@@ -1,1 +1,90 @@
-<?php echo 'evaluation';
+<?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+
+
+$this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/manager-service/appraisal-evaluation/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+?>
+
+
+<script>
+    document.appraisals =<?= json_encode($list) ?>;
+</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\appraisal-evaluation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="margin-top-20">
+    <div class="table-toolbar">
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6">
+                <div class="btn-group pull-right">
+                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu pull-right">                      
+                        <li>
+                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="appraisalListTable">
+
+    </div>
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
+        <tr>
+        <td>
+        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
+        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
+        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        </td>
+        <td>    
+        #: (APPRAISAL_EDESC == null) ? '-' : APPRAISAL_EDESC #
+        </td>
+        <td>    
+        #: (APPRAISAL_TYPE_EDESC == null) ? '-' : APPRAISAL_EDESC #
+        </td>
+        <td>    
+        #: (STAGE_EDESC == null) ? '-' : STAGE_EDESC #
+        </td>
+        <td>    
+        #: (START_DATE == null) ? '-' : START_DATE #
+        </td>
+        <td>    
+        #: (END_DATE == null) ? '-' : END_DATE #
+        </td>
+        <td>
+        <a class="btn-edit"
+        href="<?= $this->url("appraisal-evaluation", ["action" => "view"]); ?>/#:APPRAISAL_ID#/#:EMPLOYEE_ID#" style="height:17px;">
+        <i class="fa fa-search-plus"></i>
+        </a>
+        </td>
+        </tr>
+    </script>
+</div>

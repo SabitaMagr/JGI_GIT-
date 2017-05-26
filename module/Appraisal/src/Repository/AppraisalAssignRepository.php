@@ -121,7 +121,10 @@ AND
         
         $select->where([
             "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,
-            "AA.".AppraisalAssign::STATUS."='E'"]);
+            "AA.".AppraisalAssign::STATUS."='E'",
+            "E.".HrEmployees::STATUS."='E'",
+            "T.".Type::STATUS."='E'",
+            "S.".Stage::STATUS."='E'"]);
         $select->order("A.".Setup::APPRAISAL_EDESC);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -142,7 +145,7 @@ AND
             new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
         ]);
         $select->from(["A"=>Setup::TABLE_NAME])
-                ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
+                ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID,AppraisalAssign::APPRAISER_ID,AppraisalAssign::REVIEWER_ID])
                 ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)"), HrEmployees::EMPLOYEE_ID])
                 ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(T.APPRAISAL_TYPE_EDESC)")])
                 ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=A.". Setup::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")])
@@ -151,7 +154,39 @@ AND
         
         $select->where([
             "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,
-            "AA.".AppraisalAssign::APPRAISAL_ID."=".$appraisalId]);
+            "AA.".AppraisalAssign::APPRAISAL_ID."=".$appraisalId,
+            "AA.".AppraisalAssign::STATUS."='E'",
+            "E.".HrEmployees::STATUS."='E'",
+            "T.".Type::STATUS."='E'",
+            "S.".Stage::STATUS."='E' AND
+  (((E1.STATUS =
+    CASE
+      WHEN E1.STATUS IS NOT NULL
+      THEN ('E')
+    END
+  OR E1.STATUS IS NULL)
+  AND
+  (E1.RETIRED_FLAG =
+    CASE
+      WHEN E1.RETIRED_FLAG IS NOT NULL
+      THEN ('N')
+    END
+  OR E1.RETIRED_FLAG IS NULL))
+OR
+  ((E2.STATUS =
+    CASE
+      WHEN E2.STATUS IS NOT NULL
+      THEN ('E')
+    END
+  OR E2.STATUS IS NULL)
+AND
+  (E2.RETIRED_FLAG =
+    CASE
+      WHEN E2.RETIRED_FLAG IS NOT NULL
+      THEN ('N')
+    END
+  OR E2.RETIRED_FLAG IS NULL)))"
+            ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();

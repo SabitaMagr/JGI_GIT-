@@ -60,9 +60,10 @@ class PerformanceAppraisal extends AbstractActionController{
         $headingList = $headingRepo->fetchByAppraisalTypeId($appraisalTypeId);
         $questionTemplate = [];
         
-        $appraiseeFlag = ["Q.".\Appraisal\Model\Question::APPRAISEE_FLAG."='Y'"];
-        $appraiserFlag = ["Q.".\Appraisal\Model\Question::APPRAISER_FLAG."='Y'"];
-        $reviewerFlag = ["Q.".\Appraisal\Model\Question::REVIEWER_FLAG."='Y'"];
+        $appraiseeFlag = ["(Q.".\Appraisal\Model\Question::APPRAISEE_FLAG."='Y' OR Q.".\Appraisal\Model\Question::APPRAISEE_RATING."='Y')"];
+        $appraiserFlag = ["(Q.".\Appraisal\Model\Question::APPRAISER_FLAG."='Y' OR Q.".\Appraisal\Model\Question::APPRAISER_RATING."='Y')"];
+        $reviewerFlag = ["(Q.".\Appraisal\Model\Question::REVIEWER_FLAG."='Y' OR Q.".\Appraisal\Model\Question::REVIEWER_RATING."='Y')"];
+        
         
         foreach($headingList as $headingRow){
             //get question list for appraisee with current stage id
@@ -112,7 +113,8 @@ class PerformanceAppraisal extends AbstractActionController{
             'questionTemplate'=>$questionTemplate,
             'performanceAppraisalObj'=>CustomFormElement::formElement(),
             'customRenderer' => Helper::renderCustomView(),
-            'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox()
+            'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox(),
+            'appraisalId' =>$appraisalId
             ]);
     }
     public function viewAction(){
@@ -131,31 +133,77 @@ class PerformanceAppraisal extends AbstractActionController{
         $appraiseeFlag = ["Q.".\Appraisal\Model\Question::APPRAISEE_FLAG."='Y'"];
         $appraiserFlag = ["Q.".\Appraisal\Model\Question::APPRAISER_FLAG."='Y'"];
         $reviewerFlag = ["Q.".\Appraisal\Model\Question::REVIEWER_FLAG."='Y'"];
-        
+        $appraiserQuestionTemplate = [];
+        $appraiseeQuestionTemplate = [];
+        $reviewerQuestionTemplate = [];
+        $questionForCurStage = 0;
+        $questionForCurStageAppraisee = 0;
         foreach($headingList as $headingRow){
             //get question list for appraisee with current stage id
-            $questionList =$this->getAllQuestionWidOptions($headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId);
+            $questionList =$this->getAllQuestionWidOptions($headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId,$this->employeeId,$this->employeeId,"=1");
+            $appraiserQuestionList =$this->getAllQuestionWidOptions($headingRow['HEADING_ID'],$currentStageId,$appraiserFlag,$appraisalId,$this->employeeId,$assignedAppraisalDetail['APPRAISER_ID']);
+            $appraiseeQuestionList = $this->getAllQuestionWidOptions($headingRow['HEADING_ID'], $currentStageId, $appraiseeFlag, $appraisalId,$this->employeeId,$this->employeeId,"!=1");
+            $reviewerQuestionList = $this->getAllQuestionWidOptions($headingRow['HEADING_ID'], $currentStageId, $reviewerFlag, $appraisalId,$this->employeeId,$assignedAppraisalDetail['REVIEWER_ID']);
             
-            if(count($questionList)>0){
+            if($appraiseeQuestionList['questionForCurStage']){
+                $questionForCurStageAppraisee+=1;
+            }
+            if($questionList['questionForCurStage']){
+                $questionForCurStage+=1;
+            }
+            if(count($questionList['questionList'])>0){
                 array_push($questionTemplate, [
                     'HEADING_ID'=>$headingRow['HEADING_ID'],
                     'HEADING_EDESC'=>$headingRow['HEADING_EDESC'],
-                    'QUESTIONS'=>$questionList]);
+                    'QUESTIONS'=>$questionList['questionList']]);
+            }
+            if(count($appraiserQuestionList['questionList'])>0){
+                array_push($appraiserQuestionTemplate, [
+                    'HEADING_ID'=>$headingRow['HEADING_ID'],
+                    'HEADING_EDESC'=>$headingRow['HEADING_EDESC'],
+                    'QUESTIONS'=>$appraiserQuestionList['questionList']]);
+            }
+            if(count($appraiseeQuestionList['questionList'])>0){
+                array_push($appraiseeQuestionTemplate, [
+                    'HEADING_ID'=>$headingRow['HEADING_ID'],
+                    'HEADING_EDESC'=>$headingRow['HEADING_EDESC'],
+                    'QUESTIONS'=>$appraiseeQuestionList['questionList']]);
+            }
+            if(count($reviewerQuestionList['questionList'])>0){
+                array_push($reviewerQuestionTemplate, [
+                    'HEADING_ID'=>$headingRow['HEADING_ID'],
+                    'HEADING_EDESC'=>$headingRow['HEADING_EDESC'],
+                    'QUESTIONS'=>$reviewerQuestionList['questionList']   ]);
             }
         }
         if($request->isPost()){
             try{
                 $appraisalAnswerModel = new AppraisalAnswer();
-                $answer = $request->getPost()->getArrayCopy()['answer'];
+                $postData = $request->getPost()->getArrayCopy();
+                $answer = $postData['answer'];
+                $i=0;
                 foreach($answer as $key=>$value){
-                    $appraisalAnswerModel->modifiedDate = Helper::getcurrentExpressionDate();
-                    $appraisalAnswerModel->modifiedBy = $this->employeeId;
-                    if(gettype($value)=='array'){
-                        $appraisalAnswerModel->answer = json_encode($value);
+                    $appraisalAnswerModel->answer =(gettype($value)=='array')? json_encode($value):$value;
+                    if($postData['answerId'][$i]==0){
+                        $appraisalAnswerModel->answerId = (int)(Helper::getMaxId($this->adapter, AppraisalAnswer::TABLE_NAME, AppraisalAnswer::ANSWER_ID))+1;
+                        $appraisalAnswerModel->appraisalId = $appraisalId;
+                        $appraisalAnswerModel->employeeId = $this->employeeId;
+                        $appraisalAnswerModel->userId = $this->employeeId;
+                        $appraisalAnswerModel->questionId = $key;
+                        $appraisalAnswerModel->stageId = $currentStageId;
+                        $appraisalAnswerModel->createdDate = Helper::getcurrentExpressionDate();
+                        $appraisalAnswerModel->status = 'E';
+                        $appraisalAnswerModel->createdBy = $this->employeeId;
+                        $appraisalAnswerModel->approvedDate = Helper::getcurrentExpressionDate();
+                        $appraisalAnswerModel->companyId = $employeeDetail['COMPANY_ID'];
+                        $appraisalAnswerModel->branchId = $employeeDetail['BRANCH_ID'];
+                        $this->repository->add($appraisalAnswerModel);
                     }else{
-                        $appraisalAnswerModel->answer = $value;
+                        $appraisalAnswerModel->modifiedDate = Helper::getcurrentExpressionDate();
+                        $appraisalAnswerModel->modifiedBy = $this->employeeId;
+                        $this->repository->edit($appraisalAnswerModel,$key);
                     }
-                    $this->repository->edit($appraisalAnswerModel,$key);
+                    $i+=1;
                 }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("performanceAppraisal");
@@ -168,19 +216,30 @@ class PerformanceAppraisal extends AbstractActionController{
             'assignedAppraisalDetail'=> $assignedAppraisalDetail,
             'employeeDetail'=>$employeeDetail,
             'questionTemplate'=>$questionTemplate,
+            'appraiserQuestionTemplate'=>$appraiserQuestionTemplate,
+            'appraiseeQuestionTemplate'=>$appraiseeQuestionTemplate,
+            'reviewerQuestionTemplate'=>$reviewerQuestionTemplate,
             'performanceAppraisalObj'=>CustomFormElement::formElement(),
             'customRenderer' => Helper::renderCustomView(),
-            'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox()
+            'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox(),
+            'appraisalId'=>$appraisalId,
+            'questionForCurStage'=>$questionForCurStage,
+            'questionForCurStageAppraisee'=>$questionForCurStageAppraisee
             ]);
     }
-    public function getAllQuestionWidOptions($headingId,$currentStageId,$flag,$appraisalId=null){
+    public function getAllQuestionWidOptions($headingId,$currentStageId,$flag,$appraisalId=null,$employeeId=null,$userId=null,$orderCondition=null){
         $stageQuestionRepo = new StageQuestionRepository($this->adapter);
-        $result = $stageQuestionRepo->getByStageIdHeadingId($headingId,$currentStageId,$flag);
         $questionOptionRepo = new QuestionOptionRepository($this->adapter);
+        $curResult = $stageQuestionRepo->getByStageIdHeadingId($headingId,$currentStageId,$flag,$orderCondition);
+        if($curResult==null){
+            $result = $this->repository->getByAppIdEmpIdUserId($headingId,$appraisalId,$employeeId,$userId,$orderCondition);
+        }else{
+            $result = $curResult;
+        }
         $questionList = [];
         foreach($result as $row){
             $optionList = $questionOptionRepo->fetchByQuestionId($row['QUESTION_ID']);
-            $answerDtl  = $this->repository->fetchByAllDtl($appraisalId, $row['QUESTION_ID'], $this->employeeId, $this->employeeId);
+            $answerDtl  = $this->repository->fetchByAllDtl($appraisalId, $row['QUESTION_ID'], $employeeId,$userId);
             $options = [];
             foreach($optionList as $optionRow){
                 $options[$optionRow['OPTION_ID']]=$optionRow['OPTION_EDESC'];
@@ -195,6 +254,6 @@ class PerformanceAppraisal extends AbstractActionController{
             array_push($questionList,$new_array);
             $answer=[];
         }
-        return $questionList;
+        return ['questionList'=>$questionList,'questionForCurStage'=>(($curResult==null)?false:true)];
     }
 }

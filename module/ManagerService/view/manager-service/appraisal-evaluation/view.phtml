@@ -2,7 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
 ?>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\performanceAppraisal')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\appraisal-evaluation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <?php
@@ -173,11 +173,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                     <div class="tab-content margin-top-15" >
                         <div class="tab-pane active" id="portlet_tab2_1">
-                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm">
+                            <form method="post" action="" name="performanceAppraisalForm">
                             <div class="row">
-                                <?php 
-                                $selfDisabled = ($questionForCurStage==0)?'disabled':'';
-                                foreach ($questionTemplate as $questionTemplateRow) { ?>
+                                <?php foreach ($questionTemplate as $questionTemplateRow) { ?>
                                     <div class="col-md-12 margin-bottom-10">
                                         <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
                                             <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $questionTemplateRow['HEADING_EDESC']; ?></h6>
@@ -190,14 +188,60 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                                         if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
                                                         <div class="md-radio-inline">
-                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled)); ?>
+                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,"disabled")); ?>
                                                         </div>
                                                         <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
                                                             <div class="md-checkbox-inline">
-                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled)); ?>
+                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,"disabled")); ?>
                                                             </div>
                                                         <?php } else{
-                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled)));
+                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,"disabled")));
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+<!--                            <div class="row margin-top-10">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <button type="submit" id="submit" class="btn btn-success">
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>-->
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="portlet_tab2_2">
+                            <form method="post" action="<?= $this->url("appraisal-evaluation",['action'=>"view",'appraisalId'=>$appraisalId,'employeeId'=>$employeeId]); ?>" name="performanceAppraisalForm">
+                            <div class="row">
+                                <?php
+                                $disabled = ($questionForCurStage==0)?'disabled':'';
+                                foreach ($appraiserQuestionTemplate as $appraiserQuestionRow) { ?>
+                                    <div class="col-md-12 margin-bottom-10">
+                                        <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
+                                            <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $appraiserQuestionRow['HEADING_EDESC']; ?></h6>
+                                            <div class="row">
+                                                <?php foreach ($appraiserQuestionRow['QUESTIONS'] as $questionRow) { ?>
+                                                    <div  class="col-md-4 margin-bottom-10">  
+                                                        <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
+                                                        <h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
+                                                        <?php 
+                                                        $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
+                                                        if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
+                                                        <div class="md-radio-inline">
+                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$disabled)); ?>
+                                                        </div>
+                                                        <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
+                                                            <div class="md-checkbox-inline">
+                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$disabled)); ?>
+                                                            </div>
+                                                        <?php } else{
+                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$disabled)));
                                                         }
                                                         ?>
                                                     </div>
@@ -220,17 +264,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php } ?>
                             </form>
                         </div>
-                        <div class="tab-pane" id="portlet_tab2_2">
+                        <div class="tab-pane" id="portlet_tab2_4">
                             <form method="post" action="" name="performanceAppraisalForm">
                             <div class="row">
                                 <?php
-                                foreach ($appraiserQuestionTemplate as $appraiserQuestionRow) { ?>
+                                foreach ($appraiseeQuestionTemplate as $appraiseeQuestionRow) { ?>
                                     <div class="col-md-12 margin-bottom-10">
                                         <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
-                                            <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $appraiserQuestionRow['HEADING_EDESC']; ?></h6>
+                                            <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $appraiseeQuestionRow['HEADING_EDESC']; ?></h6>
                                             <div class="row">
-                                                <?php foreach ($appraiserQuestionRow['QUESTIONS'] as $questionRow) { ?>
-                                                    <div  class="col-md-4 margin-bottom-10"> 
+                                                <?php foreach ($appraiseeQuestionRow['QUESTIONS'] as $questionRow) { ?>
+                                                    <div  class="col-md-4 margin-bottom-10">
                                                         <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
                                                         <h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
                                                         <?php 
@@ -265,54 +309,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>-->
                             </form>
                         </div>
-                        <div class="tab-pane" id="portlet_tab2_4">
-                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm">
-                            <div class="row">
-                                <?php
-                                $selfDisabled1 = ($questionForCurStageAppraisee==0)?'disabled':'';
-                                foreach ($appraiseeQuestionTemplate as $appraiseeQuestionRow) { ?>
-                                    <div class="col-md-12 margin-bottom-10">
-                                        <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
-                                            <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $appraiseeQuestionRow['HEADING_EDESC']; ?></h6>
-                                            <div class="row">
-                                                <?php foreach ($appraiseeQuestionRow['QUESTIONS'] as $questionRow) { ?>
-                                                    <div  class="col-md-4 margin-bottom-10">
-                                                        <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                        <h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
-                                                        <?php 
-                                                        $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
-                                                        if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
-                                                        <div class="md-radio-inline">
-                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled1)); ?>
-                                                        </div>
-                                                        <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
-                                                            <div class="md-checkbox-inline">
-                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled1)); ?>
-                                                            </div>
-                                                        <?php } else{
-                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled1)));
-                                                        }
-                                                        ?>
-                                                    </div>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                            <?php if($questionForCurStageAppraisee>0){ ?>
-                            <div class="row margin-top-10">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-success">
-                                            SUBMIT
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php } ?>
-                            </form>
-                        </div>
                         <div class="tab-pane" id="portlet_tab2_3">
                             <form method="post" action="" name="performanceAppraisalForm">
                             <div class="row">
@@ -323,7 +319,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $reviewerQuestionList['HEADING_EDESC']; ?></h6>
                                             <div class="row">
                                                 <?php foreach ($reviewerQuestionList['QUESTIONS'] as $reviewerQuestionRow) { ?>
-                                                    <div  class="col-md-4 margin-bottom-10"> 
+                                                    <div  class="col-md-4 margin-bottom-10">  
                                                         <input type="hidden" value="<?= (count($reviewerQuestionRow['ANSWER'])>0)?array_keys($reviewerQuestionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
                                                         <h7 style="font-size:12px;"><?php echo $reviewerQuestionRow['QUESTION_EDESC']; ?></h7>  
                                                         <?php 
