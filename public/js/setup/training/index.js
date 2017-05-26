@@ -27,6 +27,8 @@
             ]
         });
         
+        app.searchTable('trainingTable',['TRAINING_NAME','COMPANY_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME']);
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

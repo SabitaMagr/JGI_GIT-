@@ -26,6 +26,9 @@
                 {title: "Action",width:110}
             ]
         });
+        
+        app.searchTable('academicUniversityTable',['ACADEMIC_UNIVERSITY_NAME']);
+        
         $("#export").click(function (e) {
             var grid = $("#academicUniversityTable").data("kendoGrid");
             grid.saveAsExcel();

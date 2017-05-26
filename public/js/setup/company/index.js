@@ -30,6 +30,8 @@
             var grid = $("#companyTable").data("kendoGrid");
             grid.saveAsExcel();
         });
+        
+        app.searchTable('companyTable',['COMPANY_NAME']);
         window.app.UIConfirmations();
 
     });

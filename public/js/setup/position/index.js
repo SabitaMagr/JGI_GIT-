@@ -52,6 +52,8 @@
                 {title: "Action", width: 80, width: 100}
             ]
         });
+        
+        app.searchTable('positionTable',['LEVEL_NO','POSITION_NAME','COMPANY_NAME']);
 
         $("#export").click(function (e) {
             var rows = [{

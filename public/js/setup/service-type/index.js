@@ -26,6 +26,9 @@
                 {title: "Action",width:110}
             ]
         });
+        
+        app.searchTable('serviceTypeTable',['SERVICE_TYPE_NAME']);
+        
         $("#export").click(function (e) {
             var grid = $("#serviceTypeTable").data("kendoGrid");
             grid.saveAsExcel();

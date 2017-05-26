@@ -29,6 +29,9 @@
                 {title: "Action",width:110}
             ]
         });
+        
+        app.searchTable('academicDegreeTable',['ACADEMIC_DEGREE_NAME','WEIGHT']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
