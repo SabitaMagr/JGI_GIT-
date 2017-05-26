@@ -23,6 +23,8 @@
                 {title: "Action", width: 80}
             ]
         });
+        
+        app.searchTable('serviceQuestionTable',['QUESTION_EDESC','PARENT_QUESTION_EDESC','SERVICE_EVENT_TYPE_NAME','QA_INDEX']);
 
         $("#export").click(function (e) {
             var rows = [{

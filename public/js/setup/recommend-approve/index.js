@@ -78,6 +78,9 @@ angular.module('hris', [])
                         {field: "Action", title: "Action", width: 200}
                     ]
                 });
+                
+                app.searchTable('recommendApproveTable',['FIRST_NAME','RECOMMENDER_NAME','APPROVER_NAME']);
+                
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [

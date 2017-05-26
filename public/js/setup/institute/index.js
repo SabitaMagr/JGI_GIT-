@@ -25,6 +25,8 @@
             ]
         });
         
+        app.searchTable('instituteTable',['INSTITUTE_NAME','LOCATION','TELEPHONE','EMAIL']);
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

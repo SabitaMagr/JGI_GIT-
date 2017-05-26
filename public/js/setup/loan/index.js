@@ -27,6 +27,8 @@
             ]
         });
         
+        app.searchTable('loanTable',['LOAN_NAME','COMPANY_NAME','MIN_AMOUNT','INTEREST_RATE','REPAYMENT_AMOUNT','REPAYMENT_PERIOD']);
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

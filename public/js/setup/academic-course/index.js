@@ -25,6 +25,9 @@
                 {title: "Action",width:110}
             ]
         });
+        
+        app.searchTable('academicCourseTable',['ACADEMIC_COURSE_NAME','ACADEMIC_PROGRAM_NAME']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
