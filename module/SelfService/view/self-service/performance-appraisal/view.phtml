@@ -185,7 +185,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php foreach ($questionTemplateRow['QUESTIONS'] as $questionRow) { ?>
                                                     <div class="col-md-4"> 
                                                         <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                        <h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
+                                                        <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label>
                                                         <?php 
                                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                                         if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
@@ -232,7 +232,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php foreach ($appraiserQuestionRow['QUESTIONS'] as $questionRow) { ?>
                                                     <div  class="col-md-4 margin-bottom-10"> 
                                                         <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                        <h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
+                                                        <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label> 
                                                         <?php 
                                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                                         if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
@@ -278,7 +278,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php foreach ($appraiseeQuestionRow['QUESTIONS'] as $questionRow) { ?>
                                                     <div  class="col-md-4 margin-bottom-10">
                                                         <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                        <h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7>  
+                                                        <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7> </label> 
                                                         <?php 
                                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                                         if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
@@ -325,7 +325,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php foreach ($reviewerQuestionList['QUESTIONS'] as $reviewerQuestionRow) { ?>
                                                     <div  class="col-md-4 margin-bottom-10"> 
                                                         <input type="hidden" value="<?= (count($reviewerQuestionRow['ANSWER'])>0)?array_keys($reviewerQuestionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                        <h7 style="font-size:12px;"><?php echo $reviewerQuestionRow['QUESTION_EDESC']; ?></h7>  
+                                                        <label><h7 style="font-size:12px;"><?php echo $reviewerQuestionRow['QUESTION_EDESC']; ?></h7> </label>
                                                         <?php 
                                                         $keyForRQuestion = ($reviewerQuestionRow['ANSWER']==null || count($reviewerQuestionRow['ANSWER'])==0)?$reviewerQuestionRow['QUESTION_ID']:array_keys($reviewerQuestionRow['ANSWER'])[0];
                                                         if($reviewerQuestionRow['ANSWER_TYPE']=="RADIO"){ ?>
