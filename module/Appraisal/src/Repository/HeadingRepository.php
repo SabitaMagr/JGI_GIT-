@@ -44,7 +44,7 @@ class HeadingRepository implements RepositoryInterface{
         $select->from(['AH' => "HRIS_APPRAISAL_HEADING"])
                 ->join(['AT' => 'HRIS_APPRAISAL_TYPE'], 'AT.APPRAISAL_TYPE_ID=AH.APPRAISAL_TYPE_ID', ["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(AT.APPRAISAL_TYPE_EDESC)")], "left");
         
-        $select->where(["AH.STATUS='E'"]);
+        $select->where(["AH.STATUS='E' AND AT.STATUS='E'"]);
         $select->order("AH.HEADING_EDESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -68,7 +68,7 @@ class HeadingRepository implements RepositoryInterface{
         $select->from(['AH' => "HRIS_APPRAISAL_HEADING"])
                 ->join(['AT' => 'HRIS_APPRAISAL_TYPE'], 'AT.APPRAISAL_TYPE_ID=AH.APPRAISAL_TYPE_ID', ["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(AT.APPRAISAL_TYPE_EDESC)")], "left");
         
-        $select->where(["AH.STATUS='E' AND AH.APPRAISAL_TYPE_ID=".$appraisalTypeId]);
+        $select->where(["AH.STATUS='E' AND AH.APPRAISAL_TYPE_ID=".$appraisalTypeId." AND AT.STATUS='E'"]);
         $select->order("AH.HEADING_ID");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

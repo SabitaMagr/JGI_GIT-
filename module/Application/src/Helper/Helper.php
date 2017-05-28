@@ -216,6 +216,11 @@ class Helper {
             $elems = $object->getValueOptions();
             $counter = 1;
             $name = $object->getName();
+            $atts = $object->getAttributes();
+            $disabled = '';
+            if(in_array('disabled',$atts)){
+                $disabled = 'disabled';
+            }
             foreach ($elems as $key => $value) {
                 $temp = '';
                 if ($object->getValue() == "") {
@@ -229,7 +234,7 @@ class Helper {
                 }
 
                 echo "<div class = 'md-radio'>";
-                echo "<input $temp type = 'radio' value = '$key' name = '$name' id = '$name+$value' class = 'md-radiobtn radioButton'>";
+                echo "<input $temp $disabled type = 'radio' value = '$key' name = '$name' id = '$name+$value' class = 'md-radiobtn radioButton'>";
 
                 echo "<label for = '$name+$value'>
                 <span></span>
@@ -246,6 +251,11 @@ class Helper {
             $elems = $object->getValueOptions();
             $counter = 1;
             $name = $object->getName();
+            $atts = $object->getAttributes();
+            $disabled = '';
+            if(in_array('disabled',$atts)){
+                $disabled = 'disabled';
+            }
             foreach ($elems as $key => $value) {
                 $temp = '';
                 if ($object->getValue() == "") {
@@ -258,7 +268,7 @@ class Helper {
                     }
                 }
                 echo "<div class = 'md-checkbox'>";
-                echo "<input $temp type = 'checkbox' value = '$key' name = '$name' id = '$name+$value' class = 'md-check'>";
+                echo "<input $temp $disabled type = 'checkbox' value = '$key' name = '$name' id = '$name+$value' class = 'md-check'>";
 
                 echo "<label for = '$name+$value'>
                 <span></span>

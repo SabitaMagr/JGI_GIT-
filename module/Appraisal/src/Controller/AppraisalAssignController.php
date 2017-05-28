@@ -16,6 +16,7 @@ use Zend\Form\Element\Select;
 use Application\Custom\CustomViewModel;
 use Setup\Repository\EmployeeRepository;
 use Appraisal\Model\AppraisalAssign;
+use Appraisal\Repository\SetupRepository;
 
 class AppraisalAssignController extends AbstractActionController{
     private $adapter;
@@ -173,6 +174,8 @@ class AppraisalAssignController extends AbstractActionController{
         $reviewerId = (int)$data['reviewerId'];
         $appraiserId = (int)$data['appraiserId'];
         $appraisalId = (int)$data['appraisalId'];
+        $appraisalRepo = new SetupRepository($this->adapter);
+        $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
 //        print_r($appraisalId); die();
         
         $employeeRepo = new EmployeeRepository($this->adapter);
@@ -207,6 +210,7 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->createdBy = $this->employeeId;
             $appraisalAssign->companyId = $employeeDetail['COMPANY_ID'];
             $appraisalAssign->branchId = $employeeDetail['BRANCH_ID'];
+            $appraisalAssign->currentStageId = $appraisalDtl['CURRENT_STAGE_ID'];
             $appraisalAssign->status = 'E';
             $this->repository->add($appraisalAssign);
         } else if ($employeePreDtl != null) {
@@ -216,6 +220,7 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->appraiserId = $appraiserIdNew;
             $appraisalAssign->modifiedDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->modifiedBy = $this->employeeId;
+            $appraisalAssign->currentStageId = $appraisalDtl['CURRENT_STAGE_ID'];
             $appraisalAssign->status = 'E';
             $this->repository->edit($appraisalAssign, [$employeeId,$appraisalId]);
         }

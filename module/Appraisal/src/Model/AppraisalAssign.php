@@ -22,6 +22,7 @@ class AppraisalAssign extends Model{
     const APPROVED_DATE = "APPROVED_DATE";
     const APPROVED = "APPROVED";
     const STATUS = "STATUS";
+    const CURRENT_STAGE_ID = "CURRENT_STAGE_ID";
 
     public $appraisalId;
     public $employeeId;
@@ -39,6 +40,7 @@ class AppraisalAssign extends Model{
     public $approvedDate;
     public $approved;
     public $status;
+    public $currentStageId;
     
     public $mappings = [
         'appraisalId'=>self::APPRAISAL_ID,
@@ -56,6 +58,7 @@ class AppraisalAssign extends Model{
         'approvedBy'=>self::APPROVED_BY,
         'approvedDate'=>self::APPROVED_DATE,
         'approved'=>self::APPROVED,
-        'status'=>self::STATUS
+        'status'=>self::STATUS,
+        'currentStageId'=>self::CURRENT_STAGE_ID
     ];
 }

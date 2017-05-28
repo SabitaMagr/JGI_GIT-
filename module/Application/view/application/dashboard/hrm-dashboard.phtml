@@ -124,17 +124,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <span><?php print trim($employeeDetail['DESIGNATION_TITLE']); ?></span><br>
                     <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-5">
                     <div class="row detailsbox">
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <div class="employee_details-box hexagon-bg1 popovers" 
-                                 data-container="body"
-                                 data-trigger="hover"
-                                 data-placement="bottom"
-                                 data-content="Popover body goes here! Popover body goes here!"
-                                 data-original-title="Popover in top">
-
-                                <span><?php print $present['PRESENT']; ?></span>
+                            <div class="employee_details-box hexagon-bg1" >
+                                <span><?php print $present; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">Present</div>
@@ -142,7 +136,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg2">
-                                <span><?php print $leave['LEAVE']; ?></span>
+                                <span><?php print $leave ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Leave</div>
@@ -150,7 +144,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg3">
-                                <span><?php print $training['TRAINING']; ?></span>
+                                <span><?php print $training; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">Training</div>
@@ -158,7 +152,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg4">
-                                <span><?php print $travel['TRAVEL']; ?></span>
+                                <span><?php print $travel; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Tour</div>
@@ -166,20 +160,36 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg5">
-                                <span><?php print $WOH['WOH']; ?></span>
+                                <span><?php print $WOH; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">WOH</div>
                             </div>
                         </div>
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <div class="employee_details-box hexagon-bg6">
-                                <span>1</span>
-                                <div class="face1"></div>
-                                <div class="face2"></div>
-                                <div class="headtitle">Late Comers</div>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12  col-sm-7 col-md-3">
+                    <div class="col-hris row attendence-box">
+                        <ul>
+                            <li class="col-xs-4 col-sm-4 col-md-4">
+                                <div class="hris efficiency efficiency-bg1">
+                                    <span><?php print $employeeDetail['LATE_IN']; ?></span>
+                                    <div>Late In</div>
+                                </div>
+                            </li>
+                            <li class="col-xs-4 col-sm-4 col-md-4">
+                                <div class="hris efficiency efficiency-bg2">
+                                    <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
+                                    <div>Early Out</div>
+                                </div>
+                            </li>
+                            <li class="col-xs-4 col-sm-4 col-md-4">
+                                <div class="hris efficiency efficiency-bg3">
+                                    <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
+                                    <div>Missed Punch</div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -463,7 +473,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
 
 
-                                <?php $employeeTask = [["DESIGNATION_TITLE"=>"TEST","FULL_NAME"=>"TEST","TASK_EDESC"=>"TEST"]]; ?>
+                                <?php $employeeTask = [["DESIGNATION_TITLE" => "TEST", "FULL_NAME" => "TEST", "TASK_EDESC" => "TEST"]]; ?>
                                 <?php if ($employeeTask) : ?>
                                     <div class="task-list">
                                         <ul>
@@ -560,9 +570,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-<!--                                        <div class="form-group">
-                                            <input type="button" id="task-save" value="Save" />
-                                        </div> -->
+                                        <!--                                        <div class="form-group">
+                                                                                    <input type="button" id="task-save" value="Save" />
+                                                                                </div> -->
                                         <button type="button" class="btn btn-theme  savebutton" id="task-save btn" value="Save">
                                             <i class="fa fa-floppy-o" aria-hidden="true"></i>
                                             Save
@@ -575,9 +585,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
 
-<!--                    <div id="lobilist">
-
-                    </div>-->
+                    <!--                    <div id="lobilist">
+                    
+                                        </div>-->
                 </div>
             </div>
 
