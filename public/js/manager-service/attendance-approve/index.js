@@ -32,6 +32,9 @@
                 {title: "Action", width: 80}
             ]
         });
+        
+        app.searchTable('attendanceApproveTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','YOUR_ROLE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

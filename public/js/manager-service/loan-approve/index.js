@@ -32,6 +32,9 @@
                 {title: "Action", width: 70}
             ]
         });
+        
+        app.searchTable('loanApproveTable',['FIRST_NAME','LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','YOUR_ROLE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

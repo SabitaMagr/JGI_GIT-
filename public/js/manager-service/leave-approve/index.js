@@ -33,6 +33,9 @@
                 {title: "Action", width: 70}
             ]
         });
+        
+        app.searchTable('leaveApproveTable',['FIRST_NAME','LEAVE_ENAME','APPLIED_DATE','START_DATE','END_DATE','NO_OF_DAYS','YOUR_ROLE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

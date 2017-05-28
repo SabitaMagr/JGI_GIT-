@@ -28,6 +28,9 @@
                 {title: "Action",width:90}
             ],
         });
+        
+        app.searchTable('appraisalSetupTable',['APPRAISAL_EDESC','APPRAISAL_NDESC','APPRAISAL_TYPE_EDESC','START_DATE','END_DATE','STAGE_EDESC']);
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalSetupTable").data("kendoGrid");
             grid.saveAsExcel();

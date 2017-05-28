@@ -33,6 +33,9 @@
                 {title: "Action",width:110}
             ]
         });
+        
+        app.searchTable('travelTable',['FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE','STATUS']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

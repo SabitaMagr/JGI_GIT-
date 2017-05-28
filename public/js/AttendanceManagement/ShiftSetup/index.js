@@ -33,6 +33,9 @@
                 {title: "Action",width:110}
             ]
         });
+        
+        app.searchTable('shiftTable',['SHIFT_ENAME','COMPANY_NAME','START_TIME','END_TIME']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

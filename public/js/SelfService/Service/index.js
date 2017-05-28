@@ -80,6 +80,9 @@ angular.module('hris', [])
                         {title: "Action", width: 100}
                     ]
                 });
+                
+                app.searchTable('serviceHistoryTable',['START_DATE','END_DATE','SERVICE_EVENT_TYPE_NAME','FROM_SERVICE_TYPE_NAME','FROM_BRANCH_NAME','FROM_DEPARTMENT_NAME','FROM_DESIGNATION_TITLE','FROM_POSITION_NAME']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

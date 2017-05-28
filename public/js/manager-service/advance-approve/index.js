@@ -33,6 +33,9 @@
                 {title: "Action", width: 70}
             ]
         });
+        
+        app.searchTable('advanceApproveTable',['FIRST_NAME','ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','YOUR_ROLE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

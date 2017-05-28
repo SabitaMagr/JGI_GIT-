@@ -117,6 +117,10 @@ angular.module('hris', [])
                     ],
                     detailInit: detailInit,
                 });
+                
+                app.searchTable('attendanceWidOTTable',['EMPLOYEE_NAME','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS','OVERTIME_IN_HOUR']);
+
+                
             };
             function detailInit(e) {
                 var dataSource = $("#attendanceWidOTTable").data("kendoGrid").dataSource.data();

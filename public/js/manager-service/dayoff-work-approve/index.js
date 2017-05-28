@@ -32,6 +32,9 @@
                 {title: "Action", width: 70}
             ]
         });
+        
+        app.searchTable('dayoffWorkApproveTable',['FIRST_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','YOUR_ROLE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

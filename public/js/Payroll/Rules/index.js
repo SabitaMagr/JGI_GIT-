@@ -28,6 +28,9 @@
                 {title: "Action"}
             ]
         });
+        
+        app.searchTable('ruleTable',['PAY_EDESC','PAY_TYPE_FLAG','PRIORITY_INDEX']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

@@ -34,6 +34,9 @@
                 {title: "Action", width: 80}
             ]
         });
+        
+        app.searchTable('travelApproveTable',['FIRST_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

@@ -31,6 +31,9 @@
                 {title: "Action"}
             ]
         });
+        
+        app.searchTable('loanTable',['LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','STATUS']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

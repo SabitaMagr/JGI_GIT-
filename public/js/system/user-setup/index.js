@@ -28,6 +28,9 @@
                     {title: "Action",width:100}
             ]
         }); 
+        
+        app.searchTable('userTable',['FIRST_NAME','USER_NAME','ROLE_NAME']);
+        
         $("#export").click(function (e) {
             var grid = $("#userTable").data("kendoGrid");
             grid.saveAsExcel();

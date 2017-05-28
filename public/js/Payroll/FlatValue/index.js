@@ -29,6 +29,9 @@
                 {title: "Action"}
             ]
         }); 
+        
+        app.searchTable('flatValueTable',['FLAT_EDESC','FLAT_LDESC','SHOW_AT_RULE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

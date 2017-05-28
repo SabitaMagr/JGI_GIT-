@@ -84,6 +84,9 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('overtimeRequestStatusTable',['FIRST_NAME','REQUESTED_DATE','OVERTIME_DATE','DETAILS','TOTAL_HOUR','YOUR_ROLE','STATUS']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

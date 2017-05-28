@@ -26,6 +26,9 @@
                 {title: "Action",width:100}
             ],
         });
+        
+        app.searchTable('appraisalHeadingTable',['HEADING_EDESC','HEADING_NDESC','PERCENTAGE','APPRAISAL_TYPE_EDESC']);
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalHeadingTable").data("kendoGrid");
             grid.saveAsExcel();

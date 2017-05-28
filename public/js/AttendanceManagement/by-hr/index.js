@@ -91,6 +91,9 @@ angular.module('hris', [])
                     ],
                     detailInit: detailInit,
                 });
+                
+                app.searchTable('attendanceByHrTable',['EMPLOYEE_NAME','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
+                
 
             }
             ;

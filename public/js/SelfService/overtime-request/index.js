@@ -31,6 +31,9 @@
                 {title: "Action"}
             ]
         });
+        
+        app.searchTable('overtimeTable',['OVERTIME_DATE','DETAILS','TOTAL_HOUR','REQUESTED_DATE','STATUS']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

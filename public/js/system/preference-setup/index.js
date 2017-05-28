@@ -26,6 +26,9 @@
                 {title: "Action", width: 120}
             ],
         });
+        
+        app.searchTable('preferenceTable',['COMPANY_NAME','PREFERENCE_NAME','PREFERENCE_CONSTRAINT','CONSTRAINT_VALUE','PREFERENCE_CONDITION']);
+        
         $("#export").click(function (e) {
             var grid = $("#preferenceTable").data("kendoGrid");
             grid.saveAsExcel();

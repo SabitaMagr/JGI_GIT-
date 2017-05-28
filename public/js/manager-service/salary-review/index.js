@@ -26,6 +26,9 @@
                 {title: "Action", width: 100}
             ],
         });
+        
+        app.searchTable('salaryReviewTable',['FIRST_NAME','OLD_AMOUNT','NEW_AMOUNT','EFFECTIVE_DATE']);
+        
 
     });
 })(window.jQuery, window.app);

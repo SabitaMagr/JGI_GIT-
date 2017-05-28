@@ -237,6 +237,9 @@ angular.module('hris', [])
                         {title: "Action", width: 100}
                     ]
                 });
+                
+                app.searchTable('trainingAssignListTable',['FIRST_NAME','TRAINING_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','TRAINING_TYPE']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

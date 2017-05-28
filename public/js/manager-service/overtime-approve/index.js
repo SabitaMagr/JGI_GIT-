@@ -32,6 +32,9 @@
                 {title: "Action", width: 70}
             ]
         });
+        
+        app.searchTable('overtimeApproveTable',['FIRST_NAME','REQUESTED_DATE','OVERTIME_DATE','DETAILS','TOTAL_HOUR','YOUR_ROLE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

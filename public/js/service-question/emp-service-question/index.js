@@ -28,6 +28,9 @@
                     {title: "Action",width:100}
             ]
         }); 
+        
+        app.searchTable('serviceQuestionTable',['FIRST_NAME','SERVICE_EVENT_TYPE_NAME','QA_DATE']);
+        
         $("#export").click(function (e) {
             var grid = $("#serviceQuestionTable").data("kendoGrid");
             grid.saveAsExcel();

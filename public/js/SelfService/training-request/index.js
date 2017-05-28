@@ -33,6 +33,9 @@
                 {title: "Action"}
             ]
         });
+        
+        app.searchTable('trainingRequestTable',['TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','STATUS']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

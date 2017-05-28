@@ -29,6 +29,9 @@
                 {field: "HALF_DAY", title: "Half Day"},
             ]
         });
+        
+        app.searchTable('holidayTable',['HOLIDAY_ENAME','START_DATE','END_DATE','HALF_DAY']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

@@ -86,6 +86,9 @@ angular.module('hris', [])
                         {title: "Action", width: 70}
                     ]
                 });
+                
+                app.searchTable('leaveRequestStatusTable',['FIRST_NAME','LEAVE_ENAME','APPLIED_DATE','START_DATE','END_DATE','RECOMMENDER_NAME','APPRVOER_NAME','NO_OF_DAYS','STATUS']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

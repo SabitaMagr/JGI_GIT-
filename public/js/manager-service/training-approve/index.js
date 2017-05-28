@@ -34,6 +34,9 @@
                 {title: "Action", width: 70}
             ]
         });
+        
+        app.searchTable('trainingApproveTable',['FIRST_NAME','TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','YOUR_ROLE']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

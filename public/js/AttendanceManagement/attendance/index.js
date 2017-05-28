@@ -76,6 +76,9 @@ angular.module('hris', [])
                         {field: "OUT_REMARKS", title: "Early Out Reason"},
                     ]
                 });
+                
+                app.searchTable('attendanceTable',['ATTENDANCE_DT','IN_TIME','OUT_TIME','TOTAL_HOUR','IN_REMARKS','OUT_REMARKS']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

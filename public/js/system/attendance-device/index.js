@@ -28,6 +28,9 @@
                     {title: "Action",width:100}
             ]
         }); 
+        
+        app.searchTable('attendanceDevice',['DEVICE_NAME','DEVICE_IP','DEVICE_LOCATION','ISACTIVE']);
+        
         $("#export").click(function (e) {
             var grid = $("#attendanceDevice").data("kendoGrid");
             grid.saveAsExcel();

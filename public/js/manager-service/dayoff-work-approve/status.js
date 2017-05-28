@@ -84,6 +84,9 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('dayoffWorkRequestStatusTable',['FIRST_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','YOUR_ROLE','STATUS']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

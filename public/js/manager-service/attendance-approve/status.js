@@ -83,6 +83,8 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('attendanceRequestStatusTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','YOUR_ROLE','STATUS']);
 
                 function gridDataBound(e) {
                     var grid = e.sender;

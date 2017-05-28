@@ -24,6 +24,9 @@
                 {title: "Action",width:100}
             ],
         });
+        
+        app.searchTable('appraisalTypeTable',['APPRAISAL_TYPE_EDESC','APPRAISAL_TYPE_NDESC','SERVICE_TYPE_NAME']);
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalTypeTable").data("kendoGrid");
             grid.saveAsExcel();

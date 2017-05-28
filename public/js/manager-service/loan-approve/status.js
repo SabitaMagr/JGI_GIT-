@@ -86,6 +86,9 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('loanRequestStatusTable',['FIRST_NAME','LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','YOUR_ROLE','STATUS']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

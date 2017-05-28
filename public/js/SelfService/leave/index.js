@@ -29,6 +29,9 @@
                 {field: "BALANCE", title: "Available Days"},
             ]
         });
+        
+//        app.searchTable('leaveTable',['LEAVE_ENAME']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

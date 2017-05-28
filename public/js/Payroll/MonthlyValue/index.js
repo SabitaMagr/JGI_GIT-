@@ -30,6 +30,9 @@
                 {title: "Action"}
             ]
         });  
+        
+        app.searchTable('monthlyValueTable',['MTH_EDESC','MTH_LDESC','SHOW_AT_RULE','SH_INDEX_NO']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

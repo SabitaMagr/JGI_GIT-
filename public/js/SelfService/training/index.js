@@ -32,6 +32,9 @@
                 {title:"Action",width:60}
             ]
         });
+        
+        app.searchTable('trainingTable',['TRAINING_CODE','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','LOCATION']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

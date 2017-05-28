@@ -27,6 +27,9 @@
                 {title: "Action", width: 100}
             ],
         });
+        
+        app.searchTable('appraisalQuestionTable',['QUESTION_EDESC','QUESTION_NDESC','ANSWER_TYPE','ORDER_NO','HEADING_EDESC']);
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

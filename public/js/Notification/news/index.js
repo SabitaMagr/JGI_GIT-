@@ -27,6 +27,9 @@
                 {title: "Action",width:100}
             ],
         });
+        
+        app.searchTable('newsTable',['NEWS_DATE','NEWS_TYPE','NEWS_TITLE','NEWS_EDESC','COMPANY_NAME']);
+        
         $("#export").click(function (e) {
             var grid = $("#newsTable").data("kendoGrid");
             grid.saveAsExcel();

@@ -34,6 +34,9 @@
                 {title: "Action"}
             ]
         }); 
+        
+        app.searchTable('leaveTable',['LEAVE_ENAME','COMPANY_NAME','ALLOW_HALFDAY','DEFAULT_DAYS','CARRY_FORWARD','CASHABLE','PAID']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
