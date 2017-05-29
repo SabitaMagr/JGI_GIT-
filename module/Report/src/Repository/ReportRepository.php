@@ -82,67 +82,67 @@ EOT;
 
     public function departmentWiseDailyReport(int $monthId, int $departmentId = null, int $branchId = null) {
         $sql = <<<EOT
-SELECT 
-  TRUNC(AD.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1                              AS DAY_COUNT, 
-  E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID ,
-  E.FIRST_NAME                                                                   AS FIRST_NAME,
-  E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
-  E.LAST_NAME                                                                    AS LAST_NAME,
-  CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
-  AD.ATTENDANCE_DT                                                               AS ATTENDANCE_DT,
-  (
-  CASE 
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    AND AD.LEAVE_ID IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS ON_LEAVE,
-  (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID    IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_PRESENT,
-  (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID   IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_ABSENT,
-  (
-  CASE
-    WHEN AD.LEAVE_ID   IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL 
-      AND  AD.DAYOFF_FLAG='Y'
-    THEN 1
-    ELSE 0
-  END) AS IS_DAYOFF
-FROM HRIS_ATTENDANCE_DETAIL AD
-JOIN HRIS_EMPLOYEES E
-ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID),
-  ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID=$monthId
-  ) M
-WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-AND E.DEPARTMENT_ID=$departmentId
-ORDER BY AD.ATTENDANCE_DT,
-  E.EMPLOYEE_ID
+                      SELECT 
+                      TRUNC(AD.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1                              AS DAY_COUNT, 
+                      E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID ,
+                      E.FIRST_NAME                                                                   AS FIRST_NAME,
+                      E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
+                      E.LAST_NAME                                                                    AS LAST_NAME,
+                      CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
+                      AD.ATTENDANCE_DT                                                               AS ATTENDANCE_DT,
+                      (
+                      CASE 
+                        WHEN AD.DAYOFF_FLAG ='N'
+                        AND AD.HOLIDAY_ID  IS NULL
+                        AND AD.TRAINING_ID IS NULL
+                        AND AD.TRAVEL_ID   IS NULL
+                        AND AD.IN_TIME     IS NULL
+                        AND AD.LEAVE_ID IS NOT NULL
+                        THEN 1
+                        ELSE 0
+                      END) AS ON_LEAVE,
+                      (
+                      CASE
+                        WHEN AD.DAYOFF_FLAG ='N'
+                        AND AD.LEAVE_ID    IS NULL
+                        AND AD.HOLIDAY_ID  IS NULL
+                        AND AD.TRAINING_ID IS NULL
+                        AND AD.TRAVEL_ID   IS NULL
+                        AND AD.IN_TIME     IS NOT NULL
+                        THEN 1
+                        ELSE 0
+                      END) AS IS_PRESENT,
+                      (
+                      CASE
+                        WHEN AD.DAYOFF_FLAG ='N'
+                        AND AD.LEAVE_ID   IS NULL
+                        AND AD.HOLIDAY_ID  IS NULL
+                        AND AD.TRAINING_ID IS NULL
+                        AND AD.TRAVEL_ID   IS NULL
+                        AND AD.IN_TIME     IS NULL
+                        THEN 1
+                        ELSE 0
+                      END) AS IS_ABSENT,
+                      (
+                      CASE
+                        WHEN AD.LEAVE_ID   IS NULL
+                        AND AD.HOLIDAY_ID  IS NULL
+                        AND AD.TRAINING_ID IS NULL
+                        AND AD.TRAVEL_ID   IS NULL
+                        AND AD.IN_TIME     IS NULL 
+                          AND  AD.DAYOFF_FLAG='Y'
+                        THEN 1
+                        ELSE 0
+                      END) AS IS_DAYOFF
+                    FROM HRIS_ATTENDANCE_DETAIL AD
+                    JOIN HRIS_EMPLOYEES E
+                    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID),
+                      ( SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID=$monthId
+                      ) M
+                    WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                    AND E.DEPARTMENT_ID=$departmentId
+                    ORDER BY AD.ATTENDANCE_DT,
+                      E.EMPLOYEE_ID
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

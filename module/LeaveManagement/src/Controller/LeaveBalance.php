@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 11/3/16
- * Time: 3:26 PM
- */
-
 namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper;
@@ -21,17 +14,10 @@ use Notification\Model\NotificationEvents;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use SelfService\Repository\LeaveRequestRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class LeaveBalance extends AbstractActionController {
