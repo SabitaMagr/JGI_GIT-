@@ -115,21 +115,11 @@ class DashboardController extends AbstractActionController {
                 $employeeDetail = $dashboardRepo->fetchEmployeeDashboardDetail($this->employeeId, $month->FROM_DATE, Helper::getCurrentDate());
                 $data = [
                     "employeeDetail" => $employeeDetail,
-                    "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
-                    "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
+                    "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($this->employeeId),
+                    "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($this->employeeId),
                     "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
                     "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
-                    "employeeList" => $dashboardRepo->fetchAllEmployee(),
-                    "headCountGender" => $dashboardRepo->fetchGenderHeadCount(),
-                    "headCountDepartment" => $dashboardRepo->fetchDepartmentHeadCount(),
-                    "headCountLocation" => $dashboardRepo->fetchLocationHeadCount(),
-                    "departmentAttendance" => $dashboardRepo->fetchDepartmentAttendance(),
                     'todoList' => $this->getTodoList(),
-                    "present" => $employeeDetail['PRESENT_DAY'],
-                    "leave" => $employeeDetail['LEAVE'],
-                    "WOH" => $employeeDetail['WOH'],
-                    "training" => $employeeDetail['TRAINING'],
-                    "travel" => $employeeDetail['TOUR']
                 ];
 
                 break;
@@ -138,8 +128,7 @@ class DashboardController extends AbstractActionController {
                 $template = "dashboard/hrm";
                 $data = [
                     "employeeDetail" => $employeeDetail,
-                    "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
-                    "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
+                    "employeeNotice" => $dashboardRepo->fetchEmployeeNotice(),
                     "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
                     "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
                     "employeeList" => $dashboardRepo->fetchAllEmployee(),
@@ -148,13 +137,9 @@ class DashboardController extends AbstractActionController {
                     "headCountLocation" => $dashboardRepo->fetchLocationHeadCount(),
                     "departmentAttendance" => $dashboardRepo->fetchDepartmentAttendance(),
                     'todoList' => $this->getTodoList(),
-                    "present" => $employeeDetail['PRESENT_DAY'],
-                    "leave" => $employeeDetail['LEAVE'],
-                    "WOH" => $employeeDetail['WOH'],
-                    "training" => $employeeDetail['TRAINING'],
-                    "travel" => $employeeDetail['TOUR'],
                     "pendingLeave" => $dashboardRepo->fetchPendingLeave(),
-                    "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth()
+                    "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth(),
+                    "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays(),
                 ];
                 break;
             case 'B':
@@ -167,8 +152,15 @@ class DashboardController extends AbstractActionController {
 
                 $template = "dashboard/branch-manager";
                 $data = [
-                    "employeeDetail" => $dashboardRepo->fetchAdminDashboardDetail($this->employeeId, Helper::getCurrentDate()),
-                    "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
+                    "employeeDetail" => $dashboardRepo->fetchManagerDashboardDetail($this->employeeId, Helper::getCurrentDate()),
+                    "present" => $dashboardRepo->fetchPresentCount($empBranchId)['PRESENT'],
+                    "leave" => $dashboardRepo->fetchLeaveCount($empCompanyId, $empBranchId)['LEAVE'],
+                    "training" => $dashboardRepo->fetchTrainingCount($empCompanyId, $empBranchId)['TRAINING'],
+                    "travel" => $dashboardRepo->fetchTravelCount($empCompanyId, $empBranchId)['TRAVEL'],
+                    "WOH" => $dashboardRepo->fetchWOHCount($empCompanyId, $empBranchId)['WOH'],
+                    'lateIn' => $dashboardRepo->fetchLateInCount($empCompanyId, $empBranchId)['LATE_IN'],
+                    'earlyOut' => $dashboardRepo->fetchEarlyOutCount($empCompanyId, $empBranchId)['EARLY_OUT'],
+                    'missedPunch' => $dashboardRepo->fetchMissedPunchCount($empCompanyId, $empBranchId)['MISSED_PUNCH'],
                     "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
                     "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
                     "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
@@ -178,13 +170,9 @@ class DashboardController extends AbstractActionController {
                     "headCountLocation" => $dashboardRepo->fetchLocationHeadCount(),
                     "departmentAttendance" => $dashboardRepo->fetchDepartmentAttendance(),
                     'todoList' => $this->getTodoList(),
-                    "present" => $dashboardRepo->fetchPresentCount($empCompanyId, $empBranchId)['PRESENT'],
-                    "leave" => $dashboardRepo->fetchLeaveCount($empCompanyId, $empBranchId)['LEAVE'],
-                    "WOH" => $dashboardRepo->fetchWOHCount($empCompanyId, $empBranchId)['WOH'],
-                    "training" => $dashboardRepo->fetchTrainingCount($empCompanyId, $empBranchId)['TRAINING'],
-                    "travel" => $dashboardRepo->fetchTravelCount($empCompanyId, $empBranchId)['TRAVEL'],
                     "pendingLeave" => $dashboardRepo->fetchPendingLeave($empCompanyId, $empBranchId),
-                    "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth($empCompanyId, $empBranchId)
+                    "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth($empCompanyId, $empBranchId),
+                    "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
                 ];
 
                 break;
