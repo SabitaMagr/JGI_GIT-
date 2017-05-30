@@ -809,17 +809,19 @@ window.app = (function ($, toastr, App) {
 
     var pdfExport = function (kendoId, col) {
 
-        console.log(col);
+//        console.log(col);
         // to create div for pdf table export
         var $pdfExportdiv = $("<div id='pdfExportTable'></div>");
         $pdfExportdiv.insertAfter("#" + kendoId);
 
 //             to create export pdf button
-        var $pdfExportButton = $("<li id='exportPdf'>"
-                + "<a href='javascript:;'>"
-                + "<i class='fa fa-pencil' ></i> Export to PDF</a>"
+        var $pdfExportButton = $("<li>"
+                + "<a href='javascript:;' id='exportPdf'>"
+                + "<i class='fa fa-file-pdf-o' ></i> Export to PDF</a>"
                 + "</li>");
-        $pdfExportButton.insertAfter("#export");
+        
+        
+        $pdfExportButton.insertAfter($("#export").parent());
 
         //to create template for export pdf
 
