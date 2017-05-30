@@ -66,7 +66,6 @@
                 var data = $self.attr('data');
                 var index = $self.attr('index');
 
-                console.log(summernotes[index - 1]);
                 summernotes[index - 1].summernote('insertText', '[' + data + ']');
             });
 

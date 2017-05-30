@@ -102,7 +102,7 @@ class HeadNotification {
         $mail->setSubject($template['SUBJECT']);
         $htmlDescription = $model->processString($template['DESCRIPTION'], $url);
         $html2txt = new Html2Text($htmlDescription);
-        $mail->setBody($html2txt->getText());
+        $mail->setBody(trim($html2txt->getText()));
 
         if (!isset($model->fromEmail) || $model->fromEmail == null || $model->fromEmail == '' || !$isValidEmail($model->fromEmail)) {
             throw new Exception("Sender email is not set or valid.");
