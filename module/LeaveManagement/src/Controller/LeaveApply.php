@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 9/8/16
- * Time: 5:16 PM
- */
-
 namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper;
@@ -66,8 +59,8 @@ class LeaveApply extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'leaves' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_LEAVE_MASTER_SETUP", "LEAVE_ID", ["LEAVE_ENAME"], ["STATUS" => 'E'], "LEAVE_ENAME", "ASC",NULL,FALSE,TRUE),
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ",FALSE,TRUE),
+                    'leaves' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_LEAVE_MASTER_SETUP", "LEAVE_ID", ["LEAVE_ENAME"], ["STATUS" => 'E'], "LEAVE_ENAME", "ASC", NULL, FALSE, TRUE),
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE),
                     'customRenderer' => Helper::renderCustomView()
         ]);
     }
