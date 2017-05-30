@@ -13,11 +13,14 @@ use Html2Text\Html2Text;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Repository\LeaveApplyRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use ManagerService\Model\SalaryDetail;
+use ManagerService\Repository\SalaryDetailRepo;
 use Notification\Model\LeaveRequestNotificationModel;
 use Notification\Model\LeaveSubNotificationModel;
 use Notification\Model\Notification;
 use Notification\Model\NotificationEvents;
 use Notification\Model\NotificationModel;
+use Notification\Model\SalaryReviewNotificationModel;
 use Notification\Model\TrainingReqNotificationModel;
 use Notification\Model\TravelSubNotificationModel;
 use Notification\Model\WorkOnDayoffNotificationModel;
@@ -49,9 +52,6 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
-use Notification\Model\SalaryReviewNotificationModel;
-use ManagerService\Model\SalaryDetail;
-use ManagerService\Repository\SalaryDetailRepo;
 
 class HeadNotification {
 
@@ -95,38 +95,37 @@ class HeadNotification {
         $emailTemplateRepo = new \Notification\Repository\EmailTemplateRepo($adapter);
         $template = $emailTemplateRepo->fetchById($type);
 
-        if (null != $template) {
-            $mail = new Message();
-            $mail->setSubject($template['SUBJECT']);
-            $htmlDescription = $model->processString($template['DESCRIPTION'], $url);
-            $html2txt = new Html2Text($htmlDescription);
-            $mail->setBody($html2txt->getText());
-
-            if (!isset($model->fromEmail) || $model->fromEmail == null || $model->fromEmail == '' || !$isValidEmail($model->fromEmail)) {
-                throw new Exception("Sender email is not set or valid.");
-            }
-            if (!isset($model->toEmail) || $model->toEmail == null || $model->toEmail == '' || !$isValidEmail($model->toEmail)) {
-                throw new Exception("Receiver email is not set or valid.");
-            }
-            $mail->setFrom($model->fromEmail, $model->fromName);
-            $mail->addTo($model->toEmail, $model->toName);
-
-            $cc = (array) json_decode($template['CC']);
-            foreach ($cc as $ccObj) {
-                $ccObj = (array) $ccObj;
-                $mail->addCc($ccObj['email'], $ccObj['name']);
-            }
-
-            $bcc = (array) json_decode($template['BCC']);
-            foreach ($bcc as $bccObj) {
-                $bccObj = (array) $bccObj;
-                $mail->addBcc($bccObj['email'], $bccObj['name']);
-            }
-            EmailHelper::sendEmail($mail);
-            HrLogger::getInstance()->info("Email Sent =>" . "From " . $model->fromEmail . " To " . $model->toEmail);
-        } else {
+        if (null == $template) {
             throw new Exception('email template not set.');
         }
+        $mail = new Message();
+        $mail->setSubject($template['SUBJECT']);
+        $htmlDescription = $model->processString($template['DESCRIPTION'], $url);
+        $html2txt = new Html2Text($htmlDescription);
+        $mail->setBody($html2txt->getText());
+
+        if (!isset($model->fromEmail) || $model->fromEmail == null || $model->fromEmail == '' || !$isValidEmail($model->fromEmail)) {
+            throw new Exception("Sender email is not set or valid.");
+        }
+        if (!isset($model->toEmail) || $model->toEmail == null || $model->toEmail == '' || !$isValidEmail($model->toEmail)) {
+            throw new Exception("Receiver email is not set or valid.");
+        }
+        $mail->setFrom($model->fromEmail, $model->fromName);
+        $mail->addTo($model->toEmail, $model->toName);
+
+        $cc = (array) json_decode($template['CC']);
+        foreach ($cc as $ccObj) {
+            $ccObj = (array) $ccObj;
+            $mail->addCc($ccObj['email'], $ccObj['name']);
+        }
+
+        $bcc = (array) json_decode($template['BCC']);
+        foreach ($bcc as $bccObj) {
+            $bccObj = (array) $bccObj;
+            $mail->addBcc($bccObj['email'], $bccObj['name']);
+        }
+        EmailHelper::sendEmail($mail);
+        HrLogger::getInstance()->info("Email Sent =>" . "From " . $model->fromEmail . " To " . $model->toEmail);
     }
 
     public static function getName($id, $repo, $name) {
@@ -134,7 +133,7 @@ class HeadNotification {
         return $detail[$name];
     }
 
-    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url=null,$senderDetail=null) {
+    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url = null, $senderDetail = null) {
         ${"fn" . NotificationEvents::LEAVE_APPLIED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, $type) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
@@ -998,20 +997,20 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 28, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::FORGOT_PASSWORD} = function (ForgotPassword $forgotPassword, AdapterInterface $adapter,$senderDetail) {
+        ${"fn" . NotificationEvents::FORGOT_PASSWORD} = function (ForgotPassword $forgotPassword, AdapterInterface $adapter, $senderDetail) {
             $isValidEmail = function ($email) {
                 return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
             };
-            
+
             $employeeRepo = new EmployeeRepository($adapter);
             $toEmployee = $employeeRepo->fetchById($forgotPassword->employeeId);
             $toEmail = $toEmployee['EMAIL_OFFICIAL'];
             $toName = $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME'];
-            
-            try{
+
+            try {
                 $mail = new Message();
-                $mail->setSubject($forgotPassword->code." is your password recovery code");
-                $htmlDescription = "Hi ".$toName.", You can enter the following reset code<br>".$forgotPassword->code."<br><br>Your Code will be expired in ".$forgotPassword->expiryDate;
+                $mail->setSubject($forgotPassword->code . " is your password recovery code");
+                $htmlDescription = "Hi " . $toName . ", You can enter the following reset code<br>" . $forgotPassword->code . "<br><br>Your Code will be expired in " . $forgotPassword->expiryDate;
                 $html2txt = new Html2Text($htmlDescription);
                 $mail->setBody($html2txt->getText());
 
@@ -1026,11 +1025,11 @@ class HeadNotification {
 
                 EmailHelper::sendEmail($mail);
                 HrLogger::getInstance()->info("Email Sent =>" . "From " . $senderDetail['fromMail'] . " To " . $toEmail);
-            } catch(Exception $e) {
+            } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         };
-        
+
         ${"fn" . NotificationEvents::SALARY_REVIEW} = function (SalaryDetail $request, AdapterInterface $adapter, Url $url) {
             $salaryDetailRepo = new SalaryDetailRepo($adapter);
             $request->exchangeArrayFromDB($salaryDetailRepo->fetchById($request->salaryDetailId));
@@ -1205,7 +1204,7 @@ class HeadNotification {
                 ${"fn" . NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::FORGOT_PASSWORD:
-                ${"fn" . NotificationEvents::FORGOT_PASSWORD}($model, $adapter,$senderDetail);
+                ${"fn" . NotificationEvents::FORGOT_PASSWORD}($model, $adapter, $senderDetail);
                 break;
             case NotificationEvents::SALARY_REVIEW:
                 ${"fn" . NotificationEvents::SALARY_REVIEW}($model, $adapter, $url);
