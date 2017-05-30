@@ -5,15 +5,29 @@
         $("#export").click(function (e) {
             app.errorMessage("No List to export data from.", "Alert");
         });
-        
-        app.searchTable('employeeTable',['FIRST_NAME','MOBILE_NO','BIRTH_DATE','COMPANY_NAME','BRANCH_NAME','DEPARTMENT_NAME','DESIGNATION_TITLE'],true);
-        
+
+        app.searchTable('employeeTable', ['FIRST_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
+
+        app.pdfExport(
+                'employeeTable',
+                {
+                    'FIRST_NAME': ' Name',
+                    'MIDDLE_NAME': 'middleName',
+                    'LAST_NAME': 'lastname',
+                    'MOBILE_NO': 'mobile',
+                    'BIRTH_DATE': 'birthdate',
+                    'COMPANY_NAME': 'companyName',
+                    'BRANCH_NAME': 'BranchName',
+                    'DEPARTMENT_NAME': 'departmentName',
+                    'DESIGNATION_TITLE': 'designation'
+                }
+        );
     });
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
         .controller('employeeListController', function ($scope, $http, $window) {
-              var displayKendoFirstTime = true;
+            var displayKendoFirstTime = true;
 //            $scope.gridData = new kendo.data.ObservableArray([
 //            ]);
 //            $scope.gridColumns = [
@@ -117,33 +131,14 @@ angular.module('hris', [])
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
                 }
-                
-                $("#exportPdf").click(function(){ 
-                    
-//                    var drawing = kendo.drawing;
-                   
 
-//                     this will contain all our drawing
-//                    var group = new drawing.Group();
-                        
-//                    var dataSource = $("#employeeTable").data("kendoGrid").dataSource;
-//                    var filteredDataSource = new kendo.data.DataSource({
-//                        data: dataSource.data(),
-//                        filter: dataSource.filter()
-//                    });
-                    
-                    
-//                    filteredDataSource.read();
-//                    var data = filteredDataSource.view();
-//                    console.log(data);
-//                    $(data).each(function(){
-//                        
-//                    });
 
-            
-                    
-                });
-                
+
+
+
+
+
+
 
                 $("#export").unbind("click");
                 $("#export").click(function (e) {

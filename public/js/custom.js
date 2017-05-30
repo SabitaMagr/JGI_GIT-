@@ -773,18 +773,18 @@ window.app = (function ($, toastr, App) {
         return Math.floor(days);
     }
 
-    var searchTable = function (kendoId, searchFields,Hidden) {
+    var searchTable = function (kendoId, searchFields, Hidden) {
         var $searchHtml = $("<div class='row search' id='searchFieldDiv'>"
                 + "<div class='col-sm-12'>"
                 + "<input class='form-group pull-right' placeholder='search here' type='text' id='kendoSearchField' style='width:136px;padding:2px;font-size:12px;'/>"
                 + "</div>"
                 + "</div>");
-        
+
 
         $searchHtml.insertBefore("#" + kendoId);
-        
+
         if (typeof Hidden !== "undefined") {
-        $("#searchFieldDiv").hide();
+            $("#searchFieldDiv").hide();
         }
         $("#kendoSearchField").keyup(function () {
             var val = $(this).val();
@@ -801,6 +801,104 @@ window.app = (function ($, toastr, App) {
                 logic: "or",
                 filters: filters
             });
+        });
+
+
+    }
+
+
+    var pdfExport = function (kendoId, col) {
+
+//        console.log(col);
+        // to create div for pdf table export
+        var $pdfExportdiv = $("<div id='pdfExportTable'></div>");
+        $pdfExportdiv.insertAfter("#" + kendoId);
+
+//             to create export pdf button
+        var $pdfExportButton = $("<li>"
+                + "<a href='javascript:;' id='exportPdf'>"
+                + "<i class='fa fa-file-pdf-o' ></i> Export to PDF</a>"
+                + "</li>");
+        
+        
+        $pdfExportButton.insertAfter($("#export").parent());
+
+        //to create template for export pdf
+
+        var pdfkendoTemplate = "<script id='rowTemplatePDF' type='text/x-kendo-tmpl'><tr>";
+        $.each(col, function (key, value) {
+            if (key != 'MIDDLE_NAME' && key != 'LAST_NAME') {
+                pdfkendoTemplate += "<td>";
+                if (key == 'FIRST_NAME') {
+                    pdfkendoTemplate += "#: (" + key + "== null) ? ' ' :" + key + "#";
+                    pdfkendoTemplate += "#: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #";
+                    pdfkendoTemplate += "#: (LAST_NAME == null) ? ' ' : LAST_NAME #";
+                } else {
+                    pdfkendoTemplate += " #: (" + key + "== null) ? ' ' :" + key + "#";
+                }
+                pdfkendoTemplate += "</td>";
+            }
+        });
+
+        pdfkendoTemplate += "</tr></script>";
+        $(pdfkendoTemplate).insertAfter("#rowTemplate");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        $("#exportPdf").click(function () {
+            $("#pdfExportTable").show();
+
+            var dataSource = $("#" + kendoId).data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+
+            var exportData = [];
+            for (var i = 0; i < data.length; i++) {
+                var tempData = {};
+                $.each(col, function (key, value) {
+                    tempData[key] = data[i][key];
+                });
+                exportData.push(tempData);
+
+            }
+            console.log(exportData);
+            var columns = [];
+            $.each(col, function (key, value) {
+                if (key != 'MIDDLE_NAME' && key != 'LAST_NAME') {
+                    columns.push({field: key, title: value});
+                }
+            });
+
+            $("#pdfExportTable").kendoGrid({
+                dataSource: exportData,
+                rowTemplate: $("#rowTemplatePDF").html(),
+                columns: columns
+            });
+
+            kendo.drawing
+                    .drawDOM("#pdfExportTable")
+                    .then(function (group) {
+                        kendo.drawing.pdf.saveAs(group, "export.pdf")
+                        $("#pdfExportTable").hide();
+                    });
+
+
         });
 
 
@@ -830,7 +928,8 @@ window.app = (function ($, toastr, App) {
         scrollTo: scrollTo,
         showMessage: showMessage,
         daysBetween: daysBetween,
-        searchTable: searchTable
+        searchTable: searchTable,
+        pdfExport: pdfExport
     };
 })(window.jQuery, window.toastr, window.App);
 
