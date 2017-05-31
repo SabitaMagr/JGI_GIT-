@@ -25,6 +25,17 @@
         });
         
         app.searchTable('serviceQuestionTable',['QUESTION_EDESC','PARENT_QUESTION_EDESC','SERVICE_EVENT_TYPE_NAME','QA_INDEX']);
+        
+        app.pdfExport(
+                'serviceQuestionTable',
+                {
+                    'QUESTION_EDESC': 'Question',
+                    'PARENT_QUESTION_EDESC': 'Parent Question',
+                    'SERVICE_EVENT_TYPE_NAME': 'serive Event Type',
+                    'QA_INDEX': 'Index',
+                    'REMARKS': 'Remarks'
+                }
+        );
 
         $("#export").click(function (e) {
             var rows = [{

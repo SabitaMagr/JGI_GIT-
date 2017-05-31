@@ -31,6 +31,17 @@
         
         app.searchTable('appraisalSetupTable',['APPRAISAL_EDESC','APPRAISAL_NDESC','APPRAISAL_TYPE_EDESC','START_DATE','END_DATE','STAGE_EDESC']);
         
+        app.pdfExport(
+                'appraisalSetupTable',
+                {
+                    'APPRAISAL_EDESC': 'Appraisal in Eng',
+                    'APPRAISAL_NDESC': 'Appraisal in Nep',
+                    'APPRAISAL_TYPE_EDESC': 'Appraisal Type',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date',
+                    'STAGE_EDESC': 'Stage'
+                });
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalSetupTable").data("kendoGrid");
             grid.saveAsExcel();

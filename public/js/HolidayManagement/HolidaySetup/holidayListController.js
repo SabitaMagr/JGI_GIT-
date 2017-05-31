@@ -78,6 +78,16 @@ angular.module('hris', [])
                 
                 app.searchTable('holidayTable',['HOLIDAY_ENAME','START_DATE','END_DATE','HALFDAY']);
                 
+                app.pdfExport(
+                'holidayTable',
+                {
+                    'HOLIDAY_ENAME': ' Holiday',
+                    'START_DATE': 'StartDate',
+                    'END_DATE': 'EndDate',
+                    'REMARKS': 'Remarks'
+                }
+                );
+        
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

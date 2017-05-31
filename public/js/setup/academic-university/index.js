@@ -29,6 +29,13 @@
         
         app.searchTable('academicUniversityTable',['ACADEMIC_UNIVERSITY_NAME']);
         
+        app.pdfExport(
+                'academicUniversityTable',
+                {
+                    'ACADEMIC_UNIVERSITY_NAME': 'Academic University Name'
+                }
+        );
+        
         $("#export").click(function (e) {
             var grid = $("#academicUniversityTable").data("kendoGrid");
             grid.saveAsExcel();

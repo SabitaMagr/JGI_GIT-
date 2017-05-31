@@ -31,6 +31,16 @@
         
         app.searchTable('serviceQuestionTable',['FIRST_NAME','SERVICE_EVENT_TYPE_NAME','QA_DATE']);
         
+        app.pdfExport(
+                'serviceQuestionTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
+                    'QA_DATE': 'Date'
+                });
+        
         $("#export").click(function (e) {
             var grid = $("#serviceQuestionTable").data("kendoGrid");
             grid.saveAsExcel();

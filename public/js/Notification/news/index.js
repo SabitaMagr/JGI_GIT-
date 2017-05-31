@@ -30,6 +30,16 @@
         
         app.searchTable('newsTable',['NEWS_DATE','NEWS_TYPE','NEWS_TITLE','NEWS_EDESC','COMPANY_NAME']);
         
+        app.pdfExport(
+                'newsTable',
+                {
+                    'NEWS_DATE': 'NewsDate',
+                    'NEWS_TYPE': 'Type',
+                    'NEWS_TITLE': 'Title',
+                    'NEWS_EDESC': 'Desc',
+                    'COMPANY_NAME': 'Company'
+                });
+        
         $("#export").click(function (e) {
             var grid = $("#newsTable").data("kendoGrid");
             grid.saveAsExcel();

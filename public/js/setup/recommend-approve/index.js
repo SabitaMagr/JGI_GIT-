@@ -81,6 +81,17 @@ angular.module('hris', [])
                 
                 app.searchTable('recommendApproveTable',['FIRST_NAME','RECOMMENDER_NAME','APPROVER_NAME']);
                 
+                app.pdfExport(
+                'recommendApproveTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'middle',
+                    'LAST_NAME': 'last',
+                    'RECOMMENDER_NAME': 'Recommendor',
+                    'APPROVER_NAME': 'Approver'
+                }
+        );
+                
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [

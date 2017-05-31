@@ -29,6 +29,18 @@
         
         app.searchTable('trainingTable',['TRAINING_NAME','COMPANY_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME']);
         
+        app.pdfExport(
+                'trainingTable',
+                {
+                    'TRAINING_NAME': 'Training',
+                    'COMPANY_NAME': 'Company',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date',
+                    'DURATION': 'Duration',
+                    'INSTITUTE_NAME': 'Institute'
+                }
+        );
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

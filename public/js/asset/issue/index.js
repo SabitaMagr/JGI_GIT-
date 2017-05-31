@@ -69,6 +69,19 @@
           
           
           app.searchTable('assetIssueTable',['ASSET_EDESC','FIRST_NAME','ISSUE_DATE','QUANTITY','RETURN_DATE','RETURNED_DATE']);
+          
+          app.pdfExport(
+                'assetIssueTable',
+                {
+                    'ASSET_EDESC': 'Asset',
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'Middle',
+                    'LAST_NAME': 'last',
+                    'ISSUE_DATE': 'Issue Date',
+                    'QUANTITY': 'Quantity',
+                    'RETURN_DATE': 'Return Date',
+                    'RETURNED_DATE': 'Retutned Date'
+                });
 
 
 //          $("#kendoSearchField").keyup(function () {

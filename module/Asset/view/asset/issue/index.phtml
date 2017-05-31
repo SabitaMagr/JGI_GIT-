@@ -37,31 +37,37 @@ if ($this->messages) { ?>
 </div>
 
 <div class="margin-top-20">
-    <div class="table-toolbar">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="btn-group">
-                </div>
+    
+    <div class="portlet light bg-inverse">
+        
+        <div class="portlet-title">
+            <div class="tools">
+                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+                <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
-            <div class="col-md-6">
-                <div class="btn-group pull-right">
-                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu pull-right">                      
-                        <li>
-                            <a href="javascript:;" id="export"> Export to Excel </a>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-copy"></i> Tools
+                        <i class="fa fa-angle-down "></i>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                        <li >
+                            <a href="javascript:;" id="export">
+                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-    </div>
-    
-  
+
     <div id="assetIssueTable">
 
     </div>
+	</div>
+    
+    
+  
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    

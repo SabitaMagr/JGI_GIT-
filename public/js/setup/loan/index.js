@@ -29,6 +29,18 @@
         
         app.searchTable('loanTable',['LOAN_NAME','COMPANY_NAME','MIN_AMOUNT','INTEREST_RATE','REPAYMENT_AMOUNT','REPAYMENT_PERIOD']);
         
+        app.pdfExport(
+                'loanTable',
+                {
+                    'LOAN_NAME': 'Loan',
+                    'COMPANY_NAME': 'Company',
+                    'MIN_AMOUNT': 'Min Amount',
+                    'INTEREST_RATE': 'Intrest Rate',
+                    'REPAYMENT_AMOUNT': 'Repayment Amount',
+                    'REPAYMENT_PERIOD': 'Repayment Period'
+                }
+        );
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

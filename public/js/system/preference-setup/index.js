@@ -29,6 +29,17 @@
         
         app.searchTable('preferenceTable',['COMPANY_NAME','PREFERENCE_NAME','PREFERENCE_CONSTRAINT','CONSTRAINT_VALUE','PREFERENCE_CONDITION']);
         
+        app.pdfExport(
+                'preferenceTable',
+                {
+                    'COMPANY_NAME': 'Company',
+                    'PREFERENCE_NAME': 'Preference',
+                    'PREFERENCE_CONSTRAINT': 'Constraint',
+                    'CONSTRAINT_VALUE': 'Value',
+                    'PREFERENCE_CONDITION': 'Condition'
+                }
+        );
+        
         $("#export").click(function (e) {
             var grid = $("#preferenceTable").data("kendoGrid");
             grid.saveAsExcel();

@@ -89,6 +89,26 @@ angular.module('hris', [])
                 
                 app.searchTable('loanRequestStatusTable',['FIRST_NAME','LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','YOUR_ROLE','STATUS']);
                 
+                app.pdfExport(
+                'loanRequestStatusTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'LOAN_NAME': 'Loan',
+                    'REQUESTED_DATE': 'Req.Date',
+                    'LOAN_DATE': 'LoanDate',
+                    'REQUESTED_AMOUNT': 'ReqAmt',
+                    'YOUR_ROLE': 'Role',
+                    'STATUS': 'Status',
+                    'REASON': 'Reason',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                    
+                });
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

@@ -26,6 +26,16 @@
         });
         
         app.searchTable('departmentTable',['DEPARTMENT_NAME','COMPANY_NAME','BRANCH_NAME']);
+        
+        app.pdfExport(
+                'departmentTable',
+                {
+                    'DEPARTMENT_NAME': 'Department',
+                    'COMPANY_NAME': 'Company',
+                    'BRANCH_NAME': 'Branch'
+                }
+        );
+        
 
         $("#export").click(function (e) {
             var rows = [{

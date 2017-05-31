@@ -240,6 +240,22 @@ angular.module('hris', [])
                 
                 app.searchTable('trainingAssignListTable',['FIRST_NAME','TRAINING_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','TRAINING_TYPE']);
                 
+                app.pdfExport(
+                'trainingAssignListTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'middle',
+                    'LAST_NAME': 'last',
+                    'TRAINING_NAME': 'Training',
+                    'START_DATE': 'StartDate',
+                    'END_DATE': 'EndDate',
+                    'DURATION': 'Duration',
+                    'LOCATION': 'Location',
+                    'INSTITUTE_NAME': 'Institute',
+                    'TRAINING_TYPE': 'Training Type',
+                    'REMARKS': 'Remarks',
+                });
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

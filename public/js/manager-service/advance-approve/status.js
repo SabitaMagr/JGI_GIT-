@@ -90,6 +90,25 @@ angular.module('hris', [])
                 
                 app.searchTable('advanceRequestStatusTable',['FIRST_NAME','ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','YOUR_ROLE','STATUS']);
                 
+                app.pdfExport(
+                'advanceRequestStatusTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'ADVANE_NAME': 'Advance',
+                    'REQUESTED_DATE': 'Req.Date',
+                    'ADVANCE_DATE': 'AdvDate',
+                    'REQUESTED_AMOUNT': 'Req.Amt',
+                    'TERMS': 'Terms',
+                    'YOUR_ROLE': 'Role',
+                    'STATUS': 'status',
+                    'REASON': 'Reason',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                });
                 
                 function gridDataBound(e) {
                     var grid = e.sender;

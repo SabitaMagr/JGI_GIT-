@@ -27,6 +27,17 @@
         
         app.searchTable('instituteTable',['INSTITUTE_NAME','LOCATION','TELEPHONE','EMAIL']);
         
+        app.pdfExport(
+                'instituteTable',
+                {
+                    'INSTITUTE_NAME': 'Institute',
+                    'LOCATION': 'Location',
+                    'TELEPHONE': 'telephone',
+                    'EMAIL': 'Email'
+                }
+        );
+        
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
