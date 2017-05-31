@@ -9,16 +9,15 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
+        ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('js/Payroll/Generate/generate.js'));
 ?>
 
 
 <script>
     document.rules =<?= json_encode($rules) ?>;
-    document.employeeList =<?= json_encode($employeeList) ?>;
-    document.branches =<?= json_encode($branches) ?>;
     document.fiscalYears =<?= json_encode($fiscalYears) ?>;
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.restful = {};
     document.restful['generateMonthlySheet'] = '<?php echo $this->url('generate', ['action' => 'generateMonthlySheet']) ?>';
 </script>
@@ -31,97 +30,106 @@ $this->headScript()
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\generate')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div ng-app="hris" ng-controller="generateController">
-    <div class="row margin-top-10">
-        <div class="col-sm-2">
-            <div class="portlet shadowlight">
-                <div class="portlet-body topgapping">
-                    <div class="row">
-                        <div class="col-sm-12 " >
-                            <label>Generated Months</label>
-                            <select class="form-control" ng-model="generatedMonthId" ng-change="viewMonthlySheet(generatedMonthId)" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in payRollGeneratedMonths">
-                                <option value="">Select Month</option>
-                            </select>
-                        </div>
-                    </div>
+<div>
+
+    <div class="portlet light bg-inverse">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-paper-plane font-green-haze"></i>
+                <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
+            </div>
+
+            <div class="tools">
+                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+                <a href="" class="fullscreen" data-original-title="" title=""> </a>
+            </div>
+            <div class="actions">
+                <div class="btn-group">
+                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-copy"></i> Tools
+                        <i class="fa fa-angle-down "></i>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                        <li >
+                            <a href="javascript:;" id="export">
+                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="col-sm-10">
-            <div class="portlet shadowlight">
-                <div class="portlet-body topgapping">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <label>Fiscal year</label>
-                            <select class="form-control" ng-change="changeYear()" ng-model="fiscalYearId" ng-options="key as fiscalYear for (key, fiscalYear) in fiscalYears">
-                                <option value="">Select Year</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <label>Months</label>
-                            <select class="form-control" ng-model="monthId" ng-options="month.MONTH_ID as month.MONTH_EDESC for month in months" ng-change="viewMonthlySheetIfAvailable()">
-                                <option value="">Select Month</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <label>Branch</label>
-                            <select class="form-control" ng-change="changeBranch()" ng-model="branchId" ng-options="key as branch for (key, branch) in branches">
-                                <option value="">All</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-3">
-                            <label>Employee</label>
-                            <select class="form-control" ng-change="viewMonthlySheetIfAvailable()"  ng-model="employeeId" ng-options="key as employee for (key, employee) in employeeList">
-                                <option value="">All</option>
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <label>
-                                &nbsp;
-                            </label>
-                            <button id="generateBtn" class="btn btn-default form-control i-search pull-right form-control " regenerateFlag="false" style="margin-top:20px;">
-                                Generate
-                            </button>
-                        </div>
-                    </div>
+        <div class="portlet-body">
 
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <select class="form-control" name="company" id="companyId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="branchId" id="branchId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="department" id="departmentId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="designation" id="designationId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="position" id="positionId">
+                    </select>
                 </div>
             </div>
-        </div>
-    </div>
-
-
-
-    <div class="row margin-top-10">
-        <div class="col-sm-12">
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceType" id="serviceTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="employee"  id="employeeId" >
+                    </select>
+                </div>
+                <div class="col-sm-4 col-sm-offset-2">
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                </div>
+            </div>
             <div id="salarySheetTable">
             </div>
         </div>
     </div>
 
+    <div class="portlet light bg-inverse">
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <select class="form-control"  id="fiscalYearId" >
+                        <option value="">Select Year</option>
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" id="monthId" >
+                        <option value="-1">Select Month</option>
+                    </select>
+                </div>
+                <div class="col-sm-2 col-sm-offset-6">
+                    <button id="generateBtn" regenerateFlag="false" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                        Generate
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </div>
-
-<!--        <table class="table">
-            <thead>
-            <th>
-                Employee Name
-            </th>
-            <th ng-repeat="rule in rules">
-                <span ng-bind="rule"></span>
-            </th>
-            <th>
-                Calculated Value
-            </th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="(key, empDataVal) in employeeRuleValues">
-                    <td ng-bind="employeeList[key]"></td>
-                    <td ng-repeat="(ruleId, rule) in rules" ng-bind="empDataVal.ruleValueKV[ruleId]">
-                    </td>
-                    <td ng-bind="empDataVal.calculatedValue">
-
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>-->

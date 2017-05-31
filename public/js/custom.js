@@ -819,8 +819,8 @@ window.app = (function ($, toastr, App) {
                 + "<a href='javascript:;' id='exportPdf'>"
                 + "<i class='fa fa-file-pdf-o' ></i> Export to PDF</a>"
                 + "</li>");
-        
-        
+
+
         $pdfExportButton.insertAfter($("#export").parent());
 
         //to create template for export pdf
@@ -904,6 +904,40 @@ window.app = (function ($, toastr, App) {
 
     }
 
+    var populateSelect = function ($element, list, id, value, defaultMessage, selectedId) {
+        $element.html('');
+        $element.append($("<option></option>").val(-1).text(defaultMessage));
+        var concatArray = function (keyList, list, concatWith) {
+            var temp = '';
+            if (typeof concatWith === 'undefined') {
+                concatWith = ' ';
+            }
+            for (var i in keyList) {
+                var listValue = list[keyList[i]];
+                if (i == (keyList.length - 1)) {
+                    temp = temp + ((listValue === null) ? '' : listValue);
+                    continue;
+                }
+                temp = temp + ((listValue === null) ? '' : listValue) + concatWith;
+            }
+
+            return temp;
+        };
+        for (var i in list) {
+            var text = null;
+            if (typeof value === 'object') {
+                text = concatArray(value, list[i], ' ');
+            } else {
+                text = list[i][value];
+            }
+            if (typeof selectedId !== 'undefined' && selectedId != null && selectedId == list[i][id]) {
+                $element.append($("<option selected='selected'></option>").val(list[i][id]).text(text));
+            } else {
+                $element.append($("<option></option>").val(list[i][id]).text(text));
+            }
+        }
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -929,7 +963,8 @@ window.app = (function ($, toastr, App) {
         showMessage: showMessage,
         daysBetween: daysBetween,
         searchTable: searchTable,
-        pdfExport: pdfExport
+        pdfExport: pdfExport,
+        populateSelect: populateSelect
     };
 })(window.jQuery, window.toastr, window.App);
 

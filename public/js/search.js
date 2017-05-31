@@ -142,10 +142,6 @@
                     $("#" + key).val(value).change();
                 });
             }
-//            var angularElementId = Object.keys(document.angularElementDetail)[0];
-//            var angularSearchFunction = document.angularElementDetail[angularElementId];
-//            console.log(angularSearchFunction);
-//            angular.element('#'+angularElementId).scope().angularSearchFunction();
         });
         /* setup change events */
     });
