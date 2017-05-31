@@ -99,6 +99,20 @@ return [
                         'action' => 'index',
                     ]
                 ],
+            ],
+            'shiftAdjustment'=>[
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/shiftAdjustment[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ShiftAdjustment::class,
+                        'action' => 'index',
+                    ]
+                ],
             ]
             
         ],
@@ -249,6 +263,7 @@ return [
             Controller\AttendanceStatus::class=>ControllerFactory::class,
             Controller\DailyAttendance::class=>ControllerFactory::class,
             Controller\CalculateOvertime::class=>ControllerFactory::class,
+            Controller\ShiftAdjustment::class=>ControllerFactory::class,
         ],
 
     ],
