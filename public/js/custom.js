@@ -809,10 +809,10 @@ window.app = (function ($, toastr, App) {
 
     var pdfExport = function (kendoId, col) {
 
-//        console.log(col);
         // to create div for pdf table export
-        var $pdfExportdiv = $("<div id='pdfExportTable'></div>");
-        $pdfExportdiv.insertAfter("#" + kendoId);
+//        var $pdfExportdiv = $("<div id='pdfExportTable'></div>");
+//        $pdfExportdiv.insertAfter("#" + kendoId);
+//        document.body.appendChild($pdfExportdiv);
 
 //             to create export pdf button
         var $pdfExportButton = $("<li>"
@@ -831,7 +831,7 @@ window.app = (function ($, toastr, App) {
                 pdfkendoTemplate += "<td>";
                 if (key == 'FIRST_NAME') {
                     pdfkendoTemplate += "#: (" + key + "== null) ? ' ' :" + key + "#";
-                    pdfkendoTemplate += "#: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #";
+                    pdfkendoTemplate += "#: (MIDDLE_NAME == null) ? ' ' : ' '+MIDDLE_NAME+' ' #";
                     pdfkendoTemplate += "#: (LAST_NAME == null) ? ' ' : LAST_NAME #";
                 } else {
                     pdfkendoTemplate += " #: (" + key + "== null) ? ' ' :" + key + "#";
@@ -842,18 +842,6 @@ window.app = (function ($, toastr, App) {
 
         pdfkendoTemplate += "</tr></script>";
         $(pdfkendoTemplate).insertAfter("#rowTemplate");
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         $("#exportPdf").click(function () {
@@ -877,9 +865,11 @@ window.app = (function ($, toastr, App) {
                 exportData.push(tempData);
 
             }
-            console.log(exportData);
+//            console.log(exportData);
             var columns = [];
             $.each(col, function (key, value) {
+//                var widthVal=100;
+//                if(typeof(colWidth) != 'undefined'){ widthVal=colWidth[key]; }
                 if (key != 'MIDDLE_NAME' && key != 'LAST_NAME') {
                     columns.push({field: key, title: value});
                 }
@@ -894,7 +884,7 @@ window.app = (function ($, toastr, App) {
             kendo.drawing
                     .drawDOM("#pdfExportTable")
                     .then(function (group) {
-                        kendo.drawing.pdf.saveAs(group, "export.pdf")
+                        kendo.drawing.pdf.saveAs(group, kendoId + ".pdf")
                         $("#pdfExportTable").hide();
                     });
 

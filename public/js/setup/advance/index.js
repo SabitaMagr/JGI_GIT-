@@ -28,6 +28,19 @@
         
         app.searchTable('advanceTable',['ADVANCE_NAME','COMPANY_NAME','MIN_SALARY_AMT','AMOUNT_TO_ALLOW','MONTH_TO_ALLOW']);
         
+        app.pdfExport(
+                'advanceTable',
+                {
+                    'ADVANCE_NAME': 'Academic Degree Name',
+                    'COMPANY_NAME': 'Company',
+                    'MIN_SALARY_AMT': 'Min Salary Amt',
+                    'MAX_SALARY_AMT': 'Max Salary Amt',
+                    'AMOUNT_TO_ALLOW': 'Amount To Allow',
+                    'MONTH_TO_ALLOW': 'Month T0 Allow',
+                    'REMARKS': 'Remarks'
+                }
+        );
+
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

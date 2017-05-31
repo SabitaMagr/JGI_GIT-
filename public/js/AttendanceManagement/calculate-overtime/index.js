@@ -119,6 +119,24 @@ angular.module('hris', [])
                 });
                 
                 app.searchTable('attendanceWidOTTable',['EMPLOYEE_NAME','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS','OVERTIME_IN_HOUR']);
+                
+                app.pdfExport(
+                'attendanceWidOTTable',
+                {
+                    'FIRST_NAME': ' Name',
+                    'MIDDLE_NAME': 'middleName',
+                    'LAST_NAME': 'lastname',
+                    'ATTENDANCE_DT': 'Attendance Date',
+                    'IN_TIME': 'In Time',
+                    'OUT_TIME': 'Out Time',
+                    'IN_REMARKS':'In Remarks',
+                    'OUT_REMARKS': 'Out Remarks',
+                    'TOTAL_HOUR': 'Total Hrs',
+                    'OVERTIME_IN_HOUR': 'Overtime Hrs',
+                    'STATUS': 'Status'
+                }
+                );
+        
 
                 
             };

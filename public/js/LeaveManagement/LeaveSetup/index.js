@@ -37,6 +37,18 @@
         
         app.searchTable('leaveTable',['LEAVE_ENAME','COMPANY_NAME','ALLOW_HALFDAY','DEFAULT_DAYS','CARRY_FORWARD','CASHABLE','PAID']);
         
+        app.pdfExport(
+                'leaveTable',
+                {
+                    'LEAVE_ENAME': 'Leave',
+                    'COMPANY_NAME': 'Company',
+                    'ALLOW_HALFDAY': 'Allow Halfday',
+                    'DEFAULT_DAYS': 'Default Days',
+                    'CARRY_FORWARD': 'Carry Forward',
+                    'CASHABLE': 'Cashable',
+                    'PAID': 'Paid'
+                });
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

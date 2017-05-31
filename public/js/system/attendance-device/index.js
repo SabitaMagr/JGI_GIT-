@@ -21,7 +21,7 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "DEVICE_NAME", title: "Device Name",width:200},
+                {field: "DEVICE_NAME", title: "Device",width:200},
                 {field: "DEVICE_IP", title: "Device IP",width:200},
                 {field: "DEVICE_LOCATION", title: "Device Location",width:200},
                 {field: "ISACTIVE", title: "Active",width:200},
@@ -30,6 +30,16 @@
         }); 
         
         app.searchTable('attendanceDevice',['DEVICE_NAME','DEVICE_IP','DEVICE_LOCATION','ISACTIVE']);
+        
+        app.pdfExport(
+                'attendanceDevice',
+                {
+                    'DEVICE_NAME': 'Device Name',
+                    'DEVICE_IP': 'DeviceIp',
+                    'DEVICE_LOCATION': 'DeviceLocation',
+                    'ISACTIVE': 'IsActive'
+                }
+        );
         
         $("#export").click(function (e) {
             var grid = $("#attendanceDevice").data("kendoGrid");

@@ -35,6 +35,29 @@
         
         app.searchTable('overtimeApproveTable',['FIRST_NAME','REQUESTED_DATE','OVERTIME_DATE','DETAILS','TOTAL_HOUR','YOUR_ROLE']);
         
+        app.pdfExport(
+                'overtimeApproveTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'REQUESTED_DATE': 'RequestDate',
+                    'OVERTIME_DATE': 'OvertimeDate',
+                    'DESCRIPTION': 'Description',
+                    'YOUR_ROLE': 'Role',
+                    'STATUS': 'Status',
+                    'REMARKS': 'Remarks',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                    
+                });
+                
+
+
+                
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

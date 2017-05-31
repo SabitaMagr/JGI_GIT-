@@ -87,6 +87,22 @@ angular.module('hris', [])
                 
                 app.searchTable('jobHistoryTable',['FIRST_NAME','START_DATE','SERVICE_EVENT_TYPE_NAME','FROM_SERVICE_NAME','FROM_BRANCH_NAME','FROM_DEPARTMENT_NAME','FROM_DESIGNATION_TITLE','FROM_POSITION_NAME']);
                 
+                app.pdfExport(
+                'jobHistoryTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'Middle',
+                    'LAST_NAME': 'Last',
+                    'START_DATE': 'Company',
+                    'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
+                    'FROM_SERVICE_NAME': 'Service',
+                    'FROM_BRANCH_NAME': 'Branch',
+                    'FROM_DEPARTMENT_NAME': 'Department',
+                    'FROM_DESIGNATION_TITLE': 'Designation',
+                    'FROM_POSITION_NAME': 'Position'
+                }
+        );
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

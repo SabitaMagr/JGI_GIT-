@@ -26,7 +26,7 @@
                 {field: "MODEL_NO", title: "Model No ", width: 140},
                 {field: "QUANTITY", title: "Quantity ", width: 140},
                 {field: "QUANTITY_BALANCE", title: " Stock Qty ", width: 140},
-                {title: "Action", width: 120}
+                {title: "Action", width: 140}
             ],
         });
         $("#export").click(function (e) {
@@ -39,6 +39,17 @@
         //saerch in kendo grid
         
         app.searchTable('assetSetupTable',['ASSET_EDESC','ASSET_GROUP_EDESC','BRAND_NAME','MODEL_NO','QUANTITY']);
+        
+        app.pdfExport(
+                'assetSetupTable',
+                {
+                    'ASSET_EDESC': 'Asset',
+                    'ASSET_GROUP_EDESC': 'Asset Group',
+                    'BRAND_NAME': 'Brand Name',
+                    'MODEL_NO': 'Model No',
+                    'QUANTITY': 'Quantity',
+                    'QUANTITY_BALANCE': 'Stock Quantity'
+                });
 
 //        $("#kendoSearchField").keyup(function () {
 //            var val = $('#kendoSearchField').val();

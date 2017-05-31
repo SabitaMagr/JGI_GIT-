@@ -31,6 +31,14 @@
         
         app.searchTable('ruleTable',['PAY_EDESC','PAY_TYPE_FLAG','PRIORITY_INDEX']);
         
+        app.pdfExport(
+                'ruleTable',
+                {
+                    'PAY_EDESC': 'Pay Desc',
+                    'PAY_TYPE_FLAG': 'Pay Type Flag',
+                    'PRIORITY_INDEX': 'Priority Index'
+                });
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

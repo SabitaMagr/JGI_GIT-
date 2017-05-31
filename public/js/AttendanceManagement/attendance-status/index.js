@@ -83,6 +83,25 @@ angular.module('hris', [])
                 });
                 
                 app.searchTable('attendanceRequestStatusTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
+                
+                app.pdfExport(
+                'attendanceRequestStatusTable',
+                {
+                    'FIRST_NAME': ' Name',
+                    'MIDDLE_NAME': 'middleName',
+                    'LAST_NAME': 'lastname',
+                    'REQUESTED_DT': 'Request Date',
+                    'ATTENDANCE_DT': 'Attendance Date',
+                    'IN_TIME': 'In Time',
+                    'OUT_TIME': 'Out Time',
+                    'TOTAL_HOUR':'Total Hour',
+                    'OUT_REMARKS': 'Out Remarks',
+                    'APPROVER_NAME': 'Approver',
+                    'STATUS': 'Status',
+                    'APPROVED_DT': 'Approved Date',
+                    'APPROVED_REMARKS': 'Approved Remarks'
+                }
+                );
 
 
                 function gridDataBound(e) {

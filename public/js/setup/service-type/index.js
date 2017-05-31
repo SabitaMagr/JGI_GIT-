@@ -29,6 +29,14 @@
         
         app.searchTable('serviceTypeTable',['SERVICE_TYPE_NAME']);
         
+        app.pdfExport(
+                'serviceTypeTable',
+                {
+                    'SERVICE_TYPE_NAME': 'Service Type',
+                }
+        );
+        
+        
         $("#export").click(function (e) {
             var grid = $("#serviceTypeTable").data("kendoGrid");
             grid.saveAsExcel();

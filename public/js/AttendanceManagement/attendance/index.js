@@ -78,7 +78,17 @@ angular.module('hris', [])
                 });
                 
                 app.searchTable('attendanceTable',['ATTENDANCE_DT','IN_TIME','OUT_TIME','TOTAL_HOUR','IN_REMARKS','OUT_REMARKS']);
-                
+                app.pdfExport(
+                'attendanceTable',
+                {
+                    'ATTENDANCE_DT': ' Attendance Date',
+                    'IN_TIME': 'In Time',
+                    'OUT_TIME': 'Out Time',
+                    'TOTAL_HOUR': 'Total Hour',
+                    'IN_REMARKS': 'In Remarks',
+                    'OUT_REMARKS': 'Out Remarks'
+                }
+                );
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

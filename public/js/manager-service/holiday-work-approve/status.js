@@ -90,6 +90,27 @@ angular.module('hris', [])
                 
                 app.searchTable('holidayWorkRequestStatusTable',['FIRST_NAME','HOLIDAY_ENAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','YOUR_ROLE','STATUS']);
                 
+                app.pdfExport(
+                'holidayWorkRequestStatusTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'HOLIDAY_ENAME': 'Holiday',
+                    'REQUESTED_DATE': 'Req.Date',
+                    'FROM_DATE': 'FromDate',
+                    'TO_DATE': 'ToDate',
+                    'DURATION': 'Duration',
+                    'YOUR_ROLE': 'Role',
+                    'STATUS': 'Status',
+                    'REMARKS': 'Remarks',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                    
+                });
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

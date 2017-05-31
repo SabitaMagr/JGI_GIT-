@@ -29,6 +29,16 @@
         
         app.searchTable('appraisalStageTable',['STAGE_EDESC','STAGE_NDESC','ORDER_NO','START_DATE','END_DATE']);
         
+        app.pdfExport(
+                'appraisalStageTable',
+                {
+                    'STAGE_EDESC': 'Stage in Eng',
+                    'STAGE_NDESC': 'Stage in Nep',
+                    'ORDER_NO': 'Order No',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date'
+                });
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalStageTable").data("kendoGrid");
             grid.saveAsExcel();

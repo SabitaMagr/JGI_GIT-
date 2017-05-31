@@ -29,6 +29,13 @@
         
         app.searchTable('serviceEventTypeTable',['SERVICE_EVENT_TYPE_CODE','SERVICE_EVENT_TYPE_NAME']);
         
+        app.pdfExport(
+                'serviceEventTypeTable',
+                {
+                    'SERVICE_EVENT_TYPE_NAME': 'Service Event Type'
+                }
+        );
+        
         $("#export").click(function (e) {
             var grid = $("#serviceEventTypeTable").data("kendoGrid");
             grid.saveAsExcel();
