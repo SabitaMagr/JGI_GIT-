@@ -8,7 +8,9 @@
 
 namespace AttendanceManagement\Controller;
 
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
+
 
 /**
  * Description of ShiftAdjustment
@@ -17,9 +19,14 @@ use Zend\Mvc\Controller\AbstractActionController;
  */
 class ShiftAdjustment extends AbstractActionController {
     
+//    private $adapter;
+    
+    public function __construct(AdapterInterface $adapter) {
+        $this->adapter = $adapter;
+    }
+
+    
     public function indexAction() {
-       echo 'index.sdfdsf';
-        die();
     }
     
 }
