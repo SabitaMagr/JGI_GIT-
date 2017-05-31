@@ -227,9 +227,6 @@ class RestfulService extends AbstractRestfulController {
                     case "deletePositionAssigned":
                         $responseData = $this->deletePositionAssigned($postedData->data);
                         break;
-                    case "generataMonthlySheet":
-                        $responseData = $this->generataMonthlySheet($postedData->data);
-                        break;
                     case "pullAcademicDetail":
                         $responseData = $this->pullAcademicDetail($postedData->data);
                         break;
@@ -398,7 +395,7 @@ class RestfulService extends AbstractRestfulController {
                     case "pullMisPunchAttendanceList";
                         $responseData = $this->pullMisPunchAttendanceList($postedData->data);
                         break;
-                    
+
                     default:
                         throw new Exception("action not found");
                         break;
@@ -1070,105 +1067,6 @@ class RestfulService extends AbstractRestfulController {
             $payPositionRepo->delete([$payId, $position]);
         }
         return ["success" => true, "data" => null];
-    }
-
-    private function generataMonthlySheet($data) {
-        $employeeId = $data['employee'];
-        $monthId = $data['month'];
-        $branchId = $data['branch'];
-        $regenerateFlag = ($data['regenerateFlag'] == "true") ? 1 : 0;
-
-        $monthRepo = new MonthRepository($this->adapter);
-        $monthDetail = $monthRepo->fetchByMonthId($monthId);
-
-        $results = [];
-        $salarySheetController = new SalarySheetController($this->adapter);
-
-        if ($salarySheetController->checkIfGenerated($monthId) && !$regenerateFlag) {
-            $employeeList = null;
-            if ($branchId == -1) {
-                if ($employeeId == -1) {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
-                } else {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
-                }
-            } else {
-                if ($employeeId == -1) {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
-                } else {
-                    $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
-                }
-            }
-            $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
-        } else {
-            if ($regenerateFlag) {
-                $salarySheetController->deleteSalarySheetDetail($monthId);
-                $salarySheetController->deleteSalarySheet($monthId);
-            }
-            $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
-//            print "<pre>";
-            foreach ($employeeList as $key => $employee) {
-//                print $key;
-                $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
-                $result = $generateMonthlySheet->generate($key);
-                $results[$key] = $result;
-            }
-//            exit;
-            $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
-            if ($addSalarySheetRes != null) {
-                $salarySheetController->addSalarySheetDetail($monthId, $results, $addSalarySheetRes[SalarySheet::SHEET_NO]);
-
-                $employeeList = null;
-                if ($branchId == -1) {
-                    if ($employeeId == -1) {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
-                    } else {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
-                    }
-                } else {
-                    if ($employeeId == -1) {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
-                    } else {
-                        $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', \Setup\Model\HrEmployees::BRANCH_ID => $branchId, \Setup\Model\HrEmployees::JOIN_DATE . " >= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression(), \Setup\Model\HrEmployees::EMPLOYEE_ID => $employeeId], ' ');
-                    }
-                }
-                $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
-            } else {
-                $results = null;
-//            handle failure here
-            }
-        }
-
-
-//        if ($branchId == -1) {
-//            if ($employeeId == -1) {
-//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E'], ' ');
-//                foreach ($employeeList as $key => $employee) {
-//                    $generateMonthlySheet = new PayrollGenerator($this->adapter);
-//                    $result = $generateMonthlySheet->generate($key);
-//                    $results[$key] = $result;
-//                }
-//            } else {
-//                $generateMonthlySheet = new PayrollGenerator($this->adapter);
-//                $result = $generateMonthlySheet->generate($employeeId);
-//                $results[$employeeId] = $result;
-//            }
-//        } else {
-//            if ($employeeId == -1) {
-//                $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', HrEmployees::BRANCH_ID => $branchId], ' ');
-//                foreach ($employeeList as $key => $employee) {
-//                    $generateMonthlySheet = new PayrollGenerator($this->adapter);
-//                    $result = $generateMonthlySheet->generate($key);
-//                    $results[$key] = $result;
-//                }
-//            } else {
-//                $generateMonthlySheet = new PayrollGenerator($this->adapter);
-//                $result = $generateMonthlySheet->generate($employeeId);
-//                $results[$employeeId] = $result;
-//            }
-//        }
-//        exit;
-        return ["success" => true, "data" => $results];
     }
 
     private function fetchEmployeePaySlip($data) {
@@ -2659,9 +2557,9 @@ class RestfulService extends AbstractRestfulController {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $status = $data['status'];
-        $missPunchOnly = ((int)$data['missPunchOnly']==1)?true:false;
-        
-        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,null,false,$missPunchOnly);
+        $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
+
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, null, false, $missPunchOnly);
         $list = [];
         foreach ($result as $row) {
             if ($status == 'L') {
@@ -2683,8 +2581,8 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "Present";
                 }
             }
-            $middleName = ($row['MIDDLE_NAME']!=null)? " ".$row['MIDDLE_NAME']." ":" ";
-            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'].$middleName.$row['LAST_NAME']; 
+            $middleName = ($row['MIDDLE_NAME'] != null) ? " " . $row['MIDDLE_NAME'] . " " : " ";
+            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'] . $middleName . $row['LAST_NAME'];
             array_push($list, $row);
         }
         return [
@@ -3317,8 +3215,7 @@ class RestfulService extends AbstractRestfulController {
             return false;
         }
     }
-    
-    
+
 //    public function pullDepartmentAccordingToBranch($data){
 //        $result=EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["BRANCH_ID"=>$data['branchId'],"STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, false, true);
 //        return[
@@ -3343,8 +3240,8 @@ class RestfulService extends AbstractRestfulController {
         $toDate = $data['toDate'];
         $status = $data['status'];
         $employeeTypeId = $data['employeeTypeId'];
-        $overtimeOnly = (int)$data['overtimeOnly'];
-        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId,true);
+        $overtimeOnly = (int) $data['overtimeOnly'];
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, true);
         $list = [];
         foreach ($result as $row) {
             if ($status == 'L') {
@@ -3366,41 +3263,43 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "Present";
                 }
             }
-                $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
-                $overtimeDetails = [];
-                foreach($overtimeDetailResult as $overtimeDetailRow){
-                    array_push($overtimeDetails,$overtimeDetailRow);
-                }
-            $middleName = ($row['MIDDLE_NAME']!=null)? " ".$row['MIDDLE_NAME']." ":" ";
-            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'].$middleName.$row['LAST_NAME']; 
-            $row['DETAILS']=$overtimeDetails;
-            if($overtimeOnly==1 && $row['OVERTIME_ID']!=null){
-            array_push($list, $row);
-            }else if($overtimeOnly==0){
+            $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
+            $overtimeDetails = [];
+            foreach ($overtimeDetailResult as $overtimeDetailRow) {
+                array_push($overtimeDetails, $overtimeDetailRow);
+            }
+            $middleName = ($row['MIDDLE_NAME'] != null) ? " " . $row['MIDDLE_NAME'] . " " : " ";
+            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'] . $middleName . $row['LAST_NAME'];
+            $row['DETAILS'] = $overtimeDetails;
+            if ($overtimeOnly == 1 && $row['OVERTIME_ID'] != null) {
                 array_push($list, $row);
-        }
+            } else if ($overtimeOnly == 0) {
+                array_push($list, $row);
+            }
         }
         return [
             'success' => "true",
             "data" => $list
         ];
     }
-    public function pullInOutTime($data){
+
+    public function pullInOutTime($data) {
         $attendanceDt = $data['attendanceDt'];
         $employeeId = $data['employeeId'];
-        
+
         $attendanceRepository = new AttendanceRepository($this->adapter);
-        $result = $attendanceRepository->fetchInOutTimeList($employeeId,$attendanceDt);
+        $result = $attendanceRepository->fetchInOutTimeList($employeeId, $attendanceDt);
         $list = [];
-        foreach($result as $row){
-            array_push($list,$row);
+        foreach ($result as $row) {
+            array_push($list, $row);
         }
         return [
             'success' => "true",
             "data" => $list
         ];
     }
-    public function pullMisPunchAttendanceList($data){
+
+    public function pullMisPunchAttendanceList($data) {
         $attendanceDetailRepository = new AttendanceDetailRepository($this->adapter);
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
@@ -3414,7 +3313,7 @@ class RestfulService extends AbstractRestfulController {
         $toDate = $data['toDate'];
         $status = $data['status'];
         $employeeTypeId = $data['employeeTypeId'];
-        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId);
+        $result = $attendanceDetailRepository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId);
         $list = [];
         foreach ($result as $row) {
             if ($status == 'L') {
@@ -3436,12 +3335,13 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "Present";
                 }
             }
-            $middleName = ($row['MIDDLE_NAME']!=null)? " ".$row['MIDDLE_NAME']." ":" ";
-            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'].$middleName.$row['LAST_NAME']; 
+            $middleName = ($row['MIDDLE_NAME'] != null) ? " " . $row['MIDDLE_NAME'] . " " : " ";
+            $row['EMPLOYEE_NAME'] = $row['FIRST_NAME'] . $middleName . $row['LAST_NAME'];
         }
         return [
             'success' => "true",
             "data" => $list
         ];
     }
+
 }
