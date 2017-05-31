@@ -15,15 +15,13 @@ $this->headScript()
 
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuGenerate"]];
-echo json_encode($menu);
-?>;
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.rules =<?= json_encode($rules) ?>;
     document.employeeList =<?= json_encode($employeeList) ?>;
     document.branches =<?= json_encode($branches) ?>;
-    document.fiscalYears =<?= json_encode($fiscalYears) ?>;</script>
+    document.fiscalYears =<?= json_encode($fiscalYears) ?>;
+    document.restful = {};
+    document.restful['generateMonthlySheet'] = '<?php echo $this->url('generate', ['action' => 'generateMonthlySheet']) ?>';
+</script>
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>

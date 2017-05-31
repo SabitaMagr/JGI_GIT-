@@ -25,19 +25,12 @@ angular.module('hris', [])
             $scope.employeeRuleValues = {};
 
             generateBtn.on('click', function (e) {
-                $this = $(e.target);
+                var $this = $(e.target);
                 var regenerateFlag = ($this.attr('regenerateFlag') == "true");
                 if (((typeof $scope.monthId === 'undefined') || ($scope.monthId === null))) {
-                    console.log("month not defined");
                     window.app.successMessage("Month not defined!");
                     return;
                 }
-                console.log("parameters", {
-                    month: $scope.monthId,
-                    branch: ((typeof $scope.branchId === 'undefined') || ($scope.branchId === null)) ? -1 : $scope.branchId,
-                    employee: (($scope.employeeId === null) || (typeof $scope.employeeId === 'undefined')) ? -1 : $scope.employeeId,
-                    regenerateFlag: regenerateFlag
-                });
                 $scope.pullMonthlySheet({
                     month: $scope.monthId,
                     branch: ((typeof $scope.branchId === 'undefined') || ($scope.branchId === null)) ? -1 : $scope.branchId,
@@ -47,12 +40,8 @@ angular.module('hris', [])
             });
 
             $scope.pullMonthlySheet = function (reqParams) {
-                window.app.pullDataById(document.url, {
-                    action: 'generataMonthlySheet',
-                    data: reqParams                    
-                }).then(function (success) {
+                window.app.pullDataById(document.restful.generateMonthlySheet, reqParams).then(function (success) {
                     $scope.$apply(function () {
-                        console.log("generateMonthlySheet", success);
                         $scope.employeeRuleValues = success.data;
 
                         initializeHeaders($scope.rules);
@@ -76,7 +65,7 @@ angular.module('hris', [])
             };
 
             $scope.changeBranch = function () {
-                window.app.pullDataById(document.url, {
+                window.app.pullDataById(document.restfulUrl, {
                     action: 'pullEmployeeList',
                     data: {
                         'employeeId': -1,
@@ -89,7 +78,6 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     $scope.$apply(function () {
-                        console.log("pullEmployeeListByBranchId", success.data);
                         var empList = success.data;
                         $scope.employeeList = [];
                         for (var i = 0; i < empList.length; i++) {
@@ -103,15 +91,13 @@ angular.module('hris', [])
             };
 
             $scope.changeYear = function () {
-                console.log("year changed", $scope.fiscalYearId);
                 if ($scope.fiscalYearId != null) {
-                    window.app.pullDataById(document.url, {
+                    window.app.pullDataById(document.restfulUrl, {
                         action: 'pullMonthsByFiscalYear',
                         data: {
                             'fiscalYearId': $scope.fiscalYearId,
                         }
                     }).then(function (success) {
-                        console.log("pullMonthsByFiscalYear res", success);
                         $scope.$apply(function () {
                             $scope.months = success.data;
                         });
@@ -127,7 +113,7 @@ angular.module('hris', [])
             };
 
             $scope.fetchPayRollGeneratedMonths = function () {
-                window.app.pullDataById(document.url, {
+                window.app.pullDataById(document.restfulUrl, {
                     action: 'pullPayRollGeneratedMonths',
                     data: {
                     }
