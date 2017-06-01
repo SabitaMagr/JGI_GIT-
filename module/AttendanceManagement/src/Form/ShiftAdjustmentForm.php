@@ -14,7 +14,7 @@ use Zend\Form\Annotation;
  *
  * @author root
  */
-class ShiftAdjustment {
+class ShiftAdjustmentForm {
     
     
     /**
@@ -52,6 +52,13 @@ class ShiftAdjustment {
      * @Annotation\Attributes({ "id":"adjustmentEndDate","class":"form-control" })
      */
     public $adjustmentEndDate;
+    
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Submit")
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
+     */
+    public $submit;
     
     
 }

@@ -11,7 +11,7 @@ namespace AttendanceManagement\Model;
 use Application\Model\Model;
 
 
-class ShiftAdjustment extends Model {
+class ShiftAdjustmentModel extends Model {
     
     
     const TABLE_NAME = "HRIS_SHIFT_ADJUSTMENT";
