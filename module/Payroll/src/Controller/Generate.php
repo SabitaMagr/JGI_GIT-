@@ -54,11 +54,11 @@ class Generate extends AbstractActionController {
             $payrollRepo = new PayrollRepository($this->adapter);
             $employeeList = $payrollRepo->fetchEmployeeList();
 
+            if ($regenerateFlag) {
+                $salarySheetController->deleteSalarySheetDetail($monthId);
+                $salarySheetController->deleteSalarySheet($monthId);
+            }
             if (!($salarySheetController->checkIfGenerated($monthId))) {
-                if ($regenerateFlag) {
-                    $salarySheetController->deleteSalarySheetDetail($monthId);
-                    $salarySheetController->deleteSalarySheet($monthId);
-                }
                 $salarySheetDetails = [];
                 $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
                 foreach ($employeeList as $employee) {

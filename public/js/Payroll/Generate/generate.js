@@ -35,10 +35,10 @@
             app.pullDataById(document.restful.generateMonthlySheet, reqParams).then(function (success) {
                 employeeRuleValues = success.data;
                 initializeDatas(employeeRuleValues);
-                if (displayKendoFirstTime) {
-                    initializekendoGrid(headers);
-                    displayKendoFirstTime = false;
-                }
+//                if (displayKendoFirstTime) {
+                initializekendoGrid(headers);
+//                    displayKendoFirstTime = false;
+//                }
                 updateKendoGridData($salarySheetTable, datas);
 
                 if (!reqParams.regenerateFlag) {
@@ -92,7 +92,9 @@
                 }
             }
             if ($generateBtn.attr("regenerateFlag") == "false") {
-                removeTable();
+                initializeDatas([]);
+                initializekendoGrid(headers);
+                updateKendoGridData($salarySheetTable, datas);
             }
 
         };
@@ -180,8 +182,8 @@
                     throw {message: "Month Not Selected", object: $month};
                 }
                 pullMonthlySheet({
-                    month: monthId,
-                    regenerateFlag: regenerateFlag
+                    'month': monthId,
+                    'regenerateFlag': regenerateFlag
                 });
             } catch (e) {
                 app.showMessage(e.message);
@@ -202,6 +204,10 @@
                 updateKendoGridData($salarySheetTable, datas);
             }
         };
+
+        initializeDatas(employeeRuleValues);
+        initializekendoGrid(headers);
+        updateKendoGridData($salarySheetTable, datas);
         document.searchManager.setCompanyListener(searchListener);
 
 
