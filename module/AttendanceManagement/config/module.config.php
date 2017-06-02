@@ -253,6 +253,33 @@ return [
                 ],
             ],
         ],
+        'shiftAdjustment' => [
+            [
+                'label' => 'shiftAdjustment',
+                'route' => 'shiftAdjustment',
+            ],
+            [
+                'label' => 'shiftAdjustment',
+                'route' => 'shiftAdjustment',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'shiftAdjustment',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'shiftAdjustment',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'shiftAdjustment',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
 
     'controllers' => [
