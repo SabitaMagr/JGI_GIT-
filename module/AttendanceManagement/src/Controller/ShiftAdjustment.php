@@ -8,10 +8,13 @@
 
 namespace AttendanceManagement\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Form\ShiftAdjustmentForm;
 use AttendanceManagement\Model\ShiftAdjustmentModel;
 use AttendanceManagement\Repository\ShiftAdjustmentRepository;
+use Exception;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -74,6 +77,7 @@ class ShiftAdjustment extends AbstractActionController {
         }
 
         return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'form' => $this->form
                         ]
         );
@@ -96,13 +100,13 @@ class ShiftAdjustment extends AbstractActionController {
         } else {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-                
+
                 $shiftAdjust->exchangeArrayFromForm($this->form->getData());
 //                $shiftAdjust->adjustmentId = ((int) Helper::getMaxId($this->adapter, ShiftAdjustmentModel::TABLE_NAME, ShiftAdjustmentModel::ADJUSTMENT_ID)) + 1;
                 $shiftAdjust->startTime = Helper::getExpressionTime($shiftAdjust->startTime);
                 $shiftAdjust->endTime = Helper::getExpressionTime($shiftAdjust->endTime);
                 $shiftAdjust->modifiedBy = $this->employeeId;
-                $shiftAdjust->modifiedDt = Helper::getcurrentExpressionDate();              
+                $shiftAdjust->modifiedDt = Helper::getcurrentExpressionDate();
 
 
                 $this->repository->edit($shiftAdjust, $id);
@@ -117,6 +121,49 @@ class ShiftAdjustment extends AbstractActionController {
                     'id' => $id,
                         ]
         );
+    }
+
+    public function addShiftAdjustUrlAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $adjustmentStartDate = $postedData['adjustmentStartDate'];
+                $adjustmentEndDate = $postedData['adjustmentEndDate'];
+                $startTime = $postedData['startTime'];
+                $endTime = $postedData['endTime'];
+                if (!isset($adjustmentStartDate)) {
+                    throw new Exception("parameter adjustmentStartDate is required");
+                }
+                if (!isset($adjustmentEndDate)) {
+                    throw new Exception("parameter adjustmentEndDate is required");
+                }
+                if (!isset($startTime)) {
+                    throw new Exception("parameter startTime is required");
+                }
+                if (!isset($endTime)) {
+                    throw new Exception("parameter endTime is required");
+                }
+
+                $shiftAdjust = new ShiftAdjustmentModel();
+                $shiftAdjust->adjustmentId = ((int) Helper::getMaxId($this->adapter, ShiftAdjustmentModel::TABLE_NAME, ShiftAdjustmentModel::ADJUSTMENT_ID)) + 1;
+                $shiftAdjust->adjustmentStartDate = $adjustmentStartDate;
+                $shiftAdjust->adjustmentEndDate = $adjustmentEndDate;
+                $shiftAdjust->startTime = Helper::getExpressionTime($startTime);
+                $shiftAdjust->endTime = Helper::getExpressionTime($endTime);
+                $shiftAdjust->createdBy = $this->employeeId;
+                $shiftAdjust->createdDt = Helper::getcurrentExpressionDate();
+//                $this->repository->add($shiftAdjust);
+//                $reportData = $this->reportRepo->employeeWiseDailyReport($employeeId);
+//                return new CustomViewModel(['success' => true, 'data' => $postedData, 'dataId'=>$shiftAdjust->adjustmentId, 'error' => '']);
+                return new CustomViewModel(['success' => true, 'data' => $postedData, 'dataId'=>4, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

@@ -255,11 +255,11 @@ return [
         ],
         'shiftAdjustment' => [
             [
-                'label' => 'shiftAdjustment',
+                'label' => 'Shift Adjustment',
                 'route' => 'shiftAdjustment',
             ],
             [
-                'label' => 'shiftAdjustment',
+                'label' => 'Shift Adjustment',
                 'route' => 'shiftAdjustment',
                 'pages' => [
                     [
