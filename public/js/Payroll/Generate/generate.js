@@ -2,45 +2,47 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        var displayKendoFirstTime = true;
 
+        var displayKendoFirstTime = true;
         var fiscalYears = document.fiscalYears;
-        var months = [];
         var rules = document.rules;
+        var months = [];
         var payRollGeneratedMonths = [];
         var employeeList = [];
-
-        var headers = [];
-        var datas = [];
-
         var employeeRuleValues = {};
 
 
+        var datas = [];
+        var headers = (function (cols) {
+            var headers = [];
+            headers.push({field: "employeeName", title: "Employee Name"});
+            for (var i in cols) {
+                headers.push({field: "h" + i, title: cols[i]});
+            }
+            headers.push({field: "calculatedValue", title: "Calculated Value"});
+            return headers;
+        })(rules);
 
         var $generateBtn = $('#generateBtn');
         var $month = $('#monthId');
         var $year = $('#fiscalYearId');
-
+        var $salarySheetTable = $('#salarySheetTable');
 
         /*
          * 
          */
         var pullMonthlySheet = function (reqParams) {
-            window.app.pullDataById(document.restful.generateMonthlySheet, reqParams).then(function (success) {
-                var employeeRuleValues = success.data;
-
-                initializeHeaders(rules);
-                initializeDatas(rules, employeeRuleValues);
+            app.pullDataById(document.restful.generateMonthlySheet, reqParams).then(function (success) {
+                employeeRuleValues = success.data;
+                initializeDatas(employeeRuleValues);
                 if (displayKendoFirstTime) {
                     initializekendoGrid(headers);
                     displayKendoFirstTime = false;
                 }
-                var dataSource = new kendo.data.DataSource({data: datas, pageSize: 20});
-                var grid = $('#salarySheetTable').data("kendoGrid");
-                dataSource.read();
-                grid.setDataSource(dataSource);
+                updateKendoGridData($salarySheetTable, datas);
+
                 if (!reqParams.regenerateFlag) {
-                    $scope.fetchPayRollGeneratedMonths();
+                    fetchPayRollGeneratedMonths();
                 }
             }, function (failure) {
                 console.log(failure);
@@ -54,7 +56,6 @@
                 data: {
                 }
             }).then(function (success) {
-                console.log("pullPayRollGeneratedMonths res", success.data);
                 payRollGeneratedMonths = success.data;
             }, function (failure) {
                 console.log("pullPayRollGeneratedMonths fail", failure);
@@ -75,17 +76,17 @@
         };
 
         var removeTable = function () {
-            $("#salarySheetTable").empty();
+            $salarySheetTable.empty();
         };
 
         var viewMonthlySheetIfAvailable = function () {
-            $generateBtn.text("Generate");
+            $generateBtn.text('Generate');
             $generateBtn.attr("regenerateFlag", false);
             var monthId = $month.val();
             for (var i in payRollGeneratedMonths) {
                 if (payRollGeneratedMonths[i].MONTH_ID == monthId) {
                     viewMonthlySheet(monthId);
-                    $generateBtn.text("Regenerate");
+                    $generateBtn.text('Regenerate');
                     $generateBtn.attr("regenerateFlag", true);
                     break;
                 }
@@ -96,36 +97,26 @@
 
         };
 
-        var initializeHeaders = function (cols) {
-            headers = [];
-            headers.push({field: "employeeName", title: "Employee Name"});
-            for (var i in cols) {
-                headers.push({field: "h" + i, title: cols[i]});
-            }
-            headers.push({field: "calculatedValue", title: "Calculated Value"});
-        };
 
-        var initializeDatas = function (cols, rows) {
+        var initializeDatas = function (rows) {
             datas = [];
-            for (var i in rows) {
-                var temp = {};
-                temp.employeeName = $scope.employeeList[i];
-                for (var j in cols) {
-                    temp["h" + j  ] = rows[i].ruleValueKV[j];
+            var searchEmployeeList = document.searchManager.getEmployee();
+            for (var i in searchEmployeeList) {
+                if (typeof rows[searchEmployeeList[i]['EMPLOYEE_ID']] === "undefined") {
+                    continue;
                 }
-                temp.calculatedValue = rows[i].calculatedValue;
+                var temp = {};
+                temp.employeeName = searchEmployeeList[i]['FIRST_NAME'];
+                for (var j in rules) {
+                    temp["h" + j  ] = rows[searchEmployeeList[i]['EMPLOYEE_ID']].ruleValueKV[j];
+                }
+                temp.calculatedValue = rows[searchEmployeeList[i]['EMPLOYEE_ID']].calculatedValue;
                 datas.push(temp);
             }
         };
 
         var initializekendoGrid = function (columns) {
-            $("#salarySheetTable").kendoGrid({
-                toolbar: ["excel"],
-                excel: {
-                    fileName: "SalarySheet.xlsx",
-                    filterable: true,
-                    allPages: true
-                },
+            $salarySheetTable.kendoGrid({
                 columnMenu: true,
                 height: 450,
                 scrollable: true,
@@ -140,21 +131,38 @@
 
         };
 
+        var updateKendoGridData = function ($table, datas) {
+            var dataSource = new kendo.data.DataSource({data: datas, pageSize: 20});
+            var grid = $table.data("kendoGrid");
+            dataSource.read();
+            grid.setDataSource(dataSource);
+        };
+
         /*
          * 
          */
         $year.on('change', function () {
-            var $this = $(this);
-            window.app.pullDataById(document.restfulUrl, {
-                action: 'pullMonthsByFiscalYear',
-                data: {
-                    'fiscalYearId': $this.val(),
+            try {
+                var $this = $(this);
+                if ($this.val() == -1) {
+                    throw {message: 'Default option selected.'};
                 }
-            }).then(function (success) {
-                months = success.data;
-            }, function (failure) {
-                console.log("pullMonthsByFiscalYear fail", failure);
-            });
+
+                window.app.pullDataById(document.restfulUrl, {
+                    action: 'pullMonthsByFiscalYear',
+                    data: {
+                        'fiscalYearId': $this.val(),
+                    }
+                }).then(function (success) {
+                    months = success.data;
+                    app.populateSelect($month, months, 'MONTH_ID', 'MONTH_EDESC', 'Month');
+                }, function (failure) {
+                    console.log("pullMonthsByFiscalYear fail", failure);
+                });
+
+            } catch (e) {
+//                app.showMessage(e.message);
+            }
 
         });
 
@@ -180,11 +188,21 @@
             }
         });
 
+
         /*
          * 
          */
-        app.populateSelectElement($year, fiscalYears, 'FISCAL_YEAR_ID', 'START_DATE', 'Fiscal Years');
+        app.populateSelect($year, fiscalYears, 'FISCAL_YEAR_ID', 'NAME', 'Fiscal Year');
+        app.populateSelect($month, [], 'MONTH_ID', 'MONTH_EDESC', 'Month');
         fetchPayRollGeneratedMonths();
+
+        var searchListener = function () {
+            if (!displayKendoFirstTime) {
+                initializeDatas(employeeRuleValues);
+                updateKendoGridData($salarySheetTable, datas);
+            }
+        };
+        document.searchManager.setCompanyListener(searchListener);
 
 
     });

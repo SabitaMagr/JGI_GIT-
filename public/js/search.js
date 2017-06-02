@@ -1,5 +1,93 @@
 (function ($, app) {
     $(document).ready(function () {
+        document.searchManager = {
+            company: [],
+            branch: [],
+            department: [],
+            designation: [],
+            serviceType: [],
+            serviceEventType: [],
+            employee: [],
+            companyListener: null,
+            branchListener: null,
+            departmentListener: null,
+            designationListener: null,
+            serviceTypeListener: null,
+            serviceEventTypeListener: null,
+            employeeListener: null
+            , setCompany: function (company) {
+                this.company = company;
+            }, getCompany: function () {
+                return this.company;
+            }, setBranch: function (branch) {
+                this.branch = branch;
+            }, getBranch: function () {
+                return this.company
+            }, setDepartment: function (department) {
+                this.department = department;
+            }, getDepartment: function () {
+                return this.department
+            }, setDesignation: function (designation) {
+                this.designation = designation;
+            }, getDesignation: function () {
+                return this.designation;
+            }, setServiceType: function (servicetype) {
+                this.serviceType = servicetype;
+            }, getServiceType: function () {
+                return this.serviceType
+            }, setServiceEventType: function (serviceEventType) {
+                this.serviceEventType = serviceEventType;
+            }, getServiceEventType: function () {
+                return this.serviceEventType
+            }, setEmployee: function (employee) {
+                this.employee = employee;
+            }, getEmployee: function () {
+                return this.employee
+            }, setCompanyListener: function (listener) {
+                this.companyListener = listener;
+            }, setBranchListener: function (listener) {
+                this.branchListener = listener
+            }, setDepartmentListener: function (listener) {
+                this.departmentListener = listener;
+            }, setDesignationListener: function (listener) {
+                this.designationListener = listener;
+            }, setServiceTypeListener: function (listener) {
+                this.serviceTypeListener = listener;
+            }, setServiceEventTypeListener: function (listener) {
+                this.serviceEventTypeListener = listener;
+            }, setEmployeeListener: function (listener) {
+                this.employeeListener = listener;
+            }, callCompanyListener: function () {
+                if (this.companyListener !== null) {
+                    this.companyListener();
+                }
+            }, callBranchListener: function () {
+                if (this.branchListener !== null) {
+                    this.branchListener();
+                }
+            }, callDepartmentListener: function () {
+                if (this.departmentListener !== null) {
+                    this.departmentListener();
+                }
+            }, callDesignationListener: function () {
+                if (this.designationListener !== null) {
+                    this.designationListener();
+                }
+            }, callServiceTypeListener: function () {
+                if (this.serviceTypeListener !== null) {
+                    this.serviceTypeListener();
+                }
+            }, callServiceEventTypeListener: function () {
+                if (this.serviceEventTypeListener !== null) {
+                    this.serviceEventTypeListener();
+                }
+            }, callEmployeeListener: function () {
+                if (this.employeeListener !== null) {
+                    this.employeeListener();
+                }
+            }
+        };
+
         /*
          * Search javascript code starts here
          */
@@ -75,7 +163,9 @@
                 if ($gender.length != 0) {
                     searchParams['GENDER_ID'] = $gender.val();
                 }
-                populateList($employee, search(document.searchValues['employee'], searchParams), 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
+                var employeeList = search(document.searchValues['employee'], searchParams);
+                document.searchManager.setEmployee(employeeList);
+                populateList($employee, employeeList, 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
             };
             /* setup functions */
 
@@ -89,6 +179,14 @@
             populateList($serviceEventType, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'Working');
             populateList($employee, document.searchValues['employee'], 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
 
+            document.searchManager.setCompany(document.searchValues['company']);
+            document.searchManager.setBranch(document.searchValues['branch']);
+            document.searchManager.setDepartment(document.searchValues['department']);
+            document.searchManager.setDesignation(document.searchValues['designation']);
+            document.searchManager.setServiceType(document.searchValues['serviceType']);
+            document.searchManager.setServiceEventType(document.searchValues['serviceEventType']);
+            document.searchManager.setEmployee(document.searchValues['employee']);
+
             if ($gender.length != 0) {
                 populateList($gender, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender');
             }
@@ -96,42 +194,43 @@
 
             /* setup change events */
             onChangeEvent($company, function ($this) {
-//                populateList($branch, search(document.searchValues['branch'], {'COMPANY_ID': $this.val()}), 'BRANCH_ID', 'BRANCH_NAME', 'All Branch');
-//                populateList($department, search(document.searchValues['department'], {'COMPANY_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'All Department');
-//                populateList($designation, search(document.searchValues['designation'], {'COMPANY_ID': $this.val()}), 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'All Designation');
-//                populateList($position, search(document.searchValues['position'], {'COMPANY_ID': $this.val()}), 'POSITION_ID', 'POSITION_NAME', 'All Position');
-
                 employeeSearchAndPopulate();
+                document.searchManager.callCompanyListener();
             });
 
             onChangeEvent($branch, function ($this) {
-//                populateList($department, search(document.searchValues['department'], {'BRANCH_ID': $this.val()}), 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'All Department');
                 employeeSearchAndPopulate();
+                document.searchManager.callBranchListener();
             });
 
             onChangeEvent($department, function ($this) {
                 employeeSearchAndPopulate();
+                document.searchManager.callDepartmentListener();
             });
             onChangeEvent($designation, function ($this) {
                 employeeSearchAndPopulate();
+                document.searchManager.callDesignationListener();
             });
             onChangeEvent($position, function ($this) {
                 employeeSearchAndPopulate();
             });
             onChangeEvent($serviceType, function ($this) {
                 employeeSearchAndPopulate();
+                document.searchManager.callServiceTypeListener();
             });
             onChangeEvent($serviceEventType, function ($this) {
                 employeeSearchAndPopulate();
+                document.searchManager.callServiceEventTypeListener();
             });
+            onChangeEvent($employee, function ($this) {
+                document.searchManager.callEmployeeListener();
+            })
 
             if ($gender.length != 0) {
                 onChangeEvent($gender, function ($this) {
                     employeeSearchAndPopulate();
                 });
             }
-
-
         };
         changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId");
 
@@ -144,6 +243,9 @@
             }
         });
         /* setup change events */
+
+
+
     });
 
 })(window.jQuery, window.app);

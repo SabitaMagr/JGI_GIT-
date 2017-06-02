@@ -51,7 +51,7 @@ $this->headScript()
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="javascript:;" id="export">
+                            <a href="javascript:;" id="" class="hris-export-to-excel"  hris-export-to-excel-target="salarySheetTable" >
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
                     </ul>
@@ -103,7 +103,7 @@ $this->headScript()
                     </button>
                 </div>
             </div>
-            <div id="salarySheetTable">
+            <div id="salarySheetTable" class="margin-top-10">
             </div>
         </div>
     </div>
@@ -113,18 +113,16 @@ $this->headScript()
             <div class="row">
                 <div class="col-sm-2">
                     <select class="form-control"  id="fiscalYearId" >
-                        <option value="">Select Year</option>
                     </select>
                 </div>
                 <div class="col-sm-2">
                     <select class="form-control" id="monthId" >
-                        <option value="-1">Select Month</option>
                     </select>
                 </div>
                 <div class="col-sm-2 col-sm-offset-6">
                     <button id="generateBtn" regenerateFlag="false" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Generate
-                        <i class="fa fa-search"></i>
+                        <!--<i class="fa fa-search"></i>-->
                     </button>
                 </div>
             </div>

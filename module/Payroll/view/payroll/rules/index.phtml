@@ -14,8 +14,6 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];
-echo json_encode($menu); ?>;
     document.rules =<?= json_encode($rules); ?>;
 </script>
 
@@ -27,13 +25,13 @@ echo json_encode($menu); ?>;
 
 
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -57,29 +55,28 @@ echo json_encode($menu); ?>;
             </div>
         </div>
 
-    <div id="ruleTable">
+        <div id="ruleTable">
+        </div>
     </div>
-	</div>
 
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
+    <tr>
         <td>
-        #: (PAY_EDESC == null) ? '-' : PAY_EDESC #
-        </td>
-
-        <td>
-        #: (PAY_TYPE_FLAG == null) ? '-' : (PAY_TYPE_FLAG=='A') ? 'Addition' : 'Deduction' #
+            #: (PRIORITY_INDEX == null) ? '-' : PRIORITY_INDEX #
         </td>
         <td>
-        #: (PRIORITY_INDEX == null) ? '-' : PRIORITY_INDEX #
+            #: (PAY_EDESC == null) ? '-' : PAY_EDESC #
         </td>
         <td>
-        <a class="btn-edit"
-        href="<?= $this->url("rules", ["action" => "edit"]); ?>/#:PAY_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a>
+            #: (PAY_TYPE_FLAG == null) ? '-' : (PAY_TYPE_FLAG=='A') ? 'Addition' : 'Deduction' #
         </td>
-        </tr>
+        <td>
+            <a class="btn-edit"
+               href="<?= $this->url("rules", ["action" => "edit"]); ?>/#:PAY_ID #" style="height:17px;">
+                <i class="fa fa-edit"></i>
+            </a>
+        </td>
+    </tr>
     </script>
 </div>

@@ -892,7 +892,34 @@ window.app = (function ($, toastr, App) {
         });
 
 
-    }
+    };
+
+    (function () {
+        $('.hris-export-to-excel').on("click", function () {
+            try {
+                var $this = $(this);
+                var targetId = $this.attr("hris-export-to-excel-target");
+                if (typeof targetId === "undefined") {
+                    throw {message: "attribute => hris-export-to-excel-target not defined."};
+                }
+                var $target = $("#" + targetId);
+                if ($target.length === 0) {
+                    throw {message: "hris-export-to-excel-target is not found."};
+                }
+
+                console.log($target);
+                var grid = $target.data("kendoGrid");
+                if (typeof grid === "undefined") {
+                    showMessage("No Table to export data.", "error");
+                    throw{message: "No Table to export data."};
+                }
+                grid.saveAsExcel();
+            } catch (e) {
+                console.log(e.message);
+            }
+
+        });
+    })();
 
     var populateSelect = function ($element, list, id, value, defaultMessage, selectedId) {
         $element.html('');

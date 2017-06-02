@@ -5,14 +5,12 @@ namespace Payroll\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Model\FiscalYear;
-use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use Exception;
 use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Model\Rules;
 use Payroll\Model\SalarySheet;
-use Setup\Model\HrEmployees;
+use Payroll\Repository\PayrollRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -20,14 +18,16 @@ use Zend\Mvc\Controller\AbstractActionController;
 class Generate extends AbstractActionController {
 
     private $adapter;
+    private $payrollRepo;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
+        $this->payrollRepo = new PayrollRepository($this->adapter);
     }
 
     public function indexAction() {
         $rules = EntityHelper::getTableKVListWithSortOption($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID, [Rules::PAY_EDESC], [Rules::STATUS => 'E'], Rules::PRIORITY_INDEX, Select::ORDER_ASCENDING, null, false, true);
-        $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::START_DATE, FiscalYear::END_DATE]);
+        $fiscalYears = $this->payrollRepo->fetchFiscalYears();
 
         return Helper::addFlashMessagesToArray($this, [
                     'rules' => $rules,
@@ -51,7 +51,8 @@ class Generate extends AbstractActionController {
             $monthDetail = $monthRepo->fetchByMonthId($monthId);
 
             $salarySheetController = new SalarySheetController($this->adapter);
-            $employeeList = EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', HrEmployees::JOIN_DATE . " <= " . Helper::getExpressionDate($monthDetail[Months::TO_DATE])->getExpression()], ' ');
+            $payrollRepo = new PayrollRepository($this->adapter);
+            $employeeList = $payrollRepo->fetchEmployeeList();
 
             if (!($salarySheetController->checkIfGenerated($monthId))) {
                 if ($regenerateFlag) {
@@ -60,9 +61,9 @@ class Generate extends AbstractActionController {
                 }
                 $salarySheetDetails = [];
                 $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
-                foreach ($employeeList as $key => $employee) {
-                    $result = $generateMonthlySheet->generate($key);
-                    $salarySheetDetails[$key] = $result;
+                foreach ($employeeList as $employee) {
+                    $result = $generateMonthlySheet->generate($employee['EMPLOYEE_ID']);
+                    $salarySheetDetails[$employee['EMPLOYEE_ID']] = $result;
                 }
                 $addSalarySheetRes = $salarySheetController->addSalarySheet($monthId);
                 if ($addSalarySheetRes == null) {
