@@ -892,7 +892,68 @@ window.app = (function ($, toastr, App) {
         });
 
 
-    }
+    };
+
+    (function () {
+        $('.hris-export-to-excel').on("click", function () {
+            try {
+                var $this = $(this);
+                var targetId = $this.attr("hris-export-to-excel-target");
+                if (typeof targetId === "undefined") {
+                    throw {message: "attribute => hris-export-to-excel-target not defined."};
+                }
+                var $target = $("#" + targetId);
+                if ($target.length === 0) {
+                    throw {message: "hris-export-to-excel-target is not found."};
+                }
+
+                console.log($target);
+                var grid = $target.data("kendoGrid");
+                if (typeof grid === "undefined") {
+                    showMessage("No Table to export data.", "error");
+                    throw{message: "No Table to export data."};
+                }
+                grid.saveAsExcel();
+            } catch (e) {
+                console.log(e.message);
+            }
+
+        });
+    })();
+
+    var populateSelect = function ($element, list, id, value, defaultMessage, selectedId) {
+        $element.html('');
+        $element.append($("<option></option>").val(-1).text(defaultMessage));
+        var concatArray = function (keyList, list, concatWith) {
+            var temp = '';
+            if (typeof concatWith === 'undefined') {
+                concatWith = ' ';
+            }
+            for (var i in keyList) {
+                var listValue = list[keyList[i]];
+                if (i == (keyList.length - 1)) {
+                    temp = temp + ((listValue === null) ? '' : listValue);
+                    continue;
+                }
+                temp = temp + ((listValue === null) ? '' : listValue) + concatWith;
+            }
+
+            return temp;
+        };
+        for (var i in list) {
+            var text = null;
+            if (typeof value === 'object') {
+                text = concatArray(value, list[i], ' ');
+            } else {
+                text = list[i][value];
+            }
+            if (typeof selectedId !== 'undefined' && selectedId != null && selectedId == list[i][id]) {
+                $element.append($("<option selected='selected'></option>").val(list[i][id]).text(text));
+            } else {
+                $element.append($("<option></option>").val(list[i][id]).text(text));
+            }
+        }
+    };
 
     return {
         format: format,
@@ -919,7 +980,8 @@ window.app = (function ($, toastr, App) {
         showMessage: showMessage,
         daysBetween: daysBetween,
         searchTable: searchTable,
-        pdfExport: pdfExport
+        pdfExport: pdfExport,
+        populateSelect: populateSelect
     };
 })(window.jQuery, window.toastr, window.App);
 

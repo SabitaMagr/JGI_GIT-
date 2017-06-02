@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 11/8/16
- * Time: 2:59 PM
- */
-
 namespace Payroll\Controller;
 
 use Application\Helper\EntityHelper;

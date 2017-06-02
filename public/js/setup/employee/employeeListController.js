@@ -133,13 +133,6 @@ angular.module('hris', [])
                 }
 
 
-
-
-
-
-
-
-
                 $("#export").unbind("click");
                 $("#export").click(function (e) {
                     var rows = [{
