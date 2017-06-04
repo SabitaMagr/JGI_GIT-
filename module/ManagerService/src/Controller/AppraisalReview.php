@@ -168,7 +168,7 @@ class AppraisalReview extends AbstractActionController{
             if((!ISSET($answerDtl)|| gettype($answerDtl)=='undefined'|| $answerDtl==null)){
                 $answer=[];
             }else{
-                $answer[$answerDtl->getArrayCopy()['ANSWER_ID']]=$answerDtl->getArrayCopy()['ANSWER'];
+                $answer[$answerDtl['ANSWER_ID']]=$answerDtl['ANSWER'];
             }
             $new_array = array_merge($row, ['QUESTION_OPTIONS'=>$options,"ANSWER"=>$answer]);
             array_push($questionList,$new_array);

@@ -177,6 +177,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="row">
                                 <?php 
                                 $selfDisabled = ($questionForCurStage==0)?'disabled':'';
+//                                print "<pre>";
+//                                print_r($questionTemplate); die();
                                 foreach ($questionTemplate as $questionTemplateRow) { ?>
                                     <div class="col-md-12 margin-bottom-10">
                                         <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
@@ -188,18 +190,46 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                         <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label>
                                                         <?php 
                                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
-                                                        if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
-                                                        <div class="md-radio-inline">
-                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled)); ?>
-                                                        </div>
-                                                        <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
-                                                            <div class="md-checkbox-inline">
-                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled)); ?>
+                                                        if($questionRow['APPRAISEE_FLAG']=='Y'){
+                                                            if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
+                                                            <div class="md-radio-inline">
+                                                                <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,$selfDisabled)); ?>
                                                             </div>
-                                                        <?php } else{
-                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled)));
-                                                        }
-                                                        ?>
+                                                            <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
+                                                                <div class="md-checkbox-inline">
+                                                                    <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,$selfDisabled)); ?>
+                                                                </div>
+                                                            <?php } else{
+                                                                print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,$selfDisabled)));
+                                                            }
+                                                        }  
+                                                        if($questionRow['APPRAISEE_RATING']=='Y'){ ?>
+                                                        <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
+                                                        Self Rating:<input type="number" name="<?= "answer[".$keyForQuestion.".sr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['RATING']:null ?>" <?= $selfDisabled ?> min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>"/>
+                                                        <?php }?>
+                                                        
+                                                        <?php
+                                                        if(count($questionRow['ANSWER'])>0 && array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER_ID']!=null){
+                                                            $keyForAppQuestion = (array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER_ID']==null)?$questionRow['QUESTION_ID']:array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER_ID'];
+                                                            if($questionRow['APPRAISER_FLAG']=='Y'){ ?>
+                                                            <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER_ID']:0; ?>" name="answerId[]"/>
+                                                            <?php if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
+                                                                <div class="md-radio-inline">
+                                                                    <?php $customRenderer($performanceAppraisalObj("answer[".$keyForAppQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER']:null,"disabled")); ?>
+                                                                </div>
+                                                                <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
+                                                                    <div class="md-checkbox-inline">
+                                                                        <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForAppQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER']:null,"disabled")); ?>
+                                                                    </div>
+                                                                <?php } else{
+                                                                    print_r($this->formElement($performanceAppraisalObj("answer[".$keyForAppQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER']:null,"disabled")));
+                                                                }
+                                                            }
+                                                            if($questionRow['APPRAISER_RATING']=='Y'){ ?>
+                                                            <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER_ID']:0; ?>" name="answerId[]"/>
+                                                            Appraiser Rating:<input type="number" name="<?= "answer[".$keyForAppQuestion.".ar]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_RATING_VAL']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" disabled="disabled"/>
+                                                            <?php } 
+                                                        }?>
                                                     </div>
                                                 <?php } ?>
                                             </div>
@@ -237,14 +267,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                                         if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
                                                         <div class="md-radio-inline">
-                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,"disabled")); ?>
+                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,"disabled")); ?>
                                                         </div>
                                                         <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
                                                             <div class="md-checkbox-inline">
-                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,"disabled")); ?>
+                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,"disabled")); ?>
                                                             </div>
                                                         <?php } else{
-                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,"disabled")));
+                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,"disabled")));
                                                         }
                                                         ?>
                                                     </div>
@@ -283,14 +313,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                                         if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
                                                         <div class="md-radio-inline">
-                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled1)); ?>
+                                                            <?php $customRenderer($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,$selfDisabled1)); ?>
                                                         </div>
                                                         <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
                                                             <div class="md-checkbox-inline">
-                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled1)); ?>
+                                                                <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,$selfDisabled1)); ?>
                                                             </div>
                                                         <?php } else{
-                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]:null,$selfDisabled1)));
+                                                            print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null && count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,$selfDisabled1)));
                                                         }
                                                         ?>
                                                     </div>
