@@ -60,8 +60,8 @@ class Generate extends AbstractActionController {
             }
             if (!($salarySheetController->checkIfGenerated($monthId))) {
                 $salarySheetDetails = [];
-                $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
                 foreach ($employeeList as $employee) {
+                    $generateMonthlySheet = new PayrollGenerator($this->adapter, $monthId);
                     $result = $generateMonthlySheet->generate($employee['EMPLOYEE_ID']);
                     $salarySheetDetails[$employee['EMPLOYEE_ID']] = $result;
                 }
