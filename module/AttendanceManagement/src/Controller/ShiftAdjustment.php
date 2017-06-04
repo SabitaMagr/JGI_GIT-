@@ -157,12 +157,69 @@ class ShiftAdjustment extends AbstractActionController {
 //                $this->repository->add($shiftAdjust);
 //                $reportData = $this->reportRepo->employeeWiseDailyReport($employeeId);
 //                return new CustomViewModel(['success' => true, 'data' => $postedData, 'dataId'=>$shiftAdjust->adjustmentId, 'error' => '']);
-                return new CustomViewModel(['success' => true, 'data' => $postedData, 'dataId'=>4, 'error' => '']);
+                return new CustomViewModel(['success' => true, 'data' => $postedData, 'dataId' => 4, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getEmployeeListAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $employeeId = $postedData['employeeId'];
+                $branchId = $postedData['branchId'];
+                $departmentId = $postedData['departmentId'];
+                $designationId = $postedData['designationId'];
+                $positionId = $postedData['positionId'];
+                $serviceTypeId = $postedData['serviceTypeId'];
+                $serviceEventTypeId = $postedData['serviceEventTypeId'];
+                $companyId = $postedData['companyId'];
+                $genderId = $postedData['genderId'];
+
+                $raw = $this->repository->filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId);
+                $reportData = Helper::extractDbData($raw);
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage(), 'errorDetail' => $e->getTraceAsString()]);
+        }
+    }
+
+    public function getShiftAdjustmentAssignedEmployeesAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $shiftAdjustmentId = $postedData['shiftAdjustmentId'];
+
+                $raw = EntityHelper::getTableKVList($this->adapter, 'HRIS_EMPLOYEE_SHIFT_ADJUSTMENT', null, ['EMPLOYEE_ID'], ['ADJUSTMENT_ID' => $shiftAdjustmentId], null, null, null, null, TRUE);
+                $reportData = Helper::extractDbData($raw);
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function shiftAdjustAddAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $postedData = $request->getPost();
+            $this->repository->insertShiftAdjstment($postedData);
+            $this->flashmessenger()->addMessage("ShiftAdjustment Successfully added!!!");
+            return $this->redirect()->toRoute("shiftAdjustment");
+        } else {
+            return $this->redirect()->toRoute("shiftAdjustment");
         }
     }
 
