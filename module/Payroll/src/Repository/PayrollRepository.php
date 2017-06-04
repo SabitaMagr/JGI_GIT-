@@ -45,4 +45,45 @@ class PayrollRepository {
         return Helper::extractDbData($fiscalYearsRaw);
     }
 
+    public function fetchBasicSalary($employeeId) {
+        $sql = "
+                SELECT NVL(SALARY,0) AS SALARY
+                FROM HRIS_EMPLOYEES
+                WHERE EMPLOYEE_ID={$employeeId}
+                ";
+        $basicSalaryRaw = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $basicSalaryRaw->current()['SALARY'];
+    }
+
+    public function getNoOfWorkingDays(int $employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(AD.EMPLOYEE_ID) AS NO_OF_WORKING_DAYS
+                FROM HRIS_ATTENDANCE_DETAIL AD,
+                  (SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID= {$monthId}
+                  ) M
+                WHERE AD.EMPLOYEE_ID = {$employeeId}
+                AND (TRUNC(ATTENDANCE_DT) BETWEEN M.FROM_DATE AND TO_DATE)
+                AND AD.DAYOFF_FLAG = 'N'
+                AND AD.HOLIDAY_ID    IS NULL
+                ";
+        $workingDaysCountRaw = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $workingDaysCountRaw->current()['NO_OF_WORKING_DAYS'];
+    }
+
+    public function getNoOfDaysAbsent($employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(AD.EMPLOYEE_ID) AS NO_OF_DAYS_ABSENT
+                FROM HRIS_ATTENDANCE_DETAIL AD,
+                  (SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID= {$monthId}
+                  ) M
+                WHERE AD.EMPLOYEE_ID = {$employeeId}
+                AND (TRUNC(ATTENDANCE_DT) BETWEEN M.FROM_DATE AND TO_DATE)
+                AND AD.DAYOFF_FLAG = 'N'
+                AND AD.HOLIDAY_ID IS NULL
+                AND AD.IN_TIME    IS NULL
+                ";
+        $workingDaysCountRaw = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $workingDaysCountRaw->current()['NO_OF_DAYS_ABSENT'];
+    }
+
 }
