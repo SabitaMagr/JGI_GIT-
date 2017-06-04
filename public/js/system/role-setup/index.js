@@ -27,6 +27,16 @@
                 {title: "Action",width:50}
             ]
         });  
+        
+        app.searchTable('roleTable',['ROLE_NAME']);
+        
+        app.pdfExport(
+                'roleTable',
+                {
+                    'ROLE_NAME': 'Role'
+                }
+        );
+        
         $("#export").click(function (e) {
             var grid = $("#roleTable").data("kendoGrid");
             grid.saveAsExcel();

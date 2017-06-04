@@ -24,6 +24,17 @@
                 {title: "Action",width:100}
             ],
         });
+        
+        app.searchTable('appraisalTypeTable',['APPRAISAL_TYPE_EDESC','APPRAISAL_TYPE_NDESC','SERVICE_TYPE_NAME']);
+        
+        app.pdfExport(
+                'appraisalTypeTable',
+                {
+                    'APPRAISAL_TYPE_EDESC': 'Appraisal Type in Eng',
+                    'APPRAISAL_TYPE_NDESC': 'Appraisal Type in Nep',
+                    'SERVICE_TYPE_NAME': 'Service Type'
+                });
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalTypeTable").data("kendoGrid");
             grid.saveAsExcel();

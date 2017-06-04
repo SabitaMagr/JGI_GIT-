@@ -20,14 +20,23 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "ACADEMIC_COURSE_CODE", title: "Academic Course Code",width:120},
-                {field: "ACADEMIC_COURSE_NAME", title: "Academic Course",width:200},
-                {field: "ACADEMIC_PROGRAM_NAME", title: "Academic Program",width:200},
-                {title: "Action",width:110}
+                {field: "ACADEMIC_COURSE_NAME", title: "Academic Course", width: 200},
+                {field: "ACADEMIC_PROGRAM_NAME", title: "Academic Program", width: 200},
+                {title: "Action", width: 110}
             ]
         });
-        
-        app.searchTable('academicCourseTable',['ACADEMIC_COURSE_NAME','ACADEMIC_PROGRAM_NAME']);
-        
+
+        app.searchTable('academicCourseTable', ['ACADEMIC_COURSE_NAME', 'ACADEMIC_PROGRAM_NAME']);
+
+        app.pdfExport(
+                'academicCourseTable',
+                {
+                    'ACADEMIC_COURSE_NAME': ' Course Name',
+                    'ACADEMIC_PROGRAM_NAME': 'AcademicProgram'
+                }
+        );
+
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -36,7 +45,8 @@
                         .find('tbody')
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
-        };
+        }
+        ;
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
@@ -53,7 +63,7 @@
 
             filteredDataSource.read();
             var data = filteredDataSource.view();
-            
+
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
                 rows.push({
@@ -67,7 +77,7 @@
             excelExport(rows);
             e.preventDefault();
         });
-        
+
         function excelExport(rows) {
             var workbook = new kendo.ooxml.Workbook({
                 sheets: [

@@ -1,36 +1,24 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 9/8/16
- * Time: 5:17 PM
- */
-
 namespace LeaveManagement\Controller;
 
+use Application\Helper\EntityHelper as AppEntityHelper;
 use Application\Helper\Helper;
 use LeaveManagement\Form\ExcelImportForm;
 use LeaveManagement\Form\LeaveAssignForm;
-use LeaveManagement\Helper\EntityHelper;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
-use Setup\Controller\EmployeeController;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\HrEmployees;
-use Setup\Model\ServiceType;
-use Setup\Repository\EmployeeRepository;
+use PHPExcel_Cell;
+use PHPExcel_IOFactory;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\Authentication\AuthenticationService;
-use Application\Helper\EntityHelper as AppEntityHelper;
+use function Zend\Filter\File\move_uploaded_file;
 
 class leaveAssign extends AbstractActionController {
 
@@ -55,29 +43,13 @@ class leaveAssign extends AbstractActionController {
         $this->excelImportForm = $this->builder->createForm($excelImportForm);
     }
 
-    public function indexAction() {
-        $excelImportForm = new ExcelImportForm();
-        $form = $this->builder->createForm($excelImportForm);
-
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeList = $employeeRepo->fetchAll();
-        return Helper::addFlashMessagesToArray($this, [
-                    'employeeList' => $employeeList
-        ]);
-    }
-
     public function assignAction() {
         $this->initializeForm();
-
-//        $empFormElement = new Select();
-//        $empFormElement->setName("employee");
-//        $empFormElement->setValueOptions(\Application\Helper\EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"]));
-//        $empFormElement->setAttributes(["id" => "employeeId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
         $leaveFormElement->setLabel("Leave Type");
-        $leaveFormElement->setValueOptions(AppEntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS . " ='E'"], LeaveMaster::LEAVE_ID,"ASC",NULL,FALSE,TRUE));
+        $leaveFormElement->setValueOptions(AppEntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS . " ='E'"], LeaveMaster::LEAVE_ID, "ASC", NULL, FALSE, TRUE));
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control", "data-init-plugin" => "select2"]);
 
         $genderFormElement = new Select();
@@ -93,117 +65,8 @@ class leaveAssign extends AbstractActionController {
                     'leaveFormElement' => $leaveFormElement,
                     'genderFormElement' => $genderFormElement,
                     'form' => $this->excelImportForm,
-                    'searchValues'=>AppEntityHelper::getSearchData($this->adapter)
+                    'searchValues' => AppEntityHelper::getSearchData($this->adapter)
         ]);
-    }
-
-//    public function assignAction()
-//    {
-//        $this->initializeForm();
-//        $id = (int)$this->params()->fromRoute("eid");
-//
-//        if ($id === 0) {
-//            return $this->redirect()->toRoute("leaveassign");
-//        }
-//        $employeeRepo = new EmployeeRepository($this->adapter);
-//        $employee = $employeeRepo->fetchById($id);
-//
-//        $assignList = $this->repository->fetchByEmployeeId($id);
-//        return Helper::addFlashMessagesToArray($this, [
-//            'assignList' => $assignList,
-//            'id' => $id,
-//            'employee' => $employee
-//        ]);
-//    }
-
-    public function addAction() {
-        $this->initializeForm();
-        $id = (int) $this->params()->fromRoute("eid");
-
-        if ($id === 0) {
-            return $this->redirect()->toRoute("leaveassign");
-        }
-
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employee = $employeeRepo->fetchById($id);
-
-        $this->initializeForm();
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
-                $leaveAssign->exchangeArrayFromForm($this->form->getData());
-                // $leaveAssign->employeeLeaveAssignId = ((int) Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
-                $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                $leaveAssign->createdBy = $this->employeeId;
-                $leaveAssign->employeeId = $id;
-                $this->repository->add($leaveAssign);
-                $this->flashmessenger()->addMessage("Leave assigned Successfully!!!");
-                return $this->redirect()->toRoute("leaveassign", ['action' => 'assign', 'eid' => $id]);
-            }
-        }
-        return Helper::addFlashMessagesToArray(
-                        $this, [
-                    'form' => $this->form,
-                    'eid' => $id,
-                    'employee' => $employee,
-                    'leavelist' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_LEAVE_MASTER_SETUP)
-                        ]
-        );
-    }
-
-    public function editAction() {
-        $this->initializeForm();
-        $eid = (int) $this->params()->fromRoute("eid");
-        $id = (int) $this->params()->fromRoute("id");
-
-        if ($id === 0 || $eid === 0) {
-            return $this->redirect()->toRoute("leaveassign");
-        }
-
-        $request = $this->getRequest();
-        $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
-        $employee = new HrEmployees();
-        if (!$request->isPost()) {
-            $leaveAssign->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
-            $this->form->bind($leaveAssign);
-            $employee->employeeId = $leaveAssign->employeeId;
-        } else {
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $leaveAssign->exchangeArrayFromForm($this->form->getData());
-                $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
-                $leaveAssign->modifiedBy = $this->employeeId;
-                
-                unset($leaveAssign->employeeLeaveAssignId);
-                unset($leaveAssign->createdDt);
-                $this->repository->edit($leaveAssign, $id);
-                $this->flashmessenger()->addMessage("Assigned leave Successfuly Updated!!!");
-                return $this->redirect()->toRoute("leaveassign", ['action' => 'assign', 'eid' => $eid]);
-            }
-        }
-        return Helper::addFlashMessagesToArray(
-                        $this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'eid' => $eid,
-                    'employee' => $employee,
-                    'leavelist' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_LEAVE_MASTER_SETUP)
-                        ]
-        );
-    }
-
-    public function deleteAction() {
-        $eid = (int) $this->params()->fromRoute("eid");
-        $id = (int) $this->params()->fromRoute("id");
-
-        if ($id === 0 || $eid === 0) {
-            return $this->redirect()->toRoute("leaveassign");
-        }
-        $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Assigned Leave Successfully Deleted!!!");
-        return $this->redirect()->toRoute("leaveassign", ['action' => 'assign', 'eid' => $eid]);
     }
 
     public function importAction() {
@@ -230,14 +93,14 @@ class leaveAssign extends AbstractActionController {
 
                 $file = Helper::UPLOAD_DIR . "/" . $newFileName;
 
-                $objPHPExcel = \PHPExcel_IOFactory::load($file);
+                $objPHPExcel = PHPExcel_IOFactory::load($file);
                 $dataArr = array();
 
                 foreach ($objPHPExcel->getWorksheetIterator() as $worksheet) {
                     $worksheetTitle = $worksheet->getTitle();
                     $highestRow = $worksheet->getHighestRow(); // e.g. 10
                     $highestColumn = $worksheet->getHighestColumn(); // e.g 'F'
-                    $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);
+                    $highestColumnIndex = PHPExcel_Cell::columnIndexFromString($highestColumn);
 
                     for ($row = 2; $row <= $highestRow; ++$row) {
                         for ($col = 0; $col < $highestColumnIndex; ++$col) {

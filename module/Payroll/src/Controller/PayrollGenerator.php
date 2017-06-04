@@ -6,6 +6,7 @@ use Application\Factory\HrLogger;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\RepositoryInterface;
+use Exception;
 use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
@@ -72,8 +73,8 @@ class PayrollGenerator {
         $this->ruleDetailRepo = new RulesDetailRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
 
-        $this->monthlyValues = EntityHelper::getTableKVListWithSortOption($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID, [MonthlyValueModel::MTH_EDESC],null,null,null,null,false,true);
-        $this->flatValues = EntityHelper::getTableKVListWithSortOption($this->adapter, FlatValueModel::TABLE_NAME, FlatValueModel::FLAT_ID, [FlatValueModel::FLAT_EDESC],null,null,null,null,false,true);
+        $this->monthlyValues = EntityHelper::getTableKVListWithSortOption($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID, [MonthlyValueModel::MTH_EDESC], null, null, null, null, false, true);
+        $this->flatValues = EntityHelper::getTableKVListWithSortOption($this->adapter, FlatValueModel::TABLE_NAME, FlatValueModel::FLAT_ID, [FlatValueModel::FLAT_EDESC], null, null, null, null, false, true);
 
         $this->sanitizeStringArray($this->monthlyValues);
         $this->sanitizeStringArray($this->flatValues);
@@ -124,11 +125,6 @@ class PayrollGenerator {
             foreach (self::SYSTEM_RULE as $systemRule) {
                 $rule = $this->convertSystemRuleToValue($rule, $systemRule);
             }
-//            if ($ruleDetail['PAY_ID'] == 11) {
-//                print "<pre>";
-//                print_r("return " . $rule . " ;");
-//                exit;
-//            }
             $rule = $this->convertReferencingRuleToValue($rule, $refRules);
 
             $this->logger->info("payroll", ['employeeId' => $this->employeeId, 'ruleId' => $ruleId]);

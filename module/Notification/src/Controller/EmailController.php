@@ -77,25 +77,25 @@ class EmailController extends AbstractActionController {
 
         $type6 = new LoanRequestNotificationModel();
         $type6ObjVars = $type6->getObjectAttrs();
-        
+
         $type7 = new WorkOnDayoffNotificationModel();
         $type7ObjVars = $type7->getObjectAttrs();
-        
+
         $type8 = new WorkOnHolidayNotificationModel();
         $type8ObjVars = $type8->getObjectAttrs();
-        
+
         $type9 = new TrainingReqNotificationModel();
         $type9ObjVars = $type9->getObjectAttrs();
-        
+
         $type10 = new LeaveSubNotificationModel();
         $type10ObjVars = $type10->getObjectAttrs();
-        
+
         $type11 = new TravelSubNotificationModel();
         $type11ObjVars = $type11->getObjectAttrs();
-        
+
         $type12 = new SalaryReviewNotificationModel();
         $type12ObjVars = $type12->getObjectAttrs();
-        
+
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -158,7 +158,12 @@ class EmailController extends AbstractActionController {
             $postedData = $request->getPost();
             $template = new EmailTemplate();
             $template->subject = $postedData['subject'];
-            $template->description = $postedData['description'];
+
+            $patterns = array("/\s+/", "/\s([?.!])/");
+            $replacer = array(" ", "$1");
+
+
+            $template->description = preg_replace('#([a-z0-9\\-]) {2,}([a-z0-9\\-])#i', '\\1 \\2', $postedData['description']);
 
             $cc = [];
             foreach ($postedData['ccEmail'] as $key => $ccEmail) {

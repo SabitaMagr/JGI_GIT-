@@ -74,6 +74,9 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('attendanceRequestTable',['REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','A_STATUS']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

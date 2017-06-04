@@ -23,6 +23,15 @@
                 {title: "Action",width:120}
             ],
         });
+        
+        app.searchTable('assetGroupTable',['ASSET_GROUP_EDESC']);
+        
+        app.pdfExport(
+                'assetGroupTable',
+                {
+                    'ASSET_GROUP_EDESC': 'Asset Group'
+                });
+        
         $("#export").click(function (e) {
             var grid = $("#assetGroupTable").data("kendoGrid");
             grid.saveAsExcel();

@@ -14,6 +14,7 @@ use AttendanceManagement\Repository\AttendanceRepository;
 use Exception;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -91,8 +92,7 @@ class AuthController extends AbstractActionController {
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
 //                        ->setCredential(md5($request->getPost('password')))
-                        ->setCredential($request->getPost('password'))
-                ;
+                        ->setCredential($request->getPost('password'));
                 $result = $this->getAuthService()->authenticate();
                 foreach ($result->getMessages() as $message) {
                     //save message temporary into flashmessenger
@@ -125,7 +125,10 @@ class AuthController extends AbstractActionController {
                         $attendanceModel = new Attendance();
                         $attendanceModel->employeeId = $employeeId;
                         $attendanceModel->attendanceDt = $todayDate;
-                        $attendanceModel->attendanceTime = $todayTime;
+//                        $attendanceModel->attendanceTime = $todayTime;
+                        $attendanceModel->attendanceTime = new Expression("SYSDATE");
+                        $attendanceModel->ipAddress=$request->getServer('REMOTE_ADDR');
+                        $attendanceModel->attendanceFrom='WEB';
                         $attendanceRepo->add($attendanceModel);
                     }
 //                    $employeeRepo = new EmployeeRepository($this->adapter);

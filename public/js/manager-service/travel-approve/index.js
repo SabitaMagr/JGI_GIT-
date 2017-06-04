@@ -34,6 +34,33 @@
                 {title: "Action", width: 80}
             ]
         });
+        
+        app.searchTable('travelApproveTable',['FIRST_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE']);
+        
+        app.pdfExport(
+                'travelApproveTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'FROM_DATE': 'FromDate',
+                    'TO_DATE': 'ToDate',
+                    'REQUESTED_DATE': 'ReqDate',
+                    'DESTINATION': 'Destination',
+                    'PURPOSE': 'Purpose',
+                    'REQUESTED_AMOUNT': 'Req.Amt',
+                    'REQUESTED_TYPE': 'Req.Type',
+                    'YOUR_ROLE': 'Role',
+                    'STATUS': 'Status',
+                    'REMARKS': 'Remarks',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                    
+                });
+             
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

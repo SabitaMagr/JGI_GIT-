@@ -26,6 +26,21 @@
                 {title: "Action", width: 100}
             ],
         });
+        
+        app.searchTable('salaryReviewTable',['FIRST_NAME','OLD_AMOUNT','NEW_AMOUNT','EFFECTIVE_DATE']);
+        
+        app.pdfExport(
+                'salaryReviewTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'OLD_AMOUNT': 'Old Amt',
+                    'NEW_AMOUNT': 'New Amt',
+                    'EFFECTIVE_DATE': 'Effective Date',
+                    'JOB_HISTORY_ID': 'Job History',
+                });
+        
 
     });
 })(window.jQuery, window.app);

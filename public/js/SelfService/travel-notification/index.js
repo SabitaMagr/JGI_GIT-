@@ -33,6 +33,9 @@
                 {title: "Action",width:80}
             ]
         });
+        
+        app.searchTable('travelNotificationTable',['FIRST_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','STATUS','APPROVED_FLAG']);
+         
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

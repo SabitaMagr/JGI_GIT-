@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:01 PM
- */
-
 namespace Payroll\Repository;
 
 use Application\Helper\Helper;
@@ -39,19 +32,17 @@ class RulesRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->gateway->select(function(Select $select){
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class,
-                    [Rules::PAY_EDESC,Rules::PAY_LDESC]),false);
-            $select->where([Rules::STATUS => 'E']);
-        });
+        return $this->gateway->select(function(Select $select) {
+                    $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class, [Rules::PAY_EDESC, Rules::PAY_LDESC]), false);
+                    $select->where([Rules::STATUS => 'E']);
+                });
     }
 
     public function fetchById($id) {
-        return $this->gateway->select(function(Select $select) use($id){
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class,
-                    [Rules::PAY_EDESC,Rules::PAY_LDESC]),false);
-            $select->where([Rules::STATUS => 'E', Rules::PAY_ID => $id]);
-        })->current();
+        return $this->gateway->select(function(Select $select) use($id) {
+                    $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class, [Rules::PAY_EDESC, Rules::PAY_LDESC]), false);
+                    $select->where([Rules::STATUS => 'E', Rules::PAY_ID => $id]);
+                })->current();
     }
 
     public function delete($id) {
@@ -62,13 +53,14 @@ class RulesRepository implements RepositoryInterface {
     }
 
     public function fetchReferencingRules($payId) {
-        $sql = "SELECT P.PAY_ID,
-  INITCAP(P.PAY_EDESC) AS PAY_EDESC,
-  INITCAP(P.PAY_LDESC) AS PAY_LDESC
-FROM HRIS_PAY_SETUP P,
-  (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=$payId
-  ) PS
-WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
+        $sql = "
+                SELECT P.PAY_ID,
+                  INITCAP(P.PAY_EDESC) AS PAY_EDESC,
+                  INITCAP(P.PAY_LDESC) AS PAY_LDESC
+                FROM HRIS_PAY_SETUP P,
+                  (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=$payId
+                  ) PS
+                WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

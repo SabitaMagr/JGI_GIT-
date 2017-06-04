@@ -81,6 +81,28 @@ angular.module('hris', [])
                         {title: "Action", width: 100}
                     ]
                 });
+                
+                app.searchTable('attendanceRequestStatusTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
+                
+                app.pdfExport(
+                'attendanceRequestStatusTable',
+                {
+                    'FIRST_NAME': ' Name',
+                    'MIDDLE_NAME': 'middleName',
+                    'LAST_NAME': 'lastname',
+                    'REQUESTED_DT': 'Request Date',
+                    'ATTENDANCE_DT': 'Attendance Date',
+                    'IN_TIME': 'In Time',
+                    'OUT_TIME': 'Out Time',
+                    'TOTAL_HOUR':'Total Hour',
+                    'OUT_REMARKS': 'Out Remarks',
+                    'APPROVER_NAME': 'Approver',
+                    'STATUS': 'Status',
+                    'APPROVED_DT': 'Approved Date',
+                    'APPROVED_REMARKS': 'Approved Remarks'
+                }
+                );
+
 
                 function gridDataBound(e) {
                     var grid = e.sender;
@@ -91,7 +113,7 @@ angular.module('hris', [])
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
                 }
-                ;
+                
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [

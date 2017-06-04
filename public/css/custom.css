@@ -2061,12 +2061,12 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
 }
 
 .div-3-designation{
-     width: 35%;
+    width: 35%;
     float:left;
 }
 
 .div-3-department{
-     width: 25%;
+    width: 25%;
     float:left;
 }
 
@@ -2080,4 +2080,9 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
 }
 div#ndp-nepali-box{
     z-index: 99999 !important ;
+}
+
+.lobilists .lobilist-placeholder, .lobilists .lobilist-wrapper{
+    width: 100%;
+    margin-right: 0px;
 }

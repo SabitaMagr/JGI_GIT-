@@ -75,7 +75,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="row detailsbox">
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg1" >
-                                <span><?php print $present; ?></span>
+                                <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">Present</div>
@@ -83,7 +83,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg2">
-                                <span><?php print $leave ?></span>
+                                <span><?php print $employeeDetail['LEAVE']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Leave</div>
@@ -91,7 +91,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg3">
-                                <span><?php print $training; ?></span>
+                                <span><?php print $employeeDetail['TRAINING']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">Training</div>
@@ -99,7 +99,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg4">
-                                <span><?php print $travel; ?></span>
+                                <span><?php print $employeeDetail['TOUR']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Tour</div>
@@ -107,7 +107,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg5">
-                                <span><?php print $WOH; ?></span>
+                                <span><?php print $employeeDetail['WOH']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">WOH</div>
@@ -235,6 +235,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <div id="lobilist">
+
+                </div>
+
+            </div>
+
+        </div>
     </div>
 
     <div class="col-md-6">
@@ -319,129 +328,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-12">
-
-                <!--                <div class="mytask-todo">
-                                    <div class="taskbox">
-                                        <div class="portlet light portlet-inner-task-wrapper boxborder">
-                                            <div class="portlet-inner-task-wrapper">
-                                            <div class="portlet-title">
-                                                <div class="caption caption-md">
-                                                    <i class="fa fa-tasks font-green-sharp"></i>
-                                                    <span class="caption-subject font-green-sharp bold">My Tasks</span>
-                                                </div>
-                
-                                                <div class="task pull-right">
-                                                    <div class="date-date">
-                                                        <span><?php print date('d'); ?></span>
-                                                        <div class="taskaddbtn">
-                                                            <a href="#"> <i class="fa fa-plus" aria-hidden="true"></i></a>
-                                                        </div>
-                                                    </div>
-                                                     <div class="nextbtn">
-                                                         <a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-                                                     </div> 
-                
-                                                </div>
-                                            </div>
-                
-                                             </div> 
-                
-                <?php $employeeTask = []; ?>
-                <?php if ($employeeTask) : ?>
-                                                        <div class="task-list">
-                                                            <ul>
-                    <?php foreach ($employeeTask as $task): ?>
-                                                                            <li>
-                                                                                <div class="task-list-content clearfix">
-                                                                                    <h4><?php print $task['TASK_EDESC']; ?></h4>
-                                                                                    <div class="positon">Position: <?php print $task['DESIGNATION_TITLE']; ?></div>
-                                                                                    <div class="name"><?php print $task['FULL_NAME']; ?></div>
-                                                                                </div>
-                                                                            </li>
-                    <?php endforeach; ?>
-                                                            </ul>
-                                                        </div>
-                <?php else : ?>
-                                                        <div class="notask">
-                                                            <div class="notask-box">
-                                                                <h4><i class="fa fa-universal-access" aria-hidden="true"></i>No Task Available</h4>
-                                                            </div>
-                                                        </div>
-                <?php endif; ?>
-                                        </div>
-                
-                                    </div>
-                
-                
-                
-                                    <div class="datepickeform">
-                                        <div class="portlet light portlet-inner-datepicker-wrapper boxborder">
-                
-                
-                                            <div class="portlet-title">
-                                                <div class="caption caption-md">
-                
-                
-                                                    <i class="fa fa-check-square-o font-green-sharp" aria-hidden="true"></i>
-                
-                
-                                                    <span class="caption-subject font-green-sharp bold">TO Do</span>
-                                                </div>     
-                                            </div>
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Due for today <?php print date('d F Y'); ?> </label>
-                                                        <input id="inp-task-dt" class="pickdate form-control form-control-inline input-medium date-picker" size="16" type="text" value=""/>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label class="control-label">Task</label>
-                                                        <input id="inp-task-name" class="form-control" placeholder="Task Name" type="text">
-                                                    </div>
-                                                </div>
-                                                div class="col-md-12">
-                                                       <div class="form-group">
-                                                         <input type="button" id="task-save btn" class="btn btn-dafault" value="Save" />
-                                                       </div> 
-                                                <div class="col-md-12">
-                                                    <div class="form-group1">
-                                                        <button type="button" class="btn btn-theme  savebutton"  id="task-save btn" value="Save">
-                                                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                                                            Save
-                                                        </button>
-                                                    </div>
-                
-                                                </div>
-                                            </div>
-                                        </div>
-                
-                                    </div>
-                                    <div class="clearfix"></div>
-                
-                                </div>-->
-                <div id="lobilist">
-
-                </div>
-                <!-- END CONTENT -->
-            </div>
-        </div>
-
-
         <div class="row">
             <div class="col-md-12 holidays">
                 <!-- BEGIN PORTLET -->
@@ -589,15 +475,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
 
         </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-12">
-                <div id="lobilist">
 
-                </div>
-
-            </div>
-
-        </div>
     </div>
 </div>
 

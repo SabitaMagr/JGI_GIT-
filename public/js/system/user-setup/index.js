@@ -28,6 +28,20 @@
                     {title: "Action",width:100}
             ]
         }); 
+        
+        app.searchTable('userTable',['FIRST_NAME','USER_NAME','ROLE_NAME']);
+        
+        app.pdfExport(
+                'userTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'middle',
+                    'LAST_NAME': 'last',
+                    'USER_NAME': 'UserName',
+                    'ROLE_NAME': 'Role'
+                }
+        );
+        
         $("#export").click(function (e) {
             var grid = $("#userTable").data("kendoGrid");
             grid.saveAsExcel();

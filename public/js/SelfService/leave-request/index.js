@@ -79,6 +79,9 @@ angular.module('hris', [])
                         {title: "Action"}
                     ]
                 });
+                
+                app.searchTable('leaveRequestTable',['LEAVE_ENAME','REQUESTED_DT','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS']);
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

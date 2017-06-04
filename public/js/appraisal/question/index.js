@@ -27,6 +27,19 @@
                 {title: "Action", width: 100}
             ],
         });
+        
+        app.searchTable('appraisalQuestionTable',['QUESTION_EDESC','QUESTION_NDESC','ANSWER_TYPE','ORDER_NO','HEADING_EDESC']);
+        
+        app.pdfExport(
+                'appraisalQuestionTable',
+                {
+                    'QUESTION_EDESC': 'Question in Eng',
+                    'QUESTION_NDESC': 'Question in Nep',
+                    'ANSWER_TYPE': 'Answer type',
+                    'ORDER_NO': 'Order No',
+                    'HEADING_EDESC': 'Heading'
+                });
+        
         $("#export").click(function (e) {
             var rows = [{
                     cells: [

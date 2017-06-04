@@ -26,6 +26,18 @@
                 {title: "Action",width:100}
             ],
         });
+        
+        app.searchTable('appraisalHeadingTable',['HEADING_EDESC','HEADING_NDESC','PERCENTAGE','APPRAISAL_TYPE_EDESC']);
+        
+        app.pdfExport(
+                'appraisalHeadingTable',
+                {
+                    'HEADING_EDESC': 'Heading in Eng',
+                    'HEADING_NDESC': 'Heading in Nep',
+                    'PERCENTAGE': 'Percentage',
+                    'APPRAISAL_TYPE_EDESC': 'Appraisal type'
+                });
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalHeadingTable").data("kendoGrid");
             grid.saveAsExcel();

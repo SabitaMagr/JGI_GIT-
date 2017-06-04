@@ -86,6 +86,32 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('trainingRequestStatusTable',['FIRST_NAME','TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','YOUR_ROLE','STATUS']);
+                
+                app.pdfExport(
+                'trainingRequestStatusTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'TRAINING_NAME': 'Training',
+                    'REQUESTED_DATE': 'Req.Date',
+                    'START_DATE': 'StartDate',
+                    'END_DATE': 'EndDate',
+                    'DURATION': 'Duration',
+                    'TRAINING_TYPE': 'Type',
+                    'YOUR_ROLE': 'Role',
+                    'STATUS': 'Status',
+                    'DESCRIPTION': 'Description',
+                    'REMARKS': 'Remarks',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                    
+                });
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

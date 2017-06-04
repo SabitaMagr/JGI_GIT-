@@ -34,6 +34,17 @@
         
         app.searchTable('branchTable',['BRANCH_NAME','STREET_ADDRESS','TELEPHONE','EMAIL','COMPANY_NAME']);
         
+        app.pdfExport(
+                'branchTable',
+                {
+                    'BRANCH_NAME': 'Branch',
+                    'STREET_ADDRESS': 'Street Adress',
+                    'TELEPHONE': 'Telephone',
+                    'EMAIL': 'Email',
+                    'COMPANY_NAME': 'Company'
+                }
+        );
+        
         window.app.UIConfirmations();
     });
 })(window.jQuery);

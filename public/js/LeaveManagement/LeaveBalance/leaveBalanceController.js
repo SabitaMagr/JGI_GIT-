@@ -117,6 +117,15 @@ angular.module('hris', [])
                     },
                     columns: columns
                 });
+                
+                app.searchTable('leaveBalanceTable',['EMPLOYEE_NAME']);
+                
+                app.pdfExport(
+                'leaveBalanceTable',
+                {
+                    'EMPLOYEE_NAME': ' EMPLOYEE'
+                }
+        );
 
             };
             function gridDataBound(e) {

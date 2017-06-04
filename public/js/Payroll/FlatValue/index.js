@@ -29,6 +29,17 @@
                 {title: "Action"}
             ]
         }); 
+        
+        app.searchTable('flatValueTable',['FLAT_EDESC','FLAT_LDESC','SHOW_AT_RULE']);
+        
+        app.pdfExport(
+                'flatValueTable',
+                {
+                    'FLAT_EDESC': 'Flat Desc in English',
+                    'FLAT_LDESC': 'Flat Desc in Nepali',
+                    'SHOW_AT_RULE': 'Show At Rule'
+                });
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

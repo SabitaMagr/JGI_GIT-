@@ -773,18 +773,18 @@ window.app = (function ($, toastr, App) {
         return Math.floor(days);
     }
 
-    var searchTable = function (kendoId, searchFields,Hidden) {
+    var searchTable = function (kendoId, searchFields, Hidden) {
         var $searchHtml = $("<div class='row search' id='searchFieldDiv'>"
                 + "<div class='col-sm-12'>"
                 + "<input class='form-group pull-right' placeholder='search here' type='text' id='kendoSearchField' style='width:136px;padding:2px;font-size:12px;'/>"
                 + "</div>"
                 + "</div>");
-        
+
 
         $searchHtml.insertBefore("#" + kendoId);
-        
+
         if (typeof Hidden !== "undefined") {
-        $("#searchFieldDiv").hide();
+            $("#searchFieldDiv").hide();
         }
         $("#kendoSearchField").keyup(function () {
             var val = $(this).val();
@@ -805,6 +805,155 @@ window.app = (function ($, toastr, App) {
 
 
     }
+
+
+    var pdfExport = function (kendoId, col) {
+
+        // to create div for pdf table export
+//        var $pdfExportdiv = $("<div id='pdfExportTable'></div>");
+//        $pdfExportdiv.insertAfter("#" + kendoId);
+//        document.body.appendChild($pdfExportdiv);
+
+//             to create export pdf button
+        var $pdfExportButton = $("<li>"
+                + "<a href='javascript:;' id='exportPdf'>"
+                + "<i class='fa fa-file-pdf-o' ></i> Export to PDF</a>"
+                + "</li>");
+
+
+        $pdfExportButton.insertAfter($("#export").parent());
+
+        //to create template for export pdf
+
+        var pdfkendoTemplate = "<script id='rowTemplatePDF' type='text/x-kendo-tmpl'><tr>";
+        $.each(col, function (key, value) {
+            if (key != 'MIDDLE_NAME' && key != 'LAST_NAME') {
+                pdfkendoTemplate += "<td>";
+                if (key == 'FIRST_NAME') {
+                    pdfkendoTemplate += "#: (" + key + "== null) ? ' ' :" + key + "#";
+                    pdfkendoTemplate += "#: (MIDDLE_NAME == null) ? ' ' : ' '+MIDDLE_NAME+' ' #";
+                    pdfkendoTemplate += "#: (LAST_NAME == null) ? ' ' : LAST_NAME #";
+                } else {
+                    pdfkendoTemplate += " #: (" + key + "== null) ? ' ' :" + key + "#";
+                }
+                pdfkendoTemplate += "</td>";
+            }
+        });
+
+        pdfkendoTemplate += "</tr></script>";
+        $(pdfkendoTemplate).insertAfter("#rowTemplate");
+
+
+        $("#exportPdf").click(function () {
+            $("#pdfExportTable").show();
+
+            var dataSource = $("#" + kendoId).data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+
+            var exportData = [];
+            for (var i = 0; i < data.length; i++) {
+                var tempData = {};
+                $.each(col, function (key, value) {
+                    tempData[key] = data[i][key];
+                });
+                exportData.push(tempData);
+
+            }
+//            console.log(exportData);
+            var columns = [];
+            $.each(col, function (key, value) {
+//                var widthVal=100;
+//                if(typeof(colWidth) != 'undefined'){ widthVal=colWidth[key]; }
+                if (key != 'MIDDLE_NAME' && key != 'LAST_NAME') {
+                    columns.push({field: key, title: value});
+                }
+            });
+
+            $("#pdfExportTable").kendoGrid({
+                dataSource: exportData,
+                rowTemplate: $("#rowTemplatePDF").html(),
+                columns: columns
+            });
+
+            kendo.drawing
+                    .drawDOM("#pdfExportTable")
+                    .then(function (group) {
+                        kendo.drawing.pdf.saveAs(group, kendoId + ".pdf")
+                        $("#pdfExportTable").hide();
+                    });
+
+
+        });
+
+
+    };
+
+    (function () {
+        $('.hris-export-to-excel').on("click", function () {
+            try {
+                var $this = $(this);
+                var targetId = $this.attr("hris-export-to-excel-target");
+                if (typeof targetId === "undefined") {
+                    throw {message: "attribute => hris-export-to-excel-target not defined."};
+                }
+                var $target = $("#" + targetId);
+                if ($target.length === 0) {
+                    throw {message: "hris-export-to-excel-target is not found."};
+                }
+
+                console.log($target);
+                var grid = $target.data("kendoGrid");
+                if (typeof grid === "undefined") {
+                    showMessage("No Table to export data.", "error");
+                    throw{message: "No Table to export data."};
+                }
+                grid.saveAsExcel();
+            } catch (e) {
+                console.log(e.message);
+            }
+
+        });
+    })();
+
+    var populateSelect = function ($element, list, id, value, defaultMessage, selectedId) {
+        $element.html('');
+        $element.append($("<option></option>").val(-1).text(defaultMessage));
+        var concatArray = function (keyList, list, concatWith) {
+            var temp = '';
+            if (typeof concatWith === 'undefined') {
+                concatWith = ' ';
+            }
+            for (var i in keyList) {
+                var listValue = list[keyList[i]];
+                if (i == (keyList.length - 1)) {
+                    temp = temp + ((listValue === null) ? '' : listValue);
+                    continue;
+                }
+                temp = temp + ((listValue === null) ? '' : listValue) + concatWith;
+            }
+
+            return temp;
+        };
+        for (var i in list) {
+            var text = null;
+            if (typeof value === 'object') {
+                text = concatArray(value, list[i], ' ');
+            } else {
+                text = list[i][value];
+            }
+            if (typeof selectedId !== 'undefined' && selectedId != null && selectedId == list[i][id]) {
+                $element.append($("<option selected='selected'></option>").val(list[i][id]).text(text));
+            } else {
+                $element.append($("<option></option>").val(list[i][id]).text(text));
+            }
+        }
+    };
 
     return {
         format: format,
@@ -830,7 +979,9 @@ window.app = (function ($, toastr, App) {
         scrollTo: scrollTo,
         showMessage: showMessage,
         daysBetween: daysBetween,
-        searchTable: searchTable
+        searchTable: searchTable,
+        pdfExport: pdfExport,
+        populateSelect: populateSelect
     };
 })(window.jQuery, window.toastr, window.App);
 

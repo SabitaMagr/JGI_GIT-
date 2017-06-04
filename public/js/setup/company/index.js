@@ -32,6 +32,14 @@
         });
         
         app.searchTable('companyTable',['COMPANY_NAME']);
+        
+        app.pdfExport(
+                'companyTable',
+                {
+                    'COMPANY_NAME': 'Company'
+                }
+        );
+        
         window.app.UIConfirmations();
 
     });

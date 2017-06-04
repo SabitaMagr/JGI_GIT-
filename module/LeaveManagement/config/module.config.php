@@ -24,7 +24,7 @@ return [
                     'route' => '/leave-assign[/:action[/:eid[/:id]]]',
                     'defaults' => [
                         'controller' => Controller\leaveAssign::class,
-                        'action' => 'index'
+                        'action' => 'assign'
                     ]
                 ]
             ],
@@ -210,9 +210,7 @@ return [
             Controller\LeaveStatus::class => ControllerFactory::class,
             Controller\LeaveBalance::class => ControllerFactory::class
         ],
-
     ],
-
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',

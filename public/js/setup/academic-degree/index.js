@@ -32,6 +32,14 @@
         
         app.searchTable('academicDegreeTable',['ACADEMIC_DEGREE_NAME','WEIGHT']);
         
+        app.pdfExport(
+                'academicDegreeTable',
+                {
+                    'ACADEMIC_DEGREE_NAME': 'Academic Degree Name',
+                    'WEIGHT': 'Weight'
+                }
+        );
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

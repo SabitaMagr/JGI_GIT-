@@ -32,6 +32,9 @@
                 {title: "Action"}
             ]
         });
+        
+        app.searchTable('advanceTable',['ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','STATUS']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

@@ -32,6 +32,9 @@
                 {title: "Action"}
             ]
         });
+        
+        app.searchTable('workOnHolidayTbl',['HOLIDAY_ENAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','STATUS']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

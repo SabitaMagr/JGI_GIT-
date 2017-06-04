@@ -22,12 +22,23 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "PAY_EDESC", title: "EDesc"},
+                {field: "PRIORITY_INDEX", title: "Priority", type: "numbers"},
+                {field: "PAY_EDESC", title: "Rules"},
                 {field: "PAY_TYPE_FLAG", title: "Type"},
-                {field: "PRIORITY_INDEX", title: "Priority Index", type: "numbers"},
                 {title: "Action"}
             ]
         });
+
+        app.searchTable('ruleTable', ['PAY_EDESC', 'PAY_TYPE_FLAG', 'PRIORITY_INDEX']);
+
+        app.pdfExport(
+                'ruleTable',
+                {
+                    'PRIORITY_INDEX': 'Priority',
+                    'PAY_EDESC': 'Rules',
+                    'PAY_TYPE_FLAG': 'Type'
+                });
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

@@ -30,6 +30,19 @@
                 {title: "Action"}
             ]
         });  
+        
+        app.searchTable('monthlyValueTable',['MTH_EDESC','MTH_LDESC','SHOW_AT_RULE','SH_INDEX_NO']);
+        
+        app.pdfExport(
+                'monthlyValueTable',
+                {
+                    'MTH_EDESC': 'Month Desc in English',
+                    'MTH_LDESC': 'Month Desc in Nepali',
+                    'SHOW_AT_RULE': 'Show At Rule',
+                    'SH_INDEX_NO': 'Index No'
+                });
+        
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

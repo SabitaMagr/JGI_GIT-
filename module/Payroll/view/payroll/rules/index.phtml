@@ -14,8 +14,6 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuPayroll", "subMenu" => ["id" => "subMenuRules"], "subMenuChild" => ["id" => "subMenuChildRuleSetup"]];
-echo json_encode($menu); ?>;
     document.rules =<?= json_encode($rules); ?>;
 </script>
 
@@ -27,56 +25,58 @@ echo json_encode($menu); ?>;
 
 
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
-    <div class="table-toolbar">
-        <div class="row">
-            <div class="col-xs-6 col-sm-6 col-md-6">
-                <div class="btn-group">
-                    <a href="<?= $this->url('rules', ['action' => 'edit']) ?>" id="sample_editable_1_new"
-                       class="btn green"> Add New
-                        <i class="fa fa-plus"></i>
-                    </a>
-                </div>
+
+    <div class="portlet light bg-inverse">
+
+        <div class="portlet-title">
+            <div class="tools">
+                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+                <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
-            <div class="col-xs-6 col-sm-6 col-md-6">
-                <div class="btn-group pull-right">
-                    <button class="btn green btn-outline dropdown-toggle" data-toggle="dropdown">Tools
-                        <i class="fa fa-angle-down"></i>
-                    </button>
+            <div class="actions">
+                <a href="<?= $this->url('rules', ['action' => 'edit']) ?>" class="btn default btn-sm">
+                    <i class="fa fa-plus-square icon-black"></i> New </a>
+                <div class="btn-group">
+                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-copy"></i> Tools
+                        <i class="fa fa-angle-down "></i>
+                    </a>
                     <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;" id="export"> Export to Excel </a>
+                        <li >
+                            <a href="javascript:;" id="export">
+                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
+
+        <div id="ruleTable">
+        </div>
     </div>
 
-    <div id="ruleTable">
-    </div>
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
+    <tr>
         <td>
-        #: (PAY_EDESC == null) ? '-' : PAY_EDESC #
-        </td>
-
-        <td>
-        #: (PAY_TYPE_FLAG == null) ? '-' : (PAY_TYPE_FLAG=='A') ? 'Addition' : 'Deduction' #
+            #: (PRIORITY_INDEX == null) ? '-' : PRIORITY_INDEX #
         </td>
         <td>
-        #: (PRIORITY_INDEX == null) ? '-' : PRIORITY_INDEX #
+            #: (PAY_EDESC == null) ? '-' : PAY_EDESC #
         </td>
         <td>
-        <a class="btn-edit"
-        href="<?= $this->url("rules", ["action" => "edit"]); ?>/#:PAY_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a>
+            #: (PAY_TYPE_FLAG == null) ? '-' : (PAY_TYPE_FLAG=='A') ? 'Addition' : 'Deduction' #
         </td>
-        </tr>
+        <td>
+            <a class="btn-edit"
+               href="<?= $this->url("rules", ["action" => "edit"]); ?>/#:PAY_ID #" style="height:17px;">
+                <i class="fa fa-edit"></i>
+            </a>
+        </td>
+    </tr>
     </script>
 </div>

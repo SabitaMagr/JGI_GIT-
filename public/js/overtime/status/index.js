@@ -83,6 +83,31 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('overtimeRequestStatusTable',['FIRST_NAME','REQUESTED_DATE','OVERTIME_DATE','TOTAL_HOUR','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
+                
+                app.pdfExport(
+                'overtimeRequestStatusTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'REQUESTED_DATE': 'RequestDate',
+                    'OVERTIME_DATE': 'OvertimeDate',
+                    'DESCRIPTION': 'Description',
+                    'RECOMMENDER_NAME': 'Recommender',
+                    'APPROVER_NAME': 'Approver',
+                    'STATUS': 'Status',
+                    'REMARKS': 'Remarks',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                    
+                });
+                
+                
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

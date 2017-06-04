@@ -30,6 +30,13 @@
         
         app.searchTable('academicProgramTable',['ACADEMIC_PROGRAM_NAME']);
         
+        app.pdfExport(
+                'academicProgramTable',
+                {
+                    'ACADEMIC_PROGRAM_NAME': 'Academic Program Name'
+                }
+        );
+        
         $("#export").click(function (e) {
             var grid = $("#academicProgramTable").data("kendoGrid");
             grid.saveAsExcel();

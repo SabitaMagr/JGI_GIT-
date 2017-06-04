@@ -34,6 +34,9 @@
                 {title: "Action",width:80}
             ]
         });
+        
+        app.searchTable('leaveNotificationTable',['FIRST_NAME','LEAVE_ENAME','APPLIED_DATE','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS','APPROVED_FLAG']);
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

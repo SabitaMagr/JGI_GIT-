@@ -83,6 +83,33 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
+                
+                app.searchTable('WorkOnDayoffRequestStatusTable',['FIRST_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
+                
+                app.pdfExport(
+                'WorkOnDayoffRequestStatusTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'middleName',
+                    'LAST_NAME': 'lastName',
+                    'REQUESTED_DATE': 'Request Days',
+                    'FROM_DATE': 'FromDate',
+                    'TO_DATE': 'To Date',
+                    'DURATION': 'Duration',
+                    'RECOMMENDER_NAME': 'Recommender',
+                    'APPROVER_NAME': 'Approver',
+                    'STATUS': 'Status',
+                    'REMARKS': 'Remarks',
+                    'RECOMMENDED_REMARKS': 'R.Remarks',
+                    'RECOMMENDED_DATE': 'R.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DATE': 'A.Date'
+                });
+                
+                              
+                
+                
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

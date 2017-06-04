@@ -27,6 +27,16 @@
         
         app.searchTable('designationTable',['DESIGNATION_TITLE','COMPANY_NAME','BASIC_SALARY']);
         
+        app.pdfExport(
+                'designationTable',
+                {
+                    'DESIGNATION_TITLE': 'Designation',
+                    'COMPANY_NAME': 'Company',
+                    'BASIC_SALARY': 'Basic Salary'
+                }
+        );
+        
+        
                $("#export").click(function (e) {
             var rows = [{
                     cells: [

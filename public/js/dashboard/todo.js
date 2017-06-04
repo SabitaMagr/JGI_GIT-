@@ -1,14 +1,14 @@
 $(document).ready(function () {
     var itemVal = document.todoTaskList;
     $('#lobilist').lobiList({
-        sortable: true,
+        sortable: false,
         onSingleLine: true,
         lists: [
             {
                 id: 'lob',
-                title: 'TODO',
-                defaultStyle: 'lobilist-default',
-                controls: ['styleChange'],
+                title: 'Tasks',
+                defaultStyle: 'lobilist-warning',
+                controls: [],
                 useCheckboxes: true,
                 items: itemVal,
 

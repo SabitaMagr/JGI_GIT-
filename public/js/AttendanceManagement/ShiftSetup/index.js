@@ -3,7 +3,7 @@
     $(document).ready(function () {
 
         console.log(document.shifts);
-        
+
         $("#shiftTable").kendoGrid({
             excel: {
                 fileName: "ShiftList.xlsx",
@@ -26,13 +26,30 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "SHIFT_CODE", title: "Shift Code",width:80},
-                {field: "SHIFT_ENAME", title: "Shift",width:120},
-                {field: "COMPANY_NAME", title: "COMPANY",width:130},
-                {field: "START_TIME", title: "Start Time",width:120},
-                {field: "END_TIME", title: "End Time",width:120},
-                {title: "Action",width:110}
+                {field: "SHIFT_ENAME", title: "Shift", width: 120},
+                {field: "COMPANY_NAME", title: "COMPANY", width: 130},
+                {field: "START_TIME", title: "Start Time", width: 120},
+                {field: "END_TIME", title: "End Time", width: 120},
+                {title: "Action", width: 110}
             ]
         });
+
+        app.searchTable('shiftTable', ['SHIFT_ENAME', 'COMPANY_NAME', 'START_TIME', 'END_TIME']);
+
+        app.pdfExport(
+                'shiftTable',
+                {
+                    'SHIFT_ENAME': ' Shift',
+                    'COMPANY_NAME': 'Company',
+                    'START_TIME': 'Start Time',
+                    'START_DATE': 'End Time',
+                    'HALF_TIME': 'Half Time',
+                    'HALF_DAY_END_TIME': 'Half End Time',
+                    'LATE_IN': 'late In',
+                    'EARLY_OUT': 'Early Out'
+                }
+        );
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -47,7 +64,7 @@
 //            var grid = $("#shiftTable").data("kendoGrid");
 //            grid.saveAsExcel();
 
-              var rows = [{
+            var rows = [{
                     cells: [
                         {value: "Shift"},
                         {value: "Company"},
@@ -70,7 +87,7 @@
 
             filteredDataSource.read();
             var data = filteredDataSource.view();
-            
+
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
                 rows.push({
@@ -86,7 +103,6 @@
                         {value: dataItem.LATE_IN},
                         {value: dataItem.EARLY_OUT},
                         {value: dataItem.REMARKS},
-                
                     ]
                 });
             }
@@ -95,9 +111,9 @@
 
 
         });
-        
-        
-          function excelExport(rows) {
+
+
+        function excelExport(rows) {
             var workbook = new kendo.ooxml.Workbook({
                 sheets: [
                     {
@@ -121,9 +137,9 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "ShiftList.xlsx"});
         }
-        
-        
-        
+
+
+
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);
