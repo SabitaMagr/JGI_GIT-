@@ -174,7 +174,6 @@ class PayrollGenerator {
     private function convertVariableToValue($rule, $variable) {
         if (strpos($rule, $this->wrapWithLargeBracket($variable)) !== false) {
             $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId);
-//            return str_replace($variable, $variableProcessor->processVariable($variable), $rule);
             $processedVariable = $variableProcessor->processVariable($variable);
             if (is_string($processedVariable)) {
                 return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedVariable . "'", $rule);
