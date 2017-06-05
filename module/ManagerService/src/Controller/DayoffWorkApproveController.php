@@ -194,37 +194,37 @@ class DayoffWorkApproveController extends AbstractActionController {
                 }
 
                 // to update back date changes
-                $sDate = $detail['FROM_DATE'];
-                $eDate = $detail['TO_DATE'];
-                $currDate = Helper::getCurrentDate();
-                $begin = new DateTime($sDate);
-                $end = new DateTime($eDate);
-                $attendanceDetailModel = new AttendanceDetail();
-                $attendanceDetailModel->dayoffFlag = 'N';
-                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+//                $sDate = $detail['FROM_DATE'];
+//                $eDate = $detail['TO_DATE'];
+//                $currDate = Helper::getCurrentDate();
+//                $begin = new DateTime($sDate);
+//                $end = new DateTime($eDate);
+//                $attendanceDetailModel = new AttendanceDetail();
+//                $attendanceDetailModel->dayoffFlag = 'N';
+//                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
 
 
 //                start of transaction
-                $connection = $this->adapter->getDriver()->getConnection();
-                $connection->beginTransaction();
-                try {
-                    if (strtotime($sDate) <= strtotime($currDate)) {
-                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
-                            $dayOffDate = $i->format("d-M-Y");
-                            if (strtotime($dayOffDate) <= strtotime($currDate)) {
-                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $dayOffDate];
-                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
-                            }
-                        }
-                    }
+//                $connection = $this->adapter->getDriver()->getConnection();
+//                $connection->beginTransaction();
+//                try {
+//                    if (strtotime($sDate) <= strtotime($currDate)) {
+//                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
+//                            $dayOffDate = $i->format("d-M-Y");
+//                            if (strtotime($dayOffDate) <= strtotime($currDate)) {
+//                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $dayOffDate];
+//                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
+//                            }
+//                        }
+//                    }
                     $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
                     $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
                     $workOnDayoffModel->id = $id;
-                    $connection->commit();
-                } catch (exception $e) {
-                    $connection->rollback();
-                    echo "error message:" . $e->getMessage();
-                }
+//                    $connection->commit();
+//                } catch (exception $e) {
+//                    $connection->rollback();
+//                    echo "error message:" . $e->getMessage();
+//                }
 //                end of transaction
 
 //                die();
