@@ -205,7 +205,7 @@ class LeaveApproveController extends AbstractActionController {
                     $leaveApply->recommendedBy = $this->employeeId;
                     $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
                 }
-
+                
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
 
@@ -214,19 +214,18 @@ class LeaveApproveController extends AbstractActionController {
                 $currDate = Helper::getCurrentDate();
                 $begin = new DateTime($leaveSDate);
                 $end = new DateTime($leaveEDate);
-                echo $requestedEmployeeID;
                 $attendanceDetailModel = new AttendanceDetail();
-                $attendanceDetailModel->leaveId = $id;
+                $attendanceDetailModel->leaveId = $detail['LEAVE_ID'];
                 $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                 
 //               start of transaction
                 $connection = $this->adapter->getDriver()->getConnection();
                 $connection->beginTransaction();
                 try {
-                    if ($leaveSDate < $currDate) {
+                    if (strtotime($leaveSDate) <= strtotime($currDate)) {
                         for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
                             $leaveDate = $i->format("d-M-Y");
-                            if ($leaveDate <= $currDate) {
+                            if (strtotime($leaveDate) <= strtotime($currDate)) {
                                 $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $leaveDate];
                                 $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
                             }

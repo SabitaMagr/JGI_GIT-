@@ -4,6 +4,9 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
+use DateTime;
 use Exception;
 use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Repository\LeaveAssignRepository;
@@ -13,12 +16,6 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -195,9 +192,44 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->recommendedBy = $this->employeeId;
                     $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
-                $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
-                $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
-                $workOnDayoffModel->id = $id;
+
+                // to update back date changes
+                $sDate = $detail['FROM_DATE'];
+                $eDate = $detail['TO_DATE'];
+                $currDate = Helper::getCurrentDate();
+                $begin = new DateTime($sDate);
+                $end = new DateTime($eDate);
+                $attendanceDetailModel = new AttendanceDetail();
+                $attendanceDetailModel->dayoffFlag = 'N';
+                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+
+
+//                start of transaction
+                $connection = $this->adapter->getDriver()->getConnection();
+                $connection->beginTransaction();
+                try {
+                    if (strtotime($sDate) <= strtotime($currDate)) {
+                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
+                            $dayOffDate = $i->format("d-M-Y");
+                            if (strtotime($dayOffDate) <= strtotime($currDate)) {
+                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $dayOffDate];
+                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
+                            }
+                        }
+                    }
+                    $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
+                    $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
+                    $workOnDayoffModel->id = $id;
+                    $connection->commit();
+                } catch (exception $e) {
+                    $connection->rollback();
+                    echo "error message:" . $e->getMessage();
+                }
+//                end of transaction
+
+//                die();
+
+
                 try {
                     HeadNotification::pushNotification(($workOnDayoffModel->status == 'AP') ? NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED : NotificationEvents::WORKONDAYOFF_APPROVE_REJECTED, $workOnDayoffModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
