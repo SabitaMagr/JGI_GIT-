@@ -1,26 +1,20 @@
 <?php
+
 namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
+use DateTime;
 use Exception;
-use Setup\Model\Training;
-use Training\Model\TrainingAssign;
-use Training\Repository\TrainingAssignRepository;
-use Setup\Repository\TrainingRepository;
 use ManagerService\Repository\TrainingApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\TrainingRequestForm;
 use SelfService\Model\TrainingRequest;
-use SelfService\Repository\TrainingRequestRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\TrainingRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -72,15 +66,15 @@ class TrainingApproveController extends AbstractActionController {
                 return "Cancelled";
             }
         };
-        
-        $getValueComType = function($trainingTypeId){
-            if($trainingTypeId=='CC'){
+
+        $getValueComType = function($trainingTypeId) {
+            if ($trainingTypeId == 'CC') {
                 return 'Company Contribution';
-            }else if($trainingTypeId=='CP'){
+            } else if ($trainingTypeId == 'CP') {
                 return 'Company Personal';
             }
         };
-        
+
         $getRole = function($recommender, $approver) {
             if ($this->employeeId == $recommender) {
                 return 2;
@@ -92,22 +86,22 @@ class TrainingApproveController extends AbstractActionController {
             $requestedEmployeeID = $row['EMPLOYEE_ID'];
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-            
-            if($row['TRAINING_ID']!=0){
-                $row['START_DATE']=$row['T_START_DATE'];
+
+            if ($row['TRAINING_ID'] != 0) {
+                $row['START_DATE'] = $row['T_START_DATE'];
                 $row['END_DATE'] = $row['T_END_DATE'];
                 $row['DURATION'] = $row['T_DURATION'];
                 $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
                 $row['TITLE'] = $row['TRAINING_NAME'];
             }
-            
+
             $new_row = array_merge($row, [
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
                 'STATUS' => $getStatusValue($row['STATUS']),
-                'TRAINING_TYPE'=> $getValueComType($row['TRAINING_TYPE']),
+                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
             ]);
-            
+
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $new_row['YOUR_ROLE'] = 'Recommender\Approver';
                 $new_row['ROLE'] = 4;
@@ -146,8 +140,8 @@ class TrainingApproveController extends AbstractActionController {
         $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
         $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        if($detail['TRAINING_ID']!=0){
-            $detail['START_DATE']=$detail['T_START_DATE'];
+        if ($detail['TRAINING_ID'] != 0) {
+            $detail['START_DATE'] = $detail['T_START_DATE'];
             $detail['END_DATE'] = $detail['T_END_DATE'];
             $detail['DURATION'] = $detail['T_DURATION'];
             $detail['TRAINING_TYPE'] = $detail['T_TRAINING_TYPE'];
@@ -190,9 +184,40 @@ class TrainingApproveController extends AbstractActionController {
                     $trainingRequestModel->recommendedBy = $this->employeeId;
                     $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
-                $trainingRequestModel->approvedRemarks = $getData->approvedRemarks;
-                $this->trainingApproveRepository->edit($trainingRequestModel, $id);
-                $trainingRequestModel->requestId = $id;
+
+                // to update back date changes
+                $sDate = $detail['START_DATE'];
+                $eDate = $detail['END_DATE'];
+                $trainingId = $detail['TRAINING_ID'];
+                $currDate = Helper::getCurrentDate();
+                $begin = new DateTime($sDate);
+                $end = new DateTime($eDate);
+                $attendanceDetailModel = new AttendanceDetail();
+                $attendanceDetailModel->trainingId = $trainingId;
+                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+
+                //                start of transaction
+                $connection = $this->adapter->getDriver()->getConnection();
+                $connection->beginTransaction();
+                try {
+                    if (strtotime($sDate) <= strtotime($currDate)) {
+                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
+                            $trainingdate = $i->format("d-M-Y");
+                            if (strtotime($trainingdate) <= strtotime($currDate)) {
+                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $trainingdate];
+                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
+                            }
+                        }
+                    }
+                    $trainingRequestModel->approvedRemarks = $getData->approvedRemarks;
+                    $this->trainingApproveRepository->edit($trainingRequestModel, $id);
+                    $trainingRequestModel->requestId = $id;
+                    $connection->commit();
+                } catch (exception $e) {
+                    $connection->rollback();
+                    echo "error message:" . $e->getMessage();
+                }
+//                end of transaction
                 try {
                     HeadNotification::pushNotification(($trainingRequestModel->status == 'AP') ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED, $trainingRequestModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
@@ -202,8 +227,8 @@ class TrainingApproveController extends AbstractActionController {
             return $this->redirect()->toRoute("trainingApprove");
         }
         $trainingTypes = array(
-           'CP'=>'Company Personal',
-           'CC'=>'Company Contribution'
+            'CP' => 'Company Personal',
+            'CC' => 'Company Contribution'
         );
         $trainings = $this->getTrainingList($requestedEmployeeID);
         return Helper::addFlashMessagesToArray($this, [
@@ -219,9 +244,9 @@ class TrainingApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
-                    'trainingIdSelected'=>$detail['TRAINING_ID'],
+                    'trainingIdSelected' => $detail['TRAINING_ID'],
                     'trainings' => $trainings["trainingKVList"],
-                    'trainingTypes'=>$trainingTypes,
+                    'trainingTypes' => $trainingTypes,
         ]);
     }
 
@@ -255,7 +280,7 @@ class TrainingApproveController extends AbstractActionController {
             $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
             $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
         }
-        return ['trainingKVList' => $trainingList,'trainingList'=>$allTrainings];
+        return ['trainingKVList' => $trainingList, 'trainingList' => $allTrainings];
     }
 
 }

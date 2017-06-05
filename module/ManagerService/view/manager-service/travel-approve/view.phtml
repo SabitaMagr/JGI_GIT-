@@ -31,8 +31,8 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/travel-request/a
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
 
-$travelCode = $form->get('travelCode');
-$travelCode->setAttributes(["disabled" => "disabled"]);
+//$travelCode = $form->get('travelCode');
+//$travelCode->setAttributes(["disabled" => "disabled"]);
 $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled" => "disabled"]);
 $toDate = $form->get('toDate');
@@ -183,14 +183,6 @@ print $this->form()->openTag($form);
 
                     <div class=" row">
                         <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($travelCode); ?>
-                                <?php print $this->formElement($travelCode); ?>
-                                <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-4">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
@@ -233,6 +225,15 @@ print $this->form()->openTag($form);
                             </div>        
 
                         </div>
+                        
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($purpose); ?>
+                                <?php print $this->formElement($purpose); ?>
+                                <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+                        
                     </div>
 
 
@@ -247,9 +248,9 @@ print $this->form()->openTag($form);
 
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <?php print $this->formLabel($purpose); ?>
-                                <?php print $this->formElement($purpose); ?>
-                                <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                                <?php print $this->formLabel($requestedAmount); ?>
+                                <?php print $this->formElement($requestedAmount); ?>
+                                <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                             </div>
                         </div>
 
@@ -271,13 +272,6 @@ print $this->form()->openTag($form);
                             </div> 
                         </div>
 
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($requestedAmount); ?>
-                                <?php print $this->formElement($requestedAmount); ?>
-                                <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                            </div>
-                        </div>
 
                         <div class="col-sm-4">
                             <div class="form-group">
