@@ -73,7 +73,7 @@
                 for (var i in referencingRules) {
                     referencingRules[i].PAY_EDESC = replaceAll(referencingRules[i].PAY_EDESC, " ", "_");
                     referencingRules[i].PAY_EDESC = referencingRules[i].PAY_EDESC.toUpperCase();
-                    $('#referencingRules').append("<button class='list-group-item refVars' ruleId=" + referencingRules[i].PAY_ID + ">" + referencingRules[i].PAY_EDESC + "</button>");
+                    $('#referencingRules').append("<li class='ms-elem-selectable refVars' ruleId='" + referencingRules[i].PAY_ID + "' ><span>" + referencingRules[i].PAY_EDESC + "</span></li>");
                 }
                 $('.refVars').on('click', function () {
                     var $this = $(this);
@@ -434,21 +434,21 @@
         for (var i in monthlyValues) {
             monthlyValues[i] = replaceAll(monthlyValues[i], " ", "_");
             monthlyValues[i] = monthlyValues[i].toUpperCase();
-            $('#monthlyValueList').append("<button class='list-group-item ' id='vars' >" + monthlyValues[i] + "</button>");
+            $('#monthlyValueList').append("<li class='ms-elem-selectable' id='vars' ><span>" + monthlyValues[i] + "</span></li>");
         }
 
         for (var i in flatValues) {
             flatValues[i] = replaceAll(flatValues[i], " ", "_");
             flatValues[i] = flatValues[i].toUpperCase();
-            $('#flatValueList').append("<button class='list-group-item ' id='vars' >" + flatValues[i] + "</button>");
+            $('#flatValueList').append("<li class='ms-elem-selectable' id='vars' ><span>" + flatValues[i] + "</span></li>");
         }
 
         for (var i in variables) {
-            $('#variables').append("<button class='list-group-item .list-group-item-text' id='vars' >" + variables[i] + "</button>");
+            $('#variables').append("<li class='ms-elem-selectable' id='vars' ><span>" + variables[i] + "</span></li>");
         }
 
         for (var i in systemRules) {
-            $('#systemRules').append("<button class='list-group-item ' id='vars' >" + systemRules[i] + "</button>");
+            $('#systemRules').append("<li class='ms-elem-selectable' id='vars' ><span>" + systemRules[i] + "</span></li>");
         }
 
 

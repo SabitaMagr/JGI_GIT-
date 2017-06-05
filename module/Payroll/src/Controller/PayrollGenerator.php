@@ -44,7 +44,6 @@ class PayrollGenerator {
         "NO_OF_PAID_LEAVES",
         "NO_OF_UNPAID_LEAVES",
         "GENDER",
-        "EMP_TYPE",
         "MARITUAL_STATUS",
         "TOTAL_DAYS_FROM_JOIN_DATE",
         "SERVICE_TYPE",
