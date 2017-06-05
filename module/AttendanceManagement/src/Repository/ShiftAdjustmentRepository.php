@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace AttendanceManagement\Repository;
 
 use Application\Helper\EntityHelper;
@@ -26,11 +20,6 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-/**
- * Description of ShiftAdjustmentRepository
- *
- * @author root
- */
 class ShiftAdjustmentRepository implements RepositoryInterface {
 
     private $adapter;
@@ -187,10 +176,8 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
         $endTime = $postData['endTime'];
         $adjustmentStartDate = $postData['adjustmentStartDate'];
         $adjustmentEndDate = $postData['adjustmentEndDate'];
-        $checkApply = $postData['checkapply'];
+        $checkApply = $postData['employeeList'];
 
-//        print_r($checkApply);
-//        die();
 
         $employeeAdjustment = '';
         foreach ($checkApply as $employee) {
@@ -232,6 +219,7 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                       TRUNC(SYSDATE)
                     );"
                 . $employeeAdjustment . "
+                    COMMIT;
                     END;";
         EntityHelper::rawQueryResult($this->adapter, $sql);
     }

@@ -1,19 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/13/16
- * Time: 11:07 AM
- */
+
 namespace AttendanceManagement;
 
 use Application\Controller\ControllerFactory;
 use Zend\Router\Http\Segment;
 
-
 return [
-    'router'=>[
-        'routes'=>[
+    'router' => [
+        'routes' => [
             'shiftassign' => [
                 'type' => Segment::class,
                 'options' => [
@@ -28,7 +22,6 @@ return [
                     ]
                 ],
             ],
-
             'attendancebyhr' => [
                 'type' => Segment::class,
                 'options' => [
@@ -43,7 +36,6 @@ return [
                     ]
                 ],
             ],
-
             'shiftsetup' => [
                 'type' => Segment::class,
                 'options' => [
@@ -72,7 +64,7 @@ return [
                     ]
                 ],
             ],
-            'dailyAttendance'=>[
+            'dailyAttendance' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/attendance/dailyAttendance[/:action[/:id]]',
@@ -86,7 +78,7 @@ return [
                     ]
                 ],
             ],
-            'calculateOvertime'=>[
+            'calculateOvertime' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/attendance/calculateOvertime[/:action[/:id]]',
@@ -100,7 +92,7 @@ return [
                     ]
                 ],
             ],
-            'shiftAdjustment'=>[
+            'shiftAdjustment' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/attendance/shiftAdjustment[/:action[/:id]]',
@@ -114,7 +106,6 @@ return [
                     ]
                 ],
             ]
-            
         ],
     ],
     'navigation' => [
@@ -281,23 +272,20 @@ return [
             ],
         ],
     ],
-
     'controllers' => [
         'factories' => [
-            Controller\ShiftAssign::class=>ControllerFactory::class,
-            Controller\AttendanceByHr::class=>ControllerFactory::class,
-            Controller\ShiftSetup::class=>ControllerFactory::class,
-            Controller\AttendanceStatus::class=>ControllerFactory::class,
-            Controller\DailyAttendance::class=>ControllerFactory::class,
-            Controller\CalculateOvertime::class=>ControllerFactory::class,
-            Controller\ShiftAdjustment::class=>ControllerFactory::class,
+            Controller\ShiftAssign::class => ControllerFactory::class,
+            Controller\AttendanceByHr::class => ControllerFactory::class,
+            Controller\ShiftSetup::class => ControllerFactory::class,
+            Controller\AttendanceStatus::class => ControllerFactory::class,
+            Controller\DailyAttendance::class => ControllerFactory::class,
+            Controller\CalculateOvertime::class => ControllerFactory::class,
+            Controller\ShiftAdjustment::class => ControllerFactory::class,
         ],
-
     ],
-
-    'view_manager'=>[
-        'template_path_stack'=>[
-            __DIR__.'/../view',
+    'view_manager' => [
+        'template_path_stack' => [
+            __DIR__ . '/../view',
         ]
     ]
 ];
