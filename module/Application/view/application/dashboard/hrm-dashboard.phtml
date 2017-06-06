@@ -101,6 +101,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
+    
+    <?php
+    $presentUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>1]);
+    $OnLeaveUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>2]);
+    $OnTrainingUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>3]);
+    $OnTravelUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>4]);
+    $wohUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>5]);
+    ?>
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard col-md-12">
@@ -126,6 +134,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <div class="col-md-5">
                     <div class="row detailsbox">
+                        <a href="<?php echo $presentUrl?>">
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg1" >
                                 <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
@@ -134,37 +143,46 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="headtitle">Present</div>
                             </div>
                         </div>
+                        </a>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <a href="<?php echo $OnLeaveUrl?>">
                             <div class="employee_details-box hexagon-bg2">
                                 <span><?php print $employeeDetail['LEAVE']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Leave</div>
                             </div>
+                            </a>
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <a href="<?php echo $OnTrainingUrl?>">
                             <div class="employee_details-box hexagon-bg3">
                                 <span><?php print $employeeDetail['TRAINING']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">Training</div>
                             </div>
+                            </a>
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <a href="<?php echo $OnTravelUrl?>">
                             <div class="employee_details-box hexagon-bg4">
                                 <span><?php print $employeeDetail['TOUR']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Tour</div>
                             </div>
+                            </a>
                         </div>
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <a href="<?php echo $wohUrl?>">
                             <div class="employee_details-box hexagon-bg5">
                                 <span><?php print $employeeDetail['WOH']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">WOH</div>
                             </div>
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -3,6 +3,7 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+//        $('#fromDate').val('05-Jun-2017');
     });
 })(window.jQuery, window.app);
 
@@ -27,6 +28,21 @@ angular.module('hris', [])
                 if (($("#missPunchOnly").is(":checked"))) {
                     missPunchOnly = 1;
                 }
+                console.log('employee', employeeId);
+                console.log('company', companyId);
+                console.log('branch', branchId);
+                console.log('department', departmentId);
+                console.log('desigination', designationId);
+                console.log('positionId', positionId);
+                console.log('serviceTypeId', serviceTypeId);
+                console.log('serviceEventTypeId', serviceEventTypeId);
+                console.log('fromDate', fromDate);
+                console.log('toDate', toDate);
+                console.log('status', status);
+                console.log('missPunchOnly', missPunchOnly);
+
+
+
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceList',
@@ -91,25 +107,25 @@ angular.module('hris', [])
                     ],
                     detailInit: detailInit,
                 });
-                
-                app.searchTable('attendanceByHrTable',['EMPLOYEE_NAME','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
+
+                app.searchTable('attendanceByHrTable', ['EMPLOYEE_NAME', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'STATUS']);
                 app.pdfExport(
-                'attendanceByHrTable',
-                {
-                    'FIRST_NAME': ' Name',
-                    'MIDDLE_NAME': 'middleName',
-                    'LAST_NAME': 'lastname',
-                    'ATTENDANCE_DT': 'Attendance Date',
-                    'IN_TIME': 'In Time',
-                    'OUT_TIME': 'Out Time',
-                    'IN_REMARKS':'In Remarks',
-                    'OUT_REMARKS': 'Out Remarks',
-                    'TOTAL_HOUR': 'Total Hour',
-                    'STATUS': 'Status'
-                }
+                        'attendanceByHrTable',
+                        {
+                            'FIRST_NAME': ' Name',
+                            'MIDDLE_NAME': 'middleName',
+                            'LAST_NAME': 'lastname',
+                            'ATTENDANCE_DT': 'Attendance Date',
+                            'IN_TIME': 'In Time',
+                            'OUT_TIME': 'Out Time',
+                            'IN_REMARKS': 'In Remarks',
+                            'OUT_REMARKS': 'Out Remarks',
+                            'TOTAL_HOUR': 'Total Hour',
+                            'STATUS': 'Status'
+                        }
                 );
 
-                        
+
 
             }
             ;
@@ -283,5 +299,24 @@ angular.module('hris', [])
             }
 
             window.app.UIConfirmations();
+
+            var IdFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+            if (parseInt(IdFromParameter) > 0) {
+                console.log(IdFromParameter);
+                if (IdFromParameter == 1) {
+                    angular.element(document.getElementById('statusId')).val('P').change();
+                }else if(IdFromParameter==2){
+                    angular.element(document.getElementById('statusId')).val('L').change();
+                }else if(IdFromParameter==3){
+                    angular.element(document.getElementById('statusId')).val('T').change();
+                    
+                }else if(IdFromParameter==4){
+                    angular.element(document.getElementById('statusId')).val('TVL').change();
+                    
+                }else if(IdFromParameter==5){
+                    angular.element(document.getElementById('statusId')).val('WOH').change();
+                }
+                $scope.view();
+            }
 
         });

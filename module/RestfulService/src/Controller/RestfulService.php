@@ -2570,16 +2570,31 @@ class RestfulService extends AbstractRestfulController {
                 $row['STATUS'] = "Absent";
             } else if ($status == 'P') {
                 $row['STATUS'] = "Present";
-            } else {
+            }else if ($status == 'T') {
+                $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
+            }else if ($status == 'TVL') {
+                $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
+            }else if ($status == 'WOH') {
+                $row['STATUS'] = "Work On Holiday";
+            }
+            else {
                 if ($row['LEAVE_ENAME'] != null) {
                     $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
                 } else if ($row['HOLIDAY_ENAME'] != null) {
                     $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
                 } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null && $row['DAYOFF_FLAG'] == 'N') {
                     $row['STATUS'] = "Absent";
-                } else if ($row['IN_TIME'] != null) {
+                } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null) {
                     $row['STATUS'] = "Present";
-                }elseif($row['DAYOFF_FLAG'] == 'Y'){
+                }else if ($row['TRAINING_NAME'] != null) {
+                    $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
+                }elseif($row['TRAVEL_DESTINATION'] != null){
+                    $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
+                }
+                elseif(($row['DAYOFF_FLAG'] == 'Y') && $row['IN_TIME'] != null){
+                    $row['STATUS'] = "Present(Work On Holiday)";
+                }
+                elseif($row['DAYOFF_FLAG'] == 'Y'){
                     $row['STATUS'] = "Day Off";
                 }
             }
