@@ -305,16 +305,16 @@ angular.module('hris', [])
                 console.log(IdFromParameter);
                 if (IdFromParameter == 1) {
                     angular.element(document.getElementById('statusId')).val('P').change();
-//                    angular.element(document.getElementById('fromDate')).val('05-Jun-2017').change();
-                }else if(IdFromParameter=2){
+                }else if(IdFromParameter==2){
                     angular.element(document.getElementById('statusId')).val('L').change();
+                }else if(IdFromParameter==3){
+                    angular.element(document.getElementById('statusId')).val('T').change();
                     
-                }else if(IdFromParameter=3){
+                }else if(IdFromParameter==4){
+                    angular.element(document.getElementById('statusId')).val('TVL').change();
                     
-                }else if(IdFromParameter=4){
-                    
-                }else if(IdFromParameter=5){
-                    
+                }else if(IdFromParameter==5){
+                    angular.element(document.getElementById('statusId')).val('WOH').change();
                 }
                 $scope.view();
             }
