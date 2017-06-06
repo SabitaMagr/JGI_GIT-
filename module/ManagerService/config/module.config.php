@@ -120,7 +120,7 @@ return [
             'appraisal-evaluation' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/managerservice/appraisalEvaluation[/:action[/:appraisalId][/:employeeId]]',
+                    'route' => '/managerservice/appraisalEvaluation[/:action[/:appraisalId][/:employeeId][/:tab]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -134,7 +134,7 @@ return [
             'appraisal-review' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/managerservice/appraisalReview[/:action[/:appraisalId][/:employeeId]]',
+                    'route' => '/managerservice/appraisalReview[/:action[/:appraisalId][/:employeeId][/:tab]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
