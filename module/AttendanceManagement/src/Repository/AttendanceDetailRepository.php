@@ -103,7 +103,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" =>new Expression('INITCAP(E.FIRST_NAME)') , "MIDDLE_NAME" =>new Expression('INITCAP(E.MIDDLE_NAME)') , "LAST_NAME" =>new Expression('INITCAP(E.LAST_NAME)') ], "left")
                 ->join(['H' => 'HRIS_HOLIDAY_MASTER_SETUP'], 'A.HOLIDAY_ID=H.HOLIDAY_ID', ["HOLIDAY_ENAME" => 'HOLIDAY_ENAME'], "left")
-                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=L.LEAVE_ID', ["LEAVE_ENAME" => 'LEAVE_ENAME'], "left");
+                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=L.LEAVE_ID', ["LEAVE_ENAME" => 'LEAVE_ENAME'], "left")
+                ->join(['T' => 'HRIS_TRAINING_MASTER_SETUP'], 'A.TRAINING_ID=T.TRAINING_ID', ["TRAINING_NAME" => 'TRAINING_NAME'], "left")
+                ->join(['TVL' => 'HRIS_EMPLOYEE_TRAVEL_REQUEST'], 'A.TRAVEL_ID=TVL.TRAVEL_ID', ["TRAVEL_DESTINATION" => 'DESTINATION'], "left");
 
         if($widOvertime!=false){
            $select->join(['OT' => 'HRIS_OVERTIME'], 'A.EMPLOYEE_ID = OT.EMPLOYEE_ID AND A.ATTENDANCE_DT=OT.OVERTIME_DATE', ["OVERTIME_ID" => 'OVERTIME_ID','OVERTIME_IN_HOUR'=>new Expression("NVL2(OT.TOTAL_HOUR,LPAD(TRUNC(OT.TOTAL_HOUR/60,0),2, 0)||':'||LPAD(MOD(OT.TOTAL_HOUR,60),2, 0),NULL)")], "left");
@@ -140,6 +142,15 @@ class AttendanceDetailRepository implements RepositoryInterface {
 
             if ($status == "P") {
                 $select->where(["A.IN_TIME IS NOT NULL"]);
+            }
+            if ($status == "T") {
+                $select->where(["A.TRAINING_ID IS NOT NULL"]);
+            }
+            if ($status == "TVL") {
+                $select->where(["A.TRAVEL_ID IS NOT NULL"]);
+            }
+            if ($status == "WOH") {
+                $select->where(["(A.HOLIDAY_ID IS NOT NULL OR A.DAYOFF_FLAG = 'Y') AND A.IN_TIME IS NOT NULL AND A.OUT_TIME IS NOT NULL "]);
             }
         }
 
