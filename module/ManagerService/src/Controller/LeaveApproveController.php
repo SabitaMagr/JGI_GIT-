@@ -4,6 +4,9 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
+use DateTime;
 use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
@@ -183,7 +186,7 @@ class LeaveApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
                 } else if ($action == "Approve") {
                     $leaveApply->status = "AP";
-                    if ($detail['HALF_DAY'] !=null && $detail['HALF_DAY'] != 'N') {
+                    if ($detail['HALF_DAY'] != null && $detail['HALF_DAY'] != 'N') {
                         $leaveTaken = 0.5;
                     } else {
                         $leaveTaken = $detail['NO_OF_DAYS'];
@@ -202,10 +205,40 @@ class LeaveApproveController extends AbstractActionController {
                     $leaveApply->recommendedBy = $this->employeeId;
                     $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
                 }
-
+                
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
-                $this->repository->edit($leaveApply, $id);
+
+                $leaveSDate = $detail['START_DATE'];
+                $leaveEDate = $detail['END_DATE'];
+                $currDate = Helper::getCurrentDate();
+                $begin = new DateTime($leaveSDate);
+                $end = new DateTime($leaveEDate);
+                $attendanceDetailModel = new AttendanceDetail();
+                $attendanceDetailModel->leaveId = $detail['LEAVE_ID'];
+                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+                
+//               start of transaction
+                $connection = $this->adapter->getDriver()->getConnection();
+                $connection->beginTransaction();
+                try {
+                    if (strtotime($leaveSDate) <= strtotime($currDate)) {
+                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
+                            $leaveDate = $i->format("d-M-Y");
+                            if (strtotime($leaveDate) <= strtotime($currDate)) {
+                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $leaveDate];
+                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
+                            }
+                        }
+                    }
+                    $this->repository->edit($leaveApply, $id);
+                    $connection->commit();
+                } catch (exception $e) {
+                    $connection->rollback();
+                    echo "error message:" . $e->getMessage();
+                }
+//                end of transaction
+
                 try {
                     HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
@@ -243,7 +276,7 @@ class LeaveApproveController extends AbstractActionController {
     public function statusAction() {
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
-        $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC",NULL,FALSE,TRUE);
+        $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", NULL, FALSE, TRUE);
         $leaves1 = [-1 => "All"] + $leaves;
         $leaveFormElement->setValueOptions($leaves1);
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);

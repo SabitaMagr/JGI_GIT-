@@ -5,6 +5,9 @@ namespace ManagerService\Controller;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\NumberHelper;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
+use DateTime;
 use Exception;
 use ManagerService\Repository\TravelApproveRepository;
 use Notification\Controller\HeadNotification;
@@ -12,13 +15,7 @@ use Notification\Model\NotificationEvents;
 use SelfService\Form\TravelRequestForm;
 use SelfService\Model\TravelRequest;
 use SelfService\Repository\TravelExpenseDtlRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
 use Setup\Model\HrEmployees;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
@@ -185,13 +182,43 @@ class TravelApproveController extends AbstractActionController {
                     $travelRequestModel->recommendedBy = $this->employeeId;
                     $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
-                $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
-                $this->travelApproveRepository->edit($travelRequestModel, $id);
-                $travelRequestModel->travelId = $id;
+                
+                // to update back date changes
+                $sDate = $detail['FROM_DATE'];
+                $eDate = $detail['TO_DATE'];
+                $currDate = Helper::getCurrentDate();
+                $begin = new DateTime($sDate);
+                $end = new DateTime($eDate);
+                $attendanceDetailModel = new AttendanceDetail();
+                $attendanceDetailModel->travelId = $detail['TRAVEL_ID'];
+                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+
+                //                start of transaction
+                $connection = $this->adapter->getDriver()->getConnection();
+                $connection->beginTransaction();
+                try {
+                    if (strtotime($sDate) <= strtotime($currDate)) {
+                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
+                            $travelDate = $i->format("d-M-Y");
+                            if (strtotime($travelDate) <= strtotime($currDate)) {
+                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $travelDate];
+                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
+                            }
+                        }
+                    }
+                    $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
+                    $this->travelApproveRepository->edit($travelRequestModel, $id);
+                    $travelRequestModel->travelId = $id;
+                    $connection->commit();
+                } catch (exception $e) {
+                    $connection->rollback();
+                    echo "error message:" . $e->getMessage();
+                }
+//                end of transaction
                 try {
                     HeadNotification::pushNotification(($travelRequestModel->status == 'AP') ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED, $travelRequestModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
-                     $this->flashmessenger()->addMessage($e->getMessage());
+                    $this->flashmessenger()->addMessage($e->getMessage());
                 }
             }
             return $this->redirect()->toRoute("travelApprove");
@@ -266,7 +293,7 @@ class TravelApproveController extends AbstractActionController {
                     'advanceAmount' => $advanceAmount,
                     'subDetail' => $subDetail,
                     'duration' => $duration,
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true)
         ]);
     }
 

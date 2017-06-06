@@ -42,13 +42,13 @@ class VariableProcessor {
                 break;
 //            "NO_OF_WORKING_DAYS"
             case PayrollGenerator::VARIABLES[1]:
-//                $monthsRepo = new MonthRepository($this->adapter);
-//                $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
-//                $attendanceDetail = new AttendanceDetailRepository($this->adapter);
-//                $firstDayExp = Helper::getExpressionDate($firstLastDate[Months::FROM_DATE]);
-//                $lastDayExp = Helper::getExpressionDate($firstLastDate[Months::TO_DATE]);
-//
-//                $days = $attendanceDetail->getNoOfDaysInDayInterval($this->employeeId, $firstDayExp, $lastDayExp);
+                $monthsRepo = new MonthRepository($this->adapter);
+                $firstLastDate = $monthsRepo->fetchByMonthId($this->monthId);
+                $attendanceDetail = new AttendanceDetailRepository($this->adapter);
+                $firstDayExp = Helper::getExpressionDate($firstLastDate[Months::FROM_DATE]);
+                $lastDayExp = Helper::getExpressionDate($firstLastDate[Months::TO_DATE]);
+
+                $days = $attendanceDetail->getNoOfDaysInDayInterval($this->employeeId, $firstDayExp, $lastDayExp);
                 $processedValue = $this->payrollRepo->getNoOfWorkingDays($this->employeeId, $this->monthId);
                 break;
 //            "NO_OF_DAYS_ABSENT"

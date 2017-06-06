@@ -2,16 +2,14 @@
 
 namespace Payroll\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Payroll\Model\Rules;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\I18n\Translator\Plural\Rule;
-use Application\Helper\EntityHelper;
 use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Expression;
+use Zend\Db\TableGateway\TableGateway;
 
 class RulesRepository implements RepositoryInterface {
 
@@ -35,6 +33,7 @@ class RulesRepository implements RepositoryInterface {
         return $this->gateway->select(function(Select $select) {
                     $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class, [Rules::PAY_EDESC, Rules::PAY_LDESC]), false);
                     $select->where([Rules::STATUS => 'E']);
+                    $select->order([Rules::PRIORITY_INDEX => Select::ORDER_ASCENDING]);
                 });
     }
 

@@ -106,9 +106,9 @@
                             return false;
                         }
 
-                        if (index == 1 || index == 2 || index == 3) {
-                            var returnval= processing(index);
-                            if(returnval==false){
+                        if (index == 1 || index == 2) {
+                            var returnval = processing(index);
+                            if (returnval == false) {
                                 return false;
                             }
                         }
@@ -137,20 +137,31 @@
 
                 $('#form_wizard_1').find('.button-previous').hide();
                 $('#form_wizard_1 .button-submit').click(function () {
-                    alert('Finished! Hope you like it :)');
+//                    alert('Finished! Hope you like it :)');
+                    $('#submit_form').submit();
                 }).hide();
 
 
                 var processing = function (tabindex) {
-                    if (tabindex == 1) {
-                        console.log(tabindex);
-                        var startDate = $('#adjustmentStartDate').val();
-                        var endDate = $('#adjustmentEndDate').val();
-                        var startTime = $('#startTime').val();
-                        var endTime = $('#endTime').val();
+//                        console.log(tabindex);
+                    var startDate = $('#adjustmentStartDate').val();
+                    var endDate = $('#adjustmentEndDate').val();
+                    var startTime = $('#startTime').val();
+                    var endTime = $('#endTime').val();
 
+                    if (tabindex == 1) {
 
                         if (!startTime.trim() || !endTime.trim()) {
+                            if (!startTime.trim()) {
+                                $('#errorStartTime').text('Start Time field is required');
+                            } else {
+                                $('#errorStartTime').text('');
+                            }
+                            if (!startTime.trim()) {
+                                $('#errorEndTime').text('End Time field is required');
+                            } else {
+                                $('#errorEndTime').text('');
+                            }
                             return false;
                         }
 
@@ -162,11 +173,30 @@
                         }).then(function (success) {
 //                            console.log("success", success);
                             shiftAssignId = success.dataId;
-                            console.log(shiftAssignId);
+//                            console.log(shiftAssignId);
                         }, function (failure) {
                             console.log("failure", failure);
                         });
                     }
+
+                    if (tabindex == 2) {
+                        var todayDate;
+                        var checkedCount = $(".allchekbox:checked").length;
+                        if (checkedCount <= 0) {
+                            alert('no employee assigned');
+                            return false;
+                        }
+
+                        app.getServerDate().then(function (response) {
+                            todayDate = response.data['serverDate'];
+                            if (startDate > todayDate) {
+                            } else {
+                            }
+                        })
+
+                    }
+
+
                     return true;
                 }
 
@@ -179,100 +209,71 @@
 
     $(document).ready(function () {
         FormWizard.init();
+
+        var $companyId = $('#companyId');
+        var $branchId = $('#branchId');
+        var $departmentId = $('#departmentId');
+        var $designationId = $('#designationId');
+        var $positionId = $('#positionId');
+        var $serviceTypeId = $('#serviceTypeId');
+        var $serviceEventTypeId = $('#serviceEventTypeId');
+        var $employeeId = $('#employeeId');
+        var $genderId = $('#genderId');
+
+
+        $('#filterEmp').on('click', function () {
+
+            app.pullDataById(document.wsGetEmployeeList, {
+                companyId: $companyId.val(),
+                branchId: $branchId.val(),
+                departmentId: $departmentId.val(),
+                designationId: $designationId.val(),
+                positionId: $positionId.val(),
+                serviceTypeId: $serviceTypeId.val(),
+                serviceEventTypeId: $serviceEventTypeId.val(),
+                employeeId: $employeeId.val(),
+                genderId: $genderId.val()
+            }).then(function (success) {
+                console.log(success.data);
+                $("#employeeTable").find('tbody').empty();
+                $.each(success.data, function (k, v) {
+                    var appendData = "<tr>"
+                            + "<td>" + v.FIRST_NAME + "</td>"
+                            + "<td>" + v.BRANCH_NAME + "</td>"
+                            + "<td>" + v.DEPARTMENT_NAME + "</td>"
+                            + "<td>" + v.DESIGNATION_TITLE + "</td>"
+                            + "<td></td>"
+                            + "<td></td>"
+                            + "<td>"
+                            + "<div class='th-inner'><label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
+                            + "<input class='allchekbox' type='checkbox' name='checkapply[]' value='" + v.EMPLOYEE_ID + "'>"
+                            + "<span></span></label></div></td>";
+                    +"<tr>";
+
+                    $("#employeeTable").find('tbody').append(appendData);
+                });
+            }, function (failure) {
+                console.log("failure", failure);
+            });
+
+
+        });
+
+
+        $('#ckeckAll').on('click', function () {
+            var checkedStatus = $(this).is(":checked");
+            console.log($(this).is(":checked"));
+            if (checkedStatus) {
+                $('.allchekbox').attr('checked', 'checked');
+            } else {
+                $('.allchekbox').removeAttr('checked');
+            }
+        });
+
+
+
     });
 
 
 })(window.jQuery, window.app);
 
-
-angular.module('hris', [])
-        .controller('ShiftAjustmentController', function ($scope) {
-//            var $companyId = angular.element(document.getElementById('companyId'));
-//            var $branchId = angular.element(document.getElementById('branchId'));
-//            var $departmentId = angular.element(document.getElementById('departmentId'));
-//            var $designationId = angular.element(document.getElementById('designationId'));
-//            var $positionId = angular.element(document.getElementById('positionId'));
-//            var $serviceTypeId = angular.element(document.getElementById('serviceTypeId'));
-//            var $serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId'));
-//            var $employeeId = angular.element(document.getElementById('employeeId'));
-//            var $genderId = angular.element(document.getElementById('genderId'));
-
-
-//            $scope.holidayList = document.holidayList;
-//
-//            $scope.employeeList = [];
-//            $scope.alreadyAssignedEmpList = [];
-//            $scope.all = false;
-//
-//            $scope.checkAll = function (item) {
-//                for (var i = 0; i < $scope.employeeList.length; i++) {
-//                    $scope.employeeList[i].checked = item;
-//                }
-//            };
-
-
-
-//            $scope.view = function () {
-//                window.app.pullDataById(document.wsGetEmployeeList, {
-//                    companyId: $companyId.val(),
-//                    branchId: $branchId.val(),
-//                    departmentId: $departmentId.val(),
-//                    designationId: $designationId.val(),
-//                    positionId: $positionId.val(),
-//                    serviceTypeId: $serviceTypeId.val(),
-//                    serviceEventTypeId: $serviceEventTypeId.val(),
-//                    employeeId: $employeeId.val(),
-//                    genderId: $genderId.val()
-//                }).then(function (response) {
-//                    $scope.$apply(function () {
-//                        $scope.employeeList = [];
-//                        var empList = response.data;
-//                        for (var i in empList) {
-//                            var emp = empList[i];
-//                            emp.checked = ($scope.alreadyAssignedEmpList.indexOf(emp.EMPLOYEE_ID) >= 0);
-//                            $scope.employeeList.push(emp);
-//                        }
-//                    });
-//                    window.app.scrollTo('employeeTable');
-//
-//                }, function (failure) {
-//
-//                });
-//                $scope.holidayChangeFn();
-//            };
-
-//            $scope.assign = function () {
-//                if ($scope.employeeList.length == 0) {
-//                    window.app.showMessage("No Employees to Assign.", "error");
-//                    return;
-//                }
-//                if ($scope.holiday == null) {
-//                    window.app.showMessage("Select the holiday first to assign to", "error");
-//                    return;
-//                }
-//
-//
-//                var checkedEmpList = [];
-//                for (var index in $scope.employeeList) {
-//                    if ($scope.employeeList[index].checked) {
-//                        checkedEmpList.push($scope.employeeList[index].EMPLOYEE_ID);
-//                    }
-//                }
-//                App.blockUI({target: "#hris-page-content"});
-//                window.app.pullDataById(document.wsAssignHolidayToEmployees, {
-//                    holidayId: $scope.holiday,
-//                    employeeIdList: checkedEmpList
-//                }).then(function (response) {
-//                    App.unblockUI("#hris-page-content");
-//                    if (response.success) {
-//                        window.app.showMessage("Holiday Assigned Successfully");
-//                    } else {
-//                        window.app.showMessage(response.error);
-//                    }
-//                }, function (failure) {
-//                    console.log("shift Assign Filter Success Response", failure);
-//                });
-//
-//            };
-
-        });

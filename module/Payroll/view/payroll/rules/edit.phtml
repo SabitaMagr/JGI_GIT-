@@ -1,6 +1,8 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/codemirror-5.19.0/lib/codemirror.css'));
+        ->appendStylesheet($this->basePath('assets/global/plugins/codemirror-5.19.0/lib/codemirror.css'))
+        ->appendStylesheet($this->basePath('css/multi-select.dist.css'))
+;
 
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/jquery-validation/js/jquery.validate.min.js'));
@@ -108,18 +110,6 @@ echo json_encode($menu);
                     <h4 class="block">Provide your account details</h4>
                     <form method="POST" name="Rules" action="/neo/neo-hris-metronic/public/payroll/rules/add"
                           id="Rules">
-<!--                        <div class="row">
-                            <div class="col-sm-6 col-md-6">
-                                <div class="form-group">
-                                    <label for="payCode">Pay Code</label>
-                                    <input type="text"
-                                           name="payCode"
-                                           id="payCode"
-                                           class="form-control">
-                                    <span class="errorMsg"></span>
-                                </div>
-                            </div>
-                        </div> -->
                         <div class="row">
                             <div class="col-sm-6 col-md-6">
                                 <div class="form-group">
@@ -207,88 +197,7 @@ echo json_encode($menu);
                     </form>
                 </div>
                 <div class="tab-pane" id="tab2">
-                    <div class="row">
-                        <div class="col-sm-12 ">
-                            <div class="portlet shadowlight">
-                                <div class="portlet-body">
-                                    <div class="row">
-                                        <div class="col-sm-2">
-                                            <h4>Monthly Values</h4>
-                                            <div class="scroller" style="height: 145px;">
-                                                <ul class="list-group" id="monthlyValueList" style="font-size: 0.5rem !important;">
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h4>Flat Values</h4>
-                                            <div class="margin-top-10 scroller" style="height: 145px;">
-                                                <ul class="list-group" id="flatValueList">
-                                                </ul>
-                                            </div>
 
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h4>Variables</h4>
-                                            <div class="scroller" style="height: 144px;">
-                                                <ul class="list-group" id="variables">
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h4>System Rules</h4>
-                                            <div class="margin-top-10 scroller" style="height: 150px;">
-                                                <ul class="list-group" id="systemRules">
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <h4>Referencing Rules</h4>
-                                            <div class="margin-top-10 scroller" style="height: 50px">
-                                                <ul class="list-group" id="referencingRules">
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <div>
-                                                <select class="form-control" id="years">
-                                                </select>
-                                            </div> 
-                                            <div class="row">
-                                                <div class="col-sm-2">
-                                                    <button id="pickMonth" class="btn btn-success">
-                                                        <span class="fa fa-youtube">
-                                                        </span>
-                                                    </button>
-
-                                                </div>
-                                                <div class="col-sm-8">
-                                                    <select class="form-control" id="months">
-                                                        <option value="">Select Month</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <!--                                            <div id="days">
-                                            
-                                                                                        </div>-->
-                                            <div>
-                                                <select class="form-control" id="gender">
-                                                    <option value="">Select Gender</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <select class="form-control" id="serviceType">
-                                                    <option value="">Select Emp type</option>
-                                                </select>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="row">
 
@@ -300,6 +209,93 @@ echo json_encode($menu);
                             </div>
                         </div>
 
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="ms-container" >
+                                        <div class="ms-selectable">
+                                            <div class="ms-header">Monthly Values</div>
+                                            <ul class="ms-list" id="monthlyValueList">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="ms-container" >
+                                        <div class="ms-selectable">
+                                            <div class="ms-header">Flat Values</div>
+                                            <ul class="ms-list" id="flatValueList">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="ms-container" >
+                                        <div class="ms-selectable">
+                                            <div class="ms-header">Variables</div>
+                                            <ul class="ms-list" id="variables">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="ms-container" >
+                                        <div class="ms-selectable">
+                                            <div class="ms-header">System Rules</div>
+                                            <ul class="ms-list" id="systemRules">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="ms-container" >
+                                        <div class="ms-selectable">
+                                            <div class="ms-header">Referencing Rules</div>
+                                            <ul class="ms-list" id="referencingRules">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div>
+                                        <select class="form-control" id="years">
+                                        </select>
+                                    </div> 
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <button id="pickMonth" class="btn btn-success">
+                                                <span class="fa fa-youtube">
+                                                </span>
+                                            </button>
+
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <select class="form-control" id="months">
+                                                <option value="">Select Month</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--                                            <div id="days">
+                                    
+                                                                                </div>-->
+                                    <div>
+                                        <select class="form-control" id="gender">
+                                            <option value="">Select Gender</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <select class="form-control" id="serviceType">
+                                            <option value="">Select Emp type</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
 
                 </div>
