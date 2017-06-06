@@ -359,8 +359,8 @@ angular.module('hris', [])
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "EmployeeList.xlsx"});
                 }
 
-                window.app.UIConfirmations();
             };
+            window.app.UIConfirmations();
 //            $scope.initializekendoGrid([]);
 
 //            $scope.msg =  $window.localStorage.getItem("msg");
