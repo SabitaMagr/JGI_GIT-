@@ -33,7 +33,7 @@
             }
         }
 
-        var shiftAdjustment = {adjustmentStartDate: null, adjustmentEndDate: null, startTime: null, endTime: null};
+        var shiftAdjustment = {adjustmentId: null, adjustmentStartDate: null, adjustmentEndDate: null, startTime: null, endTime: null};
 
         // default form wizard
         $('#form_wizard_1').bootstrapWizard({
@@ -96,7 +96,9 @@
                     $endTimeLabel.html(shiftAdjustment.endTime);
 
                     $.each(shiftAdjustedEmployeeList, function (item) {
-                        $assignedEmployeeList.append('<a href="javascript:;" class="btn btn-sm default"> Ukesh Gaiju<i class="fa fa-user"></i></a>');
+                        $assignedEmployeeList.append('<div class="col-sm-2"><div class="alert alert-info alert-dismissable">' +
+                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>' +
+                                'Ukesh Gaiju </div></div>');
                     });
                 }
             }
@@ -106,7 +108,9 @@
         $('#form_wizard_1 .button-submit').click(function () {
             shiftAdjustment['employeeList'] = shiftAdjustedEmployeeList;
             app.pullDataById(document.shiftAdjustAddUrl, shiftAdjustment).then(function (response) {
-
+                if (response.success) {
+                    document.location = document.shiftAdjustmentPage;
+                }
             }, function (error) {
 
             });
@@ -134,6 +138,19 @@
         var $endTimeLabel = $('#endTimeLabel');
 
         var $assignedEmployeeList = $('#assignedEmployeeList');
+
+
+        if (document.editData != null) {
+            var editShiftAdjustment = document.editData['shiftAdjustment'];
+            shiftAdjustment = {adjustmentId: editShiftAdjustment['ADJUSTMENT_ID'], adjustmentStartDate: editShiftAdjustment['ADJUSTMENT_START_DATE'], adjustmentEndDate: editShiftAdjustment['ADJUSTMENT_END_DATE'], startTime: editShiftAdjustment['START_TIME'], endTime: editShiftAdjustment['END_TIME']};
+            shiftAdjustedEmployeeList = document.editData['assignedEmployees'];
+
+            $adjustmentStartDate.val(shiftAdjustment['adjustmentStartDate']);
+            $adjustmentEndDate.val(shiftAdjustment['adjustmentEndDate']);
+            $startTime.val(shiftAdjustment['startTime']);
+            $endTime.val(shiftAdjustment['endTime']);
+
+        }
 
         $searchBtn.on('click', function () {
             $table.find('tbody').empty();
@@ -199,8 +216,9 @@
             });
         });
 
-
-
+//        setTimeout(function () {
+//            $("select").select2();
+//        }, 1000);
     });
 
 

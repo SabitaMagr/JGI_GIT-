@@ -3,20 +3,12 @@
 namespace AttendanceManagement\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use AttendanceManagement\Model\ShiftAdjustmentModel;
-use Setup\Model\Branch;
-use Setup\Model\Company;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Gender;
-use Setup\Model\HrEmployees;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
+use Exception;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -78,109 +70,17 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId = null) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-
-        $select->columns(
-                EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
-                    HrEmployees::BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
-                    HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
-                    HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
-                    HrEmployees::ID_PASSPORT_EXPIRY,
-                    HrEmployees::JOIN_DATE
-                        ], NULL, NULL, NULL, 'E'), false);
-
-        $select->from(["E" => "HRIS_EMPLOYEES"]);
-
-        $select
-                ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME' => new Expression('INITCAP(B.BRANCH_NAME)')], 'left')
-                ->join(['D' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME' => new Expression('INITCAP(D.DEPARTMENT_NAME)')], 'left')
-                ->join(['DES' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE' => new Expression('INITCAP(DES.DESIGNATION_TITLE)')], 'left')
-                ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME' => new Expression('INITCAP(C.COMPANY_NAME)')], 'left')
-                ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME' => new Expression('INITCAP(G.GENDER_NAME)')], 'left')
-                ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
-                ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME'], 'left')
-                ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(CN.COUNTRY_NAME)')], 'left')
-                ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME' => new Expression('INITCAP(VM.VDC_MUNICIPALITY_NAME)')], 'left')
-                ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
-                ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['APP_DEPARTMENT_NAME' => new Expression('INITCAP(D1.DEPARTMENT_NAME)')], 'left')
-                ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['APP_DESIGNATION_TITLE' => new Expression('INITCAP(DES1.DESIGNATION_TITLE)')], 'left')
-                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['APP_POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)')], 'left')
-                ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['APP_SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
-                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['APP_SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
-
-        $select->where(["E.STATUS='E'"]);
-
-        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
-            $select->where(["E.RETIRED_FLAG='Y'"]);
-        } else {
-            $select->where(["E.RETIRED_FLAG='N'"]);
-        }
-
-        if ($employeeId != -1) {
-            $select->where([
-                "E.EMPLOYEE_ID=" . $employeeId
-            ]);
-        }
-        if ($companyId != -1) {
-            $select->where([
-                "E.COMPANY_ID=" . $companyId
-            ]);
-        }
-        if ($branchId != -1) {
-            $select->where([
-                "E.BRANCH_ID=" . $branchId
-            ]);
-        }
-        if ($departmentId != -1) {
-            $select->where([
-                "E.DEPARTMENT_ID=" . $departmentId
-            ]);
-        }
-        if ($designationId != -1) {
-            $select->where([
-                "E.DESIGNATION_ID=" . $designationId
-            ]);
-        }
-        if ($positionId != -1) {
-            $select->where([
-                "E.POSITION_ID=" . $positionId
-            ]);
-        }
-        if ($serviceTypeId != -1) {
-            $select->where([
-                "E.SERVICE_TYPE_ID=" . $serviceTypeId
-            ]);
-        }
-        if ($serviceEventTypeId != -1) {
-            $select->where([
-                "E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
-            ]);
-        }
-        if ($genderId != null && $genderId != -1) {
-            $select->where([
-                "E.GENDER_ID=" . $genderId
-            ]);
-        }
-        $select->order("E.FIRST_NAME ASC");
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+    public function fetchAssignedEmployees($id) {
+        $sql = "SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEE_SHIFT_ADJUSTMENT WHERE ADJUSTMENT_ID= {$id}";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($rawResult);
     }
 
-    public function insertShiftAdjstment($postData) {
-        $startTime = $postData['startTime'];
-        $endTime = $postData['endTime'];
-        $adjustmentStartDate = $postData['adjustmentStartDate'];
-        $adjustmentEndDate = $postData['adjustmentEndDate'];
-        $checkApply = $postData['employeeList'];
-
-
+    public function insertShiftAdjustment($startTime, $endTime, $adjustmentStartDate, $adjustmentEndDate, $employeeList, $employeeId = null, $id = null) {
         $employeeAdjustment = '';
-        foreach ($checkApply as $employee) {
+
+
+        foreach ($employeeList as $employee) {
             $employeeAdjustment = $employeeAdjustment . "
                 INSERT INTO HRIS_EMPLOYEE_SHIFT_ADJUSTMENT
                 (
@@ -193,12 +93,17 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                   " . $employee . "
                 );";
         }
-
-
-        $sql = "DECLARE
+        if ($id == "") {
+            $sql = "DECLARE
                   V_ADJUSTMENT_ID NUMBER;
+                  V_ADJUSTMENT_START_DATE DATE  :=TO_DATE('{$adjustmentStartDate}', 'DD-MON-YYYY');
+                  V_ADJUSTMENT_END_DATE   DATE  :=TO_DATE('{$adjustmentEndDate}','DD-MON-YYYY');
+                  V_START_TIME            DATE  :=TO_DATE('{$startTime}', 'HH:MI AM');
+                  V_END_TIME              DATE  :=TO_DATE('{$endTime}', 'HH:MI AM');
+                  V_EMPLOYEE_ID           NUMBER  :={$employeeId};    
+                  V_DIFF NUMBER:=(TRUNC(V_ADJUSTMENT_END_DATE)-TRUNC(V_ADJUSTMENT_START_DATE));
                 BEGIN
-                  SELECT MAX(ADJUSTMENT_ID)+1 INTO V_ADJUSTMENT_ID FROM HRIS_SHIFT_ADJUSTMENT;
+                  SELECT NVL(MAX(ADJUSTMENT_ID)+1,1) INTO V_ADJUSTMENT_ID FROM HRIS_SHIFT_ADJUSTMENT;
                   INSERT
                   INTO HRIS_SHIFT_ADJUSTMENT
                     (
@@ -207,21 +112,68 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                       END_TIME,
                       ADJUSTMENT_START_DATE,
                       ADJUSTMENT_END_DATE,
-                      CREATED_DT
+                      CREATED_DT,
+                      CREATED_BY
                     )
                     VALUES
                     (
                       V_ADJUSTMENT_ID,
-                      TO_DATE('{$startTime}', 'HH:MI AM'),
-                      TO_DATE('{$endTime}', 'HH:MI AM'),
-                      TO_DATE('{$adjustmentStartDate}', 'DD-MON-YYYY'),
-                      TO_DATE('{$adjustmentEndDate}', 'DD-MON-YYYY'),
-                      TRUNC(SYSDATE)
-                    );"
-                . $employeeAdjustment . "
+                    V_START_TIME,
+                      V_END_TIME,
+                      V_ADJUSTMENT_START_DATE,
+                      V_ADJUSTMENT_END_DATE,
+                      TRUNC(SYSDATE),
+                     V_EMPLOYEE_ID
+                    );
+                    {$employeeAdjustment}
+                      BEGIN
+                        FOR i IN 0..V_DIFF
+                        LOOP
+                          IF TRUNC(V_ADJUSTMENT_START_DATE+i)>= TRUNC(SYSDATE) THEN
+                            CONTINUE;
+                          END IF;
+                          HRIS_REATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
+                          HRIS_ATTENDANCE_JGI(TRUNC(V_ADJUSTMENT_START_DATE+i));
+                        END LOOP;
+                      END;
                     COMMIT;
                     END;";
-        EntityHelper::rawQueryResult($this->adapter, $sql);
+        } else {
+            $sql = "
+                DECLARE
+                  V_ADJUSTMENT_ID         NUMBER:={$id};
+                  V_ADJUSTMENT_START_DATE DATE  :=TO_DATE('{$adjustmentStartDate}', 'DD-MON-YYYY');
+                  V_ADJUSTMENT_END_DATE   DATE  :=TO_DATE('{$adjustmentEndDate}','DD-MON-YYYY');
+                  V_START_TIME            DATE  :=TO_DATE('{$startTime}', 'HH:MI AM');
+                  V_END_TIME              DATE  :=TO_DATE('{$endTime}', 'HH:MI AM');
+                  V_EMPLOYEE_ID           NUMBER  :={$employeeId};    
+                  V_DIFF NUMBER:=(TRUNC(V_ADJUSTMENT_END_DATE)-TRUNC(V_ADJUSTMENT_START_DATE));
+                BEGIN
+                  UPDATE HRIS_SHIFT_ADJUSTMENT
+                    SET START_TIME         =V_START_TIME,
+                      END_TIME             =V_END_TIME,
+                      ADJUSTMENT_START_DATE=V_ADJUSTMENT_START_DATE,
+                      ADJUSTMENT_END_DATE  =V_ADJUSTMENT_END_DATE,
+                      MODIFIED_DT          =TRUNC(SYSDATE),
+                      MODIFIED_BY          =V_EMPLOYEE_ID
+                    WHERE ADJUSTMENT_ID    = V_ADJUSTMENT_ID; 
+                  DELETE FROM HRIS_EMPLOYEE_SHIFT_ADJUSTMENT WHERE ADJUSTMENT_ID=V_ADJUSTMENT_ID;
+                    {$employeeAdjustment}
+                    BEGIN
+                    FOR i IN 0..V_DIFF
+                    LOOP
+                      IF TRUNC(V_ADJUSTMENT_START_DATE+i)>= TRUNC(SYSDATE) THEN
+                        CONTINUE;
+                      END IF;
+                      HRIS_REATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
+                      HRIS_ATTENDANCE_JGI(TRUNC(V_ADJUSTMENT_START_DATE+i));
+                    END LOOP;
+                  END;
+                    COMMIT;
+                    END;";
+        }
+
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
 }

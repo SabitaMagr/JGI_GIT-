@@ -23,6 +23,8 @@ $this->headScript()
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.shiftAdjustAddUrl = '<?php echo $this->url('shiftAdjustment', ['action' => 'shiftAdjustAdd']); ?>';
+    document.editData =<?php echo json_encode($editData); ?>;
+    document.shiftAdjustmentPage = '<?php echo $this->url('shiftAdjustment', ['action' => 'index']); ?>';
 </script>
 
 <?php if ($this->messages) { ?>
@@ -33,24 +35,19 @@ $this->headScript()
 
 
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\shiftAdjustment')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
-<div class="portlet box blue" id="form_wizard_1">
+<div class="portlet light bordered" id="form_wizard_1">
     <div class="portlet-title">
         <div class="caption">
             <i class="fa fa-gift"></i> Shift Adjustment - <span class="step-title">
                 Step 1 of 4 </span>
         </div>
         <div class="tools hidden-xs">
-            <a href="javascript:;" class="collapse">
-            </a>
-            <a href="#portlet-config" data-toggle="modal" class="config">
-            </a>
-            <a href="javascript:;" class="reload">
-            </a>
-            <a href="javascript:;" class="remove">
+            <a class="fullscreen" href="javascript:;" >
+
             </a>
         </div>
     </div>
@@ -233,35 +230,49 @@ $this->headScript()
                         </div>   
                     </div>
                     <div class="tab-pane" id="tab3">
+                        <h3 class="form-section">Adjustment</h3>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label" >Start Date</label>                                        
-                                    <label class="col-sm-6 control-label"  id="adjustmentStartDateLabel"> </label>
+                                    <label class="control-label col-md-3">Start Date</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static" id="adjustmentStartDateLabel"></p>
+                                    </div>
                                 </div>
-                            </div>    
-                            <div class="col-sm-6">
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label" >End Date</label>                                        
-                                    <label class="col-sm-6 control-label"  id="adjustmentEndDateLabel"> </label>
+                                    <label class="control-label col-md-3">End Date</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static" id="adjustmentEndDateLabel"></p>
+                                    </div>
                                 </div>
-                            </div>    
+                            </div>
+                            <!--/span-->
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label" >Start Time</label>                                        
-                                    <label class="col-sm-6 control-label"  id="startTimeLabel"> </label>
+                                    <label class="control-label col-md-3">Start Time</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static" id="startTimeLabel"></p>
+                                    </div>
                                 </div>
-                            </div>    
-                            <div class="col-sm-6">
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label" >End Time</label>                                        
-                                    <label class="col-sm-6 control-label"  id="endTimeLabel"> </label>
+                                    <label class="control-label col-md-3">End Time</label>
+                                    <div class="col-md-9">
+                                        <p class="form-control-static" id="endTimeLabel"></p>
+                                    </div>
                                 </div>
-                            </div>    
+                            </div>
+                            <!--/span-->
                         </div>
-                        <div class="margin-top-20" id="assignedEmployeeList">
+                        <h3 class="form-section">Employees Assigned</h3>
+                        <div  class="scroller row" style="height:250px" id="assignedEmployeeList">
 
                         </div>
                     </div>
@@ -270,13 +281,13 @@ $this->headScript()
             </div>
             <div class="form-actions">
                 <div class="row">
-                    <div class="col-md-offset-3 col-md-9">
-                        <a href="javascript:;" class="btn default button-previous">
+                    <div class=" col-md-12">
+                        <a href="javascript:;" class="btn default button-previous pull-left">
                             <i class="m-icon-swapleft"></i> Back </a>
-                        <a href="javascript:;" class="btn blue button-next">
+                        <a href="javascript:;" class="btn blue button-next pull-right">
                             Continue <i class="m-icon-swapright m-icon-white"></i>
                         </a>
-                        <a href="javascript:;" class="btn green button-submit">
+                        <a href="javascript:;" class="btn green button-submit pull-right">
                             Submit <i class="m-icon-swapright m-icon-white"></i>
                         </a>
                     </div>

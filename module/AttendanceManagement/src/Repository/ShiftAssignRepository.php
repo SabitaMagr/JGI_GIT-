@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/13/16
- * Time: 12:31 PM
- */
 
 namespace AttendanceManagement\Repository;
 
@@ -24,61 +18,55 @@ use Application\Helper\EntityHelper;
 use Setup\Model\HrEmployees;
 use Zend\Db\Sql\Expression;
 
-class ShiftAssignRepository implements RepositoryInterface
-{
+class ShiftAssignRepository implements RepositoryInterface {
+
     private $tableGateway;
     private $adapter;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(ShiftAssign::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
-    {
-        $this->tableGateway->update($model->getArrayCopyForDB(),[ShiftAssign::EMPLOYEE_ID."=$id[0]",ShiftAssign::SHIFT_ID." =$id[1]"]);
+    public function edit(Model $model, $id) {
+        $this->tableGateway->update($model->getArrayCopyForDB(), [ShiftAssign::EMPLOYEE_ID . "=$id[0]", ShiftAssign::SHIFT_ID . " =$id[1]"]);
     }
 
-    public function fetchAll()
-    {
+    public function fetchAll() {
         return $this->tableGateway->select();
     }
 
-    public function fetchById($id)
-    {
+    public function fetchById($id) {
+        
     }
 
-    public function delete($id)
-    {
+    public function delete($id) {
+        
     }
 
-    public function filter($branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$companyId,$serviceEventTypeId,$employeeId)
-    {
+    public function filter($branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $companyId, $serviceEventTypeId, $employeeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
-                [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],null,null,null,[new Expression("E.EMPLOYEE_ID")],"E"), true);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], null, null, null, [new Expression("E.EMPLOYEE_ID")], "E"), true);
         $select->from(['E' => "HRIS_EMPLOYEES"])
-            ->join(['B' => 'HRIS_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME"=>new Expression("INITCAP(B.BRANCH_NAME)")],"left")
-            ->join(['DEP' => Department::TABLE_NAME], 'DEP.' . Department::DEPARTMENT_ID . '=E.' . Department::DEPARTMENT_ID . '', [Department::DEPARTMENT_ID, "DEPARTMENT_NAME"=>new Expression("INITCAP(DEP.DEPARTMENT_NAME)")],"left")
-            ->join(['DE' => 'HRIS_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE"=>new Expression("INITCAP(DE.DESIGNATION_TITLE)")],"left")
-            ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, "POSITION_NAME"=>new Expression("INITCAP(P.POSITION_NAME)")],"left")
-            ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, "SERVICE_TYPE_NAME"=>new Expression("INITCAP(ST.SERVICE_TYPE_NAME)")],"left");
+                ->join(['B' => 'HRIS_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME" => new Expression("INITCAP(B.BRANCH_NAME)")], "left")
+                ->join(['DEP' => Department::TABLE_NAME], 'DEP.' . Department::DEPARTMENT_ID . '=E.' . Department::DEPARTMENT_ID . '', [Department::DEPARTMENT_ID, "DEPARTMENT_NAME" => new Expression("INITCAP(DEP.DEPARTMENT_NAME)")], "left")
+                ->join(['DE' => 'HRIS_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE" => new Expression("INITCAP(DE.DESIGNATION_TITLE)")], "left")
+                ->join(['P' => Position::TABLE_NAME], 'P.' . Position::POSITION_ID . '=E.' . Position::POSITION_ID . '', [Position::POSITION_ID, "POSITION_NAME" => new Expression("INITCAP(P.POSITION_NAME)")], "left")
+                ->join(['ST' => ServiceType::TABLE_NAME], 'ST.' . ServiceType::SERVICE_TYPE_ID . '=E.' . ServiceType::SERVICE_TYPE_ID . '', [ServiceType::SERVICE_TYPE_ID, "SERVICE_TYPE_NAME" => new Expression("INITCAP(ST.SERVICE_TYPE_NAME)")], "left");
 
-       $select->where(["E.STATUS='E'"]);
-       $select->where(["E.RETIRED_FLAG='N'"]);
+        $select->where(["E.STATUS='E'"]);
+        $select->where(["E.RETIRED_FLAG='N'"]);
         if ($branchId != -1) {
             $select->where(["E.BRANCH_ID=$branchId"]);
         }
         if ($departmentId != -1) {
-            $select->where(["E.".Department::DEPARTMENT_ID."=$departmentId"]);
+            $select->where(["E." . Department::DEPARTMENT_ID . "=$departmentId"]);
         }
         if ($designationId != -1) {
             $select->where(["E.DESIGNATION_ID=$designationId"]);
@@ -90,7 +78,7 @@ class ShiftAssignRepository implements RepositoryInterface
             $select->where(['E.' . ServiceType::SERVICE_TYPE_ID . "=$serviceTypeId"]);
         }
         if ($companyId != -1) {
-            $select->where(['E.' . HrEmployees::COMPANY_ID. "=$companyId"]);
+            $select->where(['E.' . HrEmployees::COMPANY_ID . "=$companyId"]);
         }
         if ($serviceEventTypeId != -1) {
             $select->where(['E.' . HrEmployees::SERVICE_EVENT_TYPE_ID . "=$serviceEventTypeId"]);
@@ -104,22 +92,22 @@ class ShiftAssignRepository implements RepositoryInterface
         return $result;
     }
 
-    public function filterByEmployeeId($employeeId)
-    {
+    public function filterByEmployeeId($employeeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
         $select->from(['SA' => ShiftAssign::TABLE_NAME])
-            ->join(['SH' => ShiftSetup::TABLE_NAME], 'SA.' . ShiftSetup::SHIFT_ID . '=SH.' . ShiftSetup::SHIFT_ID . '', ["SHIFT_ENAME"=>new Expression("INITCAP(SH.SHIFT_ENAME)")],"left");
-        $select->where(["SA.".ShiftAssign::STATUS." ='E'","SA.".ShiftAssign::EMPLOYEE_ID." =$employeeId"]);
-        $select->order('SA.'.ShiftAssign::CREATED_DT.' DESC');
+                ->join(['SH' => ShiftSetup::TABLE_NAME], 'SA.' . ShiftSetup::SHIFT_ID . '=SH.' . ShiftSetup::SHIFT_ID . '', ["SHIFT_ENAME" => new Expression("INITCAP(SH.SHIFT_ENAME)")], "left");
+        $select->where(["SA." . ShiftAssign::STATUS . " ='E'", "SA." . ShiftAssign::EMPLOYEE_ID . " =$employeeId"]);
+        $select->order('SA.' . ShiftAssign::CREATED_DT . ' DESC');
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
     }
 
-    public function fetchByEmployeeId($employeeId){
-        $result = $this->tableGateway->select([ShiftAssign::EMPLOYEE_ID."=".$employeeId, ShiftAssign::STATUS=>'E']);
+    public function fetchByEmployeeId($employeeId) {
+        $result = $this->tableGateway->select([ShiftAssign::EMPLOYEE_ID . "=" . $employeeId, ShiftAssign::STATUS => 'E']);
         return $result->current();
     }
+
 }

@@ -6,7 +6,6 @@ use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Form\ShiftAdjustmentForm;
-use AttendanceManagement\Model\ShiftAdjustmentModel;
 use AttendanceManagement\Repository\ShiftAdjustmentRepository;
 use Exception;
 use Zend\Authentication\AuthenticationService;
@@ -48,6 +47,11 @@ class ShiftAdjustment extends AbstractActionController {
         $editData = null;
         if ($id !== 0) {
             $editData['shiftAdjustment'] = $this->repository->fetchById($id);
+            $editData['assignedEmployees'] = [];
+            $employees = $this->repository->fetchAssignedEmployees($id);
+            foreach ($employees as $employee) {
+                array_push($editData['assignedEmployees'], $employee['EMPLOYEE_ID']);
+            }
         }
 
         return Helper::addFlashMessagesToArray($this, [
@@ -64,8 +68,16 @@ class ShiftAdjustment extends AbstractActionController {
                 throw new Exception("The request should be of type post");
             }
             $postedData = $request->getPost();
-            $this->repository->insertShiftAdjstment($postedData);
-            return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
+
+            $startTime = $postedData['startTime'];
+            $endTime = $postedData['endTime'];
+            $adjustmentStartDate = $postedData['adjustmentStartDate'];
+            $adjustmentEndDate = $postedData['adjustmentEndDate'];
+            $employeeList = $postedData['employeeList'];
+            $adjustmentId = $postedData['adjustmentId'];
+
+            $result = $this->repository->insertShiftAdjustment($startTime, $endTime, $adjustmentStartDate, $adjustmentEndDate, $employeeList, $this->employeeId, $adjustmentId);
+            return new CustomViewModel(['success' => true, 'data' => $result, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
