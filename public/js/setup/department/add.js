@@ -1,6 +1,3 @@
-/**
- * Created by punam on 9/28/16.
- */
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -18,7 +15,7 @@
         }
         window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
             App.blockUI({target: "#hris-page-content"});
-        });   
+        });
         window.app.checkUniqueConstraints("form-departmentCode", formId, tableName, "DEPARTMENT_CODE", checkColumnName, selfId);
         var selectedBranchId = (typeof document.selectedBranchId === 'undefined' || document.selectedBranchId === '') ? null : document.selectedBranchId;
         var $companySelect = $('#form-companyId');
@@ -30,7 +27,7 @@
             $branchSelect.html('');
             $branchSelect.append($("<option></option>")
                     .attr("value", "")
-                    .text("Select Branch"));
+                    .text("---"));
 
             var selectedCompanyBranches = branchList[companyId];
 

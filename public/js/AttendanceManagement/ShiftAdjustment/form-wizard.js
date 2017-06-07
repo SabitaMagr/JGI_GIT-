@@ -51,6 +51,14 @@
                             if (!$this.valid()) {
                                 nextFlag = false;
                             }
+                            if ($startTime.val() === "") {
+                                $startTime.parent().find('.combodate').after('<div><label id="startTime-error" class="error" for="startTime">This field is required.</label></div>');
+                                nextFlag = false;
+                            }
+                            if ($endTime.val() === "") {
+                                $endTime.parent().find('.combodate').after('<div><label id="endTime-error" class="error" for="endTime">This field is required.</label></div>');
+                                nextFlag = false;
+                            }
 
                             shiftAdjustment['adjustmentStartDate'] = $adjustmentStartDate.val();
                             shiftAdjustment['adjustmentEndDate'] = $adjustmentEndDate.val();
