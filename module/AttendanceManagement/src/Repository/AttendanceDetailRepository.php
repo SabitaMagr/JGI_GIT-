@@ -152,6 +152,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
             if ($status == "WOH") {
                 $select->where(["(A.HOLIDAY_ID IS NOT NULL OR A.DAYOFF_FLAG = 'Y') AND A.IN_TIME IS NOT NULL AND A.OUT_TIME IS NOT NULL "]);
             }
+            if ($status == "LI") {
+                $select->where(["(A.LATE_STATUS='L' OR A.LATE_STATUS='B')"]);
+            }
+            if ($status == "EO") {
+                $select->where(["(A.LATE_STATUS='E' OR A.LATE_STATUS='B')"]);
+            }
         }
 
         if ($employeeId != -1) {

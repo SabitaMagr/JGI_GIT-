@@ -3,10 +3,10 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
-//        $('#fromDate').val('05-Jun-2017');
+//        $('#fromDate').datepicker('setDate', nepaliDatePickerExt.getDate('07-Jun-2017'));
+
     });
 })(window.jQuery, window.app);
-
 angular.module('hris', [])
         .controller("attendanceListController", function ($scope, $http) {
             var $tableContainer = $("#attendanceByHrTable");
@@ -62,6 +62,7 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
+//                    console.log(success);
                     console.log(success.data);
                     $scope.$apply(function () {
                         if (displayKendoFirstTime) {
@@ -300,23 +301,52 @@ angular.module('hris', [])
 
             window.app.UIConfirmations();
 
-            var IdFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-            if (parseInt(IdFromParameter) > 0) {
-                console.log(IdFromParameter);
-                if (IdFromParameter == 1) {
-                    angular.element(document.getElementById('statusId')).val('P').change();
-                }else if(IdFromParameter==2){
-                    angular.element(document.getElementById('statusId')).val('L').change();
-                }else if(IdFromParameter==3){
-                    angular.element(document.getElementById('statusId')).val('T').change();
-                    
-                }else if(IdFromParameter==4){
-                    angular.element(document.getElementById('statusId')).val('TVL').change();
-                    
-                }else if(IdFromParameter==5){
-                    angular.element(document.getElementById('statusId')).val('WOH').change();
+//            start to get the current Date in  DD-MON-YYY format
+            var m_names = new Array("Jan", "Feb", "Mar",
+                    "Apr", "May", "Jun", "Jul", "Aug", "Sep",
+                    "Oct", "Nov", "Dec");
+
+            var d = new Date();
+
+            //to get today Date
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth();
+            var curr_year = d.getFullYear();
+            var todayDate = curr_date + "-" + m_names[curr_month] + "-" + curr_year;
+
+            //to get yesterday Date
+            var yes_date = new Date(d);
+            yes_date.setDate(d.getDate() - 1);
+            var yesterday_date = yes_date.getDate();
+            var yesterday_month = yes_date.getMonth();
+            var yesterday_year = yes_date.getFullYear();
+            var yesterdayDate = yesterday_date + "-" + m_names[yesterday_month] + "-" + yesterday_year;
+
+            //End to get Current Date and YesterDay Date
+
+            var idFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+            if (parseInt(idFromParameter) > 0) {
+                var $status = angular.element(document.getElementById('statusId'));
+                var $missPunchOnly = angular.element(document.getElementById('missPunchOnly'));
+                var $fromDate = angular.element(document.getElementById('fromDate'));
+                var $toDate = angular.element(document.getElementById('toDate'));
+                var map = {1: 'P', 2: 'L', 3: 'T', 4: 'TVL', 5: 'WOH', 6: 'LI', 7: 'EO'};
+                if (idFromParameter == 8) {
+                    $missPunchOnly.prop("checked", true);
+                    $fromDate.val(yesterdayDate);
+                    $toDate.val(yesterdayDate);
+                } else {
+                    $status.val(map[idFromParameter]).change();
+                    if (idFromParameter == 7) {
+                        $fromDate.val(yesterdayDate);
+                        $toDate.val(yesterdayDate);
+                    } else {
+                        $fromDate.val(todayDate);
+                        $toDate.val(todayDate);
+                    }
                 }
                 $scope.view();
             }
-
+//            console.log();
         });
+

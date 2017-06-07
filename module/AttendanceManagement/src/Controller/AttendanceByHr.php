@@ -41,7 +41,9 @@ class AttendanceByHr extends AbstractActionController {
             "L" => "On Leave",
             "T" => "On Training",
             "TVL" => "On Travel",
-            "WOH" => "On WOH"
+            "WOH" => "On WOH",
+            "LI" => "Late In",
+            "EO" => "Early Out"
         );
         $statusFormElement->setValueOptions($status);
         $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
