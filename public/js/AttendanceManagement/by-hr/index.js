@@ -3,7 +3,7 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
-//        $('#fromDate').val('05-Jun-2017');
+//        $('#fromDate').val('07-Jun-2017');
     });
 })(window.jQuery, window.app);
 
@@ -316,6 +316,12 @@ angular.module('hris', [])
                     
                 }else if(IdFromParameter==5){
                     angular.element(document.getElementById('statusId')).val('WOH').change();
+                }else if(IdFromParameter==6){
+                    angular.element(document.getElementById('statusId')).val('LI').change();
+                }else if(IdFromParameter==7){
+                    angular.element(document.getElementById('statusId')).val('EO').change();
+                }else if(IdFromParameter==8){
+                    angular.element(document.getElementById('missPunchOnly')).prop( "checked", true );
                 }
                 $scope.view();
             }

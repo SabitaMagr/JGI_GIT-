@@ -108,6 +108,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     $OnTrainingUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>3]);
     $OnTravelUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>4]);
     $wohUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>5]);
+    $lateInUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>6]);
+    $earlyOutUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>7]);
+    $missPunchUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>8]);
     ?>
 
 <div class="employeedashboard">
@@ -189,24 +192,30 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-xs-12  col-sm-7 col-md-3">
                     <div class="col-hris row attendence-box">
                         <ul>
+                            <a href="<?php echo $lateInUrl?>">
                             <li class="col-xs-4 col-sm-4 col-md-4">
                                 <div class="hris efficiency efficiency-bg1">
                                     <span><?php print $employeeDetail['LATE_IN']; ?></span>
                                     <div>Late In</div>
                                 </div>
                             </li>
+                            </a>
+                            <a href="<?php echo $earlyOutUrl?>">
                             <li class="col-xs-4 col-sm-4 col-md-4">
                                 <div class="hris efficiency efficiency-bg2">
                                     <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
                                     <div>Early Out</div>
                                 </div>
                             </li>
+                            </a>
+                            <a href="<?php echo $missPunchUrl?>">
                             <li class="col-xs-4 col-sm-4 col-md-4">
                                 <div class="hris efficiency efficiency-bg3">
                                     <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
                                     <div>Missed Punch</div>
                                 </div>
                             </li>
+                            </a>
                         </ul>
                     </div>
                 </div>
