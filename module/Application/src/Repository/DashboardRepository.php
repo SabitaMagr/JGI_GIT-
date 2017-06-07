@@ -636,13 +636,13 @@ ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
                   FROM HRIS_ATTENDANCE_DETAIL ATTEN
                   WHERE (ATTEN.LATE_STATUS = 'E'
                   OR ATTEN.LATE_STATUS     ='B')
-                  AND ATTEN.ATTENDANCE_DT  = TO_DATE('{$date}', 'DD-MON-YYYY')
+                  AND ATTEN.ATTENDANCE_DT  = TRUNC(SYSDATE-1)
                   ) EARLY_TBL,
                   -- MISSED PUNCH
                   (
                   SELECT COUNT(*) MISSED_PUNCH
                   FROM HRIS_ATTENDANCE_DETAIL ATTEN
-                  WHERE ATTEN.ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YYYY')
+                  WHERE ATTEN.ATTENDANCE_DT = TRUNC(SYSDATE-1)
                   AND ATTEN.OUT_TIME       IS NULL
                   AND ATTEN.IN_TIME        IS NOT NULL
                   ) MISSED_PUNCH_TBL,
@@ -659,7 +659,7 @@ ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
                   SELECT EMPLOYEE_ID,
                     COUNT (*) WOH
                   FROM HRIS_ATTENDANCE_DETAIL
-                  WHERE HOLIDAY_ID IS NOT NULL
+                  WHERE (HOLIDAY_ID IS NOT NULL OR DAYOFF_FLAG= 'Y') 
                   AND IN_TIME      IS NOT NULL
                   AND OUT_TIME     IS NOT NULL
                   AND DAYOFF_FLAG   = 'N'

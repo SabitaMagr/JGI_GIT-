@@ -62,6 +62,7 @@ angular.module('hris', [])
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
+//                    console.log(success);
                     console.log(success.data);
                     $scope.$apply(function () {
                         if (displayKendoFirstTime) {

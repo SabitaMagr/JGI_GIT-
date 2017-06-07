@@ -2576,6 +2576,10 @@ class RestfulService extends AbstractRestfulController {
                 $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
             }else if ($status == 'WOH') {
                 $row['STATUS'] = "Work On Holiday";
+            }else if ($status == 'LI') {
+                $row['STATUS'] = "Present(Late In)";
+            }else if ($status == 'EO') {
+                $row['STATUS'] = "Present(Early Out)";
             }
             else {
                 if ($row['LEAVE_ENAME'] != null) {
@@ -2584,15 +2588,26 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
                 } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null && $row['DAYOFF_FLAG'] == 'N') {
                     $row['STATUS'] = "Absent";
-                } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null) {
+                } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null && $row['LATE_STATUS'] == 'N') {
                     $row['STATUS'] = "Present";
                 }else if ($row['TRAINING_NAME'] != null) {
                     $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
                 }elseif($row['TRAVEL_DESTINATION'] != null){
                     $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
                 }
-                elseif(($row['DAYOFF_FLAG'] == 'Y') && $row['IN_TIME'] != null){
+                elseif(($row['DAYOFF_FLAG'] == 'Y') && $row['IN_TIME'] != null && $row['LATE_STATUS'] == 'N'){
                     $row['STATUS'] = "Present(Work On Holiday)";
+                }
+                elseif($row['LATE_STATUS'] != 'N'){
+                    if($row['LATE_STATUS'] == 'L'){
+                    $row['STATUS'] = "Present(Late In)";
+                    }
+                    if($row['LATE_STATUS'] == 'E'){
+                    $row['STATUS'] = "Present(Early Out)";
+                    }
+                    if($row['LATE_STATUS'] == 'B'){
+                    $row['STATUS'] = "Present(Late In and Early Out)";
+                    }
                 }
                 elseif($row['DAYOFF_FLAG'] == 'Y'){
                     $row['STATUS'] = "Day Off";

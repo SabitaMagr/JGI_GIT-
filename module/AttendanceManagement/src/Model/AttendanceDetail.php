@@ -28,6 +28,7 @@ class AttendanceDetail extends Model {
     const TRAVEL_ID = "TRAVEL_ID";
     const SHIFT_ID = "SHIFT_ID";
     const DAYOFF_FLAG = "DAYOFF_FLAG";
+    const LATE_STATUS = "LATE_STATUS";
 
     public $id;
     public $employeeId;
@@ -43,6 +44,7 @@ class AttendanceDetail extends Model {
     public $travelId;
     public $shiftId;
     public $dayoffFlag;
+    public $lateStatus;
     public $mappings = [
         'id' => self::ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -57,7 +59,8 @@ class AttendanceDetail extends Model {
         'trainingId' => self::TRAINING_ID,
         'travelId' => self::TRAVEL_ID,
         'shiftId' => self::SHIFT_ID,
-        'dayoffFlag' => self::DAYOFF_FLAG
+        'dayoffFlag' => self::DAYOFF_FLAG,
+        'lateStatus' =>self::LATE_STATUS
     ];
 
 }
