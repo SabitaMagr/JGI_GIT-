@@ -10,17 +10,29 @@
                 <span></span>
             </div>
         </div>
-        
-     <div class="company-logo company-logo-box">
-         <?php if(isset($companyLogoUrl) && $companyLogoUrl!="NO") {  ?>
-       <img src="<?= $this->basePath("uploads/" . $companyLogoUrl) ?>" alt="logo" class="logo-default1 companylogo">
-          <?php  }?>
-        <?php // print_r($profilePictureUrl);  ?>
-        <span><?=$companyName?><br>
-        <address><?=$companyAddress?></address></span>
-     </div>
-
         <!-- END LOGO -->
+        <form id="globalSearchForm" class="search-form search-form-expanded margin-right-10" action="" method="GET">
+            <div class="input-group">
+                <input style="height: 50px !important;" id="globalSearch" type="text" class="form-control" placeholder="Search..." name="query">
+                <span class="input-group-btn">
+                    <a href="javascript:;" class="btn submit">
+                        <i class="icon-magnifier"></i>
+                    </a>
+                </span>
+            </div>
+        </form>
+        <div class="company-logo company-logo-box margin-right-10">
+            <?php if (isset($companyLogoUrl) && $companyLogoUrl != "NO") { ?>
+                <img src="<?= $this->basePath("uploads/" . $companyLogoUrl) ?>" alt="logo" class="logo-default1 companylogo">
+            <?php } ?>
+            <?php // print_r($profilePictureUrl);  ?>
+            <span><?= $companyName ?><br>
+                <address><?= $companyAddress ?></address></span>
+        </div>
+
+
+
+
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
         <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
             <span></span>

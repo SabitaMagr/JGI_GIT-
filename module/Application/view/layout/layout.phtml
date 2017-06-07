@@ -52,6 +52,7 @@
               rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css') ?>" rel="stylesheet" type="text/css"/>
+        <link href="<?= $this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.css') ?>" rel="stylesheet" type="text/css"/>
         <!--End of mandatory plugins-->
         <?php
         print $this->headLink();
@@ -69,6 +70,8 @@
             document.basePath = '<?= $this->basePath() ?>';
             document.settingUrl = '<?= $this->url("user-setting", ["action" => "index"]) ?>';
             document.updateSettingUrl = '<?= $this->url("user-setting", ["action" => "update"]) ?>';
+            document.globalSearchemployeeList = <?php echo json_encode($employeeList); ?>;
+            document.globalSearchEmployeeProfileUrl = '<?= $this->url("employee", ["action" => "view"]) ?>';
         </script>
         <div class="page-wrapper" id="hris-page-content">
             <?php
@@ -107,6 +110,8 @@
         <![endif]-->
 
         <?php
+        $this->headScript()
+                ->prependFile($this->basePath('js/application/globalSearch.js'));
         $this->headScript()
                 ->prependFile($this->basePath('js/user-setting.js'));
         $this->headScript()
@@ -156,6 +161,6 @@
         ?>
         <!-- END CORE PLUGINS -->
         <!-- End -->
-<div id='pdfExportTable'></div>
+        <div id='pdfExportTable'></div>
     </body>
 </html>

@@ -3,6 +3,7 @@
 namespace Application;
 
 use Application\Controller\AuthController;
+use Application\Controller\ForgotPasswordController;
 use Application\Factory\HrLogger;
 use Application\Helper\Helper;
 use Application\Helper\SessionHelper;
@@ -24,7 +25,6 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
-use Application\Controller\ForgotPasswordController;
 use Zend\View\Model\ViewModel;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
@@ -118,7 +118,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $this->initNotification($adapter, $event->getViewModel(), $identity);
         }
 
-
+        $employeeRepo = new \Setup\Repository\EmployeeRepository($adapter);
+        $event->getViewModel()->setVariable('employeeList', $employeeRepo->fetchEmployeeFullNameList());
 
 
         //print "Called before any controller action called. Do any operation.";
