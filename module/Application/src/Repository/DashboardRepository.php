@@ -815,12 +815,63 @@ ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
     }
 
     public function fetchPendingLeave($companyId = null, $branchId = null) {
-        $sql = "SELECT COUNT(*) AS PENDING_LEAVE
-              FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-              WHERE STATUS='RQ' ";
+//        $sql = "SELECT COUNT(*) AS PENDING_LEAVE
+//              FROM HRIS_EMPLOYEE_LEAVE_REQUEST
+//              WHERE STATUS='RQ' ";
+        $sql = "SELECT COUNT(*)AS PENDING_LEAVE FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
+                LEFT OUTER JOIN HRIS_LEAVE_MASTER_SETUP L
+                ON L.LEAVE_ID=LA.LEAVE_ID
+                LEFT OUTER JOIN HRIS_EMPLOYEES E
+                ON E.EMPLOYEE_ID=LA.EMPLOYEE_ID
+                LEFT OUTER JOIN HRIS_EMPLOYEES E1
+                ON E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
+                LEFT OUTER JOIN HRIS_EMPLOYEES E2
+                ON E2.EMPLOYEE_ID=LA.APPROVED_BY
+                LEFT OUTER JOIN HRIS_RECOMMENDER_APPROVER RA
+                ON LA.EMPLOYEE_ID = RA.EMPLOYEE_ID
+                LEFT OUTER JOIN HRIS_EMPLOYEES RECM
+                ON RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
+                LEFT OUTER JOIN HRIS_EMPLOYEES APRV
+                ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
+                LEFT OUTER JOIN HRIS_LEAVE_SUBSTITUTE LS
+                ON LA.ID          = LS.LEAVE_REQUEST_ID
+                WHERE L.STATUS    ='E'
+                AND E.STATUS      ='E'
+                AND E.RETIRED_FLAG='N'
+                AND (E1.STATUS    =
+                  CASE
+                    WHEN E1.STATUS IS NOT NULL
+                    THEN ('E')
+                  END
+                OR E1.STATUS  IS NULL)
+                AND (E2.STATUS =
+                  CASE
+                    WHEN E2.STATUS IS NOT NULL
+                    THEN ('E')
+                  END
+                OR E2.STATUS    IS NULL)
+                AND (RECM.STATUS =
+                  CASE
+                    WHEN RECM.STATUS IS NOT NULL
+                    THEN ('E')
+                  END
+                OR RECM.STATUS  IS NULL)
+                AND (APRV.STATUS =
+                  CASE
+                    WHEN APRV.STATUS IS NOT NULL
+                    THEN ('E')
+                  END
+                OR APRV.STATUS       IS NULL)
+                AND (LS.APPROVED_FLAG =
+                  CASE
+                    WHEN LS.EMPLOYEE_ID IS NOT NULL
+                    THEN ('Y')
+                  END
+                OR LS.EMPLOYEE_ID IS NULL)
+                AND LA.STATUS ='RQ'";
 
         if ($companyId != null and $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
+            $sql .= " AND LA.EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
         }
 
         $statement = $this->adapter->query($sql);

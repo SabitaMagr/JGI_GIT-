@@ -212,7 +212,6 @@ angular.module('hris', [])
             var idFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
             if (parseInt(idFromParameter) > 0) {
                 if (idFromParameter == 1) {
-                    console.log(idFromParameter);
                     var $leaveReqStatus = angular.element(document.getElementById('leaveRequestStatusId'));
                     $leaveReqStatus.val('RQ').change();
                     $scope.view();
