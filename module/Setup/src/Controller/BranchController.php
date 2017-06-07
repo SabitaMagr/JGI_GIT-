@@ -64,7 +64,7 @@ class BranchController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, false, true),
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, true, true),
                     'customRenderer' => Helper::renderCustomView()
                         ]
         );

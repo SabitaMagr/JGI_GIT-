@@ -137,9 +137,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <span>At work for : <?php print $serviceDays ? $serviceDays : 0; ?></span><br>
                 </div>
                 <div class="col-md-5">
-                    <div class="row detailsbox">
+                    <div title="Today" class="row detailsbox">
                         <a href="<?php echo $presentUrl?>">
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                        <div  class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <div class="employee_details-box hexagon-bg1" >
                                 <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
                                 <div class="face1"></div>
@@ -148,52 +148,52 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                         </a>
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                             <a href="<?php echo $OnLeaveUrl?>">
-                            <div class="employee_details-box hexagon-bg2">
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div title="Today" class="employee_details-box hexagon-bg2">
                                 <span><?php print $employeeDetail['LEAVE']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Leave</div>
                             </div>
-                            </a>
                         </div>
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            </a>
                             <a href="<?php echo $OnTrainingUrl?>">
-                            <div class="employee_details-box hexagon-bg3">
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div title="Today" class="employee_details-box hexagon-bg3">
                                 <span><?php print $employeeDetail['TRAINING']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">Training</div>
                             </div>
-                            </a>
                         </div>
+                            </a>
+                            <a  href="<?php echo $OnTravelUrl?>">
                         <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <a href="<?php echo $OnTravelUrl?>">
-                            <div class="employee_details-box hexagon-bg4">
+                            <div title="Today" class="employee_details-box hexagon-bg4">
                                 <span><?php print $employeeDetail['TOUR']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">On Tour</div>
                             </div>
-                            </a>
                         </div>
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            </a>
                             <a href="<?php echo $wohUrl?>">
-                            <div class="employee_details-box hexagon-bg5">
+                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                            <div title="Today" class="employee_details-box hexagon-bg5">
                                 <span><?php print $employeeDetail['WOH']; ?></span>
                                 <div class="face1"></div>
                                 <div class="face2"></div>
                                 <div class="headtitle">WOH</div>
                             </div>
-                            </a>
                         </div>
+                            </a>
                     </div>
                 </div>
                 <div class="col-xs-12  col-sm-7 col-md-3">
                     <div class="col-hris row attendence-box">
                         <ul>
-                            <a href="<?php echo $lateInUrl?>">
+                            <a title="Today" href="<?php echo $lateInUrl?>">
                             <li class="col-xs-4 col-sm-4 col-md-4">
                                 <div class="hris efficiency efficiency-bg1">
                                     <span><?php print $employeeDetail['LATE_IN']; ?></span>
@@ -201,7 +201,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </li>
                             </a>
-                            <a href="<?php echo $earlyOutUrl?>">
+                            <a title="Yesterday" href="<?php echo $earlyOutUrl?>">
                             <li class="col-xs-4 col-sm-4 col-md-4">
                                 <div class="hris efficiency efficiency-bg2">
                                     <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
@@ -209,7 +209,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </li>
                             </a>
-                            <a href="<?php echo $missPunchUrl?>">
+                            <a title="Yesterday" href="<?php echo $missPunchUrl?>">
                             <li class="col-xs-4 col-sm-4 col-md-4">
                                 <div class="hris efficiency efficiency-bg3">
                                     <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
