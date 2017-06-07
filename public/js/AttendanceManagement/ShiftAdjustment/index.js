@@ -2,8 +2,6 @@
     'use strict';
     $(document).ready(function () {
 
-        console.log(document.shiftsAdjust);
-
         $("#shiftAdjustmentTable").kendoGrid({
             excel: {
                 fileName: "ShiftAdjustList.xlsx",

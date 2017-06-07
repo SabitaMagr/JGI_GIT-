@@ -1,10 +1,4 @@
 <?php
-
-//
-//echo '<pre>';
-//print_r($shiftsAdjust);
-//die();
-
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
@@ -43,10 +37,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-    <div class="margin-top-20">
-    
+<div class="margin-top-20">
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -70,9 +64,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
 
-    <div id="shiftAdjustmentTable">
+        <div id="shiftAdjustmentTable">
+        </div>
     </div>
-	</div>
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
@@ -90,7 +84,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit" 
-        href="<?= $this->url("shiftAdjustment", ["action" => "edit"]); ?>/#:ADJUSTMENT_ID #" style="height:17px;">
+        href="<?= $this->url("shiftAdjustment", ["action" => "add"]); ?>/#:ADJUSTMENT_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
         </td>
