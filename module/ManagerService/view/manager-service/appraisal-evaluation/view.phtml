@@ -1,5 +1,5 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/SelfService/loan-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/manager-service/appraisal-evaluation/add.js'));
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\appraisal-evaluation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -150,7 +150,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <h5 id="headingForPanel"><b>Performance Evaluation</b></h5>
                 <div class="portlet-body">
                     <div class="tabbable-line menusetuptab" style="padding-top:0px">
-                        <ul class="nav nav-tabs">
+                        <ul class="nav nav-tabs" id="tabList">
                             <li class="<?= ($tab==1)?"active":"" ?>">
                                 <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                             </li>
@@ -171,9 +171,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php } ?>
                         </ul>
                     </div>
-                    <div class="tab-content margin-top-15" >
+                    <div class="tab-content margin-top-15" id="tabContent">
                         <div class="tab-pane <?= ($tab==1)?"active":"" ?>" id="portlet_tab2_1">
-                            <form method="post" action="<?= $this->url("appraisal-evaluation",['action'=>"view",'appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>1]); ?>" name="performanceAppraisalForm">
+                            <form method="post" action="<?= $this->url("appraisal-evaluation",['action'=>"view",'appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>1]); ?>" name="performanceAppraisalForm" id="appraisalEvaluation">
                             <div class="row">
                                 
                                 <?php 
@@ -239,7 +239,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                                 <?php }?>
                                                                 <div class="col-sm-1">
                                                                     <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_ANSWER_ID']:0; ?>" name="answerId[]"/>
-                                                                    <label>Appraiser Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForAppQuestion.".ar]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_RATING_VAL']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" <?= $disabled; ?>/>
+                                                                    <label>Appraiser Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForAppQuestion.".ar]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['APPRAISER_RATING_VAL']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" <?= $disabled; ?> required="required"/>
                                                                 </div>
                                                             <?php }
                                                             if(count($questionRow['ANSWER'])>0 && array_values($questionRow['ANSWER'])[0]['REVIEWER_ANSWER_ID']!=null){
@@ -289,7 +289,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </form>
                         </div>
                         <div class="tab-pane <?= ($tab==2)?"active":"" ?>" id="portlet_tab2_2">
-                            <form method="post" action="<?= $this->url("appraisal-evaluation",['action'=>"view",'appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]); ?>" name="performanceAppraisalForm">
+                            <form method="post" action="<?= $this->url("appraisal-evaluation",['action'=>"view",'appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]); ?>" name="performanceAppraisalForm" id="appraisalEvaluation1">
                             <div class="row">
                                 <?php
                                 foreach ($appraiserQuestionTemplate as $appraiserQuestionRow) { ?>
@@ -327,7 +327,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                                 <?php }?>
                                                             <div class="col-sm-1">
                                                                 <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                                <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForQuestion.".ar]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['RATING']:null ?>" <?= $disabled ?> min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>"/>
+                                                                <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForQuestion.".ar]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['RATING']:null ?>" <?= $disabled ?> min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" required="required"/>
                                                             </div>
                                                             <?php }
                                                             if((count($questionRow['ANSWER'])>0 && array_values($questionRow['ANSWER'])[0]['REVIEWER_ANSWER_ID']!=null)){
