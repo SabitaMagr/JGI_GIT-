@@ -111,6 +111,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     $lateInUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>6]);
     $earlyOutUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>7]);
     $missPunchUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>8]);
+    $pendingleaveUrl=$this->url('leavestatus', ['action' => 'index','id'=>1]);
     ?>
 
 <div class="employeedashboard">
@@ -369,6 +370,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <div class="col-sm-6 col-md-6">
                     <!-- BEGIN WIDGET THUMB -->
+                            <a href="<?php echo $pendingleaveUrl?>">
                     <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-appraisal-due">
                         <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
                             <h4 class="widget-thumb-heading">Pending Leave</h4>
@@ -395,6 +397,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                     </div>
+                            </a>
                 </div>
             </div>
 
