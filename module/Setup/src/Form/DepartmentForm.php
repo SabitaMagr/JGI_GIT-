@@ -1,15 +1,6 @@
 <?php
 namespace Setup\Form;
 
-/**
- * Form Setup Department
- * Department Form.
- * Created By: Somkala Pachhai
- * Edited By: Somkala Pachhai
- * Date: August 5, 2016, Friday
- * Last Modified By: Somkala Pachhai
- * Last Modified Date: August 10, 2016, Wednesday
- */
 
 use Zend\Form\Annotation;
 
@@ -69,7 +60,7 @@ class DepartmentForm
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
      * @Annotation\Attributes({ "id":"form-branchId","class":"form-control"})
@@ -78,7 +69,7 @@ class DepartmentForm
     
      /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
      * @Annotation\Attributes({ "id":"form-companyId","class":"form-control"})

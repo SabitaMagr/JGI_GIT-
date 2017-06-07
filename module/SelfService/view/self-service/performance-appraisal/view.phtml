@@ -176,7 +176,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm">
                             <div class="row">
                                 <?php 
-                                $selfDisabled = ($questionForCurStage==0)?'disabled':'';
+                                $selfDisabled = ($questionForCurStage==0 && $appraiserAvailableAnswer===true)?'disabled':'';
 //                                print "<pre>";
 //                                print_r($questionTemplate); die();
                                 foreach ($questionTemplate as $questionTemplateRow) { ?>
@@ -274,7 +274,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                             </div>
-                            <?php if($questionForCurStage>0){ ?>
+                            <?php if($questionForCurStage>0 || $appraiserAvailableAnswer!==true){ ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">

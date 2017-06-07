@@ -124,6 +124,7 @@ class PerformanceAppraisal extends AbstractActionController{
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
                 $i=0;
+                $editMode = false;
                 foreach($answer as $key=>$value){
                     if(strpos($key,'sr') !== false ){
                         $appraisalAnswerModel->rating = $value;
@@ -151,6 +152,7 @@ class PerformanceAppraisal extends AbstractActionController{
                             $appraisalAnswerModel->branchId = $employeeDetail['BRANCH_ID'];
                             $this->repository->add($appraisalAnswerModel);
                         }else{
+                            $editMode =true;
                             $appraisalAnswerModel->modifiedDate = Helper::getcurrentExpressionDate();
                             $appraisalAnswerModel->modifiedBy = $this->employeeId;
                             $this->repository->edit($appraisalAnswerModel,$key);
@@ -158,7 +160,9 @@ class PerformanceAppraisal extends AbstractActionController{
                     }
                     $i+=1;
                 }
-                $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $this->employeeId);
+                if(!$editMode){
+                    $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $this->employeeId);
+                }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("performanceAppraisal");
             }catch(Exception $e){

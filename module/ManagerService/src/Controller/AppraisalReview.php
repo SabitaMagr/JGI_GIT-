@@ -122,6 +122,7 @@ class AppraisalReview extends AbstractActionController{
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
                 $i=0;
+                $editMode = false;
 //                print "<pre>";
 //                print_r($postData); die();
                 foreach($answer as $key=>$value){
@@ -151,6 +152,7 @@ class AppraisalReview extends AbstractActionController{
                             $appraisalAnswerModel->branchId = $userDetail['BRANCH_ID'];
                             $appraisalAnswerRepo->add($appraisalAnswerModel);
                         }else{
+                            $editMode=true;
                             $appraisalAnswerModel->modifiedDate = Helper::getcurrentExpressionDate();
                             $appraisalAnswerModel->modifiedBy = $this->employeeId;
                             $appraisalAnswerRepo->edit($appraisalAnswerModel,$postData['answerId'][$i]);
@@ -166,7 +168,9 @@ class AppraisalReview extends AbstractActionController{
                         $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]);
                     break;
                     case 3: 
-                        $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
+                        if(!$editMode){
+                            $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
+                        }
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-review");
                     break;

@@ -95,8 +95,7 @@ class BranchController extends AbstractActionController {
                     'form' => $this->form,
                     'id' => $id,
                     'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-//                    'companies' => EntityHelper::getTableKVList($this->adapter, Company::TABLE_NAME),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, false, TRUE),
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, TRUE),
                     'customRenderer' => Helper::renderCustomView()
         ]);
     }
