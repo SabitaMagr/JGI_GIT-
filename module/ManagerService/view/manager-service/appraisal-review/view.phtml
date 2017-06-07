@@ -176,7 +176,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>1]) ?>" name="performanceAppraisalForm" id="appraisalReview">
                             <div class="row">
                                 <?php 
-                                $disabled = ($questionForCurStage==0)?'disabled':'';
+                                $disabled = ($questionForCurStage==0 && $appraiseeAvailableAnswer===true)?'disabled':'';
                                 $questionOnPreTab = 0;
                                 foreach ($questionTemplate as $questionTemplateRow) { ?>
                                     <div class="col-md-12 margin-bottom-10">
@@ -275,7 +275,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                             </div>
-                            <?php if($questionForCurStage>0 && $questionOnPreTab>0){ ?>
+                            <?php if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -365,7 +365,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                             </div>
-                                <?php if($questionForCurStage>0 && $questionOnPreTab>0){ ?>
+                                <?php if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ ?>
                                     <div class="row margin-top-10">
                                         <div class="col-sm-12">
                                             <div class="form-group">
@@ -428,7 +428,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                             </div>
-                            <?php if($questionForCurStage>0){ ?>
+                            <?php if($questionForCurStage>0 || $appraiseeAvailableAnswer!==true){ ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
