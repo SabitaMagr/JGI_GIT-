@@ -213,7 +213,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                                 <?php }?>
                                                                 <div class="col-sm-1">
                                                                     <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                                    <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForQuestion.".sr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['RATING']:null ?>" <?= $selfDisabled ?> min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>"/>
+                                                                    <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForQuestion.".sr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['RATING']:null ?>" <?= $selfDisabled ?> min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" required="required"/>
                                                                 </div>
                                                             <?php }?>
                                                                 
@@ -461,7 +461,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                                 <?php } ?>
                                                                 <div class="col-sm-1">
                                                                     <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_keys($questionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                                                    <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForQuestion.".sr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['RATING']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" <?= $selfDisabled1;?>/>
+                                                                    <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForQuestion.".sr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['RATING']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" <?= $selfDisabled1;?> required="required"/>
                                                                 </div>
                                                             <?php }?>
                                                         </div>
