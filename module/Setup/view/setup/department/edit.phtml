@@ -36,10 +36,6 @@ $form->prepare();
 <script>
     document.branches =<?php echo json_encode($branch); ?>;
     document.selectedBranchId = '<?php echo $branchId->getValue(); ?>';
-    document.menu =<?php
-$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];
-echo json_encode($menu);
-?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
@@ -87,7 +83,6 @@ echo json_encode($menu);
                         <div class="form-group">
                             <div class="form-group">
                                 <?php print $this->formLabel($companyId); ?>
-                                <span class="required" aria-required="true">*</span>
                                 <?php print $this->formElement($companyId); ?>
                                 <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
                             </div>
@@ -104,7 +99,6 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($branchId); ?>
-                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($branchId); ?>
                             <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
                         </div>

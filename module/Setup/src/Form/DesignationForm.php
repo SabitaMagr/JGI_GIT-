@@ -2,15 +2,6 @@
 
 namespace Setup\Form;
 
-/**
-* Master Setup for Designation
-* Designation controller.
-* Created By: Ukesh Gaiju
-* Edited By: Somkala Pachhai
-* Date: August 3, 2016, Friday 
-* Last Modified By: Somkala Pachhai
-* Last Modified Date: August 10,2016, Wednesday 
-*/
 
 use Zend\Form\Annotation;
 use Setup\Model\Model;
@@ -89,7 +80,7 @@ class DesignationForm
     
         /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
      * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
