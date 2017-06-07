@@ -41,10 +41,6 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuBranch"]];
-echo json_encode($menu);
-?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
@@ -91,7 +87,6 @@ echo json_encode($menu);
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($countryId); ?>
-                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($countryId); ?>
                             <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
                         </div>  

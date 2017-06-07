@@ -116,10 +116,11 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             }
             SessionHelper::sessionCheck($event);
             $this->initNotification($adapter, $event->getViewModel(), $identity);
+            
+            $employeeRepo = new \Setup\Repository\EmployeeRepository($adapter);
+            $event->getViewModel()->setVariable('employeeList', $employeeRepo->fetchEmployeeFullNameList());
         }
 
-        $employeeRepo = new \Setup\Repository\EmployeeRepository($adapter);
-        $event->getViewModel()->setVariable('employeeList', $employeeRepo->fetchEmployeeFullNameList());
 
 
         //print "Called before any controller action called. Do any operation.";
