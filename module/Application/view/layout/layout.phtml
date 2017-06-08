@@ -70,7 +70,9 @@
             document.basePath = '<?= $this->basePath() ?>';
             document.settingUrl = '<?= $this->url("user-setting", ["action" => "index"]) ?>';
             document.updateSettingUrl = '<?= $this->url("user-setting", ["action" => "update"]) ?>';
-            document.globalSearchemployeeList = <?php echo json_encode($employeeList); ?>;
+<?php if ($displayGlobalSearch) { ?>
+                document.globalSearchemployeeList = <?php echo json_encode($employeeList); ?>;
+<?php } ?>
             document.globalSearchEmployeeProfileUrl = '<?= $this->url("employee", ["action" => "view"]) ?>';
         </script>
         <div class="page-wrapper" id="hris-page-content">
@@ -110,8 +112,10 @@
         <![endif]-->
 
         <?php
-        $this->headScript()
-                ->prependFile($this->basePath('js/application/globalSearch.js'));
+        if ($displayGlobalSearch) {
+            $this->headScript()
+                    ->prependFile($this->basePath('js/application/globalSearch.js'));
+        }
         $this->headScript()
                 ->prependFile($this->basePath('js/user-setting.js'));
         $this->headScript()

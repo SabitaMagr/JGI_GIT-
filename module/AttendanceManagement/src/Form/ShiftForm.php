@@ -233,7 +233,7 @@ class ShiftForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Grace Start Time"})
      * @Annotation\Attributes({ "id":"graceStartTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control" })
@@ -242,7 +242,7 @@ class ShiftForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Grace End Time"})
      * @Annotation\Attributes({ "id":"graceEndTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})

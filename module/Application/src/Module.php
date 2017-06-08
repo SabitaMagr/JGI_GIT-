@@ -14,6 +14,7 @@ use Notification\Controller\HeadNotification;
 use RestfulService\Controller\RestfulService;
 use System\Model\MenuSetup;
 use System\Model\Setting;
+use System\Repository\DashboardDetailRepo;
 use System\Repository\RolePermissionRepository;
 use System\Repository\SettingRepository;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter as DbTableAuthAdapter;
@@ -116,9 +117,25 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             }
             SessionHelper::sessionCheck($event);
             $this->initNotification($adapter, $event->getViewModel(), $identity);
-            
-            $employeeRepo = new \Setup\Repository\EmployeeRepository($adapter);
-            $event->getViewModel()->setVariable('employeeList', $employeeRepo->fetchEmployeeFullNameList());
+
+            $dashboardDetailRepo = new DashboardDetailRepo($adapter);
+            $rawResult = $dashboardDetailRepo->fetchById($roleId);
+            $result = Helper::extractDbData($rawResult, true);
+
+            $type = null;
+            foreach ($result as $dashboard) {
+                if ($dashboard['DASHBOARD'] == 'dashboard') {
+                    $type = $dashboard['ROLE_TYPE'];
+                    break;
+                }
+            }
+
+
+            $event->getViewModel()->setVariable('displayGlobalSearch', ($type == "A") ? 1 : 0);
+            if ($type == "A") {
+                $employeeRepo = new \Setup\Repository\EmployeeRepository($adapter);
+                $event->getViewModel()->setVariable('employeeList', $employeeRepo->fetchEmployeeFullNameList());
+            }
         }
 
 
