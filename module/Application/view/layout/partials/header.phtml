@@ -11,16 +11,19 @@
             </div>
         </div>
         <!-- END LOGO -->
-        <form id="globalSearchForm" class="search-form search-form-expanded margin-right-10" action="" method="GET">
-            <div class="input-group">
-                <input style="height: 50px !important;" id="globalSearch" type="text" class="form-control" placeholder="Search..." name="query">
-                <span class="input-group-btn">
-                    <a href="javascript:;" class="btn submit">
-                        <i class="icon-magnifier"></i>
-                    </a>
-                </span>
-            </div>
-        </form>
+        <?php if ($displayGlobalSearch) { ?>
+            <form id="globalSearchForm" class="search-form search-form-expanded margin-right-10" action="" method="GET">
+                <div class="input-group">
+                    <input style="height: 50px !important;" id="globalSearch" type="text" class="form-control" placeholder="Search..." name="query">
+                    <span class="input-group-btn">
+                        <a href="javascript:;" class="btn submit">
+                            <i class="icon-magnifier"></i>
+                        </a>
+                    </span>
+                </div>
+            </form>
+
+        <?php } ?>
         <div class="company-logo company-logo-box margin-right-10">
             <?php if (isset($companyLogoUrl) && $companyLogoUrl != "NO") { ?>
                 <img src="<?= $this->basePath("uploads/" . $companyLogoUrl) ?>" alt="logo" class="logo-default1 companylogo">
