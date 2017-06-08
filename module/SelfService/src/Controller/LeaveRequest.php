@@ -158,11 +158,12 @@ class LeaveRequest extends AbstractActionController {
                     } catch (Exception $e) {
                         $this->flashmessenger()->addMessage($e->getMessage());
                     }
-                }
-                try {
-                    HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin("url"));
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
+                }else{
+                    try {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin("url"));
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
                 }
                 return $this->redirect()->toRoute("leaverequest");
             }

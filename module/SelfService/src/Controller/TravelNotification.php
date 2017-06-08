@@ -166,6 +166,13 @@ class TravelNotification extends AbstractActionController{
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
+            if($action=='Approve'){
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $travelRequest, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+            }
             $this->redirect()->toRoute('travelNotification');
         }
         $transportTypes = array(

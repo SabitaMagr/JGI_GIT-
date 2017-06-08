@@ -164,6 +164,13 @@ class LeaveNotification extends AbstractActionController{
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
+            if($action=='Approve'){
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveApply, $this->adapter, $this->plugin("url"));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+            }
             $this->redirect()->toRoute('leaveNotification');
         }
         
