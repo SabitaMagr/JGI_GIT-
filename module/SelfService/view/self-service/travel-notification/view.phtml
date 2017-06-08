@@ -33,8 +33,6 @@ $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled" => "disabled"]);
 $toDate = $form->get('toDate');
 $toDate->setAttributes(["disabled" => "disabled"]);
-$travelCode = $form->get('travelCode');
-$travelCode->setAttributes(["disabled" => "disabled"]);
 $destination = $form->get('destination');
 $destination->setAttributes(["disabled" => "disabled"]);
 $purpose = $form->get('purpose');
@@ -154,14 +152,6 @@ print $this->form()->openTag($form);
                     </div>
 
                     <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($travelCode); ?>
-                                <?php print $this->formElement($travelCode); ?>
-                                <?php print $this->formElementErrors()->render($travelCode, ['class' => 'help-block']); ?>
-                            </div>
-                        </div>
-
                         <div class="col-sm-4">
                             <div class="row">
                                 <div class="col-sm-6">
@@ -289,7 +279,7 @@ print $this->form()->openTag($form);
                         <div
                             class="form-group margin-top-10 required">
                             <label>Reason for action [From Sub. Employee] <?php echo $note; ?></label>
-                            <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks; ?></textarea>
+                            <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks; ?></textarea>
                         </div>
                     <?php } ?>
                 </div>

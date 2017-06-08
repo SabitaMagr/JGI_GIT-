@@ -160,6 +160,7 @@ class TravelRequest extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
 
                 if ($substituteEmployee == 1) {
                     $travelSubstituteModel = new TravelSubstitute();
@@ -179,12 +180,12 @@ class TravelRequest extends AbstractActionController {
                     } catch (Exception $e) {
                         $this->flashmessenger()->addMessage($e->getMessage());
                     }
-                }
-                $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
-                try {
-                    HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
+                }else{
+                    try {
+                        HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
                 }
                 return $this->redirect()->toRoute("travelRequest");
             }
