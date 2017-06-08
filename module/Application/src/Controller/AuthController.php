@@ -141,6 +141,7 @@ class AuthController extends AbstractActionController {
                         "user_id" => $resultRow->USER_ID,
                         "employee_id" => $resultRow->EMPLOYEE_ID,
                         "role_id" => $resultRow->ROLE_ID,
+//                        "role_id" => 8,
 //                        "employee_detail" => $employeeDetail,
                         "fiscal_year" => $fiscalYear
                     ]);
