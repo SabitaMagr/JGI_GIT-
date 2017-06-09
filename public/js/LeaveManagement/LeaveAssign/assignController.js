@@ -49,8 +49,11 @@ angular.module('hris', ['ui.bootstrap'])
                     }
                 }
                 Promise.all(promises).then(function (success) {
-                    App.unblockUI("#hris-page-content");
                     console.log(success);
+                    $scope.$apply(function () {
+                        $scope.view(); 
+                    });
+                    App.unblockUI("#hris-page-content");
                     window.toastr.success("Leave assigned successfully", "Notifications");
                 });
             };
