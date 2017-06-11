@@ -4,9 +4,10 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
-        
-          $("#reset").on("click", function () {
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+//        $('#fromDate').datepicker('setDate', nepaliDatePickerExt.getDate('07-Jun-2017'));
+
+        $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
                 $.each(document.ids, function (key, value) {
                     $("#" + key).val(value).change();
@@ -26,13 +27,22 @@ angular.module('hris', [])
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
+                var status = angular.element(document.getElementById('statusId')).val();
+                var missPunchOnly = 0;
+                if (($("#missPunchOnly").is(":checked"))) {
+                    missPunchOnly = 1;
+                }
+
+                console.log(status);
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceList',
                     data: {
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'employeeId': employeeId
+                        'employeeId': employeeId,
+                        'status': status,
+                        'missPunchOnly': missPunchOnly
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -72,22 +82,23 @@ angular.module('hris', [])
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
                         {field: "TOTAL_HOUR", title: "Total Hour"},
+                        {field: "STATUS", title: "STATUS"},
                         {field: "IN_REMARKS", title: "Late In Reason"},
                         {field: "OUT_REMARKS", title: "Early Out Reason"},
                     ]
                 });
-                
-                app.searchTable('attendanceTable',['ATTENDANCE_DT','IN_TIME','OUT_TIME','TOTAL_HOUR','IN_REMARKS','OUT_REMARKS']);
+
+                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'IN_REMARKS', 'OUT_REMARKS']);
                 app.pdfExport(
-                'attendanceTable',
-                {
-                    'ATTENDANCE_DT': ' Attendance Date',
-                    'IN_TIME': 'In Time',
-                    'OUT_TIME': 'Out Time',
-                    'TOTAL_HOUR': 'Total Hour',
-                    'IN_REMARKS': 'In Remarks',
-                    'OUT_REMARKS': 'Out Remarks'
-                }
+                        'attendanceTable',
+                        {
+                            'ATTENDANCE_DT': ' Attendance Date',
+                            'IN_TIME': 'In Time',
+                            'OUT_TIME': 'Out Time',
+                            'TOTAL_HOUR': 'Total Hour',
+                            'IN_REMARKS': 'In Remarks',
+                            'OUT_REMARKS': 'Out Remarks'
+                        }
                 );
                 function gridDataBound(e) {
                     var grid = e.sender;
@@ -104,4 +115,35 @@ angular.module('hris', [])
                     grid.saveAsExcel();
                 });
             }
+
+
+            var idFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+            var fiscalYear = jQuery.parseJSON(document.fiscalYear);
+            if (parseInt(idFromParameter) > 0) {
+
+                console.log(idFromParameter);
+                var $status = angular.element(document.getElementById('statusId'));
+                var $fromDate = angular.element(document.getElementById('fromDate'));
+                var $toDate = angular.element(document.getElementById('toDate'));
+                var $missPunchOnly = angular.element(document.getElementById('missPunchOnly'));
+                var fiscalFromDate = fiscalYear.FROM_DATE;
+                var fiscalEndDate = fiscalYear.TO_DATE;
+                var map = {1: 'P', 2: 'L', 3: 'T', 4: 'TVL', 5: 'WOH', 6: 'LI', 7: 'EO'};
+
+                $fromDate.val(fiscalFromDate);
+                $toDate.val(fiscalEndDate);
+                
+                if (idFromParameter == 8) {
+                    $missPunchOnly.prop("checked", true);
+                } else {
+                    $status.val(map[idFromParameter]).change();
+                }
+
+
+
+                $scope.view();
+            }
+
+
+
         });

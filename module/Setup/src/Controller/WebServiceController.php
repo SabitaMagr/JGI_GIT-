@@ -61,7 +61,7 @@ class WebServiceController extends AbstractActionController {
                 case "pullEmployeeLeave":
                     $leaveAssign = new LeaveAssignRepository($this->adapter);
                     $ids = $postedData->id;
-                    $temp = $leaveAssign->filter($ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId'], $ids['serviceTypeId'],$ids['employeeId'],$ids['companyId'],$ids['positionId']);
+                    $temp = $leaveAssign->filter($ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId'], $ids['serviceTypeId'], $ids['employeeId'], $ids['companyId'], $ids['positionId']);
 
                     $tempArray = [];
                     foreach ($temp as $item) {
@@ -225,11 +225,60 @@ class WebServiceController extends AbstractActionController {
                     $employeeId = $filtersDetail['employeeId'];
                     $fromDate = $filtersDetail['fromDate'];
                     $toDate = $filtersDetail['toDate'];
+                    $status = $filtersDetail['status'];
+                    $missPunchOnly = ((int) $filtersDetail['missPunchOnly'] == 1) ? true : false;
 
-                    $result = $attendanceRepository->recordFilter($fromDate, $toDate, $employeeId);
+                    $result = $attendanceRepository->recordFilter($fromDate, $toDate, $employeeId, $status,$missPunchOnly);
 
                     $temArray = [];
                     foreach ($result as $row) {
+                        if ($status == 'L') {
+                            $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+                        } else if ($status == 'H') {
+                            $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+                        } else if ($status == 'A') {
+                            $row['STATUS'] = "Absent";
+                        } else if ($status == 'P') {
+                            $row['STATUS'] = "Present";
+                        } else if ($status == 'T') {
+                            $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
+                        } else if ($status == 'TVL') {
+                            $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
+                        } else if ($status == 'WOH') {
+                            $row['STATUS'] = "Work On Holiday";
+                        } else if ($status == 'LI') {
+                            $row['STATUS'] = "Present(Late In)";
+                        } else if ($status == 'EO') {
+                            $row['STATUS'] = "Present(Early Out)";
+                        } else {
+                            if ($row['LEAVE_ENAME'] != null) {
+                                $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
+                            } else if ($row['HOLIDAY_ENAME'] != null) {
+                                $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
+                            } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null && $row['DAYOFF_FLAG'] == 'N') {
+                                $row['STATUS'] = "Absent";
+                            } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null && $row['LATE_STATUS'] == 'N') {
+                                $row['STATUS'] = "Present";
+                            } else if ($row['TRAINING_NAME'] != null) {
+                                $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
+                            } elseif ($row['TRAVEL_DESTINATION'] != null) {
+                                $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
+                            } elseif (($row['DAYOFF_FLAG'] == 'Y') && $row['IN_TIME'] != null && $row['LATE_STATUS'] == 'N') {
+                                $row['STATUS'] = "Present(Work On Holiday)";
+                            } elseif ($row['LATE_STATUS'] != 'N') {
+                                if ($row['LATE_STATUS'] == 'L') {
+                                    $row['STATUS'] = "Present(Late In)";
+                                }
+                                if ($row['LATE_STATUS'] == 'E') {
+                                    $row['STATUS'] = "Present(Early Out)";
+                                }
+                                if ($row['LATE_STATUS'] == 'B') {
+                                    $row['STATUS'] = "Present(Late In and Early Out)";
+                                }
+                            } elseif ($row['DAYOFF_FLAG'] == 'Y') {
+                                $row['STATUS'] = "Day Off";
+                            }
+                        }
                         array_push($temArray, $row);
                     }
 
