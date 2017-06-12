@@ -16,7 +16,7 @@ class SetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Asset Name (in Eng)"})
      * @Annotation\Attributes({"id":"assetEdesc","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"200"}})
      */
     public $assetEdesc;
     
@@ -26,7 +26,7 @@ class SetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Asset Name (in Nep)"})
      * @Annotation\Attributes({"id":"assetNdesc","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"200"}})
      */
     public $assetNdesc;
     

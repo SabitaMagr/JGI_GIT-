@@ -44,7 +44,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Loan Code"},
                         {value: "Loan Name"},
                         {value: "Amount Range"},
                         {value: "Interest Rate"},
@@ -66,7 +65,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.LOAN_CODE},
                         {value: dataItem.LOAN_NAME},
                         {value: dataItem.MIN_AMOUNT+"-"+dataItem.MAX_AMOUNT},
                         {value: dataItem.INTEREST_RATE+"%"},
@@ -85,7 +83,6 @@
                 sheets: [
                     {
                         columns: [
-                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

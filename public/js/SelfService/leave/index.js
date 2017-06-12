@@ -31,6 +31,16 @@
         });
         
 //        app.searchTable('leaveTable',['LEAVE_ENAME']);
+
+        app.pdfExport(
+                'leaveTable',
+                {
+                    'LEAVE_ENAME': 'Leave',
+                    'ALL_TOTAL_DAYS': 'Total Days,',
+                    'LEAVE_TAKEN':'Leave Taken',
+                    'BALANCE':'Balance'
+                
+                });
         
         function gridDataBound(e) {
             var grid = e.sender;

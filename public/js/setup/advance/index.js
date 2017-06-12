@@ -44,7 +44,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Advance Code"},
                         {value: "Company"},
                         {value: "Advance Name"},
                         {value: "Salary Range"},
@@ -66,7 +65,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.ADVANCE_CODE},
                         {value: dataItem.COMPANY_NAME},
                         {value: dataItem.ADVANCE_NAME},
                         {value: dataItem.MIN_SALARY_AMT+"-"+dataItem.MAX_SALARY_AMT},
@@ -85,7 +83,6 @@
                 sheets: [
                     {
                         columns: [
-                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
