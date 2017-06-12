@@ -23,7 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "TRAINING_CODE", title: "Training Code",width:90},
+                {field: "TRAINING_NAME", title: "Training",width:90},
                 {field: "START_DATE", title: "Start Date",width:80},
                 {field: "END_DATE", title: "End Date",width:80},
                 {field: "DURATION", title: "Duration(in hour)",width:100},
@@ -34,6 +34,19 @@
         });
         
         app.searchTable('trainingTable',['TRAINING_CODE','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','LOCATION']);
+        
+        app.pdfExport(
+                'trainingTable',
+                {
+                    'TRAINING_NAME': 'Training',
+                    'START_DATE': 'Start Date',
+                    'END_DATE':'End Date',
+                    'DURATION':'Duration',
+                    'INSTITUTE_NAME':'Institute',
+                    'LOCATION':'Location'
+                
+                });
+        
         
         function gridDataBound(e) {
             var grid = e.sender;
@@ -48,7 +61,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Training Code"},
                         {value: "Training Name"},
                         {value: "Start Date"},
                         {value: "End Date"},
@@ -75,7 +87,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.TRAINING_CODE},
                         {value: dataItem.TRAINING_NAME},
                         {value: dataItem.START_DATE},
                         {value: dataItem.END_DATE},
@@ -99,7 +110,6 @@
                 sheets: [
                     {
                         columns: [
-                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

@@ -32,6 +32,16 @@
         
         app.searchTable('holidayTable',['HOLIDAY_ENAME','START_DATE','END_DATE','HALF_DAY']);
         
+        app.pdfExport(
+                'holidayTable',
+                {
+                    'HOLIDAY_ENAME': 'Holiday',
+                    'START_DATE': 'Start Date,',
+                    'END_DATE':'End Date',
+                    'HALF_DAY':'HALF_DAY'
+                
+                });
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

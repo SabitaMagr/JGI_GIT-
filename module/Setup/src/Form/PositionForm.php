@@ -62,5 +62,14 @@ class PositionForm {
      * @Annotation\Attributes({ "id":"levelNo","min":"0", "class":"form-control"})
      */
     public $levelNo;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Work On Holiday"})
+     * @Annotation\Attributes({ "id":"wohFlag","class":"form-control"})
+     */
+    public $wohFlag;
 
 }
