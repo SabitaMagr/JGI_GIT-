@@ -63,7 +63,7 @@ class ShiftSetup extends AbstractActionController {
                 $shift->createdBy = $this->employeeId;
                 $shift->status = 'E';
                 $shift->graceStartTime = Helper::getExpressionTime($shift->graceStartTime);
-                $shift->graceEndTime= Helper::getExpressionTime($shift->graceEndTime);
+                $shift->graceEndTime = Helper::getExpressionTime($shift->graceEndTime);
 
                 $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
                 $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);
@@ -71,10 +71,6 @@ class ShiftSetup extends AbstractActionController {
                 $shift->earlyOut = Helper::hoursToMinutes($shift->earlyOut);
 
 
-//                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-16LE');
-//                print "<pre>";
-//                print_r($shift->shiftLname);
-//                exit;
 
                 $this->repository->add($shift);
                 $this->flashmessenger()->addMessage("Shift Successfully added!!!");
@@ -85,7 +81,7 @@ class ShiftSetup extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC",NULL,FALSE,TRUE)
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE)
                         ]
                 )
         );
@@ -119,9 +115,9 @@ class ShiftSetup extends AbstractActionController {
                 $shift->halfTime = Helper::getExpressionTime($shift->halfTime);
                 $shift->modifiedDt = Helper::getcurrentExpressionDate();
                 $shift->modifiedBy = $this->employeeId;
-                
+
                 $shift->graceStartTime = Helper::getExpressionTime($shift->graceStartTime);
-                $shift->graceEndTime= Helper::getExpressionTime($shift->graceEndTime);
+                $shift->graceEndTime = Helper::getExpressionTime($shift->graceEndTime);
 
                 $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
                 $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);
@@ -139,7 +135,7 @@ class ShiftSetup extends AbstractActionController {
                     'form' => $this->form,
                     'id' => $id,
                     'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC",NULL,FALSE,TRUE)
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE)
                         ]
                 )
         );

@@ -52,6 +52,7 @@ BEGIN
       AND V_ATTENDANCE_DATE BETWEEN HS.START_DATE AND HS.END_DATE
       AND HS.CURRENT_SHIFT = 'Y'
       AND HS.STATUS        = 'E'
+      AND ES.STATUS        = 'E'
       AND ES.SHIFT_ID      = HS.SHIFT_ID
       AND ROWNUM           <2;
     EXCEPTION
