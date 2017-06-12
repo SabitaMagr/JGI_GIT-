@@ -129,7 +129,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
         if ($status != "All") {
             if ($status == "A") {
-                $select->where(["A.IN_TIME IS NULL AND A.OUT_TIME IS NULL AND A.TRAINING_ID IS NULL AND A.HOLIDAY_ID IS NULL AND A.LEAVE_ID IS NULL"]);
+                $select->where(["A.IN_TIME IS NULL AND A.OUT_TIME IS NULL AND A.TRAINING_ID IS NULL AND A.HOLIDAY_ID IS NULL AND A.LEAVE_ID IS NULL AND A.DAYOFF_FLAG='N'"]);
             }
 
             if ($status == "H") {

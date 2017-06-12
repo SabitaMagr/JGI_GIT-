@@ -28,20 +28,6 @@ angular.module('hris', [])
                 if (($("#missPunchOnly").is(":checked"))) {
                     missPunchOnly = 1;
                 }
-                console.log('employee', employeeId);
-                console.log('company', companyId);
-                console.log('branch', branchId);
-                console.log('department', departmentId);
-                console.log('desigination', designationId);
-                console.log('positionId', positionId);
-                console.log('serviceTypeId', serviceTypeId);
-                console.log('serviceEventTypeId', serviceEventTypeId);
-                console.log('fromDate', fromDate);
-                console.log('toDate', toDate);
-                console.log('status', status);
-                console.log('missPunchOnly', missPunchOnly);
-
-
 
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
