@@ -2,16 +2,15 @@
 
 namespace WorkOnHoliday\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
-use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
-use Zend\Form\Annotation\AnnotationBuilder;
-use SelfService\Form\WorkOnHolidayForm;
-use Setup\Model\HrEmployees;
-use SelfService\Repository\WorkOnHolidayRepository;
-use SelfService\Model\WorkOnHoliday;
+use Application\Helper\Helper;
 use HolidayManagement\Model\Holiday;
+use SelfService\Form\WorkOnHolidayForm;
+use SelfService\Model\WorkOnHoliday;
+use SelfService\Repository\WorkOnHolidayRepository;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
 ;
 
@@ -56,8 +55,8 @@ class WorkOnHolidayApply extends AbstractActionController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ",false,true),
-                    'holidays' => EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], ["STATUS" => 'E'], "HOLIDAY_ENAME", "ASC",null,false,true)
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", false, true),
+                    'holidays' => EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], ["STATUS" => 'E'], "HOLIDAY_ENAME", "ASC", null, false, true)
         ]);
     }
 

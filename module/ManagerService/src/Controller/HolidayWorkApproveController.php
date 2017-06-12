@@ -15,12 +15,6 @@ use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\HolidayRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -49,7 +43,6 @@ class HolidayWorkApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        //print_r($this->employeeId); die();
         $list = $this->holidayWorkApproveRepository->getAllRequest($this->employeeId);
 
         $holidayWorkApprove = [];
@@ -170,6 +163,10 @@ class HolidayWorkApproveController extends AbstractActionController {
                     $workOnHolidayModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
                 } else if ($action == "Approve") {
+                    
+                    
+                    
+                    
                     $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
                     $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
                     $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
@@ -231,7 +228,7 @@ class HolidayWorkApproveController extends AbstractActionController {
     public function statusAction() {
         $holidayFormElement = new Select();
         $holidayFormElement->setName("holiday");
-        $holidays = EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC",NULL,FALSE,TRUE);
+        $holidays = EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC", NULL, FALSE, TRUE);
         $holidays1 = [-1 => "All"] + $holidays;
         $holidayFormElement->setValueOptions($holidays1);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);

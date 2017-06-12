@@ -293,7 +293,6 @@ window.app = (function ($, toastr, App) {
                     if (englishStartDate !== -Infinity && englishStartDate.getTime() >= nepaliDatePickerExt.getDate(temp).getTime()) {
                         throw {message: 'The Selected Date cannot be less than ' + englishStartDate};
                     }
-                    console.log('englishEndDate', englishEndDate);
                     if (englishEndDate !== Infinity && englishEndDate.getTime() <= nepaliDatePickerExt.getDate(temp).getTime()) {
                         throw {message: 'The Selected Date cannot be more than ' + englishEndDate};
                     }

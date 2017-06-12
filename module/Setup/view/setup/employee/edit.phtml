@@ -1,6 +1,8 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
@@ -10,6 +12,10 @@ $this->headScript()->appendFile($this->basePath('js/setup/employee/form_wizard.j
 $this->headScript()->appendFile($this->basePath('js/setup/employee/add.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/employeeEditController.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 ?>
 
 <?php
@@ -416,6 +422,20 @@ if ($this->messages) {
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         </div>
                                         <?php print $this->formElementErrors()->render($birthDate, ['class' => 'help-block error']) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <label for="nepaliStartDate">Birth Date(Nepali)</label>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <div class="input-group date">
+                                            <input type="text"   id="nepaliBirthDate" class="form-control " value="">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
