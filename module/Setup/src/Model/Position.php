@@ -17,6 +17,7 @@ class Position extends Model {
     const MODIFIED_BY = "MODIFIED_BY";
     const COMPANY_ID = "COMPANY_ID";
     const LEVEL_NO = "LEVEL_NO";
+    const WOH_FLAG = "WOH_FLAG";
 
     public $positionId;
     public $positionName;
@@ -28,6 +29,8 @@ class Position extends Model {
     public $modifiedBy;
     public $companyId;
     public $levelNo;
+    public $wohFlag;
+    
     public $mappings = [
         'positionId' => self::POSITION_ID,
         'positionName' => self::POSITION_NAME,
@@ -38,7 +41,8 @@ class Position extends Model {
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
         'companyId' => self::COMPANY_ID,
-        'levelNo' => self::LEVEL_NO
+        'levelNo' => self::LEVEL_NO,
+        'wohFlag' => self::WOH_FLAG
     ];
 
 }

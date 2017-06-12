@@ -47,7 +47,8 @@
             columns: [
                 {field: "LEVEL_NO", title: "Level", width: 100},
                 {field: "POSITION_NAME", title: "Position", width: 300},
-                {field: "COMPANY_NAME", title: "Company", width: 300},
+                {field: "COMPANY_NAME", title: "Company", width: 250},
+                {field: "WOH_FLAG", title: "Work On Holiday", width: 150},
                 {field: "REMARKS", title: "Remarks", hidden: true},
                 {title: "Action", width: 80, width: 100}
             ]
@@ -61,6 +62,7 @@
                     'LEVEL_NO': 'Level',
                     'POSITION_NAME': 'Position',
                     'COMPANY_NAME': 'Company',
+                    'WOH_FLAG': 'Work On Holiday',
                     'REMARKS': 'Remarks'
                 }
         );
@@ -71,6 +73,7 @@
                         {value: "Level"},
                         {value: "Position Name"},
                         {value: "Company Name"},
+                        {value: "Work On Holiday"},
                         {value: "Remarks"}
                     ]
                 }];
@@ -90,6 +93,7 @@
                         {value: dataItem.LEVEL_NO},
                         {value: dataItem.POSITION_NAME},
                         {value: dataItem.COMPANY_NAME},
+                        {value: dataItem.WOH_FLAG},
                         {value: dataItem.REMARKS}
                     ]
                 });
@@ -103,6 +107,8 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true}

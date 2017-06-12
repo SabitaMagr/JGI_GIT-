@@ -13,6 +13,14 @@ $companyId->setValueOptions($companies);
 
 $levelNo = $form->get('levelNo');
 
+$wohFlag = $form->get('wohFlag');
+$wohFlagValues=[
+    'L'=>'Leave',
+    'O'=>'OT'
+];
+
+$wohFlag->setValueOptions($wohFlagValues);
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -51,7 +59,7 @@ $form->prepare();
                 ?>
 
                 <div class=" row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group <?= empty($levelNo->getMessages()) ? "" : "has-error" ?>" >
                             <?php print $this->formLabel($levelNo); ?>
                             <span class="required" aria-required="true">*</span>
@@ -59,7 +67,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($levelNo, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group <?= empty($positionName->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($positionName); ?>
                             <span class="required" aria-required="true">*</span>
@@ -68,17 +76,24 @@ $form->prepare();
                             <input type="hidden" id="positionId" value="<?php echo $id; ?>"/>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
                             <?php print $this->formElement($companyId); ?>
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
+                </div>
+                <div class="row">
 
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($wohFlag->getMessages()) ? "" : "has-error" ?>">
+                            <?php print $this->formLabel($wohFlag); ?>
+                            <?php print $this->formElement($wohFlag); ?>
+                            <?php print $this->formElementErrors()->render($wohFlag, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
                         <div class="form-group <?= empty($remarks->getMessages()) ? "" : "has-error" ?>">
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>

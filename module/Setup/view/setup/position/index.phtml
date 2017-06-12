@@ -78,6 +78,9 @@ echo json_encode($menu);
         <td>
         #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
         </td>
+        <td>
+        #: (WOH_FLAG == null) ? '-' : WOH_FLAG #
+        </td>
         <td>      
         <a class="btn-edit" 
         href="<?= $this->url("position", ["action" => "edit"]) ?>/#:POSITION_ID #" style="height:17px;" title="edit">
