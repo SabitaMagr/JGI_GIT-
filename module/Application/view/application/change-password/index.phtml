@@ -1,0 +1,67 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/application/changePassword/index.js'));
+
+$changePasswordUrl=$this->url('changePwd', ['action' => 'updatePassword']);
+?>
+
+<?php
+if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } 
+?>
+
+<script>
+    
+    document.oldPassword="<?=$oldPassword?>";
+    
+</script>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\changePwd')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
+<div class="margin-top-20">
+    <form action="<?=$changePasswordUrl?>" id="changePassword" method="post">
+
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-3" >
+                <div class="form-group">
+                    <label class="passwordLabel">Enter Old Password</label>
+                    <input required="required" type="password" class="form-control" name="oldPassword" id="oldPassword"/>
+                    <span id="oldPwdErr" class="errorMsg"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-3" >
+                <div class="form-group">
+                    <label class="passwordLabel">Enter New Password</label>
+                    <input required="required" type="password" class="form-control" name="newPassword" id="newPassword"/>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-3" >
+                <div class="form-group">
+                    <label class="passwordLabel">Confirm New Password</label>
+                    <input required="required" type="password" class="form-control" name="reNewPassword" id="reNewPassword"/>
+                    <span id="pwdMisMatchErr" class="errorMsg"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-3" >
+                <div class="form-group pull-left">
+                    <input type="submit" name="submit" class="btn btn-primary btn-block uppercase loginbtn codeSubmit" value="Submit">
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
