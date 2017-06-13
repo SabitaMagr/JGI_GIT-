@@ -35,12 +35,26 @@ class ChangePassword extends AbstractActionController {
         if ($request->isPost()) {
             $data = $request->getPost();
             $newPassword = $data['newPassword'];
-            $this->repository->updateByEmpId($this->employeeId, $newPassword);
-            $this->flashmessenger()->addMessage("successfully changed your Password");
-            return $this->redirect()->toRoute("changePwd");
+            
+//            echo '<pre>';
+//            print_r($data);
+//            die();
+//            $this->repository->updateByEmpId($this->employeeId, $newPassword);
+//            $this->flashmessenger()->addMessage("successfully changed your Password");
+//            return $this->redirect()->toRoute("changePwd");
         } else {
-            return $this->redirect()->toRoute("changePwd");
+//            return $this->redirect()->toRoute("changePwd");
         }
+    }
+    
+    
+    public function getOldUserPassword(){
+        $userLoginData = $this->repository->getUserByEmployeeId($this->employeeId);
+        $oldPassword=$userLoginData['PASSWORD'];
+        return new CustomViewModel([
+            'sucess'=>true,
+            'oldPassword'=>$oldPassword
+        ]);
     }
 
 

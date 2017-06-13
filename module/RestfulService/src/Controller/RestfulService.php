@@ -71,6 +71,7 @@ use System\Repository\DashboardDetailRepo;
 use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
+use System\Repository\UserSetupRepository;
 use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
 use Training\Repository\TrainingStatusRepository;
@@ -82,7 +83,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use function Zend\Filter\File\move_uploaded_file;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -390,6 +390,12 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullMisPunchAttendanceList";
                         $responseData = $this->pullMisPunchAttendanceList($postedData->data);
+                        break;
+                    case "pullCurUserPwd";
+                        $responseData = $this->pullCurUserPwd();
+                        break;
+                    case "updateCurUserPwd";
+                        $responseData = $this->updateCurUserPwd($postedData->data);
                         break;
 
                     default:
@@ -3365,6 +3371,26 @@ class RestfulService extends AbstractRestfulController {
         return [
             'success' => "true",
             "data" => $list
+        ];
+    }
+    
+    public function pullCurUserPwd(){
+        $userrepo=new UserSetupRepository($this->adapter);
+        $userLoginData = $userrepo->getUserByEmployeeId($this->loggedIdEmployeeId);
+        $oldPassword=$userLoginData['PASSWORD'];
+        return [
+            'success' => "true",
+            "data" => $oldPassword
+        ];
+    }
+    
+    public function updateCurUserPwd($postData){
+        $newPassword=$postData['newPassword'];
+        $userrepo=new UserSetupRepository($this->adapter);
+        $updateResult=$userrepo->updateByEmpId($this->loggedIdEmployeeId, $newPassword);
+        return [
+            'success' => "true",
+//            "data" => $updateResult
         ];
     }
 
