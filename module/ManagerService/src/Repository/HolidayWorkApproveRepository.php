@@ -223,8 +223,7 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                                     V_TOTAL_HOUR
                                   );
                               END LOOP;
-                            END;
-");
+                            END;");
     }
 
 }

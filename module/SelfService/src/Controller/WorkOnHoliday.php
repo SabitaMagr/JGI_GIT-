@@ -7,18 +7,18 @@ use DateTime;
 use Exception;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday as WorkOnHolidayModel;
-use SelfService\Repository\HolidayRepository;
 use SelfService\Repository\WorkOnHolidayRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Notification\Model\NotificationEvents;
 use Zend\Mvc\Controller\AbstractActionController;
-use Notification\Controller\HeadNotification;
 
 class WorkOnHoliday extends AbstractActionController {
 
@@ -275,12 +275,11 @@ class WorkOnHoliday extends AbstractActionController {
     }
 
     public function getHolidayList($employeeId) {
-        $holidayRepo = new HolidayRepository($this->adapter);
-        $holidayResult = $holidayRepo->selectAll($employeeId);
+        $wohRepo = new WorkOnHolidayStatusRepository($this->adapter);
+        $holidayResult = $wohRepo->getAttendedHolidayList($employeeId);
         $holidayList = [];
         $holidayObjList = [];
         foreach ($holidayResult as $holidayRow) {
-            //$todayDate = new \DateTime();
             $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE'] . " to " . $holidayRow['END_DATE'] . ")";
             $holidayObjList[$holidayRow['HOLIDAY_ID']] = $holidayRow;
         }
