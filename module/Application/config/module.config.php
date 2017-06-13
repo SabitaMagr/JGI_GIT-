@@ -164,6 +164,16 @@ return [
                     ],
                 ],
             ],
+            'changePwd' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/ChangePassword[/:action[/:employeeId]]',
+                    'defaults' => [
+                        'controller' => Controller\ChangePassword::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -204,6 +214,23 @@ return [
                 ],
             ],
         ],
+        'changePwd' => [
+                [
+                'label' => 'Change Password',
+                'route' => 'changePwd',
+            ],
+                [
+                'label' => 'Change Password',
+                'route' => 'changePwd',
+                'pages' => [
+                        [
+                        'label' => 'Change Password',
+                        'route' => 'changePwd',
+                        'action' => 'index',
+                    ],
+                ]
+            ]
+        ],
     ],
     'service_manager' => [
         'factories' => [
@@ -216,7 +243,8 @@ return [
             Controller\DashboardController::class => Controller\ControllerFactory::class,
             Controller\CronController::class => Controller\ControllerFactory::class,
             Controller\TaskController::class => Controller\ControllerFactory::class,
-            Controller\ForgotPasswordController::class => Controller\ControllerFactory::class
+            Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
+            Controller\ChangePassword::class => Controller\ControllerFactory::class
         ],
     ],
     'view_manager' => [

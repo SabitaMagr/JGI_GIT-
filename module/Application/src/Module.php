@@ -94,7 +94,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $repository = new RolePermissionRepository($adapter);
             $data = $repository->fetchAllMenuByRoleId($roleId);
             $allowFlag = false;
-            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService'];
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService','changePwd'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }

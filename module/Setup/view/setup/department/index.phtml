@@ -22,10 +22,6 @@ $this->headScript()
 
 <script>
     document.departments =<?= json_encode($departments) ?>;
-    document.menu =<?php
-$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDepartment"]];
-echo json_encode($menu);
-?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Department')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
