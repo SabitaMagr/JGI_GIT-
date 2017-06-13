@@ -144,16 +144,16 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                 WHERE E.EMPLOYEE_ID ={$employeeId}")->current();
     }
 
-    public function wohToOT($employeeId, $recommendedBy, $approvedBy, $requestedDt, $fromDate, $totDate) {
+    public function wohToOT($employeeId, $recommendedBy, $approvedBy, $requestedDt, $fromDate, $toDate) {
         EntityHelper::rawQueryResult($this->adapter, "
                             DECLARE
                               V_OVERTIME_ID    NUMBER;
-                              V_EMPLOYEE_ID    NUMBER            :=700280;
-                              V_RECOMMENDED_BY NUMBER            :=700301;
-                              V_APPROVED_BY    NUMBER            :=700361;
-                              V_REQUESTED_DT   DATE              :=TO_DATE('13-Jun-2017','DD-MON-YYYY');
-                              V_FROM_DATE      DATE              :=TO_DATE('14-Apr-2017','DD-MON-YYYY');
-                              V_TO_DATE        DATE              :=TO_DATE('14-Apr-2017','DD-MON-YYYY');
+                              V_EMPLOYEE_ID    NUMBER            :={$employeeId};
+                              V_RECOMMENDED_BY NUMBER            :={$recommendedBy};
+                              V_APPROVED_BY    NUMBER            :={$approvedBy};
+                              V_REQUESTED_DT   DATE              :=TO_DATE('{$requestedDt}','DD-MON-YYYY');
+                              V_FROM_DATE      DATE              :=TO_DATE('{$fromDate}','DD-MON-YYYY');
+                              V_TO_DATE        DATE              :=TO_DATE('{$toDate}','DD-MON-YYYY');
                               V_STATUS         CHAR(2 BYTE)      :='AP';
                               V_DESCRIPTION    VARCHAR2(255 BYTE):='THIS IS WOH OT.';
                               V_TOTAL_HOUR     NUMBER            :=8;
@@ -223,8 +223,7 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                                     V_TOTAL_HOUR
                                   );
                               END LOOP;
-                            END;
-");
+                            END;");
     }
 
 }

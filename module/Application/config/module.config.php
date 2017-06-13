@@ -164,72 +164,45 @@ return [
                     ],
                 ],
             ],
-            'changePwd' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/ChangePassword[/:action[/:employeeId]]',
-                    'defaults' => [
-                        'controller' => Controller\ChangePassword::class,
-                        'action' => 'index',
-                    ],
-                ],
-            ],
         ],
     ],
     'navigation' => [
         'navigation-example' => [
-                [
+            [
                 'label' => 'Google',
                 'uri' => 'https://www.google.com',
                 'target' => '_blank'
             ],
-                [
+            [
                 'label' => 'Home',
                 'route' => 'leavesetup'
             ],
-                [
+            [
                 'label' => 'Modules',
                 'uri' => '#',
                 'pages' => [
-                        [
+                    [
                         'label' => 'LearnZF2Ajax',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2FormUsage',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Barcode',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Pagination',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Log',
                         'route' => 'leavesetup'
                     ],
                 ],
             ],
-        ],
-        'changePwd' => [
-                [
-                'label' => 'Change Password',
-                'route' => 'changePwd',
-            ],
-                [
-                'label' => 'Change Password',
-                'route' => 'changePwd',
-                'pages' => [
-                        [
-                        'label' => 'Change Password',
-                        'route' => 'changePwd',
-                        'action' => 'index',
-                    ],
-                ]
-            ]
         ],
     ],
     'service_manager' => [
@@ -318,6 +291,6 @@ return [
         3 => 'Other'
     ],
     'default-profile-picture' => "default-profile-picture.jpg",
-    'default-system-mail'=>"somkala.pachhai@itnepal.com",
-    'default-system-name'=>"neo hris"
+    'default-system-mail' => "somkala.pachhai@itnepal.com",
+    'default-system-name' => "neo hris"
 ];
