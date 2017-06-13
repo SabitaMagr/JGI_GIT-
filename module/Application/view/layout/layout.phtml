@@ -119,6 +119,8 @@
         $this->headScript()
                 ->prependFile($this->basePath('js/user-setting.js'));
         $this->headScript()
+                ->prependFile($this->basePath('js/application/changePassword/index.js'));
+        $this->headScript()
                 ->prependFile($this->basePath('js/custom.js'));
         ?>
         <?php
@@ -161,16 +163,15 @@
                         ->prependFile($this->basePath('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'))
                         ->prependFile($this->basePath('assets/global/plugins/js.cookie.min.js'))
                         ->prependFile($this->basePath('assets/global/plugins/bootstrap/js/bootstrap.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/jquery.min.js'))
-                        ->appendFile($this->basePath('js/application/changePassword/index.js'));
+                        ->prependFile($this->basePath('assets/global/plugins/jquery.min.js'));
         ?>
         <!-- END CORE PLUGINS -->
         <!-- End -->
-        
-            <?php
-            print $this->partial('partials/change-password.phtml');
-            ?>
-        
+
+        <?php
+        print $this->partial('partials/change-password.phtml');
+        ?>
+
         <div id='pdfExportTable'></div>
 
 
