@@ -2,8 +2,11 @@
 
 namespace ManagerService\Repository;
 
+use Application\Helper\EntityHelper;
+use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use SelfService\Model\WorkOnHoliday;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
@@ -13,12 +16,12 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
     private $tableGateway;
     private $adapter;
 
-    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(WorkOnHoliday::TABLE_NAME, $adapter);
     }
 
-    public function add(\Application\Model\Model $model) {
+    public function add(Model $model) {
         
     }
 
@@ -30,7 +33,7 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
         
     }
 
-    public function edit(\Application\Model\Model $model, $id) {
+    public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [WorkOnHoliday::ID => $id]);
     }
@@ -131,8 +134,97 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function getWOHServiceType($employeeId) {
-        
+    public function getWOHRuleType($employeeId) {
+        return EntityHelper::rawQueryResult($this->adapter, "
+                SELECT E.EMPLOYEE_ID,
+                  P.WOH_FLAG
+                FROM HRIS_EMPLOYEES E
+                JOIN HRIS_POSITIONS P
+                ON (E.POSITION_ID   = P.POSITION_ID)
+                WHERE E.EMPLOYEE_ID ={$employeeId}")->current();
+    }
+
+    public function wohToOT($employeeId, $recommendedBy, $approvedBy, $requestedDt, $fromDate, $totDate) {
+        EntityHelper::rawQueryResult($this->adapter, "
+                            DECLARE
+                              V_OVERTIME_ID    NUMBER;
+                              V_EMPLOYEE_ID    NUMBER            :=700280;
+                              V_RECOMMENDED_BY NUMBER            :=700301;
+                              V_APPROVED_BY    NUMBER            :=700361;
+                              V_REQUESTED_DT   DATE              :=TO_DATE('13-Jun-2017','DD-MON-YYYY');
+                              V_FROM_DATE      DATE              :=TO_DATE('14-Apr-2017','DD-MON-YYYY');
+                              V_TO_DATE        DATE              :=TO_DATE('14-Apr-2017','DD-MON-YYYY');
+                              V_STATUS         CHAR(2 BYTE)      :='AP';
+                              V_DESCRIPTION    VARCHAR2(255 BYTE):='THIS IS WOH OT.';
+                              V_TOTAL_HOUR     NUMBER            :=8;
+                              V_DIFF           NUMBER;
+                              V_DETAIL_ID      NUMBER;
+                              V_START_TIME     DATE        :=SYSDATE;
+                              V_END_TIME       DATE        :=SYSDATE;
+                              V_DETAIL_STATUS  CHAR(1 BYTE):='E';
+                            BEGIN
+                              V_DIFF:=TRUNC(V_TO_DATE)-TRUNC(V_FROM_DATE);
+                              FOR i                  IN 0..V_DIFF
+                              LOOP
+                                SELECT NVL(MAX(OVERTIME_ID),1)+1 INTO V_OVERTIME_ID FROM HRIS_OVERTIME;
+                                SELECT NVL(MAX(DETAIL_ID),1)+1 INTO V_DETAIL_ID FROM HRIS_OVERTIME_DETAIL;
+                                --    SELECT IN_TIME, OUT_TIME
+                                --    INTO V_START_TIME,
+                                --      V_END_TIME
+                                --    FROM HRIS_ATTENDANCE_DETAIL
+                                --    WHERE ATTENDANCE_DT= TRUNC(V_FROM_DATE)+i
+                                --    AND EMPLOYEE_ID    =V_EMPLOYEE_ID;
+                                INSERT
+                                INTO HRIS_OVERTIME
+                                  (
+                                    OVERTIME_ID,
+                                    EMPLOYEE_ID,
+                                    OVERTIME_DATE,
+                                    REQUESTED_DATE,
+                                    DESCRIPTION,
+                                    STATUS,
+                                    RECOMMENDED_BY,
+                                    RECOMMENDED_DATE,
+                                    APPROVED_BY,
+                                    APPROVED_DATE,
+                                    TOTAL_HOUR
+                                  )
+                                  VALUES
+                                  (
+                                    V_OVERTIME_ID,
+                                    V_EMPLOYEE_ID,
+                                    V_FROM_DATE+i,
+                                    V_REQUESTED_DT,
+                                    V_DESCRIPTION,
+                                    V_STATUS,
+                                    V_RECOMMENDED_BY,
+                                    V_REQUESTED_DT,
+                                    V_APPROVED_BY,
+                                    V_REQUESTED_DT,
+                                    V_TOTAL_HOUR
+                                  );
+                                INSERT
+                                INTO HRIS_OVERTIME_DETAIL
+                                  (
+                                    DETAIL_ID,
+                                    OVERTIME_ID,
+                                    START_TIME,
+                                    END_TIME,
+                                    STATUS,
+                                    TOTAL_HOUR
+                                  )
+                                  VALUES
+                                  (
+                                    V_DETAIL_ID,
+                                    V_OVERTIME_ID,
+                                    V_START_TIME,
+                                    V_END_TIME,
+                                    V_DETAIL_STATUS,
+                                    V_TOTAL_HOUR
+                                  );
+                              END LOOP;
+                            END;
+");
     }
 
 }

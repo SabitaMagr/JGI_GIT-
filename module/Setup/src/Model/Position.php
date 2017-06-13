@@ -18,6 +18,8 @@ class Position extends Model {
     const COMPANY_ID = "COMPANY_ID";
     const LEVEL_NO = "LEVEL_NO";
     const WOH_FLAG = "WOH_FLAG";
+    const WOH_FLAG_LEAVE = 'L';
+    const WOH_FLAG_OT = 'O';
 
     public $positionId;
     public $positionName;
@@ -30,7 +32,6 @@ class Position extends Model {
     public $companyId;
     public $levelNo;
     public $wohFlag;
-    
     public $mappings = [
         'positionId' => self::POSITION_ID,
         'positionName' => self::POSITION_NAME,
