@@ -146,18 +146,17 @@ class WorkOnHoliday extends AbstractActionController {
                 $model->employeeId = $this->employeeId;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
-                // print_r($model); die();
                 $this->repository->add($model);
+                $this->flashmessenger()->addMessage("Work on Holiday Request Successfully added!!!");
                 try {
                     HeadNotification::pushNotification(NotificationEvents::WORKONHOLIDAY_APPLIED, $model, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
-                $this->flashmessenger()->addMessage("Work on Holiday Request Successfully added!!!");
                 return $this->redirect()->toRoute("workOnHoliday");
             }
         }
-        
+
         $holidays = $this->getHolidayList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,

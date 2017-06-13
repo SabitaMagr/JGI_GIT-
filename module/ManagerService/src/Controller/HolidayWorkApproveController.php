@@ -13,8 +13,6 @@ use ManagerService\Repository\HolidayWorkApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnHolidayForm;
-use SelfService\Model\Overtime;
-use SelfService\Model\OvertimeDetail;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\HolidayRepository;
 use Setup\Model\Position;
@@ -245,7 +243,6 @@ class HolidayWorkApproveController extends AbstractActionController {
         $holidayList = [];
         $holidayObjList = [];
         foreach ($holidayResult as $holidayRow) {
-            //$todayDate = new \DateTime();
             $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE'] . " to " . $holidayRow['END_DATE'] . ")";
             $holidayObjList[$holidayRow['HOLIDAY_ID']] = $holidayRow;
         }
@@ -281,7 +278,7 @@ class HolidayWorkApproveController extends AbstractActionController {
         }
 
         if ($rule['WOH_FLAG'] === Position::WOH_FLAG_OT) {
-            $this->holidayWorkApproveRepository->wohToOT($employeeId, $recommendedBy, $approvedBy, $requestedDt, $fromDate, $totDate);
+            $this->holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
         }
     }
 
