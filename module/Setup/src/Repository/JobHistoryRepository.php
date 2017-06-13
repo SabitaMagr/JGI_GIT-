@@ -176,15 +176,14 @@ class JobHistoryRepository implements RepositoryInterface {
 
     public function fetchHistoryNotReview($empId) {
         $sql = "SELECT JH.JOB_HISTORY_ID,JH.START_DATE,SE.SERVICE_EVENT_TYPE_NAME
-FROM HRIS_JOB_HISTORY JH 
-JOIN HRIS_SERVICE_EVENT_TYPES SE
-ON (JH.SERVICE_EVENT_TYPE_ID=SE.SERVICE_EVENT_TYPE_ID)
+                FROM HRIS_JOB_HISTORY JH 
+                JOIN HRIS_SERVICE_EVENT_TYPES SE
+                ON (JH.SERVICE_EVENT_TYPE_ID=SE.SERVICE_EVENT_TYPE_ID)
 
-WHERE EMPLOYEE_ID=$empId
-AND JOB_HISTORY_ID NOT IN
-  (SELECT JOB_HISTORY_ID FROM HRIS_SALARY_DETAIL WHERE EMPLOYEE_ID=$empId
-  )
-";
+                WHERE EMPLOYEE_ID=$empId
+                AND JOB_HISTORY_ID NOT IN
+                  (SELECT JOB_HISTORY_ID FROM HRIS_SALARY_DETAIL WHERE EMPLOYEE_ID=$empId
+                  )";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         $result = Helper::extractDbData($result);
@@ -193,103 +192,102 @@ AND JOB_HISTORY_ID NOT IN
 
     function fetchLatestJobHistory($employeeId) {
         return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, " 
-SELECT TO_BRANCH_ID,
-  TO_DEPARTMENT_ID,
-  TO_DESIGNATION_ID,
-  TO_POSITION_ID,
-  TO_SERVICE_TYPE_ID,
-  TO_COMPANY_ID,
-  START_DATE_FORMATTED AS START_DATE
-FROM
-  (SELECT TO_BRANCH_ID,
-    TO_DEPARTMENT_ID,
-    TO_DESIGNATION_ID,
-    TO_POSITION_ID,
-    TO_SERVICE_TYPE_ID,
-    TO_COMPANY_ID,
-    INITCAP(TO_CHAR(START_DATE,'DD-MON-YYYY')) AS START_DATE_FORMATTED
-  FROM HRIS_JOB_HISTORY
-  WHERE EMPLOYEE_ID ={$employeeId}
-  AND STATUS        ='E'
-  ORDER BY START_DATE DESC
-  )
-WHERE ROWNUM=1
-
-"));
+                        SELECT TO_BRANCH_ID,
+                          TO_DEPARTMENT_ID,
+                          TO_DESIGNATION_ID,
+                          TO_POSITION_ID,
+                          TO_SERVICE_TYPE_ID,
+                          TO_COMPANY_ID,
+                          START_DATE_FORMATTED AS START_DATE
+                        FROM
+                          (SELECT TO_BRANCH_ID,
+                            TO_DEPARTMENT_ID,
+                            TO_DESIGNATION_ID,
+                            TO_POSITION_ID,
+                            TO_SERVICE_TYPE_ID,
+                            TO_COMPANY_ID,
+                            INITCAP(TO_CHAR(START_DATE,'DD-MON-YYYY')) AS START_DATE_FORMATTED
+                          FROM HRIS_JOB_HISTORY
+                          WHERE EMPLOYEE_ID ={$employeeId}
+                          AND STATUS        ='E'
+                          ORDER BY START_DATE DESC
+                          )
+                        WHERE ROWNUM=1"));
     }
 
     function fetchBeforeJobHistory($historyId) {
         return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "
-SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
-  INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
-  H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
-  H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
-  H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
-  H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
-  H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
-  H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
-  H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
-  H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
-  H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
-  H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
-  H.TO_POSITION_ID                                   AS TO_POSITION_ID,
-  H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
-  H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
-FROM HRIS_JOB_HISTORY H,
-  (SELECT START_DATE FROM HRIS_JOB_HISTORY WHERE JOB_HISTORY_ID={$historyId}
-  ) PH
-WHERE H.START_DATE<PH.START_DATE
-AND ROWNUM        =1
-"));
+                    SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+                      INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+                      H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+                      H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+                      H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+                      H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
+                      H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+                      H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
+                      H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+                      H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
+                      H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+                      H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
+                      H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+                      H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
+                      H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+                    FROM HRIS_JOB_HISTORY H,
+                      (SELECT START_DATE FROM HRIS_JOB_HISTORY WHERE JOB_HISTORY_ID={$historyId}
+                      ) PH
+                    WHERE H.START_DATE<PH.START_DATE
+                    AND ROWNUM        =1"));
     }
 
     function fetchAfterJobHistory($historyId) {
 
         return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "
-SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
-  INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
-  H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
-  H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
-  H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
-  H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
-  H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
-  H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
-  H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
-  H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
-  H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
-  H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
-  H.TO_POSITION_ID                                   AS TO_POSITION_ID,
-  H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
-  H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
-FROM HRIS_JOB_HISTORY H,
-  (SELECT START_DATE FROM HRIS_JOB_HISTORY WHERE JOB_HISTORY_ID={$historyId}
-  ) PH
-WHERE H.START_DATE>PH.START_DATE
-AND ROWNUM        =1
-"));
+                SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+                  INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+                  H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+                  H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+                  H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+                  H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
+                  H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+                  H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
+                  H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+                  H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
+                  H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+                  H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
+                  H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+                  H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
+                  H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+                FROM HRIS_JOB_HISTORY H,
+                  (SELECT START_DATE FROM HRIS_JOB_HISTORY WHERE JOB_HISTORY_ID={$historyId}
+                  ) PH
+                WHERE H.START_DATE>PH.START_DATE
+                AND ROWNUM        =1"));
     }
 
     function fetchAfterStartDate($date) {
         return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "
-SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
-  INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
-  H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
-  H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
-  H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
-  H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
-  H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
-  H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
-  H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
-  H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
-  H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
-  H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
-  H.TO_POSITION_ID                                   AS TO_POSITION_ID,
-  H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
-  H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
-FROM HRIS_JOB_HISTORY H
-WHERE H.START_DATE>{$date}
-AND ROWNUM        =1
-"));
+            SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+              INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+              H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+              H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+              H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+              H.FROM_BRANCH_ID                                   AS FROM_BRANCH_ID,
+              H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+              H.FROM_DEPARTMENT_ID                               AS FROM_DEPARTMENT_ID,
+              H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+              H.FROM_DESIGNATION_ID                              AS FROM_DESIGNATION_ID,
+              H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+              H.FROM_POSITION_ID                                 AS FROM_POSITION_ID,
+              H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+              H.FROM_SERVICE_TYPE_ID                             AS FROM_SERVICE_TYPE_ID,
+              H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+            FROM HRIS_JOB_HISTORY H
+            WHERE H.START_DATE>{$date}
+            AND ROWNUM        =1"));
+    }
+
+    function displayAutoNotification() {
+        EntityHelper::rawQueryResult($this->adapter, "");
     }
 
 }

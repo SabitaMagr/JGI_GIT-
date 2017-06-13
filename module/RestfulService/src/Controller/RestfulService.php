@@ -8,7 +8,6 @@ use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
-use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use Appraisal\Repository\HeadingRepository;
 use Appraisal\Repository\QuestionRepository;
@@ -17,8 +16,10 @@ use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use AttendanceManagement\Repository\AttendanceRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+use DateTime;
 use Exception;
 use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
@@ -26,6 +27,7 @@ use LeaveManagement\Repository\LeaveStatusRepository;
 use Loan\Repository\LoanStatusRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use Overtime\Repository\OvertimeStatusRepository;
 use Payroll\Controller\PayrollGenerator;
 use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Controller\VariableProcessor;
@@ -34,7 +36,6 @@ use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\PayPositionSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
-use Payroll\Model\SalarySheet;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\PayPositionRepo;
@@ -42,9 +43,11 @@ use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
 use SelfService\Repository\AttendanceRequestRepository;
-use SelfService\Repository\HolidayRepository as SelfHolidayRepository;
 use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\OvertimeDetailRepository;
+use SelfService\Repository\OvertimeRepository;
 use SelfService\Repository\ServiceRepository;
+use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 use Setup\Model\EmployeeExperience;
 use Setup\Model\EmployeeQualification;
 use Setup\Model\EmployeeTraining;
@@ -54,13 +57,13 @@ use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
 use Setup\Repository\AdvanceRepository;
-use Setup\Repository\BranchRepository;
 use Setup\Repository\EmployeeExperienceRepository;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\JobHistoryRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\ServiceQuestionRepository;
 use System\Model\DashboardDetail;
 use System\Model\MenuSetup;
 use System\Model\RolePermission;
@@ -68,8 +71,10 @@ use System\Repository\DashboardDetailRepo;
 use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
+use System\Repository\UserSetupRepository;
 use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
+use Training\Repository\TrainingStatusRepository;
 use Travel\Repository\TravelStatusRepository;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
@@ -78,7 +83,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Training\Repository\TrainingStatusRepository;
 use Application\Repository\ForgotPasswordRepository;
 use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Repository\OvertimeDetailRepository;
@@ -416,6 +420,11 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "deleteAppraisalCompetencies":
                         $resonseData = $this->deleteAppraisalCompetencies($postedData->data);
+                    case "pullCurUserPwd";
+                        $responseData = $this->pullCurUserPwd();
+                        break;
+                    case "updateCurUserPwd";
+                        $responseData = $this->updateCurUserPwd($postedData->data);
                         break;
 
                     default:
@@ -2123,8 +2132,8 @@ class RestfulService extends AbstractRestfulController {
                 'APPROVER_NAME' => $approverName,
                 'RECOMMENDER_NAME' => $recommenderName,
             ]);
-            $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $leaveRequestRow['FROM_DATE']);
-            $toDayDate = new \DateTime();
+            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $leaveRequestRow['FROM_DATE']);
+            $toDayDate = new DateTime();
             if (($toDayDate < $startDate) && ($statusId == 'RQ' || $statusId == 'RC' || $statusId == 'AP')) {
                 $new_row['ALLOW_TO_EDIT'] = 1;
             } else if (($toDayDate >= $startDate) && $statusId == 'RQ') {
@@ -2390,8 +2399,8 @@ class RestfulService extends AbstractRestfulController {
         $sn = 1;
         foreach ($result as $row) {
             $row['TRAINING_TYPE'] = $getValue($row['TRAINING_TYPE']);
-            $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
-            $toDayDate = new \DateTime();
+            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
+            $toDayDate = new DateTime();
             if ($toDayDate < $startDate) {
                 $row['ALLOW_TO_EDIT'] = 1;
             } else if ($toDayDate >= $startDate) {
@@ -2592,18 +2601,17 @@ class RestfulService extends AbstractRestfulController {
                 $row['STATUS'] = "Absent";
             } else if ($status == 'P') {
                 $row['STATUS'] = "Present";
-            }else if ($status == 'T') {
+            } else if ($status == 'T') {
                 $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
-            }else if ($status == 'TVL') {
+            } else if ($status == 'TVL') {
                 $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
-            }else if ($status == 'WOH') {
+            } else if ($status == 'WOH') {
                 $row['STATUS'] = "Work On Holiday";
-            }else if ($status == 'LI') {
+            } else if ($status == 'LI') {
                 $row['STATUS'] = "Present(Late In)";
-            }else if ($status == 'EO') {
+            } else if ($status == 'EO') {
                 $row['STATUS'] = "Present(Early Out)";
-            }
-            else {
+            } else {
                 if ($row['LEAVE_ENAME'] != null) {
                     $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
                 } else if ($row['HOLIDAY_ENAME'] != null) {
@@ -2612,26 +2620,23 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "Absent";
                 } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null && $row['LATE_STATUS'] == 'N') {
                     $row['STATUS'] = "Present";
-                }else if ($row['TRAINING_NAME'] != null) {
+                } else if ($row['TRAINING_NAME'] != null) {
                     $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
-                }elseif($row['TRAVEL_DESTINATION'] != null){
+                } elseif ($row['TRAVEL_DESTINATION'] != null) {
                     $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
-                }
-                elseif(($row['DAYOFF_FLAG'] == 'Y') && $row['IN_TIME'] != null && $row['LATE_STATUS'] == 'N'){
+                } elseif (($row['DAYOFF_FLAG'] == 'Y') && $row['IN_TIME'] != null && $row['LATE_STATUS'] == 'N') {
                     $row['STATUS'] = "Present(Work On Holiday)";
-                }
-                elseif($row['LATE_STATUS'] != 'N'){
-                    if($row['LATE_STATUS'] == 'L'){
-                    $row['STATUS'] = "Present(Late In)";
+                } elseif ($row['LATE_STATUS'] != 'N') {
+                    if ($row['LATE_STATUS'] == 'L') {
+                        $row['STATUS'] = "Present(Late In)";
                     }
-                    if($row['LATE_STATUS'] == 'E'){
-                    $row['STATUS'] = "Present(Early Out)";
+                    if ($row['LATE_STATUS'] == 'E') {
+                        $row['STATUS'] = "Present(Early Out)";
                     }
-                    if($row['LATE_STATUS'] == 'B'){
-                    $row['STATUS'] = "Present(Late In and Early Out)";
+                    if ($row['LATE_STATUS'] == 'B') {
+                        $row['STATUS'] = "Present(Late In and Early Out)";
                     }
-                }
-                elseif($row['DAYOFF_FLAG'] == 'Y'){
+                } elseif ($row['DAYOFF_FLAG'] == 'Y') {
                     $row['STATUS'] = "Day Off";
                 }
             }
@@ -2689,8 +2694,8 @@ class RestfulService extends AbstractRestfulController {
 
     public function pullHolidaysForEmployee($data) {
         $employeeId = $data['employeeId'];
-        $holidayRepo = new SelfHolidayRepository($this->adapter);
-        $holidayResult = $holidayRepo->selectAll($employeeId);
+        $holidayRepo = new WorkOnHolidayStatusRepository($this->adapter);
+        $holidayResult = Helper::extractDbData($holidayRepo->getAttendedHolidayList($employeeId));
 
         return [
             'success' => true,
@@ -3576,4 +3581,23 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
     
+    public function pullCurUserPwd(){
+        $userrepo=new UserSetupRepository($this->adapter);
+        $userLoginData = $userrepo->getUserByEmployeeId($this->loggedIdEmployeeId);
+        $oldPassword=$userLoginData['PASSWORD'];
+        return [
+            'success' => "true",
+            "data" => $oldPassword
+        ];
+    }
+    
+    public function updateCurUserPwd($postData){
+        $newPassword=$postData['newPassword'];
+        $userrepo=new UserSetupRepository($this->adapter);
+        $updateResult=$userrepo->updateByEmpId($this->loggedIdEmployeeId, $newPassword);
+        return [
+            'success' => "true",
+//            "data" => $updateResult
+        ];
+    }
 }

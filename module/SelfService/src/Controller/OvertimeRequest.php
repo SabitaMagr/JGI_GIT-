@@ -1,22 +1,20 @@
 <?php
+
 namespace SelfService\Controller;
 
 use Application\Helper\Helper;
-use DateTime;
 use Exception;
+use SelfService\Form\OvertimeRequestForm;
 use SelfService\Model\Overtime;
 use SelfService\Model\OvertimeDetail;
-use SelfService\Form\OvertimeRequestForm;
-use SelfService\Repository\OvertimeRepository;
 use SelfService\Repository\OvertimeDetailRepository;
+use SelfService\Repository\OvertimeRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Notification\Model\NotificationEvents;
-use Notification\Controller\HeadNotification;
 
 class OvertimeRequest extends AbstractActionController {
 
@@ -66,8 +64,8 @@ class OvertimeRequest extends AbstractActionController {
 
     public function indexAction() {
         $request = $this->getRequest();
-        if($request->isPost()){
-            try{
+        if ($request->isPost()) {
+            try {
                 $postedData = $request->getPost()->getArrayCopy();
                 switch ($postedData['action']) {
                     case "pullOvertimeDetail":
@@ -77,7 +75,7 @@ class OvertimeRequest extends AbstractActionController {
                         throw new Exception("action not found");
                         break;
                 }
-            }catch(Exception $e){
+            } catch (Exception $e) {
                 $responseData = [
                     "success" => false,
                     "message" => $e->getMessage(),
@@ -85,7 +83,7 @@ class OvertimeRequest extends AbstractActionController {
                     "line" => $e->getLine()
                 ];
             }
-        }else{
+        } else {
             $this->getRecommendApprover();
             $result = $this->repository->getAllByEmployeeId($this->employeeId);
             $fullName = function($id) {
@@ -145,13 +143,13 @@ class OvertimeRequest extends AbstractActionController {
                 } else {
                     $new_row['ALLOW_TO_EDIT'] = 0;
                 }
-                
+
                 $overtimeDetailResult = $this->detailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
                 $overtimeDetails = [];
-                foreach($overtimeDetailResult as $overtimeDetailRow){
-                    array_push($overtimeDetails,$overtimeDetailRow);
+                foreach ($overtimeDetailResult as $overtimeDetailRow) {
+                    array_push($overtimeDetails, $overtimeDetailRow);
                 }
-                $new_row['DETAILS']=$overtimeDetails;
+                $new_row['DETAILS'] = $overtimeDetails;
                 array_push($list, $new_row);
             }
             return Helper::addFlashMessagesToArray($this, ['list' => $list]);
@@ -176,10 +174,10 @@ class OvertimeRequest extends AbstractActionController {
                 $model->status = 'RQ';
                 $model->allTotalHour = Helper::hoursToMinutes($postDataArray['allTotalHour']);
                 $this->repository->add($model);
-                
+
                 $overtimeDetailNum = $postDataArray['overtimeDetailNum'];
                 $overtimeDetailModel = new OvertimeDetail();
-                for($i=0; $i<=$overtimeDetailNum; $i++){
+                for ($i = 0; $i <= $overtimeDetailNum; $i++) {
                     $startTime = $postDataArray['startTime'][$i];
                     $endTime = $postDataArray['endTime'][$i];
                     $totalHour = $postDataArray['totalHour'][$i];
@@ -237,7 +235,7 @@ class OvertimeRequest extends AbstractActionController {
         $approverName = $fullName($this->approver);
 
         $model = new Overtime();
-        $detailModel =  new OvertimeDetail();
+        $detailModel = new OvertimeDetail();
         $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
@@ -248,13 +246,13 @@ class OvertimeRequest extends AbstractActionController {
 
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
-        
+
         $overtimeDetailResult = $this->detailRepository->fetchByOvertimeId($detail['OVERTIME_ID']);
         $overtimeDetails = [];
-        foreach($overtimeDetailResult as $overtimeDetailRow){
-            array_push($overtimeDetails,$overtimeDetailRow);
+        foreach ($overtimeDetailResult as $overtimeDetailRow) {
+            array_push($overtimeDetails, $overtimeDetailRow);
         }
-        
+
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
@@ -263,25 +261,26 @@ class OvertimeRequest extends AbstractActionController {
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
-                    'overtimeDetails'=>$overtimeDetails,
-                    'totalHour'=>$detail['TOTAL_HOUR']
+                    'overtimeDetails' => $overtimeDetails,
+                    'totalHour' => $detail['TOTAL_HOUR']
         ]);
     }
 
-    public function pullOvertimeDetail($data){
+    public function pullOvertimeDetail($data) {
         $overtimeId = $data['overtimeId'];
         $result = $this->detailRepository->fetchByOvertimeId($overtimeId);
         $overtimeDetailList = [];
-        foreach($result as $row){
+        foreach ($result as $row) {
             array_push($overtimeDetailList, $row);
         }
         return [
-          'success'=>true,
-            'data'=>[
-                'overtimeDetailList'=>$overtimeDetailList
+            'success' => true,
+            'data' => [
+                'overtimeDetailList' => $overtimeDetailList
             ]
         ];
     }
+
     public function recommendApproveList() {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);

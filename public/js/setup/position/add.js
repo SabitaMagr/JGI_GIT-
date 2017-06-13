@@ -1,6 +1,3 @@
-/**
- * Created by punam on 9/28/16.
- */
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -15,7 +12,9 @@
         if (typeof (selfId) == "undefined") {
             selfId = 0;
         }
-        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
+        
+        app.checkUniqueConstraints("levelNo",formId,tableName,"LEVEL_NO",checkColumnName,selfId);
+        app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
             App.blockUI({target: "#hris-page-content"});
         });
     });

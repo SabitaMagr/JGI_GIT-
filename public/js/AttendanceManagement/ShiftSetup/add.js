@@ -2,40 +2,22 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        $('#startTime').combodate({
-            minuteStep: 1
-        });
-        $('#endTime').combodate({
-            minuteStep: 1
-        });
-        $('#halfDayEndTime').combodate({
-            minuteStep: 1
-        });
-        $('#halfTime').combodate({
-            minuteStep: 1
-        });
-        $('#lateIn').combodate({
-            minuteStep: 1
-        });
-        $('#earlyOut').combodate({
-            minuteStep: 1
-        });
-        $('#actualWorkingHr').combodate({
-            minuteStep: 1
-        });
-        $('#totalWorkingHr').combodate({
-            minuteStep: 1
-        });
-        $('#graceStartTime').combodate({
-            minuteStep: 1
-        });
-        $('#graceEndTime').combodate({
-            minuteStep: 1
-        });
 
         var $startTime = $('#startTime');
         var $endTime = $('#endTime');
+        var $halfDayEndTime = $('#halfDayEndTime');
+        var $halfTime = $('#halfTime');
+        var $graceStartTime = $('#graceStartTime');
+        var $graceEndTime = $('#graceEndTime');
+        var $lateIn = $('#lateIn');
+        var $earlyOut = $('#earlyOut');
+        var $actualWorkingHr = $('#actualWorkingHr');
         var $totalWorkingHr = $('#totalWorkingHr');
+
+        app.addComboTimePicker($startTime, $endTime, $halfDayEndTime, $halfTime, $graceStartTime, $graceEndTime, $lateIn, $earlyOut, $totalWorkingHr, $actualWorkingHr);
+
+
+        var $form = $('#shiftSetup-form');
 
         var format = function (input) {
             var str = "" + input;
@@ -81,7 +63,7 @@
         });
 
 //        app.startEndDatePicker('startDate', 'endDate');
-app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
         /* prevent past event post || commented for now as needs discussion*/
 //        $('#startDate').datepicker("setStartDate", new Date());
 //        $('#endDate').datepicker("setStartDate", new Date());
@@ -97,9 +79,42 @@ app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate
             selfId = 0;
         }
         window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
-            App.blockUI({target: "#hris-page-content"});
+            try {
+                var error = [];
+                if ($startTime.val() === "") {
+                    error.push({message: 'This field cannot be empty.', object: $startTime});
+                }
+                if ($endTime.val() === "") {
+                    error.push({message: 'This field cannot be empty.', object: $endTime});
+                }
+                if ($totalWorkingHr.val() === "") {
+                    error.push({message: 'This field cannot be empty.', object: $totalWorkingHr})
+                }
+                if ($actualWorkingHr.val() === "") {
+                    error.push({message: 'This field cannot be empty.', object: $actualWorkingHr});
+                }
+                if (error.length > 0) {
+                    throw error;
+                }
+                App.blockUI({target: "#hris-page-content"});
+                return true;
+            } catch (e) {
+                $.each(e, function (index, item) {
+                    var $errorElement = $('<span class="required" aria-required="true"></span>');
+                    $errorElement.append(item.message);
+                    var $parent = item.object.parent();
+                    if (!($parent.find('span.required').length > 0)) {
+                        $parent.append($errorElement);
+                    }
+                });
+                return false;
+            }
         });
         window.app.checkUniqueConstraints("shiftLname", formId, tableName, "SHIFT_LNAME", checkColumnName, selfId);
         window.app.checkUniqueConstraints("shiftCode", formId, tableName, "SHIFT_CODE", checkColumnName, selfId);
+
+        $form.on('submit', function () {
+
+        });
     });
 })(window.jQuery, window.app);

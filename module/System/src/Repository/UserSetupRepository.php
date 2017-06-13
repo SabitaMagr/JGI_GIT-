@@ -127,4 +127,9 @@ SELECT INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME, IN
     {
         $this->tableGateway->update([UserSetup::PASSWORD=>$password],[UserSetup::EMPLOYEE_ID=>$employeeId]);
     }
+    
+    public function getUserByEmployeeId($employeeId){
+        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID=>$employeeId]);
+        return $result->current();
+    }
 }

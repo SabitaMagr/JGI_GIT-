@@ -62,13 +62,20 @@ class PositionRepository implements RepositoryInterface {
         $result = [];
         $i = 1;
         foreach ($rowset as $row) {
+            $wohValue='-';
+            if($row['WOH_FLAG']=='L'){
+                $wohValue='LEAVE';
+            }elseif($row['WOH_FLAG']=='O'){
+                $wohValue='Over Time';
+            }
             array_push($result, [
                 'SN' => $i,
                 'POSITION_ID' => $row['POSITION_ID'],
                 'LEVEL_NO' => $row['LEVEL_NO'],
                 'POSITION_NAME' => $row['POSITION_NAME'],
                 'REMARKS' => $row['REMARKS'],
-                'COMPANY_NAME' => $row['COMPANY_NAME']
+                'COMPANY_NAME' => $row['COMPANY_NAME'],
+                'WOH_FLAG' => $wohValue
             ]);
             $i += 1;
         }

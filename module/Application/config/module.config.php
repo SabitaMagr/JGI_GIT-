@@ -168,36 +168,36 @@ return [
     ],
     'navigation' => [
         'navigation-example' => [
-                [
+            [
                 'label' => 'Google',
                 'uri' => 'https://www.google.com',
                 'target' => '_blank'
             ],
-                [
+            [
                 'label' => 'Home',
                 'route' => 'leavesetup'
             ],
-                [
+            [
                 'label' => 'Modules',
                 'uri' => '#',
                 'pages' => [
-                        [
+                    [
                         'label' => 'LearnZF2Ajax',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2FormUsage',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Barcode',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Pagination',
                         'route' => 'leavesetup'
                     ],
-                        [
+                    [
                         'label' => 'LearnZF2Log',
                         'route' => 'leavesetup'
                     ],
@@ -216,7 +216,8 @@ return [
             Controller\DashboardController::class => Controller\ControllerFactory::class,
             Controller\CronController::class => Controller\ControllerFactory::class,
             Controller\TaskController::class => Controller\ControllerFactory::class,
-            Controller\ForgotPasswordController::class => Controller\ControllerFactory::class
+            Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
+            Controller\ChangePassword::class => Controller\ControllerFactory::class
         ],
     ],
     'view_manager' => [
@@ -290,6 +291,6 @@ return [
         3 => 'Other'
     ],
     'default-profile-picture' => "default-profile-picture.jpg",
-    'default-system-mail'=>"somkala.pachhai@itnepal.com",
-    'default-system-name'=>"neo hris"
+    'default-system-mail' => "somkala.pachhai@itnepal.com",
+    'default-system-name' => "neo hris"
 ];

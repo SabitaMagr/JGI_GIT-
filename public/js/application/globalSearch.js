@@ -12,25 +12,23 @@
 
 
         $globalSearch.autocomplete({
-            source: nameList
-        });
+            source: nameList, select: function (element, selectedObject) {
+                try {
+                    var fullName = selectedObject.item.value;
+                    var filteredEmployee = employeeList.filter(function (item) {
+                        return fullName === item['FULL_NAME'];
+                    });
+                    if (filteredEmployee.length === 0) {
+                        throw {message: 'No Employee Found with the name given.'}
+                    }
 
-        $globalSearchForm.on('submit', function () {
-            try {
-                var fullName = $globalSearch.val();
-                var filteredEmployee = employeeList.filter(function (item) {
-                    return fullName === item['FULL_NAME'];
-                });
-                if (filteredEmployee.length === 0) {
-                    throw {message: 'No Employee Found with the name given.'}
+                    window.location = document.globalSearchEmployeeProfileUrl + '/' + filteredEmployee[0]['EMPLOYEE_ID'];
+                } catch (e) {
+                    app.showMessage(e.message, 'error');
                 }
-
-                window.location = document.globalSearchEmployeeProfileUrl + '/' + filteredEmployee[0]['EMPLOYEE_ID'];
-            } catch (e) {
-                app.showMessage(e.message, 'error');
             }
-            return false;
         });
+
     });
 
 })(window.jQuery, window.app);

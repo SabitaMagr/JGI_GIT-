@@ -41,7 +41,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Institute Code"},
                         {value: "Institute Name"},
                         {value: "Location Detail"},
                         {value: "Telephone"},
@@ -62,7 +61,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.INSTITUTE_CODE},
                         {value: dataItem.INSTITUTE_NAME},
                         {value: dataItem.LOCATION},
                         {value: dataItem.TELEPHONE},
@@ -80,7 +78,6 @@
                 sheets: [
                     {
                         columns: [
-                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
