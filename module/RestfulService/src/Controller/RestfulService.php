@@ -8,7 +8,6 @@ use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
-use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use Appraisal\Repository\HeadingRepository;
 use Appraisal\Repository\QuestionRepository;
@@ -17,6 +16,7 @@ use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use AttendanceManagement\Repository\AttendanceRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use Exception;
@@ -26,6 +26,7 @@ use LeaveManagement\Repository\LeaveStatusRepository;
 use Loan\Repository\LoanStatusRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use Overtime\Repository\OvertimeStatusRepository;
 use Payroll\Controller\PayrollGenerator;
 use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Controller\VariableProcessor;
@@ -34,7 +35,6 @@ use Payroll\Model\MonthlyValueDetail;
 use Payroll\Model\PayPositionSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
-use Payroll\Model\SalarySheet;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\PayPositionRepo;
@@ -44,7 +44,10 @@ use Payroll\Repository\SalarySheetRepo;
 use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\HolidayRepository as SelfHolidayRepository;
 use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\OvertimeDetailRepository;
+use SelfService\Repository\OvertimeRepository;
 use SelfService\Repository\ServiceRepository;
+use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 use Setup\Model\EmployeeExperience;
 use Setup\Model\EmployeeQualification;
 use Setup\Model\EmployeeTraining;
@@ -54,13 +57,13 @@ use Setup\Repository\AcademicDegreeRepository;
 use Setup\Repository\AcademicProgramRepository;
 use Setup\Repository\AcademicUniversityRepository;
 use Setup\Repository\AdvanceRepository;
-use Setup\Repository\BranchRepository;
 use Setup\Repository\EmployeeExperienceRepository;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\EmployeeTrainingRepository;
 use Setup\Repository\JobHistoryRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\ServiceQuestionRepository;
 use System\Model\DashboardDetail;
 use System\Model\MenuSetup;
 use System\Model\RolePermission;
@@ -68,8 +71,10 @@ use System\Repository\DashboardDetailRepo;
 use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
+use System\Repository\UserSetupRepository;
 use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
+use Training\Repository\TrainingStatusRepository;
 use Travel\Repository\TravelStatusRepository;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
@@ -78,15 +83,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Training\Repository\TrainingStatusRepository;
-use Application\Repository\ForgotPasswordRepository;
-use Overtime\Repository\OvertimeStatusRepository;
-use SelfService\Repository\OvertimeDetailRepository;
-use SelfService\Repository\OvertimeRepository;
-use ServiceQuestion\Repository\EmpServiceQuestionRepo;
-use Setup\Repository\ServiceQuestionRepository;
-use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
-use AttendanceManagement\Repository\AttendanceRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -394,6 +390,12 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullMisPunchAttendanceList";
                         $responseData = $this->pullMisPunchAttendanceList($postedData->data);
+                        break;
+                    case "pullCurUserPwd";
+                        $responseData = $this->pullCurUserPwd();
+                        break;
+                    case "updateCurUserPwd";
+                        $responseData = $this->updateCurUserPwd($postedData->data);
                         break;
 
                     default:
@@ -3373,6 +3375,26 @@ class RestfulService extends AbstractRestfulController {
         return [
             'success' => "true",
             "data" => $list
+        ];
+    }
+    
+    public function pullCurUserPwd(){
+        $userrepo=new UserSetupRepository($this->adapter);
+        $userLoginData = $userrepo->getUserByEmployeeId($this->loggedIdEmployeeId);
+        $oldPassword=$userLoginData['PASSWORD'];
+        return [
+            'success' => "true",
+            "data" => $oldPassword
+        ];
+    }
+    
+    public function updateCurUserPwd($postData){
+        $newPassword=$postData['newPassword'];
+        $userrepo=new UserSetupRepository($this->adapter);
+        $updateResult=$userrepo->updateByEmpId($this->loggedIdEmployeeId, $newPassword);
+        return [
+            'success' => "true",
+//            "data" => $updateResult
         ];
     }
 
