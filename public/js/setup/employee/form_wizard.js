@@ -1,4 +1,4 @@
-(function ($) {
+(function ($, app) {
     'use strict';
     $(document).ready(function () {
         var pathName = window.location.pathname;
@@ -12,7 +12,7 @@
                 $('#tab' + (index + 1) + " select").select2();
                 switch (index + 1) {
                     case 1:
-                        window.app.addDatePicker($("#employeeBirthDate"));
+                        app.datePickerWithNepali('birthdate', 'nepaliBirthDate');
                         break;
                     case 2:
                         app.addDatePicker(
@@ -21,13 +21,13 @@
                                 );
                         break;
                     case 3:
-                        window.app.addDatePicker(
+                        app.addDatePicker(
                                 $("#idPassportExpiry"),
                                 $("#idDrivingLicenseExpiry"),
                                 $("#idCitizenshipIssueDate"));
                         break;
                     case 4:
-                        window.app.addDatePicker($("#joinDate"));
+                        app.addDatePicker($("#joinDate"));
                         break;
                     case 7:
                         break;
@@ -52,24 +52,7 @@
                     });
                 }
 
-//                if ($current > 1 && $current < $total) {
-//                    var nextIcon = li.next().find('.fa');
-////                    var nextIconClass = nextIcon.attr('class').match(/fa-[\w-]*/).join();
-//                    removeIcons(btnNext);
-////                    btnNext.addClass(nextIconClass + ' btn-animated from-left fa');
-//                    var prevIcon = li.prev().find('.fa');
-//                    var prevIconClass = prevIcon.attr('class').match(/fa-[\w-]*/).join();
-//                    removeIcons(btnPrev);
-//                    btnPrev.addClass(prevIconClass + ' btn-animated from-left fa');
-//                } else if ($current == 1) {
-//                    btnPrev.removeClass('btn-animated from-left fa');
-//                    removeIcons(btnPrev);
-//                } else {
-//                    btnNext.removeClass('btn-animated from-left fa');
-//                    removeIcons(btnNext);
-//                }
             }, onNext: function (tab, navigation, index) {
-                console.log("Showing next tab");
                 if (typeof document.currentTab !== 'undefined') {
                     if (index <= 4 || index == 7 || index == 8) {
                         $('#btnform' + index).click();
@@ -90,9 +73,7 @@
                 return false;
 
             }, onPrevious: function (tab, navigation, index) {
-                console.log("Showing previous tab");
             }, onInit: function () {
-                console.log("Tab initialized");
                 $('#rootwizard ul').removeClass('nav-pills');
 
             }
@@ -103,4 +84,4 @@
             });
         });
     });
-})(window.jQuery);
+})(window.jQuery, window.app);

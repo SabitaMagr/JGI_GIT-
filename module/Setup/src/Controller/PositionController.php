@@ -42,12 +42,6 @@ class PositionController extends AbstractActionController {
     }
 
     public function addAction() {
-//        $tableName = "HRIS_POSITIONS";
-//        $columnsWidValues = ["POSITION_NAME"=>"Junior Officer"];
-//
-//        $result = ConstraintHelper::checkUniqueConstraint($this->adapter, $tableName, $columnsWidValues);
-//        die ();
-
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -71,7 +65,7 @@ class PositionController extends AbstractActionController {
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,true,true),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, true),
                     'messages' => $this->flashmessenger()->getMessages()
                         ]
                 )
@@ -105,10 +99,10 @@ class PositionController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray(
                         $this, [
-                            'form' => $this->form,
-                            'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,true,true),
-                            'id' => $id
-                ]
+                    'form' => $this->form,
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, true),
+                    'id' => $id
+                        ]
         );
     }
 
@@ -124,6 +118,4 @@ class PositionController extends AbstractActionController {
 
 }
 
-/* End of file PositionController.php */
-/* Location: ./Setup/src/Controller/PositionController.php */
 ?>

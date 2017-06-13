@@ -30,7 +30,7 @@ class ShiftForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Start Time"})
      * @Annotation\Attributes({ "id":"startTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control" })
@@ -39,7 +39,7 @@ class ShiftForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"End Time"})
      * @Annotation\Attributes({ "id":"endTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
@@ -215,7 +215,7 @@ class ShiftForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Actual Working Hour"})
      * @Annotation\Attributes({ "id":"actualWorkingHr", "data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })
@@ -224,7 +224,7 @@ class ShiftForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Total Working Hour"})
      * @Annotation\Attributes({ "id":"totalWorkingHr", "data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })

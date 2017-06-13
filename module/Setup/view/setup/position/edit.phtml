@@ -14,12 +14,6 @@ $companyId->setValueOptions($companies);
 $levelNo = $form->get('levelNo');
 
 $wohFlag = $form->get('wohFlag');
-$wohFlagValues=[
-    'L'=>'Leave',
-    'O'=>'OT'
-];
-
-$wohFlag->setValueOptions($wohFlagValues);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
