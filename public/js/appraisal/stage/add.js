@@ -19,7 +19,7 @@
         });       
         window.app.checkUniqueConstraints("stageCode",formId,tableName,"STAGE_CODE",checkColumnName,selfId);
         window.app.checkUniqueConstraints("stageNdesc",formId,tableName,"STAGE_NDESC",checkColumnName,selfId);
-        window.app.checkUniqueConstraints("orderNo",formId,tableName,"ORDER_NO",checkColumnName,selfId);
+//        window.app.checkUniqueConstraints("orderNo",formId,tableName,"ORDER_NO",checkColumnName,selfId);
 
     });
 })(window.jQuery,window.app);

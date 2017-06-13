@@ -139,6 +139,8 @@ AND
             new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
             new Expression("A.REMARKS AS REMARKS"),
+            new Expression("A.KPI_SETTING AS KPI_SETTING"),
+            new Expression("A.COMPETENCIES_SETTING AS COMPETENCIES_SETTING"),
             new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
             new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
         ]);

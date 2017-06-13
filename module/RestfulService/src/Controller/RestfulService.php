@@ -87,6 +87,10 @@ use ServiceQuestion\Repository\EmpServiceQuestionRepo;
 use Setup\Repository\ServiceQuestionRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 use AttendanceManagement\Repository\AttendanceRepository;
+use SelfService\Repository\AppraisalKPIRepository;
+use SelfService\Model\AppraisalKPI;
+use SelfService\Model\AppraisalCompetencies;
+use SelfService\Repository\AppraisalCompetenciesRepo;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -394,6 +398,24 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullMisPunchAttendanceList";
                         $responseData = $this->pullMisPunchAttendanceList($postedData->data);
+                        break;
+                    case "submitAppraisalKPI":
+                        $responseData = $this->submitAppraisalKPI($postedData->data);
+                        break;
+                    case "pullAppraisalKPIList":
+                        $responseData = $this->pullAppraisalKPIList($postedData->data);
+                        break;
+                    case "deleteAppraisalKPI":
+                        $responseData = $this->deleteAppraisalKPI($postedData->data);
+                        break;
+                    case "submitAppraisalCompetencies":
+                        $responseData = $this->submitAppraisalCompetencies($postedData->data);
+                        break;
+                    case "pullAppraisalCompetenciesList":
+                        $responseData = $this->pullAppraisalCompetenciesList($postedData->data);
+                        break;
+                    case "deleteAppraisalCompetencies":
+                        $resonseData = $this->deleteAppraisalCompetencies($postedData->data);
                         break;
 
                     default:
@@ -3375,5 +3397,183 @@ class RestfulService extends AbstractRestfulController {
             "data" => $list
         ];
     }
-
+    public function submitAppraisalKPI($data){
+        $appraisalKPIRepository = new AppraisalKPIRepository($this->adapter);
+        $employeeRepository = new EmployeeRepository($this->adapter);
+        $KPIList = $data['KPIList'];
+        $employeeId = $data['employeeId'];
+        $appraisalId = $data['appraisalId'];
+        $loggedInUser = $this->loggedIdEmployeeId;
+        $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
+        $appraisalKPI = new AppraisalKPI();
+        try{
+            foreach($KPIList as $KPIRow){
+                $appraisalKPI->title = $KPIRow['title'];
+                $appraisalKPI->successCriteria = $KPIRow['successCriteria'];
+                $appraisalKPI->weight = $KPIRow['weight'];
+                if($KPIRow['sno']==0 || $KPIRow['sno']==null){
+                    $appraisalKPI->sno = (int)(Helper::getMaxId($this->adapter, AppraisalKPI::TABLE_NAME, AppraisalKPI::SNO))+1;
+                    $appraisalKPI->appraisalId = $appraisalId;
+                    $appraisalKPI->employeeId = $employeeId;
+                    $appraisalKPI->createdBy = $loggedInUser;
+                    $appraisalKPI->createdDate = Helper::getcurrentExpressionDate();
+                    $appraisalKPI->branchId = $loggedInUserDtl['BRANCH_ID'];
+                    $appraisalKPI->companyId = $loggedInUserDtl['COMPANY_ID'];
+                    $appraisalKPI->approvedDate = Helper::getcurrentExpressionDate();
+                    $appraisalKPI->status = 'E';
+                    $appraisalKPIRepository->add($appraisalKPI);
+                }else{
+                    $appraisalKPI->modifiedBy = $loggedInUser;
+                    $appraisalKPI->modifiedDate = Helper::getcurrentExpressionDate();
+                    $appraisalKPIRepository->edit($appraisalKPI,$KPIRow['sno']);
+                }
+            }
+        }catch(Exception $e){
+            $responseData = [
+                "success" => false,
+                "message" => $e->getMessage(),
+                "traceAsString" => $e->getTraceAsString(),
+                "line" => $e->getLine()
+            ];
+        }
+        $appEmp= [
+            'appraisalId'=>$appraisalId,
+            'employeeId'=>$employeeId
+                ];
+        return [
+            'success' => true,
+        ];
+    }
+    public function pullAppraisalKPIList($data){
+        $appraisalId = $data['appraisalId'];
+        $employeeId = $data['employeeId'];
+        $appraisalKPIRepository = new AppraisalKPIRepository($this->adapter);
+        $result = $appraisalKPIRepository->fetchByAppEmpId($employeeId,$appraisalId);
+        $list = [];
+        try{
+            foreach($result as $row){
+                array_push($list,$row);
+            }
+        }catch(Exception $e){
+            $responseData = [
+                "success" => false,
+                "message" => $e->getMessage(),
+                "traceAsString" => $e->getTraceAsString(),
+                "line" => $e->getLine()
+            ];
+        }
+        return [
+            'success' => true,
+            'data'=>$list
+        ];
+    }
+    public function deleteAppraisalKPI($data){
+        $sno = $data['sno'];
+        $appraisalKPIRepository = new AppraisalKPIRepository($this->adapter);
+        try{
+            $appraisalKPIRepository->delete($sno);
+        }catch(Exception $e){
+            $responseData = [
+                "success" => false,
+                "message" => $e->getMessage(),
+                "traceAsString" => $e->getTraceAsString(),
+                "line" => $e->getLine()
+            ];
+        }
+        return [
+            'success' => true,
+            'data'=>[
+                'msg'=>'Appraisal KPI deleted successfully!!!'
+            ]
+        ];
+    }
+    public function submitAppraisalCompetencies($data){
+        $appraisalCompetenciesRepo = new AppraisalCompetenciesRepo($this->adapter);
+        $employeeRepository = new EmployeeRepository($this->adapter);
+        $competenciesList = $data['competenciesList'];
+        $employeeId = $data['employeeId'];
+        $appraisalId = $data['appraisalId'];
+        $loggedInUser = $this->loggedIdEmployeeId;
+        $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
+        $appraisalCompetencies = new AppraisalCompetencies();
+        try{
+            foreach($competenciesList as $competenciesRow){
+                $appraisalCompetencies->title = $competenciesRow['title'];
+                if($competenciesRow['sno']==0 || $competenciesRow['sno']==null){
+                    $appraisalCompetencies->sno = (int)(Helper::getMaxId($this->adapter, AppraisalCompetencies::TABLE_NAME, AppraisalCompetencies::SNO))+1;
+                    $appraisalCompetencies->appraisalId = $appraisalId;
+                    $appraisalCompetencies->employeeId = $employeeId;
+                    $appraisalCompetencies->createdBy = $loggedInUser;
+                    $appraisalCompetencies->createdDate = Helper::getcurrentExpressionDate();
+                    $appraisalCompetencies->branchId = $loggedInUserDtl['BRANCH_ID'];
+                    $appraisalCompetencies->companyId = $loggedInUserDtl['COMPANY_ID'];
+                    $appraisalCompetencies->approvedDate = Helper::getcurrentExpressionDate();
+                    $appraisalCompetencies->status = 'E';
+                    $appraisalCompetenciesRepo->add($appraisalCompetencies);
+                }else{
+                    $appraisalCompetencies->modifiedBy = $loggedInUser;
+                    $appraisalCompetencies->modifiedDate = Helper::getcurrentExpressionDate();
+                    $appraisalCompetenciesRepo->edit($appraisalCompetencies,$competenciesRow['sno']);
+                }
+            }
+        }catch(Exception $e){
+            $responseData = [
+                "success" => false,
+                "message" => $e->getMessage(),
+                "traceAsString" => $e->getTraceAsString(),
+                "line" => $e->getLine()
+            ];
+        }
+        $appEmp= [
+            'appraisalId'=>$appraisalId,
+            'employeeId'=>$employeeId
+                ];
+        return [
+            'success' => true
+        ];
+    }
+    public function pullAppraisalCompetenciesList($data){
+        $appraisalId = $data['appraisalId'];
+        $employeeId = $data['employeeId'];
+        $appraisalCompetenciesRepo = new AppraisalCompetenciesRepo($this->adapter);
+        $result = $appraisalCompetenciesRepo->fetchByAppEmpId($employeeId,$appraisalId);
+        $list = [];
+        try{
+            foreach($result as $row){
+                array_push($list,$row);
+            }
+        }catch(Exception $e){
+            $responseData = [
+                "success" => false,
+                "message" => $e->getMessage(),
+                "traceAsString" => $e->getTraceAsString(),
+                "line" => $e->getLine()
+            ];
+        }
+        return [
+            'success' => true,
+            'data'=>$list
+        ];
+    }
+    public function deleteAppraisalCompetencies($data){
+        $sno = $data['sno'];
+        $appraisalCompetenciesRepo = new AppraisalCompetenciesRepo($this->adapter);
+        try{
+            $appraisalCompetenciesRepo->delete($sno);
+        }catch(Exception $e){
+            $responseData = [
+                "success" => false,
+                "message" => $e->getMessage(),
+                "traceAsString" => $e->getTraceAsString(),
+                "line" => $e->getLine()
+            ];
+        }
+        return [
+            'success' => true,
+            'data'=>[
+                'msg'=>'Appraisal Competencies deleted successfully!!!'
+            ]
+        ];
+    }
+    
 }
