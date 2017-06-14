@@ -84,13 +84,7 @@ use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
 use Application\Repository\ForgotPasswordRepository;
-use Overtime\Repository\OvertimeStatusRepository;
-use SelfService\Repository\OvertimeDetailRepository;
-use SelfService\Repository\OvertimeRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionRepo;
-use Setup\Repository\ServiceQuestionRepository;
-use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
-use AttendanceManagement\Repository\AttendanceRepository;
 use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Model\AppraisalKPI;
 use SelfService\Model\AppraisalCompetencies;
@@ -419,7 +413,7 @@ class RestfulService extends AbstractRestfulController {
                         $responseData = $this->pullAppraisalCompetenciesList($postedData->data);
                         break;
                     case "deleteAppraisalCompetencies":
-                        $resonseData = $this->deleteAppraisalCompetencies($postedData->data);
+                        $responseData = $this->deleteAppraisalCompetencies($postedData->data);
                     case "pullCurUserPwd";
                         $responseData = $this->pullCurUserPwd();
                         break;
@@ -3410,9 +3404,9 @@ class RestfulService extends AbstractRestfulController {
         $appraisalId = $data['appraisalId'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
-        $appraisalKPI = new AppraisalKPI();
         try{
             foreach($KPIList as $KPIRow){
+                $appraisalKPI = new AppraisalKPI();
                 $appraisalKPI->title = $KPIRow['title'];
                 $appraisalKPI->successCriteria = $KPIRow['successCriteria'];
                 $appraisalKPI->weight = $KPIRow['weight'];
@@ -3500,9 +3494,9 @@ class RestfulService extends AbstractRestfulController {
         $appraisalId = $data['appraisalId'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
-        $appraisalCompetencies = new AppraisalCompetencies();
         try{
             foreach($competenciesList as $competenciesRow){
+                $appraisalCompetencies = new AppraisalCompetencies();
                 $appraisalCompetencies->title = $competenciesRow['title'];
                 if($competenciesRow['sno']==0 || $competenciesRow['sno']==null){
                     $appraisalCompetencies->sno = (int)(Helper::getMaxId($this->adapter, AppraisalCompetencies::TABLE_NAME, AppraisalCompetencies::SNO))+1;
@@ -3515,7 +3509,7 @@ class RestfulService extends AbstractRestfulController {
                     $appraisalCompetencies->approvedDate = Helper::getcurrentExpressionDate();
                     $appraisalCompetencies->status = 'E';
                     $appraisalCompetenciesRepo->add($appraisalCompetencies);
-                }else{
+                }else if($competenciesRow['sno']!=0){
                     $appraisalCompetencies->modifiedBy = $loggedInUser;
                     $appraisalCompetencies->modifiedDate = Helper::getcurrentExpressionDate();
                     $appraisalCompetenciesRepo->edit($appraisalCompetencies,$competenciesRow['sno']);

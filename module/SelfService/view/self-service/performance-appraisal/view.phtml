@@ -193,10 +193,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php } ?>
                         </ul>
                     </div>
-                    <div class="tab-content margin-top-15" ng-controller="kpiController">
+                    <div class="tab-content margin-top-15">
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
-                        <div class="tab-pane active" id="portlet_tab2_KPI">
+                        <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='Y')) ?'active':''?>" id="portlet_tab2_KPI" ng-controller="kpiController">
                             <form name="KPIForm" id="KPIForm" ng-submit="submitKPIForm()" novalidate>
                             <table class="table">
                                 <thead>
