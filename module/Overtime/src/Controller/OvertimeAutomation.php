@@ -22,4 +22,8 @@ class OvertimeAutomation extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, ['overtimeCompulsoryList' => Helper::extractDbData($overtimeCompulsoryList)]);
     }
 
+    public function wizardAction() {
+        
+    }
+
 }
