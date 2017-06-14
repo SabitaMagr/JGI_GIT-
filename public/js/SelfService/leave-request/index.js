@@ -82,6 +82,19 @@ angular.module('hris', [])
                 
                 app.searchTable('leaveRequestTable',['LEAVE_ENAME','REQUESTED_DT','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS']);
                 
+//                app.pdfExport(
+//                        'leaveRequestTable',
+//                        {
+//                            'LEAVE_ENAME': 'Leave',
+//                            'REQUESTED_DT': 'Request Date',
+//                            'FROM_DATE': 'Start Date',
+//                            'TO_DATE': 'End Date',
+//                            'NO_OF_DAYS': 'No Of Days',
+//                            'STATUS': 'Status',
+//                        }
+//                );
+                
+                
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

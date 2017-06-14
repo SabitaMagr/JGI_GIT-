@@ -35,7 +35,11 @@ class ControllerFactory implements FactoryInterface {
             return $output;
         };
         $refl = new ReflectionClass($requestedName);
-        $params = $refl->getConstructor()->getParameters();
+        $constructor = $refl->getConstructor();
+        if ($constructor == null) {
+            return $refl->newInstanceArgs();
+        }
+        $params = $constructor->getParameters();
         if (sizeof($params) == 0) {
             return $refl->newInstanceArgs();
         }

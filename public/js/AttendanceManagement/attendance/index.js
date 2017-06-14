@@ -96,6 +96,7 @@ angular.module('hris', [])
                             'IN_TIME': 'In Time',
                             'OUT_TIME': 'Out Time',
                             'TOTAL_HOUR': 'Total Hour',
+                            'STATUS': 'STATUS',
                             'IN_REMARKS': 'In Remarks',
                             'OUT_REMARKS': 'Out Remarks'
                         }
