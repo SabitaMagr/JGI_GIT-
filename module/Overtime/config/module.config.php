@@ -1,8 +1,10 @@
 <?php
+
 namespace Overtime;
 
 use Application\Controller\ControllerFactory;
 use Overtime\Controller\OvertimeApply;
+use Overtime\Controller\OvertimeAutomation;
 use Overtime\Controller\OvertimeStatus;
 use Zend\Router\Http\Segment;
 
@@ -37,29 +39,43 @@ return [
                     ],
                 ],
             ],
+            'overtimeAutomation' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/overtime/automation[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => OvertimeAutomation::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
         'overtimeStatus' => [
-                [
+            [
                 'label' => "Overtime Request",
                 'route' => "overtimeStatus"
             ],
-                [
+            [
                 'label' => "Overtime Request",
                 'route' => "overtimeStatus",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'overtimeStatus',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'overtimeStatus',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Detail',
                         'route' => 'overtimeStatus',
                         'action' => 'view',
@@ -68,25 +84,25 @@ return [
             ],
         ],
         'overtimeApply' => [
-                [
+            [
                 'label' => "Overtime Apply",
                 'route' => "overtimeApply"
             ],
-                [
+            [
                 'label' => "Overtime Apply",
                 'route' => "overtimeApply",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'overtimeApply',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'overtimeApply',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'overtimeApply',
                         'action' => 'edit',
@@ -94,11 +110,34 @@ return [
                 ],
             ],
         ],
+        'overtimeAutomation' => [
+            [
+                'label' => "Overtime",
+                'route' => "overtimeAutomation"
+            ],
+            [
+                'label' => "Overtime Automation",
+                'route' => "overtimeAutomation",
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'overtimeAutomation',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Wizard',
+                        'route' => 'overtimeAutomation',
+                        'action' => 'wizard',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
-            Controller\OvertimeStatus::class => ControllerFactory::class,
-            Controller\OvertimeApply::class => ControllerFactory::class
+            OvertimeStatus::class => ControllerFactory::class,
+            OvertimeApply::class => ControllerFactory::class,
+            OvertimeAutomation::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
