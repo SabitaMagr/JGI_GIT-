@@ -119,8 +119,8 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                         $scope.$apply(function () {
                             console.log(success);
                             $('.nav-tabs a[href="#portlet_tab2_COM"]').tab('show');
-//                            $scope.KPIList = [];
-//                            $scope.viewKPIList();
+                            $scope.KPIList = [];
+                            $scope.viewKPIList();
                             App.unblockUI("#hris-page-content");
                         });
                     }, function (failure) {

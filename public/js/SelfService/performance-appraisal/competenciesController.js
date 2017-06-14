@@ -114,8 +114,8 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                         $scope.$apply(function () {
                             console.log(success);
                             $('.nav-tabs a[href="#portlet_tab2_1"]').tab('show');
-//                            $scope.competenciesList = [];
-//                            $scope.viewCompetenciesList();
+                            $scope.competenciesList = [];
+                            $scope.viewCompetenciesList();
                             App.unblockUI("#hris-page-content");
                         });
                     }, function (failure) {

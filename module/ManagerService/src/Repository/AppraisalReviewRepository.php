@@ -52,6 +52,8 @@ class AppraisalReviewRepository implements RepositoryInterface{
             new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
             new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
             new Expression("A.REMARKS AS REMARKS"),
+            new Expression("A.KPI_SETTING AS KPI_SETTING"),
+            new Expression("A.COMPETENCIES_SETTING AS COMPETENCIES_SETTING"),
             new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
             new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
         ]);
@@ -67,11 +69,35 @@ class AppraisalReviewRepository implements RepositoryInterface{
             "E.".HrEmployees::STATUS."='E'",
             "T.".Type::STATUS."='E'",
             "S.".Stage::STATUS."='E'",
-            "((SELECT COUNT(*)
+            "( (COMPETENCIES_SETTING = (
+  CASE
+    WHEN (SELECT COUNT(*)
+      FROM HRIS_APPRAISAL_ANSWER APNS
+      WHERE A.APPRAISAL_ID = APNS.APPRAISAL_ID
+      AND E.EMPLOYEE_ID    =APNS.EMPLOYEE_ID)=0
+    THEN ('Y')
+  END )
+AND (SELECT COUNT(*)
+  FROM HRIS_APPRAISAL_KPI APKPI
+  WHERE A.APPRAISAL_ID = APKPI.APPRAISAL_ID
+  AND E.EMPLOYEE_ID    =APKPI.EMPLOYEE_ID)>0)
+OR (KPI_SETTING        = (
+  CASE
+    WHEN (SELECT COUNT(*)
+      FROM HRIS_APPRAISAL_ANSWER APNS
+      WHERE A.APPRAISAL_ID = APNS.APPRAISAL_ID
+      AND E.EMPLOYEE_ID    =APNS.EMPLOYEE_ID)=0
+    THEN ('Y')
+  END)
+AND (SELECT COUNT(*)
+  FROM HRIS_APPRAISAL_COMPETENCY APCOM
+  WHERE A.APPRAISAL_ID = APCOM.APPRAISAL_ID
+  AND E.EMPLOYEE_ID    =APCOM.EMPLOYEE_ID)>0)
+OR (SELECT COUNT(*)
   FROM HRIS_APPRAISAL_ANSWER APNS
   WHERE A.APPRAISAL_ID = APNS.APPRAISAL_ID
-  AND E.EMPLOYEE_ID = APNS.EMPLOYEE_ID
-  AND AA.APPRAISER_ID =APNS.USER_ID)>0)"
+  AND E.EMPLOYEE_ID    = APNS.EMPLOYEE_ID
+  AND AA.APPRAISER_ID  =APNS.USER_ID)>0)"
             ]);
         $select->order("A.".Setup::APPRAISAL_EDESC);
         $statement = $sql->prepareStatementForSqlObject($select);
