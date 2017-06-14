@@ -868,3 +868,6 @@
 2017-06-04T16:53:39+05:45 INFO (6): payroll {"employeeId":"1000370","ruleId":"3"}
 2017-06-04T16:53:39+05:45 INFO (6): payroll {"employeeId":"1000370","ruleId":"4"}
 2017-06-04T16:53:39+05:45 INFO (6): payroll {"employeeId":"1000370","ruleId":"5"}
+2017-06-14T11:46:51+05:45 INFO (6): Email Sent =>From prabin.maharjan@itnepal.com To ukesh.gaiju@itnepal.com
+2017-06-14T11:48:04+05:45 INFO (6): Email Sent =>From prabin.maharjan@itnepal.com To ukesh.gaiju@itnepal.com
+2017-06-14T11:50:14+05:45 INFO (6): Email Sent =>From prabin.maharjan@itnepal.com To ukesh.gaiju@itnepal.com
