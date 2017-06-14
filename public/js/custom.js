@@ -895,6 +895,7 @@ window.app = (function ($, toastr, App) {
 
     (function () {
         $('.hris-export-to-excel').on("click", function () {
+            console.log('tet');
             try {
                 var $this = $(this);
                 var targetId = $this.attr("hris-export-to-excel-target");

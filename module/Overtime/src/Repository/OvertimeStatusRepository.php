@@ -1,12 +1,9 @@
 <?php
 namespace Overtime\Repository;
 
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
+use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\HrEmployees;
-use Application\Model\Model;
 use Zend\Db\Adapter\AdapterInterface;
 
 class OvertimeStatusRepository implements RepositoryInterface{
