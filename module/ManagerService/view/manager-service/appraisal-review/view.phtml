@@ -1,5 +1,11 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/manager-service/appraisal-review/add.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
+$this->headScript()->appendFile($this->basePath('js/user-form-error.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/kpiController.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/competenciesController.js'));
+
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\appraisal-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -20,7 +26,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div class="row margin-top-20">
+    <div class="row margin-top-20" ng-app="hris">
     <div class="col-md-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -151,9 +157,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="portlet-body">
                     <div class="tabbable-line menusetuptab" style="padding-top:0px">
                         <ul class="nav nav-tabs" id="tabList">
-                            <li class="<?= ($tab==1)?"active":""; ?>">
+                            <?php if($assignedAppraisalDetail['KPI_SETTING']=='Y'){?>
+                            <li class="active">
+                                <a href="#portlet_tab2_KPI" data-toggle="tab"> KPI </a>
+                            </li>
+                            <?php }?>
+                            <?php if($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){ ?>
+                            <li>
+                                <a href="#portlet_tab2_COM" data-toggle="tab"> Competencies </a>
+                            </li>
+                            <?php } ?>
+                            <?php if(count($questionTemplate)>0){ ?>
+                            <li class="<?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N') && ($tab==1)) ?'active':''?>">
                                 <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                             </li>
+                            <?php } ?>
                             <?php if(count($appraiserQuestionTemplate)>0){ ?>
                             <li class="<?= ($tab==2)?"active":""; ?>">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
@@ -172,7 +190,142 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </ul>
                     </div>
                     <div class="tab-content margin-top-15" id="tabContent">
-                        <div class="tab-pane <?= ($tab==1)?"active":""; ?>" id="portlet_tab2_1">
+                        <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
+                        <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
+                        <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='Y')) ?'active':''?>" id="portlet_tab2_KPI" ng-controller="kpiController">
+                            <form name="KPIForm" id="KPIForm" ng-submit="submitKPIForm()" novalidate>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th style="width:5%;"></th>
+                                    <th style="width:5%;">S.N.</th>
+                                    <th>KPI Detail</th>
+                                    <th>Success Criteria</th>
+                                    <th style="width:10%;">Weight</th>
+                                </tr>
+                                </thead>
+                                <tr ng-repeat="KPI in KPIList">
+                                    <td>
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" id="{{KPI.checkbox}}" class="md-check"
+                                                   ng-model="KPI.checked">
+                                            <label for="{{KPI.checkbox}}">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><span ng-bind="KPI.counter"></span></td>
+                                    <td>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="title_{{KPI.checkbox}}" ng-model="KPI.title" required="required"></textarea>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.title_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.title_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                                <li>KPI Detail is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="successCriteria_{{KPI.checkbox}}" ng-model="KPI.successCriteria" required="required"></textarea>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.successCriteria_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.successCriteria_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                                <li>Success Criteria is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <input type="number" name="weight_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.weight" required="required" min="0" step='1'/>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.weight_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.weight_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                                <li>Weight is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;">
+                                        <a href="javascript:;" class="btn btn-icon-only default" ng-click="addKPI()" id="plushIcon">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                        <a href="javascript:;" class="btn btn-icon-only default" ng-click="deleteKPI()" id="plushIcon">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input type="hidden" name="sumTotal" value="{{sumAllTotal(KPIList)}}" ng-model="sumTotal"/>
+                                        <div  use-form-error="isGeaterHundred" use-error-expression="sumTotal" ng-messages="KPIForm.$error" class="errors">
+                                            <div ng-message="isGeaterHundred" class="help-block error">You Cannot Enter KPI above 100</div>
+                                        </div>
+                                        
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <button type="submit" id="submit" class="btn btn-success pull-right">
+                                                NEXT
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            </form>
+                        </div>
+                        
+                        <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
+                            <form name="competenciesForm" id="competenciesForm" ng-submit="submitCompetenciesForm()" novalidate>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th style="width:5%;"></th>
+                                    <th style="width:5%;">S.N.</th>
+                                    <th>Competencies</th>
+                                </tr>
+                                </thead>
+                                <tr ng-repeat="competencies in competenciesList">
+                                    <td>
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" id="{{competencies.checkbox}}" class="md-check"
+                                                   ng-model="competencies.checked">
+                                            <label for="{{competencies.checkbox}}">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                    <td><span ng-bind="competencies.counter"></span></td>
+                                    <td>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:25px!important" name="title_{{competencies.checkbox}}" ng-model="competencies.title" required="required"></textarea>
+                                        <div ng-show="competenciesForm.$submitted || competenciesForm.title_{{competencies.checkbox}}.$touched">
+                                            <ul ng-show="competenciesForm.title_{{competencies.checkbox}}.$error.required" class="help-block error">
+                                                <li>Competencies Detail is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:10%;">
+                                        <a href="javascript:;" class="btn btn-icon-only default" ng-click="addCompetencies()" id="plushIcon">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                        <a href="javascript:;" class="btn btn-icon-only default" ng-click="deleteCompetencies()" id="plushIcon">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <div class="form-group">
+                                            <button type="submit" id="submit" class="btn btn-success pull-right">
+                                                NEXT
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            </form>
+                        </div>
+                        <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N') && $tab==1) ?'active':''?>" id="portlet_tab2_1">
                             <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>1]) ?>" name="performanceAppraisalForm" id="appraisalReview">
                             <div class="row">
                                 <?php 
