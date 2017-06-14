@@ -89,6 +89,8 @@ use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Model\AppraisalKPI;
 use SelfService\Model\AppraisalCompetencies;
 use SelfService\Repository\AppraisalCompetenciesRepo;
+use Appraisal\Repository\AppraisalAssignRepository;
+use Application\Helper\AppraisalHelper;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -3404,12 +3406,17 @@ class RestfulService extends AbstractRestfulController {
         $appraisalId = $data['appraisalId'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
+        $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         try{
             foreach($KPIList as $KPIRow){
                 $appraisalKPI = new AppraisalKPI();
                 $appraisalKPI->title = $KPIRow['title'];
                 $appraisalKPI->successCriteria = $KPIRow['successCriteria'];
                 $appraisalKPI->weight = $KPIRow['weight'];
+                $appraisalKPI->keyAchievement = $KPIRow['keyAchievement'];
+                $appraisalKPI->selfRating = (is_numeric($KPIRow['selfRating']))?$KPIRow['selfRating']:null;
+                $appraisalKPI->appraiserRating = (is_numeric($KPIRow['appraiserRating']))?$KPIRow['appraiserRating']:null;
                 if($KPIRow['sno']==0 || $KPIRow['sno']==null){
                     $appraisalKPI->sno = (int)(Helper::getMaxId($this->adapter, AppraisalKPI::TABLE_NAME, AppraisalKPI::SNO))+1;
                     $appraisalKPI->appraisalId = $appraisalId;
@@ -3426,6 +3433,9 @@ class RestfulService extends AbstractRestfulController {
                     $appraisalKPI->modifiedDate = Helper::getcurrentExpressionDate();
                     $appraisalKPIRepository->edit($appraisalKPI,$KPIRow['sno']);
                 }
+            }
+            if($assignedAppraisalDetail['STAGE_ID']==7){
+                $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [
@@ -3498,6 +3508,8 @@ class RestfulService extends AbstractRestfulController {
             foreach($competenciesList as $competenciesRow){
                 $appraisalCompetencies = new AppraisalCompetencies();
                 $appraisalCompetencies->title = $competenciesRow['title'];
+                $appraisalCompetencies->rating = (is_numeric($competenciesRow['rating']))?$competenciesRow['rating']:null;
+                $appraisalCompetencies->comments = $competenciesRow['comments'];
                 if($competenciesRow['sno']==0 || $competenciesRow['sno']==null){
                     $appraisalCompetencies->sno = (int)(Helper::getMaxId($this->adapter, AppraisalCompetencies::TABLE_NAME, AppraisalCompetencies::SNO))+1;
                     $appraisalCompetencies->appraisalId = $appraisalId;

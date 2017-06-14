@@ -6,7 +6,7 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
-
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
@@ -36,7 +36,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<div class="margin-top-20">
+    <div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
     
     <div class="portlet light bg-inverse">
         

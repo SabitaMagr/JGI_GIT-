@@ -18,6 +18,8 @@ use Appraisal\Model\AppraisalAnswer;
 use Appraisal\Repository\StageRepository;
 use Appraisal\Model\Question;
 use Application\Helper\AppraisalHelper;
+use SelfService\Repository\AppraisalKPIRepository;
+use SelfService\Repository\AppraisalCompetenciesRepo;
 
 class AppraisalReview extends AbstractActionController{
     
@@ -180,7 +182,15 @@ class AppraisalReview extends AbstractActionController{
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
+        $appraisalKPI = new AppraisalKPIRepository($this->adapter);
+        $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
+        $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($employeeId, $appraisalId)['NUM'];
+        $appraiserRatingDtlNum = $appraisalKPI->countAppraiserRatingDtl($employeeId, $appraisalId)['NUM'];
+        $appCompetenciesRatingDtlNum = $appraisalCompetencies->countCompetenciesRatingDtl($employeeId,$appraisalId)['NUM'];
         $returnData['tab']=$tab;
+        $returnData['keyAchievementDtlNum']=$keyAchievementDtlNum;
+        $returnData['appraiserRatingDtlNum']=$appraiserRatingDtlNum;
+        $returnData['appCompetenciesRatingDtlNum']=$appCompetenciesRatingDtlNum;
         return Helper::addFlashMessagesToArray($this,$returnData);
     }
 }

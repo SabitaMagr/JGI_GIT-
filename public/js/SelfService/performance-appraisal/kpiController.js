@@ -9,6 +9,9 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 title: "",
                 successCriteria: "",
                 weight: "",
+                keyAchievement:"",
+                selfRating:"",
+                appraiserRating:"",
                 checkbox: "checkboxq0",
                 checked: false
             };
@@ -34,6 +37,9 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                                     title: appraisalKPIList[j].TITLE,
                                     successCriteria: appraisalKPIList[j].SUCCESS_CRITERIA,
                                     weight: parseInt(appraisalKPIList[j].WEIGHT),
+                                    keyAchievement:appraisalKPIList[j].KEY_ACHIEVEMENT,
+                                    selfRating:parseInt(appraisalKPIList[j].SELF_RATING),
+                                    appraiserRating:parseInt(appraisalKPIList[j].APPRAISER_RATING),
                                     checkbox: "checkboxq" + j,
                                     checked: false
                                 }));
@@ -73,6 +79,9 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                     title: "",
                     successCriteria: "",
                     weight: "",
+                    keyAchievement:"",
+                    selfRating:"",
+                    appraiserRating:"",
                     checkbox: "checkboxq" + $scope.counter,
                     checked: false
                 }));
@@ -106,7 +115,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
             $scope.submitKPIForm = function () {
                 console.log("form is going to be submitted");
                 if ($scope.KPIForm.$valid) {
-                    console.log("hellow");
+                    console.log($scope.KPIList);
                     App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.restfulUrl, {
                         action: "submitAppraisalKPI",

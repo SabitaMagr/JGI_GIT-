@@ -25,6 +25,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
+<script>
+    document.listurl = '<?= $this->url("appraisal-evaluation", ["action" => "index"]) ?>';
+</script>
 <div class="row margin-top-20" ng-app="hris">
     <div class="col-md-12">
         <div class="portlet box custom-box">
@@ -191,19 +194,34 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="tab-content margin-top-15" id="tabContent">
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
+                        <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
+                        <?php
+                        $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID']!=1)?"disabled":""; 
+                        $disabledAppraiserRatingComment = ($assignedAppraisalDetail['STAGE_ID']!=5)?"disabled":"";
+                        ?>
                         <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='Y')) ?'active':''?>" id="portlet_tab2_KPI" ng-controller="kpiController">
                             <form name="KPIForm" id="KPIForm" ng-submit="submitKPIForm()" novalidate>
                             <table class="table">
                                 <thead>
                                 <tr>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <th style="width:5%;"></th>
+                                    <?php } ?>
                                     <th style="width:5%;">S.N.</th>
                                     <th>KPI Detail</th>
                                     <th>Success Criteria</th>
                                     <th style="width:10%;">Weight</th>
+                                    <?php if($keyAchievementDtlNum>0){ ?>
+                                    <th>Key Achievement</th>
+                                    <th>Self Rating</th>
+                                    <?php } ?>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0){ ?>
+                                    <th>Appraiser Rating</th>
+                                    <?php } ?>
                                 </tr>
                                 </thead>
                                 <tr ng-repeat="KPI in KPIList">
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <td>
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="{{KPI.checkbox}}" class="md-check"
@@ -215,9 +233,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             </label>
                                         </div>
                                     </td>
+                                    <?php } ?>
                                     <td><span ng-bind="KPI.counter"></span></td>
                                     <td>
-                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="title_{{KPI.checkbox}}" ng-model="KPI.title" required="required"></textarea>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="title_{{KPI.checkbox}}" ng-model="KPI.title" required="required" <?= $disabledKPICOM ?>></textarea>
                                         <div ng-show="KPIForm.$submitted || KPIForm.title_{{KPI.checkbox}}.$touched">
                                             <ul ng-show="KPIForm.title_{{KPI.checkbox}}.$error.required" class="help-block error">
                                                 <li>KPI Detail is required.</li>
@@ -225,7 +244,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </td>
                                     <td>
-                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="successCriteria_{{KPI.checkbox}}" ng-model="KPI.successCriteria" required="required"></textarea>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="successCriteria_{{KPI.checkbox}}" ng-model="KPI.successCriteria" required="required" <?= $disabledKPICOM ?>></textarea>
                                         <div ng-show="KPIForm.$submitted || KPIForm.successCriteria_{{KPI.checkbox}}.$touched">
                                             <ul ng-show="KPIForm.successCriteria_{{KPI.checkbox}}.$error.required" class="help-block error">
                                                 <li>Success Criteria is required.</li>
@@ -233,15 +252,44 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </td>
                                     <td> 
-                                        <input type="number" name="weight_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.weight" required="required" min="0" step='1'/>
+                                        <input type="number" name="weight_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.weight" required="required" min="0" step='1' <?= $disabledKPICOM ?> style=" width: 100%;"/>
                                         <div ng-show="KPIForm.$submitted || KPIForm.weight_{{KPI.checkbox}}.$touched">
                                             <ul ng-show="KPIForm.weight_{{KPI.checkbox}}.$error.required" class="help-block error">
                                                 <li>Weight is required.</li>
                                             </ul>
                                         </div>
                                     </td>
+                                    <?php if($keyAchievementDtlNum>0){ ?>
+                                    <td>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="keyAchievement_{{KPI.checkbox}}" ng-model="KPI.keyAchievement" required="required" disabled="disabled"></textarea>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.keyAchievement_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.keyAchievement_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                                <li>Key Achievement is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td style="width: 10%">
+                                        <input type="number" name="selfRating_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.selfRating" required="required" min="0" step='1' style=" width:100%;" disabled="disabled" />
+                                        <div ng-show="KPIForm.$submitted || KPIForm.selfRating_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.selfRating_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                                <li>Self Rating is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <?php } ?>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0){ ?>
+                                    <td style="width: 10%">
+                                        <input type="number" name="appraiserRating_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.appraiserRating" required="required" min="0" step='1' style=" width:100%;" <?= $disabledAppraiserRatingComment; ?>/>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                                <li>Appraiser Rating is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <?php } ?>
                                 </tr>
                                 <tr>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <td style="width:10%;">
                                         <a href="javascript:;" class="btn btn-icon-only default" ng-click="addKPI()" id="plushIcon">
                                             <i class="fa fa-plus"></i>
@@ -250,8 +298,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <i class="fa fa-trash-o"></i>
                                         </a>
                                     </td>
+                                    <?php } ?>
                                     <td></td>
                                     <td></td>
+                                    <?php if($keyAchievementDtlNum>0){ ?>
+                                    <td></td>
+                                    <td></td>
+                                    <?php } ?>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0){ ?>
+                                    <td></td>
+                                    <?php } ?>
                                     <td>
                                         <input type="hidden" name="sumTotal" value="{{sumAllTotal(KPIList)}}" ng-model="sumTotal"/>
                                         <div  use-form-error="isGeaterHundred" use-error-expression="sumTotal" ng-messages="KPIForm.$error" class="errors">
@@ -260,11 +316,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         
                                     </td>
                                     <td>
+                                        <?php if(($assignedAppraisalDetail['STAGE_ID']==5) || ($assignedAppraisalDetail['STAGE_ID']==1)) { ?>
                                         <div class="form-group">
                                             <button type="submit" id="submit" class="btn btn-success pull-right">
-                                                NEXT
+                                               NEXT
                                             </button>
                                         </div>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             </table>
@@ -272,16 +330,24 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         
                         <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
+                            <?php $disabledCompetenciesRating = ($assignedAppraisalDetail['STAGE_ID']!=5)?"disabled":""; ?>
                             <form name="competenciesForm" id="competenciesForm" ng-submit="submitCompetenciesForm()" novalidate>
                             <table class="table">
                                 <thead>
                                 <tr>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <th style="width:5%;"></th>
+                                    <?php } ?>
                                     <th style="width:5%;">S.N.</th>
                                     <th>Competencies</th>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appCompetenciesRatingDtlNum>0){?>
+                                    <th>Rating</th>
+                                    <th>Appraiser's Comments</th>
+                                    <?php } ?>
                                 </tr>
                                 </thead>
                                 <tr ng-repeat="competencies in competenciesList">
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <td>
                                         <div class="md-checkbox">
                                             <input type="checkbox" id="{{competencies.checkbox}}" class="md-check"
@@ -293,17 +359,37 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             </label>
                                         </div>
                                     </td>
+                                    <?php } ?>
                                     <td><span ng-bind="competencies.counter"></span></td>
                                     <td>
-                                        <textarea cols="25" rows="20" class="form-control" style="height:25px!important" name="title_{{competencies.checkbox}}" ng-model="competencies.title" required="required"></textarea>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:25px!important" name="title_{{competencies.checkbox}}" ng-model="competencies.title" required="required" <?= $disabledKPICOM ?>></textarea>
                                         <div ng-show="competenciesForm.$submitted || competenciesForm.title_{{competencies.checkbox}}.$touched">
                                             <ul ng-show="competenciesForm.title_{{competencies.checkbox}}.$error.required" class="help-block error">
                                                 <li>Competencies Detail is required.</li>
                                             </ul>
                                         </div>
                                     </td>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appCompetenciesRatingDtlNum>0){?>
+                                    <td width='10%'>
+                                        <input type="number" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" <?= $disabledCompetenciesRating ?>/>
+                                        <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
+                                            <ul ng-show="competenciesForm.rating_{{competencies.checkbox}}.$error.required" class="help-block error">
+                                                <li>Appraiser Rating is required.</li>
+                                            </ul>
+                                        </div> 
+                                    </td>
+                                    <td>
+                                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="comments_{{competencies.checkbox}}" ng-model="competencies.comments" required="required" <?= $disabledCompetenciesRating ?>></textarea>
+                                        <div ng-show="competenciesForm.$submitted || competenciesForm.comments_{{competencies.checkbox}}.$touched">
+                                            <ul ng-show="competenciesForm.comments_{{competencies.checkbox}}.$error.required" class="help-block error">
+                                                <li>Appraiser's Comment is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <?php } ?>
                                 </tr>
                                 <tr>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <td style="width:10%;">
                                         <a href="javascript:;" class="btn btn-icon-only default" ng-click="addCompetencies()" id="plushIcon">
                                             <i class="fa fa-plus"></i>
@@ -312,13 +398,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <i class="fa fa-trash-o"></i>
                                         </a>
                                     </td>
+                                    <?php } ?>
                                     <td></td>
+                                    <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appCompetenciesRatingDtlNum>0){?>
+                                    <td></td>
+                                    <td></td>
+                                    <?php } ?>
                                     <td>
+                                        <?php if(($assignedAppraisalDetail['STAGE_ID']==5) || ($assignedAppraisalDetail['STAGE_ID']==1)) { ?>
                                         <div class="form-group">
                                             <button type="submit" id="submit" class="btn btn-success pull-right">
-                                                NEXT
+                                                 <?= ($assignedAppraisalDetail['STAGE_ID']==1)?'SUBMIT':"NEXT";?>
                                             </button>
                                         </div>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             </table>

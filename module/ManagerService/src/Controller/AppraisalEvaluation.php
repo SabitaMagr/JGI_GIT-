@@ -18,6 +18,8 @@ use Appraisal\Model\AppraisalAnswer;
 use Appraisal\Repository\StageRepository;
 use Appraisal\Model\Question;
 use Application\Helper\AppraisalHelper;
+use SelfService\Repository\AppraisalKPIRepository;
+use SelfService\Repository\AppraisalCompetenciesRepo;
 
 class AppraisalEvaluation extends AbstractActionController{
     
@@ -166,6 +168,11 @@ class AppraisalEvaluation extends AbstractActionController{
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
+        $appraisalKPI = new AppraisalKPIRepository($this->adapter);
+        $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
+        $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($employeeId, $appraisalId)['NUM'];
+        $appraiserRatingDtlNum = $appraisalKPI->countAppraiserRatingDtl($employeeId, $appraisalId)['NUM'];
+        $appCompetenciesRatingDtlNum = $appraisalCompetencies->countCompetenciesRatingDtl($employeeId,$appraisalId)['NUM'];
         return Helper::addFlashMessagesToArray($this,[
             'assignedAppraisalDetail'=> $assignedAppraisalDetail,
             'employeeDetail'=>$employeeDetail,
@@ -181,7 +188,10 @@ class AppraisalEvaluation extends AbstractActionController{
             'employeeId'=>$employeeId,
             'tab'=>$tab,
             'reviewerAvailableAnswer'=>$reviewerAvailableAnswer,
-            'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer
+            'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer,
+            'keyAchievementDtlNum'=>$keyAchievementDtlNum,
+            'appraiserRatingDtlNum'=>$appraiserRatingDtlNum,
+            'appCompetenciesRatingDtlNum'=>$appCompetenciesRatingDtlNum
             ]);
     }
 }
