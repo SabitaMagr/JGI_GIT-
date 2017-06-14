@@ -67,6 +67,24 @@ class SetupForm{
     public $currentStageId;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"KPI Setting","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"kpiSettting"})
+     */
+    public $kpiSetting;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Competencies Setting","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"competenciesSetting"})
+     */
+    public $competenciesSetting;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

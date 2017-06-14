@@ -68,7 +68,8 @@ class SetupController extends AbstractActionController{
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
             'appraisalTypes'=>$appraisalTypes,
-            'appraisalStages'=>$stages
+            'appraisalStages'=>$stages,
+            'customRender'=>Helper::renderCustomView()
         ]);
     }
     public function editAction(){
@@ -103,6 +104,7 @@ class SetupController extends AbstractActionController{
             'form'=>$this->form,
             'appraisalTypes'=>$appraisalTypes,
             'appraisalStages'=>$stages,
+            'customRender'=>Helper::renderCustomView(),
             'id'=>$id
         ]);        
     }
