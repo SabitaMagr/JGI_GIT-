@@ -38,7 +38,7 @@
                     'LEAVE_ENAME': 'Leave',
                     'ALL_TOTAL_DAYS': 'Total Days,',
                     'LEAVE_TAKEN':'Leave Taken',
-                    'BALANCE':'Balance'
+                    'BALANCE':'Available Days'
                 
                 });
         

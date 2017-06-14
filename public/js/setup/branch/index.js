@@ -27,13 +27,9 @@
                 {title: "Action", width: 100}
             ],
         });
-        $("#export").click(function (e) {
-            var grid = $("#branchTable").data("kendoGrid");
-            grid.saveAsExcel();
-        });
-        
-        app.searchTable('branchTable',['BRANCH_NAME','STREET_ADDRESS','TELEPHONE','EMAIL','COMPANY_NAME']);
-        
+
+        app.searchTable('branchTable', ['BRANCH_NAME', 'STREET_ADDRESS', 'TELEPHONE', 'EMAIL', 'COMPANY_NAME']);
+
         app.pdfExport(
                 'branchTable',
                 {
@@ -44,7 +40,7 @@
                     'COMPANY_NAME': 'Company'
                 }
         );
-        
+
         window.app.UIConfirmations();
     });
 })(window.jQuery);
