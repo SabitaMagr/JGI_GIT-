@@ -34,6 +34,24 @@
         
         app.searchTable('loanTable',['LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','STATUS']);
         
+        app.pdfExport(
+                        'loanTable',
+                        {
+                            'LOAN_NAME': 'Loan',
+                            'REQUESTED_DATE': 'Req Dt',
+                            'LOAN_DATE': 'Loan Date',
+                            'REQUESTED_AMOUNT': 'Req Amt',
+                            'STATUS': 'Status',
+                            'REASON': 'Reason',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DATE': 'Rec Dt',
+                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DATE': 'App Date'
+                        }
+                );
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -47,7 +65,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Loan Code"},
                         {value: "Loan Name"},
                         {value: "Applied Date"},
                         {value: "Loan Date"},
@@ -75,7 +92,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.LOAN_CODE},
                         {value: dataItem.LOAN_NAME},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.LOAN_DATE},
@@ -100,6 +116,11 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

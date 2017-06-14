@@ -30,6 +30,17 @@
         
         app.searchTable('appraisalListTable',['APPRAISAL_EDESC','APPRAISAL_TYPE_EDESC','STAGE_EDESC','START_DATE','END_DATE']);
         
+        app.pdfExport(
+                        'appraisalListTable',
+                        {
+                            'APPRAISAL_EDESC': ' Appraisal',
+                            'APPRAISAL_TYPE_EDESC': 'Type',
+                            'STAGE_EDESC': 'Stage',
+                            'START_DATE': 'Start Date',
+                            'END_DATE': 'End Date',
+                        }
+                );
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalTable").data("kendoGrid");
             grid.saveAsExcel();

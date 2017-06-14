@@ -33,6 +33,8 @@
                 {
                     'EARLY_OVERTIME_HR': 'Early Overtime Hour',
                     'LATE_OVERTIME_HR': 'Late Overtime Hour',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date'
                 }
         );
 

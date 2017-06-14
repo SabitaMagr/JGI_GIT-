@@ -859,7 +859,17 @@ window.app = (function ($, toastr, App) {
             for (var i = 0; i < data.length; i++) {
                 var tempData = {};
                 $.each(col, function (key, value) {
-                    tempData[key] = data[i][key];
+                    if (kendoId == 'ruleTable' && key == 'PAY_TYPE_FLAG') {
+                    var tempValModify;
+                        if (data[i][key] == 'A') {
+                            tempValModify = 'Addition';
+                        } else if (data[i][key] == 'Deduction') {
+                            tempValModify = 'deduction';
+                        }
+                        tempData[key] = tempValModify;
+                    } else {
+                        tempData[key] = data[i][key];
+                    }
                 });
                 exportData.push(tempData);
 
