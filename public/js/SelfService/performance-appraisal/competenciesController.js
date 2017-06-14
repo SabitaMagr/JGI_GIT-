@@ -1,12 +1,15 @@
 angular.module('competenciesModule', ['use', 'ngMessages'])
-        .controller("competenciesController", function ($scope, $http) {
+        .controller("competenciesController", function ($scope, $http,$window) {
             $scope.competenciesList = [];
             var employeeId = parseInt(angular.element(document.getElementById('employeeId')).val());
             var appraisalId = parseInt(angular.element(document.getElementById('appraisalId')).val());
+            var currentStageId = parseInt(angular.element(document.getElementById('currentStageId')).val());
             $scope.competenciesTemplate = {
                 counter: 1,
                 sno: 0,
                 title: "",
+                rating:"",
+                comments:"",
                 checkbox: "checkboxc0",
                 checked: false
             };
@@ -30,6 +33,8 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                                     counter: (j + 1),
                                     sno: appraisalCompetenciesList[j].SNO,
                                     title: appraisalCompetenciesList[j].TITLE,
+                                    rating: parseInt(appraisalCompetenciesList[j].RATING),
+                                    comments: appraisalCompetenciesList[j].COMMENTS,
                                     checkbox: "checkboxc" + j,
                                     checked: false
                                 }));
@@ -67,6 +72,8 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                     counter: parseInt($scope.counter + 1),
                     sno: 0,
                     title: "",
+                    rating:"",
+                    comments:"",
                     checkbox: "checkboxc" + $scope.counter,
                     checked: false
                 }));
@@ -113,10 +120,17 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                     }).then(function (success) {
                         $scope.$apply(function () {
                             console.log(success);
-                            $('.nav-tabs a[href="#portlet_tab2_1"]').tab('show');
-                            $scope.competenciesList = [];
-                            $scope.viewCompetenciesList();
-                            App.unblockUI("#hris-page-content");
+                            if(currentStageId==5){
+                                $('.nav-tabs a[href="#portlet_tab2_2"]').tab('show');
+                                $scope.competenciesList = [];
+                                $scope.viewCompetenciesList();
+                                App.unblockUI("#hris-page-content");
+                            }
+                            if(currentStageId==1){
+                                $window.location.href = document.listurl;
+                                $window.localStorage.setItem("msg","Appraisal Successfully Submitted!!!");
+                            }
+//                            App.unblockUI("#hris-page-content");
                         });
                     }, function (failure) {
                         App.unblockUI("#hris-page-content");

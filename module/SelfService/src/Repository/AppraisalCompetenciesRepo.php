@@ -63,5 +63,18 @@ class AppraisalCompetenciesRepo implements RepositoryInterface{
         $result = $statement->execute();
         return $result;
     }
+    public function countCompetenciesRatingDtl($employeeId,$appraisalId){
+        $sql = "SELECT count(*) as num
+FROM HRIS_APPRAISAL_COMPETENCY
+WHERE APPRAISAL_ID   =".$appraisalId."
+AND EMPLOYEE_ID      =".$employeeId."
+AND STATUS = 'E'
+AND RATING IS NOT NULL
+AND COMMENTS     IS NOT NULL
+GROUP BY APPRAISAL_ID, EMPLOYEE_ID";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
 }
 
