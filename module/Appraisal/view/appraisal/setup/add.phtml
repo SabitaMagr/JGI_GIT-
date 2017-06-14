@@ -20,6 +20,8 @@ $appraisalTypeId = $form->get('appraisalTypeId');
 $appraisalTypeId->setValueOptions($appraisalTypes);
 $currentStageId = $form->get('currentStageId');
 $currentStageId->setValueOptions($appraisalStages);
+$kpiSetting = $form->get('kpiSetting');
+$competenciesSetting = $form->get('competenciesSetting');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -134,6 +136,24 @@ $form->prepare();
                 </div>
 
                 <div class=" row">
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <?php print $this->formLabel($kpiSetting); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRender($kpiSetting); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($kpiSetting, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <?php print $this->formLabel($competenciesSetting); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRender($competenciesSetting); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($competenciesSetting, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
