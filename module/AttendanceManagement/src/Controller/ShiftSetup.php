@@ -99,7 +99,6 @@ class ShiftSetup extends AbstractActionController {
         $shift = new Shift();
         if (!$request->isPost()) {
             $shift->exchangeArrayFromDB($this->repository->fetchById($id));
-//                $shift->shiftLname=mb_convert_encoding($shift->shiftLname, 'UTF-8','UTF-16LE' );
             $this->form->bind($shift);
         } else {
 
