@@ -101,18 +101,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-    
-    <?php
-    $presentUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>1]);
-    $OnLeaveUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>2]);
-    $OnTrainingUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>3]);
-    $OnTravelUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>4]);
-    $wohUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>5]);
-    $lateInUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>6]);
-    $earlyOutUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>7]);
-    $missPunchUrl=$this->url('attendancebyhr', ['action' => 'index','id'=>8]);
-    $pendingleaveUrl=$this->url('leavestatus', ['action' => 'index','id'=>1]);
-    ?>
+
+<?php
+$presentUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 1]);
+$OnLeaveUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 2]);
+$OnTrainingUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 3]);
+$OnTravelUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 4]);
+$wohUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 5]);
+$lateInUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 6]);
+$earlyOutUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 7]);
+$missPunchUrl = $this->url('attendancebyhr', ['action' => 'index', 'id' => 8]);
+$pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
+?>
 
 <div class="employeedashboard">
     <div class="emplyoee-dashboard col-md-12">
@@ -138,84 +138,84 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <div class="col-md-5">
                     <div title="Today" class="row detailsbox">
-                        <a href="<?php echo $presentUrl?>">
-                        <div  class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <div class="employee_details-box hexagon-bg1" >
-                                <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
-                                <div class="face1"></div>
-                                <div class="face2"></div>
-                                <div class="headtitle">Present</div>
+                        <a href="<?php echo $presentUrl ?>">
+                            <div  class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div class="employee_details-box hexagon-bg1" >
+                                    <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">Present</div>
+                                </div>
                             </div>
-                        </div>
                         </a>
-                            <a href="<?php echo $OnLeaveUrl?>">
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <div title="Today" class="employee_details-box hexagon-bg2">
-                                <span><?php print $employeeDetail['LEAVE']; ?></span>
-                                <div class="face1"></div>
-                                <div class="face2"></div>
-                                <div class="headtitle">On Leave</div>
+                        <a href="<?php echo $OnLeaveUrl ?>">
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div title="Today" class="employee_details-box hexagon-bg2">
+                                    <span><?php print $employeeDetail['LEAVE']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">On Leave</div>
+                                </div>
                             </div>
-                        </div>
-                            </a>
-                            <a href="<?php echo $OnTrainingUrl?>">
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <div title="Today" class="employee_details-box hexagon-bg3">
-                                <span><?php print $employeeDetail['TRAINING']; ?></span>
-                                <div class="face1"></div>
-                                <div class="face2"></div>
-                                <div class="headtitle">Training</div>
+                        </a>
+                        <a href="<?php echo $OnTrainingUrl ?>">
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div title="Today" class="employee_details-box hexagon-bg3">
+                                    <span><?php print $employeeDetail['TRAINING']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">Training</div>
+                                </div>
                             </div>
-                        </div>
-                            </a>
-                            <a  href="<?php echo $OnTravelUrl?>">
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <div title="Today" class="employee_details-box hexagon-bg4">
-                                <span><?php print $employeeDetail['TOUR']; ?></span>
-                                <div class="face1"></div>
-                                <div class="face2"></div>
-                                <div class="headtitle">On Tour</div>
+                        </a>
+                        <a  href="<?php echo $OnTravelUrl ?>">
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div title="Today" class="employee_details-box hexagon-bg4">
+                                    <span><?php print $employeeDetail['TOUR']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">On Tour</div>
+                                </div>
                             </div>
-                        </div>
-                            </a>
-                            <a href="<?php echo $wohUrl?>">
-                        <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
-                            <div title="Today" class="employee_details-box hexagon-bg5">
-                                <span><?php print $employeeDetail['WOH']; ?></span>
-                                <div class="face1"></div>
-                                <div class="face2"></div>
-                                <div class="headtitle">WOH</div>
+                        </a>
+                        <a href="<?php echo $wohUrl ?>">
+                            <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
+                                <div title="Today" class="employee_details-box hexagon-bg5">
+                                    <span><?php print $employeeDetail['WOH']; ?></span>
+                                    <div class="face1"></div>
+                                    <div class="face2"></div>
+                                    <div class="headtitle">WOH</div>
+                                </div>
                             </div>
-                        </div>
-                            </a>
+                        </a>
                     </div>
                 </div>
                 <div class="col-xs-12  col-sm-7 col-md-3">
                     <div class="col-hris row attendence-box">
                         <ul>
-                            <a title="Today" href="<?php echo $lateInUrl?>">
-                            <li class="col-xs-4 col-sm-4 col-md-4">
-                                <div class="hris efficiency efficiency-bg1">
-                                    <span><?php print $employeeDetail['LATE_IN']; ?></span>
-                                    <div>Late In</div>
-                                </div>
-                            </li>
+                            <a title="Today" href="<?php echo $lateInUrl ?>">
+                                <li class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="hris efficiency efficiency-bg1">
+                                        <span><?php print $employeeDetail['LATE_IN']; ?></span>
+                                        <div>Late In</div>
+                                    </div>
+                                </li>
                             </a>
-                            <a title="Yesterday" href="<?php echo $earlyOutUrl?>">
-                            <li class="col-xs-4 col-sm-4 col-md-4">
-                                <div class="hris efficiency efficiency-bg2">
-                                    <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
-                                    <div>Early Out</div>
-                                </div>
-                            </li>
+                            <a title="Yesterday" href="<?php echo $earlyOutUrl ?>">
+                                <li class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="hris efficiency efficiency-bg2">
+                                        <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
+                                        <div>Early Out</div>
+                                    </div>
+                                </li>
                             </a>
-                            <a title="Yesterday" href="<?php echo $missPunchUrl?>">
-                            <li class="col-xs-4 col-sm-4 col-md-4">
-                                <div class="hris efficiency efficiency-bg3">
-                                    <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
-                                    <div>Missed Punch</div>
-                                </div>
-                            </li>
+                            <a title="Yesterday" href="<?php echo $missPunchUrl ?>">
+                                <li class="col-xs-4 col-sm-4 col-md-4">
+                                    <div class="hris efficiency efficiency-bg3">
+                                        <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
+                                        <div>Missed Punch</div>
+                                    </div>
+                                </li>
                             </a>
                         </ul>
                     </div>
@@ -370,34 +370,34 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <div class="col-sm-6 col-md-6">
                     <!-- BEGIN WIDGET THUMB -->
-                            <a href="<?php echo $pendingleaveUrl?>">
-                    <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-appraisal-due">
-                        <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
-                            <h4 class="widget-thumb-heading">Pending Leave</h4>
-                            <div class="widget-thumb-body">
-                                <ul>
-                                    <!--                                    <li class="line">
-                                                                            <span class="widget-thumb-body-stat" data-counter="counterup">30</span>
-                                                                            This Month
-                                                                        </li>
-                                                                        <li>
-                                                                            <span class="widget-thumb-body-stat" data-counter="counterup">20</span>
-                                                                            Next Month
-                                                                        </li>-->
-                                    <li class="line">
-                                        <span class="widget-thumb-body-stat" data-counter="counterup"><?= $pendingLeave['PENDING_LEAVE']; ?></span>
-                                    </li>
+                    <a href="<?php echo $pendingleaveUrl ?>">
+                        <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-appraisal-due">
+                            <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
+                                <h4 class="widget-thumb-heading">Pending Leave</h4>
+                                <div class="widget-thumb-body">
+                                    <ul>
+                                        <!--                                    <li class="line">
+                                                                                <span class="widget-thumb-body-stat" data-counter="counterup">30</span>
+                                                                                This Month
+                                                                            </li>
+                                                                            <li>
+                                                                                <span class="widget-thumb-body-stat" data-counter="counterup">20</span>
+                                                                                Next Month
+                                                                            </li>-->
+                                        <li class="line">
+                                            <span class="widget-thumb-body-stat" data-counter="counterup"><?= $pendingLeave['PENDING_LEAVE']; ?></span>
+                                        </li>
 
-                                </ul>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="icons">
+                                    <i class="widget-thumb-icon  fa fa-users colorfour"></i>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <div class="icons">
-                                <i class="widget-thumb-icon  fa fa-users colorfour"></i>
-                            </div>
-                        </div>
-                    </div>
-                            </a>
+                    </a>
                 </div>
             </div>
 
@@ -637,6 +637,107 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
 
+            </div>
+            <div class="row">
+                <div class="col-md-12 employee-contracts">
+                    <div class="portlet light bordered">
+                        <div class="portlet-title tabbable-line">
+                            <div class="caption">
+                                <i class="icon-bubbles font-dark hide"></i>
+                                <span class="caption-subject font-dark bold uppercase">Employee Contracts</span>
+                            </div>
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#portlet_expired" data-toggle="tab"> Expired </a>
+                                </li>
+                                <li>
+                                    <a href="#portlet_expiring" data-toggle="tab"> Expiring </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="tab-content scroller" style="height:300px">
+                                <div class="tab-pane active" id="portlet_expired">
+                                    <div class="mt-comments">
+                                        <?php if (isset($employeeContracts) && isset($employeeContracts['EXPIRED']) && $employeeContracts['EXPIRED']) : ?>
+                                            <?php foreach ($employeeContracts['EXPIRED'] as $expiredContract) : ?>
+                                                <div class="person-list clearfix">
+                                                    <div class="col-xs-5 col-md-3 col-sm-3">
+                                                        <div class="person-pic">
+                                                            <img src="<?php print $expiredContract['FILE_PATH'] ? $this->basePath('uploads/' . $expiredContract['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-7 col-md-5 col-sm-6">
+                                                        <div class="person-details">
+                                                            <h4><?php print $expiredContract['FULL_NAME']; ?></h4>
+                                                            <span><?php print $expiredContract['DESIGNATION_TITLE']; ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-7 col-md-4 col-sm-3">
+                                                        <span class="birth-date"><?php print $expiredContract['END_DATE']; ?></span>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <div class="dashborder clearfix">
+                                                <div class="col-xs-5 col-md-3 col-sm-3">
+                                                    <div class="person-pic birthday-pic">
+                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-7 col-md-5 col-sm-6">
+                                                    <div class="nobirthday-text">
+                                                        <h4>No Expired Contracts Found!!!</h4>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-7 col-md-4 col-sm-3">
+                                                    <span class="calendar_date"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;<?php print date('jS F') ?></span>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="portlet_expiring">
+                                    <div class="mt-comments">
+                                        <?php if (isset($employeeContracts) && isset($employeeContracts['EXPIRING']) && $employeeContracts['EXPIRING']) : ?>
+                                            <?php foreach ($employeeContracts['UPCOMING'] as $expiringContract) : ?>
+                                                <div class="person-list clearfix">
+                                                    <div class="col-xs-5 col-md-3 col-sm-3">
+                                                        <div class="person-pic">
+                                                            <img src="<?php print $expiringContract['FILE_PATH'] ? $this->basePath('uploads/' . $expiringContract['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-7 col-md-5 col-sm-6">
+                                                        <div class="person-details">
+                                                            <h4><?php print $expiringContract['FULL_NAME']; ?></h4>
+                                                            <span><?php print $expiringContract['DESIGNATION_TITLE']; ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-7 col-md-4 col-sm-3">
+                                                        <span class="birth-date"><i class="fa fa-calendar"></i><?php print $expiringContract['END_DATE']; ?></span>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                            <div class="dashborder clearfix">
+                                                <div class="col-xs-5 col-md-3 col-sm-3">
+                                                    <div class="person-pic birthday-pic">
+                                                        <img src="<?php print $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-7 col-md-5 col-sm-6">
+                                                    <div class="nobirthday-text">
+                                                        <h4>No Expiring Contracts Found!!!</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

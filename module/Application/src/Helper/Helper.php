@@ -218,7 +218,7 @@ class Helper {
             $name = $object->getName();
             $atts = $object->getAttributes();
             $disabled = '';
-            if(in_array('disabled',$atts)){
+            if (in_array('disabled', $atts)) {
                 $disabled = 'disabled';
             }
             foreach ($elems as $key => $value) {
@@ -246,6 +246,7 @@ class Helper {
             }
         };
     }
+
     public static function renderCustomViewForCheckbox() {
         return function ($object) {
             $elems = $object->getValueOptions();
@@ -253,7 +254,7 @@ class Helper {
             $name = $object->getName();
             $atts = $object->getAttributes();
             $disabled = '';
-            if(in_array('disabled',$atts)){
+            if (in_array('disabled', $atts)) {
                 $disabled = 'disabled';
             }
             foreach ($elems as $key => $value) {
@@ -263,7 +264,7 @@ class Helper {
                         $temp = 'checked=checked';
                     }
                 } else {
-                    if (in_array($key,$object->getValue())) {
+                    if (in_array($key, $object->getValue())) {
                         $temp = 'checked=checked';
                     }
                 }
@@ -320,23 +321,20 @@ class Helper {
     public static function maintainFloatNumberFormat($floatNumber) {
         return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
-    
-    public static function hoursToMinutes($hours) 
-    { 
-        $minutes = 0; 
-        if (strpos($hours, ':') !== false) 
-        { 
-            // Split hours and minutes. 
-            list($hours, $minutes) = explode(':', $hours); 
-        } 
-        return $hours * 60 + $minutes; 
-    } 
 
-    public static function minutesToHours($minutes) 
-    { 
-        $hours = (int)($minutes / 60); 
-        $minutes -= $hours * 60; 
-        return sprintf("%d:%02.0f", $hours, $minutes); 
-    } 
+    public static function hoursToMinutes($hours) {
+        $minutes = 0;
+        if (strpos($hours, ':') !== false) {
+            // Split hours and minutes. 
+            list($hours, $minutes) = explode(':', $hours);
+        }
+        return $hours * 60 + $minutes;
+    }
+
+    public static function minutesToHours($minutes) {
+        $hours = (int) ($minutes / 60);
+        $minutes -= $hours * 60;
+        return sprintf("%d:%02.0f", $hours, $minutes);
+    }
 
 }

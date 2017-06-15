@@ -38,8 +38,8 @@ $this->headScript()
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('stage', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
+<!--                <a href="<?= $this->url('stage', ['action' => 'add']) ?>" class="btn default btn-sm">
+                    <i class="fa fa-plus-square icon-black"></i> New </a>-->
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -72,13 +72,7 @@ $this->headScript()
         <td>    
         #: (ORDER_NO == null) ? '-' : ORDER_NO #
         </td>
-        <td>    
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>    
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
+<!--        <td>
         <a class="btn-edit"
         href="<?= $this->url("stage", ["action" => "edit"]); ?>/#:STAGE_ID#" style="height:17px;">
         <i class="fa fa-edit"></i>
@@ -87,7 +81,7 @@ $this->headScript()
         href="<?= $this->url("stage", ["action" => "delete"]); ?>/#:STAGE_ID#" id="bs_#:STAGE_ID #" style="height:17px;"> 
         <i class="fa fa-trash-o"></i></a>
         </a>
-        </td>
+        </td>-->
         </tr>
     </script>
 </div>

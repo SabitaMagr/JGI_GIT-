@@ -8,7 +8,6 @@ class Type extends Model{
     
     const APPRAISAL_TYPE_ID = "APPRAISAL_TYPE_ID";
     const APPRAISAL_TYPE_CODE = "APPRAISAL_TYPE_CODE";
-    const SERVICE_TYPE_ID = "SERVICE_TYPE_ID";
     const APPRAISAL_TYPE_EDESC = "APPRAISAL_TYPE_EDESC";
     const APPRAISAL_TYPE_NDESC = "APPRAISAL_TYPE_NDESC";
     const COMPANY_ID = "COMPANY_ID";
@@ -26,7 +25,6 @@ class Type extends Model{
     
     public $appraisalTypeId;
     public $appraisalTypeCode;
-    public $serviceTypeId;
     public $appraisalTypeEdesc;
     public $appraisalTypeNdesc;
     public $companyId;
@@ -45,7 +43,6 @@ class Type extends Model{
     public $mappings = [
         'appraisalTypeId'=>self::APPRAISAL_TYPE_ID,
         'appraisalTypeCode'=>self::APPRAISAL_TYPE_CODE,
-        'serviceTypeId'=>self::SERVICE_TYPE_ID,
         'appraisalTypeEdesc'=>self::APPRAISAL_TYPE_EDESC,
         'appraisalTypeNdesc'=>self::APPRAISAL_TYPE_NDESC,
         'companyId'=>self::COMPANY_ID,

@@ -79,6 +79,7 @@ class DashboardController extends AbstractActionController {
             "pendingLeave" => $dashboardRepo->fetchPendingLeave(),
             "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth(),
             "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays(),
+            "employeeContracts" => $dashboardRepo->fetchEmployeeContracts(),
         ];
         $view = new ViewModel(Helper::addFlashMessagesToArray($this, $data));
         $view->setTemplate("dashboard/hrm");
