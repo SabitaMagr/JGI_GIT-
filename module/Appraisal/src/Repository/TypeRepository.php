@@ -39,9 +39,7 @@ class TypeRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Type::class,[Type::APPRAISAL_TYPE_EDESC,Type::APPRAISAL_TYPE_NDESC],null,null,null,null,"AT"),false);
-        $select->from(['AT' => "HRIS_APPRAISAL_TYPE"])
-                ->join(['ST' => 'HRIS_SERVICE_TYPES'], 'AT.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID', ["SERVICE_TYPE_NAME"=>new Expression("INITCAP(ST.SERVICE_TYPE_NAME)")], "left");
-        
+        $select->from(['AT' => "HRIS_APPRAISAL_TYPE"]);
         $select->where(["AT.STATUS='E'"]);
         $select->order("AT.APPRAISAL_TYPE_EDESC");
         $statement = $sql->prepareStatementForSqlObject($select);

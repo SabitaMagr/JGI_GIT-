@@ -7,10 +7,6 @@ $form->setAttribute('id', 'appraisalType-form');
 $appraisalTypeEdesc = $form->get('appraisalTypeEdesc');
 $appraisalTypeNdesc = $form->get('appraisalTypeNdesc');
 $remarks = $form->get('remarks');
-$serviceTypeId = $form->get('serviceTypeId');
-$serviceTypes1 = ["0" => "none"] + $serviceTypes;
-$serviceTypeId->setValueOptions($serviceTypes1);
-
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -67,17 +63,6 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($appraisalTypeNdesc, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($serviceTypeId); ?>
-                            <?php print $this->formElement($serviceTypeId); ?>
-                            <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                </div>
-
-                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
@@ -85,9 +70,7 @@ echo json_encode($menu);
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-
                 </div>
-
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

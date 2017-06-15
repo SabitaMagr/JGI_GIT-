@@ -21,9 +21,7 @@
                 {field: "STAGE_EDESC", title: "Stage(in Eng.)",width:180},
                 {field: "STAGE_NDESC", title: "Stage(in Nep.)",width:180},
                 {field: "ORDER_NO", title: "Order No.",width:80},
-                {field: "START_DATE", title: "Start Date",width:80},
-                {field: "END_DATE", title: "End Date",width:80},
-                {title: "Action",width:100}
+//                {title: "Action",width:100}
             ],
         });
         
@@ -34,9 +32,7 @@
                 {
                     'STAGE_EDESC': 'Stage in Eng',
                     'STAGE_NDESC': 'Stage in Nep',
-                    'ORDER_NO': 'Order No',
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date'
+                    'ORDER_NO': 'Order No'
                 });
         
         $("#export").click(function (e) {
