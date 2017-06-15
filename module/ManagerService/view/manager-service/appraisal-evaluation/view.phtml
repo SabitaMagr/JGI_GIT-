@@ -398,14 +398,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
-                                <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appCompetenciesRatingDtlNum>0){ ?>
+                                <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appCompetenciesRatingDtlNum>0){ 
+                                    ?>
                                 <tr>
-                                    <td colspan="3">
+                                    <td colspan="2">
                                         ANNUAL RATING ON COMPETENCIES:
                                     </td>
                                     <td>
-                                        <input type="text" value="" name="annualRatingCompetency" id="annualRatingCompetency" ng-model="annualRatingCompetency" style="width:20%;"/>
+                                        
+                                        <input type="text" value="<?= $assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY'];?>" name="annualRatingCompetency" id="annualRatingCompetency" style="width:100%;"/>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <?php } ?>
                                 <tr>
@@ -538,14 +541,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <input type="text" id="appraiserOverallRating" ng-model="appraiserOverallRating" name="appraiserOverallRating"/>
                             </div>
                             <?php 
                             if(($questionForCurStage>0 && $questionOnPreTab>0) || ($questionOnPreTab>0 && $reviewerAvailableAnswer!==true)){ ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-success">
+                                        <button type="submit" id="submit" class="btn btn-success pull-right">
                                             NEXT
                                         </button>
                                     </div>
@@ -627,12 +629,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0)){ ?>
+                                <div class="col-sm-12">
+                                    <label>
+                                Overall Rating:
+                                    </label>
+                                    <input type="text" disabled="disabled" id="appraiserOverallRating"  name="appraiserOverallRating"/>
+                                </div>
+                                <?php } ?>
                             </div>
                             <?php if($questionForCurStage>0 || $reviewerAvailableAnswer===false){ ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-success">
+                                        <button type="submit" id="submit" class="btn btn-success pull-right">
                                             SUBMIT
                                         </button>
                                     </div>

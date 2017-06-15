@@ -83,6 +83,8 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 });
                 console.log(total);
 //                $scope.annualRating = total;
+                var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
+                angular.element(document.getElementById('appraiserOverallRating')).val((window.app.floatToRound(total, 2)) + annualRatingCompetency);
                 return window.app.floatToRound(total, 2);;
             }
             $scope.addKPI = function () {

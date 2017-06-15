@@ -3440,6 +3440,7 @@ class RestfulService extends AbstractRestfulController {
             }
             if($assignedAppraisalDetail['STAGE_ID']==5){
                 $appraisalAssignRepo->updateAnnualRatingId($annualRatingKPI, $appraisalId, $employeeId);
+                $appraisalAssignRepo->updateOverallRatingId($annualRatingKPI, $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [
@@ -3506,6 +3507,7 @@ class RestfulService extends AbstractRestfulController {
         $competenciesList = $data['competenciesList'];
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
+        $appraiserOverallRating = $data['appraiserOverallRating'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $annualRatingCompetency = $data['annualRatingCompetency'];
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
@@ -3536,6 +3538,7 @@ class RestfulService extends AbstractRestfulController {
             }
             if($assignedAppraisalDetail['STAGE_ID']==5){
                 $appraisalAssignRepo->updateAnnualRatingComId($annualRatingCompetency, $appraisalId, $employeeId);
+                $appraisalAssignRepo->updateOverallRatingId($appraiserOverallRating, $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [
