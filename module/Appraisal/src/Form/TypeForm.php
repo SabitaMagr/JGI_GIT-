@@ -31,15 +31,6 @@ class TypeForm{
     public $appraisalTypeNdesc;
     
     /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type"})
-     * @Annotation\Attributes({"id":"serviceTypeId","class":"form-control"})
-     */
-    public $serviceTypeId;
-    
-    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

@@ -51,16 +51,12 @@ class TypeController extends AbstractActionController{
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         
-        $serviceTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], ["STATUS" => "E"], "SERVICE_TYPE_NAME", "ASC",NULL,FALSE,TRUE);
         $request = $this->getRequest();
         if($request->isPost()){
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $type = new Type();
                 $type->exchangeArrayFromForm($this->form->getData());
-                if ($type->serviceTypeId == 0) {
-                    unset($type->serviceTypeId);
-                }
                 $type->createdDate = Helper::getcurrentExpressionDate();
                 $type->approvedDate = Helper::getcurrentExpressionDate();
                 $type->createdBy = $this->employeeId;
@@ -75,8 +71,7 @@ class TypeController extends AbstractActionController{
         }
         return Helper::addFlashMessagesToArray($this, 
                 [
-                    'form'=>$this->form,
-                    'serviceTypes'=>$serviceTypes
+                    'form'=>$this->form
                 ]);
         
     }
@@ -96,9 +91,6 @@ class TypeController extends AbstractActionController{
             $this->form->setData($request->getPost());
             if($this->form->isValid()){
                 $type->exchangeArrayFromForm($this->form->getData());
-                if ($type->serviceTypeId == 0) {
-                    unset($type->serviceTypeId);
-                }
                 $type->modifiedDate = Helper::getcurrentExpressionDate();
                 $type->modifiedBy = $this->employeeId;
                 $this->repository->edit($type, $id);
@@ -108,8 +100,7 @@ class TypeController extends AbstractActionController{
         }
         return Helper::addFlashMessagesToArray($this, [
             'form'=>$this->form,
-            'id'=>$id,
-            'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], ["STATUS" => "E"], "SERVICE_TYPE_NAME", "ASC",NULL,FALSE,TRUE)
+            'id'=>$id
         ]);
     }
     public function deleteAction(){

@@ -20,7 +20,6 @@
             columns: [
                 {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal(in Eng.)",width:180},
                 {field: "APPRAISAL_TYPE_NDESC", title: "Appraisal(in Nep.)",width:180},
-                {field: "SERVICE_TYPE_NAME", title: "Service Type",width:180},
                 {title: "Action",width:100}
             ],
         });
@@ -32,7 +31,6 @@
                 {
                     'APPRAISAL_TYPE_EDESC': 'Appraisal Type in Eng',
                     'APPRAISAL_TYPE_NDESC': 'Appraisal Type in Nep',
-                    'SERVICE_TYPE_NAME': 'Service Type'
                 });
         
         $("#export").click(function (e) {
