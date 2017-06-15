@@ -78,7 +78,11 @@ angular.module('hris', ['ui.bootstrap'])
                     $scope.assignShowHide = false;
                 }
             };
-            
+            $scope.appraiserOptions = document.employeeList;
+            $scope.appraiserSelected = $scope.appraiserOptions[0]
+            $scope.reviewerOptions = document.employeeList;
+            $scope.reviewerSelected = $scope.reviewerOptions[0];
+            console.log(document.employeeList);
             // MODEL CODE
             $ctrl = this;
             $ctrl.animationsEnabled = false;

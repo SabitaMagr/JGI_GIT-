@@ -40,6 +40,7 @@ class AppraisalKPIRepository implements RepositoryInterface{
     }
 
     public function edit(Model $model, $id) {
+//        print_r($model->getArrayCopyForDB()); die();
         $this->tableGateway->update($model->getArrayCopyForDB(),[AppraisalKPI::SNO=>$id]);
     }
 
@@ -61,6 +62,31 @@ class AppraisalKPIRepository implements RepositoryInterface{
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+    }
+    public function countKeyAchievementDtl($employeeId,$appraisalId){
+        $sql = "SELECT count(*) as num
+FROM HRIS_APPRAISAL_KPI
+WHERE APPRAISAL_ID   =".$appraisalId."
+AND EMPLOYEE_ID      =".$employeeId."
+AND STATUS = 'E'
+AND KEY_ACHIEVEMENT IS NOT NULL
+AND SELF_RATING     IS NOT NULL
+GROUP BY APPRAISAL_ID, EMPLOYEE_ID";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+    public function countAppraiserRatingDtl($employeeId,$appraisalId){
+        $sql = "SELECT count(*) as num
+FROM HRIS_APPRAISAL_KPI
+WHERE APPRAISAL_ID   =".$appraisalId."
+AND EMPLOYEE_ID      =".$employeeId."
+AND STATUS = 'E'
+AND APPRAISER_RATING IS NOT NULL
+GROUP BY APPRAISAL_ID, EMPLOYEE_ID";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
     }
 
 }

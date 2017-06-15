@@ -6,14 +6,12 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
-        ->appendFile($this->basePath('js/setup/branch/index.js'));
+        ->appendFile($this->basePath('js/training/training-attendance/attendance.js'));
 ?>
-
-
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
@@ -21,11 +19,33 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.branches =<?= json_encode($branches) ?>;
+//    document.list =<?php // echo json_encode($list);  ?>
 </script>
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
+
+<?php
+echo '<pre>';
+//print_r($list[0]);
+
+$fromDate = $list[0]['START_DATE'];
+$toDate = $list[0]['END_DATE'];
+echo $fromDate;
+echo $toDate;
+
+$period = new DatePeriod(
+        new DateTime($fromDate), new DateInterval('P1D'), new DateTime($toDate)
+);
+
+foreach ($period as $date) {
+    print_r($date);
+//    $arrayDates[] = $date->format('Y-m-d');
+}
+
+//print_r($arrayDates);
+
+die();
+?>
+
+
 
 <div class="margin-top-20">
 
@@ -37,8 +57,6 @@ $this->headScript()
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('branch', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -46,7 +64,7 @@ $this->headScript()
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="javascript:;" id ="export" class="hris-export-to-excel" hris-export-to-excel-target="branchTable">
+                            <a href="javascript:;" id ="export" class="hris-export-to-excel" hris-export-to-excel-target="grid">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
                     </ul>
@@ -54,39 +72,43 @@ $this->headScript()
             </div>
         </div>
 
-        <div id="branchTable">
+
+        <div id="example">
+            <table id="grid">
+                <colgroup>
+                    <col />
+                    <col />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th data-field="name">Car Make</th>
+                        <th data-field="date">date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Volvo</td>
+                        <td><input type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <td>Lancia</td>
+                        <td><input type="checkbox"></td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
+
+
+        <div id="TrainingAttendance">
+        </div>
+
+
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
+            <td>                     
+            #: (FIRST_NAME == null) ? '-' : F                IRST_NAME #
+            </td>
+            </tr>
+        </script>
     </div>
-
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td> 
-        #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #
-        </td>
-        <td>
-        #: (STREET_ADDRESS == null) ? '-' : STREET_ADDRESS #
-        </td>
-        <td>
-        #: (TELEPHONE == null) ? '-' : TELEPHONE #
-        </td>
-        <td>
-        #: (EMAIL == null) ? '-' : EMAIL #
-        </td>
-        <td>
-        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME#
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("branch", ["action" => "edit"]) ?>/#:BRANCH_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a>
-        <a class="confirmation btn-delete"
-        href="<?= $this->url("branch", ["action" => "delete"]); ?>/#:BRANCH_ID #" id="bs_#:BRANCH_ID #" style="height:17px;"> 
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        </td>
-
-        </tr>
-    </script>
-</div>
-

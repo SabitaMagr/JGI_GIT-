@@ -49,10 +49,66 @@
             }
         }
         ;
+        
         $("#export").click(function (e) {
-            var grid = $("#ruleTable").data("kendoGrid");
-            grid.saveAsExcel();
+            var rows = [{
+                    cells: [
+                        {value: "Priority"},
+                        {value: "Rules"},
+                        {value: "Type"}
+                    ]
+                }];
+            var dataSource = $("#ruleTable").data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+
+            for (var i = 0; i < data.length; i++) {
+                var dataItem = data[i];
+                
+                var payType=dataItem['PAY_TYPE_FLAG'];
+                
+                if(dataItem['PAY_TYPE_FLAG']=='A'){
+                    payType='Addition';
+                }else if(dataItem['PAY_TYPE_FLAG']=='D'){
+                    payType='Deduction';
+                }
+
+                rows.push({
+                    cells: [
+                        {value: dataItem.PRIORITY_INDEX},
+                        {value: dataItem.PAY_EDESC},
+                        {value: payType}
+                    ]
+                });
+            }
+            excelExport(rows);
+            e.preventDefault();
         });
+        
+         function excelExport(rows) {
+            var workbook = new kendo.ooxml.Workbook({
+                sheets: [
+                    {
+                        columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true}
+                        ],
+                        title: "Rule List",
+                        rows: rows
+                    }
+                ]
+            });
+            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "RuleList.xlsx"});
+        }
+        
+        
+        
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

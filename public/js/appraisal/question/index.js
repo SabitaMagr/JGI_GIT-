@@ -43,7 +43,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Question Code"},
                         {value: "Question Edesc"},
                         {value: "Question Ndesc"},
                         {value: "Answer Type"},
@@ -73,7 +72,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.QUESTION_CODE},
                         {value: dataItem.QUESTION_EDESC},
                         {value: dataItem.QUESTION_NDESC},
                         {value: dataItem.ANSWER_TYPE},
@@ -100,6 +98,12 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

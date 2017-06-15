@@ -63,6 +63,12 @@ class AppraisalAssignController extends AbstractActionController{
         $appraisalFormElement->setAttributes(["id" => "appraisalId", "class" => "form-control"]);
         $appraisalFormElement->setLabel("Appraisal");
         
+        $employeeResult = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME,HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E',HrEmployees::RETIRED_FLAG=>'N'], "FIRST_NAME", "ASC"," ",false,true);
+        $employeeList = [];
+        foreach($employeeResult as $key=>$value){
+            array_push($employeeList, ['id'=>$key,'name'=>$value]);
+        }
+        
         $request = $this->getRequest();
         if($request->isPost()){
             $postData = $request->getPost();
@@ -90,7 +96,8 @@ class AppraisalAssignController extends AbstractActionController{
             'departments'=>$departmentFormElement,
             'designations'=>$designationFormElement,
             'appraisals'=>$appraisalFormElement,
-            'searchValues' => EntityHelper::getSearchData($this->adapter)            
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'employeeList'=>$employeeList
         ]);
     }
     

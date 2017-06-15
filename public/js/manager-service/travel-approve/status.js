@@ -127,7 +127,6 @@ angular.module('hris', [])
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
-                                {value: "Travel Code"},
                                 {value: "From Date"},
                                 {value: "To Date"},
                                 {value: "Requested Date"},
@@ -160,7 +159,6 @@ angular.module('hris', [])
                         rows.push({
                             cells: [
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                                {value: dataItem.TRAVEL_CODE},
                                 {value: dataItem.FROM_DATE},
                                 {value: dataItem.TO_DATE},
                                 {value: dataItem.REQUESTED_DATE},
@@ -187,7 +185,6 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
-                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

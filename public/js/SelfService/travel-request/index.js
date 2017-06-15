@@ -36,6 +36,28 @@
         
         app.searchTable('travelTable',['FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE','STATUS']);
         
+        app.pdfExport(
+                        'travelTable',
+                        {
+                            'FROM_DATE': 'From Dt',
+                            'TO_DATE': 'To Dt',
+                            'REQUESTED_DATE': 'Req Dt',
+                            'DESTINATION': 'Destination',
+                            'REQUESTED_AMOUNT': 'Req Amt',
+                            'REQUESTED_TYPE': 'Req Type',
+                            'STATUS': 'Status',
+                            'PURPOSE': 'Purpose',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DATE': 'Rec Dt',
+//                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DATE': 'App Dt'
+                        }
+                );
+        
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -49,7 +71,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Travel Code"},
                         {value: "From Date"},
                         {value: "To Date"},
                         {value: "Applied Date"},
@@ -80,7 +101,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.TRAVEL_CODE},
                         {value: dataItem.FROM_DATE},
                         {value: dataItem.TO_DATE},
                         {value: dataItem.REQUESTED_DATE},
@@ -108,7 +128,6 @@
                 sheets: [
                     {
                         columns: [
-                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

@@ -35,6 +35,25 @@
         
         app.searchTable('workOnDayoffTbl',['REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','STATUS']);
         
+        app.pdfExport(
+                        'workOnDayoffTbl',
+                        {
+                            'REQUESTED_DATE': 'Req Dt',
+                            'FROM_DATE': 'From Dt',
+                            'TO_DATE': 'To Dt',
+                            'DURATION': 'Duration',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Dt',
+//                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DATE': 'Approved Dt'
+                        }
+                );
+        
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {

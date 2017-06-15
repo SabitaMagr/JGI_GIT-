@@ -36,6 +36,32 @@
         
         app.searchTable('travelNotificationTable',['FIRST_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','STATUS','APPROVED_FLAG']);
          
+        app.pdfExport(
+                        'travelNotificationTable',
+                        {
+                            'EMPLOYEE_NAME': 'Name',
+                            'REQUESTED_DT': 'Req Dt',
+                            'FROM_DATE': 'From Dt',
+                            'TO_DATE': 'To Dt',
+                            'DESTINATION': 'Destination',
+                            'REQUESTED_AMOUNT': 'Req Amt',
+                            'REQUESTED_TYPE': 'Req Type',
+                            'PURPOSE': 'Purpose',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DT': 'Rec Dt',
+//                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DT': 'App Dt',
+                            'SUB_EMPLOYEE_NAME': 'Sub Emp',
+//                            'SUB_APPROVED_FLAG': 'Sub App Flag',
+                            'SUB_APPROVED_DATE': 'Sub App Dt',
+                        }
+                ); 
+        
+         
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -50,7 +76,6 @@
             var rows = [{
                     cells: [
                         {value: "Employee Name"},
-                        {value: "Travel Code"},
                         {value: "From Date"},
                         {value: "To Date"},
                         {value: "Applied Date"},
@@ -85,7 +110,6 @@
                 rows.push({
                     cells: [
                         {value: dataItem.EMPLOYEE_NAME},
-                        {value: dataItem.TRAVEL_CODE},
                         {value: dataItem.FROM_DATE},
                         {value: dataItem.TO_DATE},
                         {value: dataItem.REQUESTED_DATE},
@@ -116,6 +140,9 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

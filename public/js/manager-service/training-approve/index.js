@@ -74,7 +74,6 @@
             var rows = [{
                     cells: [
                         {value: "Employee Name"},
-                        {value: "Training Code"},
                         {value: "Training Name"},
                         {value: "Requested Date"},
                         {value: "Start Date"},
@@ -107,7 +106,6 @@
                 rows.push({
                     cells: [
                         {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                        {value: dataItem.TRAINING_CODE},
                         {value: dataItem.TRAINING_NAME},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.START_DATE},
@@ -134,6 +132,8 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

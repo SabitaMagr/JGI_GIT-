@@ -37,6 +37,32 @@
         
         app.searchTable('leaveNotificationTable',['FIRST_NAME','LEAVE_ENAME','APPLIED_DATE','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS','APPROVED_FLAG']);
         
+        app.pdfExport(
+                        'leaveNotificationTable',
+                        {
+                            'FIRST_NAME': 'Name',
+                            'MIDDLE_NAME': 'Middle',
+                            'LAST_NAME': 'Last',
+                            'LEAVE_ENAME': 'Leave',
+                            'REQUESTED_DT': 'Req Dt',
+                            'FROM_DATE': 'From Dt',
+                            'TO_DATE': 'To Dt',
+                            'NO_OF_DAYS': 'No Days',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DT': 'Rec Dt',
+//                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DT': 'App Dt',
+                            'SUB_EMPLOYEE_NAME': 'Sub Emp',
+//                            'SUB_APPROVED_FLAG': 'Sub App Flag',
+                            'SUB_APPROVED_DATE': 'Sub App Dt',
+                        }
+                );
+        
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -51,7 +77,6 @@
             var rows = [{
                     cells: [
                         {value: "Employee Name"},
-                        {value: "Leave Code"},
                         {value: "Leave Name"},
                         {value: "Applied Date"},
                         {value: "Start Date"},
@@ -85,7 +110,6 @@
                 rows.push({
                     cells: [
                         {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                        {value: dataItem.LEAVE_CODE},
                         {value: dataItem.LEAVE_ENAME},
                         {value: dataItem.REQUESTED_DT},
                         {value: dataItem.FROM_DATE},
@@ -114,6 +138,7 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

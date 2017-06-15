@@ -30,6 +30,17 @@
         
         app.searchTable('appraisalListTable',['APPRAISAL_EDESC','APPRAISAL_TYPE_EDESC','STAGE_EDESC','START_DATE','END_DATE']);
         
+        app.pdfExport(
+                        'appraisalListTable',
+                        {
+                            'APPRAISAL_EDESC': ' Appraisal',
+                            'APPRAISAL_TYPE_EDESC': 'Type',
+                            'STAGE_EDESC': 'Stage',
+                            'START_DATE': 'Start Date',
+                            'END_DATE': 'End Date',
+                        }
+                );
+        
         $("#export").click(function (e) {
             var grid = $("#appraisalTable").data("kendoGrid");
             grid.saveAsExcel();
@@ -37,3 +48,13 @@
         window.app.UIConfirmations();
     });
 })(window.jQuery);
+
+
+angular.module("hris",[])
+        .controller("appraisalList",function($scope,$http,$window){
+            $scope.msg =  $window.localStorage.getItem("msg");
+            if($window.localStorage.getItem("msg")){
+                window.toastr.success($scope.msg, "Notifications");
+            }
+            $window.localStorage.removeItem("msg");
+});

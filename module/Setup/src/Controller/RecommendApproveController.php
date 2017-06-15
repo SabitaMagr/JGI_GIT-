@@ -149,7 +149,7 @@ class RecommendApproveController extends AbstractActionController {
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
         $designationFormElement->setLabel("Designation");
         
-        $employeeResult = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME,HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E',HrEmployees::RETIRED_FLAG=>'N'], "FIRST_NAME", "ASC",null,false,true);
+        $employeeResult = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME,HrEmployees::MIDDLE_NAME,HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E',HrEmployees::RETIRED_FLAG=>'N'], "FIRST_NAME", "ASC"," ",false,true);
         $employeeList = [];
         foreach($employeeResult as $key=>$value){
             array_push($employeeList, ['id'=>$key,'name'=>$value]);

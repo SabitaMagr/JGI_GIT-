@@ -35,6 +35,26 @@
         
         app.searchTable('advanceTable',['ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','STATUS']);
         
+        app.pdfExport(
+                        'advanceTable',
+                        {
+                            'ADVANCE_NAME': 'Advance',
+                            'REQUESTED_DATE': 'Req Dt',
+                            'ADVANCE_DATE': 'Adv Dt',
+                            'REQUESTED_AMOUNT': 'Req Amt',
+                            'TERMS': 'Terms',
+                            'STATUS': 'Status',
+                            'REASON': 'Reason',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DATE': 'Rec Dt',
+                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DATE': 'App Dt'
+                        }
+                );
+        
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -48,7 +68,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Advance Code"},
                         {value: "Advance Name"},
                         {value: "Applied Date"},
                         {value: "Advance Date"},
@@ -77,7 +96,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.ADVANCE_CODE},
                         {value: dataItem.ADVANCE_NAME},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.ADVANCE_DATE},
@@ -103,7 +121,6 @@
                 sheets: [
                     {
                         columns: [
-                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
