@@ -24,9 +24,6 @@ $form->prepare();
 ?>
 <link href="<?= $this->basePath('css/listpage.css') ?>"
       rel="stylesheet" type="text/css"/>
-<script>
-    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuMenuSetup"]];echo json_encode($menu);?>;
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>

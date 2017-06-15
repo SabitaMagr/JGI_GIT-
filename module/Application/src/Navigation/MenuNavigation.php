@@ -29,7 +29,7 @@ class MenuNavigation extends DefaultNavigationFactory {
                         $urlArray = array(
                             'uri' => 'javascript::'
                         );
-                    }else{
+                    } else {
                         $urlArray = array(
                             "route" => $row['ROUTE'],
                             "action" => $row['ACTION'],
@@ -42,7 +42,7 @@ class MenuNavigation extends DefaultNavigationFactory {
                         "isVisible" => $row['IS_VISIBLE'],
                         "isChildAllInvisible" => $tempMenu['allInvisible']
                     );
-                    $newMenuDtlArray = array_merge($menuDtlArray,$urlArray);
+                    $newMenuDtlArray = array_merge($menuDtlArray, $urlArray);
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = $newMenuDtlArray;
                 } else {
                     $configuration['navigation'][$this->getName()][$row['MENU_NAME']] = array(
@@ -101,20 +101,20 @@ class MenuNavigation extends DefaultNavigationFactory {
                         $urlArray = array(
                             'uri' => 'javascript::'
                         );
-                    }else{
+                    } else {
                         $urlArray = array(
                             "route" => $row['ROUTE'],
                             "action" => $row['ACTION'],
                         );
                     }
                     $menuDtlArray = array(
-                            "label" => $row['MENU_NAME'],
-                            "icon" => $row['ICON_CLASS'],
-                            "pages" => $children,
-                            "isVisible" => $row['IS_VISIBLE'],
-                            "isChildAllInvisible" => $resAllInvisible
-                        );
-                    $newMenuDtlArray = array_merge($menuDtlArray,$urlArray);
+                        "label" => $row['MENU_NAME'],
+                        "icon" => $row['ICON_CLASS'],
+                        "pages" => $children,
+                        "isVisible" => $row['IS_VISIBLE'],
+                        "isChildAllInvisible" => $resAllInvisible
+                    );
+                    $newMenuDtlArray = array_merge($menuDtlArray, $urlArray);
                     $temArray[] = $newMenuDtlArray;
                 } else {
                     $temArray[] = array(
