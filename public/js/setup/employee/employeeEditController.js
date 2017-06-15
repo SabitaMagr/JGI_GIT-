@@ -581,7 +581,6 @@
                             console.log("app log", "The form is not filled");
                             $scope.trainingListEmpty = 0;
                         }
-                        console.log($scope.trainingFormList);
                         window.app.pullDataById(document.urlQualificationDtl, {
                             action: 'submitTrainingDtl',
                             data: {

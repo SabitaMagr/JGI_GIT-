@@ -894,6 +894,73 @@ ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
         return $result->current();
     }
 
+    public function fetchEmployeeContracts() {
+        $sql = "
+                SELECT EMP.EMPLOYEE_ID,
+                  (
+                  CASE
+                    WHEN EMP.MIDDLE_NAME IS NULL
+                    THEN EMP.FIRST_NAME
+                      || ' '
+                      || EMP.LAST_NAME
+                    ELSE EMP.FIRST_NAME
+                      || ' '
+                      || EMP.MIDDLE_NAME
+                      || ' '
+                      || EMP.LAST_NAME
+                  END ) AS FULL_NAME,
+                  EF.FILE_PATH,
+                  D.DESIGNATION_TITLE,
+                  S.END_DATE,
+                  S.TYPE
+                FROM HRIS_EMPLOYEES EMP
+                JOIN
+                  (SELECT JH.EMPLOYEE_ID,
+                    JH.START_DATE,
+                    JH.END_DATE,
+                    JH.TO_DEPARTMENT_ID,
+                    JH.TO_DESIGNATION_ID,
+                    (
+                    CASE
+                      WHEN TRUNC(SYSDATE) > JH.END_DATE
+                      THEN 'EXPIRED'
+                      ELSE 'EXPIRING'
+                    END ) AS TYPE
+                  FROM HRIS_JOB_HISTORY JH,
+                    (SELECT EMPLOYEE_ID,
+                      MAX(START_DATE) AS LATEST_START_DATE
+                    FROM HRIS_JOB_HISTORY
+                    WHERE END_DATE IS NOT NULL
+                    GROUP BY EMPLOYEE_ID
+                    ) LH
+                  WHERE JH.EMPLOYEE_ID =LH.EMPLOYEE_ID
+                  AND JH.START_DATE    = LH.LATEST_START_DATE
+                  ) S
+                ON (EMP.EMPLOYEE_ID=S.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEE_FILE EF
+                ON (EMP.PROFILE_PICTURE_ID=EF.FILE_CODE)
+                LEFT JOIN HRIS_DESIGNATIONS D
+                ON (S.TO_DESIGNATION_ID=D.DESIGNATION_ID )
+                ORDER BY S.END_DATE ASC
+                ";
+
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        $employeeContract = array();
+        foreach ($result as $rs) {
+            if ('EXPIRED' == strtoupper($rs['TYPE'])) {
+                $employeeContract['EXPIRED'][$rs['EMPLOYEE_ID']] = $rs;
+            }
+            if ('EXPIRING' == strtoupper($rs['TYPE'])) {
+                $employeeContract['EXPIRING'][$rs['EMPLOYEE_ID']] = $rs;
+            }
+        }
+
+        return $employeeContract;
+    }
+
     /*
      * END FOR ADMIN DASHBOARD FUNCTIONS
      */

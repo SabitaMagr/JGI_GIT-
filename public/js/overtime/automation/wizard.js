@@ -127,10 +127,11 @@
                     $earlyOvertimeHourLabel.html(compulsorySetup.earlyOvertimeHour);
                     $lateOvertimeHourLabel.html(compulsorySetup.lateOvertimeHour);
 
-                    $.each(assignList, function (item) {
+                    $.each(assignList, function (key, item) {
+                        var employee = document.searchManager.getEmployeeById(item);
                         $assignedEmployeeList.append('<div class="col-sm-2"><div class="alert alert-info alert-dismissable">' +
-                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>' +
-                                'Ukesh Gaiju </div></div>');
+                                '<button data-id="' + item + '" type="button" class="close remove-employee" data-dismiss="alert" aria-hidden="true"></button>' +
+                                employee['FIRST_NAME'] + '</div></div>');
                     });
                 }
             }
@@ -228,6 +229,14 @@
             });
         });
 
+        $wizard.on('click', '.remove-employee', function () {
+            var $this = $(this);
+            var employeeId = $this.attr('data-id');
+            var index = assignList.indexOf(employeeId);
+            if (index > -1) {
+                assignList.splice(index, 1);
+            }
+        });
     });
 
 

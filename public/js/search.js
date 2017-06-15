@@ -43,6 +43,11 @@
                 this.employee = employee;
             }, getEmployee: function () {
                 return this.employee
+            }, getEmployeeById: function (id) {
+                var filteredList = this.employee.filter(function (item) {
+                    return item['EMPLOYEE_ID'] == id;
+                });
+                return filteredList[0];
             }, setCompanyListener: function (listener) {
                 this.companyListener = listener;
             }, setBranchListener: function (listener) {
