@@ -10,8 +10,8 @@ return [
         )
         )',
         
-        'username' => 'HRIS',
-        'password' => 'NEO_HRIS',
+        'username' => 'LAXMI_HRIS_APR28',
+        'password' => 'LAXMI_HRIS_APR28',
         
 //          'username' => 'HRIS_DEMO',
 //          'password' => 'HRIS_DEMO',
