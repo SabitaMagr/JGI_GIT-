@@ -169,7 +169,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_KPI" data-toggle="tab"> KPI </a>
                             </li>
                             <?php }?>
-                            <?php if($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){ ?>
+                            <?php if($assignedAppraisalDetail['STAGE_ID']!=7 && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){ ?>
                             <li>
                                 <a href="#portlet_tab2_COM" data-toggle="tab"> Competencies </a>
                             </li>
@@ -324,7 +324,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <?php if(($assignedAppraisalDetail['STAGE_ID']==7) || ($assignedAppraisalDetail['STAGE_ID']==1)){?>
                                         <div class="form-group">
                                             <button type="submit" id="submit" class="btn btn-success pull-right">
-                                                NEXT
+                                               <?= ($assignedAppraisalDetail['STAGE_ID']==7)?"SUBMIT":"NEXT"?>
                                             </button>
                                         </div>
                                         <?php } ?>
@@ -375,7 +375,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php if($appCompetenciesRatingDtlNum>0){?>
                                     <td width='10%'>
-                                        <input type="number" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
+                                        <input type="text" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
                                         <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
                                             <ul ng-show="competenciesForm.rating_{{competencies.checkbox}}.$error.required" class="help-block error">
                                                 <li>Appraiser Rating is required.</li>

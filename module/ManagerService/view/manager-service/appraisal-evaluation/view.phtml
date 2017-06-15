@@ -288,6 +288,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
+                                <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0){ ?>
+                                <tr>
+                                    <td colspan="6">
+                                        ANNUAL RATING ON KEY PERFORMANCE INDICATOR:
+                                    </td>
+                                    <td>
+                                        <input type="number" disabled="disabled" value="{{calculateAnnualRating(KPIList)}}" name="annualRating" id="annualRating" ng-model="annualRating" style="width:100%;"/>
+                                    </td>
+                                </tr>
+                                <?php } ?>
                                 <tr>
                                     <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <td style="width:10%;">
@@ -371,7 +381,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appCompetenciesRatingDtlNum>0){?>
                                     <td width='10%'>
-                                        <input type="number" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" <?= $disabledCompetenciesRating ?>/>
+                                        <input type="text" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" <?= $disabledCompetenciesRating ?>/>
                                         <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
                                             <ul ng-show="competenciesForm.rating_{{competencies.checkbox}}.$error.required" class="help-block error">
                                                 <li>Appraiser Rating is required.</li>
@@ -388,6 +398,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
+                                <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appCompetenciesRatingDtlNum>0){ ?>
+                                <tr>
+                                    <td colspan="3">
+                                        ANNUAL RATING ON COMPETENCIES:
+                                    </td>
+                                    <td>
+                                        <input type="text" value="" name="annualRatingCompetency" id="annualRatingCompetency" ng-model="annualRatingCompetency" style="width:20%;"/>
+                                    </td>
+                                </tr>
+                                <?php } ?>
                                 <tr>
                                     <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                     <td style="width:10%;">
@@ -518,6 +538,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
+                                <input type="text" id="appraiserOverallRating" ng-model="appraiserOverallRating" name="appraiserOverallRating"/>
                             </div>
                             <?php 
                             if(($questionForCurStage>0 && $questionOnPreTab>0) || ($questionOnPreTab>0 && $reviewerAvailableAnswer!==true)){ ?>

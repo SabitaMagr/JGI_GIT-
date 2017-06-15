@@ -3404,6 +3404,7 @@ class RestfulService extends AbstractRestfulController {
         $KPIList = $data['KPIList'];
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
+        $annualRatingKPI = $data['annualRatingKPI'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
@@ -3436,6 +3437,9 @@ class RestfulService extends AbstractRestfulController {
             }
             if($assignedAppraisalDetail['STAGE_ID']==7){
                 $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
+            }
+            if($assignedAppraisalDetail['STAGE_ID']==5){
+                $appraisalAssignRepo->updateAnnualRatingId($annualRatingKPI, $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [
@@ -3503,12 +3507,15 @@ class RestfulService extends AbstractRestfulController {
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
         $loggedInUser = $this->loggedIdEmployeeId;
+        $annualRatingCompetency = $data['annualRatingCompetency'];
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
+        $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         try{
             foreach($competenciesList as $competenciesRow){
                 $appraisalCompetencies = new AppraisalCompetencies();
                 $appraisalCompetencies->title = $competenciesRow['title'];
-                $appraisalCompetencies->rating = (is_numeric($competenciesRow['rating']))?$competenciesRow['rating']:null;
+                $appraisalCompetencies->rating = $competenciesRow['rating'];
                 $appraisalCompetencies->comments = $competenciesRow['comments'];
                 if($competenciesRow['sno']==0 || $competenciesRow['sno']==null){
                     $appraisalCompetencies->sno = (int)(Helper::getMaxId($this->adapter, AppraisalCompetencies::TABLE_NAME, AppraisalCompetencies::SNO))+1;
@@ -3526,6 +3533,9 @@ class RestfulService extends AbstractRestfulController {
                     $appraisalCompetencies->modifiedDate = Helper::getcurrentExpressionDate();
                     $appraisalCompetenciesRepo->edit($appraisalCompetencies,$competenciesRow['sno']);
                 }
+            }
+            if($assignedAppraisalDetail['STAGE_ID']==5){
+                $appraisalAssignRepo->updateAnnualRatingComId($annualRatingCompetency, $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [

@@ -62,6 +62,24 @@ window.app = (function ($, toastr, App) {
             });
         }
     }
+    var floatToRound =  function round(value, exp) {
+            if (typeof exp === 'undefined' || +exp === 0)
+              return Math.round(value);
+
+            value = +value;
+            exp = +exp;
+
+            if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0))
+              return NaN;
+
+            // Shift
+            value = value.toString().split('e');
+            value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp)));
+
+            // Shift back
+            value = value.toString().split('e');
+            return +(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp));
+          }
 
     var startEndDatePicker = function (fromDate, toDate, fn) {
         if (typeof fromDate === 'undefined' || fromDate == null || typeof toDate === 'undefined' || toDate == null) {
@@ -981,7 +999,8 @@ window.app = (function ($, toastr, App) {
         daysBetween: daysBetween,
         searchTable: searchTable,
         pdfExport: pdfExport,
-        populateSelect: populateSelect
+        populateSelect: populateSelect,
+        floatToRound:floatToRound
     };
 })(window.jQuery, window.toastr, window.App);
 

@@ -192,7 +192,16 @@ AND
         return $result->current();
     }
     public function updateCurrentStageByAppId($stageId,$appraisalId,$employeeId){
-        $this->tableGateway->update([AppraisalAssign::CURRENT_STAGE_ID=>$stageId],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::STATUS=>'E']);
+        $this->tableGateway->update([AppraisalAssign::CURRENT_STAGE_ID=>$stageId],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::EMPLOYEE_ID=>$employeeId,AppraisalAssign::STATUS=>'E']);
+    }
+    public function updateAnnualRatingId($annualRatingKPI,$appraisalId,$employeeId){
+        $this->tableGateway->update([AppraisalAssign::ANNUAL_RATING_KPI =>$annualRatingKPI],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::EMPLOYEE_ID=>$employeeId,AppraisalAssign::STATUS=>'E']);
+    }
+    public function updateAnnualRatingComId($annualRatingCompetency,$appraisalId,$employeeId){
+        $this->tableGateway->update([AppraisalAssign::ANNUAL_RATING_COMPETENCY =>$annualRatingCompetency],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::EMPLOYEE_ID=>$employeeId,AppraisalAssign::STATUS=>'E']);
+    }
+    public function updateOverallRatingId($overallRating,$appraisalId,$employeeId){
+        $this->tableGateway->update([AppraisalAssign::APPRAISER_OVERALL_RATING =>$overallRating],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::EMPLOYEE_ID=>$employeeId,AppraisalAssign::STATUS=>'E']);
     }
 }
 

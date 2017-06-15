@@ -360,7 +360,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php if($appCompetenciesRatingDtlNum>0){?>
                                     <td width='10%'>
-                                        <input type="number" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
+                                        <input type="text" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
                                         <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
                                             <ul ng-show="competenciesForm.rating_{{competencies.checkbox}}.$error.required" class="help-block error">
                                                 <li>Appraiser Rating is required.</li>

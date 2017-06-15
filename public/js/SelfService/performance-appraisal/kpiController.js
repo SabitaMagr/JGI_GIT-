@@ -1,8 +1,9 @@
 angular.module('kpiModule', ['use', 'ngMessages'])
-        .controller("kpiController", function ($scope, $http) {
+        .controller("kpiController", function ($scope, $http,$window) {
             $scope.KPIList = [];
             var employeeId = parseInt(angular.element(document.getElementById('employeeId')).val());
             var appraisalId = parseInt(angular.element(document.getElementById('appraisalId')).val());
+            var currentStageId = parseInt(angular.element(document.getElementById('currentStageId')).val());
             $scope.KPITemplate = {
                 counter: 1,
                 sno: 0,
@@ -71,6 +72,19 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                     $scope.sumTotal = false;
                 }
             }
+            $scope.calculateAnnualRating = function(list){
+                var total = 0;
+                console.log(list);
+                angular.forEach(list, function (item) {
+                    var weight = parseInt(item.weight);
+                    var appraiserRating = parseInt(item.appraiserRating);
+                    var total1 = appraiserRating*(weight/100);
+                    total += parseFloat(total1);
+                });
+                console.log(total);
+//                $scope.annualRating = total;
+                return window.app.floatToRound(total, 2);;
+            }
             $scope.addKPI = function () {
                 console.log("hellow");
                 $scope.KPIList.push(angular.copy({
@@ -115,22 +129,31 @@ angular.module('kpiModule', ['use', 'ngMessages'])
             $scope.submitKPIForm = function () {
                 console.log("form is going to be submitted");
                 if ($scope.KPIForm.$valid) {
-                    console.log($scope.KPIList);
+                    var annualRating = parseFloat(angular.element(document.getElementById('annualRating')).val());
+                    console.log(annualRating);
                     App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.restfulUrl, {
                         action: "submitAppraisalKPI",
                         data: {
                             KPIList: $scope.KPIList,
                             employeeId: employeeId,
-                            appraisalId: appraisalId
+                            appraisalId: appraisalId,
+                            annualRatingKPI:annualRating
                         },
                     }).then(function (success) {
                         $scope.$apply(function () {
                             console.log(success);
-                            $('.nav-tabs a[href="#portlet_tab2_COM"]').tab('show');
-                            $scope.KPIList = [];
-                            $scope.viewKPIList();
-                            App.unblockUI("#hris-page-content");
+                            
+                            if(currentStageId!=7){
+                                $('.nav-tabs a[href="#portlet_tab2_COM"]').tab('show');
+                                $scope.KPIList = [];
+                                $scope.viewKPIList();
+                                App.unblockUI("#hris-page-content");
+                            }
+                            if(currentStageId==7){
+                                $window.location.href = document.listurl;
+                                $window.localStorage.setItem("msg","Appraisal Successfully Submitted!!!");
+                            }
                         });
                     }, function (failure) {
                         App.unblockUI("#hris-page-content");
