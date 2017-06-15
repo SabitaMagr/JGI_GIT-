@@ -48,6 +48,7 @@
 
         var appraisalReviewForm = function (submitForm, checkingForm, submitTab, checkingTab) {
             $("#"+submitForm).on("submit", function () {
+                App.blockUI({target: "#hris-page-content"});
                 var appraiseeTabFail = false;
                 $('#'+checkingForm).find('input,select,textarea').each(function () {
                     if ($(this).attr('type') !== 'hidden' && $(this).attr('disabled') !== 'disabled') {
@@ -81,6 +82,7 @@
                     });
                 });
                 if (appraiseeTabFail) {
+                    App.unblockUI("#hris-page-content");
                     $("#"+checkingTab).addClass("active");
                     $("ul#tabList").find('a[href="#'+checkingTab+'"]').parent("li").addClass("active");
                     $("#"+submitTab).removeClass("active");

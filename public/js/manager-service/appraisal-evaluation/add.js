@@ -2,6 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("#appraisalEvaluation1").on("submit", function () {
+            App.blockUI({target: "#hris-page-content"});
             var fail = false;
             $('#appraisalEvaluation').find('input,select,textarea').each(function () {
                 if ($(this).attr('type') !== 'hidden' && $(this).attr('disabled') !== 'disabled') {
@@ -35,6 +36,7 @@
                 });
             });
             if (fail) {
+                App.unblockUI("#hris-page-content");
                 $("#portlet_tab2_1").addClass("active");
                 $("ul#tabList").find('a[href="#portlet_tab2_1"]').parent("li").addClass("active");
                 $("#portlet_tab2_2").removeClass("active");
