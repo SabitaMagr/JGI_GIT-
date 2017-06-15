@@ -19,30 +19,30 @@ $this->headScript()
 <?php } ?>
 
 <script>
-//    document.list =<?php // echo json_encode($list);  ?>
+    document.updateUrl ='<?= $this->url("trainingAtt", ["action" => "updateTrainingAtd"]);?>';
+    document.trainingId ='<?=$trainingId;?>';
 </script>
 
 <?php
-echo '<pre>';
-//print_r($list[0]);
+if (!empty($list)) {
+//echo '<pre>';
+//print_r($list);
+//die();
 
-$fromDate = $list[0]['START_DATE'];
-$toDate = $list[0]['END_DATE'];
-echo $fromDate;
-echo $toDate;
+    $todayDate = date("d-M-Y");
+    $fromDate = $list[0]['START_DATE'];
+    $toDate = $list[0]['END_DATE'];
 
-$period = new DatePeriod(
-        new DateTime($fromDate), new DateInterval('P1D'), new DateTime($toDate)
-);
 
-foreach ($period as $date) {
-    print_r($date);
-//    $arrayDates[] = $date->format('Y-m-d');
+    $daterange = new DatePeriod(new DateTime($fromDate), new DateInterval('P1D'), new DateTime($toDate));
+
+    $colDates = [];
+    foreach ($daterange as $date) {
+        $tempDate = $date->format("d-M-Y");
+        array_push($colDates, $tempDate);
+    }
+    array_push($colDates, $toDate);
 }
-
-//print_r($arrayDates);
-
-die();
 ?>
 
 
@@ -72,43 +72,75 @@ die();
             </div>
         </div>
 
+        <?php
+        if (!empty($list)) {
+            ?>
+            <div id="example">
+                <table id="grid" class="table">
+                    <colgroup>
+                        <col />
+                        <?php
+                        foreach ($colDates as $dates) {
+                            ?>
+                            <col />
+                            <?php
+                        }
+                        ?>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th data-field="name">Name</th>
+                            <?php
+                            foreach ($colDates as $dates) {
+                                ?>
+                                <th><?= $dates ?></th>
+                                <?php
+                            }
+                            ?>
 
-        <div id="example">
-            <table id="grid">
-                <colgroup>
-                    <col />
-                    <col />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th data-field="name">Car Make</th>
-                        <th data-field="date">date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Volvo</td>
-                        <td><input type="checkbox"></td>
-                    </tr>
-                    <tr>
-                        <td>Lancia</td>
-                        <td><input type="checkbox"></td>
-                    </tr>
-                </tbody>
-            </table>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($list as $listData) {
+                            ?>
+                            <tr>
+                                <td><?php echo $listData['FIRST_NAME'] . ' ' . $listData['MIDDLE_NAME'] . ' ' . $listData['LAST_NAME']; ?></td>
+                                <?php
+//                            strtotime()
+                                $i = 1;
+                                foreach ($colDates as $dates) {
+                                    if (strtotime($dates) <= strtotime($todayDate)) {
+                                        ?>
+                                        <td><input data-empId="<?=$listData['EMPLOYEE_ID']?>" data-AttDate="<?=$dates?>" class="trainingAtdChk" type="checkbox" ></td>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <td><input  type="checkbox" disabled="disabled"></td>
+                                        <?php
+                                    }
+                                    $i++;
+                                }
+                                ?>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+        } else {
+            ?>
+            <div>
+                NO Employee Assigned In Training
 
-        </div>
+            </div>
+            <?php
+        }
+        ?>
 
 
-        <div id="TrainingAttendance">
-        </div>
 
-
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>                     
-            #: (FIRST_NAME == null) ? '-' : F                IRST_NAME #
-            </td>
-            </tr>
-        </script>
     </div>
+</div>
