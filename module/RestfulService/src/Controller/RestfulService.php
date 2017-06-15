@@ -3404,7 +3404,6 @@ class RestfulService extends AbstractRestfulController {
         $KPIList = $data['KPIList'];
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
-        $annualRatingKPI = $data['annualRatingKPI'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
@@ -3439,6 +3438,7 @@ class RestfulService extends AbstractRestfulController {
                 $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
             }
             if($assignedAppraisalDetail['STAGE_ID']==5){
+                $annualRatingKPI = $data['annualRatingKPI'];
                 $appraisalAssignRepo->updateAnnualRatingId($annualRatingKPI, $appraisalId, $employeeId);
                 $appraisalAssignRepo->updateOverallRatingId($annualRatingKPI, $appraisalId, $employeeId);
             }
@@ -3507,9 +3507,7 @@ class RestfulService extends AbstractRestfulController {
         $competenciesList = $data['competenciesList'];
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
-        $appraiserOverallRating = $data['appraiserOverallRating'];
         $loggedInUser = $this->loggedIdEmployeeId;
-        $annualRatingCompetency = $data['annualRatingCompetency'];
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
@@ -3537,6 +3535,8 @@ class RestfulService extends AbstractRestfulController {
                 }
             }
             if($assignedAppraisalDetail['STAGE_ID']==5){
+                $annualRatingCompetency = $data['annualRatingCompetency'];
+                $appraiserOverallRating = $data['appraiserOverallRating'];
                 $appraisalAssignRepo->updateAnnualRatingComId($annualRatingCompetency, $appraisalId, $employeeId);
                 $appraisalAssignRepo->updateOverallRatingId($appraiserOverallRating, $appraisalId, $employeeId);
             }
