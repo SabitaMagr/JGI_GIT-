@@ -33,7 +33,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                                     counter: (j + 1),
                                     sno: appraisalCompetenciesList[j].SNO,
                                     title: appraisalCompetenciesList[j].TITLE,
-                                    rating: parseInt(appraisalCompetenciesList[j].RATING),
+                                    rating: appraisalCompetenciesList[j].RATING,
                                     comments: appraisalCompetenciesList[j].COMMENTS,
                                     checkbox: "checkboxc" + j,
                                     checked: false
@@ -53,18 +53,6 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
             } else {
                 $scope.counter = 1;
                 $scope.competenciesList.push(angular.copy($scope.competenciesTemplate));
-            }
-            $scope.sumAllTotal = function (list) {
-                var total = 0;
-                angular.forEach(list, function (item) {
-                    var total1 = parseInt(item.weight);
-                    total += parseInt(total1);
-                });
-                if (total > 100) {
-                    $scope.sumTotal = true;
-                } else {
-                    $scope.sumTotal = false;
-                }
             }
             $scope.addCompetencies = function () {
                 console.log("hellow");
@@ -107,7 +95,9 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
             $scope.submitCompetenciesForm = function () {
                 console.log("form is going to be submitted");
                 if ($scope.competenciesForm.$valid) {
-                    console.log("hellow");
+                    var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
+                    var appraiserOverallRating = angular.element(document.getElementById('appraiserOverallRating')).val();
+                    console.log(annualRatingCompetency);
                     console.log($scope.competenciesList);
                     App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.restfulUrl, {
@@ -115,7 +105,9 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                         data: {
                             competenciesList: $scope.competenciesList,
                             employeeId: employeeId,
-                            appraisalId: appraisalId
+                            appraisalId: appraisalId,
+                            annualRatingCompetency:annualRatingCompetency,
+                            appraiserOverallRating:appraiserOverallRating
                         },
                     }).then(function (success) {
                         $scope.$apply(function () {
@@ -141,3 +133,14 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
         });
         
 //        angular.module("hris", ["competenciesModule"]);
+
+(function ($) {
+    'use strict';
+    $(document).ready(function () {
+        $("#annualRatingCompetency").on("change",function(){
+            var annualRatingCompetency = $(this).val();
+            var annualRatingKPI = $("#annualRating").val();
+            $('#appraiserOverallRating').val(annualRatingKPI + annualRatingCompetency);
+        });
+    });
+})(window.jQuery);

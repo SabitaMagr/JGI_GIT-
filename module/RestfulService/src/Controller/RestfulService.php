@@ -3437,6 +3437,11 @@ class RestfulService extends AbstractRestfulController {
             if($assignedAppraisalDetail['STAGE_ID']==7){
                 $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
             }
+            if($assignedAppraisalDetail['STAGE_ID']==5){
+                $annualRatingKPI = $data['annualRatingKPI'];
+                $appraisalAssignRepo->updateAnnualRatingId($annualRatingKPI, $appraisalId, $employeeId);
+                $appraisalAssignRepo->updateOverallRatingId($annualRatingKPI, $appraisalId, $employeeId);
+            }
         }catch(Exception $e){
             $responseData = [
                 "success" => false,
@@ -3504,11 +3509,13 @@ class RestfulService extends AbstractRestfulController {
         $appraisalId = $data['appraisalId'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
+        $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         try{
             foreach($competenciesList as $competenciesRow){
                 $appraisalCompetencies = new AppraisalCompetencies();
                 $appraisalCompetencies->title = $competenciesRow['title'];
-                $appraisalCompetencies->rating = (is_numeric($competenciesRow['rating']))?$competenciesRow['rating']:null;
+                $appraisalCompetencies->rating = $competenciesRow['rating'];
                 $appraisalCompetencies->comments = $competenciesRow['comments'];
                 if($competenciesRow['sno']==0 || $competenciesRow['sno']==null){
                     $appraisalCompetencies->sno = (int)(Helper::getMaxId($this->adapter, AppraisalCompetencies::TABLE_NAME, AppraisalCompetencies::SNO))+1;
@@ -3526,6 +3533,12 @@ class RestfulService extends AbstractRestfulController {
                     $appraisalCompetencies->modifiedDate = Helper::getcurrentExpressionDate();
                     $appraisalCompetenciesRepo->edit($appraisalCompetencies,$competenciesRow['sno']);
                 }
+            }
+            if($assignedAppraisalDetail['STAGE_ID']==5){
+                $annualRatingCompetency = $data['annualRatingCompetency'];
+                $appraiserOverallRating = $data['appraiserOverallRating'];
+                $appraisalAssignRepo->updateAnnualRatingComId($annualRatingCompetency, $appraisalId, $employeeId);
+                $appraisalAssignRepo->updateOverallRatingId($appraiserOverallRating, $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [

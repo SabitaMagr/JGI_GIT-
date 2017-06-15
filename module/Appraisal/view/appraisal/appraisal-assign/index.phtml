@@ -15,6 +15,7 @@ $this->headScript()
 <script>
     document.url = '<?= $this->url("appraisalAssign", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.employeeList =<?php echo json_encode($employeeList); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\AppraisalAssign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

@@ -287,6 +287,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
+                                <?php if($appraiserRatingDtlNum>0){ ?>
+                                <tr>
+                                    <td colspan="6">
+                                        ANNUAL RATING ON KEY PERFORMANCE INDICATOR:
+                                    </td>
+                                    <td>
+                                        <input type="number" disabled="disabled" value="{{calculateAnnualRating(KPIList)}}" name="annualRating" id="annualRating" ng-model="annualRating" style="width:100%;"/>
+                                    </td>
+                                </tr>
+                                <?php } ?>
                                 <?php if($assignedAppraisalDetail['STAGE_ID']==1){?>
                                 <tr>
                                     <td style="width:10%;">
@@ -360,7 +370,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php if($appCompetenciesRatingDtlNum>0){?>
                                     <td width='10%'>
-                                        <input type="number" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
+                                        <input type="text" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
                                         <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
                                             <ul ng-show="competenciesForm.rating_{{competencies.checkbox}}.$error.required" class="help-block error">
                                                 <li>Appraiser Rating is required.</li>
@@ -377,6 +387,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
+                                <?php if($appCompetenciesRatingDtlNum>0){ 
+                                    ?>
+                                <tr>
+                                    <td colspan="2">
+                                        ANNUAL RATING ON COMPETENCIES:
+                                    </td>
+                                    <td>
+                                        
+                                        <input type="text" disabled="disabled" value="<?= $assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY'];?>" name="annualRatingCompetency" id="annualRatingCompetency" style="width:100%;"/>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <?php } ?>
                                 <?php if($assignedAppraisalDetail['STAGE_ID']==1){ ?>
                                 <tr>
                                     <td style="width:10%;">
@@ -507,7 +530,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-success">
+                                        <button type="submit" id="submit" class="btn btn-success pull-right">
                                             NEXT
                                         </button>
                                     </div>
@@ -592,12 +615,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0)){ ?>
+                                <div class="col-sm-12">
+                                    <label>
+                                Overall Rating:
+                                    </label>
+                                    <input type="text" disabled="disabled" id="appraiserOverallRating"  name="appraiserOverallRating"/>
+                                </div>
+                                <?php } ?>
                             </div>
                                 <?php if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ ?>
                                     <div class="row margin-top-10">
                                         <div class="col-sm-12">
                                             <div class="form-group">
-                                                <button type="submit" id="submit" class="btn btn-success">
+                                                <button type="submit" id="submit" class="btn btn-success pull-right">
                                                     NEXT
                                                 </button>
                                             </div>
@@ -660,7 +691,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <button type="submit" id="submit" class="btn btn-success">
+                                        <button type="submit" id="submit" class="btn btn-success pull-right">
                                             SUBMIT
                                         </button>
                                     </div>
