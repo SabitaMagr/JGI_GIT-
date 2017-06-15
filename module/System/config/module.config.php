@@ -6,11 +6,11 @@ use Application\Controller\ControllerFactory;
 use System\Controller\AttendanceDeviceController;
 use System\Controller\DashboardController;
 use System\Controller\MenuSetupController;
+use System\Controller\PreferenceSetup;
 use System\Controller\RoleSetupController;
 use System\Controller\SettingController;
 use System\Controller\UserSetupController;
 use Zend\Router\Http\Segment;
-use System\Controller\PreferenceSetup;
 
 return [
     'router' => [
@@ -113,29 +113,43 @@ return [
                     ]
                 ]
             ],
+            'menu-report' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/menu-report[/:action[/:id]]',
+                    'constraint' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\MenuReport::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ],
     ],
     'navigation' => [
         'rolesetup' => [
-                [
+            [
                 'label' => "Role Setup",
                 'route' => "rolesetup"
             ],
-                [
+            [
                 'label' => "Role Setup",
                 'route' => "rolesetup",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'rolesetup',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'rolesetup',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'rolesetup',
                         'action' => 'edit',
@@ -144,25 +158,25 @@ return [
             ],
         ],
         'usersetup' => [
-                [
+            [
                 'label' => "User Setup",
                 'route' => "usersetup"
             ],
-                [
+            [
                 'label' => "User Setup",
                 'route' => "usersetup",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'usersetup',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'usersetup',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'usersetup',
                         'action' => 'edit',
@@ -171,25 +185,25 @@ return [
             ],
         ],
         'menusetup' => [
-                [
+            [
                 'label' => "Menu Setup",
                 'route' => "menusetup"
             ],
-                [
+            [
                 'label' => "Menu Setup",
                 'route' => "menusetup",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'menusetup',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'menusetup',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'menusetup',
                         'action' => 'edit',
@@ -198,15 +212,15 @@ return [
             ],
         ],
         'dashboardsetup' => [
-                [
+            [
                 'label' => "Dashboard Setup",
                 'route' => "dashboardsetup"
             ],
-                [
+            [
                 'label' => "Dashboard Setup",
                 'route' => "dashboardsetup",
                 'pages' => [
-                        [
+                    [
                         'label' => 'Assign Dashboard',
                         'route' => 'dashboardsetup',
                         'action' => 'index',
@@ -215,25 +229,25 @@ return [
             ],
         ],
         'AttendanceDevice' => [
-                [
+            [
                 'label' => "Attedance Device Setup",
                 'route' => "AttendanceDevice"
             ],
-                [
+            [
                 'label' => "Attedance Device Setup",
                 'route' => "AttendanceDevice",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'AttendanceDevice',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'AttendanceDevice',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'AttendanceDevice',
                         'action' => 'edit',
@@ -242,28 +256,45 @@ return [
             ],
         ],
         'preferenceSetup' => [
-                [
+            [
                 'label' => "Preference Setup",
                 'route' => "preferenceSetup"
             ],
-                [
+            [
                 'label' => "Preference Setup",
                 'route' => "preferenceSetup",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'preferenceSetup',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'preferenceSetup',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'preferenceSetup',
                         'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'menu-report' => [
+            [
+                'label' => "Menu Report",
+                'route' => "menu-report"
+            ],
+            [
+                'label' => "Menu Report",
+                'route' => "menu-report",
+                'pages' => [
+                    [
+                        'label' => 'Role Wise',
+                        'route' => 'menu-report',
+                        'action' => 'index',
                     ],
                 ],
             ],
@@ -277,7 +308,8 @@ return [
             DashboardController::class => ControllerFactory::class,
             SettingController::class => ControllerFactory::class,
             AttendanceDeviceController::class => ControllerFactory::class,
-            PreferenceSetup::class => ControllerFactory::class
+            PreferenceSetup::class => ControllerFactory::class,
+            Controller\MenuReport::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
