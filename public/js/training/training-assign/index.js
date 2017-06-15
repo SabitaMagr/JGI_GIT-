@@ -269,7 +269,6 @@ angular.module('hris', [])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
-                                {value: "Employee Code"},
                                 {value: "Employee Name"},
                                 {value: "Training Name"},
                                 {value: "Start Date"},
@@ -296,7 +295,6 @@ angular.module('hris', [])
                         var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.EMPLOYEE_CODE},
                                 {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.START_DATE},
@@ -319,7 +317,6 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
-                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

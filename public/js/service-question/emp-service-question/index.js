@@ -38,7 +38,7 @@
                     'MIDDLE_NAME': 'MiddleName',
                     'LAST_NAME': 'LastName',
                     'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
-                    'QA_DATE': 'Date'
+                    'QA_DATE': 'Qusetion Date'
                 });
         
         $("#export").click(function (e) {

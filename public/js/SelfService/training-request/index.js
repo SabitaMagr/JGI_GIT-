@@ -36,6 +36,28 @@
         
         app.searchTable('trainingRequestTable',['TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','STATUS']);
         
+        app.pdfExport(
+                        'trainingRequestTable',
+                        {
+                            'TRAINING_CODE': 'Training',
+                            'TITLE': 'Title',
+                            'REQUESTED_DATE': 'Req Dt',
+                            'START_DATE': 'Start Dt',
+                            'END_DATE': 'End Dt',
+                            'DURATION': 'Duration',
+                            'TRAINING_TYPE': 'Type',
+                            'STATUS': 'Status',
+                            'DESCRIPTION': 'Desc',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDER_NAME': 'Recommeder',
+                            'APPROVER_NAME': 'Approver',
+//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DATE': 'Rec Date',
+//                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DATE': 'App Dt'
+                        }
+                );
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -49,7 +71,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Training Code"},
                         {value: "Training Name"},
                         {value: "Applied Date"},
                         {value: "Start Date"},
@@ -80,7 +101,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.TRAINING_CODE},
                         {value: dataItem.TITLE},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.START_DATE},
@@ -108,6 +128,7 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

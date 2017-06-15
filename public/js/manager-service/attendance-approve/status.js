@@ -86,24 +86,24 @@ angular.module('hris', [])
                 
                 app.searchTable('attendanceRequestStatusTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','YOUR_ROLE','STATUS']);
                 
-//                app.pdfExport(
-//                'attendanceRequestStatusTable',
-//                {
-//                    'FIRST_NAME': 'Name',
-//                    'MIDDLE_NAME': 'MiddleName',
-//                    'LAST_NAME': 'LastName',
-//                    'REQUESTED_DT': 'Req.Date',
-//                    'ATTENDANCE_DT': 'AttenDate',
-//                    'IN_TIME': 'In Time',
-//                    'OUT_TIME': 'Out Time',
-//                    'TOTAL_HOUR': 'Total Hrs',
-//                    'IN_REMARKS': 'In Remarks',
-//                    'OUT_REMARKS': 'Out Remarks',
-//                    'STATUS': 'Status',
-//                    'APPROVED_DT': 'A.Date',
-//                    'APPROVED_REMARKS': 'A.Remarks',
-//                    
-//                });
+                app.pdfExport(
+                'attendanceRequestStatusTable',
+                {
+                    'FIRST_NAME': 'Name',
+                    'MIDDLE_NAME': 'MiddleName',
+                    'LAST_NAME': 'LastName',
+                    'REQUESTED_DT': 'Req.Date',
+                    'ATTENDANCE_DT': 'AttenDate',
+                    'IN_TIME': 'In Time',
+                    'OUT_TIME': 'Out Time',
+                    'TOTAL_HOUR': 'Total Hrs',
+                    'IN_REMARKS': 'In Remarks',
+                    'OUT_REMARKS': 'Out Remarks',
+                    'STATUS': 'Status',
+                    'APPROVED_DT': 'A.Date',
+                    'APPROVED_REMARKS': 'A.Remarks',
+                    
+                });
                 
                 
 

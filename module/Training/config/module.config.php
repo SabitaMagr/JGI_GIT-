@@ -6,6 +6,7 @@ use Training\Controller\TrainingAssignController;
 use Training\Controller\TrainingStatusController;
 use Training\Controller\TrainingApplyController;
 use Zend\Router\Http\Segment;
+use Training\Controller\TrainingAttendanceController;
 
 return [
     'router' => [
@@ -49,6 +50,20 @@ return [
                     'defaults' => [
                         'controller' => TrainingApplyController::class,
                         'action' => 'add'
+                    ],
+                ],
+            ],
+            'trainingAtt' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/training/trainingAtt[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => TrainingAttendanceController::class,
+                        'action' => 'index'
                     ],
                 ],
             ],
@@ -132,6 +147,7 @@ return [
             Controller\TrainingAssignController::class => ControllerFactory::class,
             Controller\TrainingStatusController::class => ControllerFactory::class,
             Controller\TrainingApplyController::class => ControllerFactory::class,
+            Controller\TrainingAttendanceController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

@@ -35,6 +35,26 @@
         
         app.searchTable('workOnHolidayTbl',['HOLIDAY_ENAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','STATUS']);
         
+        app.pdfExport(
+                        'workOnHolidayTbl',
+                        {
+                            'HOLIDAY_ENAME': 'Holiday',
+                            'REQUESTED_DATE': 'Req Dt',
+                            'FROM_DATE': 'From Dt',
+                            'TO_DATE': 'To Dt',
+                            'DURATION': 'Duration',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Dt',
+//                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_DATE': 'Approved Dt'
+                        }
+                );
+        
+        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -48,7 +68,6 @@
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
-                        {value: "Holiday Code"},
                         {value: "Holiday Name"},
                         {value: "Applied Date"},
                         {value: "From Date"},
@@ -77,7 +96,6 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.HOLIDAY_CODE},
                         {value: dataItem.HOLIDAY_ENAME},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.FROM_DATE},
@@ -103,7 +121,6 @@
                 sheets: [
                     {
                         columns: [
-                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

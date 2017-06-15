@@ -275,6 +275,11 @@ angular.module('hris', [])
                             columns: [
                                 {autoWidth: true},
                                 {autoWidth: true},
+                                {autoWidth: true},
+                                {autoWidth: true},
+                                {autoWidth: true},
+                                {autoWidth: true},
+                                {autoWidth: true},
                                 {autoWidth: true}
                             ],
                             title: "Attendance Report",
