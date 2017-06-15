@@ -137,7 +137,6 @@ angular.module('hris', [])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
-//                                {value: "Employee Code"},
                                 {value: "Employee Name"},
                                 {value: "Name in Nepali"},
                                 {value: "Gender"},
@@ -227,7 +226,6 @@ angular.module('hris', [])
                         var employeeName = dataItem.FIRST_NAME + MIDDLE_NAME + dataItem.LAST_NAME;
                         rows.push({
                             cells: [
-                                {value: dataItem.EMPLOYEE_CODE},
                                 {value: employeeName},
                                 {value: dataItem.NAME_NEPALI},
                                 {value: dataItem.GENDER_NAME},
@@ -308,6 +306,31 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
