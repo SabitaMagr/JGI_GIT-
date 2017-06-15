@@ -1,20 +1,13 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/18/16
- * Time: 2:14 PM
- */
-
 namespace System\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use System\Model\MenuSetup;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Authentication\AuthenticationService;
 
 class MenuSetupRepository implements RepositoryInterface {
 
@@ -30,6 +23,10 @@ class MenuSetupRepository implements RepositoryInterface {
         $this->authService = new AuthenticationService();
         $recordDetail = $this->authService->getIdentity();
         $this->roleId = $recordDetail['role_id'];
+    }
+
+    public function setRoleId($id) {
+        $this->roleId = $id;
     }
 
     public function add(Model $model) {
@@ -119,7 +116,7 @@ class MenuSetupRepository implements RepositoryInterface {
         } else {
             $where .= " AND PARENT_MENU=" . $parent_menu;
         }
-        $where .= " AND HR.ROLE_ID=" . $this->roleId;
+        $where .= " AND HR.ROLE_ID = " . $this->roleId;
 
         $sql = "SELECT IS_VISIBLE,MENU_NAME,HM.MENU_ID,PARENT_MENU,ROUTE,ACTION,ICON_CLASS
 			             FROM HRIS_MENUS HM, HRIS_ROLE_PERMISSIONS HR
@@ -130,7 +127,6 @@ class MenuSetupRepository implements RepositoryInterface {
 			ORDER BY HM.MENU_INDEX ASC";
 
         $statement = $this->adapter->query($sql);
-        //return $statement->getSql();
         $resultset = $statement->execute();
         return $resultset;
     }
