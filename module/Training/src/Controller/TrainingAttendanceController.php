@@ -8,7 +8,9 @@
 
 namespace Training\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
+use Training\Model\TrainingAttendance;
 use Training\Repository\TrainingAttendanceRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -39,8 +41,28 @@ class TrainingAttendanceController extends AbstractActionController {
             return $this->redirect()->toRoute('trainingAtt');
         }
 
-        $list=$this->repository->fetchTrainingAssignedEmp($id);
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        $list = $this->repository->fetchTrainingAssignedEmp($id);
+        return Helper::addFlashMessagesToArray($this, ['list' => $list,'trainingId'=>$id]);
+    }
+
+    public function updateTrainingAtdAction() {
+
+        $request = $this->getRequest();
+        $postData = $request->getPost();
+        
+        $trainingAttendance= new TrainingAttendance();
+        
+        $trainingAttendance->employeeId=$postData['employeeId'];
+        $trainingAttendance->trainingId=$postData['trainingId'];
+        $trainingAttendance->trainingDt=$postData['trainingDate'];
+        $trainingAttendance->attendanceStatus=$postData['attendanceStatus'];
+        
+        $this->repository->updateTrainingAtd($trainingAttendance);
+        
+        return new CustomViewModel([
+            'success' => true,
+            'data' => $trainingAttendance
+        ]);
     }
 
 }
