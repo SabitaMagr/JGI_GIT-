@@ -50,9 +50,6 @@ class IssueController extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeDetail = $employeeRepo->fetchById($this->employeeId);
-        $asset = $this->repository->fetchallIssuableAsset();
         $request = $this->getRequest();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
@@ -84,14 +81,9 @@ class IssueController extends AbstractActionController {
                 $this->flashmessenger()->addMessage("Asset Successfully issued!!!");
                 return $this->redirect()->toRoute("assetSetup");
             }
+        } else {
+            return $this->redirect()->toRoute("assetSetup");
         }
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-//                    'asset' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E"], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE),
-                    'asset' => $asset['B'],
-                    'employee' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE),
-        ]);
     }
 
     public function editAction() {
@@ -113,9 +105,6 @@ class IssueController extends AbstractActionController {
                 $issue->modifiedDate = Helper::getcurrentExpressionDate();
                 $issue->modifiedBy = $this->employeeId;
 
-//                echo '<pre>';
-//                print_r($issue);
-//                die();
                 $this->repository->edit($issue, $id);
                 $this->flashmessenger()->addMessage("Asset issue Sucessfully updated");
                 return $this->redirect()->toRoute("assetIssue");
@@ -141,11 +130,11 @@ class IssueController extends AbstractActionController {
         if ($id == 0) {
             $this->redirect()->toRoute('assetSetup');
         }
-        $assetSetupRepo= new SetupRepository($this->adapter);
-        $assetImageId=$assetSetupRepo->fetchById($id)['ASSET_IMAGE'];
-            $assetFile=null;
-        if($assetImageId>0){
-            $assetFile=$this->getFileInfo($this->adapter, $assetImageId)['fileName'];
+        $assetSetupRepo = new SetupRepository($this->adapter);
+        $assetImageId = $assetSetupRepo->fetchById($id)['ASSET_IMAGE'];
+        $assetFile = null;
+        if ($assetImageId > 0) {
+            $assetFile = $this->getFileInfo($this->adapter, $assetImageId)['fileName'];
         }
 //        echo '<pre>';
 //        print_r($assetData);
@@ -203,8 +192,7 @@ class IssueController extends AbstractActionController {
             $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
         }
     }
-    
-    
+
     private function getFileInfo(AdapterInterface $adapter, $fileId) {
         $fileRepo = new EmployeeFile($adapter);
         $fileDetail = $fileRepo->fetchById($fileId);

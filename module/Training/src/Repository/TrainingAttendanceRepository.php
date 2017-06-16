@@ -3,18 +3,17 @@
 namespace Training\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Company;
-use Setup\Model\HrEmployees;
 use Setup\Model\Institute;
 use Setup\Model\Training;
-use Training\Model\TrainingAssign;
+use Training\Model\TrainingAttendance;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Training\Model\TrainingAttendance;
 
 class TrainingAttendanceRepository implements RepositoryInterface {
 
@@ -78,24 +77,68 @@ class TrainingAttendanceRepository implements RepositoryInterface {
     }
 
     public function fetchTrainingAssignedEmp($id) {
-        
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN E.MIDDLE_NAME IS NULL
+                    THEN E.FIRST_NAME
+                      || ' '
+                      || E.LAST_NAME
+                    ELSE E.FIRST_NAME
+                      || ' '
+                      || E.MIDDLE_NAME
+                      || ' '
+                      || E.LAST_NAME
+                  END ) FULL_NAME,
+                  ET.*
+                FROM HRIS_EMPLOYEE_TRAINING_ASSIGN ET
+                JOIN HRIS_EMPLOYEES E
+                ON (ET.EMPLOYEE_ID   = E.EMPLOYEE_ID)
+                WHERE ET.TRAINING_ID ={$id}";
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($result);
     }
 
-    public function updateTrainingAtd(Model $model) {
-        $data = $model->getArrayCopyForDB();
-        $trainingId = $data['TRAINING_ID'];
-        $employeeId = $data['EMPLOYEE_ID'];
-        $trainingDate = $data['TRAINING_DT'];
-        if ($data['ATTENDANCE_STATUS'] == 'P') {
-            return $this->tableGateway->insert($model->getArrayCopyForDB());
-        } else {
-            unset($data['TRAINING_ID']);
-            unset($data['EMPLOYEE_ID']);
-            unset($data['TRAINING_DT']);
-            return $this->tableGateway->update($data, [TrainingAttendance::TRAINING_ID => $trainingId,
-                        TrainingAttendance::EMPLOYEE_ID => $employeeId, TrainingAttendance::TRAINING_DT => $trainingDate
-            ]);
+    public function updateTrainingAtd($data, $trainingId) {
+        $insertList = "";
+        foreach ($data as $date => $emp) {
+            foreach ($emp as $employeeId => $status) {
+                $insert = "INSERT INTO HRIS_EMP_TRAINING_ATTENDANCE (TRAINING_ID,EMPLOYEE_ID,TRAINING_DT,ATTENDANCE_STATUS) VALUES";
+                $dStatus = ($status == 'true') ? 'P' : 'A';
+                $insert = $insert . "({$trainingId},{$employeeId},TO_DATE('{$date}','DD-MON-YYYY'),'{$dStatus}');";
+                $insertList = $insertList . $insert;
+            }
         }
+
+        $sql = "
+                BEGIN
+                DELETE FROM HRIS_EMP_TRAINING_ATTENDANCE WHERE TRAINING_ID= {$trainingId};
+                {$insertList}
+                END;
+                ";
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $result;
+    }
+
+    public function fetchTrainingDates($id) {
+        $sql = "
+                SELECT TO_CHAR((TR.START_DATE   + (ROWNUM-1)),'DD-MON-YYYY')  AS DATES,TO_CHAR(SYSDATE,'DD-MON-YYYY') AS CURRENT_DATE,
+                (CASE WHEN(TR.START_DATE + (ROWNUM-1)) <= TRUNC(SYSDATE) THEN 1 ELSE 0 END) AS STATUS
+                FROM
+                  (SELECT T.*,
+                    (TRUNC(T.END_DATE)-TRUNC(START_DATE)) AS DIFF
+                  FROM HRIS_TRAINING_MASTER_SETUP T
+                  WHERE T.TRAINING_ID={$id}
+                  ) TR
+                  CONNECT BY ROWNUM <=TR.DIFF+1";
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($result);
+    }
+
+    public function fetchAttendance($id) {
+        $sql = "SELECT EMPLOYEE_ID,TO_CHAR(TRAINING_DT,'DD-MON-YYYY') AS TRAINING_DT,ATTENDANCE_STATUS FROM HRIS_EMP_TRAINING_ATTENDANCE WHERE TRAINING_ID ={$id}";
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($result);
     }
 
 }

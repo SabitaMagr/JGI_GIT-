@@ -5,6 +5,7 @@ namespace Setup\Controller;
 use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
+use Asset\Repository\IssueRepository;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
@@ -526,6 +527,13 @@ class EmployeeController extends AbstractActionController {
 
         $employeeFileRepo = new EmployeeFile($this->adapter);
         $employeeFile = $employeeFileRepo->fetchByEmpId($id);
+        
+        $assetRepo = new IssueRepository($this->adapter);
+        $assetDetails = $assetRepo->fetchAssetByEmployee($id);
+        
+//        echo '<pre>';
+//        print_r($assetDetails);
+//        die();
 
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
@@ -547,7 +555,9 @@ class EmployeeController extends AbstractActionController {
                     'empExperienceList' => $empExperienceList,
                     'empTrainingList' => $empTrainingList,
                     'jobHistoryList' => $jobHistoryList,
-                    "employeeFile" => $employeeFile
+                    "employeeFile" => $employeeFile,
+                    "assetDetails" =>$assetDetails
+            
         ]);
     }
 

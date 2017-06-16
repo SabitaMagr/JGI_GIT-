@@ -30,31 +30,39 @@ class TrainingAttendanceController extends AbstractActionController {
             return $this->redirect()->toRoute('trainingAtt');
         }
 
-        $list = $this->repository->fetchTrainingAssignedEmp($id);
-        print "<pre>";
-        print_r($list);
-        exit;
-        return Helper::addFlashMessagesToArray($this, ['list' => $list, 'trainingId' => $id]);
+        $assignedList = $this->repository->fetchTrainingAssignedEmp($id);
+        $dates = $this->repository->fetchTrainingDates($id);
+        $attendance = $this->repository->fetchAttendance($id);
+
+        $temp = [];
+        foreach ($attendance as $att) {
+            $temp[$att['TRAINING_DT']][$att['EMPLOYEE_ID']] = $att['ATTENDANCE_STATUS'] === 'P';
+        }
+
+
+        return Helper::addFlashMessagesToArray($this, ['list' => $assignedList, 'trainingId' => $id, 'dates' => $dates, 'attendance' => $temp]);
     }
 
     public function updateTrainingAtdAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
 
-        $request = $this->getRequest();
-        $postData = $request->getPost();
+                $attendanceData = $postedData['data'];
+                $trainingId = $postedData['trainingId'];
+                if (!isset($attendanceData)) {
+                    throw new Exception("parameter data is required");
+                }
 
-        $trainingAttendance = new TrainingAttendance();
-
-        $trainingAttendance->employeeId = $postData['employeeId'];
-        $trainingAttendance->trainingId = $postData['trainingId'];
-        $trainingAttendance->trainingDt = $postData['trainingDate'];
-        $trainingAttendance->attendanceStatus = $postData['attendanceStatus'];
-
-        $this->repository->updateTrainingAtd($trainingAttendance);
-
-        return new CustomViewModel([
-            'success' => true,
-            'data' => $trainingAttendance
-        ]);
+                $response = $this->repository->updateTrainingAtd($attendanceData, $trainingId);
+                return new CustomViewModel(['success' => true, 'data' => $response, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }
