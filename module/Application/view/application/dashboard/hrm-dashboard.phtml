@@ -328,64 +328,66 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                             <div class="tab-content scroller" style="height:305px">
                                 <div class="tab-pane active" id="portlet_hired_this_month">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <!--begin: widget 1-1 -->
-                                            <div class="mt-widget-1">
-                                                <div class="mt-icon">
-                                                    <a href="#">
-                                                        <i class="icon-plus"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="mt-img">
-                                                    <img src="../assets/pages/media/users/avatar80_8.jpg"> </div>
-                                                <div class="mt-body">
-                                                    <h3 class="mt-username">Diana Ellison</h3>
-                                                    <p class="mt-user-title"> Lorem Ipsum is simply dummy text. </p>
-                                                    <div class="mt-stats">
-                                                        <div class="btn-group btn-group btn-group-justified">
-                                                            <a href="javascript:;" class="btn font-red">
-                                                                <i class="icon-bubbles"></i> 1,7k </a>
-                                                            <a href="javascript:;" class="btn font-green">
-                                                                <i class="icon-social-twitter"></i> 2,6k </a>
-                                                            <a href="javascript:;" class="btn font-yellow">
-                                                                <i class="icon-emoticon-smile"></i> 3,7k </a>
+                                        <?php if (isset($newEmployees)): ?>
+                                            <?php foreach ($newEmployees as $emp): ?>
+                                                <div class="col-md-4">
+                                                    <!--begin: widget 1-1 -->
+                                                    <div class="mt-widget-1">
+                                                        <div class="mt-icon">
+                                                            <a href="#">
+                                                                <i class="icon-plus"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="mt-img">
+                                                            <img height="80" width="80" src="<?php print $emp['FILE_PATH'] ? $this->basePath('uploads/' . $emp['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>"> </div>
+                                                        <div class="mt-body">
+                                                            <h3 class="mt-username"><?php print $emp['FULL_NAME']; ?></h3>
+                                                            <p class="mt-user-title"><?php print $emp['DESIGNATION_TITLE']; ?> </p>
+                                                            <div class="mt-stats">
+                                                                <div class="btn-group btn-group btn-group-justified">
+                                                                    <a href="javascript:;" class="btn font-green">
+                                                                        <i class="fa fa-plus"></i> <?php print $emp['JOIN_DATE']; ?> </a>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <!--end: widget 1-1 -->
                                                 </div>
-                                            </div>
-                                            <!--end: widget 1-1 -->
-                                        </div>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
-                                <div class="tab-pane active" id="portlet_left_this_month">
+                                <div class="tab-pane" id="portlet_left_this_month">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <!--begin: widget 1-1 -->
-                                            <div class="mt-widget-1">
-                                                <div class="mt-icon">
-                                                    <a href="#">
-                                                        <i class="icon-plus"></i>
-                                                    </a>
-                                                </div>
-                                                <div class="mt-img">
-                                                    <img src="../assets/pages/media/users/avatar80_8.jpg"> </div>
-                                                <div class="mt-body">
-                                                    <h3 class="mt-username">Diana Ellison</h3>
-                                                    <p class="mt-user-title"> Lorem Ipsum is simply dummy text. </p>
-                                                    <div class="mt-stats">
-                                                        <div class="btn-group btn-group btn-group-justified">
-                                                            <a href="javascript:;" class="btn font-red">
-                                                                <i class="icon-bubbles"></i> 1,7k </a>
-                                                            <a href="javascript:;" class="btn font-green">
-                                                                <i class="icon-social-twitter"></i> 2,6k </a>
-                                                            <a href="javascript:;" class="btn font-yellow">
-                                                                <i class="icon-emoticon-smile"></i> 3,7k </a>
+                                        <?php if (isset($leftEmployees)): ?>
+                                            <?php foreach ($leftEmployees as $emp): ?>
+                                                <div class="col-md-4">
+                                                    <!--begin: widget 1-1 -->
+                                                    <div class="mt-widget-1">
+                                                        <div class="mt-icon">
+                                                            <a href="#">
+                                                                <i class="fa fa-minus-circle font-red"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="mt-img">
+                                                            <img height="80" width="80" src="<?php print $emp['FILE_PATH'] ? $this->basePath('uploads/' . $emp['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>"> </div>
+                                                        <div class="mt-body">
+                                                            <h3 class="mt-username"><?php print $emp['FULL_NAME']; ?></h3>
+                                                            <p class="mt-user-title"><?php print $emp['DESIGNATION_TITLE']; ?> </p>
+                                                            <div class="mt-stats">
+                                                                <div class="btn-group btn-group btn-group-justified">
+                                                                    <a href="javascript:;" class="btn font-green">
+                                                                        <i class="fa fa-plus"></i> <?php print $emp['JOIN_DATE']; ?> </a>
+                                                                    <a href="javascript:;" class="btn font-red">
+                                                                        <i class="fa fa-minus"></i> <?php print $emp['EXIT_DATE']; ?> </a>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <!--end: widget 1-1 -->
                                                 </div>
-                                            </div>
-                                            <!--end: widget 1-1 -->
-                                        </div>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

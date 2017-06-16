@@ -12,22 +12,18 @@ $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/training/training-attendance/attendance.js'));
 ?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
 <script>
-    document.updateUrl ='<?= $this->url("trainingAtt", ["action" => "updateTrainingAtd"]);?>';
-    document.trainingId ='<?=$trainingId;?>';
+    document.updateUrl = '<?= $this->url("trainingAtt", ["action" => "updateTrainingAtd"]); ?>';
+    document.trainingId = '<?= $trainingId; ?>';
 </script>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\trainingAtt')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 
 <?php
 if (!empty($list)) {
-//echo '<pre>';
-//print_r($list);
-//die();
 
     $todayDate = date("d-M-Y");
     $fromDate = $list[0]['START_DATE'];
@@ -48,28 +44,8 @@ if (!empty($list)) {
 
 
 <div class="margin-top-20">
-
     <div class="portlet light bg-inverse">
-
         <div class="portlet-title">
-            <div class="tools">
-                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
-                <a href="" class="fullscreen" data-original-title="" title=""> </a>
-            </div>
-            <div class="actions">
-                <div class="btn-group">
-                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-copy"></i> Tools
-                        <i class="fa fa-angle-down "></i>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id ="export" class="hris-export-to-excel" hris-export-to-excel-target="grid">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
 
         <?php
@@ -112,10 +88,10 @@ if (!empty($list)) {
                                 foreach ($colDates as $dates) {
                                     if (strtotime($dates) <= strtotime($todayDate)) {
                                         ?>
-                                        <td><input data-empId="<?=$listData['EMPLOYEE_ID']?>" data-AttDate="<?=$dates?>" class="trainingAtdChk" type="checkbox" ></td>
-                                        <?php
-                                    } else {
-                                        ?>
+                                        <td><input data-empId="<?= $listData['EMPLOYEE_ID'] ?>" data-AttDate="<?= $dates ?>" class="trainingAtdChk" type="checkbox" ></td>
+                                            <?php
+                                        } else {
+                                            ?>
                                         <td><input  type="checkbox" disabled="disabled"></td>
                                         <?php
                                     }
