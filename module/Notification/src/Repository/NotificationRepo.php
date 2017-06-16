@@ -53,7 +53,7 @@ class NotificationRepo implements RepositoryInterface {
                 ], TRUE);
         $select->from(['N' => Notification::TABLE_NAME]);
         $select->where($where);
-        $select->order(Notification::MESSAGE_DATETIME . " " . Select::ORDER_ASCENDING);
+        $select->order(["N." . Notification::MESSAGE_DATETIME => Select::ORDER_DESCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
