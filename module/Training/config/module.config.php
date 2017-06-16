@@ -1,4 +1,5 @@
 <?php
+
 namespace Training;
 
 use Application\Controller\ControllerFactory;
@@ -71,25 +72,25 @@ return [
     ],
     'navigation' => [
         'trainingAssign' => [
-                [
+            [
                 'label' => "Training Assign",
                 'route' => "trainingAssign"
             ],
-                [
+            [
                 'label' => "Training Assign",
                 'route' => "trainingAssign",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'trainingAssign',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'trainingAssign',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Detail',
                         'route' => 'trainingAssign',
                         'action' => 'view',
@@ -103,20 +104,20 @@ return [
             ],
         ],
         'trainingStatus' => [
-                [
+            [
                 'label' => 'Training Request',
                 'route' => 'trainingStatus',
             ],
-                [
+            [
                 'label' => 'Training Request',
                 'route' => 'trainingStatus',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'trainingStatus',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'trainingStatus',
                         'action' => 'view',
@@ -125,18 +126,40 @@ return [
             ]
         ],
         'trainingApply' => [
-                [
+            [
                 'label' => "Training Request",
                 'route' => "trainingApply"
             ],
-                [
+            [
                 'label' => "Training Request",
                 'route' => "trainingApply",
                 'pages' => [
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'trainingApply',
                         'action' => 'add',
+                    ],
+                ],
+            ],
+        ],
+        'trainingAtt' => [
+            [
+                'label' => "Training",
+                'route' => "trainingAtt"
+            ],
+            [
+                'label' => "Training",
+                'route' => "trainingAtt",
+                'pages' => [
+                    [
+                        'label' => 'Attendance',
+                        'route' => 'trainingAtt',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Take Attendance',
+                        'route' => 'trainingAtt',
+                        'action' => 'attendance',
                     ],
                 ],
             ],
