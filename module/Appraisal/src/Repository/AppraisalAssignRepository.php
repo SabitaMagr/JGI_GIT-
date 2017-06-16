@@ -13,6 +13,7 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Appraisal\Model\Type;
 use Appraisal\Model\Stage;
+use Appraisal\Model\AppraisalStatus;
 
 class AppraisalAssignRepository implements RepositoryInterface{
     private $tableGateway;
@@ -145,7 +146,8 @@ AND
             new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
         ]);
         $select->from(["A"=>Setup::TABLE_NAME])
-                ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID,AppraisalAssign::APPRAISER_ID,AppraisalAssign::REVIEWER_ID, AppraisalAssign::ANNUAL_RATING_COMPETENCY, AppraisalAssign::ANNUAL_RATING_KPI, AppraisalAssign::APPRAISER_OVERALL_RATING])
+                ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID,AppraisalAssign::APPRAISER_ID,AppraisalAssign::REVIEWER_ID])
+                ->join(["APS"=> AppraisalStatus::TABLE_NAME],"APS.".AppraisalStatus::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID." AND APS.".AppraisalStatus::EMPLOYEE_ID."=AA.".AppraisalAssign::EMPLOYEE_ID,[AppraisalStatus::ANNUAL_RATING_KPI,AppraisalStatus::ANNUAL_RATING_COMPETENCY, AppraisalStatus::APPRAISER_OVERALL_RATING, AppraisalStatus::REVIEWER_AGREE,AppraisalStatus::APPRAISEE_AGREE],"left")
                 ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)"), HrEmployees::EMPLOYEE_ID])
                 ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(T.APPRAISAL_TYPE_EDESC)")])
                 ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=AA.". AppraisalAssign::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)"),"STAGE_ORDER_NO"=>"ORDER_NO","STAGE_ID"])
@@ -188,6 +190,7 @@ AND
   OR E2.RETIRED_FLAG IS NULL)))"
             ]);
         $statement = $sql->prepareStatementForSqlObject($select);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result->current();
     }
@@ -198,15 +201,6 @@ AND
             $empCase = [AppraisalAssign::EMPLOYEE_ID=>$employeeId];
         }
         $this->tableGateway->update([AppraisalAssign::CURRENT_STAGE_ID=>$stageId],array_merge([AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::STATUS=>'E'],$empCase));
-    }
-    public function updateAnnualRatingId($annualRatingKPI,$appraisalId,$employeeId){
-        $this->tableGateway->update([AppraisalAssign::ANNUAL_RATING_KPI =>$annualRatingKPI],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::EMPLOYEE_ID=>$employeeId,AppraisalAssign::STATUS=>'E']);
-    }
-    public function updateAnnualRatingComId($annualRatingCompetency,$appraisalId,$employeeId){
-        $this->tableGateway->update([AppraisalAssign::ANNUAL_RATING_COMPETENCY =>$annualRatingCompetency],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::EMPLOYEE_ID=>$employeeId,AppraisalAssign::STATUS=>'E']);
-    }
-    public function updateOverallRatingId($overallRating,$appraisalId,$employeeId){
-        $this->tableGateway->update([AppraisalAssign::APPRAISER_OVERALL_RATING =>$overallRating],[AppraisalAssign::APPRAISAL_ID=>$appraisalId,AppraisalAssign::EMPLOYEE_ID=>$employeeId,AppraisalAssign::STATUS=>'E']);
     }
 }
 

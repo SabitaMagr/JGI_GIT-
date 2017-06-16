@@ -91,6 +91,8 @@ use SelfService\Model\AppraisalCompetencies;
 use SelfService\Repository\AppraisalCompetenciesRepo;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Application\Helper\AppraisalHelper;
+use Appraisal\Repository\AppraisalStatusRepository;
+use Appraisal\Model\AppraisalStatus;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -3407,6 +3409,7 @@ class RestfulService extends AbstractRestfulController {
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         try{
             foreach($KPIList as $KPIRow){
@@ -3439,8 +3442,8 @@ class RestfulService extends AbstractRestfulController {
             }
             if($assignedAppraisalDetail['STAGE_ID']==5){
                 $annualRatingKPI = $data['annualRatingKPI'];
-                $appraisalAssignRepo->updateAnnualRatingId($annualRatingKPI, $appraisalId, $employeeId);
-                $appraisalAssignRepo->updateOverallRatingId($annualRatingKPI, $appraisalId, $employeeId);
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::ANNUAL_RATING_KPI=>$annualRatingKPI], $appraisalId, $employeeId);
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$annualRatingKPI], $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [
@@ -3510,6 +3513,7 @@ class RestfulService extends AbstractRestfulController {
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         try{
             foreach($competenciesList as $competenciesRow){
@@ -3537,8 +3541,8 @@ class RestfulService extends AbstractRestfulController {
             if($assignedAppraisalDetail['STAGE_ID']==5){
                 $annualRatingCompetency = $data['annualRatingCompetency'];
                 $appraiserOverallRating = $data['appraiserOverallRating'];
-                $appraisalAssignRepo->updateAnnualRatingComId($annualRatingCompetency, $appraisalId, $employeeId);
-                $appraisalAssignRepo->updateOverallRatingId($appraiserOverallRating, $appraisalId, $employeeId);
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::ANNUAL_RATING_COMPETENCY=>$annualRatingCompetency], $appraisalId, $employeeId);
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$appraiserOverallRating], $appraisalId, $employeeId);
             }
         }catch(Exception $e){
             $responseData = [
