@@ -3,10 +3,15 @@
 
 
     $(document).ready(function () {
+        
 
         app.addDatePicker($('#issueDate'));
         app.addDatePicker($('#requestDate'));
         app.addDatePicker($('#returnDate'));
+        
+        $("form").submit(function() {
+          App.blockUI({target: "form"});
+        });
 
     });
 

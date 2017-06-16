@@ -5,6 +5,7 @@ namespace Asset\Repository;
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Asset\Model\Group;
 use Asset\Model\Issue;
 use Asset\Model\Setup;
 use Setup\Model\HrEmployees;
@@ -34,10 +35,6 @@ class IssueRepository implements RepositoryInterface {
 
     public function edit(Model $model, $id) {
         $data = $model->getArrayCopyForDB();
-        
-//        echo '<pre>';
-//        print_r($data);
-//        die();
         
         unset($data[Issue::ISSUE_ID]);
         unset($data[Issue::CREATED_DATE]);
@@ -112,6 +109,30 @@ class IssueRepository implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
+    }
+    
+    public function fetchAssetByEmployee($id){
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, null, null, null, null, "AI"), false);
+        $select->from(['AI' => Issue::TABLE_NAME])
+                ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_ID . '=AI.' . Issue::ASSET_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left")
+                ->join(['AG' => Group::TABLE_NAME], 'AG.' . Group::ASSET_GROUP_ID . '=S.' . Setup::ASSET_GROUP_ID, ["ASSET_GROUP_EDESC" => new Expression("INITCAP(AG.ASSET_GROUP_EDESC)")], "left")
+                ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
+
+        $select->where(["AI." . Issue::STATUS . "='E'"]);
+        $select->where("(AI.RETURNED!='Y' OR AI.RETURNED IS NULL)");
+        $select->where(["AI." . Issue::EMPLOYEE_ID . "=$id"]);
+//        $select->order("S." . Setup::ASSET_EDESC);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        
+        $list=[];
+        
+        foreach($result as $data){
+            array_push($list,$data);
+        }
+        return $list;
     }
 
 }

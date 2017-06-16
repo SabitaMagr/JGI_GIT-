@@ -5,6 +5,7 @@ namespace SelfService\Controller;
 use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
+use Asset\Repository\IssueRepository;
 use Setup\Form\HrEmployeesFormTabEight;
 use Setup\Form\HrEmployeesFormTabFive;
 use Setup\Form\HrEmployeesFormTabFour;
@@ -21,11 +22,11 @@ use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeQualificationRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\EmployeeTrainingRepository;
+use Setup\Repository\JobHistoryRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Setup\Repository\JobHistoryRepository;
 
 class Profile extends AbstractActionController {
 
@@ -120,6 +121,9 @@ class Profile extends AbstractActionController {
         
         $employeeFileRepo = new EmployeeFile($this->adapter);
         $employeeFile = $employeeFileRepo->fetchByEmpId($id);
+        
+        $assetRepo = new IssueRepository($this->adapter);
+        $assetDetails = $assetRepo->fetchAssetByEmployee($id);
 
         return Helper::addFlashMessagesToArray($this, [
                     'formOne' => $this->formOne,
@@ -141,7 +145,8 @@ class Profile extends AbstractActionController {
                     'empExperienceList' => $empExperienceList,
                     'empTrainingList' => $empTrainingList,
                     'jobHistoryList'=>$jobHistoryList,
-                    "employeeFile"=>$employeeFile
+                    "employeeFile"=>$employeeFile,
+                    "assetDetails" =>$assetDetails
         ]);
     }
 
