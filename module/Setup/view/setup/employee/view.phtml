@@ -1299,6 +1299,54 @@ echo json_encode($menu);
                 </div>
             </div>
         </div>
+        
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="status-info"> 
+                    <p><i class="fa fa-info-circle ticon ticon"></i>Asset Details</p>
+                    <div class="row clearfix e-setup">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover no-footer customtbl profile-table-header" id="assetTbl">
+                                    <tr>
+                                        <td><label>Asset Type</label></td>
+                                        <td><label>Asset</label></td>
+                                        <td><label>Returnable</label></td>
+                                        <td><label>ReturnDate</label></td>
+                                        <td><label>ReturnedDate</label></td>
+                                    </tr>
+                                    
+                                    <?php
+                                    foreach ($assetDetails as $asset) {
+                                        ?>
+                                        <tr>
+                                            <td>
+                                                <?php print $asset['ASSET_GROUP_EDESC']; ?>
+                                            </td>
+                                            <td>
+                                                <?php print $asset['ASSET_EDESC']; ?>
+                                            </td>
+                                            <td>
+                                                <?php if($asset['RETURNABLE']=='Y'){print 'Yes';}else{print 'NO';}?>
+                                            </td>
+                                            <td>
+                                                <?php print $asset['RETURN_DATE']; ?>
+                                            </td>
+                                            <td>
+                                                <?php if(empty($asset['RETURNED_DATE'])&& $asset['RETURNABLE']=='Y'){print 'Not returned';}else{print $asset['RETURNED_DATE'];}  ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        
+        
     </div>
 </div>
 
