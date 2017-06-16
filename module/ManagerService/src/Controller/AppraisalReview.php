@@ -20,6 +20,8 @@ use Appraisal\Model\Question;
 use Application\Helper\AppraisalHelper;
 use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AppraisalCompetenciesRepo;
+use Appraisal\Repository\AppraisalStatusRepository;
+use Appraisal\Model\AppraisalStatus;
 
 class AppraisalReview extends AbstractActionController{
     
@@ -65,6 +67,7 @@ class AppraisalReview extends AbstractActionController{
         $reviewerQuestionTemplate = [];
         $questionForCurStage = 0;
         $appraiseeAvailableAnswer = false;
+        $appraiserAvailableAnswer = false;
         foreach($headingList as $headingRow){
             //get question list for appraisee with current stage id
             $questionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId,$employeeId,$employeeId,"=1",$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['REVIEWER_ID']);
@@ -74,6 +77,9 @@ class AppraisalReview extends AbstractActionController{
             
             if($reviewerQuestionList['questionForCurStage']){
                 $questionForCurStage+=1;
+            }
+            if($appraiserQuestionList['availableAnswer']){
+                $appraiserAvailableAnswer=true;
             }
             if($appraiseeQuestionList['availableAnswer']){
                 $appraiseeAvailableAnswer=true;
@@ -116,13 +122,16 @@ class AppraisalReview extends AbstractActionController{
             'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox(),
             'appraisalId'=>$appraisalId,
             'employeeId'=>$employeeId,
-            'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer
+            'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer,
+            'appraiserAvailableAnswer'=>$appraiserAvailableAnswer
         ];
         if($request->isPost()){
             try{
                 $appraisalAnswerModel = new AppraisalAnswer();
+                $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
+                $reviewerAgree = (gettype($postData['reviewerAgree'])=='undefined')?null:$postData['reviewerAgree'];
                 $i=0;
                 $editMode = false;
 //                print "<pre>";
@@ -162,6 +171,10 @@ class AppraisalReview extends AbstractActionController{
                     }
                     $i+=1;
                 }
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE=>$reviewerAgree], $appraisalId, $employeeId);
+                if($reviewerAgree=='N'){
+                    $appraisalAssignRepo->updateCurrentStageByAppId(5, $appraisalId, $employeeId);
+                }
                 switch ($tab) {
                     case 1:    
                         $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]);
@@ -170,9 +183,9 @@ class AppraisalReview extends AbstractActionController{
                         $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]);
                     break;
                     case 3: 
-                        if(!$editMode){
+//                        if(!$editMode){
                             $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
-                        }
+//                        }
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-review");
                     break;

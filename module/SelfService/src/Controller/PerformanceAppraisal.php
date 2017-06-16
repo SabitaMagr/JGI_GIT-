@@ -21,6 +21,8 @@ use Appraisal\Model\Question;
 use Application\Helper\AppraisalHelper;
 use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AppraisalCompetenciesRepo;
+use Appraisal\Repository\AppraisalStatusRepository;
+use Appraisal\Model\AppraisalStatus;
 
 class PerformanceAppraisal extends AbstractActionController{
     private $repository;
@@ -122,9 +124,11 @@ class PerformanceAppraisal extends AbstractActionController{
         }
         if($request->isPost()){
             try{
+                $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
                 $appraisalAnswerModel = new AppraisalAnswer();
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
+                $appraiseeAgree = $postData['appraiseeAgree'];
                 $i=0;
                 $editMode = false;
                 foreach($answer as $key=>$value){
@@ -162,9 +166,10 @@ class PerformanceAppraisal extends AbstractActionController{
                     }
                     $i+=1;
                 }
-                if(!$editMode){
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISEE_AGREE=>$appraiseeAgree], $appraisalId, $this->employeeId);
+//                if(!$editMode){
                     $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $this->employeeId);
-                }
+//                }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("performanceAppraisal");
             }catch(Exception $e){

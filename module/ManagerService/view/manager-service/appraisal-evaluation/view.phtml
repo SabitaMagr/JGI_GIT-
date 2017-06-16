@@ -178,12 +178,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="<?= ($tab==2)?"active":"" ?>">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
-                            <?php } ?>
+                            <?php } 
+                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')){
+                            ?>
                             <?php if(count($reviewerQuestionTemplate)>0 && $reviewerAvailableAnswer==true){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                             </li>
-                            <?php } ?>
+                            <?php } 
+                            }
+                            ?>
                             <?php if(count($appraiseeQuestionTemplate)>0 && $appraiseeAvailableAnswer==true){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
@@ -694,6 +698,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y')){ ?>
+                                <div class="col-sm-12">
+                                    <label style="font-size:12px !important;">
+                                I agree with the Appraiser's overall performance assessment. Agree? 
+                                    </label>
+                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input class="" disabled="disabled" type="checkbox" name="reviewerAgree" id="reviewerAgree" value="Y" <?= ($assignedAppraisalDetail['REVIEWER_AGREE']=='Y')?"checked":"" ?>/>
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <?php } ?>
                             </div>
 <!--                            <div class="row margin-top-10">
                                 <div class="col-sm-12">
@@ -748,6 +763,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             </div>
                                         </div>
                                     </div>
+                                <?php } ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y')){ ?>
+                                <div class="col-sm-12">
+                                    <label style="font-size:12px !important;">
+                                Have you had the opportunity for a full discussion on the report and agree. Agree? 
+                                    </label>
+                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input class="" disabled="disabled" type="checkbox" name="appraiseeAgree" id="appraiseeAgree" value="Y" <?= ($assignedAppraisalDetail['APPRAISEE_AGREE']=='Y')?"checked":"" ?>/>
+                                        <span></span>
+                                    </label>
+                                </div>
                                 <?php } ?>
                             </div>
 <!--                            <div class="row margin-top-10">

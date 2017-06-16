@@ -155,9 +155,9 @@ class AppraisalEvaluation extends AbstractActionController{
                         $this->redirect()->toRoute("appraisal-evaluation",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]);
                     break;
                     case 2: 
-                        if(!$editMode){
+//                        if(!$editMode){
                             $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
-                        }
+//                        }
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-evaluation");
                     break;

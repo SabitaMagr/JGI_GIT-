@@ -31,6 +31,9 @@ class PositionRepository implements RepositoryInterface {
         $array = $model->getArrayCopyForDB();
         unset($array[Position::POSITION_ID]);
         unset($array[Position::CREATED_DT]);
+        if (!isset($array[Position::COMPANY_ID])) {
+            $array[Position::COMPANY_ID] = null;
+        }
         $this->tableGateway->update($array, [Position::POSITION_ID => $id]);
     }
 
@@ -62,11 +65,11 @@ class PositionRepository implements RepositoryInterface {
         $result = [];
         $i = 1;
         foreach ($rowset as $row) {
-            $wohValue='-';
-            if($row['WOH_FLAG']=='L'){
-                $wohValue='LEAVE';
-            }elseif($row['WOH_FLAG']=='O'){
-                $wohValue='Over Time';
+            $wohValue = '-';
+            if ($row['WOH_FLAG'] == 'L') {
+                $wohValue = 'LEAVE';
+            } elseif ($row['WOH_FLAG'] == 'O') {
+                $wohValue = 'Over Time';
             }
             array_push($result, [
                 'SN' => $i,

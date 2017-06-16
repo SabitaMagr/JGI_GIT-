@@ -178,7 +178,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="<?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')) ?'active':''?>">
                                 <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                             </li>
-                            <?php } ?>
+                            <?php } 
+                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')){
+                            ?>
                             <?php if(count($appraiserQuestionTemplate)>0 && $appraiserAvailableAnswer==true){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
@@ -188,7 +190,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                             </li>
-                            <?php } ?>
+                            <?php }
+                            }
+                            ?>
                             <?php if(count($appraiseeQuestionTemplate)>0){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
@@ -220,7 +224,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <th>Key Achievement</th>
                                     <th>Self Rating</th>
                                     <?php } ?>
-                                    <?php if($appraiserRatingDtlNum>0){ ?>
+                                    <?php if($appraiserRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ ?>
                                     <th>Appraiser Rating</th>
                                     <?php } ?>
                                 </tr>
@@ -282,7 +286,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </td>
                                     <?php } ?>
-                                    <?php if($appraiserRatingDtlNum>0){ ?>
+                                    <?php if($appraiserRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ ?>
                                     <td style="width: 10%">
                                         <input type="number" name="appraiserRating_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.appraiserRating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
                                         <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
@@ -293,7 +297,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
-                                <?php if($appraiserRatingDtlNum>0){ ?>
+                                <?php if($appraiserRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ ?>
                                 <tr>
                                     <td colspan="6">
                                         ANNUAL RATING ON KEY PERFORMANCE INDICATOR:
@@ -327,7 +331,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <td></td>
                                     <td></td>
                                     <?php } ?>
-                                    <?php if($appraiserRatingDtlNum>0){ ?>
+                                    <?php if($appraiserRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ ?>
                                     <td></td>
                                     <?php } ?>
                                     <td>
@@ -354,7 +358,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <?php } ?>
                                     <th style="width:5%;">S.N.</th>
                                     <th>Competencies</th>
-                                    <?php if($appCompetenciesRatingDtlNum>0){?>
+                                    <?php if($appCompetenciesRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){?>
                                     <th>Rating</th>
                                     <th>Appraiser's Comments</th>
                                     <?php } ?>
@@ -383,7 +387,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             </ul>
                                         </div>
                                     </td>
-                                    <?php if($appCompetenciesRatingDtlNum>0){?>
+                                    <?php if($appCompetenciesRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){?>
                                     <td width='10%'>
                                         <input type="text" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
                                         <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
@@ -402,7 +406,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
-                                <?php if($appCompetenciesRatingDtlNum>0){ 
+                                <?php if($appCompetenciesRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ 
                                     ?>
                                 <tr>
                                     <td colspan="2">
@@ -684,6 +688,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y')){ ?>
+                                <div class="col-sm-12">
+                                    <label style="font-size:12px !important;">
+                                I agree with the Appraiser's overall performance assessment. Agree? 
+                                    </label>
+                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input class="" disabled="disabled" type="checkbox" name="reviewerAgree" id="reviewerAgree" value="Y" <?= ($assignedAppraisalDetail['REVIEWER_AGREE']=='Y')?"checked":"" ?>/>
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <?php } ?>
                             </div>
 <!--                            <div class="row margin-top-10">
                                 <div class="col-sm-12">
@@ -745,6 +760,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             </div>
                                         </div>
                                     </div>
+                                <?php } ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y')){ ?>
+                                <div class="col-sm-12">
+                                    <label style="font-size:12px !important;">
+                                Have you had the opportunity for a full discussion on the report and agree. Agree? 
+                                    </label>
+                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input class="" <?= $selfDisabled1;?> type="hidden" name="appraiseeAgree" id="appraiseeAgree" value="N"/>
+                                        <input class="" <?= $selfDisabled1;?> type="checkbox" name="appraiseeAgree" id="appraiseeAgree" value="Y" <?= ($assignedAppraisalDetail['APPRAISEE_AGREE']=='Y')?"checked":"" ?>/>
+                                        <span></span>
+                                    </label>
+                                </div>
                                 <?php } ?>
                             </div>
                             <?php if($questionForCurStageAppraisee>0){ ?>

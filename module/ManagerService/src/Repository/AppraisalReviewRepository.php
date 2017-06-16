@@ -97,7 +97,7 @@ OR (SELECT COUNT(*)
   FROM HRIS_APPRAISAL_ANSWER APNS
   WHERE A.APPRAISAL_ID = APNS.APPRAISAL_ID
   AND E.EMPLOYEE_ID    = APNS.EMPLOYEE_ID
-  AND AA.APPRAISER_ID  =APNS.USER_ID)>0)"
+  )>0)"
             ]);
         $select->order("A.".Setup::APPRAISAL_EDESC);
         $statement = $sql->prepareStatementForSqlObject($select);
