@@ -1,40 +1,49 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        
-        
-        
-        
-                    $("#grid").kendoGrid({
-                        height: 550,
-                        sortable: true
-                    });
 
-//
-//        console.log(document.list);
-//        console.log(document.list[0]);
+        $('.trainingAtdChk').on('change', function () {
+            var employeeId = $(this).attr('data-empId');
+            var attDate = $(this).attr('data-AttDate');
+            var attendanceStatus;
+
+            if (this.checked) {
+                attendanceStatus = 'P';
+            } else
+            {
+                attendanceStatus = 'A';
+            }
+
+            console.log(employeeId);
+            console.log(attDate);
+            console.log(attendanceStatus);
+
+            app.pullDataById(document.updateUrl, {
+                'employeeId': employeeId,
+                'trainingId': document.trainingId,
+                'trainingDate': attDate,
+                'attendanceStatus': attendanceStatus
+            }).then(function (success) {
+                console.log(success);
+            });
+
+        });
 
 
-//        $("#TrainingAttendance").kendoGrid({
-//            dataSource: {
-//                data: document.list,
-//                pageSize: 20
-//            },
-//            height: 450,
-//            scrollable: true,
-//            sortable: true,
-//            filterable: true,
-//            pageable: {
-//                input: true,
-//                numeric: false
-//            },
-//            rowTemplate: kendo.template($("#rowTemplate").html()),
-//            columns: [
-////                {field: "COMPANY_CODE", title: "Company Code",width:120},
-//                {field: "FIRST_NAME", title: "Name", width: 400},
-////                {title: "Action", width: 110}
-//            ]
+//        $('.checkAll').on('change', function () {
+//            var columnNo = $(this).attr('data-col');
+//            if (this.checked) {
+//                $('.checkbox' + columnNo).prop('checked', true);
+//            } else
+//            {
+//                $('.checkbox' + columnNo).prop('checked', false);
+//            }
 //        });
+
+//        $('#submitBtn').on('click', function () {
+//            console.log(clicked);
+//        });
+
 
 
     });

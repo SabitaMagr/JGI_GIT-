@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Training\Repository;
 
 use Application\Helper\EntityHelper;
@@ -19,19 +13,16 @@ use Training\Model\TrainingAssign;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
+use Training\Model\TrainingAttendance;
 
-/**
- * Description of TrainingAttendanceRepository
- *
- * @author root
- */
 class TrainingAttendanceRepository implements RepositoryInterface {
 
-//    private $tableGateway;
+    private $tableGateway;
     private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
-//        $this->tableGateway = new TableGateway(TrainingAssign::TABLE_NAME, $adapter);
+        $this->tableGateway = new TableGateway(TrainingAttendance::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
@@ -87,35 +78,24 @@ class TrainingAttendanceRepository implements RepositoryInterface {
     }
 
     public function fetchTrainingAssignedEmp($id) {
-        $sql = new Sql($this->adapter);
-        $select=$sql->select();
-
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(
-                        Training::class, [
-                    Training::TRAINING_NAME
-                        ], [
-                    Training::START_DATE,
-                    Training::END_DATE
-                        ], NULL, NULL, NULL, 'T')
-                , false);
-
-        $select->from(['T' => Training::TABLE_NAME]);
-        $select->join(['TA' => TrainingAssign::TABLE_NAME], "TA." . TrainingAssign::TRAINING_ID . "=T." . Training::TRAINING_ID, [TrainingAssign::EMPLOYEE_ID], 'left');
-        $select->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TA." . TrainingAssign::EMPLOYEE_ID, ["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")], "left");
-        $select->where(["T.STATUS='E'"]);
-        $select->where(["T.TRAINING_ID='$id'"]);
-        $select->order("T." . Training::TRAINING_NAME . " ASC");
         
-        $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql()); die();      
-        $result = $statement->execute();
-        $arrayList = [];
-        foreach ($result as $row) {
-            array_push($arrayList, $row);
+    }
+
+    public function updateTrainingAtd(Model $model) {
+        $data = $model->getArrayCopyForDB();
+        $trainingId = $data['TRAINING_ID'];
+        $employeeId = $data['EMPLOYEE_ID'];
+        $trainingDate = $data['TRAINING_DT'];
+        if ($data['ATTENDANCE_STATUS'] == 'P') {
+            return $this->tableGateway->insert($model->getArrayCopyForDB());
+        } else {
+            unset($data['TRAINING_ID']);
+            unset($data['EMPLOYEE_ID']);
+            unset($data['TRAINING_DT']);
+            return $this->tableGateway->update($data, [TrainingAttendance::TRAINING_ID => $trainingId,
+                        TrainingAttendance::EMPLOYEE_ID => $employeeId, TrainingAttendance::TRAINING_DT => $trainingDate
+            ]);
         }
-        
-        return $arrayList;
-        
     }
 
 }

@@ -12,103 +12,111 @@ $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/training/training-attendance/attendance.js'));
 ?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
 <script>
-//    document.list =<?php // echo json_encode($list);  ?>
+    document.updateUrl = '<?= $this->url("trainingAtt", ["action" => "updateTrainingAtd"]); ?>';
+    document.trainingId = '<?= $trainingId; ?>';
 </script>
 
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\trainingAtt')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+
 <?php
-echo '<pre>';
-//print_r($list[0]);
+if (!empty($list)) {
 
-$fromDate = $list[0]['START_DATE'];
-$toDate = $list[0]['END_DATE'];
-echo $fromDate;
-echo $toDate;
+    $todayDate = date("d-M-Y");
+    $fromDate = $list[0]['START_DATE'];
+    $toDate = $list[0]['END_DATE'];
 
-$period = new DatePeriod(
-        new DateTime($fromDate), new DateInterval('P1D'), new DateTime($toDate)
-);
 
-foreach ($period as $date) {
-    print_r($date);
-//    $arrayDates[] = $date->format('Y-m-d');
+    $daterange = new DatePeriod(new DateTime($fromDate), new DateInterval('P1D'), new DateTime($toDate));
+
+    $colDates = [];
+    foreach ($daterange as $date) {
+        $tempDate = $date->format("d-M-Y");
+        array_push($colDates, $tempDate);
+    }
+    array_push($colDates, $toDate);
 }
-
-//print_r($arrayDates);
-
-die();
 ?>
 
 
 
 <div class="margin-top-20">
-
     <div class="portlet light bg-inverse">
-
         <div class="portlet-title">
-            <div class="tools">
-                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
-                <a href="" class="fullscreen" data-original-title="" title=""> </a>
+        </div>
+
+        <?php
+        if (!empty($list)) {
+            ?>
+            <div id="example">
+                <table id="grid" class="table">
+                    <colgroup>
+                        <col />
+                        <?php
+                        foreach ($colDates as $dates) {
+                            ?>
+                            <col />
+                            <?php
+                        }
+                        ?>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th data-field="name">Name</th>
+                            <?php
+                            foreach ($colDates as $dates) {
+                                ?>
+                                <th><?= $dates ?></th>
+                                <?php
+                            }
+                            ?>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($list as $listData) {
+                            ?>
+                            <tr>
+                                <td><?php echo $listData['FIRST_NAME'] . ' ' . $listData['MIDDLE_NAME'] . ' ' . $listData['LAST_NAME']; ?></td>
+                                <?php
+//                            strtotime()
+                                $i = 1;
+                                foreach ($colDates as $dates) {
+                                    if (strtotime($dates) <= strtotime($todayDate)) {
+                                        ?>
+                                        <td><input data-empId="<?= $listData['EMPLOYEE_ID'] ?>" data-AttDate="<?= $dates ?>" class="trainingAtdChk" type="checkbox" ></td>
+                                            <?php
+                                        } else {
+                                            ?>
+                                        <td><input  type="checkbox" disabled="disabled"></td>
+                                        <?php
+                                    }
+                                    $i++;
+                                }
+                                ?>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
-            <div class="actions">
-                <div class="btn-group">
-                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-copy"></i> Tools
-                        <i class="fa fa-angle-down "></i>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id ="export" class="hris-export-to-excel" hris-export-to-excel-target="grid">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
-                        </li>
-                    </ul>
-                </div>
+            <?php
+        } else {
+            ?>
+            <div>
+                NO Employee Assigned In Training
+
             </div>
-        </div>
+            <?php
+        }
+        ?>
 
 
-        <div id="example">
-            <table id="grid">
-                <colgroup>
-                    <col />
-                    <col />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th data-field="name">Car Make</th>
-                        <th data-field="date">date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Volvo</td>
-                        <td><input type="checkbox"></td>
-                    </tr>
-                    <tr>
-                        <td>Lancia</td>
-                        <td><input type="checkbox"></td>
-                    </tr>
-                </tbody>
-            </table>
 
-        </div>
-
-
-        <div id="TrainingAttendance">
-        </div>
-
-
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>                     
-            #: (FIRST_NAME == null) ? '-' : F                IRST_NAME #
-            </td>
-            </tr>
-        </script>
     </div>
+</div>
