@@ -419,7 +419,6 @@ if ($this->messages) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <div class="input-group date" id="employeeBirthDate">
                                             <?php print $this->formElement($birthDate) ?>
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         </div>
                                         <?php print $this->formElementErrors()->render($birthDate, ['class' => 'help-block error']) ?>
                                     </div>
@@ -959,6 +958,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
 
@@ -971,39 +971,53 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
+                            
 
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
-
                                     <div class="form-group <?= empty($famSpouseBirthDate->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famSpouseBirthDate); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                            <div class="input-group date" id="famSpouseBirthDate">
-                                                <?php print $this->formElement($famSpouseBirthDate); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                    <?php print $this->formElement($famSpouseBirthDate); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                     <input type="text"   id="famSpouseBirthDateNepali" class="form-control " value="">
+                                                </div>
                                             </div>
                                         </div>
                                         <?php print $this->formElementErrors()->render($famSpouseBirthDate, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
-
+                            
+                                            
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group<?= empty($famSpouseWeddingAnniversary->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famSpouseWeddingAnniversary); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                            <div class="input-group date" id="famSpouseWeddingAnniversary">
-                                                <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                    <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                <input type="text"   id="weddingAnniversaryDateNepali" class="form-control " value="">
+                                                </div>
                                             </div>
                                         </div>
                                         <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
+                            
 
 
                         </div>
@@ -1255,13 +1269,27 @@ if ($this->messages) {
                                             <span class="required" aria-required="true">*</span>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <div class="input-group date" id="joinDate"> 
+                                            <div class="input-group date" id="employeejoinDate"> 
 
                                                 <?php print $this->formElement($joinDate); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             </div>
                                         </div>
                                         <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <label for="nepaliStartDate">Join Date(Nepali)</label>
+                                    </div>
+                                     <div class="col-xs-6 col-sm-6 cgap-4">
+                                        <div class="input-group date">
+                                            <input type="text"   id="nepalijoinDate" class="form-control " value="">
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
