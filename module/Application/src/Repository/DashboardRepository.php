@@ -816,9 +816,6 @@ class DashboardRepository implements RepositoryInterface {
     }
 
     public function fetchPendingLeave($companyId = null, $branchId = null) {
-//        $sql = "SELECT COUNT(*) AS PENDING_LEAVE
-//              FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-//              WHERE STATUS='RQ' ";
         $sql = "SELECT COUNT(*)AS PENDING_LEAVE FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT OUTER JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID=LA.LEAVE_ID
@@ -983,12 +980,12 @@ class DashboardRepository implements RepositoryInterface {
                     ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
                     LEFT JOIN HRIS_DESIGNATIONS D
                     ON (E.DESIGNATION_ID=D.DESIGNATION_ID )
-                   -- ,
-                   --   (SELECT *
-                   --   FROM HRIS_MONTH_CODE
-                   --   WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
-                   --  ) M
-                   -- WHERE E.JOIN_DATE BETWEEN M.FROM_DATE AND M.TO_DATE
+                   ,
+                   (SELECT *
+                   FROM HRIS_MONTH_CODE
+                   WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
+                   ) M
+                    WHERE E.JOIN_DATE BETWEEN M.FROM_DATE AND M.TO_DATE
                     ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -996,41 +993,6 @@ class DashboardRepository implements RepositoryInterface {
     }
 
     public function fetchLeftEmployees() {
-//        $sql = "
-//                SELECT * FROM HRIS_SERVICE_EVENT_TYPES;
-//                SELECT (
-//                  CASE
-//                    WHEN E.MIDDLE_NAME IS NULL
-//                    THEN E.FIRST_NAME
-//                      || ' '
-//                      || E.LAST_NAME
-//                    ELSE E.FIRST_NAME
-//                      || ' '
-//                      || E.MIDDLE_NAME
-//                      || ' '
-//                      || E.LAST_NAME
-//                  END ) AS FULL_NAME,
-//                  EF.FILE_PATH,
-//                  D.DESIGNATION_TITLE,
-//                  R.EXIT_DATE
-//                FROM HRIS_EMPLOYEES E
-//                LEFT JOIN HRIS_EMPLOYEE_FILE EF
-//                ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
-//                LEFT JOIN HRIS_DESIGNATIONS D
-//                ON (E.DESIGNATION_ID=D.DESIGNATION_ID ),
-//                  (SELECT JH.EMPLOYEE_ID,
-//                    JH.START_DATE AS EXIT_DATE
-//                  FROM HRIS_JOB_HISTORY JH,
-//                    (SELECT *
-//                    FROM HRIS_MONTH_CODE
-//                    WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
-//                    ) M
-//                  WHERE (JH.START_DATE BETWEEN M.FROM_DATE AND M.TO_DATE)
-//                  AND JH.SERVICE_EVENT_TYPE_ID IN (14,5,8)
-//                  ) R
-//                WHERE E.EMPLOYEE_ID= R.EMPLOYEE_ID
-//";
-
         $sql = "
                 SELECT (
                   CASE
@@ -1055,11 +1017,17 @@ class DashboardRepository implements RepositoryInterface {
                 ON (E.DESIGNATION_ID=D.DESIGNATION_ID ),
                   (SELECT JH.EMPLOYEE_ID,
                     JH.START_DATE AS EXIT_DATE
-                  FROM HRIS_JOB_HISTORY JH
-                  WHERE JH.SERVICE_EVENT_TYPE_ID IN (14,5,8)
+                  FROM HRIS_JOB_HISTORY JH,
+                    (SELECT *
+                    FROM HRIS_MONTH_CODE
+                    WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
+                    ) M
+                  WHERE (JH.START_DATE BETWEEN M.FROM_DATE AND M.TO_DATE)
+                  AND JH.SERVICE_EVENT_TYPE_ID IN (14,5,8)
                   ) R
                 WHERE E.EMPLOYEE_ID= R.EMPLOYEE_ID
 ";
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

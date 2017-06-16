@@ -128,9 +128,6 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
                 ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME' => new Expression('INITCAP(RG.RELIGION_NAME)')], 'left')
                 ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(CN.COUNTRY_NAME)')], 'left')
-//                ->join(['DT' => "HRIS_DISTRICTS"], "E." . HrEmployees::ID_CITIZENSHIP_ISSUE_PLACE . "=DT.DISTRICT_ID", ['ID_CIT_ISSUE_PLACE_NAME' => 'DISTRICT_NAME'], 'left')
-//                ->join(['Z' => "HRIS_ZONES"], "E." . HrEmployees::ZON . "=Z.ZONE_ID", ['ZONE_NAME'], 'left')
-//                ->join(['D' => "HRIS_DISTRICTS"], "E." . HrEmployees::DISTRICT_ID . "=D.DISTRICT_ID", ['DISTRICT_NAME'], 'left')
                 ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME' => new Expression('INITCAP(VM.VDC_MUNICIPALITY_NAME)')], 'left')
                 ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
                 ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME' => new Expression('INITCAP(D1.DEPARTMENT_NAME)')], 'left')
@@ -166,18 +163,6 @@ class EmployeeRepository implements RepositoryInterface {
                         ], NULL, NULL, NULL, 'E'), false);
 
         $select->from(['E' => HrEmployees::TABLE_NAME]);
-//        $select->columns([
-//            Helper::dateExpression(HrEmployees::BIRTH_DATE, "E"),
-//            Helper::columnExpression(HrEmployees::FIRST_NAME, "E"),
-//            Helper::columnExpression(HrEmployees::MIDDLE_NAME, "E"),
-//            Helper::columnExpression(HrEmployees::PROFILE_PICTURE_ID, "E"),
-//            Helper::columnExpression(HrEmployees::LAST_NAME, "E"),
-//            Helper::columnExpression(HrEmployees::GENDER_ID, "E"),
-//            Helper::columnExpression(HrEmployees::MOBILE_NO, "E"),
-//            Helper::columnExpression(HrEmployees::MARITAL_STATUS, "E"),
-//            Helper::columnExpression(HrEmployees::EMPLOYEE_CODE, "E"),
-//            Helper::dateExpression(HrEmployees::JOIN_DATE, "E"),
-//                ], true);
         $select->join(['B1' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B1." . Branch::BRANCH_ID, ['BRANCH' => 'BRANCH_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['F' => EmployeeFile::TABLE_NAME], "F." . EmployeeFile::FILE_CODE . "=C." . Company::LOGO, ['COMPANY_FILE_PATH' => "FILE_PATH", 'COMPANY_FILE_CODE' => "FILE_CODE", 'COMPANY_FILE_NAME' => "FILE_NAME"], 'left')
