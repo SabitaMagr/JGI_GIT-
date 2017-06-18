@@ -16,6 +16,7 @@ use Appraisal\Controller\QuestionController;
 use Appraisal\Controller\StageQuestionController;
 use Appraisal\Controller\SetupController;
 use Appraisal\Controller\AppraisalAssignController;
+use Appraisal\Controller\AppraisalStatusController;
 
 return [
     'router' => [
@@ -156,6 +157,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> AppraisalAssignController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'appraisalStatus'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/status[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> AppraisalStatusController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -416,6 +431,27 @@ return [
                 ],
             ],
         ],
+        'AppraisalStatus'=>[
+            [
+                'label'=>'Appraisal Status',
+                'route'=>'appraisalStatus',
+            ],[
+                'label' => 'Appraisal Status',
+                'route' => 'appraisalStatus',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'appraisalStatus',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Detail',
+                        'route' => 'appraisalStatus',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -428,7 +464,8 @@ return [
             QuestionController::class=> ControllerFactory::class,
             StageQuestionController::class=> ControllerFactory::class,
             SetupController::class=> ControllerFactory::class,
-            AppraisalAssignController::class=> ControllerFactory::class
+            AppraisalAssignController::class=> ControllerFactory::class,
+            AppraisalStatusController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
