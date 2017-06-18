@@ -51,6 +51,10 @@
             var selectedAsset=returnButton.attr('data-asset');
             var selectedQuantity=returnButton.attr('data-quantity');
             var selectedRdate=returnButton.attr('data-rdate');
+            
+            if(selectedRdate=='null'){
+                selectedRdate='Not Set';
+            }
 
             $('#returnEmployee').text(selectedEmployee);
             $('#returnAsset').text(selectedAsset);

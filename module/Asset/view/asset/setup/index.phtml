@@ -129,13 +129,8 @@ $form->prepare();
         <i class="fa fa-trash-o"></i>
         </a>
         # } #
-<!--        <a class="btn-edit"  id="btnIssue" data-asset="#:ASSET_EDESC#" data-assetid="#:ASSET_ID#"
-        href="\\#"  > 
-        <i class="fa fa-send-o"></i>
-        </a>-->
-        
-        <a class="btn-edit" data-asset="#:ASSET_EDESC#" data-assetid="#:ASSET_ID#"
-        href="\\#" ng-click="assetIssueBtn('#:ASSET_EDESC#',#:ASSET_ID#)"   > 
+        <a class="btn-edit" id="btnIssue" data-asset="#:ASSET_EDESC#" data-assetid="#:ASSET_ID#"
+        href="\\#"   > 
         <i class="fa fa-send-o"></i>
         </a>
         
@@ -175,7 +170,7 @@ $form->prepare();
                         <div class="col-sm-3">
                             <input class="form-control" type="text" readonly="readonly" name='assetName'ng-model="assetNameView">    
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-5">
                             <span ng-model="rQ" ng-bind="rQ"></span>    
                         </div>
                     </div>
