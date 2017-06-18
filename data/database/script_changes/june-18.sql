@@ -30,10 +30,10 @@ INTO HRIS_MENUS
   (
   NULL,
     317,
-    'Status',
+    'Report',
     72,
     NULL,
-    'appraisalStatus',
+    'appraisalReport',
     'E',
       TRUNC(SYSDATE),
     NULL,
