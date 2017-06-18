@@ -20,6 +20,8 @@ use Appraisal\Model\Question;
 use Application\Helper\AppraisalHelper;
 use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AppraisalCompetenciesRepo;
+use Appraisal\Repository\AppraisalStatusRepository;
+use Appraisal\Model\AppraisalStatus;
 
 class AppraisalEvaluation extends AbstractActionController{
     
@@ -108,6 +110,7 @@ class AppraisalEvaluation extends AbstractActionController{
         }
         if($request->isPost()){
             try{
+                $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
                 $appraisalAnswerModel = new AppraisalAnswer();
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
@@ -158,6 +161,8 @@ class AppraisalEvaluation extends AbstractActionController{
 //                        if(!$editMode){
                             $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
 //                        }
+                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
+//               
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-evaluation");
                     break;

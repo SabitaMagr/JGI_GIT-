@@ -171,10 +171,6 @@ class AppraisalReview extends AbstractActionController{
                     }
                     $i+=1;
                 }
-                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE=>$reviewerAgree], $appraisalId, $employeeId);
-                if($reviewerAgree=='N'){
-                    $appraisalAssignRepo->updateCurrentStageByAppId(5, $appraisalId, $employeeId);
-                }
                 switch ($tab) {
                     case 1:    
                         $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]);
@@ -183,9 +179,11 @@ class AppraisalReview extends AbstractActionController{
                         $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]);
                     break;
                     case 3: 
-//                        if(!$editMode){
-                            $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
-//                        }
+                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE=>$reviewerAgree], $appraisalId, $employeeId);
+                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
+                        $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
+                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWED_BY=> $this->employeeId], $appraisalId, $employeeId);
+                        
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-review");
                     break;
