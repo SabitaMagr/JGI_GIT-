@@ -60,16 +60,29 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 $scope.counter = 1;
                 $scope.KPIList.push(angular.copy($scope.KPITemplate));
             }
+            $scope.KPIErrorMsg = "";
             $scope.sumAllTotal = function (list) {
                 var total = 0;
+                console.log(list.length);
+                console.log(list[0].weight);
                 angular.forEach(list, function (item) {
                     var total1 = parseInt(item.weight);
                     total += parseInt(total1);
                 });
-                if (total > 100) {
+                if(list.length==1 && list[0].weight==100){
                     $scope.sumTotal = true;
-                } else {
-                    $scope.sumTotal = false;
+                    $scope.KPIErrorMsg="A single KPI weight should not be 100%";
+                }else{
+                    if (total > 100) {
+                        $scope.sumTotal = true;
+                        $scope.KPIErrorMsg="Total Weight Must be 100%.The total weight of your KPI is "+total;
+                    } else if(total<100){
+                        $scope.sumTotal = true;
+                        $scope.KPIErrorMsg="Total weight must be 100%. The total weight of your KPI is "+total;
+                    }else {
+                        $scope.sumTotal = false;
+                        $scope.KPIErrorMsg="";
+                    }
                 }
             }
             $scope.calculateAnnualRating = function(list){
