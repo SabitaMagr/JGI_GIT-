@@ -16,7 +16,7 @@ use Appraisal\Controller\QuestionController;
 use Appraisal\Controller\StageQuestionController;
 use Appraisal\Controller\SetupController;
 use Appraisal\Controller\AppraisalAssignController;
-use Appraisal\Controller\AppraisalStatusController;
+use Appraisal\Controller\AppraisalReportController;
 
 return [
     'router' => [
@@ -161,16 +161,16 @@ return [
                     ]
                 ],
             ],
-            'appraisalStatus'=>[
+            'appraisalReport'=>[
                 'type'=>Segment::class,
                 'options'=>[
-                    'route'=> '/appraisal/status[/:action[/:id]]',
+                    'route'=> '/appraisal/report[/:action[/:id]]',
                     'constants'=>[
                         'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'=>'[0-9]+',
                     ],
                     'defaults'=>[
-                        'controller'=> AppraisalStatusController::class,
+                        'controller'=> AppraisalReportController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -431,22 +431,22 @@ return [
                 ],
             ],
         ],
-        'AppraisalStatus'=>[
+        'appraisalReport'=>[
             [
-                'label'=>'Appraisal Status',
-                'route'=>'appraisalStatus',
+                'label'=>'Appraisal Report',
+                'route'=>'appraisalReport',
             ],[
                 'label' => 'Appraisal Status',
-                'route' => 'appraisalStatus',
+                'route' => 'appraisalReport',
                 'pages' => [
                         [
                         'label' => 'List',
-                        'route' => 'appraisalStatus',
+                        'route' => 'appraisalReport',
                         'action' => 'index',
                     ],
                         [
                         'label' => 'Detail',
-                        'route' => 'appraisalStatus',
+                        'route' => 'appraisalReport',
                         'action' => 'view',
                     ],
                 ],
@@ -465,7 +465,7 @@ return [
             StageQuestionController::class=> ControllerFactory::class,
             SetupController::class=> ControllerFactory::class,
             AppraisalAssignController::class=> ControllerFactory::class,
-            AppraisalStatusController::class=> ControllerFactory::class
+            AppraisalReportController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
