@@ -314,7 +314,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                     <td></td>
-                                    <td></td>
+                                    <td colspan="2">
+                                        <input type="hidden" name="sumTotal" value="{{sumAllTotal(KPIList)}}" ng-model="sumTotal"/>
+                                        <div  use-form-error="isGeaterHundred" use-error-expression="sumTotal" ng-messages="KPIForm.$error" class="errors">
+                                            <div ng-message="isGeaterHundred" class="help-block error pull-right">{{KPIErrorMsg}}</div>
+                                        </div>
+                                    </td>
                                     <?php if($keyAchievementDtlNum>0){ ?>
                                     <td></td>
                                     <td></td>
@@ -322,13 +327,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <?php if($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0){ ?>
                                     <td></td>
                                     <?php } ?>
-                                    <td>
-                                        <input type="hidden" name="sumTotal" value="{{sumAllTotal(KPIList)}}" ng-model="sumTotal"/>
-                                        <div  use-form-error="isGeaterHundred" use-error-expression="sumTotal" ng-messages="KPIForm.$error" class="errors">
-                                            <div ng-message="isGeaterHundred" class="help-block error">You Cannot Enter KPI above 100</div>
-                                        </div>
-                                        
-                                    </td>
                                     <td>
                                         <?php if(($assignedAppraisalDetail['STAGE_ID']==5) || ($assignedAppraisalDetail['STAGE_ID']==1)) { ?>
                                         <div class="form-group">
@@ -410,7 +408,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <td>
                                         
-                                        <input type="text" value="<?= $assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY'];?>" name="annualRatingCompetency" id="annualRatingCompetency" style="width:100%;"/>
+                                        <input type="text" value="<?= $assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY'];?>" name="annualRatingCompetency" id="annualRatingCompetency" style="width:100%;" <?= $disabledCompetenciesRating ?>/>
                                     </td>
                                     <td></td>
                                 </tr>
