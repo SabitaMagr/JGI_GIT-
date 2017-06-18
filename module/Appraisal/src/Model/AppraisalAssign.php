@@ -26,6 +26,8 @@ class AppraisalAssign extends Model{
     const ANNUAL_RATING_KPI = "ANNUAL_RATING_KPI";
     const ANNUAL_RATING_COMPETENCY = "ANNUAL_RATING_COMPETENCY";
     const APPRAISER_OVERALL_RATING = "APPRAISER_OVERALL_RATING";
+    const ALT_APPRAISER_ID = "ALT_APPRAISER_ID";
+    const ALT_REVIEWER_ID = "ALT_REVIEWER_ID";
 
     public $appraisalId;
     public $employeeId;
@@ -47,6 +49,8 @@ class AppraisalAssign extends Model{
     public $annualRatingKPI;
     public $annualRatingCompetency;
     public $appraiserOverallRating;
+    public $altAppraiserId;
+    public $altReviewerId;
     
     public $mappings = [
         'appraisalId'=>self::APPRAISAL_ID,
@@ -68,6 +72,8 @@ class AppraisalAssign extends Model{
         'currentStageId'=>self::CURRENT_STAGE_ID,
         'annualRatingKPI'=>self::ANNUAL_RATING_KPI,
         'annualRatingCompetency'=>self::ANNUAL_RATING_COMPETENCY,
-        'appraiserOverallRating'=>self::APPRAISER_OVERALL_RATING
+        'appraiserOverallRating'=>self::APPRAISER_OVERALL_RATING,
+        'altAppraiserId'=>self::ALT_APPRAISER_ID,
+        'altReviewerId'=>self::ALT_REVIEWER_ID
     ];
 }

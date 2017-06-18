@@ -61,39 +61,14 @@ class AppraisalAssignRepository implements RepositoryInterface{
                 ->join(["A"=> Setup::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,["APPRAISAL_EDESC"=>new Expression("INITCAP(A.APPRAISAL_EDESC)")],"left")
                 ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")],"left")
                 ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,['FIRST_NAME_R'=>new Expression("INITCAP(E1.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E1.MIDDLE_NAME)"),"LAST_NAME_R"=>new Expression("INITCAP(E1.LAST_NAME)"),"RETIRED_R"=> HrEmployees::RETIRED_FLAG,"STATUS_R"=> HrEmployees::STATUS],"left")
-                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,['FIRST_NAME_A'=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_A"=>new Expression("INITCAP(E2.MIDDLE_NAME)"),"LAST_NAME_A"=>new Expression("INITCAP(E2.LAST_NAME)"),"RETIRED_A"=>HrEmployees::RETIRED_FLAG,"STATUS_A"=>HrEmployees::STATUS],"left");
+                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,['FIRST_NAME_A'=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_A"=>new Expression("INITCAP(E2.MIDDLE_NAME)"),"LAST_NAME_A"=>new Expression("INITCAP(E2.LAST_NAME)"),"RETIRED_A"=>HrEmployees::RETIRED_FLAG,"STATUS_A"=>HrEmployees::STATUS],"left")
+                ->join(['E3'=> HrEmployees::TABLE_NAME],"E3.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::ALT_REVIEWER_ID,['FIRST_NAME_ALT_R'=>new Expression("INITCAP(E3.FIRST_NAME)"),"MIDDLE_NAME_ALT_R"=>new Expression("INITCAP(E3.MIDDLE_NAME)"),"LAST_NAME_ALT_R"=>new Expression("INITCAP(E3.LAST_NAME)"),"RETIRED_ALT_R"=> HrEmployees::RETIRED_FLAG,"STATUS_ALT_R"=> HrEmployees::STATUS],"left")
+                ->join(['E4'=> HrEmployees::TABLE_NAME],"E4.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::ALT_APPRAISER_ID,['FIRST_NAME_ALT_A'=>new Expression("INITCAP(E4.FIRST_NAME)"),"MIDDLE_NAME_ALT_A"=>new Expression("INITCAP(E4.MIDDLE_NAME)"),"LAST_NAME_ALT_A"=>new Expression("INITCAP(E4.LAST_NAME)"),"RETIRED_ALT_A"=>HrEmployees::RETIRED_FLAG,"STATUS_ALT_A"=>HrEmployees::STATUS],"left");
         
         $select->where([
             "AA.".AppraisalAssign::APPRAISAL_ID."=".$appraisalId,
             "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,
-            "AA.".AppraisalAssign::STATUS."='E' AND
-  (((E1.STATUS =
-    CASE
-      WHEN E1.STATUS IS NOT NULL
-      THEN ('E')
-    END
-  OR E1.STATUS IS NULL)
-  AND
-  (E1.RETIRED_FLAG =
-    CASE
-      WHEN E1.RETIRED_FLAG IS NOT NULL
-      THEN ('N')
-    END
-  OR E1.RETIRED_FLAG IS NULL))
-OR
-  ((E2.STATUS =
-    CASE
-      WHEN E2.STATUS IS NOT NULL
-      THEN ('E')
-    END
-  OR E2.STATUS IS NULL)
-AND
-  (E2.RETIRED_FLAG =
-    CASE
-      WHEN E2.RETIRED_FLAG IS NOT NULL
-      THEN ('N')
-    END
-  OR E2.RETIRED_FLAG IS NULL)))"
+            "AA.".AppraisalAssign::STATUS."='E'"
         ]);
         $select->order("E.".HrEmployees::FIRST_NAME." ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
