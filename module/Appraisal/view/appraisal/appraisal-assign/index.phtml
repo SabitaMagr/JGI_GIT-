@@ -98,7 +98,13 @@ $this->headScript()
                             Appraiser Assigned
                         </th>
                         <th>
+                            Alt. Appraiser Assigned
+                        </th>
+                        <th>
                             Reviewer Assigned
+                        </th>
+                        <th>
+                            Alt. Reviewer Assigned
                         </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -124,8 +130,14 @@ $this->headScript()
                         <td>
                             <span ng-bind="employee.APPRAISER_NAME"></span>
                         </td>
+                        <td>
+                            <span ng-bind="employee.ALT_APPRAISER_NAME"></span>
+                        </td>
                         <td>                       
                             <span ng-bind="employee.REVIEWER_NAME"></span>
+                        </td>
+                        <td>                       
+                            <span ng-bind="employee.ALT_REVIEWER_NAME"></span>
                         </td>
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -160,6 +172,22 @@ $this->headScript()
                         </label>
                     </div>  
                 </div>
+                <label for="altAppraiserId" style="width:100%; margin-top:2%;">Alternate Appraiser</label>
+                <div class="row">
+                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                        <select name="altAppraiserId" id="altAppraiserId" class="form-control" ng-options="altAppraiser.name for altAppraiser in altAppraiserOptions track by altAppraiser.id" ng-model="altAppraiserSelected">
+                        </select>   
+                    </div>
+                    <div class="col-md-3 rlPadding appraiserWrap" style="padding:0px 0px !important;">
+                        <a class="btn-edit" href="javascript::" ng-click="open('A3')" style="height:22px; padding: 0px 7px !important;">
+                            <i class="fa fa-search" style="height:17px;"></i>
+                        </a>
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                            <input class="" ng-model="altAppraiserAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="altAppraiserAssign"/>
+                            <span></span>
+                        </label>
+                    </div>  
+                </div>
             </div> 
             <div class="col-sm-3">
                 <label for="reviewerId" style="width:100%">Reviewer</label>
@@ -174,6 +202,22 @@ $this->headScript()
                         </a>
                         <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                             <input class="" ng-model="reviewerAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="reviewerAssign"/>
+                            <span></span>
+                        </label>
+                    </div>  
+                </div>
+                <label for="altReviewerId" style="width:100%; margin-top:2%;">Alternate Reviewer</label>
+                <div class="row">
+                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                        <select name="altReviewerId" required="required" id="altReviewerId" class="form-control" ng-options="altReviewer.name for altReviewer in altReviewerOptions track by altReviewer.id" ng-model="altReviewerSelected">
+                        </select>   
+                    </div>
+                    <div class="col-md-3 rlPadding reviewerWrap" style="padding:0px 0px !important;">
+                        <a class="btn-edit" href="javascript::" ng-click="open('A2')" style="height:22px; padding: 0px 7px !important;">
+                            <i class="fa fa-search" style="height:17px;"></i>
+                        </a>
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                            <input class="" ng-model="altReviewerAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="altReviewerAssign"/>
                             <span></span>
                         </label>
                     </div>  

@@ -64,7 +64,7 @@ class AppraisalReviewRepository implements RepositoryInterface{
                 ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=AA.". AppraisalAssign::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)"),"STAGE_ID"]);
         
         $select->where([
-            "AA.".AppraisalAssign::REVIEWER_ID."=".$employeeId,
+            ("AA.".AppraisalAssign::REVIEWER_ID."=".$employeeId." OR AA.".AppraisalAssign::ALT_REVIEWER_ID."=".$employeeId),
             "AA.".AppraisalAssign::STATUS."='E'",
             "E.".HrEmployees::STATUS."='E'",
             "T.".Type::STATUS."='E'",
