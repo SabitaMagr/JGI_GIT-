@@ -9,9 +9,9 @@
         app.addDatePicker($('#requestDate'));
         app.addDatePicker($('#returnDate'));
 
-        $("form").submit(function () {
-            App.blockUI({target: "form"});
-        });
+//        $("form").submit(function () {
+//            App.blockUI({target: "form"});
+//        });
 
     });
 
@@ -20,43 +20,38 @@
 
 angular.module('hris', ['ui.bootstrap'])
         .controller('setupController', function ($scope, $http, $uibModal) {
-            
+
             $scope.assetNameView = 'asdasadas';
 
 //            $('select').select2();
-            
+
             $scope.asset = '1';
-                $scope.assetNameView = 'lenovo';
+            $scope.assetNameView = 'lenovo';
 
             $scope.assetIssue = function (assetname, assetId) {
-//                console.log(assetname);
-//                console.log(assetId);
-//                $scope.asset = assetId;
+                $scope.asset = assetId;
                 $scope.assetNameView = assetname;
-                
-                console.log($scope.asset);
-                console.log($scope.assetNameView);
-//
-//                window.app.pullDataById(document.restfulUrl, {
-//                    action: 'pullAssetBalance',
-//                    data: {
-//                        assetId: $scope.asset
-//                    }
-//
-//                }).then(function (success) {
-//                    $scope.$apply(function () {
-//                        if (success.data == null || success.data == 0 || success.data == 'undefined') {
-//                            $('#IssueSubmitBtn').attr('disabled', 'disabled');
-//                        } else {
-//                            $('#IssueSubmitBtn').attr('disabled', false);
-//                        }
-//                        $scope.rQ = 'REM BALANCE: ' + success.data;
-//                        $scope.bal = success.data;
-//                        $("#quantity").attr({"max": success.data, "min": 1});
-//                    });
-//                }, function (error) {
-//                    console.log("error", error);
-//                })
+
+                window.app.pullDataById(document.restfulUrl, {
+                    action: 'pullAssetBalance',
+                    data: {
+                        assetId: $scope.asset
+                    }
+
+                }).then(function (success) {
+                    $scope.$apply(function () {
+                        if (success.data == null || success.data == 0 || success.data == 'undefined') {
+                            $('#IssueSubmitBtn').attr('disabled', 'disabled');
+                        } else {
+                            $('#IssueSubmitBtn').attr('disabled', false);
+                        }
+                        $scope.rQ = 'REM BALANCE: ' + success.data;
+                        $scope.bal = success.data;
+                        $("#quantity").attr({"max": success.data, "min": 1});
+                    });
+                }, function (error) {
+                    console.log("error", error);
+                })
 
 
             }
@@ -77,14 +72,10 @@ angular.module('hris', ['ui.bootstrap'])
                 $scope.radioClik();
             }
 
-            $scope.openmod = function () {
-                console.log('sdfdsf');
-            }
 
 
 
             $("#assetSetupTable").on("click", "#btnIssue", function () {
-//                $('#myModal').modal('show');
                 $('#returnedDate').val('');
                 var issueButton = $(this);
                 var selectedassetId = issueButton.attr('data-assetid');
@@ -131,37 +122,66 @@ angular.module('hris', ['ui.bootstrap'])
 
             $ctrl = this;
             $ctrl.animationsEnabled = false;
-            $scope.assetIssueBtn = function (assetName,assetId) {
-                
-//                console.log(assetName);
-//                console.log(assetId);
+            $scope.assetIssueBtn = function (assetName, assetId) {
                 var modalInstance = $uibModal.open({
                     animation: $ctrl.animationsEnabled,
                     ariaLabelledBy: 'modal-title',
                     ariaDescribedBy: 'modal-body',
                     templateUrl: 'myModalContent.html',
                     controller: function ($scope, $uibModalInstance) {
-                        
-                    $scope.assetIssue(assetName, assetId);
-//                            $scope.assetNameView = assetName;
-                        
+
+
+                        $scope.asset = assetId;
+                        $scope.assetNameView = assetName;
+
+                        window.app.pullDataById(document.restfulUrl, {
+                            action: 'pullAssetBalance',
+                            data: {
+                                assetId: $scope.asset
+                            }
+
+                        }).then(function (success) {
+                            $scope.$apply(function () {
+                                if (success.data == null || success.data == 0 || success.data == 'undefined') {
+                                    $('#IssueSubmitBtn').attr('disabled', 'disabled');
+                                } else {
+                                    $('#IssueSubmitBtn').attr('disabled', false);
+                                }
+                                $scope.rQ = 'REM BALANCE: ' + success.data;
+                                $scope.bal = success.data;
+                                $("#quantity").attr({"max": success.data, "min": 1});
+                            });
+                        }, function (error) {
+                            console.log("error", error);
+                        })
+
+
                         $scope.assetIssuecancel = function () {
                             $uibModalInstance.dismiss('cancel');
                         };
+                        
+//                        $("form").submit(function () {
+//                        App.blockUI({target: "form"});
+//                            });
+                        
+                        
                     },
-                     controllerAs: '$ctrl'
+                    controllerAs: '$ctrl'
                 });
-                
+
                 modalInstance.result.then(function (result) {
                     console.log(result);
                 });
-                
+
 
                 modalInstance.rendered.then(function () {
                     $("select").select2();
                     app.addDatePicker($('#issueDate'));
                     app.addDatePicker($('#requestDate'));
                     app.addDatePicker($('#returnDate'));
+                    $("#assetIssue-form").submit(function () {
+                        App.blockUI({target: "form"});
+                            });
                 });
 
 
