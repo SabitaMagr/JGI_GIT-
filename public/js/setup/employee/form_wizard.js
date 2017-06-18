@@ -19,13 +19,11 @@
                         app.datePickerWithNepali('famSpouseWeddingAnniversary', 'weddingAnniversaryDateNepali');
                         break;
                     case 3:
-                        app.addDatePicker(
-                                $("#idPassportExpiry"),
-                                $("#idDrivingLicenseExpiry"),
-                                $("#idCitizenshipIssueDate"));
+                        app.datePickerWithNepali('idDrivingLicenseExpiry', 'drivingLicenseExpiaryNepali');
+                        app.datePickerWithNepali('idCitizenshipIssueDate', 'citizenshipIssueDateNepali');
+                        app.datePickerWithNepali('idPassportExpiry', 'passportExpiryNepali');
                         break;
                     case 4:
-//                        app.addDatePicker($("#joinDate"));
                         app.datePickerWithNepali('joinDate', 'nepalijoinDate');
                         break;
                     case 7:
