@@ -2086,3 +2086,8 @@ div#ndp-nepali-box{
     width: 100%;
     margin-right: 0px;
 }
+
+.col-md-6.nopaddinggap{
+   padding-right:0px !important;  
+    
+}

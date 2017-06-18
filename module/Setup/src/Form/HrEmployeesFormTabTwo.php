@@ -100,7 +100,7 @@ class HrEmployeesFormTabTwo extends Model {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"label":"Spouse Birth Date"})
-     * @Annotation\Attributes({ "class":"form-control","id":"famSpouseBirthDateId"})
+     * @Annotation\Attributes({ "class":"form-control","id":"famSpouseBirthDate"})
      */
     public $famSpouseBirthDate;
 
@@ -108,7 +108,7 @@ class HrEmployeesFormTabTwo extends Model {
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Wedding Anniversary"})
-     * @Annotation\Attributes({ "class":"form-control","id":"famSpouseWedAnniId" })
+     * @Annotation\Attributes({ "class":"form-control","id":"famSpouseWeddingAnniversary" })
      * @Annotation\Required(false)
      */
     public $famSpouseWeddingAnniversary;
