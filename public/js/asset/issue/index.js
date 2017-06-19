@@ -41,9 +41,10 @@
         app.datePickerWithNepali('returnedDate', 'returnedDateNepali');
 
         $("#assetIssueTable").on("click", "#btnReturn", function () {
-//            returnedDate
+            $('#myModal').modal('show');
             
             $('#returnedDate').val('');
+            $('#returnedDateNepali').val('');
             var returnButton =$(this);
             
             var selectedassetId=returnButton.attr('data-assetid');
