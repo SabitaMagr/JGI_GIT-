@@ -2,6 +2,7 @@
     'use strict';
 
     $(document).ready(function () {
+        
         console.log(document.issue);
         $("#assetIssueTable").kendoGrid({
             excel: {
@@ -36,7 +37,8 @@
         window.app.UIConfirmations();
 
 
-        app.addDatePicker($('#returnedDate'));
+//        app.addDatePicker($('#returnedDate'));
+        app.datePickerWithNepali('returnedDate', 'returnedDateNepali');
 
         $("#assetIssueTable").on("click", "#btnReturn", function () {
 //            returnedDate
@@ -53,7 +55,7 @@
             var selectedRdate=returnButton.attr('data-rdate');
             
             if(selectedRdate=='null'){
-                selectedRdate='Not Set';
+                selectedRdate='-';
             }
 
             $('#returnEmployee').text(selectedEmployee);
