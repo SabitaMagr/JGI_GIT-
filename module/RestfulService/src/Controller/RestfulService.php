@@ -93,6 +93,7 @@ use Appraisal\Repository\AppraisalAssignRepository;
 use Application\Helper\AppraisalHelper;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Model\AppraisalStatus;
+use Appraisal\Repository\AppraisalReportRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -424,7 +425,9 @@ class RestfulService extends AbstractRestfulController {
                     case "updateCurUserPwd";
                         $responseData = $this->updateCurUserPwd($postedData->data);
                         break;
-
+                    case "pullAppraisalViewList":
+                        $responseData = $this->pullAppraisalViewList($postedData->data);
+                        break;
                     default:
                         throw new Exception("action not found");
                         break;
@@ -3621,6 +3624,46 @@ class RestfulService extends AbstractRestfulController {
         return [
             'success' => "true",
 //            "data" => $updateResult
+        ];
+    }
+    public function pullAppraisalViewList($data){
+        $appraisalStatusRepo = new AppraisalReportRepository($this->adapter);
+        
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $appraisalId = $data['appraisalId'];
+        $appraisalStageId = $data['appraisalStageId'];
+        
+        $result = $appraisalStatusRepo->fetchFilterdData($fromDate,$toDate,$employeeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$appraisalId,$appraisalStageId);
+        $list = [];
+        $fullName = function($id) {
+            if($id!=null){
+                $empRepository = new EmployeeRepository($this->adapter);
+                $empDtl = $empRepository->fetchById($id);
+                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+            }else{
+                return "";
+            }
+        };
+        foreach($result as $row){
+            $row['APPRAISER_NAME']= $fullName($row['APPRAISER_ID']);
+            $row['ALT_APPRAISER_NAME']=$fullName($row['ALT_APPRAISER_ID']);
+            $row['REVIEWER_NAME'] = $fullName($row['REVIEWER_ID']);
+            $row['ALT_REVIEWER_NAME'] = $fullName($row['ALT_REVIEWER_ID']);
+            array_push($list,$row);
+        }
+        return [
+            "success"=>true,
+            'data'=>$list
         ];
     }
 }
