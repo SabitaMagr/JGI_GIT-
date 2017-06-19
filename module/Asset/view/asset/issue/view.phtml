@@ -94,7 +94,7 @@ if ($this->messages) { ?>
         #: (RETURNED_DATE == null) ? '-' : RETURNED_DATE #
         </td>
         <td>
-        # if(RETURN_DATE!=null&&RETURNED!='Y'){#
+        # if(RETURNABLE=='Y'&&RETURNED!='Y'){#
         <a class="btn-edit" data-issueid="#:ISSUE_ID#" data-assetid="#:ASSET_ID#" data-rdate=#:RETURN_DATE# 
         href="\\#" data-toggle="modal" data-asset="#:ASSET_EDESC#" data-quantity="#:QUANTITY#" 
         data-employee=" #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
