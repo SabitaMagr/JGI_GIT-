@@ -199,6 +199,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
+                        <input type='hidden' value="appraiser" id="currentUser" />
                         <?php
                         $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID']!=1)?"disabled":""; 
                         $disabledAppraiserRatingComment = ($assignedAppraisalDetail['STAGE_ID']!=5)?"disabled":"";

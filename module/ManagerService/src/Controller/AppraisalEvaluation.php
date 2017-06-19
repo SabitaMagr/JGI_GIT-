@@ -22,6 +22,8 @@ use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AppraisalCompetenciesRepo;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Model\AppraisalStatus;
+use Notification\Model\NotificationEvents;
+use Notification\Controller\HeadNotification;
 
 class AppraisalEvaluation extends AbstractActionController{
     
@@ -111,6 +113,8 @@ class AppraisalEvaluation extends AbstractActionController{
         if($request->isPost()){
             try{
                 $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
+                $appraisalStatus = new AppraisalStatus();
+                $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
                 $appraisalAnswerModel = new AppraisalAnswer();
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
@@ -162,7 +166,13 @@ class AppraisalEvaluation extends AbstractActionController{
                             $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
 //                        }
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
-//               
+                        
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        $adminList1 = $employeeRepo->fetchByAdminFlagList();
+                        foreach($adminList1 as $adminRow1){
+                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                        }
+                        
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-evaluation");
                     break;

@@ -145,6 +145,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 console.log("form is going to be submitted");
                 if ($scope.KPIForm.$valid) {
                     var annualRating = parseFloat(angular.element(document.getElementById('annualRating')).val());
+                    var currentUser = angular.element(document.getElementById('currentUser')).val();
                     console.log(annualRating);
                     App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.restfulUrl, {
@@ -153,7 +154,8 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                             KPIList: $scope.KPIList,
                             employeeId: employeeId,
                             appraisalId: appraisalId,
-                            annualRatingKPI:annualRating
+                            annualRatingKPI:annualRating,
+                            currentUser:currentUser
                         },
                     }).then(function (success) {
                         $scope.$apply(function () {

@@ -97,6 +97,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                 if ($scope.competenciesForm.$valid) {
                     var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
                     var appraiserOverallRating = angular.element(document.getElementById('appraiserOverallRating')).val();
+                    var currentUser = angular.element(document.getElementById('currentUser')).val();
                     console.log(annualRatingCompetency);
                     console.log($scope.competenciesList);
                     App.blockUI({target: "#hris-page-content"});
@@ -107,7 +108,8 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                             employeeId: employeeId,
                             appraisalId: appraisalId,
                             annualRatingCompetency:annualRatingCompetency,
-                            appraiserOverallRating:appraiserOverallRating
+                            appraiserOverallRating:appraiserOverallRating,
+                            currentUser:currentUser
                         },
                     }).then(function (success) {
                         $scope.$apply(function () {
