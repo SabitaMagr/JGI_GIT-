@@ -3,9 +3,9 @@
 
 
     $(document).ready(function () {
-        app.addDatePicker($('#issueDate'));
-        app.addDatePicker($('#requestDate'));
-        app.addDatePicker($('#returnDate'));
+        app.datePickerWithNepali('issueDate', 'issueDateNepali');
+        app.datePickerWithNepali('requestDate', 'requestDateNepali');
+        app.datePickerWithNepali('returnDate', 'returnDateNepali');
     });
 
 })(window.jQuery, window.app);
@@ -15,13 +15,17 @@ angular.module('hris', ['ui.bootstrap'])
         .controller('setupController', function ($scope, $http, $uibModal) {
 
             $scope.radioClik = function () {
-                console.log('sdfdsf');
+//                console.log('sdfdsf');
                 console.log($scope.rdChk);
+                console.log($scope.rdChkNepali);
                 if ($scope.rdChk == false) {
                     $("#returnDate").prop('required', false);
+                    $("#returnDateNepali").prop('required', false);
                     $scope.rdTxt = '';
+                    $scope.rdTxtNepali = '';
                 } else {
                     $("#returnDate").prop('required', true);
+                    $("#returnDateNepali").prop('required', true);
                 }
             }
 
@@ -104,9 +108,9 @@ angular.module('hris', ['ui.bootstrap'])
 
                 modalInstance.rendered.then(function () {
                     $("select").select2();
-                    app.addDatePicker($('#issueDate'));
-                    app.addDatePicker($('#requestDate'));
-                    app.addDatePicker($('#returnDate'));
+                        app.datePickerWithNepali('issueDate', 'issueDateNepali');
+                        app.datePickerWithNepali('requestDate', 'requestDateNepali');
+                        app.datePickerWithNepali('returnDate', 'returnDateNepali');
                     $("#assetIssue-form").submit(function () {
                         App.blockUI({target: "form"});
                     });

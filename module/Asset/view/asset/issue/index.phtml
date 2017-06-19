@@ -6,11 +6,20 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/asset/issue/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
 ?>
 
 <?php
@@ -93,7 +102,7 @@ if ($this->messages) { ?>
         <td>
         # if(RETURNABLE=='Y'&&RETURNED!='Y'){#
         <a class="btn-edit" data-issueid="#:ISSUE_ID#" data-assetid="#:ASSET_ID#" data-rdate=#:RETURN_DATE# 
-        href="\\#" data-toggle="modal" data-asset="#:ASSET_EDESC#" data-quantity="#:QUANTITY#" 
+        href="\\#" data-asset="#:ASSET_EDESC#" data-quantity="#:QUANTITY#" 
         data-employee=" #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
         #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
         #: (LAST_NAME == null) ? ' ' : LAST_NAME #" data-target="\\#myModal" id="btnReturn"  style="height:17px;">
@@ -161,12 +170,16 @@ if ($this->messages) { ?>
           </div>
               
           <div class="row">
-              <div class="col-sm-3">
+              <div class="col-sm-3 form-group">
                   <lable>Returned Date : </lable>
               </div>
               
               <div class="col-sm-3">
-                  <input required="required" id="returnedDate" name="returndeDate" class="form-group" type="text">
+                  <input required="required" id="returnedDate" name="returndeDate" class="form-control" type="text">
+              </div>
+              
+              <div class="col-sm-3">
+                  <input type="text"   id="returnedDateNepali" class="form-control " value="">
               </div>    
           </div>
               
