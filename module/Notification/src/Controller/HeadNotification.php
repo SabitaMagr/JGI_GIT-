@@ -1276,7 +1276,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 32, $adapter,$url);
         };
-        ${"fn" . NotificationEvents::APPRAISAL_EVALUATION} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$recieverDetail) {
+        ${"fn" . NotificationEvents::APPRAISAL_EVALUATION} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$senderDetail,$recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
             $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
             
@@ -1291,7 +1291,7 @@ class HeadNotification {
                 }
             };
             $notification = new AppraisalNotificationModel();
-            self::setNotificationModel($assignedAppraisalDetail['APPRAISER_ID'], $recieverDetail['ID'], $notification, $adapter);
+            self::setNotificationModel($senderDetail['ID'], $recieverDetail['ID'], $notification, $adapter);
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
@@ -1320,7 +1320,7 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 33, $adapter,$url);
         };
-        ${"fn" . NotificationEvents::APPRAISAL_REVIEW} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$recieverDetail) {
+        ${"fn" . NotificationEvents::APPRAISAL_REVIEW} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$senderDetail,$recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
             $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
             
@@ -1335,7 +1335,7 @@ class HeadNotification {
                 }
             };
             $notification = new AppraisalNotificationModel();
-            self::setNotificationModel($assignedAppraisalDetail['REVIEWER_ID'], $recieverDetail['ID'], $notification, $adapter);
+            self::setNotificationModel($senderDetail['ID'], $recieverDetail['ID'], $notification, $adapter);
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
@@ -1574,10 +1574,10 @@ class HeadNotification {
                 ${"fn" . NotificationEvents::KEY_ACHIEVEMENT}($model, $adapter, $url,$recieverDetail);
                 break;
             case NotificationEvents::APPRAISAL_EVALUATION:
-                ${"fn" . NotificationEvents::APPRAISAL_EVALUATION}($model, $adapter, $url,$recieverDetail);
+                ${"fn" . NotificationEvents::APPRAISAL_EVALUATION}($model, $adapter, $url,$senderDetail,$recieverDetail);
                 break;
             case NotificationEvents::APPRAISAL_REVIEW:
-                ${"fn" . NotificationEvents::APPRAISAL_REVIEW}($model, $adapter, $url,$recieverDetail);
+                ${"fn" . NotificationEvents::APPRAISAL_REVIEW}($model, $adapter, $url,$senderDetail,$recieverDetail);
                 break;
             case NotificationEvents::APPRAISEE_FEEDBACK:
                 ${"fn" . NotificationEvents::APPRAISEE_FEEDBACK}($model, $adapter, $url,$recieverDetail);

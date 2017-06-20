@@ -167,10 +167,10 @@ class AppraisalEvaluation extends AbstractActionController{
 //                        }
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
                         
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
                         $adminList1 = $employeeRepo->fetchByAdminFlagList();
                         foreach($adminList1 as $adminRow1){
-                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
                         }
                         
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
