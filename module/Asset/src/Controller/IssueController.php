@@ -50,6 +50,8 @@ class IssueController extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
+        $employeeRepo = new EmployeeRepository($this->adapter);
+        $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
@@ -69,6 +71,10 @@ class IssueController extends AbstractActionController {
 
                 $remQty = $request->getPost()['balance'];
                 $newRemQty = $remQty - $issue->quantity;
+                
+//                echo '<pre>';
+//                print_r($issue);
+//                die();
 
                 $assetadd = $this->repository->add($issue);
                 if ($assetadd) {

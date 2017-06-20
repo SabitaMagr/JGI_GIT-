@@ -123,6 +123,8 @@ class AppraisalAssignController extends AbstractActionController{
             if ($assignList != null) {
                 $middleNameR = ($assignList['MIDDLE_NAME_R'] != null) ? " " . $assignList['MIDDLE_NAME_R'] . " " : " ";
                 $middleNameA = ($assignList['MIDDLE_NAME_A'] != null) ? " " . $assignList['MIDDLE_NAME_A'] . " " : " ";
+                $middleNameALTR = ($assignList['MIDDLE_NAME_ALT_R'] != null) ? " " . $assignList['MIDDLE_NAME_ALT_R'] . " " : " ";
+                $middleNameALTA = ($assignList['MIDDLE_NAME_ALT_A'] != null) ? " " . $assignList['MIDDLE_NAME_ALT_A'] . " " : " ";
                 
                 if($assignList['RETIRED_R']!='Y' && $assignList['STATUS_R']!='D'){
                     $employeeRow['REVIEWER_NAME'] = $assignList['FIRST_NAME_R'] . $middleNameR . $assignList['LAST_NAME_R'];
@@ -133,6 +135,16 @@ class AppraisalAssignController extends AbstractActionController{
                     $employeeRow['APPRAISER_NAME'] = $assignList['FIRST_NAME_A'] . $middleNameA . $assignList['LAST_NAME_A'];
                 }else{
                     $employeeRow['APPRAISER_NAME'] = "";
+                }
+                if($assignList['RETIRED_ALT_R']!='Y' && $assignList['STATUS_ALT_R']!='D'){
+                    $employeeRow['ALT_REVIEWER_NAME'] = $assignList['FIRST_NAME_ALT_R'] . $middleNameALTR . $assignList['LAST_NAME_ALT_R'];
+                }else{
+                    $employeeRow['ALT_REVIEWER_NAME'] = "";
+                }
+                if($assignList['RETIRED_ALT_A']!='Y' && $assignList['STATUS_ALT_A']!='D'){
+                    $employeeRow['ALT_APPRAISER_NAME'] = $assignList['FIRST_NAME_ALT_A'] . $middleNameALTA . $assignList['LAST_NAME_ALT_A'];
+                }else{
+                    $employeeRow['ALT_APPRAISER_NAME'] = "";
                 }
                 $employeeRow['APPRAISAL_EDESC'] = $assignList['APPRAISAL_EDESC'];
             } else {
@@ -181,6 +193,8 @@ class AppraisalAssignController extends AbstractActionController{
         $reviewerId = (int)$data['reviewerId'];
         $appraiserId = (int)$data['appraiserId'];
         $appraisalId = (int)$data['appraisalId'];
+        $altAppraiserId = (int)$data['altAppraiserId'];
+        $altReviewerId = (int)$data['altReviewerId'];
         $appraisalRepo = new SetupRepository($this->adapter);
         $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
 //        print_r($appraisalId); die();
@@ -204,6 +218,22 @@ class AppraisalAssignController extends AbstractActionController{
         } else {
             $appraiserIdNew = $appraiserId;
         }
+        
+        if ($altReviewerId == "" || $altReviewerId == null) {
+            $altReviewerIdNew = null;
+        } else if ($employeeId == $altReviewerId || $altReviewerId=='-1') {
+            $altReviewerIdNew = "";
+        } else {
+            $altReviewerIdNew = $altReviewerId;
+        }
+
+        if ($altAppraiserId == "" || $altAppraiserId == null) {
+            $altAppraiserIdNew = null;
+        } else if ($employeeId == $altAppraiserId || $altAppraiserId=='-1') {
+            $altAppraiserIdNew = "";
+        } else {
+            $altAppraiserIdNew = $altAppraiserId;
+        }
 
         $appraisalAssign = new AppraisalAssign();
         $employeePreDtl = $this->repository->getDetailByEmpAppraisalId($employeeId,$appraisalId);
@@ -212,6 +242,8 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->appraisalId = $appraisalId;
             $appraisalAssign->reviewerId = $reviewerIdNew;
             $appraisalAssign->appraiserId = $appraiserIdNew;
+            $appraisalAssign->altAppraiserId = $altAppraiserIdNew;
+            $appraisalAssign->altReviewerId = $altReviewerIdNew;
             $appraisalAssign->createdDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->approvedDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->createdBy = $this->employeeId;
@@ -225,6 +257,8 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->employeeId = $employeeId;
             $appraisalAssign->reviewerId = $reviewerIdNew;
             $appraisalAssign->appraiserId = $appraiserIdNew;
+            $appraisalAssign->altAppraiserId = $altAppraiserIdNew;
+            $appraisalAssign->altReviewerId = $altReviewerIdNew;
             $appraisalAssign->modifiedDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->modifiedBy = $this->employeeId;
             $appraisalAssign->currentStageId = $appraisalDtl['CURRENT_STAGE_ID'];

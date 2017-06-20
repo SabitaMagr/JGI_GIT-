@@ -42,7 +42,10 @@ class AppraisalStatusRepository implements RepositoryInterface{
     public function fetchById($id) {
         
     }
-
+    public function fetchByEmpAppId($employeeId,$appraisalId){
+        $result = $this->tableGateway->select([AppraisalStatus::APPRAISAL_ID=>$appraisalId, AppraisalStatus::EMPLOYEE_ID=>$employeeId]);
+        return $result->current(); 
+    }
     public function updateAnnualRatingId($annualRatingKPI,$appraisalId,$employeeId){
         $this->tableGateway->update([AppraisalStatus::ANNUAL_RATING_KPI =>$annualRatingKPI],[AppraisalStatus::APPRAISAL_ID=>$appraisalId,AppraisalStatus::EMPLOYEE_ID=>$employeeId]);
     }

@@ -23,6 +23,8 @@ use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AppraisalCompetenciesRepo;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Model\AppraisalStatus;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 
 class PerformanceAppraisal extends AbstractActionController{
     private $repository;
@@ -125,6 +127,8 @@ class PerformanceAppraisal extends AbstractActionController{
         if($request->isPost()){
             try{
                 $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
+                $appraisalStatus = new AppraisalStatus();
+                $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($this->employeeId,$appraisalId)->getArrayCopy());
                 $appraisalAnswerModel = new AppraisalAnswer();
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
@@ -170,6 +174,14 @@ class PerformanceAppraisal extends AbstractActionController{
 //                if(!$editMode){
                     $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $this->employeeId);
 //                }
+                if($assignedAppraisalDetail['STAGE_ID']!=1){
+                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['REVIEWED_BY'],'USER_TYPE'=>"REVIEWER"]);
+                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['APPRAISED_BY'],'USER_TYPE'=>"APPRAISER"]);
+                    $adminList = $employeeRepo->fetchByAdminFlagList();
+                    foreach($adminList as $adminRow){
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                    }
+                }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("performanceAppraisal");
             }catch(Exception $e){

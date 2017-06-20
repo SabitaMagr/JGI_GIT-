@@ -3,9 +3,9 @@
     $(document).ready(function () {
         window.app.UIConfirmations();
         $('select').select2();
-    });
+ });
 })(window.jQuery, window.app);
-
+  
 angular.module('hris', ['ui.bootstrap'])
         .controller('appraisalAssignController', function ($scope, $uibModal, $log, $document) {
             $scope.employeeList = [];
@@ -82,7 +82,14 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.appraiserSelected = $scope.appraiserOptions[0]
             $scope.reviewerOptions = document.employeeList;
             $scope.reviewerSelected = $scope.reviewerOptions[0];
-            console.log(document.employeeList);
+            
+            var test = [];
+            jQuery.merge(test,document.employeeList);
+            test.unshift({'id':'-1','name':'none'});
+            $scope.altAppraiserOptions = test;
+            $scope.altAppraiserSelected = $scope.altAppraiserOptions[0]
+            $scope.altReviewerOptions = test;
+            $scope.altReviewerSelected = $scope.altReviewerOptions[0];
             // MODEL CODE
             $ctrl = this;
             $ctrl.animationsEnabled = false;
@@ -140,6 +147,14 @@ angular.module('hris', ['ui.bootstrap'])
                         $scope.appraiserSelected = $scope.appraiserOptions[0];
                         $scope.appraiserAssign = true;
                         $scope.showHideAssignBtn = true;
+                    }else if (type === 'A2') { //for alternate reviewer
+                        selectedItem.unshift({'id':'-1','name':'none'});
+                        $scope.altReviewerOptions = selectedItem;
+                        $scope.altReviewerSelected = $scope.altReviewerOptions[0];
+                    } else if (type === 'A3') { //for alternate appraiser
+                        selectedItem.unshift({'id':'-1','name':'none'});
+                        $scope.altAppraiserOptions = selectedItem;
+                        $scope.altAppraiserSelected = $scope.altAppraiserOptions[0];
                     }
                     console.log("Model closed with following result", selectedItem);
                 }, function () {
@@ -151,7 +166,7 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
             $scope.checkReportingHierarchy = function () {
-                if ($scope.reviewerAssign || $scope.appraiserAssign) {
+                if ($scope.reviewerAssign || $scope.appraiserAssign || $scope.altAppraiserAssign || $scope.altReviewerAssign) {
                     $scope.showHideAssignBtn = true;
                 } else {
                     $scope.showHideAssignBtn = false;
@@ -170,6 +185,14 @@ angular.module('hris', ['ui.bootstrap'])
                 var appraisalId = appraisalElement.val();
                 var appraisalName = document.getElementById('appraisalId').options[document.getElementById('appraisalId').selectedIndex].text;
                 
+                var altAppraiserElement = angular.element(document.getElementById('altAppraiserId'));
+                var altAppraiserId = altAppraiserElement.val();
+                var altAppraiserName = document.getElementById('altAppraiserId').options[document.getElementById('altAppraiserId').selectedIndex].text;
+               
+                var altReviewerElement = angular.element(document.getElementById('altReviewerId'));
+                var altReviewerId = altReviewerElement.val();
+                var altReviewerName = document.getElementById('altReviewerId').options[document.getElementById('altReviewerId').selectedIndex].text;
+                console.log(appraiserId);
                 var errorFlagR = false;
                 if ($scope.reviewerAssign) {
                     if (reviewerId == "?") {
@@ -200,10 +223,10 @@ angular.module('hris', ['ui.bootstrap'])
 
                 if (!errorFlagR && !errorFlagA) {
                     App.blockUI({target: "#hris-page-content"});
-                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName);
+                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId);
                 }
             };
-            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName) {
+            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId) {
                 var promises = [];
 
                 if (!$scope.reviewerAssign) {
@@ -211,12 +234,25 @@ angular.module('hris', ['ui.bootstrap'])
                 } else {
                     var reviewerId1 = reviewerId;
                 }
+                
+                if (!$scope.altReviewerAssign) {
+                    var altReviewerId1=null;
+                } else {
+                    var altReviewerId1 = altReviewerId;
+                }
 
                 if (!$scope.appraiserAssign) {
                     var appraiserId1 = null;
                 } else {
                     var appraiserId1 = appraiserId;
                 }
+                
+                if (!$scope.altAppraiserAssign) {
+                    var altAppraiserId1 = null;
+                } else {
+                    var altAppraiserId1 = altAppraiserId;
+                }
+                
                 for (var index in $scope.employeeList) {
                     if ($scope.employeeList[index].checked) {
                         promises.push(window.app.pullDataById(document.url, {
@@ -225,7 +261,9 @@ angular.module('hris', ['ui.bootstrap'])
                                 employeeId: $scope.employeeList[index].EMPLOYEE_ID,
                                 reviewerId: reviewerId1,
                                 appraiserId: appraiserId1,
-                                appraisalId: appraisalId
+                                appraisalId: appraisalId,
+                                altAppraiserId:altAppraiserId1,
+                                altReviewerId:altReviewerId1
                             }
                         }));
                     }
@@ -241,8 +279,17 @@ angular.module('hris', ['ui.bootstrap'])
                                     } else {
                                         var reviewerNameNew = reviewerName;
                                     }
+                                    
                                     $scope.employeeList[index].REVIEWER_NAME = reviewerNameNew;
                                     $scope.employeeList[index].APPRAISAL_EDESC = appraisalName;
+                                }
+                                if ($scope.altReviewerAssign) {
+                                    if ($scope.employeeList[index].EMPLOYEE_ID == altReviewerId) {
+                                        var altReviewerNameNew = null;
+                                    } else {
+                                        var altReviewerNameNew = (altReviewerName=="none")?"":altReviewerName;
+                                    }
+                                    $scope.employeeList[index].ALT_REVIEWER_NAME = altReviewerNameNew;
                                 }
 
                                 if ($scope.appraiserAssign) {
@@ -254,6 +301,14 @@ angular.module('hris', ['ui.bootstrap'])
                                     $scope.employeeList[index].APPRAISER_NAME = appraiserNameNew;
                                     $scope.employeeList[index].APPRAISAL_EDESC = appraisalName;
                                 }
+                                if ($scope.altAppraiserAssign) {
+                                    if ($scope.employeeList[index].EMPLOYEE_ID == altAppraiserId) {
+                                        var altAppraiserNameNew = null;
+                                    } else {
+                                        var altAppraiserNameNew = (altAppraiserName=='none')?"":altAppraiserName;
+                                    }
+                                    $scope.employeeList[index].ALT_APPRAISER_NAME = altAppraiserNameNew;
+                                }
                                 console.log(appraiserName);
                             }
                         }
@@ -262,3 +317,4 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
         });
+ 

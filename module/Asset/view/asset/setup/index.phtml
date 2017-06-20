@@ -6,6 +6,10 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
@@ -14,7 +18,13 @@ $this->headScript()
 
 
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('js/asset/setup/setupController.js'));
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
+
 ?>
 
 <?php
@@ -128,10 +138,11 @@ $form->prepare();
         <i class="fa fa-trash-o"></i>
         </a>
         # } #
-        <a class="btn-edit"  id="btnIssue" data-asset="#:ASSET_EDESC#" data-assetid="#:ASSET_ID#"
-        href="\\#" data-toggle="modal" data-target="\\#myModal" > 
+        <a class="btn-edit" id="btnIssue" data-asset="#:ASSET_EDESC#" data-assetid="#:ASSET_ID#"
+        href="\\#"   > 
         <i class="fa fa-send-o"></i>
         </a>
+        
         <a class="btn-edit"
         href="<?= $this->url("assetIssue", ["action" => "view"]); ?>/#:ASSET_ID#" > 
         <i class="fa fa-eye"></i>
@@ -140,21 +151,19 @@ $form->prepare();
         </tr>
     </script>
 
-     <!--bootstrap modal for asset issue-->
-     
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
 
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">ASSET ISSUE</h4>
-                </div>
-                <div class="modal-body">
                     
-                    <div class="row">
-        <div class="col-sm-12">
+                   
+       
+     
+<script type="text/ng-template" id="myModalContent.html">
+     <div class="modal-header">
+            <h3 class="modal-title" id="modal-title">ASSET ISSUE</h3>
+        </div>
+        <div class="modal-body" id="modal-body">
+        
+        <div class="row">
+                    <div class="col-sm-12">
                     <?php print $this->form()->openTag($form); ?>
                     <input type="hidden" name="balance" ng-model="bal" value="{{bal}}">
                     <input type="hidden" name="assetId" ng-model="asset" value="{{asset}}">
@@ -167,7 +176,7 @@ $form->prepare();
                         <div class="col-sm-3">
                             <input class="form-control" type="text" readonly="readonly" name='assetName'ng-model="assetNameView">    
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-5">
                             <span ng-model="rQ" ng-bind="rQ"></span>    
                         </div>
                     </div>
@@ -176,7 +185,14 @@ $form->prepare();
                         <div class="col-sm-6"> 
                             <div class="form-group">
                                 <?php print $this->formLabel($requestDate); ?>
+                                <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
                                 <?php print $this->formElement($requestDate); ?>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <input type="text"   id="requestDateNepali" class="form-control " value="">
+                                </div>
+                            </div>
                                 <?php print $this->formElementErrors()->render($requestDate, ['class' => 'help-block']); ?>
                             </div>
                         </div>
@@ -184,7 +200,14 @@ $form->prepare();
                         <div class="col-sm-6"> 
                             <div class="form-group">
                                 <?php print $this->formLabel($issueDate); ?>
+                                <div class="row">
+                                <div class="col-xs-6 col-sm-6 col-md-6">
                                 <?php print $this->formElement($issueDate); ?>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6">
+                                    <input type="text"   id="issueDateNepali" class="form-control " value="">
+                                </div>
+                            </div>
                                 <?php print $this->formElementErrors()->render($issueDate, ['class' => 'help-block']); ?>
                             </div>
                         </div>
@@ -227,7 +250,15 @@ $form->prepare();
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="returnDate">Return Date</label>
-                                <input ng-model="rdTxt" ng-disabled="!rdChk" type="text" name="returnDate" id="returnDate" class="form-control" disabled="disabled" value="">
+                                
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 nopaddinggap">
+                                        <input ng-model="rdTxt" ng-disabled="!rdChk" type="text" name="returnDate" id="returnDate" class="form-control" disabled="disabled" value="">
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 minpaddingleft">
+                                        <input type="text" ng-model="rdTxtNepali"  ng-disabled="!rdChk"   id="returnDateNepali" class="form-control " value="">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         
@@ -258,21 +289,17 @@ $form->prepare();
                     ?>
             </div>
         </div>
-    
-                    
-                    
-                   
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-
+        
+        
+        
         </div>
-    </div>
-
-
-
+        <div class="modal-footer">
+            <button class="btn btn-defualt" type="button" ng-click="assetIssuecancel()">Cancel</button>
+        </div>
+  </script>
+    
+     
+ 
 
 </div>
 

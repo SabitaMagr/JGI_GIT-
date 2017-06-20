@@ -407,6 +407,10 @@ class EmployeeRepository implements RepositoryInterface {
         $result = $this->gateway->select(["IS_ADMIN='Y'"]);
         return $result->current()->getArrayCopy();
     }
+    public function fetchByAdminFlagList(){
+        $result = $this->gateway->select(["IS_ADMIN='Y' AND STATUS='E'"]);
+        return $result;
+    }
 
     public function fetchEmployeeFullNameList() {
         $sql = "

@@ -20,6 +20,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Notification\Model\SalaryReviewNotificationModel;
+use Notification\Model\AppraisalNotificationModel;
 
 class EmailController extends AbstractActionController {
 
@@ -56,7 +57,13 @@ class EmailController extends AbstractActionController {
         26 => "Leave_Substitute_Approval",
         27 => "Travel_Substitute_Applied",
         28 => "Travel_Substitute_Approval",
-        29 => "Salary_Reviewed"
+        29 => "Salary_Reviewed",
+        30 => "KPI_Setting",
+        31 => "KPI_Approval",
+        32 => "Key_Achievement",
+        33 => "Appraisal_Evaluated",
+        34 => "Appraisal_Reviewed",
+        35 => "Appraisee_Feedback"
     ];
 
     private function getVariables() {
@@ -95,6 +102,9 @@ class EmailController extends AbstractActionController {
 
         $type12 = new SalaryReviewNotificationModel();
         $type12ObjVars = $type12->getObjectAttrs();
+        
+        $type13 = new AppraisalNotificationModel();
+        $type13ObjVars  = $type13->getObjectAttrs();
 
         return [
             1 => $type1ObjVars,
@@ -125,7 +135,13 @@ class EmailController extends AbstractActionController {
             26 => $type10ObjVars,
             27 => $type11ObjVars,
             28 => $type11ObjVars,
-            29 => $type12ObjVars
+            29 => $type12ObjVars,
+            30 => $type13ObjVars,
+            31 => $type13ObjVars,
+            32 => $type13ObjVars,
+            33 => $type13ObjVars,
+            34 => $type13ObjVars,
+            35 => $type13ObjVars,
         ];
     }
 

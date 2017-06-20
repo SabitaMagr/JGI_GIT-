@@ -196,6 +196,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
+                        <input type='hidden' value="reviewer" id="currentUser" />
                         <?php 
                         $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID']!=1)?"disabled":"";  ?>
                         <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='Y')) ?'active':''?>" id="portlet_tab2_KPI" ng-controller="kpiController">
@@ -308,13 +309,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </a>
                                     </td>
                                     <td></td>
-                                    <td></td>
-                                    <td>
+                                    <td colspan="2">
                                         <input type="hidden" name="sumTotal" value="{{sumAllTotal(KPIList)}}" ng-model="sumTotal"/>
                                         <div  use-form-error="isGeaterHundred" use-error-expression="sumTotal" ng-messages="KPIForm.$error" class="errors">
-                                            <div ng-message="isGeaterHundred" class="help-block error">You Cannot Enter KPI above 100</div>
+                                            <div ng-message="isGeaterHundred" class="help-block error pull-right">{{KPIErrorMsg}}</div>
                                         </div>
-                                        
                                     </td>
                                     <td>
                                         <div class="form-group">

@@ -2,6 +2,7 @@
     'use strict';
 
     $(document).ready(function () {
+        
         console.log(document.issue);
         $("#assetIssueTable").kendoGrid({
             excel: {
@@ -36,12 +37,14 @@
         window.app.UIConfirmations();
 
 
-        app.addDatePicker($('#returnedDate'));
+//        app.addDatePicker($('#returnedDate'));
+        app.datePickerWithNepali('returnedDate', 'returnedDateNepali');
 
         $("#assetIssueTable").on("click", "#btnReturn", function () {
-//            returnedDate
+            $('#myModal').modal('show');
             
             $('#returnedDate').val('');
+            $('#returnedDateNepali').val('');
             var returnButton =$(this);
             
             var selectedassetId=returnButton.attr('data-assetid');
@@ -51,6 +54,10 @@
             var selectedAsset=returnButton.attr('data-asset');
             var selectedQuantity=returnButton.attr('data-quantity');
             var selectedRdate=returnButton.attr('data-rdate');
+            
+            if(selectedRdate=='null'){
+                selectedRdate='-';
+            }
 
             $('#returnEmployee').text(selectedEmployee);
             $('#returnAsset').text(selectedAsset);

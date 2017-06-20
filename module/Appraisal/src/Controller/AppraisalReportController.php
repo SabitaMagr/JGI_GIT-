@@ -1,11 +1,15 @@
 <?php
-namespace ManagerService\Controller;
+namespace Appraisal\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use ManagerService\Repository\AppraisalReviewRepository;
+use Appraisal\Repository\AppraisalReportRepository;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Authentication\AuthenticationService;
 use Application\Helper\Helper;
+use Appraisal\Model\Setup;
+use Appraisal\Model\Stage;
+use Zend\Form\Element\Select;
+use Application\Helper\EntityHelper;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Setup\Repository\EmployeeRepository;
 use Appraisal\Repository\HeadingRepository;
@@ -22,38 +26,47 @@ use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AppraisalCompetenciesRepo;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Model\AppraisalStatus;
-use Notification\Model\NotificationEvents;
-use Notification\Controller\HeadNotification;
 
-class AppraisalReview extends AbstractActionController{
-    
-    private $employeeId;
+class AppraisalReportController extends AbstractActionController{
     private $repository;
+    private $adapter;
+    private $employeeId;
+    
     public function __construct(AdapterInterface $adapter){
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-        $this->repository = new AppraisalReviewRepository($adapter);
+        $this->repository = new AppraisalReportRepository($this->adapter);
     }
     public function indexAction() {
-        $result = $this->repository->getAllRequest($this->employeeId);
-        $list = [];
-        foreach($result as $row){
-            array_push($list, $row);
-        }
-        return Helper::addFlashMessagesToArray($this,['list'=>$list]);
+        $appraisalFormElement = new Select();
+        $appraisalFormElement->setName("Appraisal");
+        $appraisals = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC",NULL,FALSE,TRUE);
+        $appraisals1 = [-1 => "All Type"] + $appraisals;
+        $appraisalFormElement->setValueOptions($appraisals1);
+        $appraisalFormElement->setAttributes(["id" => "appraisalId", "class" => "form-control"]);
+        $appraisalFormElement->setLabel("Appraisal");
+        
+        $appraisalStageFormElement = new Select();
+        $appraisalStageFormElement->setName("Appraisal");
+        $appraisalStages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::STAGE_EDESC, "ASC",NULL,FALSE,TRUE);
+        $appraisalStages1 = [-1 => "All Type"] + $appraisalStages;
+        $appraisalStageFormElement->setValueOptions($appraisalStages1);
+        $appraisalStageFormElement->setAttributes(["id" => "appraisalStageId", "class" => "form-control"]);
+        $appraisalStageFormElement->setLabel("Appraisal Stage");
+
+        return Helper::addFlashMessagesToArray($this,[
+            'appraisals'=>$appraisalFormElement,
+            'appraisalStages'=>$appraisalStageFormElement,
+            'searchValues' => EntityHelper::getSearchData($this->adapter)
+                ]);
     }
     public function viewAction(){
-        $request = $this->getRequest();
         $appraisalId = $this->params()->fromRoute('appraisalId');
         $employeeId = $this->params()->fromRoute('employeeId');
         $tab = $this->params()->fromRoute('tab');
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
-        $appraisalAnswerRepo = new AppraisalAnswerRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
         $employeeDetail = $employeeRepo->getById($employeeId);
-        $userDetail = $employeeRepo->getById($this->employeeId);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
         $currentStageId = $assignedAppraisalDetail['STAGE_ID'];
@@ -75,7 +88,7 @@ class AppraisalReview extends AbstractActionController{
             $questionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId,$employeeId,$employeeId,"=1",$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['REVIEWER_ID']);
             $appraiserQuestionList =AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiserFlag,$appraisalId,$employeeId,$assignedAppraisalDetail['APPRAISER_ID'],null,null,$assignedAppraisalDetail['REVIEWER_ID']);
             $appraiseeQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $appraiseeFlag, $appraisalId,$employeeId,$employeeId,"!=1");
-            $reviewerQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $reviewerFlag, $appraisalId,$employeeId,$this->employeeId);
+            $reviewerQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $reviewerFlag, $appraisalId,$employeeId,$assignedAppraisalDetail['REVIEWER_ID']);
             
             if($reviewerQuestionList['questionForCurStage']){
                 $questionForCurStage+=1;
@@ -127,83 +140,6 @@ class AppraisalReview extends AbstractActionController{
             'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer,
             'appraiserAvailableAnswer'=>$appraiserAvailableAnswer
         ];
-        if($request->isPost()){
-            try{
-                $appraisalAnswerModel = new AppraisalAnswer();
-                $appraisalStatus = new AppraisalStatus();
-                $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
-                $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
-                $postData = $request->getPost()->getArrayCopy();
-                $answer = $postData['answer'];
-                $reviewerAgree = (gettype($postData['reviewerAgree'])=='undefined')?null:$postData['reviewerAgree'];
-                $i=0;
-                $editMode = false;
-//                print "<pre>";
-//                print_r($postData); die();
-                foreach($answer as $key=>$value){
-                    if(strpos($key,'rr') !== false ){
-                        $appraisalAnswerModel->rating = $value;
-                        $appraisalAnswerModel->modifiedDate = Helper::getcurrentExpressionDate();
-                        $appraisalAnswerModel->modifiedBy = $this->employeeId;
-                        $maxAnswerId = (int)(Helper::getMaxId($this->adapter, AppraisalAnswer::TABLE_NAME, AppraisalAnswer::ANSWER_ID));
-                        $answerId = ($postData['answerId'][$i]==0) ? $maxAnswerId : $postData['answerId'][$i];
-                        $appraisalAnswerRepo->edit($appraisalAnswerModel,$answerId);
-                        unset($appraisalAnswerModel);
-                    }else{
-                        $appraisalAnswerModel = new AppraisalAnswer();
-                        $appraisalAnswerModel->answer =(gettype($value)=='array')? json_encode($value):$value;
-                        if($postData['answerId'][$i]==0){
-                            $appraisalAnswerModel->answerId = (int)(Helper::getMaxId($this->adapter, AppraisalAnswer::TABLE_NAME, AppraisalAnswer::ANSWER_ID))+1;
-                            $appraisalAnswerModel->appraisalId = $appraisalId;
-                            $appraisalAnswerModel->employeeId = $employeeId;
-                            $appraisalAnswerModel->userId = $this->employeeId;
-                            $appraisalAnswerModel->questionId = $key;
-                            $appraisalAnswerModel->stageId = $currentStageId;
-                            $appraisalAnswerModel->createdDate = Helper::getcurrentExpressionDate();
-                            $appraisalAnswerModel->status = 'E';
-                            $appraisalAnswerModel->createdBy = $this->employeeId;
-                            $appraisalAnswerModel->approvedDate = Helper::getcurrentExpressionDate();
-                            $appraisalAnswerModel->companyId = $userDetail['COMPANY_ID'];
-                            $appraisalAnswerModel->branchId = $userDetail['BRANCH_ID'];
-                            $appraisalAnswerRepo->add($appraisalAnswerModel);
-                        }else{
-                            $editMode=true;
-                            $appraisalAnswerModel->modifiedDate = Helper::getcurrentExpressionDate();
-                            $appraisalAnswerModel->modifiedBy = $this->employeeId;
-                            $appraisalAnswerRepo->edit($appraisalAnswerModel,$postData['answerId'][$i]);
-                        }
-                    }
-                    $i+=1;
-                }
-                switch ($tab) {
-                    case 1:    
-                        $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]);
-                    break;
-                    case 2:   
-                        $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]);
-                    break;
-                    case 3: 
-                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE=>$reviewerAgree,AppraisalStatus::REVIEWED_BY=> $this->employeeId], $appraisalId, $employeeId);
-                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
-                        $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
-                        
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
-                        if($reviewerAgree==='Y'){
-                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
-                        }
-                        $adminList1 = $employeeRepo->fetchByAdminFlagList();
-                        foreach($adminList1 as $adminRow1){
-                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
-                        }
-                        $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                        $this->redirect()->toRoute("appraisal-review");
-                    break;
-                }
-            }catch(Exception $e){
-                $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
-                $this->flashmessenger()->addMessage($e->getMessage());
-            }
-        }
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
         $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($employeeId, $appraisalId)['NUM'];

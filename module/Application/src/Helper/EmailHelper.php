@@ -27,6 +27,7 @@ class EmailHelper {
     public static function sendEmail(Message $mail) {
         $transport = self::getSmtpTransport();
         $transport->send($mail);
+        return true;
     }
 
 }

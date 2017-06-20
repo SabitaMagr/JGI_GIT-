@@ -2,6 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
 $this->headScript()->appendFile($this->basePath('js/user-form-error.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/add.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/kpiController.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/competenciesController.js'));
 ?>
@@ -204,6 +205,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
+                        <input type='hidden' value="appraisee" id="currentUser" />
                         <?php 
                         $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID']!=1)?"disabled":""; 
                         $disabledKeyAchievement = ($assignedAppraisalDetail['STAGE_ID']!=7)?"disabled":""; 
@@ -319,13 +321,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                     <td></td>
-                                    <td></td>
-                                    <td>
+                                    <td colspan="2">
                                         <input type="hidden" name="sumTotal" value="{{sumAllTotal(KPIList)}}" ng-model="sumTotal"/>
                                         <div  use-form-error="isGeaterHundred" use-error-expression="sumTotal" ng-messages="KPIForm.$error" class="errors">
-                                            <div ng-message="isGeaterHundred" class="help-block error">You Cannot Enter KPI above 100</div>
+                                            <div ng-message="isGeaterHundred" class="help-block error pull-right">{{KPIErrorMsg}}</div>
                                         </div>
-                                        
                                     </td>
                                     <?php if($assignedAppraisalDetail['STAGE_ID']==7 || $keyAchievementDtlNum>0){ ?>
                                     <td></td>
@@ -444,7 +444,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         
                         <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')) ?'active':''?>" id="portlet_tab2_1">
-                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm">
+                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation">
                             <div class="row">
                                 <?php 
                                 $selfDisabled = ($questionForCurStage==0 && $appraiserAvailableAnswer===true)?'disabled':'';
@@ -712,7 +712,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </form>
                         </div>
                          <div class="tab-pane" id="portlet_tab2_4">
-                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm">
+                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation1">
                             <div class="row">
                                 <?php
                                 $selfDisabled1 = ($questionForCurStageAppraisee==0)?'disabled':'';
