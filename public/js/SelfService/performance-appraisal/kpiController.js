@@ -1,5 +1,5 @@
 angular.module('kpiModule', ['use', 'ngMessages'])
-        .controller("kpiController", function ($scope, $http,$window) {
+        .controller("kpiController", function ($scope, $http, $window) {
             $scope.KPIList = [];
             var employeeId = parseInt(angular.element(document.getElementById('employeeId')).val());
             var appraisalId = parseInt(angular.element(document.getElementById('appraisalId')).val());
@@ -10,9 +10,9 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 title: "",
                 successCriteria: "",
                 weight: "",
-                keyAchievement:"",
-                selfRating:"",
-                appraiserRating:"",
+                keyAchievement: "",
+                selfRating: "",
+                appraiserRating: "",
                 checkbox: "checkboxq0",
                 checked: false
             };
@@ -27,7 +27,8 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 }).then(function (success) {
                     $scope.$apply(function () {
                         var appraisalKPIList = success.data;
-                        var appraisalKPINum = (typeof success.data!=="undefined")?success.data.length:0;;
+                        var appraisalKPINum = (typeof success.data !== "undefined") ? success.data.length : 0;
+                        ;
                         console.log(appraisalKPIList);
                         if (appraisalKPINum > 0) {
                             $scope.counter = appraisalKPINum;
@@ -38,9 +39,9 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                                     title: appraisalKPIList[j].TITLE,
                                     successCriteria: appraisalKPIList[j].SUCCESS_CRITERIA,
                                     weight: parseInt(appraisalKPIList[j].WEIGHT),
-                                    keyAchievement:appraisalKPIList[j].KEY_ACHIEVEMENT,
-                                    selfRating:parseInt(appraisalKPIList[j].SELF_RATING),
-                                    appraiserRating:parseInt(appraisalKPIList[j].APPRAISER_RATING),
+                                    keyAchievement: appraisalKPIList[j].KEY_ACHIEVEMENT,
+                                    selfRating: parseInt(appraisalKPIList[j].SELF_RATING),
+                                    appraiserRating: parseInt(appraisalKPIList[j].APPRAISER_RATING),
                                     checkbox: "checkboxq" + j,
                                     checked: false
                                 }));
@@ -63,42 +64,47 @@ angular.module('kpiModule', ['use', 'ngMessages'])
             $scope.KPIErrorMsg = "";
             $scope.sumAllTotal = function (list) {
                 var total = 0;
-                console.log(list.length);
-                console.log(list[0].weight);
-                angular.forEach(list, function (item) {
-                    var total1 = parseInt(item.weight);
-                    total += parseInt(total1);
-                });
-                if(list.length==1 && list[0].weight==100){
-                    $scope.sumTotal = true;
-                    $scope.KPIErrorMsg="A single KPI weight should not be 100%";
-                }else{
-                    if (total > 100) {
+                if (typeof list !== 'undefined' && list.length>0) {
+                    console.log(list.length);
+                    console.log(list[0].weight);
+                    angular.forEach(list, function (item) {
+                        var total1 = parseInt(item.weight);
+                        total += parseInt(total1);
+                    });
+                    if (list.length == 1 && list[0].weight == 100) {
                         $scope.sumTotal = true;
-                        $scope.KPIErrorMsg="Total Weight Must be 100%.The total weight of your KPI is "+total;
-                    } else if(total<100){
-                        $scope.sumTotal = true;
-                        $scope.KPIErrorMsg="Total weight must be 100%. The total weight of your KPI is "+total;
-                    }else {
-                        $scope.sumTotal = false;
-                        $scope.KPIErrorMsg="";
+                        $scope.KPIErrorMsg = "A single KPI weight should not be 100%";
+                    } else {
+                        if (total > 100) {
+                            $scope.sumTotal = true;
+                            $scope.KPIErrorMsg = "Total Weight Must be 100%.The total weight of your KPI is " + total;
+                        } else if (total < 100) {
+                            $scope.sumTotal = true;
+                            $scope.KPIErrorMsg = "Total weight must be 100%. The total weight of your KPI is " + total;
+                        } else {
+                            $scope.sumTotal = false;
+                            $scope.KPIErrorMsg = "";
+                        }
                     }
                 }
             }
-            $scope.calculateAnnualRating = function(list){
+            $scope.calculateAnnualRating = function (list) {
                 var total = 0;
-                console.log(list);
-                angular.forEach(list, function (item) {
-                    var weight = parseInt(item.weight);
-                    var appraiserRating = parseInt(item.appraiserRating);
-                    var total1 = appraiserRating*(weight/100);
-                    total += parseFloat(total1);
-                });
-                console.log(total);
+                if (typeof list !== 'undefined' && list.length>0) {
+                    console.log(list);
+                    angular.forEach(list, function (item) {
+                        var weight = parseInt(item.weight);
+                        var appraiserRating = parseInt(item.appraiserRating);
+                        var total1 = appraiserRating * (weight / 100);
+                        total += parseFloat(total1);
+                    });
+                    console.log(total);
 //                $scope.annualRating = total;
-                var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
-                angular.element(document.getElementById('appraiserOverallRating')).val((window.app.floatToRound(total, 2)) + annualRatingCompetency);
-                return window.app.floatToRound(total, 2);;
+                    var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
+                    angular.element(document.getElementById('appraiserOverallRating')).val((window.app.floatToRound(total, 2)) + annualRatingCompetency);
+                    return window.app.floatToRound(total, 2);
+                    ;
+                }
             }
             $scope.addKPI = function () {
                 console.log("hellow");
@@ -108,9 +114,9 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                     title: "",
                     successCriteria: "",
                     weight: "",
-                    keyAchievement:"",
-                    selfRating:"",
-                    appraiserRating:"",
+                    keyAchievement: "",
+                    selfRating: "",
+                    appraiserRating: "",
                     checkbox: "checkboxq" + $scope.counter,
                     checked: false
                 }));
@@ -145,6 +151,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 console.log("form is going to be submitted");
                 if ($scope.KPIForm.$valid) {
                     var annualRating = parseFloat(angular.element(document.getElementById('annualRating')).val());
+                    var currentUser = angular.element(document.getElementById('currentUser')).val();
                     console.log(annualRating);
                     App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.restfulUrl, {
@@ -153,21 +160,22 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                             KPIList: $scope.KPIList,
                             employeeId: employeeId,
                             appraisalId: appraisalId,
-                            annualRatingKPI:annualRating
+                            annualRatingKPI: annualRating,
+                            currentUser: currentUser
                         },
                     }).then(function (success) {
                         $scope.$apply(function () {
                             console.log(success);
-                            
-                            if(currentStageId!=7){
+
+                            if (currentStageId != 7) {
                                 $('.nav-tabs a[href="#portlet_tab2_COM"]').tab('show');
                                 $scope.KPIList = [];
                                 $scope.viewKPIList();
                                 App.unblockUI("#hris-page-content");
                             }
-                            if(currentStageId==7){
+                            if (currentStageId == 7) {
                                 $window.location.href = document.listurl;
-                                $window.localStorage.setItem("msg","Appraisal Successfully Submitted!!!");
+                                $window.localStorage.setItem("msg", "Appraisal Successfully Submitted!!!");
                             }
                         });
                     }, function (failure) {

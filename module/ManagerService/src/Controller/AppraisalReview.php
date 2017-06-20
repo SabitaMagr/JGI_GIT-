@@ -22,6 +22,8 @@ use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AppraisalCompetenciesRepo;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Model\AppraisalStatus;
+use Notification\Model\NotificationEvents;
+use Notification\Controller\HeadNotification;
 
 class AppraisalReview extends AbstractActionController{
     
@@ -128,7 +130,9 @@ class AppraisalReview extends AbstractActionController{
         if($request->isPost()){
             try{
                 $appraisalAnswerModel = new AppraisalAnswer();
+                $appraisalStatus = new AppraisalStatus();
                 $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
+                $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
                 $reviewerAgree = (gettype($postData['reviewerAgree'])=='undefined')?null:$postData['reviewerAgree'];
@@ -179,11 +183,18 @@ class AppraisalReview extends AbstractActionController{
                         $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]);
                     break;
                     case 3: 
-                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE=>$reviewerAgree], $appraisalId, $employeeId);
+                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE=>$reviewerAgree,AppraisalStatus::REVIEWED_BY=> $this->employeeId], $appraisalId, $employeeId);
                         $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
                         $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
-                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWED_BY=> $this->employeeId], $appraisalId, $employeeId);
                         
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                        if($reviewerAgree==='Y'){
+                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                        }
+                        $adminList1 = $employeeRepo->fetchByAdminFlagList();
+                        foreach($adminList1 as $adminRow1){
+                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                        }
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-review");
                     break;

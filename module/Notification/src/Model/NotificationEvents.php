@@ -79,4 +79,11 @@ class NotificationEvents {
     const TRAVEL_SUBSTITUTE_REJECTED = 59;
     
     const FORGOT_PASSWORD = 60;
+    
+    const KPI_SETTING = 61;
+    const KPI_APPROVED = 62;
+    const KEY_ACHIEVEMENT = 63;
+    const APPRAISAL_EVALUATION = 64;
+    const APPRAISAL_REVIEW = 65;
+    const APPRAISEE_FEEDBACK = 66;
 }

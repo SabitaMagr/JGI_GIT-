@@ -205,6 +205,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
+                        <input type='hidden' value="appraisee" id="currentUser" />
                         <?php 
                         $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID']!=1)?"disabled":""; 
                         $disabledKeyAchievement = ($assignedAppraisalDetail['STAGE_ID']!=7)?"disabled":""; 
@@ -443,7 +444,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         
                         <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')) ?'active':''?>" id="portlet_tab2_1">
-                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation1">
+                            <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation">
                             <div class="row">
                                 <?php 
                                 $selfDisabled = ($questionForCurStage==0 && $appraiserAvailableAnswer===true)?'disabled':'';

@@ -1458,7 +1458,7 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullEmployeeList($data) {
-        $emplyoeeId = $data['employeeId'];
+        $$employeeId = $data['employeeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -1467,7 +1467,7 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $employeeList = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
+        $employeeList = $repository->filterRecords($$employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
 
         return [
             'success' => true,
@@ -3409,10 +3409,13 @@ class RestfulService extends AbstractRestfulController {
         $KPIList = $data['KPIList'];
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
+        $currentUser = $data['currentUser'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
         $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
+        $appraisalStatus = new AppraisalStatus();
+        $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         try{
             foreach($KPIList as $KPIRow){
@@ -3447,6 +3450,18 @@ class RestfulService extends AbstractRestfulController {
                 $annualRatingKPI = $data['annualRatingKPI'];
                 $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::ANNUAL_RATING_KPI=>$annualRatingKPI], $appraisalId, $employeeId);
                 $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$annualRatingKPI], $appraisalId, $employeeId);
+            }
+            if($assignedAppraisalDetail['STAGE_ID']==7){
+                switch ($currentUser){
+                    case 'appraisee':
+                        HeadNotification::pushNotification(NotificationEvents::KEY_ACHIEVEMENT, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        HeadNotification::pushNotification(NotificationEvents::KEY_ACHIEVEMENT, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                        $adminList = $employeeRepository->fetchByAdminFlagList();
+                        foreach($adminList as $adminRow){
+                            HeadNotification::pushNotification(NotificationEvents::KEY_ACHIEVEMENT, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                        }
+                    break;
+                }
             }
         }catch(Exception $e){
             $responseData = [
@@ -3513,10 +3528,13 @@ class RestfulService extends AbstractRestfulController {
         $competenciesList = $data['competenciesList'];
         $employeeId = $data['employeeId'];
         $appraisalId = $data['appraisalId'];
+        $currentUser = $data['currentUser'];
         $loggedInUser = $this->loggedIdEmployeeId;
         $loggedInUserDtl = $employeeRepository->getById($loggedInUser);
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
         $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
+        $appraisalStatus = new AppraisalStatus();
+        $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         try{
             foreach($competenciesList as $competenciesRow){
@@ -3547,6 +3565,41 @@ class RestfulService extends AbstractRestfulController {
                 $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::ANNUAL_RATING_COMPETENCY=>$annualRatingCompetency], $appraisalId, $employeeId);
                 $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$appraiserOverallRating], $appraisalId, $employeeId);
             }
+            if($assignedAppraisalDetail['STAGE_ID']==1){
+                switch ($currentUser){
+                    case 'appraisee':
+                        HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                        if($assignedAppraisalDetail['ALT_APPRAISER_ID']!=null && $assignedAppraisalDetail['ALT_APPRAISER_ID']!=""){
+                            HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['ALT_APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                        }
+                        if($assignedAppraisalDetail['ALT_REVIEWER_ID']!=null && $assignedAppraisalDetail['ALT_REVIEWER_ID']!=""){
+                            HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['ALT_REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        }
+                        $adminList = $employeeRepository->fetchByAdminFlagList();
+                        foreach($adminList as $adminRow){
+                            HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                        }
+                    break;
+                    case 'appraiser':
+                        HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->loggedIdEmployeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->loggedIdEmployeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                        $adminList1 = $employeeRepository->fetchByAdminFlagList();
+                        foreach($adminList1 as $adminRow1){
+                            HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->loggedIdEmployeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                        }
+                    break;
+                    case 'reviewer':
+                        HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->loggedIdEmployeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                        HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->loggedIdEmployeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                        $adminList1 = $employeeRepository->fetchByAdminFlagList();
+                        foreach($adminList1 as $adminRow1){
+                            HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->loggedIdEmployeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                        }
+                    break;
+                }
+            }
+            
         }catch(Exception $e){
             $responseData = [
                 "success" => false,

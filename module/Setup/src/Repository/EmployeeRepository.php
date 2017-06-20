@@ -229,7 +229,10 @@ class EmployeeRepository implements RepositoryInterface {
         $select = $sql->select();
 
         $select->columns(
-                EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+                EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [
+                    HrEmployees::FIRST_NAME,
+                    HrEmployees::MIDDLE_NAME,
+                    HrEmployees::LAST_NAME], [
                     HrEmployees::BIRTH_DATE,
                     HrEmployees::FAM_SPOUSE_BIRTH_DATE,
                     HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
@@ -406,6 +409,11 @@ class EmployeeRepository implements RepositoryInterface {
     public function fetchByAdminFlag() {
         $result = $this->gateway->select(["IS_ADMIN='Y'"]);
         return $result->current()->getArrayCopy();
+    }
+
+    public function fetchByAdminFlagList() {
+        $result = $this->gateway->select(["IS_ADMIN='Y' AND STATUS='E'"]);
+        return $result;
     }
 
     public function fetchEmployeeFullNameList() {

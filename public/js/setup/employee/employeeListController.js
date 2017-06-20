@@ -6,20 +6,18 @@
             app.errorMessage("No List to export data from.", "Alert");
         });
 
-        app.searchTable('employeeTable', ['FIRST_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
+        app.searchTable('employeeTable', ['FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
 
         app.pdfExport(
                 'employeeTable',
                 {
-                    'FIRST_NAME': ' Name',
-                    'MIDDLE_NAME': 'middleName',
-                    'LAST_NAME': 'lastname',
-                    'MOBILE_NO': 'mobile',
-                    'BIRTH_DATE': 'birthdate',
-                    'COMPANY_NAME': 'companyName',
-                    'BRANCH_NAME': 'BranchName',
-                    'DEPARTMENT_NAME': 'departmentName',
-                    'DESIGNATION_TITLE': 'designation'
+                    'FULL_NAME': 'Full Name',
+                    'MOBILE_NO': 'Mobile',
+                    'BIRTH_DATE': 'Birth Date',
+                    'COMPANY_NAME': 'Company',
+                    'BRANCH_NAME': 'Branch',
+                    'DEPARTMENT_NAME': 'Department',
+                    'DESIGNATION_TITLE': 'Designation'
                 }
         );
     });
@@ -28,27 +26,6 @@
 angular.module('hris', [])
         .controller('employeeListController', function ($scope, $http, $window) {
             var displayKendoFirstTime = true;
-//            $scope.gridData = new kendo.data.ObservableArray([
-//            ]);
-//            $scope.gridColumns = [
-//                {field: "employeeCode", title: "Employee Code"},
-//                {field: "firstName", title: "Name"},
-//                {field: "birthDate", title: "Birth Date"},
-//                {field: "mobileNo", title: "Mobile No"},
-//                {field: "emailOfficial", title: "Email Official"},
-//                {title: "Action"}
-//            ];
-//            $scope.kendoGridOptions = {
-//                height: 550,
-//                scrollable: true,
-//                sortable: true,
-//                filterable: true,
-//                rowTemplate: kendo.template($("#rowTemplate").html()),
-//                pageable: {
-//                    input: true,
-//                    numeric: false
-//                },
-//            };
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
@@ -110,8 +87,7 @@ angular.module('hris', [])
                     },
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-//                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 130},
-                        {field: "FIRST_NAME", title: "Name", width: 180},
+                        {field: "FULL_NAME", title: "Full Name", width: 180},
                         {field: "MOBILE_NO", title: "Mobile No", width: 110},
                         {field: "BIRTH_DATE", title: "Birth Date", width: 110},
                         {field: "COMPANY_NAME", title: "Company", width: 110},
@@ -218,15 +194,9 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        if (dataItem.MIDDLE_NAME != null) {
-                            var MIDDLE_NAME = " " + dataItem.MIDDLE_NAME + " ";
-                        } else {
-                            var MIDDLE_NAME = " ";
-                        }
-                        var employeeName = dataItem.FIRST_NAME + MIDDLE_NAME + dataItem.LAST_NAME;
                         rows.push({
                             cells: [
-                                {value: employeeName},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.NAME_NEPALI},
                                 {value: dataItem.GENDER_NAME},
                                 {value: dataItem.BIRTH_DATE},

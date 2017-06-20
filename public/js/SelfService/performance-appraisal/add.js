@@ -1,8 +1,6 @@
-(function ($) {
+(function ($,app) {
     'use strict';
     $(document).ready(function () {
-        $("#selfEvaluation1").on("submit", function () {
-            App.blockUI({target: "#hris-page-content"});
-        });
+        app.setLoadingOnSubmit("selfEvaluation1");
     });
-})(window.jQuery);
+})(window.jQuery,window.app);

@@ -66,9 +66,7 @@ class EmployeeController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $employees = $this->repository->fetchAll();
         return Helper::addFlashMessagesToArray($this, [
-                    'list' => $employees,
                     'searchValues' => ApplicationHelper::getSearchData($this->adapter)
         ]);
     }
@@ -527,10 +525,10 @@ class EmployeeController extends AbstractActionController {
 
         $employeeFileRepo = new EmployeeFile($this->adapter);
         $employeeFile = $employeeFileRepo->fetchByEmpId($id);
-        
+
         $assetRepo = new IssueRepository($this->adapter);
         $assetDetails = $assetRepo->fetchAssetByEmployee($id);
-        
+
 //        echo '<pre>';
 //        print_r($assetDetails);
 //        die();
@@ -556,8 +554,7 @@ class EmployeeController extends AbstractActionController {
                     'empTrainingList' => $empTrainingList,
                     'jobHistoryList' => $jobHistoryList,
                     "employeeFile" => $employeeFile,
-                    "assetDetails" =>$assetDetails
-            
+                    "assetDetails" => $assetDetails
         ]);
     }
 

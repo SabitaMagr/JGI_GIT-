@@ -14,6 +14,7 @@ use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
@@ -96,6 +97,14 @@ class EntityHelper {
 
         $objAttrs = array_keys(get_object_vars($table));
         $objCols = [];
+        if (HrEmployees::class == $requestedName) {
+            $pre = "";
+            if ($shortForm != null) {
+                $pre = $shortForm;
+            }
+            $fullNameExpression = new Expression("FULL_NAME({$pre}.FIRST_NAME,{$pre}.MIDDLE_NAME,{$pre}.LAST_NAME) AS FULL_NAME");
+            array_push($objCols, $inStringForm ? $fullNameExpression->getExpression() : $fullNameExpression);
+        }
 
         foreach ($objAttrs as $objAttr) {
             if ('mappings' === $objAttr) {
@@ -132,7 +141,6 @@ class EntityHelper {
                 array_push($objCols, $inStringForm ? $minuteToHour->getExpression() : $minuteToHour);
                 continue;
             }
-
 
             if (!$selectedOnly) {
                 array_push($objCols, Helper::columnExpression($tempCol, $shortForm));

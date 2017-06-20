@@ -173,9 +173,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="<?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N') && ($tab==1)) ?'active':''?>">
                                 <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                             </li>
-                            <?php } 
-                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')){
-                            ?>
+                            <?php }?>
                             <?php if(count($appraiserQuestionTemplate)>0 && $appraiserAvailableAnswer==true){ ?>
                             <li class="<?= ($tab==2)?"active":""; ?>">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
@@ -185,8 +183,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="<?= ($tab==3)?"active":""; ?>">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                             </li>
-                            <?php } 
-                            }?>
+                            <?php } ?>
                             <?php if(count($appraiseeQuestionTemplate)>0 && $appraiseeAvailableAnswer==true){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
@@ -213,7 +210,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <th>Key Achievement</th>
                                     <th>Self Rating</th>
                                     <?php } ?>
-                                    <?php if($appraiserRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ ?>
+                                    <?php if($appraiserRatingDtlNum>0){ ?>
                                     <th>Appraiser Rating</th>
                                     <?php } ?>
                                 </tr>
@@ -262,7 +259,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </td>
                                     <?php } ?>
-                                    <?php if($appraiserRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ ?>
+                                    <?php if($appraiserRatingDtlNum>0){ ?>
                                     <td style="width: 10%">
                                         <input type="number" name="appraiserRating_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.appraiserRating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
                                         <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
@@ -273,7 +270,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
-                                <?php if($appraiserRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ ?>
+                                <?php if($appraiserRatingDtlNum>0){ ?>
                                 <tr>
                                     <td colspan="6">
                                         ANNUAL RATING ON KEY PERFORMANCE INDICATOR:
@@ -294,7 +291,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <tr>
                                     <th style="width:5%;">S.N.</th>
                                     <th>Competencies</th>
-                                    <?php if($appCompetenciesRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){?>
+                                    <?php if($appCompetenciesRatingDtlNum>0){?>
                                     <th>Rating</th>
                                     <th>Appraiser's Comments</th>
                                     <?php } ?>
@@ -310,7 +307,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             </ul>
                                         </div>
                                     </td>
-                                    <?php if($appCompetenciesRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){?>
+                                    <?php if($appCompetenciesRatingDtlNum>0){?>
                                     <td width='10%'>
                                         <input type="text" name="rating_{{competencies.checkbox}}" value="" size="3" ng-model="competencies.rating" required="required" min="0" step='1' style=" width:100%;" disabled='disabled'/>
                                         <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
@@ -329,7 +326,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <?php } ?>
                                 </tr>
-                                <?php if($appCompetenciesRatingDtlNum>0 && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y'){ 
+                                <?php if($appCompetenciesRatingDtlNum>0){ 
                                     ?>
                                 <tr>
                                     <td colspan="2">
