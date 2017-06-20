@@ -78,13 +78,14 @@ class IssueController extends AbstractActionController {
         $assetStatusFormElement->setAttributes(["id" => "assetStatusId", "class" => "form-control"]);
         $assetStatusFormElement->setLabel("Status");
         
+        
+        $assetList=$this->repository->getAssetListByType();
+        
+        echo '<pre>';
+        print_r($assetList);
+        die();
+        
 
-
-//        $result = $this->repository->fetchAll();
-//        $list = [];
-//        foreach ($result as $row) {
-//            array_push($list, $row);
-//        }
         return Helper::addFlashMessagesToArray($this, [
 //                    'issue' => $list,
                     'assetType' => $assetTypeFormElement,

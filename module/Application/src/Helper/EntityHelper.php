@@ -100,9 +100,9 @@ class EntityHelper {
         if (HrEmployees::class == $requestedName) {
             $pre = "";
             if ($shortForm != null) {
-                $pre = $shortForm;
+                $pre = $shortForm.".";
             }
-            $fullNameExpression = new Expression("FULL_NAME({$pre}.FIRST_NAME,{$pre}.MIDDLE_NAME,{$pre}.LAST_NAME) AS FULL_NAME");
+            $fullNameExpression = new Expression("FULL_NAME({$pre}FIRST_NAME,{$pre}MIDDLE_NAME,{$pre}LAST_NAME) AS FULL_NAME");
             array_push($objCols, $inStringForm ? $fullNameExpression->getExpression() : $fullNameExpression);
         }
 

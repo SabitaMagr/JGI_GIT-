@@ -131,11 +131,35 @@ class IssueRepository implements RepositoryInterface {
         }
         return $list;
     }
+    
+    
+    public function getAssetListByType(){
+        
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Group::class, null, null, null, null, null, "AG"), false);
+        $select->from(['AG' => Group::TABLE_NAME])
+                ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_GROUP_ID . '=AG.' . Setup::ASSET_GROUP_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left");
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+
+        $list = [];
+
+            $temp=[];
+        foreach ($result as $data) {
+//            $temp[$data['ASSET_GROUP_ID']]= array_push();
+            $temp[$data['ASSET_GROUP_ID']]=$data;
+//            array_push($list, $temp);
+        }
+        return $temp;
+//        return $list;
+        
+        
+    }
 
     public function getFilteredRecord($data) {
         
-        
-        $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
