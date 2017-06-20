@@ -14,7 +14,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/asset/issue/index.js'))
+        ->appendFile($this->basePath('js/asset/issue/view.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 
 $this->headScript()
@@ -44,7 +44,7 @@ if ($this->messages) { ?>
 
 
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\assetIssue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\assetSetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -130,7 +130,8 @@ if ($this->messages) { ?>
         <h4 class="modal-title">Asset Return</h4>
       </div>
       <div class="modal-body">
-          <form action="<?=$assetReturnUrl?>" method="post">
+          <form action="<?=$assetReturnUrl?>" id="assetReturnForm" method="post">
+              <input  name="redirectPage" type="hidden" value="ViewPage">
               <input id="assetId" name="assetId" type="hidden">
               <input id="issueId" name="issueId" type="hidden">
               <input id="issueBal" name="issueBal" type="hidden">
