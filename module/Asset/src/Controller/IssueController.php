@@ -2,9 +2,12 @@
 
 namespace Asset\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
 use Asset\Form\IssueForm;
+use Asset\Model\Group;
 use Asset\Model\Issue;
 use Asset\Model\Setup;
 use Asset\Repository\IssueRepository;
@@ -15,6 +18,7 @@ use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class IssueController extends AbstractActionController {
@@ -38,13 +42,55 @@ class IssueController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $result = $this->repository->fetchAll();
-        $list = [];
-        foreach ($result as $row) {
-            array_push($list, $row);
-        }
+
+        //form element for asst type
+
+        $assetTypeFormElement = new Select();
+        $assetTypeFormElement->setName("asset");
+        $assetTypes = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC", NULL, FALSE, TRUE);
+        $assetType1 = [-1 => "All Asset Type"] + $assetTypes;
+        $assetTypeFormElement->setValueOptions($assetType1);
+        $assetTypeFormElement->setAttributes(["id" => "assetTypeId", "class" => "form-control"]);
+        $assetTypeFormElement->setLabel("Type");
+
+        //form element for asset
+        $assetFormElement = new Select();
+        $assetFormElement->setName("asset");
+        $assets = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E"], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE);
+        $asset1 = [-1 => "All Asset"] + $assets;
+        $assetFormElement->setValueOptions($asset1);
+        $assetFormElement->setAttributes(["id" => "asset", "class" => "form-control"]);
+        $assetFormElement->setLabel("Asset");
+        
+        
+        //form element for asset status
+        $assetStatus = [
+            '-1' => 'All Status',
+            'CUR' => 'Current',
+            'NR' => 'Not Returnable',
+            'R' => 'Returnable',
+            'RED' => 'Returned'
+        ];
+        
+        $assetStatusFormElement = new Select();
+        $assetStatusFormElement->setName("assetStatus");
+        $assetStatusFormElement->setValueOptions($assetStatus);
+        $assetStatusFormElement->setAttributes(["id" => "assetStatusId", "class" => "form-control"]);
+        $assetStatusFormElement->setLabel("Status");
+        
+
+
+//        $result = $this->repository->fetchAll();
+//        $list = [];
+//        foreach ($result as $row) {
+//            array_push($list, $row);
+//        }
         return Helper::addFlashMessagesToArray($this, [
-                    'issue' => $list
+//                    'issue' => $list,
+                    'assetType' => $assetTypeFormElement,
+                    'assets' => $assetFormElement,
+                    'assetStatus' => $assetStatusFormElement,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -71,7 +117,7 @@ class IssueController extends AbstractActionController {
 
                 $remQty = $request->getPost()['balance'];
                 $newRemQty = $remQty - $issue->quantity;
-                
+
 //                echo '<pre>';
 //                print_r($issue);
 //                die();
@@ -126,9 +172,9 @@ class IssueController extends AbstractActionController {
                     'id' => $id
         ]);
 
-        echo "<pre>";
-        print_r($issue);
-        die();
+//        echo "<pre>";
+//        print_r($issue);
+//        die();
     }
 
     public function viewAction() {
@@ -159,20 +205,24 @@ class IssueController extends AbstractActionController {
     }
 
     public function returnAssetAction() {
-        $id = $this->params()->fromRoute('id');
-        if ($id == 0) {
-            $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
-        }
         $this->initializeForm();
         $request = $this->getRequest();
         $issue = new Issue();
+        $redirectLink= $this->redirect()->toRoute('assetIssue', ['action' => 'index']);
         if ($request->isPost()) {
 
             $postdata = $request->getPost();
+            $redirectPage = $postdata['redirectPage'];
             $assetId = $postdata['assetId'];
             $issueId = $postdata['issueId'];
             $issueBal = $postdata['issueBal'];
             $returnedDate = $postdata['returndeDate'];
+            
+            if($redirectPage=='indexPage'){
+                $redirectLink= $this->redirect()->toRoute('assetIssue', ['action' => 'index']);
+            }else{
+                $redirectLink= $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $assetId]);
+            }
 
             if (!empty($assetId) && !empty($assetId) && !empty($issueId) && !empty($issueBal)) {
                 $issue->modifiedDate = Helper::getcurrentExpressionDate();
@@ -192,10 +242,11 @@ class IssueController extends AbstractActionController {
                 }
 
                 $this->flashmessenger()->addMessage("Asset return Sucessfully recorded");
-                return $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
+                
+                return $redirectLink;
             }
         } else {
-            $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $id]);
+            return $redirectLink;
         }
     }
 
@@ -217,6 +268,26 @@ class IssueController extends AbstractActionController {
             ];
         }
         return $imageData;
+    }
+    
+    
+    public function getAssetIssueListAction(){
+        
+        $request = $this->getRequest();
+        $postValue = $request->getPost();
+        $postData=$postValue['data'];
+        $result=$this->repository->getFilteredRecord($postData);
+        
+        $list = [];
+        foreach ($result as $row) {
+            array_push($list, $row);
+        }
+        return new CustomViewModel([
+            "success" => "true",
+            "data" => $list,
+            "postDate" => $postData,
+            "num" => count($list),
+        ]);
     }
 
 }

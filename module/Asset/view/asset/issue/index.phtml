@@ -11,8 +11,10 @@ $this->headLink()
 
 
 $this->headScript()
+        ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/asset/issue/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 
@@ -31,10 +33,18 @@ if ($this->messages) { ?>
 ?>
     
 <script>
-    document.issue =<?= json_encode($issue) ?>;
+    document.ids=<?php echo json_encode(["assetTypeId"=>-1,"asset"=>-1,"assetStatusId"=>-1]) ?>;
+    document.url = '<?= $this->url("assetIssue", ["action" => "getAssetIssueList"]) ?>';
+    document.issue =[];
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 
 <?php 
+
+
+//echo '<pre>';
+//print_r($assets);
+//die();
     $assetReturnUrl=$this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
     ?>
 
@@ -45,7 +55,7 @@ if ($this->messages) { ?>
     <?= $this->navigation('Zend\Navigation\assetIssue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
-<div class="margin-top-20">
+<div id="leaveStatusList" ng-app="hris" ng-controller="assetListController">
     
     <div class="portlet light bg-inverse">
         
@@ -69,6 +79,73 @@ if ($this->messages) { ?>
                 </div>
             </div>
         </div>
+        
+         <div class="portlet-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <select class="form-control" name="company" id="companyId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="branchId" id="branchId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="department" id="departmentId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="designation" id="designationId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="position" id="positionId">
+                    </select>
+                </div>
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceType" id="serviceTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="employee" id="employeeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <?php print $this->formElement($assetType); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?php print $this->formElement($assets); ?>
+                </div> 
+                
+            </div>
+            <div class="row margin-top-10">
+            
+                <div class="col-sm-2">
+                    <?php print $this->formElement($assetStatus); ?>
+                </div> 
+                
+                
+                
+                <div class="col-sm-10">
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        
 
     <div id="assetIssueTable">
 
@@ -126,8 +203,9 @@ if ($this->messages) { ?>
         <h4 class="modal-title">Asset Return</h4>
       </div>
       <div class="modal-body">
-          <form action="<?=$assetReturnUrl?>" method="post">
-              <input id="assetId" name="assetId" type="hidden">
+          <form action="<?=$assetReturnUrl?>" id="assetReturnForm" method="post">
+              <input  name="redirectPage" type="hidden" value="indexPage">
+              <input id="assetId" name="assetId" type="hidden" >
               <input id="issueId" name="issueId" type="hidden">
               <input id="issueBal" name="issueBal" type="hidden">
           <div class="row">
