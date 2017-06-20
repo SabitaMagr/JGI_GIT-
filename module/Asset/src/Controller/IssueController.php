@@ -78,13 +78,6 @@ class IssueController extends AbstractActionController {
         $assetStatusFormElement->setAttributes(["id" => "assetStatusId", "class" => "form-control"]);
         $assetStatusFormElement->setLabel("Status");
         
-        
-        $assetList=$this->repository->getAssetListByType();
-        
-        echo '<pre>';
-        print_r($assetList);
-        die();
-        
 
         return Helper::addFlashMessagesToArray($this, [
 //                    'issue' => $list,
@@ -286,9 +279,27 @@ class IssueController extends AbstractActionController {
         return new CustomViewModel([
             "success" => "true",
             "data" => $list,
-            "postDate" => $postData,
             "num" => count($list),
         ]);
+    }
+    
+    public function getAssetFilterListAction(){
+        $request = $this->getRequest();
+        $postValue = $request->getPost();
+        $assetTypeId=$postValue['assetTypeId'];
+        if($assetTypeId==-1){
+            $assetList = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E"], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE);
+        }else{
+            $assetList = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E","ASSET_GROUP_ID"=>$assetTypeId], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE);
+        }
+  
+        return new CustomViewModel([
+            "success" => "true",
+            "data" => $assetList,
+            "postData" => $assetTypeId,
+            "num" => count($assetList)
+        ]);
+        
     }
 
 }

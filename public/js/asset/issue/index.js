@@ -4,13 +4,13 @@
     $(document).ready(function () {
         $("select").select2();
         app.datePickerWithNepali('returnedDate', 'returnedDateNepali');
-        
+
         $("#assetReturnForm").submit(function () {
-                        App.blockUI({target: "form"});
-            });
-        
-        
-        
+            App.blockUI({target: "form"});
+        });
+
+
+
 
 //        $("#export").click(function (e) {
 //            var grid = $("#assetIssueTable").data("kendoGrid");
@@ -22,7 +22,7 @@
 
         $("#assetIssueTable").on("click", "#btnReturn", function () {
             $('#myModal').modal('show');
-            
+
 
             $('#returnedDate').val('');
             $('#returnedDateNepali').val('');
@@ -50,10 +50,25 @@
 //            console.log(selectedIssueId);
 
             console.log(selectedassetId);
-            
+
             $('#assetId').val(selectedassetId);
             $('#issueId').val(selectedIssueId);
             $('#issueBal').val(selectedQuantity);
+
+        });
+
+        $('#assetTypeId').on('change', function () {
+            var selectedAssetTypeId = $(this).val();
+
+            app.pullDataById(document.assetfilterListUrl, {
+                assetTypeId: selectedAssetTypeId
+            }).then(function (sucess) {
+                $("#asset").find('option').not(':first').remove();
+                var options = $("#asset");
+                $.each(sucess.data, function (id, val) {
+                    options.append($("<option />").val(id).text(val));
+                });
+            });
 
         });
 
@@ -88,7 +103,7 @@
 
 angular.module('hris', [])
         .controller("assetListController", function ($scope, $http) {
-            
+
             var displayKendoFirstTime = true;
 
             $scope.view = function () {
@@ -170,21 +185,21 @@ angular.module('hris', [])
                         {title: "Action", width: 120}
                     ],
                 });
-                
-                       app.searchTable('assetIssueTable', ['ASSET_EDESC', 'FIRST_NAME', 'ISSUE_DATE', 'QUANTITY', 'RETURN_DATE', 'RETURNED_DATE']);
 
-        app.pdfExport(
-                'assetIssueTable',
-                {
-                    'ASSET_EDESC': 'Asset',
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'Middle',
-                    'LAST_NAME': 'last',
-                    'ISSUE_DATE': 'Issue Date',
-                    'QUANTITY': 'Quantity',
-                    'RETURN_DATE': 'Return Date',
-                    'RETURNED_DATE': 'Retutned Date'
-                });
+                app.searchTable('assetIssueTable', ['ASSET_EDESC', 'FIRST_NAME', 'ISSUE_DATE', 'QUANTITY', 'RETURN_DATE', 'RETURNED_DATE']);
+
+                app.pdfExport(
+                        'assetIssueTable',
+                        {
+                            'ASSET_EDESC': 'Asset',
+                            'FIRST_NAME': 'Name',
+                            'MIDDLE_NAME': 'Middle',
+                            'LAST_NAME': 'last',
+                            'ISSUE_DATE': 'Issue Date',
+                            'QUANTITY': 'Quantity',
+                            'RETURN_DATE': 'Return Date',
+                            'RETURNED_DATE': 'Retutned Date'
+                        });
 
 
 
@@ -199,7 +214,10 @@ angular.module('hris', [])
                 }
                 ;
 
-
+                $("#export").click(function (e) {
+                    var grid = $("#assetIssueTable").data("kendoGrid");
+                    grid.saveAsExcel();
+                });
 
                 window.app.UIConfirmations();
 

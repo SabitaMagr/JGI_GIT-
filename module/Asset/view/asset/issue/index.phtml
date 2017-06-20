@@ -35,6 +35,7 @@ if ($this->messages) { ?>
 <script>
     document.ids=<?php echo json_encode(["assetTypeId"=>-1,"asset"=>-1,"assetStatusId"=>-1]) ?>;
     document.url = '<?= $this->url("assetIssue", ["action" => "getAssetIssueList"]) ?>';
+    document.assetfilterListUrl = '<?= $this->url("assetIssue", ["action" => "getAssetFilterList"]) ?>';
     document.issue =[];
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
