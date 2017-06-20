@@ -3570,6 +3570,9 @@ class RestfulService extends AbstractRestfulController {
                     case 'appraisee':
                         HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
                         HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+//                        if($assignedAppraisalDetail['ALT_APPRAISER_ID']!=null || $assignedAppraisalDetail['ALT_APPRAISER_ID']!=""){
+//                            HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['ALT_APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+//                        }
                         $adminList = $employeeRepository->fetchByAdminFlagList();
                         foreach($adminList as $adminRow){
                             HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
