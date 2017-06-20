@@ -1458,7 +1458,7 @@ class RestfulService extends AbstractRestfulController {
     }
 
     public function pullEmployeeList($data) {
-        $emplyoeeId = $data['employeeId'];
+        $$employeeId = $data['employeeId'];
         $branchId = $data['branchId'];
         $departmentId = $data['departmentId'];
         $designationId = $data['designationId'];
@@ -1467,7 +1467,7 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $employeeList = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
+        $employeeList = $repository->filterRecords($$employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId);
 
         return [
             'success' => true,
