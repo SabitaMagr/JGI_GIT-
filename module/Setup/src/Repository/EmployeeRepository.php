@@ -230,6 +230,7 @@ class EmployeeRepository implements RepositoryInterface {
 
         $select->columns(
                 EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [
+                    HrEmployees::FULL_NAME,
                     HrEmployees::FIRST_NAME,
                     HrEmployees::MIDDLE_NAME,
                     HrEmployees::LAST_NAME], [
