@@ -45,7 +45,7 @@ class IssueRepository implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, null, null, null, null, "AI"), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, [Issue::REQUEST_DATE, Issue::RETURN_DATE, Issue::RETURNED_DATE], null, null, null, "AI"), false);
         $select->from(['AI' => Issue::TABLE_NAME])
                 ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_ID . '=AI.' . Issue::ASSET_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left")
                 ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
@@ -60,7 +60,7 @@ class IssueRepository implements RepositoryInterface {
     public function fetchAllById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, null, null, null, null, "AI"), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, [Issue::REQUEST_DATE,Issue::ISSUE_DATE, Issue::RETURN_DATE, Issue::RETURNED_DATE], null, null, null, "AI"), false);
         $select->from(['AI' => Issue::TABLE_NAME])
                 ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_ID . '=AI.' . Issue::ASSET_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left")
                 ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
@@ -149,18 +149,18 @@ class IssueRepository implements RepositoryInterface {
         
         
         $sql="SELECT AI.ISSUE_ID       AS ISSUE_ID,
-                  AI.ISSUE_DATE          AS ISSUE_DATE,
+                  INITCAP(TO_CHAR(AI.ISSUE_DATE, 'DD-MON-YYYY'))          AS ISSUE_DATE,
                   AI.ASSET_ID            AS ASSET_ID,
                   AI.SNO                 AS SNO,
                   AI.EMPLOYEE_ID         AS EMPLOYEE_ID,
                   AI.QUANTITY            AS QUANTITY,
-                  AI.REQUEST_DATE        AS REQUEST_DATE,
-                  AI.RETURN_DATE         AS RETURN_DATE,
+                  INITCAP(TO_CHAR(AI.REQUEST_DATE, 'DD-MON-YYYY'))        AS REQUEST_DATE,
+                  INITCAP(TO_CHAR(AI.RETURN_DATE, 'DD-MON-YYYY'))         AS RETURN_DATE,
                   AI.PURPOSE             AS PURPOSE,
                   AI.RETURNABLE          AS RETURNABLE,
                   AI.AUTHORIZED_BY       AS AUTHORIZED_BY,
                   AI.RETURNED            AS RETURNED,
-                  AI.RETURNED_DATE       AS RETURNED_DATE,
+                  INITCAP(TO_CHAR(AI.RETURNED_DATE, 'DD-MON-YYYY'))       AS RETURNED_DATE,
                   AI.REMARKS             AS REMARKS,
                   AI.COMPANY_ID          AS COMPANY_ID,
                   AI.BRANCH_ID           AS BRANCH_ID,

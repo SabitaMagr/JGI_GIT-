@@ -98,7 +98,7 @@ return[
                 'route' => 'assetSetup',
                 'pages' => [
                         [
-                        'label' => 'Asset Setup List',
+                        'label' => 'Asset List',
                         'route' => 'assetSetup',
                         'action' => 'index',
                     ],
@@ -111,6 +111,11 @@ return[
                         'label' => 'Edit',
                         'route' => 'assetSetup',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'View',
+                        'route' => 'assetIssue',
+                        'action' => 'view',
                     ],
                 ],
             ],
@@ -125,7 +130,7 @@ return[
                 'route' => 'assetIssue',
                 'pages' => [
                         [
-                        'label' => 'Asset Issue List',
+                        'label' => 'Asset Issue Report',
                         'route' => 'assetIssue',
                         'action' => 'index',
                     ],
@@ -138,11 +143,6 @@ return[
                         'label' => 'Edit',
                         'route' => 'assetIssue',
                         'action' => 'edit',
-                    ],
-                        [
-                        'label' => 'View',
-                        'route' => 'assetIssue',
-                        'action' => 'view',
                     ],
                 ],
             ],
