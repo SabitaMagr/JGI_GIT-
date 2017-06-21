@@ -227,7 +227,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 130},
+                        {field: "FULL_NAME", title: "Employee Name", width: 130},
                         {field: "TRAINING_NAME", title: "Training Name", width: 120},
                         {field: "START_DATE", title: "Start Date", width: 80},
                         {field: "END_DATE", title: "End Date", width: 80},
@@ -238,14 +238,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('trainingAssignListTable',['FIRST_NAME','TRAINING_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','TRAINING_TYPE']);
+                app.searchTable('trainingAssignListTable',['FULL_NAME','TRAINING_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','TRAINING_TYPE']);
                 
                 app.pdfExport(
                 'trainingAssignListTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'middle',
-                    'LAST_NAME': 'last',
+                    'FULL_NAME': 'Name',
                     'TRAINING_NAME': 'Training',
                     'START_DATE': 'StartDate',
                     'END_DATE': 'EndDate',
@@ -292,10 +290,9 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},

@@ -96,6 +96,7 @@ class LoanApproveRepository implements RepositoryInterface{
                     INITCAP(E.FIRST_NAME) AS FIRST_NAME,
                     INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                     INITCAP(E.LAST_NAME) AS LAST_NAME,
+                    INITCAP(E.FULL_NAME) AS FULL_NAME,
                     INITCAP(L.LOAN_NAME) AS LOAN_NAME,
                     L.LOAN_CODE,
                     RA.RECOMMEND_BY as RECOMMENDER,

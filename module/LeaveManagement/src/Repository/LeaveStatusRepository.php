@@ -209,6 +209,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 INITCAP(E.FIRST_NAME) AS FIRST_NAME,
                 INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                 INITCAP(E.LAST_NAME) AS LAST_NAME,
+                INITCAP(E.FULL_NAME) AS FULL_NAME,
                 INITCAP(E1.FIRST_NAME) AS FN1,
                 INITCAP(E1.MIDDLE_NAME) AS MN1,
                 INITCAP(E1.LAST_NAME) AS LN1,

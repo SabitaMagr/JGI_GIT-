@@ -72,7 +72,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 150},
+                        {field: "FULL_NAME", title: "Employee", width: 150},
                         {field: "TRAINING_NAME", title: "Training", width: 110},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 110},
                         {field: "START_DATE", title: "Start Date", width: 110},
@@ -86,14 +86,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('trainingRequestStatusTable',['FIRST_NAME','TRAINING_NAME','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
+                app.searchTable('trainingRequestStatusTable',['FULL_NAME','TRAINING_NAME','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
                 
                  app.pdfExport(
                 'trainingRequestStatusTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'middle',
-                    'LAST_NAME': 'last',
+                    'FULL_NAME': 'Name',
                     'TRAINING_NAME': 'Training',
                     'REQUESTED_DATE': 'ReqDate',
                     'START_DATE': 'StartDate',
@@ -155,12 +153,11 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         var mn1 = dataItem.MN1 != null ? " " + dataItem.MN1 + " " : " ";
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.REQUESTED_DATE},
                                 {value: dataItem.START_DATE},

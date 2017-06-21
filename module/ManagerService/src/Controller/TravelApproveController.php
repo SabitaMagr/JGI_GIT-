@@ -88,6 +88,7 @@ class TravelApproveController extends AbstractActionController {
             $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
 
             $dataArray = [
+                'FULL_NAME' => $row['FULL_NAME'],
                 'FIRST_NAME' => $row['FIRST_NAME'],
                 'MIDDLE_NAME' => $row['MIDDLE_NAME'],
                 'LAST_NAME' => $row['LAST_NAME'],

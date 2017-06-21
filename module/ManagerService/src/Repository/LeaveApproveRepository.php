@@ -48,6 +48,7 @@ class LeaveApproveRepository implements RepositoryInterface
                 INITCAP(E.FIRST_NAME) AS FIRST_NAME,
                 INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                 INITCAP(E.LAST_NAME) AS LAST_NAME,
+                INITCAP(E.FULL_NAME) AS FULL_NAME,
                 LA.RECOMMENDED_BY,
                 LA.APPROVED_BY,
                 RA.RECOMMEND_BY AS RECOMMENDER,

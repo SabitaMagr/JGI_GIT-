@@ -123,9 +123,7 @@ angular.module('hris', [])
                 app.pdfExport(
                 'attendanceWidOTTable',
                 {
-                    'FIRST_NAME': ' Name',
-                    'MIDDLE_NAME': 'middleName',
-                    'LAST_NAME': 'lastname',
+                    'EMPLOYEE_NAME': ' Name',
                     'ATTENDANCE_DT': 'Attendance Date',
                     'IN_TIME': 'In Time',
                     'OUT_TIME': 'Out Time',
@@ -265,7 +263,6 @@ angular.module('hris', [])
 
                 for (var i = 0; i < data.length; i++) {
                     var dataItem = data[i];
-                    var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                     var details = [];
                     for (var j = 0; j < dataItem.DETAILS.length; j++) {
                         details.push(dataItem.DETAILS[j].START_TIME + "-" + dataItem.DETAILS[j].END_TIME);
@@ -273,7 +270,7 @@ angular.module('hris', [])
                     var details1 = details.toString();
                     rows.push({
                         cells: [
-                            {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                            {value: dataItem.EMPLOYEE_NAME},
                             {value: dataItem.ATTENDANCE_DT},
                             {value: dataItem.IN_TIME},
                             {value: dataItem.OUT_TIME},

@@ -107,6 +107,7 @@ class TrainingApproveRepository implements RepositoryInterface{
                     INITCAP(E.FIRST_NAME) AS FIRST_NAME,
                     INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                     INITCAP(E.LAST_NAME) AS LAST_NAME,
+                    INITCAP(E.FULL_NAME) AS FULL_NAME,
                     INITCAP(T.TRAINING_NAME) AS TRAINING_NAME,
                     T.TRAINING_CODE,
                     INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY')) AS T_START_DATE,

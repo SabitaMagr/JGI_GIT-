@@ -175,7 +175,8 @@ class IssueRepository implements RepositoryInterface {
                   INITCAP(S.ASSET_EDESC) AS ASSET_EDESC,
                   INITCAP(E.FIRST_NAME)  AS FIRST_NAME,
                   INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
-                  INITCAP(E.LAST_NAME)   AS LAST_NAME
+                  INITCAP(E.LAST_NAME)   AS LAST_NAME,
+                  INITCAP(E.FULL_NAME)   AS FULL_NAME
                 FROM HRIS_ASSET_ISSUE AI
                 LEFT JOIN HRIS_ASSET_SETUP S
                 ON S.ASSET_ID=AI.ASSET_ID

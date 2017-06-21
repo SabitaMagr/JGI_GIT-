@@ -177,7 +177,7 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "ASSET_EDESC", title: "Asset", width: 120},
-                        {field: "FIRST_NAME", title: "Employee ", width: 140},
+                        {field: "FULL_NAME", title: "Employee ", width: 140},
                         {field: "ISSUE_DATE", title: "Issue Date", width: 90},
                         {field: "QUANTITY", title: "Quantity ", width: 80},
                         {field: "RETURN_DATE", title: "ReturnDate", width: 130},
@@ -186,15 +186,13 @@ angular.module('hris', [])
                     ],
                 });
 
-                app.searchTable('assetIssueTable', ['ASSET_EDESC', 'FIRST_NAME', 'ISSUE_DATE', 'QUANTITY', 'RETURN_DATE', 'RETURNED_DATE']);
+                app.searchTable('assetIssueTable', ['ASSET_EDESC', 'FULL_NAME', 'ISSUE_DATE', 'QUANTITY', 'RETURN_DATE', 'RETURNED_DATE']);
 
                 app.pdfExport(
                         'assetIssueTable',
                         {
                             'ASSET_EDESC': 'Asset',
-                            'FIRST_NAME': 'Name',
-                            'MIDDLE_NAME': 'Middle',
-                            'LAST_NAME': 'last',
+                            'FULL_NAME': 'Name',
                             'ISSUE_DATE': 'Issue Date',
                             'QUANTITY': 'Quantity',
                             'RETURN_DATE': 'Return Date',

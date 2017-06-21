@@ -74,7 +74,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 200},
+                        {field: "FULL_NAME", title: "Employee", width: 200},
                         {field: "TITLE", title: "Training", width: 120},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
                         {field: "START_DATE", title: "Start Date", width: 100},
@@ -87,14 +87,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('trainingRequestStatusTable',['FIRST_NAME','TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','YOUR_ROLE','STATUS']);
+                app.searchTable('trainingRequestStatusTable',['FULL_NAME','TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','YOUR_ROLE','STATUS']);
                 
                 app.pdfExport(
                 'trainingRequestStatusTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'TRAINING_NAME': 'Training',
                     'REQUESTED_DATE': 'Req.Date',
                     'START_DATE': 'StartDate',
@@ -127,7 +125,6 @@ angular.module('hris', [])
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
-                                {value: "Training Code"},
                                 {value: "Training Name"},
                                 {value: "Requested Date"},
                                 {value: "Start Date"},
@@ -155,12 +152,10 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
 
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                                {value: dataItem.TRAINING_CODE},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.REQUESTED_DATE},
                                 {value: dataItem.START_DATE},
