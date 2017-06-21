@@ -167,7 +167,6 @@ class QuestionController extends AbstractActionController{
             $questionOptionRepo = new QuestionOptionRepository($this->adapter);
             $employeeDetail = $employeeRepo->fetchById($this->employeeId);
             $postRecord = $request->getPost()->getArrayCopy();
-            $questionOptionList = $postRecord['data']['questionOptionList'];
             $questionDetail = $postRecord['data']['questionDetail'];
             $optionListEmpty = $postRecord['data']['optionListEmpty'];
             $questionId = (int)$postRecord['data']['questionId'];
@@ -206,6 +205,7 @@ class QuestionController extends AbstractActionController{
             }
             
             if($optionListEmpty==1){
+                $questionOptionList = $postRecord['data']['questionOptionList'];
                 foreach($questionOptionList as $questionOption){
                     $questionOptionModel = new QuestionOption();
                     $questionIdNew = $question->questionId;

@@ -1254,37 +1254,39 @@ class RestfulService extends AbstractRestfulController {
 //$qualificationDtl = $data;
         $repository = new EmployeeQualificationRepository($this->adapter);
         $empQualificationModel = new EmployeeQualification();
+        if($data['qualificationRecordNum']>0){
+            foreach ($data['qualificationRecord'] as $qualificationDtl) {
+                $id = $qualificationDtl['id'];
+                $academicDegreeId = $qualificationDtl['academicDegreeId'];
+                $academicUniversityId = $qualificationDtl['academicUniversityId'];
+                $academicProgramId = $qualificationDtl['academicProgramId'];
+                $academicCourseId = $qualificationDtl['academicCourseId'];
+                $rankType = $qualificationDtl['rankType'];
+                $rankValue = $qualificationDtl['rankValue'];
+                $passedYr = $qualificationDtl['passedYr'];
+                $employeeId = $data['employeeId'];
 
-        foreach ($data['qualificationRecord'] as $qualificationDtl) {
-            $id = $qualificationDtl['id'];
-            $academicDegreeId = $qualificationDtl['academicDegreeId'];
-            $academicUniversityId = $qualificationDtl['academicUniversityId'];
-            $academicProgramId = $qualificationDtl['academicProgramId'];
-            $academicCourseId = $qualificationDtl['academicCourseId'];
-            $rankType = $qualificationDtl['rankType'];
-            $rankValue = $qualificationDtl['rankValue'];
-            $passedYr = $qualificationDtl['passedYr'];
-            $employeeId = $data['employeeId'];
+                $empQualificationModel->employeeId = $employeeId;
+                $empQualificationModel->academicDegreeId = $academicDegreeId['id'];
+                $empQualificationModel->academicUniversityId = $academicUniversityId['id'];
+                $empQualificationModel->academicProgramId = $academicProgramId['id'];
+                $empQualificationModel->academicCourseId = $academicCourseId['id'];
+                $empQualificationModel->rankType = $rankType['id'];
+                $empQualificationModel->rankValue = $rankValue;
+                $empQualificationModel->passedYr = $passedYr;
+                $empQualificationModel->createdDt = Helper::getcurrentExpressionDate();
+                $empQualificationModel->status = 'E';
 
-            $empQualificationModel->employeeId = $employeeId;
-            $empQualificationModel->academicDegreeId = $academicDegreeId['id'];
-            $empQualificationModel->academicUniversityId = $academicUniversityId['id'];
-            $empQualificationModel->academicProgramId = $academicProgramId['id'];
-            $empQualificationModel->academicCourseId = $academicCourseId['id'];
-            $empQualificationModel->rankType = $rankType['id'];
-            $empQualificationModel->rankValue = $rankValue;
-            $empQualificationModel->passedYr = $passedYr;
-            $empQualificationModel->createdDt = Helper::getcurrentExpressionDate();
-            $empQualificationModel->status = 'E';
-
-            if ($id != 0) {
-                $empQualificationModel->modifiedDt = Helper::getcurrentExpressionDate();
-                $repository->edit($empQualificationModel, $id);
-            } else if ($id == 0) {
-                $empQualificationModel->id = Helper::getMaxId($this->adapter, EmployeeQualification::TABLE_NAME, EmployeeQualification::ID) + 1;
-                $repository->add($empQualificationModel);
+                if ($id != 0) {
+                    $empQualificationModel->modifiedDt = Helper::getcurrentExpressionDate();
+                    $repository->edit($empQualificationModel, $id);
+                } else if ($id == 0) {
+                    $empQualificationModel->id = Helper::getMaxId($this->adapter, EmployeeQualification::TABLE_NAME, EmployeeQualification::ID) + 1;
+                    $repository->add($empQualificationModel);
+                }
             }
-        }
+        
+            }
         return [
             "success" => true,
             "data" => "Qualification Detail Successfully Added"
@@ -1294,13 +1296,13 @@ class RestfulService extends AbstractRestfulController {
     public function submitExperienceDtl($data) {
         $experienceListEmpty = (int) $data['experienceListEmpty'];
         $employeeId = (int) $data['employeeId'];
-        $experienceList = $data['experienceList'];
 
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeExperienceRepo = new EmployeeExperienceRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById((int) $this->loggedIdEmployeeId);
 
         if ($experienceListEmpty == 1) {
+            $experienceList = $data['experienceList'];
             foreach ($experienceList as $experience) {
                 $employeeExperienceModel = new EmployeeExperience();
                 $employeeExperienceModel->employeeId = (int) $employeeId;
@@ -1336,13 +1338,12 @@ class RestfulService extends AbstractRestfulController {
     public function submitTrainingDtl($data) {
         $trainingListEmpty = $data['trainingListEmpty'];
         $employeeId = (int) $data['employeeId'];
-        $trainingList = $data['trainingList'];
-
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeTrainingRepo = new EmployeeTrainingRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->loggedIdEmployeeId);
 
         if ($trainingListEmpty == 1) {
+            $trainingList = $data['trainingList'];
             foreach ($trainingList as $training) {
                 $employeeTrainingModel = new EmployeeTraining();
                 $employeeTrainingModel->employeeId = $employeeId;
@@ -3707,11 +3708,20 @@ class RestfulService extends AbstractRestfulController {
                 return "";
             }
         };
+        $getValue = function($val){
+            if($val!=null){
+                if($val=='Y')return 'Yes';
+                else if($val=='N') return 'No';
+            }else {
+                return "";
+            }
+        };
         foreach($result as $row){
             $row['APPRAISER_NAME']= $fullName($row['APPRAISER_ID']);
             $row['ALT_APPRAISER_NAME']=$fullName($row['ALT_APPRAISER_ID']);
             $row['REVIEWER_NAME'] = $fullName($row['REVIEWER_ID']);
             $row['ALT_REVIEWER_NAME'] = $fullName($row['ALT_REVIEWER_ID']);
+            $row['APPRAISEE_AGREE']= $getValue($row['APPRAISEE_AGREE']);
             array_push($list,$row);
         }
         return [

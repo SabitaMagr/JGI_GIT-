@@ -70,7 +70,6 @@ WHERE APPRAISAL_ID   =".$appraisalId."
 AND EMPLOYEE_ID      =".$employeeId."
 AND STATUS = 'E'
 AND RATING IS NOT NULL
-AND COMMENTS     IS NOT NULL
 GROUP BY APPRAISAL_ID, EMPLOYEE_ID";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

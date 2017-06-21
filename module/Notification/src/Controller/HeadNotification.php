@@ -92,7 +92,7 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-//        return;
+        return;
         $isValidEmail = function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         };
@@ -1356,10 +1356,17 @@ class HeadNotification {
             }else if($recieverDetail['USER_TYPE']=='APPRAISEE'){
                 $notification->route = json_encode(["route" => "performanceAppraisal", "action" => "view", "appraisalId" => $request->appraisalId]);
             }
-            
+            $getValue = function($val){
+                if($val!=null && $val!=""){
+                    if($val=='Y')return "Agreed";
+                    else if($val=='N')return "Disgreed";
+                }else {
+                    return "";
+                }
+            };
             $title = "Appraisal Review";
-            $desc = "Appraisal Reviewed by"
-                    . " $notification->fromName of type $notification->appraisalType";
+            $desc =$getValue($assignedAppraisalDetail['REVIEWER_AGREE'])." by"
+                    . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 34, $adapter,$url);
@@ -1399,8 +1406,16 @@ class HeadNotification {
                 $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId]);
             }
             
+            $getValue = function($val){
+                if($val!=null && $val!=""){
+                    if($val=='Y')return "Agreed";
+                    else if($val=='N')return "Disagreed";
+                }else {
+                    return "";
+                }
+            };
             $title = "Final Feedback on Appraisal";
-            $desc = "Final Feedback by"
+            $desc = $getValue($assignedAppraisalDetail['APPRAISEE_AGREE'])." by"
                     . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
