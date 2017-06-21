@@ -73,7 +73,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee Name", width: 200},
+                        {field: "FULL_NAME", title: "Employee Name", width: 200},
                         {field: "START_DATE", title: "Start Date", width: 120},
                         {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 150},
                         {field: "FROM_SERVICE_NAME", title: "Service Type", width: 150},
@@ -85,14 +85,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('jobHistoryTable',['FIRST_NAME','START_DATE','SERVICE_EVENT_TYPE_NAME','FROM_SERVICE_NAME','FROM_BRANCH_NAME','FROM_DEPARTMENT_NAME','FROM_DESIGNATION_TITLE','FROM_POSITION_NAME']);
+                app.searchTable('jobHistoryTable',['FULL_NAME','START_DATE','SERVICE_EVENT_TYPE_NAME','FROM_SERVICE_NAME','FROM_BRANCH_NAME','FROM_DEPARTMENT_NAME','FROM_DESIGNATION_TITLE','FROM_POSITION_NAME']);
                 
                 app.pdfExport(
                 'jobHistoryTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'Middle',
-                    'LAST_NAME': 'Last',
+                    'FULL_NAME': 'Name',
                     'START_DATE': 'Company',
                     'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
                     'FROM_SERVICE_NAME': 'Service',
@@ -137,10 +135,9 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.SERVICE_EVENT_TYPE_NAME},
                                 {value: dataItem.FROM_SERVICE_NAME + "-" + dataItem.TO_SERVICE_NAME},

@@ -74,7 +74,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 150},
+                        {field: "FULL_NAME", title: "Employee", width: 150},
                         {field: "HOLIDAY_ENAME", title: "Holiday", width: 120},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
                         {field: "FROM_DATE", title: "From Date", width: 100},
@@ -87,14 +87,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('workOnHolidayRequestStatusTable',['FIRST_NAME','HOLIDAY_ENAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
+                app.searchTable('workOnHolidayRequestStatusTable',['FULL_NAME','HOLIDAY_ENAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
                 
                 app.pdfExport(
                 'workOnHolidayRequestStatusTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'middleName',
-                    'LAST_NAME': 'lastName',
+                    'FULL_NAME': 'Name',
                     'HOLIDAY_ENAME': 'Holiday',
                     'REQUESTED_DATE': 'Request Days',
                     'FROM_DATE': 'FromDate',
@@ -153,12 +151,11 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         var mn1 = dataItem.MN1 != null ? " " + dataItem.MN1 + " " : " ";
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.HOLIDAY_ENAME},
                                 {value: dataItem.REQUESTED_DATE},
                                 {value: dataItem.FROM_DATE},

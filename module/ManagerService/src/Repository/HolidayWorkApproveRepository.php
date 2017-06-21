@@ -102,6 +102,7 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                     INITCAP(E.FIRST_NAME) AS FIRST_NAME,
                     INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                     INITCAP(E.LAST_NAME) AS LAST_NAME,
+                    INITCAP(E.FULL_NAME) AS FULL_NAME,
                     INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
                     INITCAP(H.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
                     H.HOLIDAY_CODE,

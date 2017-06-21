@@ -45,7 +45,7 @@ class SalaryDetailRepo implements RepositoryInterface {
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(SalaryDetail::class, NULL,NULL,NULL,NULL,NULL,'SD',FALSE,FALSE), false);
         $select->from(['SD' => SalaryDetail::TABLE_NAME]);
-        $select->join(['E' => HrEmployees::TABLE_NAME], "E.". HrEmployees::EMPLOYEE_ID."=SD.".SalaryDetail::EMPLOYEE_ID, [HrEmployees::FIRST_NAME => new Expression('INITCAP(E.FIRST_NAME)'),HrEmployees::MIDDLE_NAME => new Expression('INITCAP(E.MIDDLE_NAME)'),HrEmployees::LAST_NAME => new Expression('INITCAP(E.LAST_NAME)')], 'left');
+        $select->join(['E' => HrEmployees::TABLE_NAME], "E.". HrEmployees::EMPLOYEE_ID."=SD.".SalaryDetail::EMPLOYEE_ID, [HrEmployees::FIRST_NAME => new Expression('INITCAP(E.FIRST_NAME)'),HrEmployees::MIDDLE_NAME => new Expression('INITCAP(E.MIDDLE_NAME)'),HrEmployees::LAST_NAME => new Expression('INITCAP(E.LAST_NAME)'),'FULL_NAME' => new Expression('INITCAP(E.FULL_NAME)')], 'left');
         $select->where(["SD.".SalaryDetail::STATUS."='E'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $rowset = $statement->execute();

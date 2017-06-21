@@ -3,7 +3,7 @@
     $(document).ready(function () {
         $("#salaryReviewTable").kendoGrid({
             excel: {
-                fileName: "BranchList.xlsx",
+                fileName: "Salaryreview.xlsx",
                 filterable: true,
                 allPages: true
             },
@@ -18,7 +18,7 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 200},
+                {field: "FULL_NAME", title: "Employee", width: 200},
                 {field: "OLD_AMOUNT", title: "Old Amount", width: 120},
                 {field: "NEW_AMOUNT", title: "New Amount", width: 120},
                 {field: "EFFECTIVE_DATE", title: "Effective Date", width: 120},
@@ -27,14 +27,12 @@
             ],
         });
         
-        app.searchTable('salaryReviewTable',['FIRST_NAME','OLD_AMOUNT','NEW_AMOUNT','EFFECTIVE_DATE']);
+        app.searchTable('salaryReviewTable',['FULL_NAME','OLD_AMOUNT','NEW_AMOUNT','EFFECTIVE_DATE']);
         
         app.pdfExport(
                 'salaryReviewTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'OLD_AMOUNT': 'Old Amt',
                     'NEW_AMOUNT': 'New Amt',
                     'EFFECTIVE_DATE': 'Effective Date',

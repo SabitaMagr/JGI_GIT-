@@ -1,7 +1,7 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-
+console.log(document.attendanceApprove);
         $("#attendanceApproveTable").kendoGrid({
             excel: {
                 fileName: "AttendanceRequestList.xlsx",
@@ -23,7 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 200},
+                {field: "FULL_NAME", title: "Employee", width: 200},
                 {field: "REQUESTED_DT", title: "Requested Date", width: 160},
                 {field: "ATTENDANCE_DT", title: "Attendance Date", width: 180},
                 {field: "IN_TIME", title: "Check In", width: 120},
@@ -33,14 +33,12 @@
             ]
         });
         
-        app.searchTable('attendanceApproveTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','YOUR_ROLE']);
+        app.searchTable('attendanceApproveTable',['FULL_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','YOUR_ROLE']);
         
          app.pdfExport(
                 'attendanceApproveTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'REQUESTED_DT': 'Req.Date',
                     'ATTENDANCE_DT': 'AttenDate',
                     'IN_TIME': 'In Time',
@@ -93,11 +91,9 @@
 
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
-                var middleName1 = dataItem.MIDDLE_NAME1 != null ? " " + dataItem.MIDDLE_NAME1 + " " : " ";
                 rows.push({
                     cells: [
-                        {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                        {value: dataItem.FULL_NAME},
                         {value: dataItem.REQUESTED_DT},
                         {value: dataItem.ATTENDANCE_DT},
                         {value: dataItem.IN_TIME},

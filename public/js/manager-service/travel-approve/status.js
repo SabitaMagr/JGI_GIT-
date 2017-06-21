@@ -74,7 +74,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 140},
+                        {field: "FULL_NAME", title: "Employee", width: 140},
 //                        {field: "TRAVEL_CODE", title: "Travel Code", width: 120},
                         {field: "FROM_DATE", title: "From Date", width: 120},
                         {field: "TO_DATE", title: "To Date", width: 100},
@@ -87,14 +87,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('travelRequestStatusTable',['FIRST_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE','STATUS']);
+                app.searchTable('travelRequestStatusTable',['FULL_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE','STATUS']);
                 
                 app.pdfExport(
                 'travelRequestStatusTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'FROM_DATE': 'FromDate',
                     'TO_DATE': 'ToDate',
                     'REQUESTED_DATE': 'ReqDate',
@@ -154,11 +152,10 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
 
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.FROM_DATE},
                                 {value: dataItem.TO_DATE},
                                 {value: dataItem.REQUESTED_DATE},

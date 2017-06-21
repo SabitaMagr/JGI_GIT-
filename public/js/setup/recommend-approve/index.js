@@ -72,21 +72,19 @@ angular.module('hris', [])
                     },
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 200},
+                        {field: "FULL_NAME", title: "Employee", width: 200},
                         {field: "FIRST_NAME_R", title: "Recommender", width: 200},
                         {field: "FIRST_NAME_A", title: "Approver", width: 200},
                         {field: "Action", title: "Action", width: 200}
                     ]
                 });
                 
-                app.searchTable('recommendApproveTable',['FIRST_NAME','RECOMMENDER_NAME','APPROVER_NAME']);
+                app.searchTable('recommendApproveTable',['FULL_NAME','RECOMMENDER_NAME','APPROVER_NAME']);
                 
                 app.pdfExport(
                 'recommendApproveTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'middle',
-                    'LAST_NAME': 'last',
+                    'FULL_NAME': 'Name',
                     'RECOMMENDER_NAME': 'Recommendor',
                     'APPROVER_NAME': 'Approver'
                 }
@@ -112,10 +110,9 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME !== null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.RECOMMENDER_NAME },
                                 {value: dataItem.APPROVER_NAME }
                             ]

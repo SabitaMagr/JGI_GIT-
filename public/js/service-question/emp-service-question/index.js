@@ -22,21 +22,19 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee",width:200},
+                {field: "FULL_NAME", title: "Employee",width:200},
                 {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type",width:200},
                 {field: "QA_DATE", title: "Question Date",width:200},
                     {title: "Action",width:100}
             ]
         }); 
         
-        app.searchTable('serviceQuestionTable',['FIRST_NAME','SERVICE_EVENT_TYPE_NAME','QA_DATE']);
+        app.searchTable('serviceQuestionTable',['FULL_NAME','SERVICE_EVENT_TYPE_NAME','QA_DATE']);
         
         app.pdfExport(
                 'serviceQuestionTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
                     'QA_DATE': 'Qusetion Date'
                 });

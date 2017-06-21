@@ -99,9 +99,7 @@ angular.module('hris', [])
                 app.pdfExport(
                         'attendanceByHrTable',
                         {
-                            'FIRST_NAME': ' Name',
-                            'MIDDLE_NAME': 'middleName',
-                            'LAST_NAME': 'lastname',
+                            'EMPLOYEE_NAME': ' Name',
                             'ATTENDANCE_DT': 'Attendance Date',
                             'IN_TIME': 'In Time',
                             'OUT_TIME': 'Out Time',
@@ -250,10 +248,9 @@ angular.module('hris', [])
 
                 for (var i = 0; i < data.length; i++) {
                     var dataItem = data[i];
-                    var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                     rows.push({
                         cells: [
-                            {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                            {value: dataItem.EMPLOYEE_NAME},
                             {value: dataItem.ATTENDANCE_DT},
                             {value: dataItem.IN_TIME},
                             {value: dataItem.OUT_TIME},

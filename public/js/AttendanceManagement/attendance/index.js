@@ -88,7 +88,7 @@ angular.module('hris', [])
                     ]
                 });
 
-                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'IN_REMARKS', 'OUT_REMARKS']);
+                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR','STATUS' ,'IN_REMARKS', 'OUT_REMARKS']);
                 app.pdfExport(
                         'attendanceTable',
                         {
