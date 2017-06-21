@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_PRELOAD_ATTENDANCE(
+create or replace PROCEDURE HRIS_PRELOAD_ATTENDANCE(
     V_ATTENDANCE_DATE DATE)
 AS
   V_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE;
@@ -143,7 +143,8 @@ BEGIN
             ATTENDANCE_DT,
             ID ,
             SHIFT_ID,
-            DAYOFF_FLAG
+            DAYOFF_FLAG,
+            OVERALL_STATUS
           )
           VALUES
           (
@@ -151,7 +152,8 @@ BEGIN
             V_ATTENDANCE_DATE,
             V_MAX_ID,
             V_SHIFT_ID,
-            'Y'
+            'Y',
+            'DO'
           );
         COMMIT;
         CONTINUE;
@@ -174,7 +176,8 @@ BEGIN
             ATTENDANCE_DT,
             HOLIDAY_ID,
             ID,
-            SHIFT_ID
+            SHIFT_ID,
+            OVERALL_STATUS
           )
           VALUES
           (
@@ -182,7 +185,8 @@ BEGIN
             V_ATTENDANCE_DATE,
             V_HOLIDAY_ID,
             V_MAX_ID,
-            V_SHIFT_ID
+            V_SHIFT_ID,
+            'HD'
           );
         COMMIT;
         CONTINUE;
@@ -206,7 +210,8 @@ BEGIN
             ATTENDANCE_DT,
             LEAVE_ID,
             ID,
-            SHIFT_ID
+            SHIFT_ID,
+            OVERALL_STATUS
           )
           VALUES
           (
@@ -214,7 +219,8 @@ BEGIN
             V_ATTENDANCE_DATE,
             V_LEAVE_ID,
             V_MAX_ID,
-            V_SHIFT_ID
+            V_SHIFT_ID,
+            'LV'
           );
         COMMIT;
         CONTINUE;
@@ -240,7 +246,8 @@ BEGIN
             ATTENDANCE_DT,
             TRAINING_ID,
             ID,
-            SHIFT_ID
+            SHIFT_ID,
+            OVERALL_STATUS
           )
           VALUES
           (
@@ -248,7 +255,8 @@ BEGIN
             V_ATTENDANCE_DATE,
             V_TRAINING_ID,
             V_MAX_ID,
-            V_SHIFT_ID
+            V_SHIFT_ID,
+            'TN'
           );
         COMMIT;
         CONTINUE;
@@ -272,7 +280,8 @@ BEGIN
             ATTENDANCE_DT,
             TRAVEL_ID,
             ID,
-            SHIFT_ID
+            SHIFT_ID,
+            OVERALL_STATUS
           )
           VALUES
           (
@@ -280,7 +289,8 @@ BEGIN
             V_ATTENDANCE_DATE,
             V_TRAVEL_ID,
             V_MAX_ID,
-            V_SHIFT_ID
+            V_SHIFT_ID,
+            'TV'
           );
         COMMIT;
         CONTINUE;
@@ -296,14 +306,16 @@ BEGIN
           EMPLOYEE_ID,
           ATTENDANCE_DT,
           ID,
-          SHIFT_ID
+          SHIFT_ID,
+          OVERALL_STATUS
         )
         VALUES
         (
           V_EMPLOYEE_ID,
           V_ATTENDANCE_DATE,
           V_MAX_ID,
-          V_SHIFT_ID
+          V_SHIFT_ID,
+          'AB'
         );
       COMMIT;
     END;
