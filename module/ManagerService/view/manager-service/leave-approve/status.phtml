@@ -153,9 +153,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
-        #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-        #: (LAST_NAME == null) ? ' ' : LAST_NAME #
+        #: (FULL_NAME == null) ? ' ' : FULL_NAME #
         </td>
         <td>
         #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #

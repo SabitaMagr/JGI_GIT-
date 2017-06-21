@@ -23,7 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 150},
+                {field: "FULL_NAME", title: "Employee", width: 150},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
                 {field: "FROM_DATE", title: "From Date", width: 100},
                 {field: "TO_DATE", title: "To Date", width: 100},
@@ -33,14 +33,12 @@
             ]
         });
         
-        app.searchTable('dayoffWorkApproveTable',['FIRST_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','YOUR_ROLE']);
+        app.searchTable('dayoffWorkApproveTable',['FULL_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','YOUR_ROLE']);
         
          app.pdfExport(
                 'dayoffWorkApproveTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'REQUESTED_DATE': 'ReqDate',
                     'FROM_DATE': 'FromDate',
                     'TO_DATE': 'ToDate',
@@ -94,11 +92,10 @@
 
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
 
                 rows.push({
                     cells: [
-                        {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                        {value: dataItem.FULL_NAME},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.FROM_DATE},
                         {value: dataItem.TO_DATE},

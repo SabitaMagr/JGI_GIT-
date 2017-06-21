@@ -72,7 +72,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 150},
+                        {field: "FULL_NAME", title: "Employee", width: 150},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
                         {field: "OVERTIME_DATE", title: "Overtime Date", width: 120},
                         {field: "DETAILS", title: "Time (From-To)", width: 150},
@@ -84,14 +84,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('overtimeRequestStatusTable',['FIRST_NAME','REQUESTED_DATE','OVERTIME_DATE','TOTAL_HOUR','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
+                app.searchTable('overtimeRequestStatusTable',['FULL_NAME','REQUESTED_DATE','OVERTIME_DATE','TOTAL_HOUR','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
                 
                 app.pdfExport(
                 'overtimeRequestStatusTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'REQUESTED_DATE': 'RequestDate',
                     'OVERTIME_DATE': 'OvertimeDate',
                     'TOTAL_HOUR': 'Total Hour',
@@ -150,7 +148,6 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         var mn1 = dataItem.MN1 != null ? " " + dataItem.MN1 + " " : " ";
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         var details = [];
@@ -160,7 +157,7 @@ angular.module('hris', [])
                         var details1 = details.toString();
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.REQUESTED_DATE},
                                 {value: dataItem.OVERTIME_DATE},
                                 {value: details1},

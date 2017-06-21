@@ -23,7 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 150},
+                {field: "FULL_NAME", title: "Employee", width: 150},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 120},
                 {field: "OVERTIME_DATE", title: "Overtime Date", width: 100},
                 {field: "DETAILS", title: "Time (From-To)", width: 150},
@@ -33,16 +33,15 @@
             ]
         });
         
-        app.searchTable('overtimeApproveTable',['FIRST_NAME','REQUESTED_DATE','OVERTIME_DATE','DETAILS','TOTAL_HOUR','YOUR_ROLE']);
+        app.searchTable('overtimeApproveTable',['FULL_NAME','REQUESTED_DATE','OVERTIME_DATE','TOTAL_HOUR','YOUR_ROLE']);
         
         app.pdfExport(
                 'overtimeApproveTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'REQUESTED_DATE': 'RequestDate',
                     'OVERTIME_DATE': 'OvertimeDate',
+                    'TOTAL_HOUR': 'Total Hour',
                     'DESCRIPTION': 'Description',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
@@ -75,6 +74,7 @@
                         {value: "Requested Date"},
                         {value: "Overtime Date"},
                         {value: "Time (From-To)"},
+                        {value: "Total Hour"},
                         {value: "Description"},
                         {value: "Your Role"},
                         {value: "Status"},
@@ -96,7 +96,6 @@
 
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                 var details = [];
                 for (var j = 0; j < dataItem.DETAILS.length; j++) {
                     details.push(dataItem.DETAILS[j].START_TIME+"-"+dataItem.DETAILS[j].END_TIME);
@@ -104,10 +103,11 @@
                 var details1 = details.toString();
                 rows.push({
                     cells: [
-                        {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                        {value: dataItem.FULL_NAME},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.OVERTIME_DATE},
                         {value: details1},
+                        {value: dataItem.TOTAL_HOUR},
                         {value: dataItem.DESCRIPTION},
                         {value: dataItem.YOUR_ROLE},
                         {value: dataItem.STATUS},

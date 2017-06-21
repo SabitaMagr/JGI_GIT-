@@ -43,7 +43,7 @@ class EmpServiceQuestionRepo implements RepositoryInterface {
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(EmpServiceQuestion::class, null, [EmpServiceQuestion::QA_DATE, EmpServiceQuestion::CREATED_DATE, EmpServiceQuestion::MODIFIED_DATE], NULL, NULL, NULL, 'EQA'), false);
         $select->from(['EQA' => EmpServiceQuestion::TABLE_NAME]);
         $select->join(['ST' => ServiceEventType::TABLE_NAME], "EQA." . EmpServiceQuestion::SERVICE_EVENT_TYPE_ID . "=ST." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(ST.SERVICE_EVENT_TYPE_NAME)'), 'SERVICE_EVENT_TYPE_ID'], 'left')
-               ->join(['E' => 'HRIS_EMPLOYEES'], 'EQA.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
+               ->join(['E' => 'HRIS_EMPLOYEES'], 'EQA.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)"),"FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left");
 
         $select->where(["EQA.STATUS='E'"]);
         $select->order([

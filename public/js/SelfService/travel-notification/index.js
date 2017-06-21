@@ -34,7 +34,7 @@
             ]
         });
         
-        app.searchTable('travelNotificationTable',['FIRST_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','STATUS','APPROVED_FLAG']);
+        app.searchTable('travelNotificationTable',['EMPLOYEE_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','STATUS','APPROVED_FLAG']);
          
         app.pdfExport(
                         'travelNotificationTable',

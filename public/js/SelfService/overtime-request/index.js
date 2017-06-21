@@ -32,21 +32,22 @@
             ]
         });
         
-        app.searchTable('overtimeTable',['OVERTIME_DATE','DETAILS','TOTAL_HOUR','REQUESTED_DATE','STATUS']);
+        app.searchTable('overtimeTable',['OVERTIME_DATE','TOTAL_HOUR','REQUESTED_DATE','STATUS']);
         
         app.pdfExport(
                         'overtimeTable',
                         {
                             'OVERTIME_DATE': ' Overtime Dt',
-                            'REQUESTED_DATE': 'Req Dt',
+                            'TOTAL_HOUR': 'Total Hour',
+                            'REQUESTED_DATE': 'Req.Dt',
                             'STATUS': 'Status',
                             'DESCRIPTION': 'Desc',
                             'REMARKS': 'Remarks',
                             'RECOMMENDER_NAME': 'Recommender',
                             'APPROVER_NAME': 'Approver',
                             'RECOMMENDED_REMARKS': 'Rec Remarks',
-                            'RECOMMENDED_DATE': 'Rec Dt',
-                            'APPROVED_REMARKS': 'App Remarks',
+                            'RECOMMENDED_DATE': 'Rec.Dt',
+                            'APPROVED_REMARKS': 'App.Remarks',
                             'APPROVED_DATE': 'App Dt'
                         }
                 );
@@ -67,6 +68,7 @@
                     cells: [
                         {value: "Overtime Date"},
                         {value: "Time (From - To)"},
+                        {value: "Total Hour"},
                         {value: "Requested Date"},
                         {value: "Status"},
                         {value: "Description"},
@@ -99,6 +101,7 @@
                     cells: [
                         {value: dataItem.OVERTIME_DATE},
                         {value: details1},
+                        {value: dataItem.TOTAL_HOUR},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.STATUS},
                         {value: dataItem.DESCRIPTION},

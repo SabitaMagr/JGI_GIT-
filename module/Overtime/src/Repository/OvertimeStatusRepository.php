@@ -69,7 +69,10 @@ class OvertimeStatusRepository implements RepositoryInterface{
                 TRUNC(OT.TOTAL_HOUR/60,0)
                   ||':'
                   ||MOD(OT.TOTAL_HOUR,60) AS TOTAL_HOUR,
-                E.FIRST_NAME,E.MIDDLE_NAME,E.LAST_NAME,
+                  INITCAP(E.FULL_NAME) AS FULL_NAME,
+                INITCAP(E.FIRST_NAME) AS FIRST_NAME,
+                INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
+                INITCAP(E.LAST_NAME) AS LAST_NAME,
                 INITCAP(E1.FIRST_NAME) AS FN1,INITCAP(E1.MIDDLE_NAME) AS MN1,INITCAP(E1.LAST_NAME) AS LN1,
                 INITCAP(E2.FIRST_NAME) AS FN2,INITCAP(E2.MIDDLE_NAME) AS MN2,INITCAP(E2.LAST_NAME) AS LN2,
                 RA.RECOMMEND_BY AS RECOMMENDER,

@@ -22,21 +22,19 @@
             },
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee Name",width:200},
+                {field: "FULL_NAME", title: "Employee Name",width:200},
                 {field: "USER_NAME", title: "User Name",width:200},
                 {field: "ROLE_NAME", title: "Role Name",width:200},
                     {title: "Action",width:100}
             ]
         }); 
         
-        app.searchTable('userTable',['FIRST_NAME','USER_NAME','ROLE_NAME']);
+        app.searchTable('userTable',['FULL_NAME','USER_NAME','ROLE_NAME']);
         
         app.pdfExport(
                 'userTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'middle',
-                    'LAST_NAME': 'last',
+                    'FULL_NAME': 'Name',
                     'USER_NAME': 'UserName',
                     'ROLE_NAME': 'Role'
                 }

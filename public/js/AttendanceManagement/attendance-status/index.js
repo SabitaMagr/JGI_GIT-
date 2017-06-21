@@ -72,7 +72,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 200},
+                        {field: "FULL_NAME", title: "Employee", width: 200},
                         {field: "REQUESTED_DT", title: "Requested Date", width: 200},
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 160},
                         {field: "IN_TIME", title: "Check In", width: 120},
@@ -82,14 +82,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('attendanceRequestStatusTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
+                app.searchTable('attendanceRequestStatusTable',['FULL_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
                 
                 app.pdfExport(
                 'attendanceRequestStatusTable',
                 {
-                    'FIRST_NAME': ' Name',
-                    'MIDDLE_NAME': 'middleName',
-                    'LAST_NAME': 'lastname',
+                    'FULL_NAME': ' Name',
                     'REQUESTED_DT': 'Request Date',
                     'ATTENDANCE_DT': 'Attendance Date',
                     'IN_TIME': 'In Time',
@@ -142,10 +140,9 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.REQUESTED_DT},
                                 {value: dataItem.ATTENDANCE_DT},
                                 {value: dataItem.IN_TIME},

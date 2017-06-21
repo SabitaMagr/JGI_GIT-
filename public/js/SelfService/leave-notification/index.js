@@ -23,7 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 150},
+                {field: "FULL_NAME", title: "Employee", width: 150},
                 {field: "LEAVE_ENAME", title: "Leave", width: 120},
                 {field: "APPLIED_DATE", title: "Requested Date", width: 140},
                 {field: "FROM_DATE", title: "From Date", width: 100},
@@ -35,12 +35,12 @@
             ]
         });
         
-        app.searchTable('leaveNotificationTable',['FIRST_NAME','LEAVE_ENAME','APPLIED_DATE','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS','APPROVED_FLAG']);
+        app.searchTable('leaveNotificationTable',['FULL_NAME','LEAVE_ENAME','APPLIED_DATE','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS','APPROVED_FLAG']);
         
         app.pdfExport(
                         'leaveNotificationTable',
                         {
-                            'FIRST_NAME': 'Name',
+                            'FULL_NAME': 'Name',
                             'MIDDLE_NAME': 'Middle',
                             'LAST_NAME': 'Last',
                             'LEAVE_ENAME': 'Leave',
@@ -106,10 +106,9 @@
 
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                 rows.push({
                     cells: [
-                        {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                        {value: dataItem.FULL_NAME},
                         {value: dataItem.LEAVE_ENAME},
                         {value: dataItem.REQUESTED_DT},
                         {value: dataItem.FROM_DATE},

@@ -23,7 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 150},
+                {field: "FULL_NAME", title: "Employee", width: 150},
                 {field: "ADVANCE_NAME", title: "Advance", width: 120},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 120},
                 {field: "ADVANCE_DATE", title: "Advance Date", width: 110},
@@ -34,15 +34,13 @@
             ]
         });
         
-        app.searchTable('advanceApproveTable',['FIRST_NAME','ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','YOUR_ROLE']);
+        app.searchTable('advanceApproveTable',['FULL_NAME','ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','YOUR_ROLE']);
         
          app.pdfExport(
                 'advanceApproveTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
-                    'ADVANE_NAME': 'Advance',
+                    'FULL_NAME': 'Name',
+                    'ADVANCE_NAME': 'Advance',
                     'REQUESTED_DATE': 'Req.Date',
                     'ADVANCE_DATE': 'AdvDate',
                     'REQUESTED_AMOUNT': 'Req.Amt',
@@ -96,12 +94,11 @@
 
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
 
                 rows.push({
                     cells: [
-                        {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
-                        {value: dataItem.ADVANE_NAME},
+                        {value: dataItem.FULL_NAME},
+                        {value: dataItem.ADVANCE_NAME},
                         {value: dataItem.REQUESTED_DATE},
                         {value: dataItem.ADVANCE_DATE},
                         {value: dataItem.REQUESTED_AMOUNT},

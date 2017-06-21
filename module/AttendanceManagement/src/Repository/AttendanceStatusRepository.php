@@ -158,7 +158,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)')],"left")
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)'), 'FULL_NAME'=>new Expression('INITCAP(E.FULL_NAME)')],"left")
 //                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' =>new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')],"left")
                 ->join(['RA'=>"HRIS_RECOMMENDER_APPROVER"],"RA.EMPLOYEE_ID=AR.EMPLOYEE_ID",['APPROVER'=>'RECOMMEND_BY'],"left")

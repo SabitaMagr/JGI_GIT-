@@ -76,7 +76,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 200},
+                        {field: "FULL_NAME", title: "Employee", width: 200},
                         {field: "LOAN_NAME", title: "Loan", width: 120},
                         {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
                         {field: "LOAN_DATE", title: "Loan Date", width: 100},
@@ -87,14 +87,12 @@ angular.module('hris', [])
                     ]
                 });
                 
-                app.searchTable('loanRequestStatusTable',['FIRST_NAME','LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','YOUR_ROLE','STATUS']);
+                app.searchTable('loanRequestStatusTable',['FULL_NAME','LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','YOUR_ROLE','STATUS']);
                 
                 app.pdfExport(
                 'loanRequestStatusTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'LOAN_NAME': 'Loan',
                     'REQUESTED_DATE': 'Req.Date',
                     'LOAN_DATE': 'LoanDate',
@@ -148,11 +146,10 @@ angular.module('hris', [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
 
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.LOAN_NAME},
                                 {value: dataItem.REQUESTED_DATE},
                                 {value: dataItem.LOAN_DATE},

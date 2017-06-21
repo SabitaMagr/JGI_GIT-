@@ -1,6 +1,8 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
+        
+        console.log(document.leaveApprove);
 
         $("#leaveApproveTable").kendoGrid({
             excel: {
@@ -23,7 +25,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 200},
+                {field: "FULL_NAME", title: "Employee", width: 200},
                 {field: "LEAVE_ENAME", title: "Leave", width: 120},
                 {field: "APPLIED_DATE", title: "Requested Date", width: 140},
                 {field: "START_DATE", title: "From Date", width: 100},
@@ -34,14 +36,12 @@
             ]
         });
         
-        app.searchTable('leaveApproveTable',['FIRST_NAME','LEAVE_ENAME','APPLIED_DATE','START_DATE','END_DATE','NO_OF_DAYS','YOUR_ROLE']);
+        app.searchTable('leaveApproveTable',['FULL_NAME','LEAVE_ENAME','APPLIED_DATE','START_DATE','END_DATE','NO_OF_DAYS','YOUR_ROLE']);
         
          app.pdfExport(
                 'leaveApproveTable',
                 {
-                    'FIRST_NAME': 'Name',
-                    'MIDDLE_NAME': 'MiddleName',
-                    'LAST_NAME': 'LastName',
+                    'FULL_NAME': 'Name',
                     'LEAVE_ENAME': 'Leave',
                     'APPLIED_DATE': 'AppliedDate',
                     'START_DATE': 'StartDate',
@@ -103,7 +103,7 @@
 
                 rows.push({
                     cells: [
-                        {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                        {value: dataItem.FULL_NAME},
                         {value: dataItem.LEAVE_ENAME},
                         {value: dataItem.APPLIED_DATE},
                         {value: dataItem.START_DATE},
