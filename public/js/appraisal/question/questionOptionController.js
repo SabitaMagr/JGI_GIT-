@@ -110,15 +110,15 @@ angular.module('hris', [])
                     }
                     
                     $scope.optionListEmpty = 1;
-                    if ($scope.questionOptionList.length == 1 && angular.equals($scope.questionOptionTemplate, $scope.questionOptionList[0])) {
+                    if (($scope.questionOptionList.length == 1 && angular.equals($scope.questionOptionTemplate, $scope.questionOptionList[0]))||($scope.questionOptionList.length==0)) {
                         console.log("app log", "The form is not filled");
                         $scope.optionListEmpty = 0;
                     }
-                    console.log(typeof questionId);
+                    console.log(($scope.questionOptionList.length));
                     App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.urlSubmit, {
                         data: {
-                            questionOptionList: $scope.questionOptionList,
+                            questionOptionList: ($scope.questionOptionList.length!==0)?$scope.questionOptionList:null,
                             questionDetail: $scope.question,
                             questionId:parseInt(questionId),
                             optionListEmpty:parseInt($scope.optionListEmpty)

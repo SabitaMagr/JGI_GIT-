@@ -4,11 +4,12 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
             var employeeId = parseInt(angular.element(document.getElementById('employeeId')).val());
             var appraisalId = parseInt(angular.element(document.getElementById('appraisalId')).val());
             var currentStageId = parseInt(angular.element(document.getElementById('currentStageId')).val());
+            $scope.ratingNames = ["A", "B", "C"];
             $scope.competenciesTemplate = {
                 counter: 1,
                 sno: 0,
                 title: "",
-                rating:"",
+                rating:$scope.ratingNames[0],
                 comments:"",
                 checkbox: "checkboxc0",
                 checked: false
@@ -33,7 +34,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                                     counter: (j + 1),
                                     sno: appraisalCompetenciesList[j].SNO,
                                     title: appraisalCompetenciesList[j].TITLE,
-                                    rating: appraisalCompetenciesList[j].RATING,
+                                    rating: (appraisalCompetenciesList[j].RATING!==null)?appraisalCompetenciesList[j].RATING:$scope.ratingNames[0],
                                     comments: appraisalCompetenciesList[j].COMMENTS,
                                     checkbox: "checkboxc" + j,
                                     checked: false
@@ -60,7 +61,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                     counter: parseInt($scope.counter + 1),
                     sno: 0,
                     title: "",
-                    rating:"",
+                    rating:$scope.ratingNames[0],
                     comments:"",
                     checkbox: "checkboxc" + $scope.counter,
                     checked: false
