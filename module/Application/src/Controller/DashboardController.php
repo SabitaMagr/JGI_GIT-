@@ -3,21 +3,13 @@
 namespace Application\Controller;
 
 use Application\Custom\CustomViewModel;
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\DashboardRepository;
 use Application\Repository\MonthRepository;
 use Application\Repository\TaskRepository;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
-use AttendanceManagement\Repository\AttendanceStatusRepository;
 use Exception;
-use HolidayManagement\Repository\HolidayRepository;
 use Interop\Container\ContainerInterface;
-use LeaveManagement\Repository\LeaveStatusRepository;
-use Setup\Model\Branch;
-use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
-use System\Repository\DashboardDetailRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;

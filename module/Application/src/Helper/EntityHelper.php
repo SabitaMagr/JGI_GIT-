@@ -97,17 +97,6 @@ class EntityHelper {
 
         $objAttrs = array_keys(get_object_vars($table));
         $objCols = [];
-<<<<<<< HEAD
-=======
-        if (HrEmployees::class == $requestedName) {
-            $pre = "";
-            if ($shortForm != null) {
-                $pre = $shortForm.".";
-            }
-            $fullNameExpression = new Expression("FULL_NAME({$pre}FIRST_NAME,{$pre}MIDDLE_NAME,{$pre}LAST_NAME) AS FULL_NAME");
-            array_push($objCols, $inStringForm ? $fullNameExpression->getExpression() : $fullNameExpression);
-        }
->>>>>>> e7b1638cb289a11ed3129090edf57c8e2345afde
 
         foreach ($objAttrs as $objAttr) {
             if ('mappings' === $objAttr) {
