@@ -12,6 +12,10 @@
                 $("#duration").val(newValue);
             }
         });
+        
+        var employeeId = $('#employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
+        
         app.setLoadingOnSubmit("workOnDayoff-form");
     });
 })(window.jQuery, window.app);

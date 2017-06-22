@@ -9,6 +9,10 @@
         $startDate.datepicker('setStartDate', new Date());
         app.setLoadingOnSubmit("advanceApprove-form");
         app.setLoadingOnSubmit("advance-form");
+        
+        var employeeId = $('#form-employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
+        
     });
 })(window.jQuery, window.app);
 

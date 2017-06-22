@@ -104,6 +104,7 @@ class AttendanceRequest extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
+                    'employeeId' => $this->employeeId,
                     'form' => $this->form
                         ]
         );
