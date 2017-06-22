@@ -19,7 +19,7 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee",width:200},
+                {field: "FULL_NAME", title: "Employee",width:200},
                 {field: "APPRAISAL_EDESC", title: "Appraisal",width:150},
                 {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type",width:120},
                 {field: "STAGE_EDESC", title: "Current Status",width:100},
@@ -28,8 +28,21 @@
                 {title: "Action",width:90}
             ],
         });
+        
+        app.searchTable('appraisalListTable',['FULL_NAME','APPRAISAL_EDESC','APPRAISAL_TYPE_EDESC','STAGE_EDESC','START_DATE','END_DATE']);
+        app.pdfExport(
+                'appraisalListTable',
+                {
+                    'FULL_NAME': 'Name',
+                    'APPRAISAL_EDESC': 'Appraisal',
+                    'APPRAISAL_TYPE_EDESC': 'Appraisal Type',
+                    'STAGE_EDESC': 'Current Status',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date',                    
+                });
+        
         $("#export").click(function (e) {
-            var grid = $("#appraisalTable").data("kendoGrid");
+            var grid = $("#appraisalListTable").data("kendoGrid");
             grid.saveAsExcel();
         });
         window.app.UIConfirmations();
