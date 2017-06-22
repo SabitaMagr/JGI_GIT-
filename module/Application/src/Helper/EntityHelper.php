@@ -170,6 +170,7 @@ class EntityHelper {
         $genderList = self::getTableList($adapter, Gender::TABLE_NAME, [Gender::GENDER_ID, Gender::GENDER_NAME], [Gender::STATUS => "E"]);
         $employeeList = self::getTableList($adapter, HrEmployees::TABLE_NAME, [
                     HrEmployees::EMPLOYEE_ID,
+                    HrEmployees::FULL_NAME,
                     HrEmployees::FIRST_NAME,
                     HrEmployees::MIDDLE_NAME,
                     HrEmployees::LAST_NAME,
