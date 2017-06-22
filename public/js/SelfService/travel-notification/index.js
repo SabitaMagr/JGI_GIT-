@@ -23,7 +23,7 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FIRST_NAME", title: "Employee", width: 150},
+                {field: "FULL_NAME", title: "Employee", width: 150},
                 {field: "FROM_DATE", title: "Start Date",width:100},
                 {field: "TO_DATE", title: "To Date",width:90},
                 {field: "REQUESTED_DATE", title: "Applied Date",width:120},
@@ -34,12 +34,12 @@
             ]
         });
         
-        app.searchTable('travelNotificationTable',['EMPLOYEE_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','STATUS','APPROVED_FLAG']);
+        app.searchTable('travelNotificationTable',['FULL_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','STATUS','APPROVED_FLAG']);
          
         app.pdfExport(
                         'travelNotificationTable',
                         {
-                            'EMPLOYEE_NAME': 'Name',
+                            'FULL_NAME': 'Name',
                             'REQUESTED_DT': 'Req Dt',
                             'FROM_DATE': 'From Dt',
                             'TO_DATE': 'To Dt',
@@ -109,7 +109,7 @@
                 var dataItem = data[i];
                 rows.push({
                     cells: [
-                        {value: dataItem.EMPLOYEE_NAME},
+                        {value: dataItem.FULL_NAME},
                         {value: dataItem.FROM_DATE},
                         {value: dataItem.TO_DATE},
                         {value: dataItem.REQUESTED_DATE},
