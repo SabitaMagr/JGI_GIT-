@@ -33,6 +33,9 @@
         $holidayId.on('change', function () {
             holidayChange($(this));
         });
+        
+        var employeeId = $('#employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
 
         holidayChange($holidayId);
         app.setLoadingOnSubmit("workOnHoliday-form");

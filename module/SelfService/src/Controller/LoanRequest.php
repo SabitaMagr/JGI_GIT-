@@ -149,6 +149,7 @@ class LoanRequest extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
+                    'employeeId' => $this->employeeId,
                     'form' => $this->form,
                     'loans' => LoanAdvanceHelper::getLoanList($this->adapter, $this->employeeId)
         ]);

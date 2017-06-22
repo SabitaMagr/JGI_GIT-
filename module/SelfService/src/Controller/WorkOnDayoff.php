@@ -157,7 +157,8 @@ class WorkOnDayoff extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form
+                    'form' => $this->form,
+                    'employeeId' => $this->employeeId
         ]);
     }
     

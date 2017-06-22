@@ -63,7 +63,7 @@ class IssueRepository implements RepositoryInterface {
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Issue::class, null, [Issue::REQUEST_DATE,Issue::ISSUE_DATE, Issue::RETURN_DATE, Issue::RETURNED_DATE], null, null, null, "AI"), false);
         $select->from(['AI' => Issue::TABLE_NAME])
                 ->join(['S' => Setup::TABLE_NAME], 'S.' . Setup::ASSET_ID . '=AI.' . Issue::ASSET_ID, ["ASSET_EDESC" => new Expression("INITCAP(S.ASSET_EDESC)")], "left")
-                ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
+                ->join(['E' => HrEmployees::TABLE_NAME], 'E.' . HrEmployees::EMPLOYEE_ID . '=AI.' . Issue::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)"), "FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left");
 
         $select->where(["AI." . Issue::STATUS . "='E'"]);
         $select->where("(AI.RETURNED!='Y' OR AI.RETURNED IS NULL)");

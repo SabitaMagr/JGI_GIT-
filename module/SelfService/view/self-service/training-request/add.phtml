@@ -67,6 +67,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
             <div class="portlet-body">
+                <div class="form-group">
+                        <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                    </div>
+                
                 <?php
                 print $this->form()->openTag($form);
                 ?>

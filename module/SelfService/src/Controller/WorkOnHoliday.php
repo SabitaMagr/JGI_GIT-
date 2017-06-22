@@ -160,6 +160,7 @@ class WorkOnHoliday extends AbstractActionController {
         $holidays = $this->getHolidayList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
+                    'employeeId' => $this->employeeId,
                     'holidays' => $holidays["holidayKVList"],
                     'holidayObjList' => $holidays["holidayList"]
         ]);

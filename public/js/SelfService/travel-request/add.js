@@ -11,6 +11,9 @@
         $('#form-toDate').datepicker("setStartDate", new Date());
         /* end of  prevent past event post */
         
+        var employeeId = $('#employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
+        
         var inputFieldId = "form-travelCode";
         var formId = "travelRequest-form";
         var tableName =  "HRIS_EMPLOYEE_TRAVEL_REQUEST";

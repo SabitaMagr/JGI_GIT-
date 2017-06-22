@@ -416,6 +416,8 @@ window.app = (function ($, toastr, App) {
             position: $('#floating-profile #position'),
             serviceType: $('#floating-profile #serviceType'),
             serviceEventType: $('#floating-profile #serviceEventType'),
+            recommenderName: $('#floating-profile #recommenderName'),
+            approverName: $('#floating-profile #approverName'),
             image: $('#floating-profile #profile-image'),
             header: $('#floating-profile #profile-header'),
             body: $('#floating-profile #profile-body'),
@@ -439,6 +441,8 @@ window.app = (function ($, toastr, App) {
             serviceType: null,
             serviceEventType: null,
             mobileNo: null,
+            recommenderName: null,
+            approverName: null,
             imageFilePath: null
         },
         makeDraggable: function () {
@@ -485,6 +489,8 @@ window.app = (function ($, toastr, App) {
 
                 this.data.mobileNo = (success.data['MOBILE_NO'] == null) ? "" : success.data['MOBILE_NO'];
                 this.data.imageFilePath = (success.data['FILE_NAME'] == null) ? "" : success.data['FILE_NAME'];
+                this.data.recommenderName = (success.data['RECOMMENDER'] == null) ? "" : success.data['RECOMMENDER'];
+                this.data.approverName = (success.data['APPROVER'] == null) ? "" : success.data['APPROVER'];
 
                 this.refreshView();
                 this.show();
@@ -514,6 +520,8 @@ window.app = (function ($, toastr, App) {
             this.view.position.text(this.data.position);
             this.view.serviceType.text(this.data.serviceType);
             this.view.serviceEventType.text(this.data.serviceEventType);
+            this.view.recommenderName.text(this.data.recommenderName);
+            this.view.approverName.text(this.data.approverName);
 
             this.view.mobileNo.text(this.data.mobileNo);
             if (this.data.imageFilePath != null && (typeof this.data.imageFilePath !== "undefined") && this.data.imageFilePath.length >= 4) {
