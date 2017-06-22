@@ -189,6 +189,7 @@ class TrainingRequest extends AbstractActionController {
         $trainings = $this->getTrainingList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
+                    'employeeId' => $this->employeeId,
                     'trainings' => $trainings["trainingKVList"],
                     'trainingTypes'=>$trainingTypes,
                     'trainingList'=>$trainings['trainingList']

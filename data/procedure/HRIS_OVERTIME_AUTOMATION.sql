@@ -46,6 +46,9 @@ BEGIN
   WHEN NO_DATA_FOUND THEN
     RAISE_APPLICATION_ERROR(-20001, 'NO EMPLOYEE IS DEFINED AS ADMIN');
   END;
+  DECLARE
+    V_PREF_COUNTER           NUMBER:=0;
+    NO_PREFERENCE_DATA_FOUND EXCEPTION;
   BEGIN
     FOR CUR_PREF IN
     (SELECT       *
@@ -54,6 +57,9 @@ BEGIN
     AND STATUS           ='E'
     )
     LOOP
+      DECLARE
+        V_EMPLOYEE_COUNTER     NUMBER:=0;
+        NO_EMPLOYEE_DATA_FOUND EXCEPTION;
       BEGIN
         FOR CUR_EMP IN
         (SELECT E.EMPLOYEE_ID AS EMPLOYEE_ID,
@@ -76,12 +82,12 @@ BEGIN
           ) S
         ON (S.SHIFT_ID=SA.SHIFT_ID)
         LEFT JOIN HRIS_ATTENDANCE_DETAIL AD
-        ON (E.EMPLOYEE_ID      =AD.EMPLOYEE_ID)
-        WHERE AD.ATTENDANCE_DT = V_DATE
-        AND (V_DATE BETWEEN S.START_DATE AND S.END_DATE)
-        AND E.STATUS        = 'E'
-        AND E.RETIRED_FLAG  ='N'
-        AND E.EMPLOYEE_TYPE = CUR_PREF.EMPLOYEE_TYPE
+        ON (E.EMPLOYEE_ID =AD.EMPLOYEE_ID)
+        WHERE (V_DATE BETWEEN S.START_DATE AND S.END_DATE)
+        AND AD.ATTENDANCE_DT = V_DATE
+        AND E.STATUS         = 'E'
+        AND E.RETIRED_FLAG   ='N'
+        AND E.EMPLOYEE_TYPE  = CUR_PREF.EMPLOYEE_TYPE
         )
         LOOP
           BEGIN
@@ -99,10 +105,10 @@ BEGIN
                 SELECT SHIFT_ID ,
                   START_TIME,
                   END_TIME,
-                  LATE_IN,
-                  EARLY_OUT,
-                  TOTAL_WORKING_HR,
-                  ACTUAL_WORKING_HR
+                  NVL(LATE_IN,0),
+                  NVL(EARLY_OUT,0),
+                  NVL(TOTAL_WORKING_HR,0),
+                  NVL(ACTUAL_WORKING_HR,0)
                 INTO V_SHIFT_ID,
                   V_START_TIME,
                   V_END_TIME,
@@ -132,9 +138,9 @@ BEGIN
                   SELECT COUNT(*)
                   INTO V_PUNCH_COUNT
                   FROM HRIS_ATTENDANCE
-                  WHERE EMPLOYEE_ID      = CUR_EMP.EMPLOYEE_ID
-                  AND ATTENDANCE_DT      =V_DATE;
-                  IF MOD(V_PUNCH_COUNT,2)=0 THEN
+                  WHERE EMPLOYEE_ID = CUR_EMP.EMPLOYEE_ID
+                  AND ATTENDANCE_DT =V_DATE;
+                  IF V_PUNCH_COUNT !=0 AND MOD(V_PUNCH_COUNT,2)=0 THEN
                     --
                     BEGIN
                       FOR CUR_OVERTIME       IN
@@ -168,9 +174,9 @@ BEGIN
                       )
                       LOOP
                         IF V_COUNTER       = 1 THEN
-                          V_NON_WORKING_HR:=CUR_OVERTIME.TOTAL_MINS;
+                          V_NON_WORKING_HR:=NVL(CUR_OVERTIME.TOTAL_MINS,0);
                         ELSE
-                          V_WORKING_HR:=CUR_OVERTIME.TOTAL_MINS;
+                          V_WORKING_HR:=NVL(CUR_OVERTIME.TOTAL_MINS,0);
                         END IF;
                         -- NO EXCEPTION HANDLED HERE YET;
                         V_COUNTER:=V_COUNTER+1;
@@ -347,22 +353,27 @@ BEGIN
                     END IF;
                     --
                     --
-                  ELSE
-                    RAISE_APPLICATION_ERROR(-20002, 'MISS PUNTCH');
                   END IF;
-                  --
                 END;
               END IF;
             END;
+            V_EMPLOYEE_COUNTER:=V_EMPLOYEE_COUNTER+1;
           END;
         END LOOP;
+        IF V_EMPLOYEE_COUNTER=0 THEN
+          RAISE NO_EMPLOYEE_DATA_FOUND;
+        END IF;
       EXCEPTION
-      WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20003,'FAILED ON PREFERENCE_ID : ' || CUR_PREF.PREFERENCE_ID );
+      WHEN NO_EMPLOYEE_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR(-20004,'FAILED ON PREFERENCE_ID : ' || CUR_PREF.PREFERENCE_ID || ' EMPLOYEE ARE NOT AVAILABLE WITH PROVIDED ATTENDANCE DATE ACCORDING TO SETUP');
       END;
+      V_PREF_COUNTER:=V_PREF_COUNTER+1;
     END LOOP;
+    IF V_PREF_COUNTER=0 THEN
+      RAISE NO_PREFERENCE_DATA_FOUND;
+    END IF;
   EXCEPTION
-  WHEN NO_DATA_FOUND THEN
-    RAISE_APPLICATION_ERROR(-20004, 'NO PREFERENCE SETTING IS DEFINED FOR OVERTIME AUTOMATION');
+  WHEN NO_PREFERENCE_DATA_FOUND THEN
+    RAISE_APPLICATION_ERROR(-20005, 'NO PREFERENCE SETTING IS DEFINED FOR OVERTIME AUTOMATION');
   END;
 END HRIS_OVERTIME_AUTOMATION;

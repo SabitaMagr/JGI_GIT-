@@ -13,6 +13,9 @@
             }
         });
         
+        var employeeId = $('#employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
+        
         var $trainingId = $("#form-trainingId");
         var $title = $("#form-title");
         var $startDate = $("#form-startDate");
