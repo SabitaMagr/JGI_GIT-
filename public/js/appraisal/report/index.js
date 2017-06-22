@@ -73,7 +73,7 @@ angular.module("hris", [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FIRST_NAME", title: "Employee", width: 150},
+                        {field: "FULL_NAME", title: "Employee", width: 150},
                         {field: "APPRAISAL_EDESC", title: "Appraisal", width: 120},
                         {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type", width: 150},
                         {field: "STAGE_EDESC", title: "Current Stage", width: 140},
@@ -87,14 +87,12 @@ angular.module("hris", [])
                     ]
                 });
 
-                app.searchTable('appraisalListTable', ['FIRST_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
+                app.searchTable('appraisalListTable', ['FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
 
                 app.pdfExport(
                         'appraisalListTable',
                         {
-                            'FIRST_NAME': 'Name',
-                            'MIDDLE_NAME': 'MiddleName',
-                            'LAST_NAME': 'LastName',
+                            'FULL_NAME': 'Name',
                             'APPRAISAL_EDESC': 'Appraisal',
                             'APPRAISAL_TYPE_EDESC':'Appraisal Type',
                             'STAGE_EDESC': 'Current Stage',
@@ -148,12 +146,11 @@ angular.module("hris", [])
 
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
-                        var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
                         var mn1 = dataItem.MN1 != null ? " " + dataItem.MN1 + " " : " ";
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
-                                {value: dataItem.FIRST_NAME + middleName + dataItem.LAST_NAME},
+                                {value: dataItem.FULL_NAME},
                                 {value: dataItem.APPRAISAL_EDESC},
                                 {value: dataItem.APPRAISAL_TYPE_EDESC},
                                 {value: dataItem.STAGE_EDESC},

@@ -90,7 +90,7 @@ class EmployeeRepository implements RepositoryInterface {
 
     public function fetchById($id) {
         $rowset = $this->gateway->select(function (Select $select) use ($id) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME,HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME, HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
                         HrEmployees::BIRTH_DATE,
                         HrEmployees::FAM_SPOUSE_BIRTH_DATE,
                         HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
@@ -179,11 +179,11 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE' => 'SERVICE_EVENT_TYPE_NAME'], 'left')
                 ->join(['SE2' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE2." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['APP_SERVICE_EVENT_TYPE' => 'SERVICE_EVENT_TYPE_NAME'], 'left')
                 ->join(['EF' => EmployeeFile::TABLE_NAME], "E." . HrEmployees::PROFILE_PICTURE_ID . "=EF." . EmployeeFile::FILE_CODE, ["FILE_NAME" => EmployeeFile::FILE_PATH], 'left')
-                ->join(['RA' => RecommendApprove::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=RA." . RecommendApprove::EMPLOYEE_ID, ["RECOMMENDER_ID" => RecommendApprove::RECOMMEND_BY,"APPROVER_ID" => RecommendApprove::APPROVED_BY,], 'left')
-                ->join(['E1' => HrEmployees::TABLE_NAME], "E1." . HrEmployees::EMPLOYEE_ID . "=RA.".RecommendApprove::RECOMMEND_BY, ["RECOMMENDER" => new Expression("INITCAP(E1.FULL_NAME)") ], 'left')
-                ->join(['E2' => HrEmployees::TABLE_NAME], "E2." . HrEmployees::EMPLOYEE_ID . "=RA.".RecommendApprove::APPROVED_BY, ["APPROVER" => new Expression("INITCAP(E2.FULL_NAME)") ], 'left');
-            $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
-        
+                ->join(['RA' => RecommendApprove::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=RA." . RecommendApprove::EMPLOYEE_ID, ["RECOMMENDER_ID" => RecommendApprove::RECOMMEND_BY, "APPROVER_ID" => RecommendApprove::APPROVED_BY,], 'left')
+                ->join(['E1' => HrEmployees::TABLE_NAME], "E1." . HrEmployees::EMPLOYEE_ID . "=RA." . RecommendApprove::RECOMMEND_BY, ["RECOMMENDER" => new Expression("INITCAP(E1.FULL_NAME)")], 'left')
+                ->join(['E2' => HrEmployees::TABLE_NAME], "E2." . HrEmployees::EMPLOYEE_ID . "=RA." . RecommendApprove::APPROVED_BY, ["APPROVER" => new Expression("INITCAP(E2.FULL_NAME)")], 'left');
+        $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
+
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
