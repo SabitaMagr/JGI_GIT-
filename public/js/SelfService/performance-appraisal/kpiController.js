@@ -40,8 +40,8 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                                     successCriteria: appraisalKPIList[j].SUCCESS_CRITERIA,
                                     weight: parseInt(appraisalKPIList[j].WEIGHT),
                                     keyAchievement: appraisalKPIList[j].KEY_ACHIEVEMENT,
-                                    selfRating: parseInt(appraisalKPIList[j].SELF_RATING),
-                                    appraiserRating: parseInt(appraisalKPIList[j].APPRAISER_RATING),
+                                    selfRating: parseFloat(appraisalKPIList[j].SELF_RATING),
+                                    appraiserRating: parseFloat(appraisalKPIList[j].APPRAISER_RATING),
                                     checkbox: "checkboxq" + j,
                                     checked: false
                                 }));
@@ -94,7 +94,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                     console.log(list);
                     angular.forEach(list, function (item) {
                         var weight = parseInt(item.weight);
-                        var appraiserRating = parseInt(item.appraiserRating);
+                        var appraiserRating = parseFloat(item.appraiserRating);
                         var total1 = appraiserRating * (weight / 100);
                         total += parseFloat(total1);
                     });

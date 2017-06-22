@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/14/16
- * Time: 3:38 PM
- */
-
 namespace AttendanceManagement\Repository;
 
 use Application\Helper\EntityHelper;
@@ -48,14 +41,13 @@ class AttendanceDetailRepository implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class,
-	 NULL, [
-            AttendanceDetail::ATTENDANCE_DT
-                    ], [
-                        AttendanceDetail::IN_TIME,
-                        AttendanceDetail::OUT_TIME
-                        ], NULL, NULL,'A'),false);
-        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class, NULL, [
+                    AttendanceDetail::ATTENDANCE_DT
+                        ], [
+                    AttendanceDetail::IN_TIME,
+                    AttendanceDetail::OUT_TIME
+                        ], NULL, NULL, 'A'), false);
+
 //        $select->columns([
 //            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
 //            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
@@ -78,18 +70,17 @@ class AttendanceDetailRepository implements RepositoryInterface {
     }
 
     //this function need changes
-    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status,$companyId=null,$employeeTypeId=null,$widOvertime=false,$onlyMisPunch=false) {
+    public function filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId = null, $employeeTypeId = null, $widOvertime = false, $onlyMisPunch = false) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class,
-	 NULL, [
-            AttendanceDetail::ATTENDANCE_DT
-                    ], [
-                        AttendanceDetail::IN_TIME,
-                        AttendanceDetail::OUT_TIME
-                        ], NULL, NULL,'A'),false);
-        
+
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class, NULL, [
+                    AttendanceDetail::ATTENDANCE_DT
+                        ], [
+                    AttendanceDetail::IN_TIME,
+                    AttendanceDetail::OUT_TIME
+                        ], NULL, NULL, 'A'), false);
+
 //        $select->columns(
 //                [new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
 //                    new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
@@ -99,16 +90,16 @@ class AttendanceDetailRepository implements RepositoryInterface {
 //                    new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),
 //                    new Expression("A.OUT_REMARKS AS OUT_REMARKS")],
 //                true);
-        
+
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" =>new Expression('INITCAP(E.FIRST_NAME)') , "MIDDLE_NAME" =>new Expression('INITCAP(E.MIDDLE_NAME)') , "LAST_NAME" =>new Expression('INITCAP(E.LAST_NAME)') ], "left")
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression('INITCAP(E.FIRST_NAME)'), "MIDDLE_NAME" => new Expression('INITCAP(E.MIDDLE_NAME)'), "LAST_NAME" => new Expression('INITCAP(E.LAST_NAME)')], "left")
                 ->join(['H' => 'HRIS_HOLIDAY_MASTER_SETUP'], 'A.HOLIDAY_ID=H.HOLIDAY_ID', ["HOLIDAY_ENAME" => 'HOLIDAY_ENAME'], "left")
                 ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=L.LEAVE_ID', ["LEAVE_ENAME" => 'LEAVE_ENAME'], "left")
                 ->join(['T' => 'HRIS_TRAINING_MASTER_SETUP'], 'A.TRAINING_ID=T.TRAINING_ID', ["TRAINING_NAME" => 'TRAINING_NAME'], "left")
                 ->join(['TVL' => 'HRIS_EMPLOYEE_TRAVEL_REQUEST'], 'A.TRAVEL_ID=TVL.TRAVEL_ID', ["TRAVEL_DESTINATION" => 'DESTINATION'], "left");
 
-        if($widOvertime!=false){
-           $select->join(['OT' => 'HRIS_OVERTIME'], 'A.EMPLOYEE_ID = OT.EMPLOYEE_ID AND A.ATTENDANCE_DT=OT.OVERTIME_DATE', ["OVERTIME_ID" => 'OVERTIME_ID','OVERTIME_IN_HOUR'=>new Expression("NVL2(OT.TOTAL_HOUR,LPAD(TRUNC(OT.TOTAL_HOUR/60,0),2, 0)||':'||LPAD(MOD(OT.TOTAL_HOUR,60),2, 0),NULL)")], "left");
+        if ($widOvertime != false) {
+            $select->join(['OT' => 'HRIS_OVERTIME'], 'A.EMPLOYEE_ID = OT.EMPLOYEE_ID AND A.ATTENDANCE_DT=OT.OVERTIME_DATE', ["OVERTIME_ID" => 'OVERTIME_ID', 'OVERTIME_IN_HOUR' => new Expression("NVL2(OT.TOTAL_HOUR,LPAD(TRUNC(OT.TOTAL_HOUR/60,0),2, 0)||':'||LPAD(MOD(OT.TOTAL_HOUR,60),2, 0),NULL)")], "left");
         }
         if ($fromDate != null) {
             $startDate = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
@@ -163,12 +154,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($employeeId != -1) {
             $select->where(["E.EMPLOYEE_ID=" . $employeeId]);
         }
-        
-        if($companyId!=null && $companyId!=-1){
-            $select->where(["E.COMPANY_ID=".$companyId]);
+
+        if ($companyId != null && $companyId != -1) {
+            $select->where(["E.COMPANY_ID=" . $companyId]);
         }
-        if($employeeTypeId!=null && $employeeTypeId!=-1){
-            $select->where(["E.EMPLOYEE_TYPE='".$employeeTypeId."'"]);
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $select->where(["E.EMPLOYEE_TYPE='" . $employeeTypeId . "'"]);
         }
 
         if ($branchId != -1) {
@@ -194,8 +185,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($serviceEventTypeId != -1) {
             $select->where(["E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId]);
         }
-        
-        if($onlyMisPunch!=false){
+
+        if ($onlyMisPunch != false) {
             $select->where([
                 "mod((SELECT COUNT(*) FROM HRIS_ATTENDANCE A1
                 WHERE A1.EMPLOYEE_ID = A.EMPLOYEE_ID
@@ -212,8 +203,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
-    
-    public function filterRecordForMisPunch($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId,$employeeTypeId){
+
+    public function filterRecordForMisPunch($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId) {
         
     }
 
@@ -221,13 +212,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
     public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class,
-	 NULL, [
-            AttendanceDetail::ATTENDANCE_DT
-                    ], [
-                        AttendanceDetail::IN_TIME,
-                        AttendanceDetail::OUT_TIME
-                        ], NULL, NULL,'A'),false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class, NULL, [
+                    AttendanceDetail::ATTENDANCE_DT
+                        ], [
+                    AttendanceDetail::IN_TIME,
+                    AttendanceDetail::OUT_TIME
+                        ], NULL, NULL, 'A'), false);
 //        $select->columns([new Expression("INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression('INITCAP(E.FIRST_NAME)')], "left");
@@ -245,13 +235,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
     public function getDtlWidEmpIdDate($employeeId, $attendanceDt) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class,
-	 NULL, [
-            AttendanceDetail::ATTENDANCE_DT
-                    ], [
-                        AttendanceDetail::IN_TIME,
-                        AttendanceDetail::OUT_TIME
-                        ], NULL, NULL,'A'),false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class, NULL, [
+                    AttendanceDetail::ATTENDANCE_DT
+                        ], [
+                    AttendanceDetail::IN_TIME,
+                    AttendanceDetail::OUT_TIME
+                        ], NULL, NULL, 'A'), false);
 //        $select->columns([
 //            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
 //            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
@@ -261,7 +250,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
 //            new Expression("A.IN_REMARKS AS IN_REMARKS"),
 //            new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression('INITCAP(E.FIRST_NAME)'), "MIDDLE_NAME" =>new Expression('INITCAP(E.MIDDLE_NAME)'), "LAST_NAME" =>new Expression('INITCAP(E.LAST_NAME)')], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression('INITCAP(E.FIRST_NAME)'), "MIDDLE_NAME" => new Expression('INITCAP(E.MIDDLE_NAME)'), "LAST_NAME" => new Expression('INITCAP(E.LAST_NAME)')], "left");
         $select->where([
             'A.EMPLOYEE_ID=' . $employeeId,
             "A.ATTENDANCE_DT=TO_DATE('" . $attendanceDt . "','DD-MM-YYYY')"
@@ -416,13 +405,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
     public function fetchByEmpIdAttendanceDT($employeeId, $attendanceDt) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class,
-	 NULL, [
-            AttendanceDetail::ATTENDANCE_DT
-                    ], [
-                        AttendanceDetail::IN_TIME,
-                        AttendanceDetail::OUT_TIME
-                        ], NULL, NULL,'A'),false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceDetail::class, NULL, [
+                    AttendanceDetail::ATTENDANCE_DT
+                        ], [
+                    AttendanceDetail::IN_TIME,
+                    AttendanceDetail::OUT_TIME
+                        ], NULL, NULL, 'A'), false);
 //        $select->columns([new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression('INITCAP(E.FIRST_NAME)'), "MIDDLE_NAME" => new Expression('INITCAP(E.MIDDLE_NAME)'), "LAST_NAME" => new Expression('INITCAP(E.LAST_NAME)')], "left");

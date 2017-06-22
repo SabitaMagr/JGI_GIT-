@@ -113,26 +113,28 @@ class AttendanceApproveController extends AbstractActionController {
 
                 if ($action == "Approve") {
                     $model->status = "AP";
-                    $attendanceDetail->attendanceDt = Helper::getcurrentExpressionDate($detail['ATTENDANCE_DT']);
-                    $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
-                    $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
-                    $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
-                    $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
-                    $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
-                    $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
-                    $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
+                    $this->repository->backdateAttendance(Helper::getExpressionDate($detail['ATTENDANCE_DT']), $detail['EMPLOYEE_ID'], Helper::getExpressionTime($detail['IN_TIME']), Helper::getExpressionTime($detail['OUT_TIME']));
 
-                    $employeeId = $detail['EMPLOYEE_ID'];
-                    $attendanceDt = $detail['ATTENDANCE_DT'];
-
-                    $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
-
-                    if ($previousDtl == null) {
-//                    $attendanceRepository->add($attendanceDetail);
-                        throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
-                    } else {
-                        $attendanceRepository->edit($attendanceDetail, $previousDtl['ID']);
-                    }
+//                    
+//                    $attendanceDetail->attendanceDt = Helper::getExpressionDate($detail['ATTENDANCE_DT']);
+//                    $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
+//                    $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
+//                    $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
+//                    $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
+//                    $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
+//                    $attendanceDetail->employeeId = $detail['EMPLOYEE_ID'];
+//                    $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
+//
+//                    $employeeId = $detail['EMPLOYEE_ID'];
+//                    $attendanceDt = $detail['ATTENDANCE_DT'];
+//
+//                    $previousDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $attendanceDt);
+//
+//                    if ($previousDtl == null) {
+//                        throw new Exception("Attendance of employee with employeeId :$employeeId on $attendanceDt is not found.");
+//                    } else {
+//                        $attendanceRepository->edit($attendanceDetail, $previousDtl['ID']);
+//                    }
                     $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
                 } else if ($action == "Reject") {
                     $model->status = "R";

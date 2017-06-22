@@ -97,7 +97,8 @@
                                 action: 'submitQualificationDtl',
                                 data: {
                                     "qualificationRecord": qualificationRecord,
-                                    'employeeId': employeeId
+                                    'employeeId': employeeId,
+                                    "qualificationRecordNum":qualificationRecord.length
                                 }
                             }).then(function (success) {
                                 $scope.$apply(function () {
@@ -461,7 +462,7 @@
                     if ($scope.employeeExperienceForm.$valid && $scope.experienceFormList.length > 0) {
                         console.log("hellow");
                         $scope.experienceListEmpty = 1;
-                        if ($scope.experienceFormList.length == 1 && angular.equals($scope.experienceFormTemplate, $scope.experienceFormList[0])) {
+                        if (($scope.experienceFormList.length == 1 && angular.equals($scope.experienceFormTemplate, $scope.experienceFormList[0]))||$scope.experienceFormList.length==0) {
                             console.log("app log", "The form is not filled");
                             $scope.experienceListEmpty = 0;
                         }
@@ -577,7 +578,7 @@
                 $scope.submitTraining = function () {
                     if ($scope.employeeTrainingForm.$valid && $scope.trainingFormList.length > 0) {
                         $scope.trainingListEmpty = 1;
-                        if ($scope.trainingFormList.length == 1 && angular.equals($scope.trainingFormTemplate, $scope.trainingFormList[0])) {
+                        if (($scope.trainingFormList.length == 1 && angular.equals($scope.trainingFormTemplate, $scope.trainingFormList[0]))||$scope.trainingFormList.length==0) {
                             console.log("app log", "The form is not filled");
                             $scope.trainingListEmpty = 0;
                         }
