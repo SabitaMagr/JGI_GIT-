@@ -59,6 +59,7 @@ FROM
     INITCAP(E.FIRST_NAME)                        AS FIRST_NAME,
     INITCAP(E.MIDDLE_NAME)                       AS MIDDLE_NAME,
     INITCAP(E.LAST_NAME)                         AS LAST_NAME,
+    INITCAP(E.FULL_NAME)                         AS FULL_NAME,
     INITCAP(T.APPRAISAL_TYPE_EDESC)              AS APPRAISAL_TYPE_EDESC,
     INITCAP(S.STAGE_EDESC)                       AS STAGE_EDESC,
     S.STAGE_ID                                   AS STAGE_ID,
