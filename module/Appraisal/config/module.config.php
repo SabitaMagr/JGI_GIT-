@@ -17,6 +17,7 @@ use Appraisal\Controller\StageQuestionController;
 use Appraisal\Controller\SetupController;
 use Appraisal\Controller\AppraisalAssignController;
 use Appraisal\Controller\AppraisalReportController;
+use Appraisal\Controller\DefaultRatingController;
 
 return [
     'router' => [
@@ -171,6 +172,20 @@ return [
                     ],
                     'defaults'=>[
                         'controller'=> AppraisalReportController::class,
+                        'action'=>'index'
+                    ]
+                ],
+            ],
+            'defaultRating'=>[
+                'type'=>Segment::class,
+                'options'=>[
+                    'route'=> '/appraisal/defaultRating[/:action[/:id]]',
+                    'constants'=>[
+                        'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'=>'[0-9]+',
+                    ],
+                    'defaults'=>[
+                        'controller'=> DefaultRatingController::class,
                         'action'=>'index'
                     ]
                 ],
@@ -452,6 +467,27 @@ return [
                 ],
             ],
         ],
+        'defaultRating'=>[
+            [
+                'label'=>'Appraisal Default Rating',
+                'route'=>'defaultRating',
+            ],[
+                'label' => 'Appraisal Default Rating',
+                'route' => 'defaultRating',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'defaultRating',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Detail',
+                        'route' => 'defaultRating',
+                        'action' => 'view',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -465,7 +501,8 @@ return [
             StageQuestionController::class=> ControllerFactory::class,
             SetupController::class=> ControllerFactory::class,
             AppraisalAssignController::class=> ControllerFactory::class,
-            AppraisalReportController::class=> ControllerFactory::class
+            AppraisalReportController::class=> ControllerFactory::class,
+            DefaultRatingController::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
