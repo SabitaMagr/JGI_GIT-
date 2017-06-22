@@ -35,7 +35,7 @@ class DefaultRatingRepository implements RepositoryInterface{
     }
 
     public function fetchAll() {
-        
+        return $this->tableGateway->select([DefaultRating::STATUS=>'E']);
     }
 
     public function fetchById($id) {
