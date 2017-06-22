@@ -1,4 +1,5 @@
 <?php
+
 namespace Advance\Controller;
 
 use Advance\Repository\AdvanceStatusRepository;
@@ -17,33 +18,32 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class AdvanceStatus extends AbstractActionController
-{
+class AdvanceStatus extends AbstractActionController {
+
     private $adapter;
     private $advanceApproveRepository;
     private $advanceStatusRepository;
     private $form;
     private $employeeId;
-    
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->advanceApproveRepository = new AdvanceApproveRepository($adapter);
         $this->advanceStatusRepository = new AdvanceStatusRepository($adapter);
         $auth = new AuthenticationService();
-        $this->employeeId =  $auth->getStorage()->read()['employee_id'];       
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
-    
-    public function initializeForm(){
+
+    public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new AdvanceRequestForm();
         $this->form = $builder->createForm($form);
     }
 
-    
     public function indexAction() {
         $advanceFormElement = new Select();
         $advanceFormElement->setName("advance");
-        $advances = EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], "ADVANCE_NAME", "ASC",NULL,FALSE,TRUE);
+        $advances = EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], "ADVANCE_NAME", "ASC", NULL, FALSE, TRUE);
         $advances1 = [-1 => "All"] + $advances;
         $advanceFormElement->setValueOptions($advances1);
         $advanceFormElement->setAttributes(["id" => "advanceId", "class" => "form-control"]);
@@ -55,7 +55,7 @@ class AdvanceStatus extends AbstractActionController
             'RC' => 'Recommended',
             'AP' => 'Approved',
             'R' => 'Rejected',
-            'C'=>'Cancelled'
+            'C' => 'Cancelled'
         ];
         $advanceStatusFormElement = new Select();
         $advanceStatusFormElement->setName("advanceStatus");
@@ -66,9 +66,10 @@ class AdvanceStatus extends AbstractActionController
         return Helper::addFlashMessagesToArray($this, [
                     'advances' => $advanceFormElement,
                     'advanceStatus' => $advanceStatusFormElement,
-                    'searchValues'=> EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
+
     public function viewAction() {
         $this->initializeForm();
         $advanceRequestRepository = new AdvanceRequestRepository($this->adapter);
@@ -91,20 +92,19 @@ class AdvanceStatus extends AbstractActionController
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         $recommApprove = 0;
-        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
-            $recommApprove=1;
+        if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+            $recommApprove = 1;
         }
-        
+
         $fullName = function($id) {
             $empRepository = new EmployeeRepository($this->adapter);
             $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+            return $empDtl['FULL_NAME'];
         };
-        
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);        
-        $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
+
+        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        $authRecommender = ($status == 'RQ' || $status == 'C') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $authApprover = ($status == 'RC' || $status == 'C' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $detail['APPROVER'] : $detail['APPROVED_BY'];
 
         if (!$request->isPost()) {
             $advanceRequest->exchangeArrayFromDB($detail);
@@ -136,12 +136,12 @@ class AdvanceStatus extends AbstractActionController
                     'requestedDt' => $detail['REQUESTED_DATE'],
                     'recommender' => $fullName($authRecommender),
                     'approver' => $fullName($authApprover),
-                    'approvedDT'=>$detail['APPROVED_DATE'],
+                    'approvedDT' => $detail['APPROVED_DATE'],
                     'status' => $status,
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC",NULL,FALSE,TRUE),
+                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC", NULL, FALSE, TRUE),
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove'=>$recommApprove
+                    'recommApprove' => $recommApprove
         ]);
     }
-    
+
 }

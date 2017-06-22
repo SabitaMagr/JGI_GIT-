@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("AppraisalDefaultRating")
  */
 
-class DefaultRating{   
+class DefaultRatingForm{   
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required(false)
