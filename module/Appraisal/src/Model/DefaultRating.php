@@ -59,6 +59,7 @@ class DefaultRating extends Model{
         'checked'=>self::CHECKED,
         'approvedBy'=>self::APPROVED_BY,
         'approved'=>self::APPROVED,
+        'approvedDate'=>self::APPROVED_DATE,
         'status'=>self::STATUS,
         'defaultValue'=>self::DEFAULT_VALUE
     ];
