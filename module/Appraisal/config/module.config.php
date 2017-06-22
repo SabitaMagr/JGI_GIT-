@@ -481,9 +481,13 @@ return [
                         'action' => 'index',
                     ],
                         [
-                        'label' => 'Detail',
+                        'label' => 'Edit',
                         'route' => 'defaultRating',
-                        'action' => 'view',
+                        'action' => 'edit',
+                    ], [
+                        'label' => 'Add',
+                        'route' => 'defaultRating',
+                        'action' => 'add',
                     ],
                 ],
             ],

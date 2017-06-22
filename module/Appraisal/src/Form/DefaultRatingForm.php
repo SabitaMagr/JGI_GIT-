@@ -11,9 +11,9 @@ use Zend\Form\Annotation;
 class DefaultRatingForm{   
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Default Value"})
+     * @Annotation\Options({"label":"Default Rating"})
      * @Annotation\Attributes({"id":"defaultValue","class":"form-control","min":"0","step":"0.01"})
      */
     public $defaultValue;
