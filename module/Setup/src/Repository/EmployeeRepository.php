@@ -90,7 +90,7 @@ class EmployeeRepository implements RepositoryInterface {
 
     public function fetchById($id) {
         $rowset = $this->gateway->select(function (Select $select) use ($id) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME,HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
                         HrEmployees::BIRTH_DATE,
                         HrEmployees::FAM_SPOUSE_BIRTH_DATE,
                         HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,

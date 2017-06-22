@@ -179,9 +179,7 @@ if ($this->messages) { ?>
         # if(RETURNABLE=='Y'&&RETURNED!='Y'){#
         <a class="btn-edit" data-issueid="#:ISSUE_ID#" data-assetid="#:ASSET_ID#" data-rdate=#:RETURN_DATE# 
         href="\\#" data-asset="#:ASSET_EDESC#" data-quantity="#:QUANTITY#" 
-        data-employee=" #: (FIRST_NAME == null) ? ' ' : FIRST_NAME #
-        #: (MIDDLE_NAME == null) ? ' ' : MIDDLE_NAME #
-        #: (LAST_NAME == null) ? ' ' : LAST_NAME #" data-target="\\#myModal" id="btnReturn"  style="height:17px;">
+        data-employee=" #: (FULL_NAME == null) ? ' ' : FULL_NAME #" data-target="\\#myModal" id="btnReturn"  style="height:17px;">
         <i class="fa fa-send-o"></i>
         </a>
         # } #
