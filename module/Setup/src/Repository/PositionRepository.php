@@ -58,7 +58,7 @@ class PositionRepository implements RepositoryInterface {
         $select->from(['P' => Position::TABLE_NAME]);
         $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=P." . Position::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
         $select->where(["P." . Position::STATUS . "='E'"]);
-        $select->order("P." . Position::POSITION_NAME . " ASC");
+        $select->order("P." . Position::LEVEL_NO . " ASC");
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $rowset = $statement->execute();
