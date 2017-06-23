@@ -163,10 +163,15 @@ class AppraisalEvaluation extends AbstractActionController{
                     break;
                     case 2: 
 //                        if(!$editMode){
-                            $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
-//                        }
+                            //}
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
-                        
+                        if($postData['defaultRating']=='Y'){
+                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$postData['appraiserOverallRating'], AppraisalStatus::DEFAULT_RATING=>'Y'], $appraisalId, $employeeId);
+                            $stageId = 2;
+                        }else{
+                            $stageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
+                        }
+                        $appraisalAssignRepo->updateCurrentStageByAppId($stageId, $appraisalId, $employeeId);
                         HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
                         $adminList1 = $employeeRepo->fetchByAdminFlagList();
                         foreach($adminList1 as $adminRow1){
@@ -183,6 +188,7 @@ class AppraisalEvaluation extends AbstractActionController{
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
+        $defaultRatingDtl = AppraisalHelper::checkDefaultRatingForEmp($this->adapter, $employeeId, $appraisalTypeId);
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
         $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($employeeId, $appraisalId)['NUM'];
@@ -206,7 +212,8 @@ class AppraisalEvaluation extends AbstractActionController{
             'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer,
             'keyAchievementDtlNum'=>$keyAchievementDtlNum,
             'appraiserRatingDtlNum'=>$appraiserRatingDtlNum,
-            'appCompetenciesRatingDtlNum'=>$appCompetenciesRatingDtlNum
+            'appCompetenciesRatingDtlNum'=>$appCompetenciesRatingDtlNum,
+            'defaultRatingDtl'=>$defaultRatingDtl
             ]);
     }
 }

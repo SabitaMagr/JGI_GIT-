@@ -18,6 +18,7 @@ class AppraisalStatus extends Model{
     const CREATED_DATE="CREATED_DATE";
     const MODIFIED_BY="MODIFIED_BY";
     const MODIFIED_DATE="MODIFIED_DATE";
+    const DEFAULT_RATING = "DEFAULT_RATING";
     
     public $employeeId;
     public $appraisalId;
@@ -32,6 +33,7 @@ class AppraisalStatus extends Model{
     public $createdDate;
     public $modifiedBy;
     public $modifiedDate;
+    public $defaultRating;
     
     public $mappings = [
         'employeeId'=>self::EMPLOYEE_ID,
@@ -46,7 +48,8 @@ class AppraisalStatus extends Model{
         'createdBy'=>self::CREATED_BY,
         'createdDate'=>self::CREATED_DATE,
         'modifiedBy'=>self::MODIFIED_BY,
-        'modifiedDate'=>self::MODIFIED_DATE
+        'modifiedDate'=>self::MODIFIED_DATE,
+        'defaultRating'=>self::DEFAULT_RATING
     ];
 }
 

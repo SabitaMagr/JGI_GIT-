@@ -189,6 +189,7 @@ class PerformanceAppraisal extends AbstractActionController{
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
+        $defaultRatingDtl = AppraisalHelper::checkDefaultRatingForEmp($this->adapter, $this->employeeId, $appraisalTypeId);
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
         $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($this->employeeId, $appraisalId)['NUM'];
@@ -211,7 +212,8 @@ class PerformanceAppraisal extends AbstractActionController{
             'appraiserAvailableAnswer'=>$appraiserAvailableAnswer,
             'keyAchievementDtlNum'=>$keyAchievementDtlNum,
             'appraiserRatingDtlNum'=>$appraiserRatingDtlNum,
-            'appCompetenciesRatingDtlNum'=>$appCompetenciesRatingDtlNum
+            'appCompetenciesRatingDtlNum'=>$appCompetenciesRatingDtlNum,
+            'defaultRatingDtl'=>$defaultRatingDtl
             ]);
     }
 }

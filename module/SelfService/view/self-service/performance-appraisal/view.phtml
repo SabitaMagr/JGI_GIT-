@@ -2,9 +2,11 @@
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
 $this->headScript()->appendFile($this->basePath('js/user-form-error.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/appraisalCustom.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/add.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/kpiController.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/competenciesController.js'));
+
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\performanceAppraisal')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -164,7 +166,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <h5 id="headingForPanel"><b>Performance Evaluation</b></h5>
                 <div class="portlet-body">
                     <div class="tabbable-line menusetuptab" style="padding-top:0px">
-                        <ul class="nav nav-tabs">
+                        <ul class="nav nav-tabs" id="tabList">
                             <?php if($assignedAppraisalDetail['KPI_SETTING']=='Y'){?>
                             <li class="active">
                                 <a href="#portlet_tab2_KPI" data-toggle="tab"> KPI </a>
@@ -180,28 +182,28 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                             </li>
                             <?php } 
-                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')){
+                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')||$assignedAppraisalDetail['DEFAULT_RATING']=='N'){
                             ?>
                             <?php if(count($appraiserQuestionTemplate)>0 && $appraiserAvailableAnswer==true){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
                             <?php } ?>
-                            <?php if(count($reviewerQuestionTemplate)>0 && $reviewerAvailableAnswer==true){ ?>
+                            <?php if(count($reviewerQuestionTemplate)>0 && $reviewerAvailableAnswer==true && $assignedAppraisalDetail['DEFAULT_RATING']=='N'){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                             </li>
                             <?php }
                             }
                             ?>
-                            <?php if(count($appraiseeQuestionTemplate)>0){ ?>
+                            <?php if(count($appraiseeQuestionTemplate)>0 && $assignedAppraisalDetail['DEFAULT_RATING']=='N'){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
                             <?php } ?>
                         </ul>
                     </div>
-                    <div class="tab-content margin-top-15">
+                    <div class="tab-content margin-top-15" id="tabContent">
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
@@ -284,6 +286,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <div ng-show="KPIForm.$submitted || KPIForm.selfRating_{{KPI.checkbox}}.$touched">
                                             <ul ng-show="KPIForm.selfRating_{{KPI.checkbox}}.$error.required" class="help-block error">
                                                 <li>Self Rating is required.</li>
+                                            </ul>
+                                        </div>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.selfRating_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.selfRating_{{KPI.checkbox}}.$error.max" class="help-block error">
+                                                <li>You exceeded the maximum.(max. value:4)</li>
+                                            </ul>
+                                        </div>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.selfRating_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.selfRating_{{KPI.checkbox}}.$error.min" class="help-block error">
+                                                <li>You exceeded the minimum.(max. value:0.2)</li>
                                             </ul>
                                         </div>
                                     </td>
@@ -451,7 +463,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation">
                             <div class="row">
                                 <?php 
-                                $selfDisabled = ($questionForCurStage==0 && $appraiserAvailableAnswer===true)?'disabled':'';
+//                                $selfDisabled = ($questionForCurStage==0 && $appraiserAvailableAnswer===true)?'disabled':'';
+                                $selfDisabled = ($questionForCurStage==0)?'disabled':'';
 //                                print "<pre>";
 //                                print_r($questionTemplate); die();
                                 foreach ($questionTemplate as $questionTemplateRow) { ?>
@@ -549,7 +562,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                             </div>
-                            <?php if($questionForCurStage>0 || $appraiserAvailableAnswer!==true){ ?>
+                            <?php 
+                            //if($questionForCurStage>0 || $appraiserAvailableAnswer!==true){ 
+                            if($questionForCurStage>0){
+                            ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -629,12 +645,39 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0)){ ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0 || $defaultRatingDtl!=null)){ ?>
+                                <?php
+                                    if($defaultRatingDtl!=null){
+                                ?>
+                                <div class="col-sm-12 margin-bottom-10">
+                                    <label style="font-size:12px !important;">
+                                        <input type="hidden" id="defaultRating" value="<?= $defaultRatingDtl['DEFAULT_VALUE'] ?>"/>
+                                Do you want to set default rating for current employee?
+                                [<b>Default Rating::<?= $defaultRatingDtl['DEFAULT_VALUE']; ?>, Tolerance Range::<?= $defaultRatingDtl['MIN_VALUE'] ?>-<?= $defaultRatingDtl['MAX_VALUE']?></b>]
+                                    </label>
+                                    <div class="md-radio-inline">
+                                        <div class="md-radio">
+                                            <input type="radio" disabled="disabled" id="radio141" name="defaultRating" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['DEFAULT_RATING']=='Y')?"checked":""; ?>>
+                                            <label for="radio141">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> Yes </label>
+                                        </div>
+                                        <div class="md-radio">
+                                            <input type="radio" disabled="disabled"  id="radio152" name="defaultRating" value="N" class="md-radiobtn" <?= ($assignedAppraisalDetail['DEFAULT_RATING']=='N')?"checked":""; ?>>
+                                            <label for="radio152">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> No </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
                                 <div class="col-sm-12">
                                     <label>
                                 Overall Rating:
                                     </label>
-                                    <input type="text" disabled="disabled" id="appraiserOverallRating"  name="appraiserOverallRating"/>
+                                    <input type="text" disabled="disabled" id="appraiserOverallRating"  name="appraiserOverallRating" value="<?= $assignedAppraisalDetail['APPRAISER_OVERALL_RATING']; ?>"/>
                                 </div>
                                 <?php } ?>
                             </div>

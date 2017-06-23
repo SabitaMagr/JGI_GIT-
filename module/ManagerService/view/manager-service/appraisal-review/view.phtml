@@ -1,4 +1,5 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/appraisalCustom.js'));
 $this->headScript()->appendFile($this->basePath('js/manager-service/appraisal-review/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
@@ -179,7 +180,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="<?= ($tab==2)?"active":""; ?>">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
-                            <?php } ?>
+                            <?php } 
+                            if($assignedAppraisalDetail['DEFAULT_RATING']!='Y'){
+                            ?>
                             <?php if(count($reviewerQuestionTemplate)>0){ ?>
                             <li class="<?= ($tab==3)?"active":""; ?>">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
@@ -189,7 +192,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="">
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
-                            <?php } ?>
+                            <?php } 
+                            }?>
                         </ul>
                     </div>
                     <div class="tab-content margin-top-15" id="tabContent">
@@ -430,7 +434,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>1]) ?>" name="performanceAppraisalForm" id="appraisalReview">
                             <div class="row">
                                 <?php 
-                                $disabled = ($questionForCurStage==0 && $appraiseeAvailableAnswer===true)?'disabled':'';
+//                                $disabled = ($questionForCurStage==0 && $appraiseeAvailableAnswer===true)?'disabled':'';
+                                $disabled = ($questionForCurStage==0)?'disabled':'';
                                 $questionOnPreTab = 0;
                                 foreach ($questionTemplate as $questionTemplateRow) { ?>
                                     <div class="col-md-12 margin-bottom-10">
@@ -529,7 +534,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                             </div>
-                            <?php if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ ?>
+                            <?php // if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ 
+                            if($questionForCurStage>0 && $questionOnPreTab>0){
+                            ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -618,16 +625,45 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0)){ ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0 || $defaultRatingDtl!=null)){ ?>
+                                <?php
+                                    if($defaultRatingDtl!=null){
+                                ?>
+                                <div class="col-sm-12 margin-bottom-10">
+                                    <label style="font-size:12px !important;">
+                                        <input type="hidden" id="defaultRating" value="<?= $defaultRatingDtl['DEFAULT_VALUE'] ?>"/>
+                                Do you want to set default rating for current employee?
+                                [<b>Default Rating::<?= $defaultRatingDtl['DEFAULT_VALUE']; ?>, Tolerance Range::<?= $defaultRatingDtl['MIN_VALUE'] ?>-<?= $defaultRatingDtl['MAX_VALUE']?></b>]
+                                    </label>
+                                    <div class="md-radio-inline">
+                                        <div class="md-radio">
+                                            <input type="radio" disabled="disabled" id="radio141" name="defaultRating" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['DEFAULT_RATING']=='Y')?"checked":""; ?>>
+                                            <label for="radio141">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> Yes </label>
+                                        </div>
+                                        <div class="md-radio">
+                                            <input type="radio" disabled="disabled"  id="radio152" name="defaultRating" value="N" class="md-radiobtn" <?= ($assignedAppraisalDetail['DEFAULT_RATING']=='N')?"checked":""; ?>>
+                                            <label for="radio152">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> No </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
                                 <div class="col-sm-12">
                                     <label>
                                 Overall Rating:
                                     </label>
-                                    <input type="text" disabled="disabled" id="appraiserOverallRating"  name="appraiserOverallRating"/>
+                                    <input type="text" disabled="disabled" id="appraiserOverallRating"  name="appraiserOverallRating" value="<?= $assignedAppraisalDetail['APPRAISER_OVERALL_RATING']; ?>"/>
                                 </div>
                                 <?php } ?>
                             </div>
-                                <?php if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ ?>
+                                <?php 
+                                //if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ 
+                                if($questionForCurStage>0 && $questionOnPreTab>0){?>
                                     <div class="row margin-top-10">
                                         <div class="col-sm-12">
                                             <div class="form-group">
@@ -713,7 +749,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                                 <?php } ?>
                             </div>
-                            <?php if($questionForCurStage>0 || $appraiseeAvailableAnswer!==true){ ?>
+                            <?php 
+                            //if($questionForCurStage>0 || $appraiseeAvailableAnswer!==true){
+                            if($questionForCurStage>0){?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">

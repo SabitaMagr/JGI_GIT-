@@ -101,7 +101,10 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                     console.log(total);
 //                $scope.annualRating = total;
                     var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
-                    angular.element(document.getElementById('appraiserOverallRating')).val((window.app.floatToRound(total, 2)) + annualRatingCompetency);
+                    var appraiserOverallRating = angular.element(document.getElementById('appraiserOverallRating'));
+                    if(appraiserOverallRating==null || appraiserOverallRating==""){
+                       appraiserOverallRating.val(((!isNaN(total))?(window.app.floatToRound(total, 2)):"") + annualRatingCompetency);
+                    }
                     return window.app.floatToRound(total, 2);
                     ;
                 }
@@ -148,8 +151,8 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                 }
             }
             $scope.submitKPIForm = function () {
-                console.log("form is going to be submitted");
                 if ($scope.KPIForm.$valid) {
+                    console.log("form is going to be submitted");
                     var annualRating = parseFloat(angular.element(document.getElementById('annualRating')).val());
                     var currentUser = angular.element(document.getElementById('currentUser')).val();
                     console.log(annualRating);
