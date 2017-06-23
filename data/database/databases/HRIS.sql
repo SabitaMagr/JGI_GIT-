@@ -1,10 +1,5 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- * Author:  itnepal
- * Created: Jun 22, 2017
- */
+ALTER TABLE HRIS_ATTENDANCE_DETAIL
+DROP COLUMN LATE_STATUS;
+ALTER TABLE HRIS_ATTENDANCE_DETAIL ADD LATE_STATUS CHAR(1 BYTE) CHECK (LATE_STATUS IN ('L','E','B','N','X','Y'));
 
+ALTER TABLE HRIS_ATTENDANCE ADD REMARKS VARCHAR(255 BYTE);
