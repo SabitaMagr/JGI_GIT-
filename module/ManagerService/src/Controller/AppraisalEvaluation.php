@@ -163,10 +163,15 @@ class AppraisalEvaluation extends AbstractActionController{
                     break;
                     case 2: 
 //                        if(!$editMode){
-                            $appraisalAssignRepo->updateCurrentStageByAppId(AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1), $appraisalId, $employeeId);
-//                        }
+                            //}
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
-                        
+                        if($postData['defaultRating']=='Y'){
+                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$postData['appraiserOverallRating'], AppraisalStatus::DEFAULT_RATING=>'Y'], $appraisalId, $employeeId);
+                            $stageId = 2;
+                        }else{
+                            $stageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
+                        }
+                        $appraisalAssignRepo->updateCurrentStageByAppId($stageId, $appraisalId, $employeeId);
                         HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
                         $adminList1 = $employeeRepo->fetchByAdminFlagList();
                         foreach($adminList1 as $adminRow1){

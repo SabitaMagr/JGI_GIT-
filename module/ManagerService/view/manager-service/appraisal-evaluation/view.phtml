@@ -292,6 +292,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <li>Appraiser Rating is required.</li>
                                             </ul>
                                         </div>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.max" class="help-block error">
+                                                <li>You exceeded the maximum.(max. value:4)</li>
+                                            </ul>
+                                        </div>
+                                        <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
+                                            <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.min" class="help-block error">
+                                                <li>You exceeded the minimum.(max. value:0.2)</li>
+                                            </ul>
+                                        </div>
                                     </td>
                                     <?php } ?>
                                 </tr>
@@ -450,7 +460,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="row">
                                 
                                 <?php 
-                                $disabled = ($questionForCurStage==0 && $reviewerAvailableAnswer===true)?'disabled':'';
+//                                $disabled = ($questionForCurStage==0 && $reviewerAvailableAnswer===true)?'disabled':'';
+                                $disabled = ($questionForCurStage==0)?'disabled':'';
                                 $questionOnPreTab = 0;
                                 foreach ($questionTemplate as $questionTemplateRow) { ?>
                                     <div class="col-md-12 margin-bottom-10">
@@ -548,7 +559,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php } ?>
                             </div>
                             <?php 
-                            if(($questionForCurStage>0 && $questionOnPreTab>0) || ($questionOnPreTab>0 && $reviewerAvailableAnswer!==true)){ ?>
+//                            if(($questionForCurStage>0 && $questionOnPreTab>0) || ($questionOnPreTab>0 && $reviewerAvailableAnswer!==true)){ 
+                            if($questionForCurStage>0 && $questionOnPreTab>0){ ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">
@@ -634,11 +646,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0)){ ?>
+                                <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0 || $defaultRatingDtl!=null)){ ?>
                                 <?php
                                     if($defaultRatingDtl!=null){
-                                       // print_r($defaultRatingDtl);
-                                    
                                 ?>
                                 <div class="col-sm-12 margin-bottom-10">
                                     <label style="font-size:12px !important;">
@@ -648,14 +658,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </label>
                                     <div class="md-radio-inline">
                                         <div class="md-radio">
-                                            <input type="radio"  id="radio141" name="defaultRating" value="Y" class="md-radiobtn">
+                                            <input type="radio" <?= $disabled; ?>  id="radio141" name="defaultRating" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['DEFAULT_RATING']=='Y')?"checked":""; ?>>
                                             <label for="radio141">
                                                 <span class="inc"></span>
                                                 <span class="check"></span>
                                                 <span class="box"></span> Yes </label>
                                         </div>
                                         <div class="md-radio">
-                                            <input type="radio" checked="" id="radio152" name="defaultRating" value="N" class="md-radiobtn">
+                                            <input type="radio" <?= $disabled; ?>  id="radio152" name="defaultRating" value="N" class="md-radiobtn" <?= ($assignedAppraisalDetail['DEFAULT_RATING']=='N')?"checked":""; ?>>
                                             <label for="radio152">
                                                 <span class="inc"></span>
                                                 <span class="check"></span>
@@ -668,11 +678,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <label>
                                 Overall Rating:
                                     </label>
-                                    <input type="text" disabled="disabled" id="appraiserOverallRating"  name="appraiserOverallRating"/>
+                                    <input type="text" readonly="readonly" id="appraiserOverallRating"  name="appraiserOverallRating" value="<?= $assignedAppraisalDetail['APPRAISER_OVERALL_RATING']; ?>"/>
                                 </div>
                                 <?php } ?>
                             </div>
-                            <?php if($questionForCurStage>0 || $reviewerAvailableAnswer===false){ ?>
+                            <?php 
+                            //if($questionForCurStage>0 || $reviewerAvailableAnswer===false){
+                            if($questionForCurStage>0){
+                            ?>
                             <div class="row margin-top-10">
                                 <div class="col-sm-12">
                                     <div class="form-group">

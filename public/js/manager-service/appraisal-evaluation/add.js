@@ -1,4 +1,4 @@
-(function ($,appraisalCustom) {
+(function ($, appraisalCustom) {
     'use strict';
     $(document).ready(function () {
 //        $("#appraisalEvaluation1").on("submit", function () {
@@ -46,21 +46,33 @@
 //                return true;
 //            }
 //        });
-        appraisalCustom.tabFormValidation("competenciesForm","KPIForm","portlet_tab2_COM","portlet_tab2_KPI");
+        appraisalCustom.tabFormValidation("competenciesForm", "KPIForm", "portlet_tab2_COM", "portlet_tab2_KPI");
         var comSettingId = $("#comSettingId").val();
-        if(comSettingId=='N'){
-            appraisalCustom.tabFormValidation("appraisalEvaluation1","appraisalEvaluation","portlet_tab2_2","portlet_tab2_1");
-        }else if(comSettingId=='Y'){
-            appraisalCustom.tabFormValidation("appraisalEvaluation1","competenciesForm","portlet_tab2_2","portlet_tab2_COM");
+        if (comSettingId == 'N') {
+            appraisalCustom.tabFormValidation("appraisalEvaluation1", "appraisalEvaluation", "portlet_tab2_2", "portlet_tab2_1");
+        } else if (comSettingId == 'Y') {
+            appraisalCustom.tabFormValidation("appraisalEvaluation1", "competenciesForm", "portlet_tab2_2", "portlet_tab2_COM");
         }
-         $('input[type=radio][name=defaultRating]').change(function() {
-             console.log($(this).val());
-             if($(this).val()=='Y'){
-                 var defaultRating = $("#defaultRating").val();
-                 $("#appraiserOverallRating").val(defaultRating);
-             }else{
-                 $("#appraiserOverallRating").val("");
-             }
-         });
+        $('input[type=radio][name=defaultRating]').change(function () {
+            console.log($(this).val());
+            if ($(this).val() == 'Y') {
+                var defaultRating = $("#defaultRating").val();
+                $("#appraiserOverallRating").val(defaultRating);
+                $('#tabContent').find('input,select,textarea').each(function () {
+                    if ($(this).attr('type') !== 'hidden' && $(this).attr('disabled') !== 'disabled') {
+                        $(this).removeAttr("required");
+                    }
+                })
+            } else {
+                var annualRatingCompetency = $('#annualRatingCompetency').val();
+                var annualRating = $('#annualRating').val();
+                $("#appraiserOverallRating").val(((!isNaN(annualRating))?annualRating:"") + annualRatingCompetency);
+                $('#tabContent').find('input,select,textarea').each(function () {
+                    if ($(this).attr('type') !== 'hidden' && $(this).attr('disabled') !== 'disabled') {
+                        $(this).attr("required",true);
+                    }
+                })
+            }
+        });
     });
-})(window.jQuery,window.appraisalCustom);
+})(window.jQuery, window.appraisalCustom);
