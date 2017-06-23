@@ -133,7 +133,7 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                             CONTINUE;
                           END IF;
                           HRIS_REATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
-                          HRIS_ATTENDANCE_JGI(TRUNC(V_ADJUSTMENT_START_DATE+i));
+                          HRIS_POST_ATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
                         END LOOP;
                       END;
                     COMMIT;
@@ -166,7 +166,7 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                         CONTINUE;
                       END IF;
                       HRIS_REATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
-                      HRIS_ATTENDANCE_JGI(TRUNC(V_ADJUSTMENT_START_DATE+i));
+                      HRIS_POST_ATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
                     END LOOP;
                   END;
                     COMMIT;
