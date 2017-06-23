@@ -2,6 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
 $this->headScript()->appendFile($this->basePath('js/user-form-error.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/appraisalCustom.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/add.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/kpiController.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/competenciesController.js'));
@@ -164,7 +165,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <h5 id="headingForPanel"><b>Performance Evaluation</b></h5>
                 <div class="portlet-body">
                     <div class="tabbable-line menusetuptab" style="padding-top:0px">
-                        <ul class="nav nav-tabs">
+                        <ul class="nav nav-tabs" id="tabList">
                             <?php if($assignedAppraisalDetail['KPI_SETTING']=='Y'){?>
                             <li class="active">
                                 <a href="#portlet_tab2_KPI" data-toggle="tab"> KPI </a>
@@ -201,7 +202,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php } ?>
                         </ul>
                     </div>
-                    <div class="tab-content margin-top-15">
+                    <div class="tab-content margin-top-15" id="tabContent">
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />

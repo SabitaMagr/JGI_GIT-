@@ -52,6 +52,10 @@ class DefaultRatingRepository implements RepositoryInterface{
         $result['POSITION_IDS']= json_decode($result['POSITION_IDS']);
         return $result;
     }
+    public function fetechByAppraisalTypeId($appraisalTypeId){
+        $result = $this->tableGateway->select([DefaultRating::APPRAISAL_TYPE_ID=>$appraisalTypeId,DefaultRating::STATUS=>'E']);
+        return $result; 
+    }
 }
 
 
