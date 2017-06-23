@@ -63,7 +63,8 @@ class EmailController extends AbstractActionController {
         32 => "Key_Achievement",
         33 => "Appraisal_Evaluated",
         34 => "Appraisal_Reviewed",
-        35 => "Appraisee_Feedback"
+        35 => "Appraisee_Feedback",
+        36 => "Attendance_Recommend"
     ];
 
     private function getVariables() {
@@ -142,6 +143,7 @@ class EmailController extends AbstractActionController {
             33 => $type13ObjVars,
             34 => $type13ObjVars,
             35 => $type13ObjVars,
+            36 => $type2ObjVars,
         ];
     }
 

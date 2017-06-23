@@ -2048,6 +2048,8 @@ class RestfulService extends AbstractRestfulController {
                 return "Pending";
             } else if ($status == "R") {
                 return "Rejected";
+            }elseif($status == "RC"){
+                return "Recommended";
             } else if ($status == "AP") {
                 return "Approved";
             } else if ($status == "C") {

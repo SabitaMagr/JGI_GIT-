@@ -28,6 +28,8 @@ $outRemarks = $form->get('outRemarks');
 $outRemarks->setAttributes(['disabled' => "disabled"]);
 $totalHour = $form->get('totalHour');
 $totalHour->setAttributes(['disabled' => "disabled"]);
+$recommendedRemarks = $form->get('recommendedRemarks');
+$recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
 $approvedRemarks->setAttributes(['required' => 'true']);
 
@@ -35,7 +37,7 @@ $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
 $submit->setAttribute('id','approve');
 
-$form->setAttribute('action', $this->url('attedanceapprove', ['action' => 'view', 'id' => $id]));
+$form->setAttribute('action', $this->url('attedanceapprove', ['action' => 'view', 'id' => $id,'role' => $role]));
 
 
 $form->prepare();
@@ -91,11 +93,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </tr>
                                     <tr height="30">
                                         <td>
-                                            Role
+                                            Your Role
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php echo 'Approver'; ?>
+                                             <?php
+                                            if ($role == 3) {
+                                                echo 'Approver';
+                                            } else if ($role == 2) {
+                                                echo 'Recommender';
+                                            } else if ($role == 4) {
+                                                echo 'Recommender\Approver';
+                                            }
+                                            ?>
                                         </td>
                                     </tr>
                                 </table>
@@ -122,18 +132,31 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td width="15">:</td>
                                         <td>
                                             <?php
-                                            if ($status == "RQ") {
+                                            if ($status == 'RQ') {
                                                 echo "Pending";
+                                            } else if ($status == 'RC') {
+                                                echo "Recommended";
+                                            } else if ($status == 'AP') {
+                                                echo "Approved";
                                             } else if ($status == "R") {
                                                 echo "Rejected";
-                                            } else if ($status == "AP") {
-                                                echo "Approved";
                                             } else if ($status == "C") {
                                                 echo "Cancelled";
                                             }
                                             ?>
                                         </td>
                                     </tr>
+                                     <?php if ($role != 4) { ?>
+                                        <tr height="30">
+                                            <td>
+                                                <?= ($role == 3) ? "Recommender" : "Approver"; ?>
+                                            </td>
+                                            <td width="15">:</td>
+                                            <td>
+                                                <?= ($role == 3) ? $recommender : $approver; ?>
+                                            </td>
+                                        </tr> 
+                                    <?php } ?>
                                 </table>
                             </div>
                         </div>
@@ -222,15 +245,44 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                 </div>
 
-                <div class="form-group margin-top-10 <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($approvedRemarks); ?>
-                    <?php print $this->formElement($approvedRemarks); ?>
-                </div>
-                <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block error']); ?>
+        
+            
+             <?php if ($role == 2) { ?>
+                    <div
+                        class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($recommendedRemarks); ?>
+                            <?php print $this->formElement($recommendedRemarks); ?>
+                    </div>
+                <?php } ?>
+                <?php if ($role == 2 && ($status == 'AP' || ($status == 'R' && $approvedDT != null))) { ?>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                        <label>Reason for action [From Approver]</label>
+                        <?php print $this->formElement($approvedRemarks); ?>
+                    </div>
+                <?php } ?>
+
+                <?php
+                if ($role == 3 || $role == 4) {
+                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
+                    ?>
+                    <?php if ($role != 4) { ?>
+                        <div
+                            class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                            <label>Reason for action [From Recommender]</label>
+                            <?php print $this->formElement($recommendedRemarks); ?>
+                        </div>
+                    <?php } ?>
+                    <div
+                        class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($approvedRemarks); ?>
+                            <?php print $this->formElement($approvedRemarks); ?>
+                    </div>
+                <?php } ?>
 
                 <div class="">
                     <?php
-                    if ($status == 'RQ' || $status == 'RC') {
+                    if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
                         print $this->formSubmit($submit);
                         ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">

@@ -92,7 +92,7 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-        return;
+//        return;
         $isValidEmail = function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         };
@@ -266,14 +266,41 @@ class HeadNotification {
             $notification->outRemarks = $request->outRemarks;
 
             $notification->totalHours = $request->totalHour;
-            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id]);
+            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id,"role" => 2]);
 
             $title = "Attendance Request";
-            $desc = "No description for now";
+            $desc = "Attendance Request Applied";
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 4, $adapter, $url);
         };
+        
+        ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED} = function (AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
+            $attendanceReqRepo = new AttendanceRequestRepository($adapter);
+            $request->exchangeArrayFromDB($attendanceReqRepo->fetchById($request->id));
+            
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+            $notification = new \Notification\Model\AdvanceRequestNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::APPROVED_BY], $notification, $adapter);
+
+            $notification->attendanceDate = $request->attendanceDt;
+            $notification->inTime = $request->inTime;
+            $notification->outTime = $request->outTime;
+            $notification->inRemarks = $request->inRemarks;
+            $notification->outRemarks = $request->outRemarks;
+            $notification->totalHours = $request->totalHour;
+            $notification->status = $status;
+
+            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id,"role" => 3]);
+            $title = "Attendance Request";
+            $desc = "Attendance Request is Recommended";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, 5, $adapter, $url);
+        };
+        
 
         ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED} = function (AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
             $attendanceReqRepo = new AttendanceRequestRepository($adapter);
@@ -292,7 +319,7 @@ class HeadNotification {
 
             $notification->route = json_encode(["route" => "attendancerequest", "action" => "view", "id" => $request->id]);
             $title = "Attendance Request";
-            $desc = "No description for now";
+            $desc = "Attendance Request Accepted";
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 5, $adapter, $url);
@@ -1443,6 +1470,12 @@ class HeadNotification {
                 break;
             case NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED:
                 ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED:
+                ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::ATTENDANCE_RECOMMEND_REJECTED:
+                ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::ATTENDANCE_APPROVE_REJECTED:
                 ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED}($model, $adapter, $url, self::REJECTED);

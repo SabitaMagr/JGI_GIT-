@@ -28,7 +28,7 @@ class AttendanceApproveRepository implements RepositoryInterface {
         // TODO: Implement add() method.
     }
 
-    public function getAllRequest($id = null, $status) {
+    public function getAllRequest($id = null, $status=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -50,17 +50,27 @@ class AttendanceApproveRepository implements RepositoryInterface {
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)"), "FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MIDDLE_NAME1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LAST_NAME1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
-                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['APPROVER' => 'RECOMMEND_BY'], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.RECOMMEND_BY", ['APRV_FN' => new Expression("INITCAP(APRV.FIRST_NAME)"), 'APRV_MN' => new Expression("INITCAP(APRV.MIDDLE_NAME)"), 'APRV_LN' => new Expression("INITCAP(APRV.LAST_NAME)")], "left");
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['RECOMMENDER' => 'RECOMMEND_BY','APPROVER' =>'APPROVED_BY'], "left")
+                ->join(['RECM'=>"HRIS_EMPLOYEES"],"RECM.EMPLOYEE_ID=RA.RECOMMEND_BY",['RECM_FN'=>new Expression("INITCAP(RECM.FIRST_NAME)"),'RECM_MN'=>new Expression("INITCAP(RECM.MIDDLE_NAME)"),'RECM_LN'=>new Expression("INITCAP(RECM.LAST_NAME)")],"left")
+            ->join(['APRV'=>"HRIS_EMPLOYEES"],"APRV.EMPLOYEE_ID=RA.APPROVED_BY",['APRV_FN'=>new Expression("INITCAP(APRV.FIRST_NAME)"),'APRV_MN'=>new Expression("INITCAP(APRV.MIDDLE_NAME)"),'APRV_LN'=>new Expression("INITCAP(APRV.LAST_NAME)")],"left");
+        
+        if($status==null){
+            $select->where(["((RA.RECOMMEND_BY=".$id." AND AR.STATUS='RQ') OR (RA.APPROVED_BY=".$id." AND AR.STATUS='RC') )"]);
+//            $sql .=" AND ((AR.RECOMMEND_BY=".$id." AND AR.STATUS='RQ') OR (AR.APPROVED_BY=".$id." AND AR.STATUS='RC') )";
+        }
 
         $select->where([
-            "AR.STATUS='" . $status . "'",
+//            "AR.STATUS='" . $status . "'",
             "E.STATUS='E'",
             "E.RETIRED_FLAG='N'",
-            "RA.RECOMMEND_BY=" . $id
+//            "RA.RECOMMEND_BY=" . $id
         ]);
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
+        
+//        print_r($statement->getSql());
+//        die();
+        
         $result = $statement->execute();
         return $result;
     }

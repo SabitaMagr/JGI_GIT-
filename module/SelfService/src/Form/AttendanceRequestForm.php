@@ -67,6 +67,15 @@ class AttendanceRequestForm
      * @Annotation\Attributes({ "id":"totalHour", "class":"form-control" })
      */
     public $totalHour;
+    
+     /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Reason for action"})
+     * @Annotation\Attributes({"id":"form-recommendedRemarks","class":"form-reason form-control","style":"    height: 50px; font-size:12px"})
+     */
+    public $recommendedRemarks;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
