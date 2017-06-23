@@ -101,7 +101,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                     console.log(total);
 //                $scope.annualRating = total;
                     var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
-                    angular.element(document.getElementById('appraiserOverallRating')).val((window.app.floatToRound(total, 2)) + annualRatingCompetency);
+                    angular.element(document.getElementById('appraiserOverallRating')).val(((!isNaN(total))?(window.app.floatToRound(total, 2)):"") + annualRatingCompetency);
                     return window.app.floatToRound(total, 2);
                     ;
                 }

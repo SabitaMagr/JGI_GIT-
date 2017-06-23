@@ -9,7 +9,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                 counter: 1,
                 sno: 0,
                 title: "",
-                rating:$scope.ratingNames[0],
+                rating:"",
                 comments:"",
                 checkbox: "checkboxc0",
                 checked: false
@@ -34,7 +34,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                                     counter: (j + 1),
                                     sno: appraisalCompetenciesList[j].SNO,
                                     title: appraisalCompetenciesList[j].TITLE,
-                                    rating: (appraisalCompetenciesList[j].RATING!==null)?appraisalCompetenciesList[j].RATING:$scope.ratingNames[0],
+                                    rating: appraisalCompetenciesList[j].RATING,
                                     comments: appraisalCompetenciesList[j].COMMENTS,
                                     checkbox: "checkboxc" + j,
                                     checked: false
@@ -61,7 +61,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                     counter: parseInt($scope.counter + 1),
                     sno: 0,
                     title: "",
-                    rating:$scope.ratingNames[0],
+                    rating:"",
                     comments:"",
                     checkbox: "checkboxc" + $scope.counter,
                     checked: false
@@ -101,7 +101,7 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                     var currentUser = angular.element(document.getElementById('currentUser')).val();
                     console.log(annualRatingCompetency);
                     console.log($scope.competenciesList);
-                    App.blockUI({target: "#hris-page-content"});
+//                    App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.restfulUrl, {
                         action: "submitAppraisalCompetencies",
                         data: {
@@ -116,12 +116,34 @@ angular.module('competenciesModule', ['use', 'ngMessages'])
                         $scope.$apply(function () {
                             console.log(success);
                             if(currentStageId==5){
+                                var err = [];
+                                $(".errorMsg").each(function () {
+                                    var erroMsg = $.trim($(this).html());
+                                    if (erroMsg !== "") {
+                                        err.push("error");
+                                    }
+                                });
+                                if (err.length > 0)
+                                {
+                                    return;
+                                }
                                 $('.nav-tabs a[href="#portlet_tab2_2"]').tab('show');
                                 $scope.competenciesList = [];
                                 $scope.viewCompetenciesList();
                                 App.unblockUI("#hris-page-content");
                             }
                             if(currentStageId==1){
+                                var err = [];
+                                $(".errorMsg").each(function () {
+                                    var erroMsg = $.trim($(this).html());
+                                    if (erroMsg !== "") {
+                                        err.push("error");
+                                    }
+                                });
+                                if (err.length > 0)
+                                {
+                                    return;
+                                }
                                 $window.location.href = document.listurl;
                                 $window.localStorage.setItem("msg","Appraisal Successfully Submitted!!!");
                             }

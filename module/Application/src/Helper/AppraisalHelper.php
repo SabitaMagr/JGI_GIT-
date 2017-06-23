@@ -1,10 +1,12 @@
 <?php
 namespace Application\Helper;
 
-use Appraisal\Repository\StageQuestionRepository;
-use Appraisal\Repository\QuestionOptionRepository;
 use Appraisal\Repository\AppraisalAnswerRepository;
+use Appraisal\Repository\DefaultRatingRepository;
+use Appraisal\Repository\QuestionOptionRepository;
+use Appraisal\Repository\StageQuestionRepository;
 use Appraisal\Repository\StageRepository;
+use Setup\Repository\EmployeeRepository;
 
 class AppraisalHelper{
     public static function getAllQuestionWidOptions($adapter,$headingId,$currentStageId,$flag,$appraisalId=null,$employeeId=null,$userId=null,$orderCondition=null,$appraiserId=null, $reviewerId=null){
@@ -43,5 +45,21 @@ class AppraisalHelper{
         $stageRepo = new StageRepository($adapter);
         $stageDetail = $stageRepo->getNextStageId($orderNo);
         return $stageDetail['STAGE_ID'];
+    }
+    public static function checkDefaultRatingForEmp($adapter,$employeeId,$appraisalTypeId){
+        $defaultRatingRepo = new DefaultRatingRepository($adapter);
+        $employeeRepo = new EmployeeRepository($adapter);
+        $employeeDtl = $employeeRepo->fetchById($employeeId);
+        $defaultRatingDtl = $defaultRatingRepo->fetechByAppraisalTypeId($appraisalTypeId);
+        $list = [];
+        foreach($defaultRatingDtl as $defaultRatingRow){
+            $defaultRatingRow['DESIGNATION_IDS'] = json_decode($defaultRatingRow['DESIGNATION_IDS']);
+            $defaultRatingRow['POSITION_IDS'] = json_decode($defaultRatingRow['POSITION_IDS']);
+            if(($employeeDtl['DESIGNATION_ID']!=null && in_array($employeeDtl['DESIGNATION_ID'], $defaultRatingRow['DESIGNATION_IDS'], TRUE))&&($employeeDtl['POSITION_ID']!=NULL && in_array($employeeDtl['POSITION_ID'], $defaultRatingRow['POSITION_IDS'], TRUE))){
+                array_push($list,$defaultRatingRow);
+            }
+        }
+        $result = (count($list)>0)?$list[0]->getArrayCopy():null;
+        return $result;
     }
 }

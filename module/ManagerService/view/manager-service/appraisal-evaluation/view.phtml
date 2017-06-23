@@ -1,8 +1,9 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/manager-service/appraisal-evaluation/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
 $this->headScript()->appendFile($this->basePath('js/user-form-error.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/appraisalCustom.js'));
+$this->headScript()->appendFile($this->basePath('js/manager-service/appraisal-evaluation/add.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/kpiController.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/competenciesController.js'));
 ?>
@@ -199,6 +200,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
+                        <input type='hidden' value="<?= $assignedAppraisalDetail['COMPETENCIES_SETTING']; ?>" id="comSettingId" />
                         <input type='hidden' value="appraiser" id="currentUser" />
                         <?php
                         $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID']!=1)?"disabled":""; 
@@ -405,6 +407,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <td>
                                         <select name="annualRatingCompetency" id="annualRatingCompetency" required="required" <?= $disabledCompetenciesRating ?>>
+                                            <option></option>
                                             <option <?= ($assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY']=="A")?"selected":"" ?>>A</option>
                                             <option <?= ($assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY']=="B")?"selected":"" ?>>B</option>
                                             <option <?= ($assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY']=="C")?"selected":"" ?>>C</option>
@@ -632,6 +635,35 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                                 <?php if(($assignedAppraisalDetail['KPI_SETTING']=='Y') && ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y') && ($assignedAppraisalDetail['STAGE_ID']==5 || $appraiserRatingDtlNum>0 || $appCompetenciesRatingDtlNum>0)){ ?>
+                                <?php
+                                    if($defaultRatingDtl!=null){
+                                       // print_r($defaultRatingDtl);
+                                    
+                                ?>
+                                <div class="col-sm-12 margin-bottom-10">
+                                    <label style="font-size:12px !important;">
+                                        <input type="hidden" id="defaultRating" value="<?= $defaultRatingDtl['DEFAULT_VALUE'] ?>"/>
+                                Do you want to set default rating for current employee?
+                                [<b>Default Rating::<?= $defaultRatingDtl['DEFAULT_VALUE']; ?>, Tolerance Range::<?= $defaultRatingDtl['MIN_VALUE'] ?>-<?= $defaultRatingDtl['MAX_VALUE']?></b>]
+                                    </label>
+                                    <div class="md-radio-inline">
+                                        <div class="md-radio">
+                                            <input type="radio"  id="radio141" name="defaultRating" value="Y" class="md-radiobtn">
+                                            <label for="radio141">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> Yes </label>
+                                        </div>
+                                        <div class="md-radio">
+                                            <input type="radio" checked="" id="radio152" name="defaultRating" value="N" class="md-radiobtn">
+                                            <label for="radio152">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> No </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php } ?>
                                 <div class="col-sm-12">
                                     <label>
                                 Overall Rating:
