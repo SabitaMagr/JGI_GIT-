@@ -65,6 +65,7 @@ class HeadNotification {
 
     const RECOMMENDER = 1;
     const APPROVER = 2;
+    const RECOMMENDED = "Recommended";
     const ACCEPTED = "Accepted";
     const REJECTED = "Rejected";
     const ASSIGNED = "Assigned";
@@ -283,7 +284,14 @@ class HeadNotification {
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
 
             $notification = new \Notification\Model\AdvanceRequestNotificationModel();
-            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::APPROVED_BY], $notification, $adapter);
+            
+            if($status==self::REJECTED){
+            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], $notification, $adapter);
+            $notification->route = json_encode(["route" => "attendancerequest", "action" => "view", "id" => $request->id]);
+            }else{
+            self::setNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::APPROVED_BY], $notification, $adapter);            
+            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id,"role" => 3]);
+            }
 
             $notification->attendanceDate = $request->attendanceDt;
             $notification->inTime = $request->inTime;
@@ -293,9 +301,8 @@ class HeadNotification {
             $notification->totalHours = $request->totalHour;
             $notification->status = $status;
 
-            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id,"role" => 3]);
             $title = "Attendance Request";
-            $desc = "Attendance Request is Recommended";
+            $desc = "Attendance Request is ".$status;
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 5, $adapter, $url);
@@ -307,7 +314,10 @@ class HeadNotification {
             $request->exchangeArrayFromDB($attendanceReqRepo->fetchById($request->id));
 
             $notification = new \Notification\Model\AttendanceRequestNotificationModel();
+            
+          
             self::setNotificationModel($request->approvedBy, $request->employeeId, $notification, $adapter);
+            
 
             $notification->attendanceDate = $request->attendanceDt;
             $notification->inTime = $request->inTime;
@@ -317,9 +327,9 @@ class HeadNotification {
             $notification->totalHours = $request->totalHour;
             $notification->status = $status;
 
-            $notification->route = json_encode(["route" => "attendancerequest", "action" => "view", "id" => $request->id]);
             $title = "Attendance Request";
-            $desc = "Attendance Request Accepted";
+            $desc = "Attendance Request ".$status;
+            $notification->route = json_encode(["route" => "attendancerequest", "action" => "view", "id" => $request->id]);
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 5, $adapter, $url);
@@ -1472,7 +1482,7 @@ class HeadNotification {
                 ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED:
-                ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
+                ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::RECOMMENDED);
                 break;
             case NotificationEvents::ATTENDANCE_RECOMMEND_REJECTED:
                 ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);

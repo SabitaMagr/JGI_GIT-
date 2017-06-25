@@ -24,6 +24,7 @@ class AttendanceRequest extends AbstractActionController {
     private $form;
     private $employeeId;
     private $authService;
+    private $recommender;
     private $approver;
 
     public function __construct(AdapterInterface $adapter) {
@@ -46,9 +47,15 @@ class AttendanceRequest extends AbstractActionController {
         $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
 
         if ($empRecommendApprove != null) {
-            $this->approver = $empRecommendApprove['RECOMMEND_BY'];
+            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
+            $this->approver = $empRecommendApprove['APPROVED_BY'];
         } else {
             $result = $this->recommendApproveList();
+            if (count($result['recommender']) > 0) {
+                $this->recommender = $result['recommender'][0]['id'];
+            } else {
+                $this->recommender = null;
+            }
             if (count($result['approver']) > 0) {
                 $this->approver = $result['approver'][0]['id'];
             } else {
@@ -61,6 +68,7 @@ class AttendanceRequest extends AbstractActionController {
         $attendanceStatus = [
             '-1' => 'All',
             'RQ' => 'Pending',
+            'RC' => 'Recommended',
             'AP' => 'Approved',
             'R' => 'Rejected'
         ];
@@ -167,17 +175,27 @@ class AttendanceRequest extends AbstractActionController {
             $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
+        
+        $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        
 
         $status = $detail['STATUS'];
+        
         $approvedDT = $detail['APPROVED_DT'];
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
         $approved_by = $fullName($detail['APPROVED_BY']);
-        $authApprover = ( $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+        
+//        $approvedDT = $detail['APPROVED_DT'];
+//        $approved_by = $fullName($detail['APPROVED_BY']);
+//        $authApprover = ( $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
@@ -186,6 +204,7 @@ class AttendanceRequest extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
+                    'recommender' => $authRecommender,
                     'approver' => $authApprover,
                     'status' => $detail['STATUS'],
                     'employeeName' => $employeeName,
