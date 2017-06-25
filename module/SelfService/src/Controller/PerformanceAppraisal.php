@@ -62,7 +62,7 @@ class PerformanceAppraisal extends AbstractActionController{
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
-        $employeeDetail = $employeeRepo->getById($this->employeeId);
+        $employeeDetail = $employeeRepo->fetchForProfileById($this->employeeId);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($this->employeeId,$appraisalId);
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
         $currentStageId = $assignedAppraisalDetail['STAGE_ID'];

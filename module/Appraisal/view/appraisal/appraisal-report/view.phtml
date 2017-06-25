@@ -41,9 +41,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                 </div>
             </div>
-            <div class="portlet-body" style="padding-top:1px;">
-                <h5 id="headingForPanel"><b>Personal Information</b></h5>
-                <div class="row div-font-11">
+            <div class="portlet-body" style="padding-top:1px; background-color: #fafafa;">
+                <h5 id="headingForPanel" style="font-weight:600">Personal Information</h5>
+                <div class="row div-font-11" style="font-weight:600">
                     <div class="col-md-4">
                         <table>
                             <tbody>
@@ -67,7 +67,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </td>
                                     <td width="15">:</td>
                                     <td>
-                                        <?= $employeeDetail['BRANCH_NAME']; ?>
+                                        <?= $employeeDetail['DEPARTMENT']; ?>
                                     </td>
                                 </tr>
                                 <tr height="30">
@@ -79,29 +79,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <?= $assignedAppraisalDetail['START_DATE']; ?>
                                         To
                                         <?= $assignedAppraisalDetail['END_DATE']; ?>
-                                    </td>
-                                </tr>
-                            </tbody></table>
-                    </div>
-                    <div class="col-md-4">
-                        <table>
-                            <tbody>
-                                <tr height="30">
-                                    <td>
-                                        Position
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        <?= $employeeDetail['POSITION_NAME']; ?>
-                                    </td>
-                                </tr>
-                                <tr height="30">
-                                    <td>
-                                        Joining Date
-                                    </td>
-                                    <td width="15">:</td>
-                                    <td>
-                                        <?= $employeeDetail['JOIN_DATE']; ?>  
                                     </td>
                                 </tr>
                                 <tr height="30" id="availableDaysText">
@@ -124,17 +101,32 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <tbody>
                                 <tr height="30">
                                     <td>
-                                        Branch
+                                        Position
                                     </td>
                                     <td width="15">:</td>
                                     <td>
-                                        <?= $employeeDetail['BRANCH_NAME']; ?>
+                                        <?= $employeeDetail['POSITION']; ?>
                                     </td>
                                 </tr>
                                 <tr height="30">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        Designation
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $employeeDetail['DESIGNATION']; ?>  
+                                    </td>
+                                </tr>
+                                <tr height="30" id="availableDaysText">
+                                    <td>
+                                        Previous Appraisal Period
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php
+                                        print_r($assignedAppraisalDetail['PREVIOUS_REVIEW_PERIOD']);
+                                        ?>       
+                                    </td>
                                 </tr>
                                 <tr height="30">
                                     <td>
@@ -149,13 +141,47 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         ?>                                         
                                     </td>
                                 </tr>
+                            </tbody></table>
+                    </div>
+                    <div class="col-md-4">
+                        <table>
+                            <tbody>
+                                <tr height="30">
+                                    <td>
+                                        Branch
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $employeeDetail['BRANCH']; ?>
+                                    </td>
+                                </tr>
+                                <tr height="30">
+                                    <td>
+                                        Joining Date
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?= $employeeDetail['JOIN_DATE']; ?>  
+                                    </td>
+                                </tr>
+                                <tr height="30" id="availableDaysText">
+                                    <td>
+                                        Previous Rating
+                                    </td>
+                                    <td width="15">:</td>
+                                    <td>
+                                        <?php
+                                        print_r($assignedAppraisalDetail['PREVIOUS_RATING']);
+                                        ?>       
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="portlet-body" style="padding-top:1px;">
-                <h5 id="headingForPanel"><b>Performance Evaluation</b></h5>
+                <h5 id="headingForPanel" style="font-weight:600">Performance Evaluation</h5>
                 <div class="portlet-body">
                     <div class="tabbable-line menusetuptab" style="padding-top:0px">
                         <ul class="nav nav-tabs" id="tabList">
@@ -282,6 +308,115 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php } ?>
                             </table>
                             </form>
+                            <div>
+                                <table class="table table-bordered" id="dataTables-example">
+                                    <tr>
+                                        <td class="label" id="home" style="color:#428bca;font:bold;"><b>KEY ACHIEVEMENTS
+                                                AND RATING</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p style="width:800px;height:auto;color:black;font-size:10px;">
+                                                First identify the key objectives of your job for the year and record
+                                                them in rough order of priority.
+                                                These are areas for which you have direct personal responsibility for
+                                                achieving results.
+                                                These objectives (Key Performance Indicator) should be
+                                                SMARTER-specific,measurable,agreed,
+                                                realistic,time-bound,ethical,and recorded.
+                                                Ideally they should not exceed half a dozen or so but may be supported
+                                                by more specific projects you undertake.
+                                                At the annual review Appraisee should summarize briefly his/her
+                                                achievements against the objectives with a self-rating.
+                                                The Appraiser should review the achievement and give a rating using the
+                                                scale below.
+                                            </p>
+                                            <h5><u style="font-weight: 400;">Rating Scale</u></h5>
+                                            <table class="table table-bordered customTable" style="width:40%;">
+                                                <thead>
+                                                <tr>
+                                                    <th>Ratings</th>
+                                                    <th>Achievements</th>
+                                                    <th>Performance Zone</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1.0</td>
+                                                    <td>0%-19%</td>
+                                                    <td rowspan="3">Poor</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1.2</td>
+                                                    <td>20%-39%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1.4</td>
+                                                    <td>40%-59%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1.6</td>
+                                                    <td>60%-79%</td>
+                                                    <td rowspan="2">Improvement Needed</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>1.8</td>
+                                                    <td>80%-99%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2.0</td>
+                                                    <td>100%-119%</td>
+                                                    <td rowspan="3">Satisfactory/Meets expectation</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2.2</td>
+                                                    <td>120%-139%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2.4</td>
+                                                    <td>140%-159%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2.6</td>
+                                                    <td>160%-179%</td>
+                                                    <td rowspan="4">Exceeds Expectations</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2.8</td>
+                                                    <td>180%-199%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3.0</td>
+                                                    <td>200%-219%</td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>3.2</td>
+                                                    <td>220%-239%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3.4</td>
+                                                    <td>240%-259%</td>
+                                                    <td rowspan="4">Excellent</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3.6</td>
+                                                    <td>260%-279%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3.8</td>
+                                                    <td>280%-299%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4.0</td>
+                                                    <td>300% or above</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         
                         <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
@@ -341,6 +476,29 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php } ?>
                             </table>
                             </form>
+                            <div>
+                                <table class="table table-bordered" id="dataTables-exampl">
+                                    <tr>
+                                        <td class="label" style="color:#428bca;font:bold;"><b>COMPETENCIES AND
+                                                COMMENT</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p style="width:800px;height:100px;color:black;font-size:10px;">
+                                                The appraisee and the appraiser should decide on the competencies which
+                                                are key to the job.
+                                                These competencies can feature from the individual job description.
+                                                Appraiser should give a rating and also add comments in the appropriate
+                                                space at the end of the review period using the following scale.
+                                                &nbsp;
+                                                (A- Exceeds expectation
+                                                B- Meets expectation
+                                                C- Needs improvement)
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N') && $tab==1) ?'active':''?>" id="portlet_tab2_1">
                             <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>1]) ?>" name="performanceAppraisalForm" id="appraisalReview">
@@ -560,6 +718,22 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php } ?>
                             </div>
                             </form>
+                            <div class="margin-top-30">
+                                <table class="table table-bordered" id="dataTables-examp">
+                                    <tr>
+                                        <td class="label" style="color:#428bca;font:bold;"><b>Remarks</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p style="width:400px;height:50px;color:black;font-size:10px;">
+                                                (Please write a qualitative report about the employee's achievements
+                                                /improvements during the year capturing the essence of your discussion
+                                                and highlighting the employee's strengths and weaknesses.)&nbsp;
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         <div class="tab-pane <?= ($tab==3)?"active":""; ?>" id="portlet_tab2_3">
                             <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]) ?>" name="performanceAppraisalForm" id="appraisalReview2">
@@ -624,6 +798,23 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php } ?>
                             </div>
                             </form>
+                            <div class="margin-top-30">
+                                <table class="table table-bordered" id="dataTables-examp">
+                                    <tr>
+                                        <td class="label" style="color:#428bca;font:bold;"><b>Remarks</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p style="width:400px;height:50px;color:black;font-size:10px;">
+                                               (Please comment below indicating how much you see the Appraisee's work.
+                                            If you have ticked the No box you must discuss your views with the Appraisee
+                                            and the Appraiser.)
+                                            
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         <div class="tab-pane" id="portlet_tab2_4">
                             <form method="post" action="" name="performanceAppraisalForm">

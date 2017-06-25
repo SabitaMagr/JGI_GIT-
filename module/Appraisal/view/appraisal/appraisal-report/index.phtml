@@ -44,7 +44,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
     <div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
-    
+    <input type="hidden" value="<?= $userId; ?>" id="userId" />
      <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -178,11 +178,50 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td>    
         #: (END_DATE == null) ? '-' : END_DATE #
         </td>
+        <td id="#if(KPI_ANS_NUM>0){ #green#}else{#red#}#">
+            #if(KPI_ANS_NUM>0){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(KPI_MODIFIED_DATE==null){#red#}else{##}#">
+            #if(KPI_MODIFIED_DATE!=null){   #
+            #= KPI_MODIFIED_DATE #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(APPRAISED_BY!=null){ #green#}else{#red#}#">
+            #if(APPRAISED_BY!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(REVIEWED_BY!=null){ #green#}else{#red#}#">
+            #if(REVIEWED_BY!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
+            #if(APPRAISER_OVERALL_RATING!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
         <td>    
         #: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #
         </td>
-         <td>    
-        #: (APPRAISEE_AGREE == null) ? '-' : APPRAISEE_AGREE #
+         <td id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
+            #if(APPRAISEE_AGREE=='Yes'){   #
+            #= "&\\#10004;" #
+            # }else if(APPRAISEE_AGREE=='No'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
         </td>
         <td>    
         #: (APPRAISER_NAME == null) ? '-' : APPRAISER_NAME #

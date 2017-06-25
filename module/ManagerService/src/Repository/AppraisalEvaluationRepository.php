@@ -42,6 +42,7 @@ class AppraisalEvaluationRepository implements RepositoryInterface{
     public function fetchById($id) {
         
     }
+    //NOT USED YET
     public function getAllRequest($employeeId){
         $sql = "SELECT *
 FROM

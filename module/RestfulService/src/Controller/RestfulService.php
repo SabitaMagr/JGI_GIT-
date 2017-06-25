@@ -3697,8 +3697,10 @@ class RestfulService extends AbstractRestfulController {
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $appraisalId = $data['appraisalId'];
         $appraisalStageId = $data['appraisalStageId'];
+        $userId = $data['userId'];
+        $reportType = $data['reportType'];
         
-        $result = $appraisalStatusRepo->fetchFilterdData($fromDate,$toDate,$employeeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$appraisalId,$appraisalStageId);
+        $result = $appraisalStatusRepo->fetchFilterdData($fromDate,$toDate,$employeeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$appraisalId,$appraisalStageId,$reportType,$userId);
         $list = [];
         $fullName = function($id) {
             if($id!=null){
