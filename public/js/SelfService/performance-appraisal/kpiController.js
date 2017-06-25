@@ -18,6 +18,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
             };
             $scope.counter = "";
             $scope.viewKPIList = function () {
+                App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.restfulUrl, {
                     action: 'pullAppraisalKPIList',
                     data: {
@@ -51,6 +52,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                             $scope.KPIList.push(angular.copy($scope.KPITemplate));
                         }
                     });
+                    App.unblockUI("#hris-page-content");
                 }, function (failure) {
                     console.log(failure);
                 });

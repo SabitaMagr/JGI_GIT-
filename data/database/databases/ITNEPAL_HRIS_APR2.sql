@@ -1,10 +1,6 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- * Author:  itnepal
- * Created: Jun 22, 2017
- */
-
+ALTER TABLE HRIS_APPRAISAL_STATUS
+ADD (
+REVIEW_PERIOD     VARCHAR2(255 BYTE),
+PREVIOUS_REVIEW_PERIOD    VARCHAR2(255 BYTE),
+PREVIOUS_RATING         VARCHAR2(255 BYTE)
+);
