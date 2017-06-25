@@ -65,7 +65,6 @@ class HeadNotification {
 
     const RECOMMENDER = 1;
     const APPROVER = 2;
-    const RECOMMENDED = "Recommended";
     const ACCEPTED = "Accepted";
     const REJECTED = "Rejected";
     const ASSIGNED = "Assigned";
@@ -1482,7 +1481,7 @@ class HeadNotification {
                 ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED:
-                ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::RECOMMENDED);
+                ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::ATTENDANCE_RECOMMEND_REJECTED:
                 ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED}($model, $adapter, $url, self::REJECTED);
