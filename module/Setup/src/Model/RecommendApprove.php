@@ -15,6 +15,8 @@ class RecommendApprove extends Model {
     const STATUS = "STATUS";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    
+    
     const RECOMMENDER_VALUE = 2;
     const APPROVER_VALUE = 3;
     const BOTH_VALUE = 4;
