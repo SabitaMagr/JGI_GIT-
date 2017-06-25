@@ -7,6 +7,8 @@ use Application\Helper\EmailHelper;
 use Application\Helper\Helper;
 use Application\Model\ForgotPassword;
 use Application\Model\Model;
+use Appraisal\Model\AppraisalStatus;
+use Appraisal\Repository\AppraisalAssignRepository;
 use Exception;
 use HolidayManagement\Repository\HolidayRepository;
 use Html2Text\Html2Text;
@@ -15,6 +17,7 @@ use LeaveManagement\Repository\LeaveApplyRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Model\SalaryDetail;
 use ManagerService\Repository\SalaryDetailRepo;
+use Notification\Model\AppraisalNotificationModel;
 use Notification\Model\LeaveRequestNotificationModel;
 use Notification\Model\LeaveSubNotificationModel;
 use Notification\Model\Notification;
@@ -29,6 +32,7 @@ use Notification\Repository\NotificationRepo;
 use SelfService\Model\AdvanceRequest;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Model\LoanRequest;
+use SelfService\Model\Overtime;
 use SelfService\Model\TrainingRequest;
 use SelfService\Model\TravelRequest;
 use SelfService\Model\WorkOnDayoff;
@@ -37,6 +41,7 @@ use SelfService\Repository\AdvanceRequestRepository;
 use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\LeaveSubstituteRepository;
 use SelfService\Repository\LoanRequestRepository;
+use SelfService\Repository\OvertimeRepository;
 use SelfService\Repository\TrainingRequestRepository;
 use SelfService\Repository\TravelRequestRepository;
 use SelfService\Repository\TravelSubstituteRepository;
@@ -52,10 +57,6 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
-use Notification\Model\AppraisalNotificationModel;
-use Appraisal\Model\AppraisalStatus;
-use Appraisal\Repository\AppraisalAssignRepository;
-use Appraisal\Repository\AppraisalStatusRepository;
 
 class HeadNotification {
 
@@ -130,7 +131,6 @@ class HeadNotification {
         }
         EmailHelper::sendEmail($mail);
 //        HrLogger::getInstance()->info("Email Sent =>" . "From " . $model->fromEmail . " To " . $model->toEmail);
-        
     }
 
     public static function getName($id, $repo, $name) {
@@ -138,35 +138,22 @@ class HeadNotification {
         return $detail[$name];
     }
 
-    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url, $senderDetail = null,$recieverDetail=null) {
-        ${"fn" . NotificationEvents::LEAVE_APPLIED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, $type) {
+    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url, $senderDetail = null, $recieverDetail = null) {
+        ${"fn" . NotificationEvents::LEAVE_APPLIED} = function (LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, $type) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
-            $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
-            $leaveApply = new LeaveApply();
-            $leaveApply->exchangeArrayFromDB($leaveApplyArray);
+            $leaveApply->exchangeArrayFromDB($leaveApplyRepo->fetchById($leaveApply->id)->getArrayCopy());
 
             $recommdAppRepo = new RecommendApproveRepository($adapter);
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($leaveApply->employeeId);
-            
-            $approverId = '';
-            $approverRole = '';
-            if($recommdAppModel[RecommendApprove::RECOMMEND_BY]==$recommdAppModel[RecommendApprove::APPROVED_BY]){
-                $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
-                $approverRole = 4;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::RECOMMENDER)){
-                $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
-                $approverRole = 2;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::APPROVER)){
-                $approverId = $recommdAppModel[RecommendApprove::APPROVED_BY];
-                $approverRole = 3;
-            }
+
             if ($recommdAppModel == null) {
                 throw new Exception("recommender and approver not set for employee with id =>" . $leaveApply->employeeId);
             }
+            $idAndRole = self::findRoleType($recommdAppModel, $type);
+            
             $leaveReqNotiMod = new LeaveRequestNotificationModel();
-            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID],$approverId, $leaveReqNotiMod, $adapter);
+            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $idAndRole['id'], $leaveReqNotiMod, $adapter);
 
-            $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => $approverRole]);
 
             $leaveRepo = new LeaveMasterRepository($adapter);
             $leaveName = self::getName($leaveApply->leaveId, $leaveRepo, 'LEAVE_ENAME');
@@ -176,12 +163,16 @@ class HeadNotification {
             $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
             $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
 
+            $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => $idAndRole['role']]);
+
             $notificationTitle = "Leave Request";
             $notificationDesc = "Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
 
             self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
             self::sendEmail($leaveReqNotiMod, 1, $adapter, $url);
         };
+        
+        
         ${"fn" . NotificationEvents::LEAVE_RECOMMEND_ACCEPTED} = function (LeaveApply $model, AdapterInterface $adapter, Url $url, string $status) {
             $leaveApplyRepo = new LeaveApplyRepository($adapter);
             $leaveApplyArray = $leaveApplyRepo->fetchById($model->id)->getArrayCopy();
@@ -266,7 +257,7 @@ class HeadNotification {
             $notification->outRemarks = $request->outRemarks;
 
             $notification->totalHours = $request->totalHour;
-            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id,"role" => 2]);
+            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id, "role" => 2]);
 
             $title = "Attendance Request";
             $desc = "Attendance Request Applied";
@@ -274,11 +265,11 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 4, $adapter, $url);
         };
-        
+
         ${"fn" . NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED} = function (AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
             $attendanceReqRepo = new AttendanceRequestRepository($adapter);
             $request->exchangeArrayFromDB($attendanceReqRepo->fetchById($request->id));
-            
+
             $recommdAppRepo = new RecommendApproveRepository($adapter);
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
 
@@ -293,14 +284,14 @@ class HeadNotification {
             $notification->totalHours = $request->totalHour;
             $notification->status = $status;
 
-            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id,"role" => 3]);
+            $notification->route = json_encode(["route" => "attedanceapprove", "action" => "view", "id" => $request->id, "role" => 3]);
             $title = "Attendance Request";
             $desc = "Attendance Request is Recommended";
 
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 5, $adapter, $url);
         };
-        
+
 
         ${"fn" . NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED} = function (AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
             $attendanceReqRepo = new AttendanceRequestRepository($adapter);
@@ -334,17 +325,17 @@ class HeadNotification {
 
             $approverId = '';
             $approverRole = '';
-            if($recommdAppModel[RecommendApprove::RECOMMEND_BY]==$recommdAppModel[RecommendApprove::APPROVED_BY]){
+            if ($recommdAppModel[RecommendApprove::RECOMMEND_BY] == $recommdAppModel[RecommendApprove::APPROVED_BY]) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 4;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::RECOMMENDER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::RECOMMENDER)) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 2;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::APPROVER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::APPROVER)) {
                 $approverId = $recommdAppModel[RecommendApprove::APPROVED_BY];
                 $approverRole = 3;
             }
-            
+
             $notification = new \Notification\Model\AdvanceRequestNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $approverId, $notification, $adapter);
 
@@ -469,17 +460,17 @@ class HeadNotification {
 
             $approverId = '';
             $approverRole = '';
-            if($recommdAppModel[RecommendApprove::RECOMMEND_BY]==$recommdAppModel[RecommendApprove::APPROVED_BY]){
+            if ($recommdAppModel[RecommendApprove::RECOMMEND_BY] == $recommdAppModel[RecommendApprove::APPROVED_BY]) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 4;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::RECOMMENDER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::RECOMMENDER)) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 2;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::APPROVER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::APPROVER)) {
                 $approverId = $recommdAppModel[RecommendApprove::APPROVED_BY];
                 $approverRole = 3;
             }
-            
+
             $notification = new \Notification\Model\TravelReqNotificationModel();
             self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $approverId, $notification, $adapter);
             $notification->destination = $request->destination;
@@ -596,13 +587,13 @@ class HeadNotification {
 
             $approverId = '';
             $approverRole = '';
-            if($recommdAppModel[RecommendApprove::RECOMMEND_BY]==$recommdAppModel[RecommendApprove::APPROVED_BY]){
+            if ($recommdAppModel[RecommendApprove::RECOMMEND_BY] == $recommdAppModel[RecommendApprove::APPROVED_BY]) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 4;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::RECOMMENDER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::RECOMMENDER)) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 2;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::APPROVER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::APPROVER)) {
                 $approverId = $recommdAppModel[RecommendApprove::APPROVED_BY];
                 $approverRole = 3;
             }
@@ -682,13 +673,13 @@ class HeadNotification {
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($workOnDayoff->employeeId);
             $approverId = '';
             $approverRole = '';
-            if($recommdAppModel[RecommendApprove::RECOMMEND_BY]==$recommdAppModel[RecommendApprove::APPROVED_BY]){
+            if ($recommdAppModel[RecommendApprove::RECOMMEND_BY] == $recommdAppModel[RecommendApprove::APPROVED_BY]) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 4;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::RECOMMENDER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::RECOMMENDER)) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 2;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::APPROVER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::APPROVER)) {
                 $approverId = $recommdAppModel[RecommendApprove::APPROVED_BY];
                 $approverRole = 3;
             }
@@ -771,13 +762,13 @@ class HeadNotification {
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
             $approverId = '';
             $approverRole = '';
-            if($recommdAppModel[RecommendApprove::RECOMMEND_BY]==$recommdAppModel[RecommendApprove::APPROVED_BY]){
+            if ($recommdAppModel[RecommendApprove::RECOMMEND_BY] == $recommdAppModel[RecommendApprove::APPROVED_BY]) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 4;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::RECOMMENDER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::RECOMMENDER)) {
                 $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
                 $approverRole = 2;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::APPROVER)){
+            } else if (($recommdAppModel[RecommendApprove::RECOMMEND_BY] != $recommdAppModel[RecommendApprove::APPROVED_BY]) && ($type == self::APPROVER)) {
                 $approverId = $recommdAppModel[RecommendApprove::APPROVED_BY];
                 $approverRole = 3;
             }
@@ -869,19 +860,9 @@ class HeadNotification {
 
             $recommdAppRepo = new RecommendApproveRepository($adapter);
             $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
-            
-            $approverId = '';
-            $approverRole = '';
-            if($recommdAppModel[RecommendApprove::RECOMMEND_BY]==$recommdAppModel[RecommendApprove::APPROVED_BY]){
-                $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
-                $approverRole = 4;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::RECOMMENDER)){
-                $approverId = $recommdAppModel[RecommendApprove::RECOMMEND_BY];
-                $approverRole = 2;
-            }else if(($recommdAppModel[RecommendApprove::RECOMMEND_BY]!=$recommdAppModel[RecommendApprove::APPROVED_BY])&&($type==self::APPROVER)){
-                $approverId = $recommdAppModel[RecommendApprove::APPROVED_BY];
-                $approverRole = 3;
-            }
+
+
+
 
             if ($recommdAppModel == null) {
                 throw new Exception("recommender and approver not set for employee with id =>" . $request->employeeId);
@@ -1170,18 +1151,18 @@ class HeadNotification {
             self::addNotifications($notification, $title, $desc, $adapter);
             self::sendEmail($notification, 29, $adapter, $url);
         };
-        
-        ${"fn" . NotificationEvents::KPI_SETTING} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$recieverDetail) {
+
+        ${"fn" . NotificationEvents::KPI_SETTING} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url, $recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
-            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
-            
-            $fullName = function($id,$adapter) {
-                if($id!=null){
+            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+            $fullName = function($id, $adapter) {
+                if ($id != null) {
                     $empRepository = new EmployeeRepository($adapter);
                     $empDtl = $empRepository->fetchById($id);
                     $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
                     return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-                }else{
+                } else {
                     return "";
                 }
             };
@@ -1190,40 +1171,40 @@ class HeadNotification {
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
-            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'],$adapter);
-            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'],$adapter);
-            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'],$adapter);
+            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
             $notification->startDate = $assignedAppraisalDetail['START_DATE'];
             $notification->endDate = $assignedAppraisalDetail['END_DATE'];
             $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
             $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
-            
-            if($recieverDetail['USER_TYPE']=='APPRAISER'){
-                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='REVIEWER'){
-                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='HR'){
-                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId]);
+
+            if ($recieverDetail['USER_TYPE'] == 'APPRAISER') {
+                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'REVIEWER') {
+                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'HR') {
+                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
             }
-            
+
             $title = "KPI Setting on Appraisal";
             $desc = "KPI Set by"
                     . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
-            self::sendEmail($notification, 30, $adapter,$url);
+            self::sendEmail($notification, 30, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::KPI_APPROVED} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$senderDetail,$recieverDetail) {
+        ${"fn" . NotificationEvents::KPI_APPROVED} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url, $senderDetail, $recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
-            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
-            
-            $fullName = function($id,$adapter) {
-                if($id!=null){
+            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+            $fullName = function($id, $adapter) {
+                if ($id != null) {
                     $empRepository = new EmployeeRepository($adapter);
                     $empDtl = $empRepository->fetchById($id);
                     $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
                     return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-                }else{
+                } else {
                     return "";
                 }
             };
@@ -1232,46 +1213,46 @@ class HeadNotification {
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
-            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'],$adapter);
-            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'],$adapter);
-            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'],$adapter);
+            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
             $notification->startDate = $assignedAppraisalDetail['START_DATE'];
             $notification->endDate = $assignedAppraisalDetail['END_DATE'];
             $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
             $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
-            
-            if($recieverDetail['USER_TYPE']=='APPRAISER'){
-                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='REVIEWER'){
-                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='HR'){
+
+            if ($recieverDetail['USER_TYPE'] == 'APPRAISER') {
+                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'REVIEWER') {
+                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'HR') {
 //                print_r($recieverDetail['USER_TYPE']);
 //                print_r("hellow"); die();
-                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId]);
-            }else if($recieverDetail['USER_TYPE']=='APPRAISEE'){
+                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
+            } else if ($recieverDetail['USER_TYPE'] == 'APPRAISEE') {
 //                print_r($recieverDetail['USER_TYPE']);
 //                print_r("hellow"); die();
                 $notification->route = json_encode(["route" => "performanceAppraisal", "action" => "view", "appraisalId" => $request->appraisalId]);
             }
-            
+
             $title = "KPI Approval";
             $desc = "KPI Approved by"
                     . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
-            self::sendEmail($notification, 31, $adapter,$url);
+            self::sendEmail($notification, 31, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::KEY_ACHIEVEMENT} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$recieverDetail) {
+        ${"fn" . NotificationEvents::KEY_ACHIEVEMENT} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url, $recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
-            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
-            
-            $fullName = function($id,$adapter) {
-                if($id!=null){
+            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+            $fullName = function($id, $adapter) {
+                if ($id != null) {
                     $empRepository = new EmployeeRepository($adapter);
                     $empDtl = $empRepository->fetchById($id);
                     $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
                     return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-                }else{
+                } else {
                     return "";
                 }
             };
@@ -1280,40 +1261,40 @@ class HeadNotification {
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
-            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'],$adapter);
-            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'],$adapter);
-            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'],$adapter);
+            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
             $notification->startDate = $assignedAppraisalDetail['START_DATE'];
             $notification->endDate = $assignedAppraisalDetail['END_DATE'];
             $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
             $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
-            
-            if($recieverDetail['USER_TYPE']=='APPRAISER'){
-                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='REVIEWER'){
-                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='HR'){
-                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId]);
+
+            if ($recieverDetail['USER_TYPE'] == 'APPRAISER') {
+                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'REVIEWER') {
+                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'HR') {
+                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
             }
-            
+
             $title = "Key Achievement Update on Appraisal";
             $desc = "Key Achievement Updated by"
                     . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
-            self::sendEmail($notification, 32, $adapter,$url);
+            self::sendEmail($notification, 32, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::APPRAISAL_EVALUATION} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$senderDetail,$recieverDetail) {
+        ${"fn" . NotificationEvents::APPRAISAL_EVALUATION} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url, $senderDetail, $recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
-            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
-            
-            $fullName = function($id,$adapter) {
-                if($id!=null){
+            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+            $fullName = function($id, $adapter) {
+                if ($id != null) {
                     $empRepository = new EmployeeRepository($adapter);
                     $empDtl = $empRepository->fetchById($id);
                     $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
                     return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-                }else{
+                } else {
                     return "";
                 }
             };
@@ -1322,42 +1303,42 @@ class HeadNotification {
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
-            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'],$adapter);
-            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'],$adapter);
-            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'],$adapter);
+            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
             $notification->startDate = $assignedAppraisalDetail['START_DATE'];
             $notification->endDate = $assignedAppraisalDetail['END_DATE'];
             $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
             $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
-            
-            if($recieverDetail['USER_TYPE']=='APPRAISER'){
-                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='REVIEWER'){
-                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='HR'){
-                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId]);
-            }else if($recieverDetail['USER_TYPE']=='APPRAISEE'){
+
+            if ($recieverDetail['USER_TYPE'] == 'APPRAISER') {
+                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'REVIEWER') {
+                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'HR') {
+                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
+            } else if ($recieverDetail['USER_TYPE'] == 'APPRAISEE') {
                 $notification->route = json_encode(["route" => "performanceAppraisal", "action" => "view", "appraisalId" => $request->appraisalId]);
             }
-            
+
             $title = "Appraisal Evaluation";
             $desc = "Appraisal Evaluated by"
                     . " $notification->fromName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
-            self::sendEmail($notification, 33, $adapter,$url);
+            self::sendEmail($notification, 33, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::APPRAISAL_REVIEW} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$senderDetail,$recieverDetail) {
+        ${"fn" . NotificationEvents::APPRAISAL_REVIEW} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url, $senderDetail, $recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
-            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
-            
-            $fullName = function($id,$adapter) {
-                if($id!=null){
+            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+            $fullName = function($id, $adapter) {
+                if ($id != null) {
                     $empRepository = new EmployeeRepository($adapter);
                     $empDtl = $empRepository->fetchById($id);
                     $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
                     return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-                }else{
+                } else {
                     return "";
                 }
             };
@@ -1366,49 +1347,51 @@ class HeadNotification {
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
-            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'],$adapter);
-            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'],$adapter);
-            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'],$adapter);
+            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
             $notification->startDate = $assignedAppraisalDetail['START_DATE'];
             $notification->endDate = $assignedAppraisalDetail['END_DATE'];
             $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
             $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
-            
-            if($recieverDetail['USER_TYPE']=='APPRAISER'){
-                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='REVIEWER'){
-                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='HR'){
-                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId]);
-            }else if($recieverDetail['USER_TYPE']=='APPRAISEE'){
+
+            if ($recieverDetail['USER_TYPE'] == 'APPRAISER') {
+                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'REVIEWER') {
+                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'HR') {
+                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
+            } else if ($recieverDetail['USER_TYPE'] == 'APPRAISEE') {
                 $notification->route = json_encode(["route" => "performanceAppraisal", "action" => "view", "appraisalId" => $request->appraisalId]);
             }
-            $getValue = function($val){
-                if($val!=null && $val!=""){
-                    if($val=='Y')return "Agreed";
-                    else if($val=='N')return "Disgreed";
+            $getValue = function($val) {
+                if ($val != null && $val != "") {
+                    if ($val == 'Y')
+                        return "Agreed";
+                    else if ($val == 'N')
+                        return "Disgreed";
                 }else {
                     return "";
                 }
             };
             $title = "Appraisal Review";
-            $desc =$getValue($assignedAppraisalDetail['REVIEWER_AGREE'])." by"
+            $desc = $getValue($assignedAppraisalDetail['REVIEWER_AGREE']) . " by"
                     . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
-            self::sendEmail($notification, 34, $adapter,$url);
+            self::sendEmail($notification, 34, $adapter, $url);
         };
-        ${"fn" . NotificationEvents::APPRAISEE_FEEDBACK} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url,$recieverDetail) {
+        ${"fn" . NotificationEvents::APPRAISEE_FEEDBACK} = function (AppraisalStatus $request, AdapterInterface $adapter, Url $url, $recieverDetail) {
             $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
-            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId,$request->appraisalId);
-            
-            $fullName = function($id,$adapter) {
-                if($id!=null){
+            $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+            $fullName = function($id, $adapter) {
+                if ($id != null) {
                     $empRepository = new EmployeeRepository($adapter);
                     $empDtl = $empRepository->fetchById($id);
                     $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
                     return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-                }else{
+                } else {
                     return "";
                 }
             };
@@ -1417,37 +1400,69 @@ class HeadNotification {
 
             $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
             $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
-            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'],$adapter);
-            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'],$adapter);
-            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'],$adapter);
+            $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+            $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+            $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
             $notification->startDate = $assignedAppraisalDetail['START_DATE'];
             $notification->endDate = $assignedAppraisalDetail['END_DATE'];
             $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
             $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
-            
-            if($recieverDetail['USER_TYPE']=='APPRAISER'){
-                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='REVIEWER'){
-                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId,"tab"=>1]);
-            }else if($recieverDetail['USER_TYPE']=='HR'){
-                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId,"employeeId"=>$request->employeeId]);
+
+            if ($recieverDetail['USER_TYPE'] == 'APPRAISER') {
+                $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'REVIEWER') {
+                $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+            } else if ($recieverDetail['USER_TYPE'] == 'HR') {
+                $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
             }
-            
-            $getValue = function($val){
-                if($val!=null && $val!=""){
-                    if($val=='Y')return "Agreed";
-                    else if($val=='N')return "Disagreed";
+
+            $getValue = function($val) {
+                if ($val != null && $val != "") {
+                    if ($val == 'Y')
+                        return "Agreed";
+                    else if ($val == 'N')
+                        return "Disagreed";
                 }else {
                     return "";
                 }
             };
             $title = "Final Feedback on Appraisal";
-            $desc = $getValue($assignedAppraisalDetail['APPRAISEE_AGREE'])." by"
+            $desc = $getValue($assignedAppraisalDetail['APPRAISEE_AGREE']) . " by"
                     . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
             self::addNotifications($notification, $title, $desc, $adapter);
-            self::sendEmail($notification, 35, $adapter,$url);
+            self::sendEmail($notification, 35, $adapter, $url);
         };
+
+        ${"fn" . NotificationEvents::OVERTIME_APPLIED} = function (Overtime $request, AdapterInterface $adapter, Url $url) {
+            $attendReqRepo = new OvertimeRepository($adapter);
+            $request->exchangeArrayFromDB($attendReqRepo->fetchById($request->overtimeId));
+
+            $recommdAppRepo = new RecommendApproveRepository($adapter);
+            $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($request->employeeId);
+
+
+            $keys = get_object_vars($notification);
+            foreach ($keys as $v) {
+                if (isset($notification->{$v})) {
+                    $notification->{$v} = $request->{$v};
+                }
+            }
+
+            $idAndRole = self::findRoleType($recommdAppModel, $type);
+
+            $notification = new \Notification\Model\OvertimeReqNotificationModel();
+            self::setNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $idAndRole['id'], $notification, $adapter);
+
+            $notification->route = json_encode(["route" => "overtimeApprove", "action" => "view", "id" => $request->overtimeId, "role" => $idAndRole['role']]);
+
+            $title = "Overtime Request";
+            $desc = "Overtime Request Applied";
+
+            self::addNotifications($notification, $title, $desc, $adapter);
+            self::sendEmail($notification, NotificationEvents::OVERTIME_APPLIED, $adapter, $url);
+        };
+
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
                 ${"fn" . NotificationEvents::LEAVE_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
@@ -1613,22 +1628,25 @@ class HeadNotification {
                 ${"fn" . NotificationEvents::SALARY_REVIEW}($model, $adapter, $url);
                 break;
             case NotificationEvents::KPI_SETTING:
-                ${"fn" . NotificationEvents::KPI_SETTING}($model, $adapter, $url,$recieverDetail);
+                ${"fn" . NotificationEvents::KPI_SETTING}($model, $adapter, $url, $recieverDetail);
                 break;
             case NotificationEvents::KPI_APPROVED:
-                ${"fn" . NotificationEvents::KPI_APPROVED}($model, $adapter, $url,$senderDetail,$recieverDetail);
+                ${"fn" . NotificationEvents::KPI_APPROVED}($model, $adapter, $url, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::KEY_ACHIEVEMENT:
-                ${"fn" . NotificationEvents::KEY_ACHIEVEMENT}($model, $adapter, $url,$recieverDetail);
+                ${"fn" . NotificationEvents::KEY_ACHIEVEMENT}($model, $adapter, $url, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISAL_EVALUATION:
-                ${"fn" . NotificationEvents::APPRAISAL_EVALUATION}($model, $adapter, $url,$senderDetail,$recieverDetail);
+                ${"fn" . NotificationEvents::APPRAISAL_EVALUATION}($model, $adapter, $url, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISAL_REVIEW:
-                ${"fn" . NotificationEvents::APPRAISAL_REVIEW}($model, $adapter, $url,$senderDetail,$recieverDetail);
+                ${"fn" . NotificationEvents::APPRAISAL_REVIEW}($model, $adapter, $url, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISEE_FEEDBACK:
-                ${"fn" . NotificationEvents::APPRAISEE_FEEDBACK}($model, $adapter, $url,$recieverDetail);
+                ${"fn" . NotificationEvents::APPRAISEE_FEEDBACK}($model, $adapter, $url, $recieverDetail);
+                break;
+            case NotificationEvents::OVERTIME_APPLIED:
+                ${"fn" . NotificationEvents::OVERTIME_APPLIED}($model, $adapter, $url, self::RECOMMENDER);
                 break;
         }
     }
@@ -1649,6 +1667,27 @@ class HeadNotification {
         $notification->toMaritualStatus = $toEmployee['MARITAL_STATUS'];
         $notification->toName = $toEmployee['FIRST_NAME'] . " " . $toEmployee['MIDDLE_NAME'] . " " . $toEmployee['LAST_NAME'];
         $notification->setHonorific();
+    }
+
+    private static function findRoleType($recAppModel, $type) {
+        $id = '';
+        $role = '';
+        switch ($type) {
+            case self::RECOMMENDER:
+                $id = $recAppModel[RecommendApprove::RECOMMEND_BY];
+                $role = RecommendApprove::RECOMMENDER_VALUE;
+                break;
+            case self::APPROVER:
+                $id = $recAppModel[RecommendApprove::APPROVED_BY];
+                $role = RecommendApprove::APPROVER_VALUE;
+                break;
+        }
+        if ($recAppModel[RecommendApprove::RECOMMEND_BY] == $recAppModel[RecommendApprove::APPROVED_BY]) {
+            $id = $recAppModel[RecommendApprove::RECOMMEND_BY];
+            $role = RecommendApprove::BOTH_VALUE;
+        }
+
+        return ['id' => $id, 'role' => $role];
     }
 
 }
