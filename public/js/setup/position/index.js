@@ -47,8 +47,8 @@
             columns: [
                 {field: "LEVEL_NO", title: "Level", width: 100},
                 {field: "POSITION_NAME", title: "Position", width: 300},
-                {field: "COMPANY_NAME", title: "Company", width: 250},
                 {field: "WOH_FLAG", title: "Work On Holiday", width: 150},
+                {field: "COMPANY_NAME", title: "Company", width: 250},
                 {field: "REMARKS", title: "Remarks", hidden: true},
                 {title: "Action", width: 80, width: 100}
             ]
