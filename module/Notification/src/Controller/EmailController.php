@@ -66,7 +66,9 @@ class EmailController extends AbstractActionController {
         34 => "Appraisal_Reviewed",
         35 => "Appraisee_Feedback",
         36 => "Attendance_Recommend",
-        NotificationEvents::OVERTIME_APPLIED => "Overtime Request"
+        37 => "Overtime Request",
+        38 => "Overtime Recommend",
+        39 => "Overtime Approve"
     ];
 
     private function getVariables() {
@@ -151,7 +153,9 @@ class EmailController extends AbstractActionController {
             34 => $type13ObjVars,
             35 => $type13ObjVars,
             36 => $type2ObjVars,
-            NotificationEvents::OVERTIME_APPLIED => $overtimeNotiModelOA
+            37 => $overtimeNotiModelOA,
+            38 => $overtimeNotiModelOA,
+            39 => $overtimeNotiModelOA
         ];
     }
 
