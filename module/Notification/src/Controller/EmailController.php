@@ -4,23 +4,24 @@ namespace Notification\Controller;
 
 use Application\Helper\Helper;
 use Notification\Model\AdvanceRequestNotificationModel;
+use Notification\Model\AppraisalNotificationModel;
 use Notification\Model\AttendanceRequestNotificationModel;
 use Notification\Model\EmailTemplate;
 use Notification\Model\LeaveRequestNotificationModel;
+use Notification\Model\LeaveSubNotificationModel;
 use Notification\Model\LoanRequestNotificationModel;
+use Notification\Model\NotificationEvents;
+use Notification\Model\OvertimeReqNotificationModel;
+use Notification\Model\SalaryReviewNotificationModel;
 use Notification\Model\TrainingReqNotificationModel;
 use Notification\Model\TravelReqNotificationModel;
+use Notification\Model\TravelSubNotificationModel;
 use Notification\Model\WorkOnDayoffNotificationModel;
 use Notification\Model\WorkOnHolidayNotificationModel;
-use Notification\Model\LeaveSubNotificationModel;
-use Notification\Model\TravelSubNotificationModel;
-use Notification\Model\ForgotPasswordNotificationModel;
 use Notification\Repository\EmailTemplateRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
-use Notification\Model\SalaryReviewNotificationModel;
-use Notification\Model\AppraisalNotificationModel;
 
 class EmailController extends AbstractActionController {
 
@@ -64,10 +65,13 @@ class EmailController extends AbstractActionController {
         33 => "Appraisal_Evaluated",
         34 => "Appraisal_Reviewed",
         35 => "Appraisee_Feedback",
-        36 => "Attendance_Recommend"
+        36 => "Attendance_Recommend",
+        NotificationEvents::OVERTIME_APPLIED => "Overtime Request"
     ];
 
     private function getVariables() {
+
+
         $type1 = new LeaveRequestNotificationModel();
         $type1ObjVars = $type1->getObjectAttrs();
 
@@ -103,9 +107,12 @@ class EmailController extends AbstractActionController {
 
         $type12 = new SalaryReviewNotificationModel();
         $type12ObjVars = $type12->getObjectAttrs();
-        
+
         $type13 = new AppraisalNotificationModel();
-        $type13ObjVars  = $type13->getObjectAttrs();
+        $type13ObjVars = $type13->getObjectAttrs();
+
+        $overtimeNotiModel = new OvertimeReqNotificationModel();
+        $overtimeNotiModelOA = $overtimeNotiModel->getObjectAttrs();
 
         return [
             1 => $type1ObjVars,
@@ -144,6 +151,7 @@ class EmailController extends AbstractActionController {
             34 => $type13ObjVars,
             35 => $type13ObjVars,
             36 => $type2ObjVars,
+            NotificationEvents::OVERTIME_APPLIED => $overtimeNotiModelOA
         ];
     }
 

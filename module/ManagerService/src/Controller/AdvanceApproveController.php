@@ -153,8 +153,8 @@ class AdvanceApproveController extends AbstractActionController {
                 $advanceRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);
 
-                $advanceRequestModel->advanceRequestId = $id;
                 try {
+                    $advanceRequestModel->advanceRequestId = $id;
                     HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
@@ -176,8 +176,8 @@ class AdvanceApproveController extends AbstractActionController {
                 $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->advanceApproveRepository->edit($advanceRequestModel, $id);
 
-                $advanceRequestModel->advanceRequestId = $id;
                 try {
+                    $advanceRequestModel->advanceRequestId = $id;
                     HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
@@ -198,14 +198,14 @@ class AdvanceApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC",NULL,FALSE,TRUE)
+                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC", NULL, FALSE, TRUE)
         ]);
     }
 
     public function statusAction() {
         $advanceFormElement = new Select();
         $advanceFormElement->setName("advance");
-        $advances = EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], Advance::ADVANCE_NAME, "ASC",NULL,FALSE,TRUE);
+        $advances = EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], Advance::ADVANCE_NAME, "ASC", NULL, FALSE, TRUE);
         $advances1 = [-1 => "All"] + $advances;
         $advanceFormElement->setValueOptions($advances1);
         $advanceFormElement->setAttributes(["id" => "advanceId", "class" => "form-control"]);

@@ -1,32 +1,35 @@
 <?php
+
 namespace WorkOnDayoff\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
-use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
-use Zend\Form\Annotation\AnnotationBuilder;
+use Application\Helper\Helper;
 use SelfService\Form\WorkOnDayoffForm;
-use Setup\Model\HrEmployees;
-use SelfService\Repository\WorkOnDayoffRepository;
 use SelfService\Model\WorkOnDayoff;
+use SelfService\Repository\WorkOnDayoffRepository;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
-class WorkOnDayoffApply extends AbstractActionController{
+class WorkOnDayoffApply extends AbstractActionController {
+
     private $form;
     private $adapter;
     private $workOnDayoffRepository;
-    
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->workOnDayoffRepository = new WorkOnDayoffRepository($adapter);
     }
-    public function initializeForm(){
+
+    public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new WorkOnDayoffForm();
         $this->form = $builder->createForm($form);
     }
+
     public function indexAction() {
-       return $this->redirect()->toRoute("workOnDayoffStatus");
+        return $this->redirect()->toRoute("workOnDayoffStatus");
     }
 
     public function addAction() {
@@ -43,13 +46,15 @@ class WorkOnDayoffApply extends AbstractActionController{
                 $model->status = 'RQ';
                 $this->workOnDayoffRepository->add($model);
                 $this->flashmessenger()->addMessage("Work on Day-off Request Successfully added!!!");
+
                 return $this->redirect()->toRoute("workOnDayoffStatus");
             }
         }
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E','RETIRED_FLAG'=>'N'],"FIRST_NAME","ASC"," ",false,true),
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", false, true),
         ]);
     }
+
 }

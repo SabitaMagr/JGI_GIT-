@@ -4,6 +4,8 @@ namespace SelfService\Controller;
 
 use Application\Helper\Helper;
 use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\OvertimeRequestForm;
 use SelfService\Model\Overtime;
 use SelfService\Model\OvertimeDetail;
@@ -191,12 +193,12 @@ class OvertimeRequest extends AbstractActionController {
                     $overtimeDetailModel->createdDate = Helper::getcurrentExpressionDate();
                     $this->detailRepository->add($overtimeDetailModel);
                 }
-//                try {
-//                    HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this->plugin("url"));
-//                } catch (Exception $e) {
-//                    $this->flashmessenger()->addMessage($e->getMessage());
-//                }
                 $this->flashmessenger()->addMessage("Overtime Request Successfully added!!!");
+                try {
+                    HeadNotification::pushNotification(NotificationEvents::OVERTIME_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
                 return $this->redirect()->toRoute("overtimeRequest");
             }
         }

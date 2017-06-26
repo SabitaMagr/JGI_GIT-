@@ -154,8 +154,8 @@ class HolidayWorkApproveController extends AbstractActionController {
                 }
                 $workOnHolidayModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
-                $workOnHolidayModel->id = $id;
                 try {
+                    $workOnHolidayModel->id = $id;
                     HeadNotification::pushNotification(($workOnHolidayModel->status == 'RC') ? NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED : NotificationEvents::WORKONHOLIDAY_RECOMMEND_REJECTED, $workOnHolidayModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
@@ -167,10 +167,7 @@ class HolidayWorkApproveController extends AbstractActionController {
                     $workOnHolidayModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
                 } else if ($action == "Approve") {
-
                     $this->wohAppAction($requestedEmployeeID, $detail);
-
-
                     $workOnHolidayModel->status = "AP";
                     $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
                 }
@@ -180,8 +177,8 @@ class HolidayWorkApproveController extends AbstractActionController {
                 }
                 $workOnHolidayModel->approvedRemarks = $getData->approvedRemarks;
                 $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
-                $workOnHolidayModel->id = $id;
                 try {
+                    $workOnHolidayModel->id = $id;
                     HeadNotification::pushNotification(($workOnHolidayModel->status == 'AP') ? NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED : NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED, $workOnHolidayModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());

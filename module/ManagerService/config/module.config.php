@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 10/4/16
- * Time: 4:59 PM
- */
-
 namespace ManagerService;
 
 use Zend\Router\Http\Segment;
@@ -149,30 +142,30 @@ return [
     ],
     'navigation' => [
         'leaveapprove' => [
-                [
+            [
                 'label' => 'Leave Request',
                 'route' => 'leaveapprove',
             ],
-                [
+            [
                 'label' => 'Leave Request',
                 'route' => 'leaveapprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'leaveapprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'leaveapprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'leaveapprove',
                         'action' => 'edit',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'leaveapprove',
                         'action' => 'view',
@@ -181,25 +174,25 @@ return [
             ]
         ],
         'attedanceapprove' => [
-                [
+            [
                 'label' => 'Attendance Request',
                 'route' => 'attedanceapprove',
             ],
-                [
+            [
                 'label' => 'Attendance Request',
                 'route' => 'attedanceapprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'attedanceapprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'attedanceapprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'attedanceapprove',
                         'action' => 'view',
@@ -208,25 +201,25 @@ return [
             ]
         ],
         'loanApprove' => [
-                [
+            [
                 'label' => 'Loan Request',
                 'route' => 'loanApprove',
             ],
-                [
+            [
                 'label' => 'Loan Request',
                 'route' => 'loanApprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'loanApprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'loanApprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'loanApprove',
                         'action' => 'view',
@@ -235,25 +228,25 @@ return [
             ]
         ],
         'advanceApprove' => [
-                [
+            [
                 'label' => 'Advance Request',
                 'route' => 'advanceApprove',
             ],
-                [
+            [
                 'label' => 'Advance Request',
                 'route' => 'advanceApprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'advanceApprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'advanceApprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'advanceApprove',
                         'action' => 'view',
@@ -262,15 +255,15 @@ return [
             ]
         ],
         'salaryReview' => [
-                [
+            [
                 'label' => 'SalaryReview',
                 'route' => 'salaryReview',
             ],
-                [
+            [
                 'label' => 'SalaryReview',
                 'route' => 'salaryReview',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'salaryReview',
                         'action' => 'index',
@@ -279,7 +272,7 @@ return [
                         'route' => 'salaryReview',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'loanApprove',
                         'action' => 'edit',
@@ -288,25 +281,25 @@ return [
             ]
         ],
         'travelApprove' => [
-                [
+            [
                 'label' => 'Travel Request',
                 'route' => 'travelApprove',
             ],
-                [
+            [
                 'label' => 'Travel Request',
                 'route' => 'travelApprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'travelApprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'travelApprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'travelApprove',
                         'action' => 'view',
@@ -320,25 +313,25 @@ return [
             ]
         ],
         'dayoffWorkApprove' => [
-                [
+            [
                 'label' => 'Work on Day-off Request',
                 'route' => 'dayoffWorkApprove',
             ],
-                [
+            [
                 'label' => 'Work on Day-off Request',
                 'route' => 'dayoffWorkApprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'dayoffWorkApprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'dayoffWorkApprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'dayoffWorkApprove',
                         'action' => 'view',
@@ -347,25 +340,25 @@ return [
             ]
         ],
         'holidayWorkApprove' => [
-                [
+            [
                 'label' => 'Work on Holiday Request',
                 'route' => 'holidayWorkApprove',
             ],
-                [
+            [
                 'label' => 'Work on Holiday Request',
                 'route' => 'holidayWorkApprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'holidayWorkApprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'holidayWorkApprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'holidayWorkApprove',
                         'action' => 'view',
@@ -374,25 +367,25 @@ return [
             ]
         ],
         'trainingApprove' => [
-                [
+            [
                 'label' => 'Training Request',
                 'route' => 'trainingApprove',
             ],
-                [
+            [
                 'label' => 'Training Request',
                 'route' => 'trainingApprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'trainingApprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'trainingApprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'trainingApprove',
                         'action' => 'view',
@@ -401,25 +394,25 @@ return [
             ]
         ],
         'salaryReview' => [
-                [
+            [
                 'label' => 'Salary Review',
                 'route' => 'salaryReview',
             ],
-                [
+            [
                 'label' => 'Salary Review',
                 'route' => 'salaryReview',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'salaryReview',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'salaryReview',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'salaryReview',
                         'action' => 'edit',
@@ -428,25 +421,25 @@ return [
             ]
         ],
         'overtimeApprove' => [
-                [
+            [
                 'label' => 'Overtime Request',
                 'route' => 'overtimeApprove',
             ],
-                [
+            [
                 'label' => 'Overtime Request',
                 'route' => 'overtimeApprove',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'overtimeApprove',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'overtimeApprove',
                         'action' => 'status',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'overtimeApprove',
                         'action' => 'view',
@@ -455,20 +448,20 @@ return [
             ]
         ],
         'appraisal-evaluation' => [
-                [
+            [
                 'label' => 'Appraisal Evaluation',
                 'route' => 'appraisal-evaluation',
             ],
-                [
+            [
                 'label' => 'Appraisal Evaluation',
                 'route' => 'appraisal-evaluation',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'appraisal-evaluation',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'appraisal-evaluation',
                         'action' => 'view',
@@ -477,20 +470,20 @@ return [
             ]
         ],
         'appraisal-review' => [
-                [
+            [
                 'label' => 'Appraisal Review',
                 'route' => 'appraisal-review',
             ],
-                [
+            [
                 'label' => 'Appraisal Review',
                 'route' => 'appraisal-review',
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'appraisal-review',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'View',
                         'route' => 'appraisal-review',
                         'action' => 'view',
@@ -510,9 +503,9 @@ return [
             Controller\DayoffWorkApproveController::class => ControllerFactory::class,
             Controller\HolidayWorkApproveController::class => ControllerFactory::class,
             Controller\TrainingApproveController::class => ControllerFactory::class,
-            Controller\OvertimeApproveController::class=> ControllerFactory::class,
-            Controller\AppraisalEvaluation::class=> ControllerFactory::class,
-            Controller\AppraisalReview::class=> ControllerFactory::class
+            Controller\OvertimeApproveController::class => ControllerFactory::class,
+            Controller\AppraisalEvaluation::class => ControllerFactory::class,
+            Controller\AppraisalReview::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
