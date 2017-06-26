@@ -2105,7 +2105,7 @@ class RestfulService extends AbstractRestfulController {
                 'ROLE' => $roleID
             ];
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $role['YOUR_ROLE'] = 'Recommender\Approver';
+                $role['YOUR_ROLE'] = 'RECOMMENDER/APPROVER';
                 $role['ROLE'] = 4;
             }
             $new_row = array_merge($row, ['STATUS' => $status]);
