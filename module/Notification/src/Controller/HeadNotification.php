@@ -141,12 +141,19 @@ class HeadNotification {
 
     private static function initFullModel(RepositoryInterface $repository, Model &$model, $id) {
         $dbModel = $repository->fetchById($id);
-        $model->exchangeArrayFromDB($dbModel->getArrayCopy());
+        $data = null;
+
+        if (gettype($dbModel) === "array") {
+            $data = $dbModel;
+        } else {
+            $data = $dbModel->getArrayCopy();
+        }
+        $model->exchangeArrayFromDB($data);
     }
 
     private static function leaveApplied(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
-        $recommdAppModel = self::findRecApp($leaveApply->employeeId);
+        $recommdAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
         $idAndRole = self::findRoleType($recommdAppModel, $type);
         $leaveReqNotiMod = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $idAndRole['id'], LeaveRequestNotificationModel::class, $adapter);
 
@@ -170,7 +177,7 @@ class HeadNotification {
 
     private static function leaveRecommend(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
-        $recommendAppModel = self::findRecApp($leaveApply->employeeId);
+        $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
         $leaveReqNotiMod = self::initializeNotificationModel($leaveApply->employeeId, $recommendAppModel[RecommendApprove::RECOMMEND_BY], LeaveRequestNotificationModel::class, $adapter);
 
 //
@@ -192,7 +199,7 @@ class HeadNotification {
 
     public static function leaveApprove(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
-        $recommendAppModel = self::findRecApp($leaveApply->employeeId);
+        $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
         $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::APPROVED_BY], $leaveApply->employeeId, LeaveRequestNotificationModel::class, $adapter);
 
 
@@ -214,7 +221,7 @@ class HeadNotification {
 
     public static function attendanceRequest(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new AttendanceRequestRepository($adapter), $request, $request->id);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $idAndRole = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $idAndRole['id'], \Notification\Model\AttendanceRequestNotificationModel::class, $adapter);
 
@@ -236,7 +243,7 @@ class HeadNotification {
 
     public static function attendanceRecommend(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AttendanceRequestRepository($adapter), $request, $request->id);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
 
         $notification->attendanceDate = $request->attendanceDt;
@@ -258,7 +265,7 @@ class HeadNotification {
 
     public static function attendanceApprove(AttendanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AttendanceRequestRepository($adapter), $request, $request->id);
-        $recApp = self::findRecApp($request->employeeId);
+        $recApp = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recApp[AttendanceRequestModel::APPROVED_BY], $request->employeeId, \Notification\Model\AttendanceRequestNotificationModel::class, $adapter);
 
         $notification->attendanceDate = $request->attendanceDt;
@@ -280,7 +287,7 @@ class HeadNotification {
 
     public static function advanceApplied(AdvanceRequest $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
 
@@ -299,7 +306,7 @@ class HeadNotification {
 
     public static function advanceRecommend(AdvanceRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
 
         $notification->advanceDate = $request->advanceDate;
@@ -318,7 +325,7 @@ class HeadNotification {
 
     private static function advanceApprove(AdvanceRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
 
         $notification->advanceDate = $request->advanceDate;
@@ -337,7 +344,7 @@ class HeadNotification {
 
     private static function travelApplied(TravelRequest $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -360,7 +367,7 @@ class HeadNotification {
 
     private static function travelRecommend(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -383,7 +390,7 @@ class HeadNotification {
 
     private static function travelApprove(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -429,7 +436,7 @@ class HeadNotification {
 
     private static function loanApplied(LoanRequest $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new LoanRequestRepository($adapter), $request, $request->loanRequestId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $request->employeeId);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\LoanRequestNotificationModel::class, $adapter);
 
@@ -449,7 +456,7 @@ class HeadNotification {
 
     private static function loanRecommend(LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LoanRequestRepository($adapter), $request, $request->loanRequestId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\LoanRequestNotificationModel::class, $adapter);
 
         $notification->approvedAmount = $request->approvedAmount;
@@ -470,7 +477,7 @@ class HeadNotification {
 
     private static function loanApprove(LoanRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LoanRequestRepository($adapter), $request, $request->loanRequestId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\LoanRequestNotificationModel::class, $adapter);
 
         $notification->approvedAmount = $request->approvedAmount;
@@ -492,7 +499,7 @@ class HeadNotification {
     private static function workOnDayOffApplied(WorkOnDayoff $workOnDayoff, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new WorkOnDayoffRepository($adapter), $workOnDayoff, $workOnDayoff->id);
 
-        $recommdAppModel = self::findRecApp($workOnDayoff->employeeId);
+        $recommdAppModel = self::findRecApp($workOnDayoff->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $workOnDayoffReqNotiMod = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], WorkOnDayoffNotificationModel::class, $adapter);
 
@@ -511,7 +518,7 @@ class HeadNotification {
 
     private static function workOnDayOffRecommend(WorkOnDayoff $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new WorkOnDayoffRepository($adapter), $request, $request->id);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], WorkOnDayoffNotificationModel::class, $adapter);
 
         $notification->fromDate = $request->fromDate;
@@ -532,7 +539,7 @@ class HeadNotification {
 
     private static function workOnDayOffApprove(WorkOnDayoff $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new WorkOnDayoffRepository($adapter), $request, $request->id);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], WorkOnDayoffNotificationModel::class, $adapter);
@@ -555,7 +562,7 @@ class HeadNotification {
 
     private static function workOnHoliday(WorkOnHoliday $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new WorkOnHolidayRepository($adapter), $request, $request->id);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], WorkOnHolidayNotificationModel::class, $adapter);
 
@@ -577,7 +584,7 @@ class HeadNotification {
 
     private static function workOnHolidayRecommend(WorkOnHoliday $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new WorkOnHolidayRepository($adapter), $request, $request->id);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], WorkOnHolidayNotificationModel::class, $adapter);
 
         $holidayName = self::getName($request->holidayId, new HolidayRepository($adapter), 'HOLIDAY_ENAME');
@@ -600,7 +607,7 @@ class HeadNotification {
 
     private static function workOnHolidayApprove(WorkOnHoliday $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new WorkOnHolidayRepository($adapter), $request, $request->id);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], WorkOnHolidayNotificationModel::class, $adapter);
@@ -628,7 +635,7 @@ class HeadNotification {
         $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
         $request->exchangeArrayFromDB($trainingRequestDetail);
 
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], TrainingReqNotificationModel::class, $adapter);
 
@@ -670,7 +677,7 @@ class HeadNotification {
         $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
         $request->exchangeArrayFromDB($trainingRequestDetail);
 
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], TrainingReqNotificationModel::class, $adapter);
 
@@ -714,7 +721,7 @@ class HeadNotification {
         $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
         $request->exchangeArrayFromDB($trainingRequestDetail);
 
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], TrainingReqNotificationModel::class, $adapter);
@@ -1182,14 +1189,14 @@ class HeadNotification {
 
     private static function overtimeApplied(Overtime $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new OvertimeRepository($adapter), $request, $request->overtimeId);
-        $recommdAppModel = self::findRecApp($request->employeeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\OvertimeReqNotificationModel::class, $adapter);
 
         $keys = get_object_vars($notification);
         foreach ($keys as $v) {
-            if (isset($notification->{$v})) {
+            if (!isset($notification->{$v}) && isset($request->{$v})) {
                 $notification->{$v} = $request->{$v};
             }
         }
@@ -1200,7 +1207,53 @@ class HeadNotification {
         $desc = "Overtime Request Applied";
 
         self::addNotifications($notification, $title, $desc, $adapter);
-        self::sendEmail($notification, NotificationEvents::OVERTIME_APPLIED, $adapter, $url);
+        self::sendEmail($notification, 37, $adapter, $url);
+    }
+
+    private static function overtimeRecommend(Overtime $request, AdapterInterface $adapter, Url $url, $status) {
+        self::initFullModel(new OvertimeRepository($adapter), $request, $request->overtimeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+
+        $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\OvertimeReqNotificationModel::class, $adapter);
+
+        $keys = get_object_vars($notification);
+        foreach ($keys as $v) {
+            if (!isset($notification->{$v}) && isset($request->{$v})) {
+                $notification->{$v} = $request->{$v};
+            }
+        }
+        $notification->status = $status;
+
+        $notification->route = json_encode(["route" => "overtimeRequest", "action" => "view", "id" => $request->overtimeId]);
+
+        $title = "Overtime Request";
+        $desc = "Recommendation of Overtime request is {$status}";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 38, $adapter, $url);
+    }
+
+    private static function overtimeApprove(Overtime $request, AdapterInterface $adapter, Url $url, $status) {
+        self::initFullModel(new OvertimeRepository($adapter), $request, $request->overtimeId);
+        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+
+        $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\OvertimeReqNotificationModel::class, $adapter);
+
+        $keys = get_object_vars($notification);
+        foreach ($keys as $v) {
+            if (!isset($notification->{$v}) && isset($request->{$v})) {
+                $notification->{$v} = $request->{$v};
+            }
+        }
+        $notification->status = $status;
+
+        $notification->route = json_encode(["route" => "overtimeRequest", "action" => "view", "id" => $request->overtimeId]);
+
+        $title = "Overtime Request";
+        $desc = "Approval of Overtime request is {$status}";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 39, $adapter, $url);
     }
 
     public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url, $senderDetail = null, $recieverDetail = null) {
@@ -1390,6 +1443,19 @@ class HeadNotification {
             case NotificationEvents::OVERTIME_APPLIED:
                 self::overtimeApplied($model, $adapter, $url, self::RECOMMENDER);
                 break;
+            case NotificationEvents::OVERTIME_RECOMMEND_ACCEPTED:
+                self::overtimeRecommend($model, $adapter, $url, self::ACCEPTED);
+                self::overtimeApplied($model, $adapter, $url, self::APPROVER);
+                break;
+            case NotificationEvents::OVERTIME_RECOMMEND_REJECTED:
+                self::overtimeRecommend($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::OVERTIME_APPROVE_ACCEPTED:
+                self::overtimeApprove($model, $adapter, $url, self::ACCEPTED);
+                break;
+            case NotificationEvents::OVERTIME_APPROVE_REJECTED:
+                self::overtimeApprove($model, $adapter, $url, self::REJECTED);
+                break;
         }
     }
 
@@ -1436,7 +1502,7 @@ class HeadNotification {
         return ['id' => $id, 'role' => $role];
     }
 
-    private static function findRecApp($employeeId) {
+    private static function findRecApp($employeeId, $adapter) {
         $recommdAppRepo = new RecommendApproveRepository($adapter);
         $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($employeeId);
 

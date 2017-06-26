@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 10/3/16
- * Time: 1:27 PM
- */
-
 namespace Setup\Repository;
 
 use Application\Model\Model;
