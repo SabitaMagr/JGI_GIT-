@@ -5,14 +5,12 @@ namespace ManagerService\Controller;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
-use SelfService\Model\Overtime;
-use SelfService\Model\OvertimeDetail;
-use SelfService\Repository\OvertimeDetailRepository;
-use SelfService\Repository\OvertimeRepository;
 use ManagerService\Repository\OvertimeApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\OvertimeRequestForm;
+use SelfService\Model\Overtime;
+use SelfService\Repository\OvertimeDetailRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -89,7 +87,7 @@ class OvertimeApproveController extends AbstractActionController {
                 'REMARKS' => $row['REMARKS'],
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'OVERTIME_ID' => $row['OVERTIME_ID'],
-                'TOTAL_HOUR'=>$row['TOTAL_HOUR'],
+                'TOTAL_HOUR' => $row['TOTAL_HOUR'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
@@ -99,10 +97,10 @@ class OvertimeApproveController extends AbstractActionController {
             }
             $overtimeDetailResult = $this->overtimeDetailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
             $overtimeDetails = [];
-            foreach($overtimeDetailResult as $overtimeDetailRow){
-                array_push($overtimeDetails,$overtimeDetailRow);
+            foreach ($overtimeDetailResult as $overtimeDetailRow) {
+                array_push($overtimeDetails, $overtimeDetailRow);
             }
-            $dataArray['DETAILS']=$overtimeDetails;
+            $dataArray['DETAILS'] = $overtimeDetails;
             array_push($overtimeRequest, $dataArray);
         }
         return Helper::addFlashMessagesToArray($this, ['overtimeRequest' => $overtimeRequest, 'id' => $this->employeeId]);
@@ -137,11 +135,11 @@ class OvertimeApproveController extends AbstractActionController {
         $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
         $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        
+
         $overtimeDetailResult = $this->overtimeDetailRepository->fetchByOvertimeId($detail['OVERTIME_ID']);
         $overtimeDetails = [];
-        foreach($overtimeDetailResult as $overtimeDetailRow){
-            array_push($overtimeDetails,$overtimeDetailRow);
+        foreach ($overtimeDetailResult as $overtimeDetailRow) {
+            array_push($overtimeDetails, $overtimeDetailRow);
         }
         if (!$request->isPost()) {
             $overtimeModel->exchangeArrayFromDB($detail);
@@ -162,12 +160,12 @@ class OvertimeApproveController extends AbstractActionController {
                 }
                 $overtimeModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->overtimeApproveRepository->edit($overtimeModel, $id);
-                $overtimeModel->overtimeId = $id;
-//                try {
-//                    HeadNotification::pushNotification(($overtimeModel->status == 'RC') ? NotificationEvents::OVERTIME_RECOMMEND_ACCEPTED : NotificationEvents::OVERTIME_RECOMMEND_REJECTED, $overtimeModel, $this->adapter, $this->plugin('url'));
-//                } catch (Exception $e) {
-//                    $this->flashmessenger()->addMessage($e->getMessage());
-//                }
+                try {
+                    $overtimeModel->overtimeId = $id;
+                    HeadNotification::pushNotification(($overtimeModel->status == 'RC') ? NotificationEvents::OVERTIME_RECOMMEND_ACCEPTED : NotificationEvents::OVERTIME_RECOMMEND_REJECTED, $overtimeModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             } else if ($role == 3 || $role == 4) {
                 $overtimeModel->approvedDate = Helper::getcurrentExpressionDate();
                 $overtimeModel->approvedBy = $this->employeeId;
@@ -184,12 +182,12 @@ class OvertimeApproveController extends AbstractActionController {
                 }
                 $overtimeModel->approvedRemarks = $getData->approvedRemarks;
                 $this->overtimeApproveRepository->edit($overtimeModel, $id);
-                $overtimeModel->overtimeId = $id;
-//                try {
-//                    HeadNotification::pushNotification(($overtimeModel->status == 'AP') ? NotificationEvents::OVERTIME_APPROVE_ACCEPTED : NotificationEvents::OVERTIME_APPROVE_REJECTED, $overtimeModel, $this->adapter, $this->plugin('url'));
-//                } catch (Exception $e) {
-//                    $this->flashmessenger()->addMessage($e->getMessage());
-//                }
+                try {
+                    $overtimeModel->overtimeId = $id;
+                    HeadNotification::pushNotification(($overtimeModel->status == 'AP') ? NotificationEvents::OVERTIME_APPROVE_ACCEPTED : NotificationEvents::OVERTIME_APPROVE_REJECTED, $overtimeModel, $this->adapter, $this->plugin('url'));
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("overtimeApprove");
         }
@@ -206,8 +204,8 @@ class OvertimeApproveController extends AbstractActionController {
                     'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
-                    'overtimeDetails'=>$overtimeDetails,
-                    'totalHour'=>$detail['TOTAL_HOUR']
+                    'overtimeDetails' => $overtimeDetails,
+                    'totalHour' => $detail['TOTAL_HOUR']
         ]);
     }
 
