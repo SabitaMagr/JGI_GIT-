@@ -81,7 +81,6 @@
                 }
         );
 
-e
     });
 })(window.jQuery, window.app);
 
