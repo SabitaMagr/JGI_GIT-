@@ -356,115 +356,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php } ?>
                             </table>
                             </form>
-                            <div>
-                                <table class="table table-bordered" id="dataTables-example">
-                                    <tr>
-                                        <td class="label" id="home" style="color:#428bca;font:bold;"><b>KEY ACHIEVEMENTS
-                                                AND RATING</b></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <p style="width:800px;height:auto;color:black;font-size:10px;">
-                                                First identify the key objectives of your job for the year and record
-                                                them in rough order of priority.
-                                                These are areas for which you have direct personal responsibility for
-                                                achieving results.
-                                                These objectives (Key Performance Indicator) should be
-                                                SMARTER-specific,measurable,agreed,
-                                                realistic,time-bound,ethical,and recorded.
-                                                Ideally they should not exceed half a dozen or so but may be supported
-                                                by more specific projects you undertake.
-                                                At the annual review Appraisee should summarize briefly his/her
-                                                achievements against the objectives with a self-rating.
-                                                The Appraiser should review the achievement and give a rating using the
-                                                scale below.
-                                            </p>
-                                            <h5><u style="font-weight: 400;">Rating Scale</u></h5>
-                                            <table class="table table-bordered customTable" style="width:40%;">
-                                                <thead>
-                                                <tr>
-                                                    <th>Ratings</th>
-                                                    <th>Achievements</th>
-                                                    <th>Performance Zone</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>1.0</td>
-                                                    <td>0%-19%</td>
-                                                    <td rowspan="3">Poor</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>1.2</td>
-                                                    <td>20%-39%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>1.4</td>
-                                                    <td>40%-59%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>1.6</td>
-                                                    <td>60%-79%</td>
-                                                    <td rowspan="2">Improvement Needed</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>1.8</td>
-                                                    <td>80%-99%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2.0</td>
-                                                    <td>100%-119%</td>
-                                                    <td rowspan="3">Satisfactory/Meets expectation</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2.2</td>
-                                                    <td>120%-139%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2.4</td>
-                                                    <td>140%-159%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2.6</td>
-                                                    <td>160%-179%</td>
-                                                    <td rowspan="4">Exceeds Expectations</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2.8</td>
-                                                    <td>180%-199%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3.0</td>
-                                                    <td>200%-219%</td>
-                                                </tr>
-
-                                                <tr>
-                                                    <td>3.2</td>
-                                                    <td>220%-239%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3.4</td>
-                                                    <td>240%-259%</td>
-                                                    <td rowspan="4">Excellent</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3.6</td>
-                                                    <td>260%-279%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3.8</td>
-                                                    <td>280%-299%</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4.0</td>
-                                                    <td>300% or above</td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                            <?php
+//                            print $this->partial('layout/kpiRemarks.phtml');
+                            ?>
                         </div>
                         
                         <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
@@ -564,7 +458,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php }?>
                             </table>
                             </form>
-                            <div>
+                            <div class="<?= ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y')?'display-block':'display-none'; ?>">
                                 <table class="table table-bordered" id="dataTables-exampl">
                                     <tr>
                                         <td class="label" style="color:#428bca;font:bold;"><b>COMPETENCIES AND
@@ -833,7 +727,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 <?php } ?>
                             </form>
-                            <div class="margin-top-30">
+                            <div class="margin-top-30 <?= ($assignedAppraisalDetail['KPI_SETTING']=='Y' || $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y')?'display-block':'display-none'; ?>">
                                 <table class="table table-bordered" id="dataTables-examp">
                                     <tr>
                                         <td class="label" style="color:#428bca;font:bold;"><b>Remarks</b></td>
@@ -937,7 +831,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                             <?php } ?>
                             </form>
-                            <div class="margin-top-30">
+                            <div class="margin-top-30 <?= ($assignedAppraisalDetail['KPI_SETTING']=='Y' || $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y')?'display-block':'display-none'; ?>">
                                 <table class="table table-bordered" id="dataTables-examp">
                                     <tr>
                                         <td class="label" style="color:#428bca;font:bold;"><b>Remarks</b></td>
