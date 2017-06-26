@@ -50,10 +50,14 @@ class AttendanceApproveController extends AbstractActionController {
         $attendanceApprove = [];
 
         $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
+            if ($recommender = $approver) {
+                return 'RECOMMENDER/APPROVER';
+            } else {
+                if ($this->employeeId == $recommender) {
+                    return 'RECOMMENDER';
+                } else if ($this->employeeId == $approver) {
+                    return 'APPROVER';
+                }
             }
         };
 
