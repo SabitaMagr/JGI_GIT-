@@ -4,9 +4,6 @@ namespace ManagerService\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use AttendanceManagement\Model\AttendanceDetail;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
-use DateTime;
 use Exception;
 use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Repository\LeaveAssignRepository;
@@ -44,7 +41,6 @@ class DayoffWorkApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-//        print_r($this->employeeId); die();
         $list = $this->dayoffWorkApproveRepository->getAllRequest($this->employeeId);
 
         $dayoffWorkRequest = [];
@@ -152,8 +148,8 @@ class DayoffWorkApproveController extends AbstractActionController {
                 }
                 $workOnDayoffModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
-                $workOnDayoffModel->id = $id;
                 try {
+                    $workOnDayoffModel->id = $id;
                     HeadNotification::pushNotification(($workOnDayoffModel->status == 'RC') ? NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED : NotificationEvents::WORKONDAYOFF_RECOMMEND_REJECTED, $workOnDayoffModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
@@ -165,27 +161,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
-                    $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-                    $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
-                    $substituteLeaveId = $substituteLeave['LEAVE_ID'];
-                    $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-                    if (count($empSubLeaveDtl) > 0) {
-                        $preBalance = $empSubLeaveDtl['BALANCE'];
-                        $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
-                        $balance = $preBalance + $detail['DURATION'];
-                        $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
-                    } else {
-                        $leaveAssign = new LeaveAssign();
-                        $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                        $leaveAssign->createdBy = $this->employeeId;
-                        $leaveAssign->employeeId = $requestedEmployeeID;
-                        $leaveAssign->leaveId = $substituteLeaveId;
-                        $leaveAssign->totalDays = $detail['DURATION'];
-                        $leaveAssign->previousYearBalance = 0;
-                        $leaveAssign->balance = $detail['DURATION'];
-                        $leaveAssignRepo->add($leaveAssign);
-                    }
+                    $this->wodApproveAction($requestedEmployeeID, $empSubLeaveDtl);
                     $workOnDayoffModel->status = "AP";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
                 }
@@ -194,44 +170,11 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
 
-                // to update back date changes
-//                $sDate = $detail['FROM_DATE'];
-//                $eDate = $detail['TO_DATE'];
-//                $currDate = Helper::getCurrentDate();
-//                $begin = new DateTime($sDate);
-//                $end = new DateTime($eDate);
-//                $attendanceDetailModel = new AttendanceDetail();
-//                $attendanceDetailModel->dayoffFlag = 'N';
-//                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-
-
-//                start of transaction
-//                $connection = $this->adapter->getDriver()->getConnection();
-//                $connection->beginTransaction();
-//                try {
-//                    if (strtotime($sDate) <= strtotime($currDate)) {
-//                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
-//                            $dayOffDate = $i->format("d-M-Y");
-//                            if (strtotime($dayOffDate) <= strtotime($currDate)) {
-//                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $dayOffDate];
-//                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
-//                            }
-//                        }
-//                    }
-                    $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
-                    $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
-                    $workOnDayoffModel->id = $id;
-//                    $connection->commit();
-//                } catch (exception $e) {
-//                    $connection->rollback();
-//                    echo "error message:" . $e->getMessage();
-//                }
-//                end of transaction
-
-//                die();
-
+                $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
+                $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
 
                 try {
+                    $workOnDayoffModel->id = $id;
                     HeadNotification::pushNotification(($workOnDayoffModel->status == 'AP') ? NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED : NotificationEvents::WORKONDAYOFF_APPROVE_REJECTED, $workOnDayoffModel, $this->adapter, $this->plugin('url'));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
@@ -274,6 +217,39 @@ class DayoffWorkApproveController extends AbstractActionController {
                     'recomApproveId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
+    }
+
+    private function wodApproveAction($requestedEmployeeID, $detail) {
+        $rule = $this->holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
+
+
+        if ($rule['WOH_FLAG'] === Position::WOH_FLAG_LEAVE) {
+            $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
+            $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
+            $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
+            $substituteLeaveId = $substituteLeave['LEAVE_ID'];
+            $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
+            if (count($empSubLeaveDtl) > 0) {
+                $preBalance = $empSubLeaveDtl['BALANCE'];
+                $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
+                $balance = $preBalance + $detail['DURATION'];
+                $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
+            } else {
+                $leaveAssign = new LeaveAssign();
+                $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
+                $leaveAssign->createdBy = $this->employeeId;
+                $leaveAssign->employeeId = $requestedEmployeeID;
+                $leaveAssign->leaveId = $substituteLeaveId;
+                $leaveAssign->totalDays = $detail['DURATION'];
+                $leaveAssign->previousYearBalance = 0;
+                $leaveAssign->balance = $detail['DURATION'];
+                $leaveAssignRepo->add($leaveAssign);
+            }
+        }
+
+        if ($rule['WOH_FLAG'] === Position::WOH_FLAG_OT) {
+            $this->holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
+        }
     }
 
 }

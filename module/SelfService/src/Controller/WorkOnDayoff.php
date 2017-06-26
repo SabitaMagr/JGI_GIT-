@@ -2,23 +2,22 @@
 
 namespace SelfService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
+use DateTime;
 use Exception;
-use Application\Helper\EntityHelper;
-use Zend\Form\Annotation\AnnotationBuilder;
+use LeaveManagement\Repository\LeaveAssignRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
-use Setup\Model\HrEmployees;
 use SelfService\Model\WorkOnDayoff as WorkOnDayoffModel;
 use SelfService\Repository\WorkOnDayoffRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
-use LeaveManagement\Repository\LeaveAssignRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use Notification\Model\NotificationEvents;
-use Notification\Controller\HeadNotification;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class WorkOnDayoff extends AbstractActionController {
 
@@ -34,14 +33,15 @@ class WorkOnDayoff extends AbstractActionController {
         $this->repository = new WorkOnDayoffRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    } 
+    }
 
     public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new WorkOnDayoffForm();
         $this->form = $builder->createForm($form);
     }
-    public function getRecommendApprover(){
+
+    public function getRecommendApprover() {
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
 
@@ -50,32 +50,32 @@ class WorkOnDayoff extends AbstractActionController {
             $this->approver = $empRecommendApprove['APPROVED_BY'];
         } else {
             $result = $this->recommendApproveList();
-            if(count($result['recommender'])>0){
-                $this->recommender=$result['recommender'][0]['id'];
-            }else{
-                $this->recommender=null;
+            if (count($result['recommender']) > 0) {
+                $this->recommender = $result['recommender'][0]['id'];
+            } else {
+                $this->recommender = null;
             }
-            if(count($result['approver'])>0){
-                $this->approver=$result['approver'][0]['id'];
-            }else{
-                 $this->approver=null;
-            } 
+            if (count($result['approver']) > 0) {
+                $this->approver = $result['approver'][0]['id'];
+            } else {
+                $this->approver = null;
+            }
         }
     }
 
     public function indexAction() {
         $this->getRecommendApprover();
         $result = $this->repository->getAllByEmployeeId($this->employeeId);
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        
+
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-        
+
         $list = [];
         $getValue = function($status) {
             if ($status == "RQ") {
@@ -102,23 +102,22 @@ class WorkOnDayoff extends AbstractActionController {
             $action = $getAction($row['STATUS']);
             $statusID = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-            $MN1 = ($row['MN1']!=null)? " ".$row['MN1']." ":" ";
-            $recommended_by = $row['FN1'].$MN1.$row['LN1'];        
-            $MN2 = ($row['MN2']!=null)? " ".$row['MN2']." ":" ";
-            $approved_by = $row['FN2'].$MN2.$row['LN2'];
-            $authRecommender = ($statusID=='RQ' || $statusID=='C')?$recommenderName:$recommended_by;
-            $authApprover = ($statusID=='RC' || $statusID=='RQ' || $statusID=='C' || ($statusID=='R' && $approvedDT==null))?$approverName:$approved_by;
+            $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
+            $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
+            $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
+            $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
+            $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
+            $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-            $new_row = array_merge($row, 
-                    [
-                        'RECOMMENDER_NAME'=>$authRecommender,
-                        'APPROVER_NAME'=>$authApprover,
-                        'STATUS' => $status, 
-                        'ACTION' => key($action), 
-                        'ACTION_TEXT' => $action[key($action)]
-                    ]);
-            $startDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['FROM_DATE']);
-            $toDayDate = new \DateTime();
+            $new_row = array_merge($row, [
+                'RECOMMENDER_NAME' => $authRecommender,
+                'APPROVER_NAME' => $authApprover,
+                'STATUS' => $status,
+                'ACTION' => key($action),
+                'ACTION_TEXT' => $action[key($action)]
+            ]);
+            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['FROM_DATE']);
+            $toDayDate = new DateTime();
             if (($toDayDate < $startDate) && ($statusID == 'RQ' || $statusID == 'RC' || $statusID == 'AP')) {
                 $new_row['ALLOW_TO_EDIT'] = 1;
             } else if (($toDayDate >= $startDate) && $statusID == 'RQ') {
@@ -147,12 +146,12 @@ class WorkOnDayoff extends AbstractActionController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                $this->flashmessenger()->addMessage("Work on Day-off Request Successfully added!!!");
                 try {
                     HeadNotification::pushNotification(NotificationEvents::WORKONDAYOFF_APPLIED, $model, $this->adapter, $this->plugin("url"));
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
-                $this->flashmessenger()->addMessage("Work on Day-off Request Successfully added!!!");
                 return $this->redirect()->toRoute("workOnDayoff");
             }
         }
@@ -161,15 +160,15 @@ class WorkOnDayoff extends AbstractActionController {
                     'employeeId' => $this->employeeId
         ]);
     }
-    
+
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('workOnDayoff');
         }
         $detail = $this->repository->fetchById($id);
-        
-        if($detail['STATUS']=='AP'){
+
+        if ($detail['STATUS'] == 'AP') {
             //to get the previous balance of selected leave from assigned leave detail
             $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
             $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
@@ -179,13 +178,13 @@ class WorkOnDayoff extends AbstractActionController {
             $preBalance = $empSubLeaveDtl['BALANCE'];
             $total = $empSubLeaveDtl['TOTAL_DAYS'] - $detail['DURATION'];
             $balance = $preBalance - $detail['DURATION'];
-            $leaveAssignRepo->updatePreYrBalance($detail['EMPLOYEE_ID'],$substituteLeaveId, 0,$total, $balance);
+            $leaveAssignRepo->updatePreYrBalance($detail['EMPLOYEE_ID'], $substituteLeaveId, 0, $total, $balance);
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Work on Day-off Request Successfully Cancelled!!!");
         return $this->redirect()->toRoute('workOnDayoff');
     }
-    
+
     public function viewAction() {
         $this->initializeForm();
         $this->getRecommendApprover();
@@ -194,39 +193,40 @@ class WorkOnDayoff extends AbstractActionController {
         if ($id === 0) {
             return $this->redirect()->toRoute("workOnDayoff");
         }
-        $fullName = function($id){
-          $empRepository = new EmployeeRepository($this->adapter);
-          $empDtl = $empRepository->fetchById($id);
-          $empMiddleName = ($empDtl['MIDDLE_NAME']!=null)? " ".$empDtl['MIDDLE_NAME']." " :" ";
-          return $empDtl['FIRST_NAME'].$empMiddleName.$empDtl['LAST_NAME'];
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        
+
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-        
+
         $model = new WorkOnDayoffModel();
         $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);        
+        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
         $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status=='RQ' || $status=='C')?$recommenderName:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='RQ' || $status=='C' || ($status=='R' && $approvedDT==null))?$approverName:$approved_by;
-       
+        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
-                       
+
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employeeName'=>$employeeName,
-                    'status'=>$detail['STATUS'],
-                    'requestedDate'=>$detail['REQUESTED_DATE'],
-                    'recommender'=>$authRecommender,
-                    'approver'=>$authApprover
-        ]);       
+                    'employeeName' => $employeeName,
+                    'status' => $detail['STATUS'],
+                    'requestedDate' => $detail['REQUESTED_DATE'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover
+        ]);
     }
+
     public function recommendApproveList() {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
@@ -268,4 +268,5 @@ class WorkOnDayoff extends AbstractActionController {
         ];
         return $responseData;
     }
+
 }
