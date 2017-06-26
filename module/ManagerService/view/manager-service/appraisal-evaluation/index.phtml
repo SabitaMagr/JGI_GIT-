@@ -5,18 +5,24 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
+$this->headScript()
+        ->appendFile($this->basePath('js/search.js'));
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/manager-service/appraisal-evaluation/index.js'))
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
 
 <script>
-    document.appraisals =<?= json_encode($list) ?>;
+    document.ids=<?php echo json_encode(["appraisalId"=>-1,"appraisalStageId"=>-1,"fromDate1"=>"","nepaliFromDate1"=>"","toDate1"=>"","nepaliToDate1"=>""]) ?>;
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\appraisal-evaluation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -37,10 +43,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
-    
+    <input type="hidden" value="<?= $userId; ?>" id="userId" />
     <div class="portlet light bg-inverse">
-        
         <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-paper-plane font-green-haze"></i>
+                <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
+            </div>
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
@@ -52,21 +61,100 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li >
+                        <li>
                             <a href="javascript:;" id="export">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
                     </ul>
                 </div>
             </div>
+            
         </div>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-sm-2">
+                    <select class="form-control" name="company" id="companyId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="branchId" id="branchId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="department" id="departmentId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="designation" id="designationId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="position" id="positionId">
+                    </select>
+                </div>
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceType" id="serviceTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" name="employee" id="employeeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <?php print $this->formElement($appraisals); ?>
+                </div>
+                <div class="col-sm-2">
+                    <?php print $this->formElement($appraisalStages); ?>
+                </div> 
+            </div>
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <div class="input-group date" id="fromDate">
+                        <input type="text" placeholder="From Date" id="fromDate1" name="fromDate" ng-model="fromDate" class="form-control"/>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="input-group date" id="nepaliFromDate">
+                        <input type="text" placeholder="From Date Nepali" id="nepaliFromDate1" name="fromDate" class="form-control"/>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="input-group date" id="toDate">
+                        <input type="text" placeholder="To Date" id="toDate1" name="toDate" ng-model="toDate" class="form-control"/>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="input-group date" id="nepaliToDate">
+                        <input type="text" placeholder="To Date Nepali" id="nepaliToDate1" name="toDate"  class="form-control"/>
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button id="reset" class="btn default btn-sm pull-right">
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                        Search
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="appraisalListTable">
 
     </div>
-	</div>
-    
-    
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -86,6 +174,57 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>    
         #: (END_DATE == null) ? '-' : END_DATE #
+        </td>
+        <td id="#if(KPI_ANS_NUM>0){ #green#}else{#red#}#">
+            #if(KPI_ANS_NUM>0){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(KPI_MODIFIED_DATE==null){#red#}else{##}#">
+            #if(KPI_MODIFIED_DATE!=null){   #
+            #= KPI_MODIFIED_DATE #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(APPRAISED_BY!=null){ #green#}else{#red#}#">
+            #if(APPRAISED_BY!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(REVIEWED_BY!=null){ #green#}else{#red#}#">
+            #if(REVIEWED_BY!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
+            #if(APPRAISER_OVERALL_RATING!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
+        <td>    
+        #: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #
+        </td>
+         <td id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
+            #if(APPRAISEE_AGREE=='Yes'){   #
+            #= "&\\#10004;" #
+            # }else if(APPRAISEE_AGREE=='No'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
+        </td>
+        <td>    
+        #: (APPRAISER_NAME == null) ? '-' : APPRAISER_NAME #
+        </td>
+        <td>    
+        #: (REVIEWER_NAME == null) ? '-' : REVIEWER_NAME #
         </td>
         <td>
         <a class="btn-edit"

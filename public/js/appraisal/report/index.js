@@ -10,6 +10,7 @@ angular.module("hris", [])
         .controller("appraisalList", function ($scope, $http, $window) {
             var displayKendoFirstTime = true;
             $scope.view = function () {
+                var userId = angular.element(document.getElementById('userId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -37,7 +38,9 @@ angular.module("hris", [])
                         'appraisalId': appraisalId,
                         'appraisalStageId': appraisalStageId,
                         'fromDate': fromDate,
-                        'toDate': toDate
+                        'toDate': toDate,
+                        'reportType':'hrReport',
+                        'userId':userId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -79,7 +82,12 @@ angular.module("hris", [])
                         {field: "STAGE_EDESC", title: "Current Stage", width: 140},
                         {field: "START_DATE", title: "Start Date", width: 120},
                         {field: "END_DATE", title: "End Date", width: 100},
-                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 110},
+                        {field: "END_DATE", title: "Objective Set?", width: 130},
+                        {field: "END_DATE", title: "Objective Approved?", width: 170},
+                        {field: "END_DATE", title: "Appraiser Evaluation?", width: 170},
+                        {field: "END_DATE", title: "Reviewer View?", width: 140},
+                        {field: "END_DATE", title: "Final Rating?", width: 120},
+                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100},
                         {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140},
                         {field: "APPRAISER_NAME", title: "Appraiser Name", width: 150},
                         {field: "REVIEWER_NAME", title: "Reviewer Name", width: 150},

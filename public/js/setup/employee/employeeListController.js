@@ -50,6 +50,7 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId
                     }
                 }).then(function (success) {
+                    console.log(success.data);
                     App.unblockUI("#hris-page-content");
                     console.log("pullEmployeeList", success.data);
                     if (displayKendoFirstTime) {
@@ -114,12 +115,18 @@ angular.module('hris', [])
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
-                                {value: "Name in Nepali"},
+//                                {value: "Name in Nepali"},
                                 {value: "Gender"},
+                                {value: "Company"},
+                                {value: "Branch"},
+                                {value: "Department"},
+                                {value: "Designation"},
+                                {value: "Position"},
+                                {value: "Level"},
+                                {value: "Join Date"},
                                 {value: "Birth Date"},
-                                {value: "Coutry"},
+                                {value: "Country"},
                                 {value: "Religion"},
-                                {value: "Companies"},
                                 {value: "Blood Group"},
                                 {value: "Mobile No"},
                                 {value: "Telephone No"},
@@ -171,16 +178,10 @@ angular.module('hris', [])
                                 {value: "CIT No."},
                                 {value: "Citizenship Issue Date"},
                                 {value: "Passport Expiry"},
-                                {value: "Join Date"},
                                 {value: "Salary"},
                                 {value: "Salary PF"},
                                 {value: "Service Type Name"},
                                 {value: "Service Event Type Name"},
-                                {value: "Position Name"},
-                                {value: "Designation Name"},
-                                {value: "Department Name"},
-                                {value: "Branch Name"},
-                                {value: "Company Name"},
                             ]
                         }];
                     var dataSource = $("#employeeTable").data("kendoGrid").dataSource;
@@ -197,13 +198,19 @@ angular.module('hris', [])
                         rows.push({
                             cells: [
                                 {value: dataItem.FULL_NAME},
-                                {value: dataItem.NAME_NEPALI},
+//                                {value: dataItem.NAME_NEPALI},
                                 {value: dataItem.GENDER_NAME},
+                                {value: dataItem.COMPANY_NAME},
+                                {value: dataItem.BRANCH_NAME},
+                                {value: dataItem.DEPARTMENT_NAME},
+                                {value: dataItem.DESIGNATION_TITLE},
+                                {value: dataItem.POSITION_NAME},
+                                {value: dataItem.LEVEL_NO},
+                                {value: dataItem.JOIN_DATE},
                                 {value: dataItem.BIRTH_DATE},
                                 {value: dataItem.COUNTRY_NAME},
                                 {value: dataItem.RELIGION_NAME},
-                                {value: dataItem.COMPANY_NAME},
-                                {value: dataItem.BLOOD_GROUP_NAME},
+                                {value: dataItem.BLOOD_GROUP_CODE},
                                 {value: dataItem.MOBILE_NO},
                                 {value: dataItem.TELEPHONE_NO},
                                 {value: dataItem.SOCIAL_ACTIVITY},
@@ -254,16 +261,10 @@ angular.module('hris', [])
                                 {value: dataItem.ID_RETIREMENT_NO},
                                 {value: dataItem.ID_CITIZENSHIP_ISSUE_DATE},
                                 {value: dataItem.ID_PASSPORT_EXPIRY},
-                                {value: dataItem.JOIN_DATE},
                                 {value: dataItem.SALARY},
                                 {value: dataItem.SALARY_PF},
                                 {value: dataItem.SERVICE_TYPE_NAME},
                                 {value: dataItem.SERVICE_EVENT_TYPE_NAME},
-                                {value: dataItem.POSITION_NAME},
-                                {value: dataItem.DESIGNATION_TITLE},
-                                {value: dataItem.DEPARTMENT_NAME},
-                                {value: dataItem.BRANCH_NAME},
-                                {value: dataItem.COMPANY_NAME}
                             ]
                         });
                     }
@@ -277,6 +278,7 @@ angular.module('hris', [])
                             {
                                 columns: [
                                     {autoWidth: true},
+//                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

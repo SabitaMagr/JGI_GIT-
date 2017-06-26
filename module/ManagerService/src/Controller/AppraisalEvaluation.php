@@ -1,29 +1,30 @@
 <?php
 namespace ManagerService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use ManagerService\Repository\AppraisalEvaluationRepository;
-use Zend\Db\Adapter\AdapterInterface;
-use Application\Helper\Helper;
-use Appraisal\Repository\AppraisalAssignRepository;
-use Setup\Repository\EmployeeRepository;
-use Appraisal\Repository\HeadingRepository;
-use Appraisal\Repository\QuestionRepository;
-use Appraisal\Repository\QuestionOptionRepository;
-use Appraisal\Repository\StageQuestionRepository;
-use Appraisal\Repository\AppraisalAnswerRepository;
-use Application\Helper\CustomFormElement;
-use Appraisal\Model\AppraisalAnswer;
-use Appraisal\Repository\StageRepository;
-use Appraisal\Model\Question;
 use Application\Helper\AppraisalHelper;
-use SelfService\Repository\AppraisalKPIRepository;
-use SelfService\Repository\AppraisalCompetenciesRepo;
-use Appraisal\Repository\AppraisalStatusRepository;
+use Application\Helper\CustomFormElement;
+use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
+use Appraisal\Model\AppraisalAnswer;
 use Appraisal\Model\AppraisalStatus;
-use Notification\Model\NotificationEvents;
+use Appraisal\Model\Question;
+use Appraisal\Model\Setup;
+use Appraisal\Model\Stage;
+use Appraisal\Repository\AppraisalAnswerRepository;
+use Appraisal\Repository\AppraisalAssignRepository;
+use Appraisal\Repository\AppraisalStatusRepository;
+use Appraisal\Repository\HeadingRepository;
+use ManagerService\Repository\AppraisalEvaluationRepository;
 use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
+use SelfService\Repository\AppraisalCompetenciesRepo;
+use SelfService\Repository\AppraisalKPIRepository;
+use Setup\Repository\EmployeeRepository;
+use TheSeer\Tokenizer\Exception;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class AppraisalEvaluation extends AbstractActionController{
     
@@ -36,12 +37,28 @@ class AppraisalEvaluation extends AbstractActionController{
         $this->repository = new AppraisalEvaluationRepository($adapter);
     }
     public function indexAction() {
-        $result = $this->repository->getAllRequest($this->employeeId);
-        $list = [];
-        foreach($result as $row){
-            array_push($list, $row);
-        }
-        return Helper::addFlashMessagesToArray($this,['list'=>$list]);
+        $appraisalFormElement = new Select();
+        $appraisalFormElement->setName("Appraisal");
+        $appraisals = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC",NULL,FALSE,TRUE);
+        $appraisals1 = [-1 => "All Type"] + $appraisals;
+        $appraisalFormElement->setValueOptions($appraisals1);
+        $appraisalFormElement->setAttributes(["id" => "appraisalId", "class" => "form-control"]);
+        $appraisalFormElement->setLabel("Appraisal");
+        
+        $appraisalStageFormElement = new Select();
+        $appraisalStageFormElement->setName("Appraisal");
+        $appraisalStages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::STAGE_EDESC, "ASC",NULL,FALSE,TRUE);
+        $appraisalStages1 = [-1 => "All Type"] + $appraisalStages;
+        $appraisalStageFormElement->setValueOptions($appraisalStages1);
+        $appraisalStageFormElement->setAttributes(["id" => "appraisalStageId", "class" => "form-control"]);
+        $appraisalStageFormElement->setLabel("Appraisal Stage");
+        
+        return Helper::addFlashMessagesToArray($this,[
+            'appraisals'=>$appraisalFormElement,
+            'appraisalStages'=>$appraisalStageFormElement,
+            'userId'=>$this->employeeId,
+            'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
     }
     public function viewAction(){
         $request = $this->getRequest();
@@ -52,7 +69,7 @@ class AppraisalEvaluation extends AbstractActionController{
         $appraisalAnswerRepo = new AppraisalAnswerRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
-        $employeeDetail = $employeeRepo->getById($employeeId);
+        $employeeDetail = $employeeRepo->fetchForProfileById($employeeId);
         $userDetail = $employeeRepo->getById($this->employeeId);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];

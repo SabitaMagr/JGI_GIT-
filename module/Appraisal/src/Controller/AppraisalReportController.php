@@ -56,6 +56,7 @@ class AppraisalReportController extends AbstractActionController{
         return Helper::addFlashMessagesToArray($this,[
             'appraisals'=>$appraisalFormElement,
             'appraisalStages'=>$appraisalStageFormElement,
+            'userId'=>$this->employeeId,
             'searchValues' => EntityHelper::getSearchData($this->adapter)
                 ]);
     }
@@ -66,7 +67,7 @@ class AppraisalReportController extends AbstractActionController{
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
-        $employeeDetail = $employeeRepo->getById($employeeId);
+        $employeeDetail = $employeeRepo->fetchForProfileById($employeeId);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId,$appraisalId);
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
         $currentStageId = $assignedAppraisalDetail['STAGE_ID'];
