@@ -114,6 +114,11 @@ FROM
   AND E.STATUS         ='E'
   AND T.STATUS         ='E'
   AND S.STATUS         ='E'
+  AND (AKPI.SNO = (SELECT MIN(KPI.SNO)
+      FROM HRIS_APPRAISAL_KPI KPI
+      WHERE KPI.EMPLOYEE_ID = APS.EMPLOYEE_ID
+      AND KPI.APPRAISAL_ID  = APS.APPRAISAL_ID
+      ) OR AKPI.SNO IS NULL)
   ";
         if($reportType!=null && $reportType=="appraisalEvaluation"){
             $sql .=" AND AA.APPRAISER_ID  =".$userId." OR AA.ALT_APPRAISER_ID =".$userId;
@@ -172,17 +177,6 @@ OR (KPI_SETTING = (
   END)
 AND KPI_ANS_NUM>0)
 OR ANSWER_NUM  >0)
-AND (KPI_SNO    = (
-  CASE
-    WHEN KPI_ANS_NUM >0
-    THEN
-      (SELECT MIN(KPI.SNO)
-      FROM HRIS_APPRAISAL_KPI KPI
-      WHERE KPI.EMPLOYEE_ID = EMPLOYEE_ID
-      AND KPI.APPRAISAL_ID  =APPRAISAL_ID
-      )
-       END
- ) OR KPI_SNO IS NULL)
 ";
         $statement = $this->adapter->query($sql);
 //        print_r($statement->getSql()); die();
