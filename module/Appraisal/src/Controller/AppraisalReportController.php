@@ -84,6 +84,7 @@ class AppraisalReportController extends AbstractActionController{
         $questionForCurStage = 0;
         $appraiseeAvailableAnswer = false;
         $appraiserAvailableAnswer = false;
+        $reviewerAvailableAnswer = false;
         foreach($headingList as $headingRow){
             //get question list for appraisee with current stage id
             $questionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId,$employeeId,$employeeId,"=1",$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['REVIEWER_ID']);
@@ -99,6 +100,9 @@ class AppraisalReportController extends AbstractActionController{
             }
             if($appraiseeQuestionList['availableAnswer']){
                 $appraiseeAvailableAnswer=true;
+            }
+            if($reviewerQuestionList['availableAnswer']){
+                $reviewerAvailableAnswer=true;
             }
             if(count($questionList['questionList'])>0){
                 array_push($questionTemplate, [
@@ -139,7 +143,8 @@ class AppraisalReportController extends AbstractActionController{
             'appraisalId'=>$appraisalId,
             'employeeId'=>$employeeId,
             'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer,
-            'appraiserAvailableAnswer'=>$appraiserAvailableAnswer
+            'appraiserAvailableAnswer'=>$appraiserAvailableAnswer,
+            'reviewerAvailableAnswer'=>$reviewerAvailableAnswer
         ];
         $defaultRatingDtl = AppraisalHelper::checkDefaultRatingForEmp($this->adapter, $employeeId, $appraisalTypeId);
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
