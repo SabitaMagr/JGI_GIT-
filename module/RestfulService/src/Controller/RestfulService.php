@@ -3475,12 +3475,15 @@ class RestfulService extends AbstractRestfulController {
                     $appraisalKPI->createdDate = Helper::getcurrentExpressionDate();
                     $appraisalKPI->branchId = $loggedInUserDtl['BRANCH_ID'];
                     $appraisalKPI->companyId = $loggedInUserDtl['COMPANY_ID'];
-                    $appraisalKPI->approvedDate = Helper::getcurrentExpressionDate();
                     $appraisalKPI->status = 'E';
                     $appraisalKPIRepository->add($appraisalKPI);
                 }else{
                     $appraisalKPI->modifiedBy = $loggedInUser;
                     $appraisalKPI->modifiedDate = Helper::getcurrentExpressionDate();
+                    if($appraisalKPI->employeeId!=$loggedInUser){
+                        $appraisalKPI->approvedBy= $loggedInUser;
+                        $appraisalKPI->approvedDate = Helper::getcurrentExpressionDate();
+                    }
                     $appraisalKPIRepository->edit($appraisalKPI,$KPIRow['sno']);
                 }
             }
