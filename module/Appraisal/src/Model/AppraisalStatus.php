@@ -22,6 +22,7 @@ class AppraisalStatus extends Model{
     const REVIEW_PERIOD = "REVIEW_PERIOD";
     const PREVIOUS_REVIEW_PERIOD = "PREVIOUS_REVIEW_PERIOD";
     const PREVIOUS_RATING = "PREVIOUS_RATING";
+    const HR_FEEDBACK = "HR_FEEDBACK";
     
     public $employeeId;
     public $appraisalId;
@@ -40,6 +41,7 @@ class AppraisalStatus extends Model{
     public $reviewPeriod;
     public $previousReviewPeriod;
     public $previousRating;
+    public $hrFeedback;
     
     public $mappings = [
         'employeeId'=>self::EMPLOYEE_ID,
@@ -58,7 +60,8 @@ class AppraisalStatus extends Model{
         'defaultRating'=>self::DEFAULT_RATING,
         'reviewPeriod'=>self::REVIEW_PERIOD,
         'previousReviewPeriod'=>self::PREVIOUS_REVIEW_PERIOD,
-        'previousRating'=>self::PREVIOUS_RATING
+        'previousRating'=>self::PREVIOUS_RATING,
+        'hrFeedback'=>self::HR_FEEDBACK
     ];
 }
 
