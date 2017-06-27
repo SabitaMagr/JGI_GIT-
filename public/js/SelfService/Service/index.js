@@ -86,8 +86,8 @@ angular.module('hris', [])
                 app.pdfExport(
                 'serviceHistoryTable',
                 {
-                    'START_DATE': 'S.Date',
-                    'END_DATE': 'E.Date',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date',
                     'SERVICE_EVENT_TYPE_NAME': 'Type',
                     'FROM_SERVICE_TYPE_NAME': 'From service',
                     'TO_SERVICE_TYPE_NAME': 'To Service',
