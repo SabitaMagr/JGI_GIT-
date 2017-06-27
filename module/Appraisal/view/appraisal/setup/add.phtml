@@ -22,6 +22,7 @@ $currentStageId = $form->get('currentStageId');
 $currentStageId->setValueOptions($appraisalStages);
 $kpiSetting = $form->get('kpiSetting');
 $competenciesSetting = $form->get('competenciesSetting');
+$hrFeedbackEnable = $form->get('hrFeedbackEnable');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -154,6 +155,17 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($competenciesSetting, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <?php print $this->formLabel($hrFeedbackEnable); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRender($hrFeedbackEnable); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($hrFeedbackEnable, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
@@ -162,7 +174,6 @@ $form->prepare();
                         </div>
                     </div>
                 </div>
-
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

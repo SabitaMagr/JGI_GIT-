@@ -28,6 +28,7 @@ class Setup extends Model{
     const STATUS = "STATUS";
     const KPI_SETTING = "KPI_SETTING";
     const COMPETENCIES_SETTING = "COMPETENCIES_SETTING";
+    const HR_FEEDBACK_ENABLE = "HR_FEEDBACK_ENABLE";
     
     public $appraisalId;
     public $appraisalCode;
@@ -51,6 +52,7 @@ class Setup extends Model{
     public $status;
     public $kpiSetting;
     public $competenciesSetting;
+    public $hrFeedbackEnable;
     
     public $mappings = [
         "appraisalId"=>self::APPRAISAL_ID,
@@ -74,6 +76,7 @@ class Setup extends Model{
         'approved'=>self::APPROVED,
         'status'=>self::STATUS,
         'kpiSetting'=>self::KPI_SETTING,
-        'competenciesSetting'=>self::COMPETENCIES_SETTING
+        'competenciesSetting'=>self::COMPETENCIES_SETTING,
+        'hrFeedbackEnable'=>self::HR_FEEDBACK_ENABLE
     ]; 
 }

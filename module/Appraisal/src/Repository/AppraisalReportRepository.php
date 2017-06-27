@@ -162,7 +162,7 @@ FROM
         if($toDate!=null && $toDate!=""){
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
-        $sql .= " ORDER BY A.APPRAISAL_EDESC)";
+        $sql .= " ORDER BY A.START_DATE DESC,E.FIRST_NAME)";
         $sql .="
 WHERE ( (COMPETENCIES_SETTING = (
   CASE
