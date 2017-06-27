@@ -157,7 +157,7 @@ class AttendanceApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Attendance Request Rejected!!!");
                 } else if ($action == "Approve") {
                     $model->status = "RC";
-                    $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
+                    $this->flashmessenger()->addMessage("Attendance Request Recommended!!!");
                 }
                 $model->recommendedRemarks = $getData->recommendedRemarks;
                 $this->repository->edit($model, $id);

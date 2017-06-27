@@ -228,6 +228,56 @@ class JobHistoryController extends AbstractActionController {
         );
     }
 
+    public function viewAction() {
+        $id = (int) $this->params()->fromRoute("id");
+        if ($id === 0) {
+            return $this->redirect()->toRoute('jobHistory');
+        }
+
+        $prevAndNextHistory = [];
+        if ($id !== 0) {
+            $jobHistoryRepo = new JobHistoryRepository($this->adapter);
+
+            $prevJobHistory = $jobHistoryRepo->fetchBeforeJobHistory($id);
+
+            if (sizeof($prevJobHistory) > 0) {
+                $prevAndNextHistory['prev'] = $prevJobHistory[0];
+            }
+
+            $nextJobHistory = $jobHistoryRepo->fetchAfterJobHistory($id);
+            if (sizeof($nextJobHistory) > 0) {
+                $prevAndNextHistory['next'] = $nextJobHistory[0];
+            }
+        }
+
+        $this->initializeForm();
+
+        $jobHistory = new JobHistory();
+        $jobHistoryDetail = $this->repository->fetchById($id);
+        $jobHistory->exchangeArrayFromDb($jobHistoryDetail);
+        $this->form->bind($jobHistory);
+        
+        return Helper::addFlashMessagesToArray(
+                        $this, [
+                    'form' => $this->form,
+                    'id' => $id,
+                    'empId' => EntityHelper::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
+                    'messages' => $this->flashmessenger()->getMessages(),
+                    'employeesAll' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
+                    'departments' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true, true),
+                    'designations' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true, true),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => 'E'], "COMPANY_NAME", "ASC", null, true, true),
+                    'branches' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true, true),
+                    'positions' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
+                    'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
+                    'serviceEventTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
+                    'prevAndNextHistory' => $prevAndNextHistory
+                        ]
+        );
+        
+        
+    }
+
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {

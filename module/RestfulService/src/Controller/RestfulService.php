@@ -2660,7 +2660,7 @@ class RestfulService extends AbstractRestfulController {
                     $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
                 } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null && $row['DAYOFF_FLAG'] == 'N') {
                     $row['STATUS'] = "Absent";
-                } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null && $row['LATE_STATUS'] == 'N') {
+                } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null && ($row['LATE_STATUS'] == 'N'||$row['LATE_STATUS'] == null)) {
                     $row['STATUS'] = "Present";
                 } else if ($row['TRAINING_NAME'] != null) {
                     $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
