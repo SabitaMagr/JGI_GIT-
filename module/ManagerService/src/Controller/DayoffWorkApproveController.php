@@ -9,10 +9,12 @@ use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\DayoffWorkApproveRepository;
+use ManagerService\Repository\HolidayWorkApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
+use Setup\Model\Position;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -161,7 +163,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $this->wodApproveAction($requestedEmployeeID, $empSubLeaveDtl);
+                    $this->wodApproveAction($requestedEmployeeID, $detail);
                     $workOnDayoffModel->status = "AP";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
                 }
@@ -220,7 +222,8 @@ class DayoffWorkApproveController extends AbstractActionController {
     }
 
     private function wodApproveAction($requestedEmployeeID, $detail) {
-        $rule = $this->holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
+        $holidayWorkApproveRepository = new HolidayWorkApproveRepository($this->adapter);
+        $rule = $holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
 
 
         if ($rule['WOH_FLAG'] === Position::WOH_FLAG_LEAVE) {
@@ -248,7 +251,7 @@ class DayoffWorkApproveController extends AbstractActionController {
         }
 
         if ($rule['WOH_FLAG'] === Position::WOH_FLAG_OT) {
-            $this->holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
+            $holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
         }
     }
 

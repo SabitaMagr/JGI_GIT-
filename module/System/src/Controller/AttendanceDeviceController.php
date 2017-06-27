@@ -41,8 +41,6 @@ class AttendanceDeviceController extends AbstractActionController {
 
     public function addAction() {
         $allCompanyBranches = new DepartmentRepository($this->adapter);
-//        print_r($allCompanyBranches->fetchAllBranchAndCompany());
-//        die();
         $this->initializeForm();
 
         $request = $this->getRequest();
@@ -53,7 +51,7 @@ class AttendanceDeviceController extends AbstractActionController {
                 $attendanceDevice = new AttendanceDevice();
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
                 $attendanceDevice->deviceId = ((int) Helper::getMaxId($this->adapter, AttendanceDevice::TABLE_NAME, AttendanceDevice::DEVICE_ID)) + 1;
-                $attendanceDevice->status='E';
+                $attendanceDevice->status = 'E';
                 $this->repository->add($attendanceDevice);
 
                 $this->flashmessenger()->addMessage("Attendance Device Successfully Added!!!");
@@ -62,7 +60,7 @@ class AttendanceDeviceController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
                     'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }
@@ -79,7 +77,7 @@ class AttendanceDeviceController extends AbstractActionController {
         if (!$request->isPost()) {
             $attendanceDevice->exchangeArrayFromDB($detail);
             $this->form->bind($attendanceDevice);
-        }else{
+        } else {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
@@ -91,14 +89,13 @@ class AttendanceDeviceController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
                     'form' => $this->form,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC",null,false,true),
+                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
                     'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }
-    
-    
-    public function deleteAction(){
-        $id = (int)$this->params()->fromRoute("id");
+
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('usersetup');
         }

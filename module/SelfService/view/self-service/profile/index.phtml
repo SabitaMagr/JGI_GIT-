@@ -153,6 +153,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div id="quaConId" ng-app="hris" ng-controller="qualificationController">
+    <div class="row esetup" style="margin-top:10px;">
+        <div class="col-md-12" style="">
+            <a class="btn btn-success pull-right" href="<?= $this->url("employee", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
+                <i class="fa fa-edit"></i>
+            </a>
+        </div>   
+    </div>
     <div id="rootwizard" class="tabbable-custom">
         <div class="personal-info">     
             <p><i class="fa fa-user ticon" aria-hidden="true"></i>
@@ -1187,36 +1194,41 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php print $jobHistory['END_DATE']; ?>
                                             </td>
                                             <td>
-                                                <?php print ($jobHistory['SERVICE_EVENT_TYPE_NAME']!=null)?$jobHistory['SERVICE_EVENT_TYPE_NAME']:"-"; ?>
+                                                <?php print ($jobHistory['SERVICE_EVENT_TYPE_NAME'] != null) ? $jobHistory['SERVICE_EVENT_TYPE_NAME'] : "-"; ?>
                                             </td>
 
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_SERVICE_NAME'] == null) ? ' ' : $jobHistory['FROM_SERVICE_NAME']." - "; print  ($jobHistory['TO_SERVICE_NAME'] == null) ? ' ' : $jobHistory['TO_SERVICE_NAME'] 
+                                                <?php
+                                                print ($jobHistory['FROM_SERVICE_NAME'] == null) ? ' ' : $jobHistory['FROM_SERVICE_NAME'] . " - ";
+                                                print ($jobHistory['TO_SERVICE_NAME'] == null) ? ' ' : $jobHistory['TO_SERVICE_NAME']
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_BRANCH_NAME'] == null) ? ' ' : $jobHistory['FROM_BRANCH_NAME']." - "; print  ($jobHistory['TO_BRANCH_NAME'] == null) ? ' ' : $jobHistory['TO_BRANCH_NAME'] 
+                                                <?php
+                                                print ($jobHistory['FROM_BRANCH_NAME'] == null) ? ' ' : $jobHistory['FROM_BRANCH_NAME'] . " - ";
+                                                print ($jobHistory['TO_BRANCH_NAME'] == null) ? ' ' : $jobHistory['TO_BRANCH_NAME']
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['FROM_DEPARTMENT_NAME']." - "; print  ($jobHistory['TO_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['TO_DEPARTMENT_NAME'] 
+                                                <?php
+                                                print ($jobHistory['FROM_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['FROM_DEPARTMENT_NAME'] . " - ";
+                                                print ($jobHistory['TO_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['TO_DEPARTMENT_NAME']
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['FROM_DESIGNATION_TITLE']." - "; print  ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE'] 
-                                                ?>
+    <?php
+    print ($jobHistory['FROM_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['FROM_DESIGNATION_TITLE'] . " - ";
+    print ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE']
+    ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_POSITION_NAME'] == null) ? ' ' : $jobHistory['FROM_POSITION_NAME']." - "; print  ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME'] 
-                                                ?>
+                                        <?php
+                                        print ($jobHistory['FROM_POSITION_NAME'] == null) ? ' ' : $jobHistory['FROM_POSITION_NAME'] . " - ";
+                                        print ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME']
+                                        ?>
                                             </td>
                                         </tr>
-                                    <?php } ?>
+<?php } ?>
                                 </table>
                             </div>
                         </div>
@@ -1235,22 +1247,22 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td><label>Document Name</label></td>
                                         <td><label>Action</label></td>
                                     </tr>
-                                    <?php
-                                    foreach ($employeeFile as $file) {
-                                        ?>
+                                            <?php
+                                            foreach ($employeeFile as $file) {
+                                                ?>
                                         <tr>
                                             <td>
-                                                <?php print $file['FILE_NAME']; ?>
+    <?php print $file['FILE_NAME']; ?>
                                             </td>
 
                                             <td width="10%">
                                                 <a class="btn-delete"
-                                                    href="<?= $this->basePath() . "/uploads/" . $file['FILE_PATH']; ?>" download="<?php echo $file['FILE_NAME']; ?>" style="height:27px;">
+                                                   href="<?= $this->basePath() . "/uploads/" . $file['FILE_PATH']; ?>" download="<?php echo $file['FILE_NAME']; ?>" style="height:27px;">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
                                         </tr>
-                                    <?php } ?>
+<?php } ?>
                                 </table>
                             </div>
                         </div>
@@ -1259,7 +1271,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="status-info"> 
@@ -1275,10 +1287,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td><label>Return Date</label></td>
                                         <td><label>Returned Date</label></td>
                                     </tr>
-                                    
-                                    <?php
-                                    foreach ($assetDetails as $asset) {
-                                        ?>
+
+                                            <?php
+                                            foreach ($assetDetails as $asset) {
+                                                ?>
                                         <tr>
                                             <td>
                                                 <?php print $asset['ASSET_GROUP_EDESC']; ?>
@@ -1287,24 +1299,32 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php print $asset['ASSET_EDESC']; ?>
                                             </td>
                                             <td>
-                                                <?php if($asset['RETURNABLE']=='Y'){print 'Yes';}else{print 'NO';}?>
+                                                <?php if ($asset['RETURNABLE'] == 'Y') {
+                                                    print 'Yes';
+                                                } else {
+                                                    print 'NO';
+                                                } ?>
                                             </td>
                                             <td>
-                                                <?php print $asset['RETURN_DATE']; ?>
+    <?php print $asset['RETURN_DATE']; ?>
                                             </td>
                                             <td>
-                                                <?php if(empty($asset['RETURNED_DATE'])&& $asset['RETURNABLE']=='Y'){print 'Not returned';}else{print $asset['RETURNED_DATE'];}  ?>
+    <?php if (empty($asset['RETURNED_DATE']) && $asset['RETURNABLE'] == 'Y') {
+        print 'Not returned';
+    } else {
+        print $asset['RETURNED_DATE'];
+    } ?>
                                             </td>
                                         </tr>
-                                    <?php } ?>
-                                    
+<?php } ?>
+
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
+        </div>
 
         <div class="row esetup" style="margin-top:10px;">
             <div class="col-md-12" style="text-align:center;">

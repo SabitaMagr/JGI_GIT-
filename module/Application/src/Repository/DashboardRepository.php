@@ -913,8 +913,8 @@ class DashboardRepository implements RepositoryInterface {
                 FROM HRIS_EMPLOYEES EMP
                 JOIN
                   (SELECT JH.EMPLOYEE_ID,
-                    JH.START_DATE,
-                    JH.END_DATE,
+                    TO_CHAR(JH.START_DATE,'DD-MON-YYYY') AS START_DATE,
+                    TO_CHAR(JH.END_DATE,'DD-MON-YYYY') AS END_DATE,
                     JH.TO_DEPARTMENT_ID,
                     JH.TO_DESIGNATION_ID,
                     (
