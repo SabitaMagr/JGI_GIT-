@@ -82,7 +82,7 @@ angular.module('hris', [])
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
                         {field: "TOTAL_HOUR", title: "Total Hour"},
-                        {field: "STATUS", title: "STATUS"},
+                        {field: "STATUS", title: "Status"},
                         {field: "IN_REMARKS", title: "Late In Reason"},
                         {field: "OUT_REMARKS", title: "Early Out Reason"},
                     ]
