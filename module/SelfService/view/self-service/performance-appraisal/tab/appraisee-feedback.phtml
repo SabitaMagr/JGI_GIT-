@@ -55,7 +55,7 @@
             </label>
             <div class="md-radio-inline">
                 <div class="md-radio">
-                    <input <?= $selfDisabled1 ?> type="radio" id="appraiseeAgree1" name="appraiseeAgree" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['APPRAISEE_AGREE']=='Y')?"checked":""; ?>>
+                    <input <?= $selfDisabled1 ?> type="radio" id="appraiseeAgree1" name="appraiseeAgree" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['APPRAISEE_AGREE']=='Y' || $assignedAppraisalDetail['APPRAISEE_AGREE']==null)?"checked":""; ?>>
                     <label for="appraiseeAgree1">
                         <span class="inc"></span>
                         <span class="check"></span>

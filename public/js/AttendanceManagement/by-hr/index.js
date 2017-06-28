@@ -176,7 +176,7 @@ angular.module('hris', [])
                                 ]
                     }).data("kendoGrid");
                     $("<div/>", {
-                        class: "col-sm-8",
+                        class: "col-sm-6",
                         css: {
                             float: "left",
                             padding: "0px",
@@ -200,6 +200,36 @@ angular.module('hris', [])
                                 [
                                     {field: "IN_REMARKS", title: "In Remarks"},
                                     {field: "OUT_REMARKS", title: "Out Remarks"},
+                                ]
+                    }).data("kendoGrid");
+                    $("<div/>", {
+                        class: "col-sm-2",
+                        css: {
+                            float: "left",
+                            padding: "0px",
+                            margin: "0px 0px 0px 20px",
+                            width: "11%"
+                        }
+                    }).appendTo(e.detailCell).kendoGrid({
+                        dataSource: {
+                            data: childData,
+                            pageSize: 5,
+                            read: {
+                                cache: false
+                            }
+                        },
+                        scrollable: false,
+                        sortable: false,
+                        pageable: false,
+                        serverPaging: true,
+                        serverSorting: true,
+                        serverFiltering: true,
+                        columns:
+                                [
+                                    {
+                                        template: "<img class='img-thumbnail' style='height:35px;width:40px;' src='"+document.picUrl+"' id=''/>",
+                                        field: "IN_REMARKS", title: "Attendance Photo"
+                                    },
                                 ]
                     }).data("kendoGrid");
                 }, function (failure) {

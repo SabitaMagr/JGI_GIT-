@@ -2,8 +2,7 @@
     <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]) ?>" name="performanceAppraisalForm" id="appraisalReview1">
     <div class="row">
         <?php
-        $disabled = ($questionForCurStage==0)?'disabled':'';
-        $questionOnPreTab = 0;
+        $disabled = 'disabled';
         foreach ($appraiserQuestionTemplate as $appraiserQuestionRow) { ?>
             <div class="col-md-12 margin-bottom-10">
                 <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
@@ -112,19 +111,6 @@
         </div>
         <?php } ?>
     </div>
-        <?php 
-        //if(($questionForCurStage>0 && $questionOnPreTab>0)||($questionOnPreTab>0 && $appraiseeAvailableAnswer!==true)){ 
-        if($questionForCurStage>0 && $questionOnPreTab>0){?>
-            <div class="row margin-top-10">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <button type="submit" id="submit" class="btn btn-success pull-right">
-                            NEXT
-                        </button>
-                    </div>
-                </div>
-            </div>
-        <?php } ?>
     </form>
     <?php
     print $this->partial('appraisal/layout/appraiser-remarks.phtml');

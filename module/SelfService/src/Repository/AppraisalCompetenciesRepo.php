@@ -75,5 +75,8 @@ GROUP BY APPRAISAL_ID, EMPLOYEE_ID";
         $result = $statement->execute();
         return $result->current();
     }
+    public function updateColumnByEmpAppId($data,$employeeId,$appraisalId){
+        $this->tableGateway->update($data,[AppraisalCompetencies::EMPLOYEE_ID=>$employeeId, AppraisalCompetencies::APPRAISAL_ID=>$appraisalId]);
+    }
 }
 

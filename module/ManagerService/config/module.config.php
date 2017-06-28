@@ -138,6 +138,20 @@ return [
                     ]
                 ],
             ],
+            'appraisal-final-review' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/appraisalFinalReview[/:action[/:appraisalId][/:employeeId]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\AppraisalFinalReview::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ]
     ],
     'navigation' => [
@@ -491,6 +505,28 @@ return [
                 ]
             ]
         ],
+        'appraisal-final-review' => [
+            [
+                'label' => 'Appraisal Final Review',
+                'route' => 'appraisal-final-review',
+            ],
+            [
+                'label' => 'Appraisal Final Review',
+                'route' => 'appraisal-final-review',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'appraisal-final-review',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'View',
+                        'route' => 'appraisal-final-review',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -505,7 +541,8 @@ return [
             Controller\TrainingApproveController::class => ControllerFactory::class,
             Controller\OvertimeApproveController::class => ControllerFactory::class,
             Controller\AppraisalEvaluation::class => ControllerFactory::class,
-            Controller\AppraisalReview::class => ControllerFactory::class
+            Controller\AppraisalReview::class => ControllerFactory::class,
+            Controller\AppraisalFinalReview::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

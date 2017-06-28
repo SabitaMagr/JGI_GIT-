@@ -1,4 +1,6 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/appraisalCustom.js'));
+$this->headScript()->appendFile($this->basePath('js/manager-service/appraisal-review/add.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
 $this->headScript()->appendFile($this->basePath('js/user-form-error.js'));
@@ -7,7 +9,7 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appr
 
 ?>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\appraisalReport')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\appraisal-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <?php
@@ -63,29 +65,36 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <li class="<?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N') && ($tab==1)) ?'active':''?>">
                                 <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                             </li>
-                            <?php }?>
+                            <?php } ?>
                             <?php if(count($appraiserQuestionTemplate)>0 && $appraiserAvailableAnswer==true){ ?>
                             <li class="<?= ($tab==2)?"active":""; ?>">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
-                            <?php } ?>
-                            <?php if(count($reviewerQuestionTemplate)>0 && $reviewerAvailableAnswer==true && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
+                            <?php } 
+                            ?>
+                            <?php if(count($reviewerQuestionTemplate)>0 && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
                             <li class="<?= ($tab==3)?"active":""; ?>">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
+                            </li>
+                            <?php } ?>
+                            <?php if (($assignedAppraisalDetail['STAGE_ID']==8 || $assignedAppraisalDetail['SUPER_REVIEWER_AGREE']!=null)){ ?>
+                            <li class="<?= ($tab==5)?"active":""; ?>">
+                                <a href="#portlet_tab2_5" data-toggle="tab">Super Reviewer's Evaluation </a>
                             </li>
                             <?php } ?>
                             <?php if(count($appraiseeQuestionTemplate)>0 && $appraiseeAvailableAnswer==true){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
-                            <?php } ?>
+                            <?php } 
+                            ?>
                         </ul>
                     </div>
                     <div class="tab-content margin-top-15" id="tabContent">
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
-                        
+                        <input type='hidden' value="reviewer" id="currentUser" />
                         <?php
                         print $this->partial('tab/kpi.phtml');
                         ?>
@@ -100,6 +109,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         ?>
                         <?php
                         print $this->partial('tab/reviewer-evaluation.phtml');
+                        ?>
+                        <?php
+                        print $this->partial('tab/super-reviewer-evaluation.phtml');
                         ?>
                         <?php
                         print $this->partial('tab/appraisee-feedback.phtml');
