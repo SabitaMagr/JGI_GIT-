@@ -106,6 +106,9 @@ $this->headScript()
                         <th>
                             Alt. Reviewer Assigned
                         </th>
+                        <th>
+                            Super Reviewer Assigned
+                        </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
                                 <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -138,6 +141,9 @@ $this->headScript()
                         </td>
                         <td>                       
                             <span ng-bind="employee.ALT_REVIEWER_NAME"></span>
+                        </td>
+                        <td>                       
+                            <span ng-bind="employee.SUPER_REVIEWER_NAME"></span>
                         </td>
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -218,6 +224,24 @@ $this->headScript()
                         </a>
                         <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                             <input class="" ng-model="altReviewerAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="altReviewerAssign"/>
+                            <span></span>
+                        </label>
+                    </div>  
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <label for="superReviewerId" style="width:100%; margin-top:2%;">Super Reviewer</label>
+                <div class="row">
+                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                        <select name="superReviewerId" required="required" id="superReviewerId" class="form-control" ng-options="superReviewer.name for superReviewer in superReviewerOptions track by superReviewer.id" ng-model="superReviewerSelected">
+                        </select>   
+                    </div>
+                    <div class="col-md-3 rlPadding reviewerWrap" style="padding:0px 0px !important;">
+                        <a class="btn-edit" href="javascript::" ng-click="open('S2')" style="height:22px; padding: 0px 7px !important;">
+                            <i class="fa fa-search" style="height:17px;"></i>
+                        </a>
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                            <input class="" ng-model="superReviewerAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="superReviewerAssign"/>
                             <span></span>
                         </label>
                     </div>  

@@ -25,6 +25,7 @@ $this->headScript()
     document.ids =<?php echo json_encode(["statusId" => "All", "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.picUrl = '<?= $this->basePath('img/nobody_m.original.jpg'); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
