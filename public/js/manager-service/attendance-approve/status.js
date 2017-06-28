@@ -98,8 +98,8 @@ angular.module('hris', [])
                     'IN_REMARKS': 'In Remarks',
                     'OUT_REMARKS': 'Out Remarks',
                     'STATUS': 'Status',
-                    'APPROVED_DT': 'A.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DT': 'Approved Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
                     
                 });
                 

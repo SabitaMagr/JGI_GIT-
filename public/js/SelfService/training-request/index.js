@@ -41,20 +41,20 @@
                         {
                             'TRAINING_CODE': 'Training',
                             'TITLE': 'Title',
-                            'REQUESTED_DATE': 'Req Dt',
-                            'START_DATE': 'Start Dt',
-                            'END_DATE': 'End Dt',
+                            'REQUESTED_DATE': 'Request Date',
+                            'START_DATE': 'Start Date',
+                            'END_DATE': 'End Date',
                             'DURATION': 'Duration',
                             'TRAINING_TYPE': 'Type',
                             'STATUS': 'Status',
-                            'DESCRIPTION': 'Desc',
+                            'DESCRIPTION': 'Description',
                             'REMARKS': 'Remarks',
                             'RECOMMENDER_NAME': 'Recommeder',
                             'APPROVER_NAME': 'Approver',
-//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
-                            'RECOMMENDED_DATE': 'Rec Date',
-//                            'APPROVED_REMARKS': 'App Remarks',
-                            'APPROVED_DATE': 'App Dt'
+                            'RECOMMENDED_REMARKS': 'Recommeder Remarks',
+                            'RECOMMENDED_DATE': 'Recommeder Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Dt'
                         }
                 );
         

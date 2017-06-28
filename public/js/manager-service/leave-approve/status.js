@@ -95,17 +95,17 @@ angular.module('hris', [])
                 {
                     'FULL_NAME': 'Name',
                     'LEAVE_ENAME': 'Leave',
-                    'APPLIED_DATE': 'AppliedDate',
-                    'START_DATE': 'StartDate',
-                    'END_DATE': 'EndDate',
+                    'APPLIED_DATE': 'Applied Date',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date',
                     'YOUR_ROLE': 'Role',
-                    'NO_OF_DAYS': 'NoOfDays',
+                    'NO_OF_DAYS': 'No Of Days',
                     'STATUS': 'Status',
                     'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 

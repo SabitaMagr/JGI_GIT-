@@ -106,7 +106,7 @@ angular.module("hris",[])
                             'APPRAISAL_TYPE_EDESC':'Appraisal Type',
                             'STAGE_EDESC': 'Current Stage',
                             'START_DATE': 'Start Date',
-                            'END_DATE': 'EndDate',
+                            'END_DATE': 'End Date',
                             'APPRAISER_OVERALL_RATING':'Rating',
                             'APPRAISER_NAME': 'Appraiser Name',
                             'ALT_APPRAISER_NAME': 'Alt. Appraiser Name',

@@ -245,8 +245,8 @@ angular.module('hris', [])
                 {
                     'FULL_NAME': 'Name',
                     'TRAINING_NAME': 'Training',
-                    'START_DATE': 'StartDate',
-                    'END_DATE': 'EndDate',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date',
                     'DURATION': 'Duration',
                     'LOCATION': 'Location',
                     'INSTITUTE_NAME': 'Institute',

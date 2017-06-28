@@ -37,18 +37,18 @@
         app.pdfExport(
                         'overtimeTable',
                         {
-                            'OVERTIME_DATE': ' Overtime Dt',
+                            'OVERTIME_DATE': ' Overtime Date',
                             'TOTAL_HOUR': 'Total Hour',
-                            'REQUESTED_DATE': 'Req.Dt',
+                            'REQUESTED_DATE': 'Request Date',
                             'STATUS': 'Status',
-                            'DESCRIPTION': 'Desc',
+                            'DESCRIPTION': 'Description',
                             'REMARKS': 'Remarks',
                             'RECOMMENDER_NAME': 'Recommender',
                             'APPROVER_NAME': 'Approver',
-                            'RECOMMENDED_REMARKS': 'Rec Remarks',
-                            'RECOMMENDED_DATE': 'Rec.Dt',
-                            'APPROVED_REMARKS': 'App.Remarks',
-                            'APPROVED_DATE': 'App Dt'
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
                         }
                 );
         

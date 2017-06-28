@@ -94,19 +94,19 @@ angular.module('hris', [])
                 {
                     'FULL_NAME': 'Name',
                     'TRAINING_NAME': 'Training',
-                    'REQUESTED_DATE': 'Req.Date',
-                    'START_DATE': 'StartDate',
-                    'END_DATE': 'EndDate',
+                    'REQUESTED_DATE': 'Request Date',
+                    'START_DATE': 'Start Date',
+                    'END_DATE': 'End Date',
                     'DURATION': 'Duration',
                     'TRAINING_TYPE': 'Type',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
                     'DESCRIPTION': 'Description',
                     'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 
