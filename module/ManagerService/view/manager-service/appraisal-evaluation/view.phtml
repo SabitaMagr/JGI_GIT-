@@ -70,14 +70,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
                             <?php } 
-                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')){
+//                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y' && $assignedAppraisalDetail['DEFAULT_RATING']!='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')){
                             ?>
-                            <?php if(count($reviewerQuestionTemplate)>0 && $reviewerAvailableAnswer==true){ ?>
+                            <?php if(count($reviewerQuestionTemplate)>0 && $reviewerAvailableAnswer==true && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                             </li>
                             <?php } 
-                            }
+//                            }
                             ?>
                             <?php if(count($appraiseeQuestionTemplate)>0 && $appraiseeAvailableAnswer==true){ ?>
                             <li class="">

@@ -163,7 +163,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #: (APPRAISAL_EDESC == null) ? '-' : APPRAISAL_EDESC #
         </td>
         <td>    
-        #: (APPRAISAL_TYPE_EDESC == null) ? '-' : APPRAISAL_EDESC #
+        #: (APPRAISAL_TYPE_EDESC == null) ? '-' : APPRAISAL_TYPE_EDESC #
         </td>
         <td>    
         #: (STAGE_EDESC == null) ? '-' : STAGE_EDESC #
@@ -188,6 +188,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             #= "&\\#10006;" #
             # } #
         </td>
+        <td id="#if(KPI_SELF_RATING_NUM>0){ #green#}else{#red#}#">
+            #if(KPI_SELF_RATING_NUM>0){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </td>
         <td id="#if(APPRAISED_BY!=null){ #green#}else{#red#}#">
             #if(APPRAISED_BY!=null){   #
             #= "&\\#10004;" #
@@ -198,9 +205,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td id="#if(REVIEWED_BY!=null){ #green#}else{#red#}#">
             #if(REVIEWED_BY!=null){   #
             #= "&\\#10004;" #
-            # }else{ #
+            #}else if(REVIEWED_BY==null && DEFAULT_RATING=='N'){ #
             #= "&\\#10006;" #
-            # } #
+            # }else{#-#}#
         </td>
         <td id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
             #if(APPRAISER_OVERALL_RATING!=null){   #

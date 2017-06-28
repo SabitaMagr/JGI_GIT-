@@ -84,6 +84,7 @@ angular.module("hris", [])
                         {field: "END_DATE", title: "End Date", width: 100},
                         {field: "END_DATE", title: "Objective Set?", width: 130},
                         {field: "END_DATE", title: "Objective Approved?", width: 170},
+                        {field: "END_DATE", title: "Appraisee Self Rating?", width: 170},
                         {field: "END_DATE", title: "Appraiser Evaluation?", width: 170},
                         {field: "END_DATE", title: "Reviewer View?", width: 140},
                         {field: "END_DATE", title: "Final Rating?", width: 120},

@@ -71,9 +71,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
                             <?php } 
-                            if($assignedAppraisalDetail['DEFAULT_RATING']!='Y'){
                             ?>
-                            <?php if(count($reviewerQuestionTemplate)>0){ ?>
+                            <?php if(count($reviewerQuestionTemplate)>0 && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
                             <li class="<?= ($tab==3)?"active":""; ?>">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                             </li>
@@ -83,7 +82,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
                             <?php } 
-                            }?>
+                            ?>
                         </ul>
                     </div>
                     <div class="tab-content margin-top-15" id="tabContent">

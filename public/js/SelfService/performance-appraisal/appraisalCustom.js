@@ -37,9 +37,10 @@ window.appraisalCustom = (function ($, toastr) {
                         }
                     }
                 }
-                $(this).on("blur", function () {
+                $(this).on("blur", function () { 
+                    var parentId = $(this).parent("div");
                     parentId.find('span.errorMsg').remove();
-                    $("#tabContent").find('span.errorMsg').remove();
+                    $("#tabContent").find('span#appraisalError').remove();
                 });
             });
             if (!formOwnTab) {
@@ -59,7 +60,7 @@ window.appraisalCustom = (function ($, toastr) {
                                         text: "This field is required"
                                     });
                                     parentId.append(errorMsgSpan);
-                                    var tabErrorMsgSpanNum = $("#tabContent").find('span#appraisalError');
+                                    var tabErrorMsgSpanNum = $("#tabContent1").find('span#appraisalError');
                                     if (tabErrorMsgSpanNum.length > 0) {
                                         $(this).html("Appraisal Submission Failed!!!!");
                                     } else {
@@ -69,15 +70,16 @@ window.appraisalCustom = (function ($, toastr) {
                                             "style": 'margin-bottom:10px',
                                             text: "Appraisal Submission Failed!!!!"
                                         });
-                                        $("#tabContent").prepend(errorMsgSpan1);
+//                                        $("#tabContent1").append(errorMsgSpan1);
                                     }
                                 }
                             }
                         }
                     }
                     $(this).on("blur", function () {
+                        var parentId = $(this).parent("div");
                         parentId.find('span.errorMsg').remove();
-                        $("#tabContent").find('span.errorMsg').remove();
+                        $("#tabContent").find('span#appraisalError').remove();
                     });
                 });
                 if (appraiseeTabFail) {
@@ -92,12 +94,9 @@ window.appraisalCustom = (function ($, toastr) {
                     return true;
 
                 }
-            }
-            if(formOwnTab){
+            }else{
                 App.unblockUI("#hris-page-content");
                 return false;
-            }else{
-                return true;
             }
         });
     }
