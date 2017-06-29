@@ -86,12 +86,13 @@ class AppraisalFinalReview extends AbstractActionController{
         $questionForCurStage = 0;
         $appraiseeAvailableAnswer = false;
         $appraiserAvailableAnswer = false;
+        $reviewerAvailableAnswer = false;
         foreach($headingList as $headingRow){
             //get question list for appraisee with current stage id
             $questionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId,$employeeId,$employeeId,"=1",$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['REVIEWER_ID']);
             $appraiserQuestionList =AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiserFlag,$appraisalId,$employeeId,$assignedAppraisalDetail['APPRAISER_ID'],null,null,$assignedAppraisalDetail['REVIEWER_ID']);
             $appraiseeQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $appraiseeFlag, $appraisalId,$employeeId,$employeeId,"!=1");
-            $reviewerQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $reviewerFlag, $appraisalId,$employeeId,$this->employeeId);
+            $reviewerQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $reviewerFlag, $appraisalId,$employeeId,$assignedAppraisalDetail['REVIEWER_ID']);
             
             if($reviewerQuestionList['questionForCurStage']){
                 $questionForCurStage+=1;
@@ -101,6 +102,9 @@ class AppraisalFinalReview extends AbstractActionController{
             }
             if($appraiseeQuestionList['availableAnswer']){
                 $appraiseeAvailableAnswer=true;
+            }
+            if($reviewerQuestionList['availableAnswer']){
+                $reviewerAvailableAnswer=true;
             }
             if(count($questionList['questionList'])>0){
                 array_push($questionTemplate, [
@@ -142,7 +146,8 @@ class AppraisalFinalReview extends AbstractActionController{
             'employeeId'=>$employeeId,
             'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer,
             'appraiserAvailableAnswer'=>$appraiserAvailableAnswer,
-            'loggedInEmployeeId'=>$this->employeeId
+            'loggedInEmployeeId'=>$this->employeeId,
+            'reviewerAvailableAnswer'=>$reviewerAvailableAnswer
         ];
         if($request->isPost()){
             try{
@@ -151,9 +156,21 @@ class AppraisalFinalReview extends AbstractActionController{
                 $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
                 $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
                 $postData = $request->getPost()->getArrayCopy();
-                
-                
-                
+                $superReviewerAgree = (gettype($postData['superReviewerAgree'])=='undefined')?null:$postData['superReviewerAgree'];
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::SUPER_REVIEWER_FEEDBACK=>$postData['superReviewerComment'],AppraisalStatus::SUPER_REVIEWER_AGREE=> $superReviewerAgree], $appraisalId, $employeeId);
+                $nextStageId = ($superReviewerAgree=='N')?5:6;
+                $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
+                if($superReviewerAgree==='Y'){
+                    HeadNotification::pushNotification(NotificationEvents::FINAL_APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                }
+                HeadNotification::pushNotification(NotificationEvents::FINAL_APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                HeadNotification::pushNotification(NotificationEvents::FINAL_APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                $adminList1 = $employeeRepo->fetchByAdminFlagList();
+                foreach($adminList1 as $adminRow1){
+                    HeadNotification::pushNotification(NotificationEvents::FINAL_APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                }
+                $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
+                $this->redirect()->toRoute("appraisal-final-review");
             }catch(Exception $e){
                 $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
                 $this->flashmessenger()->addMessage($e->getMessage());
@@ -165,7 +182,6 @@ class AppraisalFinalReview extends AbstractActionController{
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($employeeId, $appraisalId)['NUM'];
         $appraiserRatingDtlNum = $appraisalKPI->countAppraiserRatingDtl($employeeId, $appraisalId)['NUM'];
         $appCompetenciesRatingDtlNum = $appraisalCompetencies->countCompetenciesRatingDtl($employeeId,$appraisalId)['NUM'];
-        $returnData['tab']=$tab;
         $returnData['keyAchievementDtlNum']=$keyAchievementDtlNum;
         $returnData['appraiserRatingDtlNum']=$appraiserRatingDtlNum;
         $returnData['appCompetenciesRatingDtlNum']=$appCompetenciesRatingDtlNum;

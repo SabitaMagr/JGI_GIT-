@@ -40,8 +40,22 @@
         </div>
         <?php } ?>
     </div>
+    <?php 
+    //if($questionForCurStage>0 || $appraiseeAvailableAnswer!==true){
+    if ($assignedAppraisalDetail['STAGE_ID']==8){?>
+    <div class="row margin-top-10">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <button type="submit" id="submit" class="btn btn-success pull-right">
+                    SUBMIT
+                </button>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
     </form>
     <?php
     print $this->partial('appraisal/layout/reviewer-remarks.phtml');
     ?>
 </div>
+
