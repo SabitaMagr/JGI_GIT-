@@ -133,6 +133,9 @@ FROM
         if($reportType!=null && $reportType=="appraisalReview"){
             $sql .=" AND AA.REVIEWER_ID  =".$userId." OR AA.ALT_REVIEWER_ID =".$userId;
         }
+        if($reportType!=null && $reportType=="appraisalFinalReview"){
+            $sql .=" AND AA.SUPER_REVIEWER_ID  =".$userId;
+        }
         if($employeeId!=null && $employeeId!=-1){
             $sql .= " AND E.EMPLOYEE_ID=".$employeeId;
         }

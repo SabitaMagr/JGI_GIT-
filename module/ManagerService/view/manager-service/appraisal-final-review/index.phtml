@@ -43,6 +43,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
     <input type="hidden" value="<?= $userId; ?>" id="userId" />
+    <input type="hidden" value="appraisalFinalReview" id="reportType" />
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -234,7 +235,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("appraisal-review", ["action" => "view"]); ?>/#:APPRAISAL_ID#/#:EMPLOYEE_ID#/1" tital="view" style="height:17px;">
+        href="<?= $this->url("appraisal-final-review", ["action" => "view"]); ?>/#:APPRAISAL_ID#/#:EMPLOYEE_ID#" tital="view" style="height:17px;">
         <i class="fa fa-search-plus"></i>
         </a>
         </td>

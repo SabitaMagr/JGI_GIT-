@@ -77,7 +77,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                             </li>
                             <?php } ?>
-                            <?php if ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE']!=null){ ?>
+                            <?php if ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE']!=null && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
                             <li class="<?= ($tab==5)?"active":""; ?>">
                                 <a href="#portlet_tab2_5" data-toggle="tab">Super Reviewer's Evaluation </a>
                             </li>

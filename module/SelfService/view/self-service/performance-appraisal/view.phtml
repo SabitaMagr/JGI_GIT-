@@ -66,7 +66,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                             </li>
                             <?php } 
-                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')||$assignedAppraisalDetail['DEFAULT_RATING']=='Y'){
+                            if(($assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y' && $assignedAppraisalDetail['REVIEWER_AGREE']=='Y' && $assignedAppraisalDetail['SUPER_REVIEWER_AGREE']=='Y')||($assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')||$assignedAppraisalDetail['DEFAULT_RATING']=='Y'){
                             ?>
                             <?php if(count($appraiserQuestionTemplate)>0 && $appraiserAvailableAnswer==true){ ?>
                             <li class="">
@@ -80,6 +80,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php }
                             }
                             ?>
+                            <?php if ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE']=='Y' && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
+                            <li class="<?= ($tab==5)?"active":""; ?>">
+                                <a href="#portlet_tab2_5" data-toggle="tab">Super Reviewer's Evaluation </a>
+                            </li>
+                            <?php } ?>
                             <?php if(count($appraiseeQuestionTemplate)>0){ ?>
                             <li class="">
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
@@ -107,6 +112,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         ?>
                         <?php
                         print $this->partial('tab/reviewer-evaluation.phtml');
+                        ?>
+                        <?php
+                        print $this->partial('tab/super-reviewer-evaluation.phtml');
                         ?>
                         <?php
                         print $this->partial('tab/appraisee-feedback.phtml');

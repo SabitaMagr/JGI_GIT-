@@ -71,6 +71,8 @@ class HeadNotification {
     const REJECTED = "Rejected";
     const ASSIGNED = "Assigned";
     const CANCELLED = "Cancelled";
+    const REVIEWER_EVALUATION = "REVIEWER_EVALUATION";
+    const SUPER_REVIEWER_EVALUATION ="SUPER_REVIEWER_EVALUATION";
 
     public static function getNotifications(AdapterInterface $adapter, int $empId) {
         $notiRepo = new NotificationRepo($adapter);
@@ -1082,7 +1084,7 @@ class HeadNotification {
         self::sendEmail($notification, 33, $adapter, $url);
     }
 
-    private static function appraisalReview(AppraisalStatus $request, AdapterInterface $adapter, Url $url, $senderDetail, $recieverDetail) {
+    private static function appraisalReview(AppraisalStatus $request, AdapterInterface $adapter, Url $url,$type, $senderDetail, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1116,6 +1118,8 @@ class HeadNotification {
             $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         } else if ($recieverDetail['USER_TYPE'] == 'APPRAISEE') {
             $notification->route = json_encode(["route" => "performanceAppraisal", "action" => "view", "appraisalId" => $request->appraisalId]);
+        }else if ($recieverDetail['USER_TYPE'] == 'SUPER_REVIEWER') {
+            $notification->route = json_encode(["route" => "final-appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         }
         $getValue = function($val) {
             if ($val != null && $val != "") {
@@ -1127,8 +1131,9 @@ class HeadNotification {
                 return "";
             }
         };
+        $agree = ($type=='REVIEWER_EVALUATION')?$assignedAppraisalDetail['REVIEWER_AGREE']:$assignedAppraisalDetail['SUPER_REVIEWER_AGREE'];
         $title = "Appraisal Review";
-        $desc = $getValue($assignedAppraisalDetail['REVIEWER_AGREE']) . " by"
+        $desc = $getValue($agree) . " by"
                 . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
         self::addNotifications($notification, $title, $desc, $adapter);
@@ -1167,6 +1172,8 @@ class HeadNotification {
             $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
         } else if ($recieverDetail['USER_TYPE'] == 'HR') {
             $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
+        }else if ($recieverDetail['USER_TYPE'] == 'SUPER_REVIEWER') {
+            $notification->route = json_encode(["route" => "final-appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         }
 
         $getValue = function($val) {
@@ -1435,7 +1442,10 @@ class HeadNotification {
                 self::appraisalEvaluation($model, $adapter, $url, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISAL_REVIEW:
-                self::appraisalReview($model, $adapter, $url, $senderDetail, $recieverDetail);
+                self::appraisalReview($model, $adapter, $url,self::REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
+                break;
+            case NotificationEvents::FINAL_APPRAISAL_REVIEW:
+                self::appraisalReview($model, $adapter, $url,self::SUPER_REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISEE_FEEDBACK:
                 self::appraiseeFeedback($model, $adapter, $url, $recieverDetail);

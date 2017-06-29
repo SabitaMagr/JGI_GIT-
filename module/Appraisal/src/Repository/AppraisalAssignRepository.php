@@ -14,6 +14,7 @@ use Application\Repository\RepositoryInterface;
 use Appraisal\Model\Type;
 use Appraisal\Model\Stage;
 use Appraisal\Model\AppraisalStatus;
+use Setup\Model\Designation;
 
 class AppraisalAssignRepository implements RepositoryInterface{
     private $tableGateway;
@@ -131,7 +132,9 @@ class AppraisalAssignRepository implements RepositoryInterface{
                 ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(T.APPRAISAL_TYPE_EDESC)")])
                 ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=AA.". AppraisalAssign::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)"),"STAGE_ORDER_NO"=>"ORDER_NO","STAGE_ID"])
                 ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,["FIRST_NAME_A"=>new Expression("INITCAP(E1.FIRST_NAME)"), "MIDDLE_NAME_A"=>new Expression("INITCAP(E1.MIDDLE_NAME)"), "LAST_NAME_A"=>new Expression("INITCAP(E1.LAST_NAME)"),"EMPLOYEE_ID_A"=> HrEmployees::EMPLOYEE_ID],"left")
-                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,["FIRST_NAME_R"=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E2.MIDDLE_NAME)"), "LAST_NAME_R"=>new Expression("INITCAP(E2.LAST_NAME)"), "EMPLOYEE_ID_R"=>HrEmployees::EMPLOYEE_ID],"left");
+                ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,["FIRST_NAME_R"=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E2.MIDDLE_NAME)"), "LAST_NAME_R"=>new Expression("INITCAP(E2.LAST_NAME)"), "EMPLOYEE_ID_R"=>HrEmployees::EMPLOYEE_ID],"left")
+                ->join(['DES1'=> Designation::TABLE_NAME],"DES1.".Designation::DESIGNATION_ID."=E1.". HrEmployees::DESIGNATION_ID,["DESIGNATION_NAME_A"=>new Expression("INITCAP(DES1.DESIGNATION_TITLE)")],"left")
+                ->join(['DES2'=> Designation::TABLE_NAME],"DES2.".Designation::DESIGNATION_ID."=E2.". HrEmployees::DESIGNATION_ID,["DESIGNATION_NAME_R"=>new Expression("INITCAP(DES2.DESIGNATION_TITLE)")],"left");
         
         $select->where([
             "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,

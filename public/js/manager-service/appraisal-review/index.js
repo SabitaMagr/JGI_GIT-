@@ -11,6 +11,7 @@ angular.module("hris",[])
             var displayKendoFirstTime = true;
             $scope.view = function () {
                 var userId = angular.element(document.getElementById('userId')).val();
+                var reportType = angular.element(document.getElementById('reportType')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -39,7 +40,7 @@ angular.module("hris",[])
                         'appraisalStageId': appraisalStageId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'reportType':'appraisalReview',
+                        'reportType':reportType,
                         'userId':userId
                     }
                 }).then(function (success) {

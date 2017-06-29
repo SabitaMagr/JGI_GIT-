@@ -207,6 +207,7 @@ class AppraisalReview extends AbstractActionController{
                         if($reviewerAgree==='Y'){
                             if($assignedAppraisalDetail['DEFAULT_RATING']=='N' && $assignedAppraisalDetail['SUPER_REVIEWER_ID']!=null && $assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){
                                 $appraisalAssignRepo->updateCurrentStageByAppId(8, $appraisalId, $employeeId);
+                                HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['SUPER_REVIEWER_ID'],'USER_TYPE'=>"SUPER_REVIEWER"]);
                             }
                             HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
                         }
