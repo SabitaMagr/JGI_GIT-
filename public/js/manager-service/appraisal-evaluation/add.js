@@ -65,12 +65,12 @@
                 });
                 $('#tabContent').find('input.appraiserKPIRating,select.appraiserComRating').each(function () {
                     $(this).removeAttr("required");
-                    $(this).val("");
+//                    $(this).val("");
                     $(this).attr('disabled',true);
                 })
                 $("#annualRatingCompetency").attr('disabled',true);
-                $("#annualRatingCompetency").val("");
-                $("#annualRating").val("");
+//                $("#annualRatingCompetency").val("");
+//                $("#annualRating").val("");
             } else {
                 var annualRatingCompetency = $('#annualRatingCompetency').val();
                 var annualRating = $('#annualRating').val();
