@@ -11,8 +11,6 @@ $appraisalTypeId = $form->get('appraisalTypeId');
 $appraisalTypeId->setValueOptions($appraisalTypes);
 $designationIds = $form->get('designationIds');
 $designationIds->setValueOptions($designations);
-$positionIds = $form->get('positionIds');
-$positionIds->setValueOptions($positions);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -92,14 +90,6 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($designationIds, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($positionIds); ?>
-                            <?php print $this->formElement($positionIds); ?>
-                            <?php print $this->formElementErrors()->render($positionIds, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                     
                 </div>
                 
                 <?php

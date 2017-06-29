@@ -52,7 +52,7 @@ class DefaultRatingForm{
     public $designationIds;
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Positions"})
      * @Annotation\Attributes({"id":"positionId","class":"form-control","multiple":"multiple"})

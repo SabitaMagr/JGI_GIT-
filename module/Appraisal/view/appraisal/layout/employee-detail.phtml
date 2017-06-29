@@ -51,6 +51,17 @@
                             ?>       
                         </td>
                     </tr>
+                    <tr height="30" id="availableDaysText">
+                        <td>
+                            Appraiser's Designation
+                        </td>
+                        <td width="15">:</td>
+                        <td>
+                            <?php
+                            print_r($assignedAppraisalDetail['DESIGNATION_NAME_A']);
+                            ?>       
+                        </td>
+                    </tr>
                 </tbody></table>
         </div>
         <div class="col-md-4">
@@ -96,6 +107,17 @@
                             $employeeName_R = $assignedAppraisalDetail['FIRST_NAME_R'] . $middleName_R . $assignedAppraisalDetail['LAST_NAME_R'];
                             print_r($employeeName_R);
                             ?>                                         
+                        </td>
+                    </tr>
+                    <tr height="30" id="availableDaysText">
+                        <td>
+                            Reviewer's Designation
+                        </td>
+                        <td width="15">:</td>
+                        <td>
+                            <?php
+                            print_r($assignedAppraisalDetail['DESIGNATION_NAME_R']);
+                            ?>       
                         </td>
                     </tr>
                 </tbody></table>

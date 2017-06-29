@@ -24,7 +24,6 @@
                 {field: "MAX_VALUE", title: "Max. Value",width:100},
                 {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type",width:100},
                 {field: "DESIGNATION_LIST", title: "Designation List",width:100},
-                {field: "POSITION_LIST", title: "Position List",width:100},
                 {title: "Action",width:100}
             ],
         });

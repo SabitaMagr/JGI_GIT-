@@ -76,8 +76,8 @@ angular.module("hris", [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 150},
-                        {field: "APPRAISAL_EDESC", title: "Appraisal", width: 120},
+                        {field: "FULL_NAME", title: "Employee", locked: true, lockable: false,  width: 150},
+                        {field: "APPRAISAL_EDESC", title: "Appraisal", locked: true,  width: 120},
                         {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type", width: 150},
                         {field: "STAGE_EDESC", title: "Current Stage", width: 140},
                         {field: "START_DATE", title: "Start Date", width: 120},
@@ -92,7 +92,7 @@ angular.module("hris", [])
                         {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140},
                         {field: "APPRAISER_NAME", title: "Appraiser Name", width: 150},
                         {field: "REVIEWER_NAME", title: "Reviewer Name", width: 150},
-                        {title: "Action", width: 90}
+                        {title: "Action", width: 90, lockable: false}
                     ]
                 });
 
