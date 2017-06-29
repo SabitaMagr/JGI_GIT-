@@ -6,11 +6,13 @@ use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
 use Application\Model\User;
 use Application\Model\UserLog;
+use Application\Repository\CheckoutRepository;
 use Application\Repository\MonthRepository;
 use Application\Repository\UserLogRepository;
 use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
+use DateTime;
 use Exception;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -127,8 +129,8 @@ class AuthController extends AbstractActionController {
                         $attendanceModel->attendanceDt = $todayDate;
 //                        $attendanceModel->attendanceTime = $todayTime;
                         $attendanceModel->attendanceTime = new Expression("SYSDATE");
-                        $attendanceModel->ipAddress=$request->getServer('REMOTE_ADDR');
-                        $attendanceModel->attendanceFrom='WEB';
+                        $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
+                        $attendanceModel->attendanceFrom = 'WEB';
                         $attendanceRepo->add($attendanceModel);
                     }
 //                    $employeeRepo = new EmployeeRepository($this->adapter);
@@ -174,6 +176,31 @@ class AuthController extends AbstractActionController {
     }
 
     public function checkoutAction() {
+        $employeeId = $this->storage->read()['employee_id'];
+        $chekoutRepo = new CheckoutRepository($this->adapter);
+        $shiftDetails = $chekoutRepo->fetchEmployeeShfitDetails($employeeId);
+        $currentTimeDatabase = $shiftDetails['CURRENT_TIME'];
+        $checkoutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
+
+//            $currentDateTime = new DateTime('19:00:00');
+        $currentDateTime = new DateTime($currentTimeDatabase);
+        $checkoutDateTime = new DateTime($checkoutTimeDatabase);
+        $diff = date_diff($checkoutDateTime, $currentDateTime);
+        $earlyOut = $diff->format("%r");
+
+        $request = $this->getRequest();
+        $remarks='';
+
+        if ($earlyOut == '-') {
+            if (!$request->isPost()) {
+                return Helper::addFlashMessagesToArray($this, [
+                ]);
+            } else {
+                $postData = $request->getPost();
+                $remarks = $postData['remarks'];
+            }
+        }
+        
         $attendanceRepo = new AttendanceRepository($this->adapter);
         $attendanceModel = new Attendance();
 
@@ -183,6 +210,9 @@ class AuthController extends AbstractActionController {
         $attendanceModel->employeeId = $this->getAuthService()->getStorage()->read()['employee_id'];
         $attendanceModel->attendanceDt = $todayDate;
         $attendanceModel->attendanceTime = $todayTime;
+        $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
+        $attendanceModel->attendanceFrom = 'WEB';
+        $attendanceModel->remarks = $remarks;
         $attendanceRepo->add($attendanceModel);
 
         $this->getSessionStorage()->forgetMe();
