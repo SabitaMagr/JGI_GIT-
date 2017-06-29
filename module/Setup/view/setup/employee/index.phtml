@@ -125,6 +125,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
+        #: (EMPLOYEE_CODE == null) ? '-' : EMPLOYEE_CODE #
+        </td>
+        <td>
         #: (FULL_NAME == null) ? '-' : FULL_NAME #
         </td>
         <td>

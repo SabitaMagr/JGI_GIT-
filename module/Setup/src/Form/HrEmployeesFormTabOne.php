@@ -6,6 +6,18 @@ use Application\Model\Model;
 use Zend\Form\Annotation;
 
 class HrEmployeesFormTabOne extends Model {
+    
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Employee Code"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Attributes({ "id":"employeeCode", "class":"form-control" })
+     */
+    public $employeeCode;
+    
 
     public $employeeId;
 
