@@ -66,7 +66,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </li>
                             <?php } ?>
                             <?php if(count($appraiserQuestionTemplate)>0){ ?>
-                            <li class="<?= ($tab==2)?"active":"" ?>">
+                            <li class="<?= ($tab==2 || count($questionTemplate)==0)?"active":"" ?>">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
                             <?php } 

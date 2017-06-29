@@ -46,6 +46,17 @@ class AppraisalReportRepository implements RepositoryInterface {
         
     }
     public function fetchFilterdData($fromDate,$toDate,$employeeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$appraisalId,$appraisalStageId,$reportType=null,$userId=null){
+        if($reportType!=null && $reportType=="appraisalEvaluation"){
+            $userFlag = "AND AQ.APPRAISER_FLAG='Y'";
+            $userQuestionNum = " OR USER_QUESTION_NUM>0";
+        }else if($reportType!=null && $reportType=="appraisalReview"){
+            $userFlag = "AND AQ.REVIEWER_FLAG='Y'";
+            $userQuestionNum = " OR USER_QUESTION_NUM>0";
+        }else{
+            $userFlag = "";
+            $userQuestionNum="";
+        }
+        
         $sql = "SELECT *
 FROM
   (SELECT A.APPRAISAL_ID                         AS APPRAISAL_ID,
@@ -101,6 +112,10 @@ FROM
     AND APKPI1.EMPLOYEE_ID    =E.EMPLOYEE_ID
     AND APKPI1.SELF_RATING IS NOT NULL
     )                  AS KPI_SELF_RATING_NUM,
+    (SELECT COUNT(*) FROM HRIS_APPRAISAL_STAGE_QUESTIONS SQ
+LEFT JOIN HRIS_APPRAISAL_QUESTION AQ
+ON SQ.QUESTION_ID = AQ.QUESTION_ID
+WHERE SQ.STAGE_ID=AA.CURRENT_STAGE_ID AND AQ.STATUS='E' AND SQ.STATUS='E' ".$userFlag.") AS USER_QUESTION_NUM,
     INITCAP(TO_CHAR(AKPI.APPROVED_DATE,'DD-MON-YYYY')) AS KPI_APPROVED_DATE
   FROM HRIS_APPRAISAL_SETUP A
   INNER JOIN HRIS_APPRAISAL_ASSIGN AA
@@ -186,7 +201,7 @@ OR (KPI_SETTING = (
     THEN ('Y')
   END)
 AND KPI_ANS_NUM>0)
-OR ANSWER_NUM  >0)
+OR ANSWER_NUM  >0 ".$userQuestionNum.")
 ";
         $statement = $this->adapter->query($sql);
 //        print_r($statement->getSql()); die();
