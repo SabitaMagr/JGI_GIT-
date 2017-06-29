@@ -48,6 +48,7 @@
                     <td width='10%'>
                         <div>
                             <select name="rating_{{competencies.checkbox}}" class="appraiserComRating" ng-model="competencies.rating" ng-options="item for item in ratingNames" required="required" <?= $disabledCompetenciesRating ?>>
+                            <option value="" selected="" class="ng-binding"></option>
                             </select>
                             <div ng-show="competenciesForm.$submitted || competenciesForm.rating_{{competencies.checkbox}}.$touched">
                                 <ul ng-show="competenciesForm.rating_{{competencies.checkbox}}.$error.required" class="help-block error">
@@ -71,7 +72,7 @@
                     </td>
                     <td>
                         <div>
-                            <select name="annualRatingCompetency" id="annualRatingCompetency" required="required" <?= $disabledCompetenciesRating ?>>
+                            <select name="annualRatingCompetency" id="annualRatingCompetency" class="appraiserComRating" required="required" <?= $disabledCompetenciesRating ?>>
                                 <option></option>
                                 <option <?= ($assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY'] == "A") ? "selected" : "" ?>>A</option>
                                 <option <?= ($assignedAppraisalDetail['ANNUAL_RATING_COMPETENCY'] == "B") ? "selected" : "" ?>>B</option>
