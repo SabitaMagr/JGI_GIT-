@@ -120,6 +120,36 @@ class AuthController extends AbstractActionController {
                         $todayTime = Helper::getcurrentExpressionTime();
                         $employeeId = $resultRow->EMPLOYEE_ID;
 
+                        $shiftDetails = $attendanceRepo->fetchEmployeeShfitDetails($employeeId);
+                        $currentTimeDatabase = $shiftDetails['CURRENT_TIME'];
+                        $checkoutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
+
+                        $currentDateTime = new DateTime($currentTimeDatabase);
+                        $checkoutDateTime = new DateTime($checkoutTimeDatabase);
+                        $diff = date_diff($checkoutDateTime, $currentDateTime);
+                        $earlyOut = $diff->format("%r");
+                        
+                        echo '<pre>';
+                        print_r($shiftDetails);
+                        echo 'sdfdsf';
+                        
+                        die();
+
+
+//                        if ($earlyOut == '-') {
+//                            if (!$request->isPost()) {
+//                                return Helper::addFlashMessagesToArray($this, [
+//                                ]);
+//                            } else {
+//                                $postData = $request->getPost();
+//                                $remarks = $postData['remarks'];
+//                            }
+//                        }
+
+
+
+
+
                         $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
                         if (!isset($result)) {
                             throw new Exception("Today's Attendance of employee with employeeId :$employeeId is not found.");
@@ -189,7 +219,7 @@ class AuthController extends AbstractActionController {
         $earlyOut = $diff->format("%r");
 
         $request = $this->getRequest();
-        $remarks='';
+        $remarks = '';
 
         if ($earlyOut == '-') {
             if (!$request->isPost()) {
@@ -200,7 +230,7 @@ class AuthController extends AbstractActionController {
                 $remarks = $postData['remarks'];
             }
         }
-        
+
         $attendanceRepo = new AttendanceRepository($this->adapter);
         $attendanceModel = new Attendance();
 
