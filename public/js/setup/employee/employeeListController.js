@@ -6,11 +6,12 @@
             app.errorMessage("No List to export data from.", "Alert");
         });
 
-        app.searchTable('employeeTable', ['FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
+        app.searchTable('employeeTable', ['EMPLOYEE_CODE','FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
         
         app.pdfExport(
                 'employeeTable',
                 {
+                    'EMPLOYEE_CODE': 'Employee Code',
                     'FULL_NAME': 'Employee',
                     'GENDER_NAME': 'Gender',
                     'COMPANY_NAME': 'Company',
@@ -176,6 +177,7 @@ angular.module('hris', [])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
+                                {value: "Employee Code"},
                                 {value: "Employee Name"},
 //                                {value: "Name in Nepali"},
                                 {value: "Gender"},
@@ -259,6 +261,7 @@ angular.module('hris', [])
                         var dataItem = data[i];
                         rows.push({
                             cells: [
+                                {value: dataItem.EMPLOYEE_CODE},
                                 {value: dataItem.FULL_NAME},
 //                                {value: dataItem.NAME_NEPALI},
                                 {value: dataItem.GENDER_NAME},
@@ -339,6 +342,7 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
                                     {autoWidth: true},
 //                                    {autoWidth: true},
                                     {autoWidth: true},
