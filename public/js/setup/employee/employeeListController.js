@@ -149,6 +149,7 @@ angular.module('hris', [])
                     },
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
+                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 180},
                         {field: "FULL_NAME", title: "Full Name", width: 180},
                         {field: "MOBILE_NO", title: "Mobile No", width: 110},
                         {field: "BIRTH_DATE", title: "Birth Date", width: 110},
