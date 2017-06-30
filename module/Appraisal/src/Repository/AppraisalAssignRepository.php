@@ -142,6 +142,7 @@ WHERE KPI_SETTING='Y' OR COMPETENCIES_SETTING='Y' OR APPRAISEE_QUESTION_NUM>0 OR
             new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
             new Expression("A.REMARKS AS REMARKS"),
             new Expression("A.KPI_SETTING AS KPI_SETTING"),
+            new Expression("A.HR_FEEDBACK_ENABLE AS HR_FEEDBACK_ENABLE"),
             new Expression("A.COMPETENCIES_SETTING AS COMPETENCIES_SETTING"),
             new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
             new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
