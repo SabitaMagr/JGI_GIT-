@@ -73,6 +73,7 @@ class HeadNotification {
     const CANCELLED = "Cancelled";
     const REVIEWER_EVALUATION = "REVIEWER_EVALUATION";
     const SUPER_REVIEWER_EVALUATION ="SUPER_REVIEWER_EVALUATION";
+    const HR_FEEDBACK = "HR_FEEDBACK";
 
     public static function getNotifications(AdapterInterface $adapter, int $empId) {
         $notiRepo = new NotificationRepo($adapter);
@@ -1133,8 +1134,12 @@ class HeadNotification {
         };
         $agree = ($type=='REVIEWER_EVALUATION')?$assignedAppraisalDetail['REVIEWER_AGREE']:$assignedAppraisalDetail['SUPER_REVIEWER_AGREE'];
         $title = "Appraisal Review";
-        $desc = $getValue($agree) . " by"
-                . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
+        if($agree==null){
+            $desc = "Appraisal reviewed";
+        }else{
+            $desc = $getValue($agree);
+        }
+        $desc .=" by ".$notification->fromName." on ". $notification->appraisalName." of type ". $notification->appraisalType;
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 34, $adapter, $url);
@@ -1187,8 +1192,8 @@ class HeadNotification {
             }
         };
         $title = "Final Feedback on Appraisal";
-        $desc = $getValue($assignedAppraisalDetail['APPRAISEE_AGREE']) . " by"
-                . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
+        $desc = ($assignedAppraisalDetail['APPRAISEE_AGREE']==null)?"Feedback":$getValue($assignedAppraisalDetail['APPRAISEE_AGREE']);
+        $desc .=" by $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 35, $adapter, $url);
@@ -1444,8 +1449,11 @@ class HeadNotification {
             case NotificationEvents::APPRAISAL_REVIEW:
                 self::appraisalReview($model, $adapter, $url,self::REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
                 break;
-            case NotificationEvents::FINAL_APPRAISAL_REVIEW:
+            case NotificationEvents::APPRAISAL_FINAL_REVIEW:
                 self::appraisalReview($model, $adapter, $url,self::SUPER_REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
+                break;
+            case NotificationEvents::HR_FEEDBACK:
+                self::appraisalReview($model, $adapter, $url,self::HR_FEEDBACK, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISEE_FEEDBACK:
                 self::appraiseeFeedback($model, $adapter, $url, $recieverDetail);

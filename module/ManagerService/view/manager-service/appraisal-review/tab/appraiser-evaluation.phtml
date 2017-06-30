@@ -1,4 +1,4 @@
-<div class="tab-pane <?= ($tab==2)?"active":""; ?>" id="portlet_tab2_2">
+<div class="tab-pane <?= ($tab==2 || (count($questionTemplate)==0 && $assignedAppraisalDetail['KPI_SETTING']=='N'))?"active":""; ?>" id="portlet_tab2_2">
     <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]) ?>" name="performanceAppraisalForm" id="appraisalReview1">
     <div class="row">
         <?php
@@ -12,7 +12,7 @@
                         <?php foreach ($appraiserQuestionRow['QUESTIONS'] as $questionRow) { ?>
                             <div  class="col-md-12 margin-bottom-10"> 
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="<?= ($questionRow['REVIEWER_FLAG']=='Y')?"col-sm-3":"col-sm-8"; ?>">
                                         <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7> </label>  
                                         <?php 
                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
