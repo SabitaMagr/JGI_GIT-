@@ -23,53 +23,6 @@ ALTER TABLE HRIS_APPRAISAL_ASSIGN ADD CONSTRAINT FK_APP_ASN_EMP_EMP_ID FOREIGN K
 HRIS_EMPLOYEES(EMPLOYEE_ID);
 
 INSERT
-INTO HRIS_APPRAISAL_STAGE
-  (
-    STAGE_ID,
-    STAGE_CODE,
-    STAGE_EDESC,
-    STAGE_NDESC,
-    START_DATE,
-    END_DATE,
-    ORDER_NO,
-    COMPANY_ID,
-    BRANCH_ID,
-    CREATED_BY,
-    CREATED_DATE,
-    MODIFIED_BY,
-    MODIFIED_DATE,
-    CHECKED,
-    APPROVED_BY,
-    APPROVED_DATE,
-    APPROVED,
-    STATUS,
-    REMARKS
-  )
-  VALUES
-  (
-    8,
-    'SK008',
-    'Super Reviewer Comment',
-    NULL,
-    NULL,
-    NULL,
-    4,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    'N',
-    NULL,
-    NULL,
-    'N',
-    'E',
-    NULL
-  );
-
-
-INSERT
 INTO HRIS_MENUS
   (
     MENU_CODE,
@@ -151,51 +104,3 @@ ADD SUPER_REVIEWER_AGREE CHAR(1 BYTE) CHECK (SUPER_REVIEWER_AGREE IN ('Y','N'));
 
 ALTER TABLE HRIS_APPRAISAL_STATUS
 ADD SUPER_REVIEWER_FEEDBACK VARCHAR2(255 BYTE)
-
-
-INSERT
-INTO HRIS_APPRAISAL_STAGE
-  (
-    STAGE_ID,
-    STAGE_CODE,
-    STAGE_EDESC,
-    STAGE_NDESC,
-    START_DATE,
-    END_DATE,
-    ORDER_NO,
-    COMPANY_ID,
-    BRANCH_ID,
-    CREATED_BY,
-    CREATED_DATE,
-    MODIFIED_BY,
-    MODIFIED_DATE,
-    CHECKED,
-    APPROVED_BY,
-    APPROVED_DATE,
-    APPROVED,
-    STATUS,
-    REMARKS
-  )
-  VALUES
-  (
-    9,
-    'SK009',
-    'HR Comment',
-    NULL,
-    NULL,
-    NULL,
-    8,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    'N',
-    NULL,
-    NULL,
-    'N',
-    'E',
-    NULL
-  );
-  

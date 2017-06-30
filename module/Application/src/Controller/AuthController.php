@@ -179,15 +179,19 @@ class AuthController extends AbstractActionController {
         $employeeId = $this->storage->read()['employee_id'];
         $chekoutRepo = new CheckoutRepository($this->adapter);
         $shiftDetails = $chekoutRepo->fetchEmployeeShfitDetails($employeeId);
+        
+        if(!$shiftDetails){
+            $shiftDetails=$chekoutRepo->fetchEmployeeDefaultShift();
+        }
+        
         $currentTimeDatabase = $shiftDetails['CURRENT_TIME'];
         $checkoutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
 
-//            $currentDateTime = new DateTime('19:00:00');
         $currentDateTime = new DateTime($currentTimeDatabase);
         $checkoutDateTime = new DateTime($checkoutTimeDatabase);
         $diff = date_diff($checkoutDateTime, $currentDateTime);
         $earlyOut = $diff->format("%r");
-
+        
         $request = $this->getRequest();
         $remarks = '';
 
