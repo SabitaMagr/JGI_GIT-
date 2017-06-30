@@ -85,10 +85,15 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $response->sendHeaders();
             return $response;
         }
-
         $route = $event->getRouteMatch()->getMatchedRouteName();
         $identity = $auth->getIdentity();
+        
+        if(is_array($identity)){
         $roleId = $identity['role_id'];
+        }else{
+        $roleId = null;
+        }
+        
         if ($roleId != null) {
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
             $repository = new RolePermissionRepository($adapter);

@@ -164,6 +164,16 @@ return [
                     ],
                 ],
             ],
+            'checkin' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/checkin[/:action[/:userId]]',
+                    'defaults' => [
+                        'controller' => Controller\CheckInController::class,
+                        'action' => 'email',
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -217,7 +227,8 @@ return [
             Controller\CronController::class => Controller\ControllerFactory::class,
             Controller\TaskController::class => Controller\ControllerFactory::class,
             Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
-            Controller\ChangePassword::class => Controller\ControllerFactory::class
+            Controller\ChangePassword::class => Controller\ControllerFactory::class,
+            Controller\CheckInController::class => Controller\ControllerFactory::class
         ],
     ],
     'view_manager' => [
