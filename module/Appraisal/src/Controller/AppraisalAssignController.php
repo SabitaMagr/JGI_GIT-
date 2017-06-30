@@ -1,22 +1,25 @@
 <?php
 namespace Appraisal\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
-use Appraisal\Repository\AppraisalAssignRepository;
-use Zend\Authentication\AuthenticationService;
-use Application\Helper\Helper;
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
+use Appraisal\Model\AppraisalAssign;
+use Appraisal\Model\Setup;
+use Appraisal\Repository\AppraisalAssignRepository;
+use Appraisal\Repository\AppraisalReportRepository;
+use Appraisal\Repository\SetupRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\HrEmployees;
-use Appraisal\Model\Setup;
-use Zend\Form\Element\Select;
-use Application\Custom\CustomViewModel;
 use Setup\Repository\EmployeeRepository;
-use Appraisal\Model\AppraisalAssign;
-use Appraisal\Repository\SetupRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class AppraisalAssignController extends AbstractActionController{
     private $adapter;
@@ -251,6 +254,8 @@ class AppraisalAssignController extends AbstractActionController{
 //        print_r($superReviewerIdNew); die();
         $appraisalAssign = new AppraisalAssign();
         $employeePreDtl = $this->repository->getDetailByEmpAppraisalId($employeeId,$appraisalId);
+        $appraisalReportRepo = new AppraisalReportRepository($this->adapter);
+        $appraiserQuestionNum = $appraisalReportRepo->checkAppraiserQuestionOnStage($appraisalDtl['CURRENT_STAGE_ID'])['NUM'];
         if ($employeePreDtl == null) {
             $appraisalAssign->employeeId = $employeeId;
             $appraisalAssign->appraisalId = $appraisalId;
@@ -280,6 +285,11 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->currentStageId = $appraisalDtl['CURRENT_STAGE_ID'];
             $appraisalAssign->status = 'E';
             $this->repository->edit($appraisalAssign, [$employeeId,$appraisalId]);
+        }
+        $appraisalAssign->appraisalId = $appraisalId;
+        $appraisalAssign->createdBy = $this->employeeId;
+        if($appraiserQuestionNum>0 && $appraiserIdNew!=null && $appraiserIdNew!=""){
+            HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this->plugin('url'));
         }
         return [
             "success" => true,

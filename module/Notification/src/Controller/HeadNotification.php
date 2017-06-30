@@ -8,6 +8,7 @@ use Application\Helper\Helper;
 use Application\Model\ForgotPassword;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Appraisal\Model\AppraisalAssign;
 use Appraisal\Model\AppraisalStatus;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Exception;
@@ -54,7 +55,6 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
 use Training\Model\TrainingAssign;
-use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
@@ -1198,6 +1198,41 @@ class HeadNotification {
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 35, $adapter, $url);
     }
+    
+    public static function monthlyAppraisalAssigned(AppraisalAssign $request, AdapterInterface $adapter,Url $url){
+        $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
+        $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+        $fullName = function($id, $adapter) {
+            if ($id != null) {
+                $empRepository = new EmployeeRepository($adapter);
+                $empDtl = $empRepository->fetchById($id);
+                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+            } else {
+                return "";
+            }
+        };
+        $notification = self::initializeNotificationModel($request->createdBy, $assignedAppraisalDetail['APPRAISER_ID'], AppraisalNotificationModel::class, $adapter);
+
+        $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
+        $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
+        $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+        $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+        $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
+        $notification->startDate = $assignedAppraisalDetail['START_DATE'];
+        $notification->endDate = $assignedAppraisalDetail['END_DATE'];
+        $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
+        $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
+
+        $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+
+        $title = "Monthly Appraisal Assigned";
+        $desc ="$notification->appraisalName for $notification->appraiseeName is ready to evaluate";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 40, $adapter, $url);
+    }
 
     private static function overtimeApplied(Overtime $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new OvertimeRepository($adapter), $request, $request->overtimeId);
@@ -1457,6 +1492,9 @@ class HeadNotification {
                 break;
             case NotificationEvents::APPRAISEE_FEEDBACK:
                 self::appraiseeFeedback($model, $adapter, $url, $recieverDetail);
+                break;
+            case NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED:
+                self::monthlyAppraisalAssigned($model, $adapter, $url);
                 break;
             case NotificationEvents::OVERTIME_APPLIED:
                 self::overtimeApplied($model, $adapter, $url, self::RECOMMENDER);

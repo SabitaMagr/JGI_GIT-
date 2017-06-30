@@ -68,7 +68,8 @@ class EmailController extends AbstractActionController {
         36 => "Attendance_Recommend",
         37 => "Overtime Request",
         38 => "Overtime Recommend",
-        39 => "Overtime Approve"
+        39 => "Overtime Approve",
+        40 => "Monthly_Appraisal_Assigned"
     ];
 
     private function getVariables() {
@@ -115,7 +116,7 @@ class EmailController extends AbstractActionController {
 
         $overtimeNotiModel = new OvertimeReqNotificationModel();
         $overtimeNotiModelOA = $overtimeNotiModel->getObjectAttrs();
-
+        
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -155,7 +156,8 @@ class EmailController extends AbstractActionController {
             36 => $type2ObjVars,
             37 => $overtimeNotiModelOA,
             38 => $overtimeNotiModelOA,
-            39 => $overtimeNotiModelOA
+            39 => $overtimeNotiModelOA,
+            40 => $type13ObjVars
         ];
     }
 

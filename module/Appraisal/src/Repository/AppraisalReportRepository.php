@@ -208,4 +208,14 @@ OR ANSWER_NUM  >0 ".$userQuestionNum.")
         $result = $statement->execute();
         return $result;
     }
+    public function checkAppraiserQuestionOnStage($stageId){
+        $sql = "SELECT COUNT(*) as NUM FROM HRIS_APPRAISAL_STAGE_QUESTIONS SQ
+LEFT JOIN HRIS_APPRAISAL_QUESTION AQ
+ON SQ.QUESTION_ID = AQ.QUESTION_ID
+WHERE SQ.STAGE_ID=".$stageId." AND AQ.STATUS='E' AND SQ.STATUS='E' AND AQ.APPRAISER_FLAG='Y'";
+        $statement = $this->adapter->query($sql);
+//        print_r($statement->getSql()); die();
+        $result = $statement->execute();
+        return $result->current();
+    }
 }
