@@ -9,7 +9,7 @@
                     <div class="row">
                             <div  class="col-md-12 margin-bottom-10"> 
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-8">
                                         <label> <h7 style="font-size:12px;">Overall Comment</h7>  </label> 
                                         <textarea name="superReviewerComment" id="superReviewerComment" class="form-control" style="height:50px!important" required="required"  <?= $disabledSuperComment ?>><?= $assignedAppraisalDetail['SUPER_REVIEWER_FEEDBACK']; ?></textarea>
                                     </div>
@@ -43,7 +43,6 @@
         <?php } ?>
     </div>
     <?php 
-    //if($questionForCurStage>0 || $appraiseeAvailableAnswer!==true){
     if ($assignedAppraisalDetail['STAGE_ID']==8){?>
     <div class="row margin-top-10">
         <div class="col-sm-12">

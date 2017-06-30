@@ -1,7 +1,8 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
-$this->headScript()->appendFile($this->basePath('js/user-form-error.js'));
+$this->headScript()->appendFile($this->basePath('js/user-form-error.js'))
+                ->appendFile($this->basePath('js/appraisal/report/add.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/kpiController.js'));
 $this->headScript()->appendFile($this->basePath('js/SelfService/performance-appraisal/competenciesController.js'));
 
@@ -84,6 +85,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
                             <?php } ?>
+                            <?php if (($assignedAppraisalDetail['STAGE_ID']==9 || $assignedAppraisalDetail['HR_FEEDBACK']!=null)){ ?>
+                            <li class="<?= ($tab==6)?"active":""; ?>">
+                                <a href="#portlet_tab2_6" data-toggle="tab">HR Feedback </a>
+                            </li>
+                            <?php } ?>
                         </ul>
                     </div>
                     <div class="tab-content margin-top-15" id="tabContent">
@@ -111,6 +117,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         ?>
                         <?php
                         print $this->partial('tab/appraisee-feedback.phtml');
+                        ?>
+                        <?php
+                        print $this->partial('tab/hr-feedback.phtml');
                         ?>
                     </div>
                 </div>

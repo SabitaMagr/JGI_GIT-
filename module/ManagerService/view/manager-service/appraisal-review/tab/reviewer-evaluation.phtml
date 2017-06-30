@@ -11,7 +11,7 @@
                         <?php foreach ($reviewerQuestionList['QUESTIONS'] as $reviewerQuestionRow) { ?>
                             <div  class="col-md-12 margin-bottom-10"> 
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-8">
                                         <label> <h7 style="font-size:12px;"><?php echo $reviewerQuestionRow['QUESTION_EDESC']; ?></h7>  </label> 
                                         <?php 
                                         $keyForRQuestion = ($reviewerQuestionRow['ANSWER']==null || count($reviewerQuestionRow['ANSWER'])==0)?$reviewerQuestionRow['QUESTION_ID']:array_keys($reviewerQuestionRow['ANSWER'])[0];
