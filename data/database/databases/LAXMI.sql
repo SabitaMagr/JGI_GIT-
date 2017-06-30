@@ -145,3 +145,49 @@ INTO HRIS_MENUS
     NULL,
     'N'
     );
+INSERT
+INTO HRIS_APPRAISAL_STAGE
+  (
+    STAGE_ID,
+    STAGE_CODE,
+    STAGE_EDESC,
+    STAGE_NDESC,
+    START_DATE,
+    END_DATE,
+    ORDER_NO,
+    COMPANY_ID,
+    BRANCH_ID,
+    CREATED_BY,
+    CREATED_DATE,
+    MODIFIED_BY,
+    MODIFIED_DATE,
+    CHECKED,
+    APPROVED_BY,
+    APPROVED_DATE,
+    APPROVED,
+    STATUS,
+    REMARKS
+  )
+  VALUES
+  (
+    9,
+    'SK009',
+    'HR Comment',
+    NULL,
+    NULL,
+    NULL,
+    8,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    'N',
+    NULL,
+    NULL,
+    'N',
+    'E',
+    NULL
+  );
+  

@@ -81,32 +81,53 @@ class AppraisalAssignRepository implements RepositoryInterface{
         return $result->current();
     }
     public function fetchByEmployeeId($employeeId){
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns([
-            new Expression("A.APPRAISAL_ID AS APPRAISAL_ID"),
-            new Expression("A.APPRAISAL_TYPE_ID AS APPRAISAL_TYPE_ID"),
-            new Expression("A.STATUS AS STATUS"),
-            new Expression("A.APPRAISAL_CODE AS APPRAISAL_CODE"),
-            new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
-            new Expression("A.REMARKS AS REMARKS"),
-            new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
-            new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
-        ]);
-        $select->from(["A"=>Setup::TABLE_NAME])
-                ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID])
-                ->join(['E'=> HrEmployees::TABLE_NAME],"E.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::EMPLOYEE_ID,["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)"), HrEmployees::EMPLOYEE_ID])
-                ->join(['T'=> Type::TABLE_NAME],"T.".Type::APPRAISAL_TYPE_ID."=A.". Setup::APPRAISAL_TYPE_ID,["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(T.APPRAISAL_TYPE_EDESC)")])
-                ->join(['S'=> Stage::TABLE_NAME],"S.". Stage::STAGE_ID."=AA.". AppraisalAssign::CURRENT_STAGE_ID,["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)"),"STAGE_ORDER_NO"=>"ORDER_NO"]);
-        
-        $select->where([
-            "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,
-            "AA.".AppraisalAssign::STATUS."='E'",
-            "E.".HrEmployees::STATUS."='E'",
-            "T.".Type::STATUS."='E'",
-            "S.".Stage::STATUS."='E'"]);
-        $select->order("A.".Setup::APPRAISAL_EDESC);
-        $statement = $sql->prepareStatementForSqlObject($select);
+        $sql = "SELECT * FROM(
+SELECT A.APPRAISAL_ID                          AS APPRAISAL_ID,
+  A.APPRAISAL_TYPE_ID                          AS APPRAISAL_TYPE_ID,
+  A.STATUS                                     AS STATUS,
+  A.APPRAISAL_CODE                             AS APPRAISAL_CODE,
+  A.APPRAISAL_EDESC                            AS APPRAISAL_EDESC,
+  A.REMARKS                                    AS REMARKS,
+  INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE,
+  INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY'))   AS END_DATE,
+  INITCAP(E.FIRST_NAME)                        AS FIRST_NAME,
+  INITCAP(E.MIDDLE_NAME)                       AS MIDDLE_NAME,
+  INITCAP(E.LAST_NAME)                         AS LAST_NAME,
+  E.EMPLOYEE_ID                                AS EMPLOYEE_ID,
+  INITCAP(T.APPRAISAL_TYPE_EDESC)              AS APPRAISAL_TYPE_EDESC,
+  INITCAP(S.STAGE_EDESC)                       AS STAGE_EDESC,
+  S.ORDER_NO                                   AS STAGE_ORDER_NO,
+  A.KPI_SETTING                                AS KPI_SETTING,
+  A.COMPETENCIES_SETTING                       AS COMPETENCIES_SETTING,
+  (SELECT COUNT(*) FROM HRIS_APPRAISAL_STAGE_QUESTIONS SQ
+LEFT JOIN HRIS_APPRAISAL_QUESTION AQ
+ON SQ.QUESTION_ID = AQ.QUESTION_ID
+WHERE SQ.STAGE_ID=AA.CURRENT_STAGE_ID AND AQ.STATUS='E' AND SQ.STATUS='E' AND AQ.APPRAISEE_FLAG='Y') AS APPRAISEE_QUESTION_NUM,
+(SELECT COUNT(*)
+    FROM HRIS_APPRAISAL_ANSWER APNS
+    WHERE APNS.EMPLOYEE_ID = E.EMPLOYEE_ID
+    AND APNS.APPRAISAL_ID  = A.APPRAISAL_ID
+    AND APNS.STATUS='E'
+    ) AS ANSWER_NUM
+FROM HRIS_APPRAISAL_SETUP A
+INNER JOIN HRIS_APPRAISAL_ASSIGN AA
+ON A.APPRAISAL_ID=AA.APPRAISAL_ID
+INNER JOIN HRIS_EMPLOYEES E
+ON E.EMPLOYEE_ID=AA.EMPLOYEE_ID
+INNER JOIN HRIS_APPRAISAL_TYPE T
+ON T.APPRAISAL_TYPE_ID=A.APPRAISAL_TYPE_ID
+INNER JOIN HRIS_APPRAISAL_STAGE S
+ON S.STAGE_ID       =AA.CURRENT_STAGE_ID
+WHERE AA.EMPLOYEE_ID=".$employeeId."
+AND AA.STATUS       ='E'
+AND E.STATUS        ='E'
+AND T.STATUS        ='E'
+AND S.STATUS        ='E'
+ORDER BY A.APPRAISAL_EDESC ASC)
+WHERE KPI_SETTING='Y' OR COMPETENCIES_SETTING='Y' OR APPRAISEE_QUESTION_NUM>0 OR ANSWER_NUM>0
+";
+        $statement = $this->adapter->query($sql);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }
@@ -121,6 +142,7 @@ class AppraisalAssignRepository implements RepositoryInterface{
             new Expression("A.APPRAISAL_EDESC AS APPRAISAL_EDESC"),
             new Expression("A.REMARKS AS REMARKS"),
             new Expression("A.KPI_SETTING AS KPI_SETTING"),
+            new Expression("A.HR_FEEDBACK_ENABLE AS HR_FEEDBACK_ENABLE"),
             new Expression("A.COMPETENCIES_SETTING AS COMPETENCIES_SETTING"),
             new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
             new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),

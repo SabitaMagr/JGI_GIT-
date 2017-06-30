@@ -1,4 +1,4 @@
-<div class="tab-pane <?= ($tab==2)?"active":"" ?>" id="portlet_tab2_2">
+<div class="tab-pane <?= ($tab==2 || (count($questionTemplate)==0 && $assignedAppraisalDetail['KPI_SETTING']=='N'))?"active":"" ?>" id="portlet_tab2_2">
     <form method="post" action="<?= $this->url("appraisal-evaluation",['action'=>"view",'appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]); ?>" name="performanceAppraisalForm" id="appraisalEvaluation1">
     <div class="row">
         <?php
