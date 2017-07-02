@@ -156,9 +156,9 @@ class AppraisalFinalReview extends AbstractActionController{
                 $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
                 $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
                 $postData = $request->getPost()->getArrayCopy();
-                $superReviewerAgree = (gettype($postData['superReviewerAgree'])=='undefined')?null:$postData['superReviewerAgree'];
+                $superReviewerAgree = (!isset($postData['superReviewerAgree']))?null:$postData['superReviewerAgree'];
                 $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::SUPER_REVIEWER_FEEDBACK=>$postData['superReviewerComment'],AppraisalStatus::SUPER_REVIEWER_AGREE=> $superReviewerAgree], $appraisalId, $employeeId);
-                $nextStageId = ($superReviewerAgree=='N')?5:6;
+                $nextStageId = ($superReviewerAgree=='N')?5:6; //appraiser evaluation:appraisee stage
                 $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
                 if($superReviewerAgree==='Y'){
                     HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);

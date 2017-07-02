@@ -68,6 +68,9 @@
             <?php if ($appCompetenciesRatingDtlNum > 0) {
                 ?>
                 <tr>
+                    <?php if ($assignedAppraisalDetail['STAGE_ID'] == 1) { ?>
+                    <td></td>
+                    <?php } ?>
                     <td colspan="2">
                         ANNUAL RATING ON COMPETENCIES:
                     </td>
@@ -91,6 +94,10 @@
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </td>
+                    <?php if ($appCompetenciesRatingDtlNum > 0 && $assignedAppraisalDetail['REVIEWER_AGREE'] == 'Y') {?>
+                    <td></td>
+                    <td></td>
+                    <?php } ?>
                     <td></td>
                     <td>
                         <div class="form-group">

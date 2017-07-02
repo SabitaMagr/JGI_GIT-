@@ -136,8 +136,10 @@ class AppraisalEvaluation extends AbstractActionController{
                 $appraisalComRepo = new AppraisalCompetenciesRepo($this->adapter);
                 $appraisalStatus = new AppraisalStatus();
                 $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
-                $appraisalAnswerModel = new AppraisalAnswer();
                 $postData = $request->getPost()->getArrayCopy();
+                $defaultRating = (isset($postData['defaultRating']))?$postData['defaultRating']:null;
+                $appraiserOverallRating = (isset($postData['appraiserOverallRating']))?$postData['appraiserOverallRating']:null;
+                $appraisalAnswerModel = new AppraisalAnswer();
                 $answer = $postData['answer'];
 //                print "<pre>";
 //                print_r($postData); die();
@@ -186,13 +188,13 @@ class AppraisalEvaluation extends AbstractActionController{
 //                        if(!$editMode){
                             //}
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
-                        if($postData['defaultRating']=='Y'){
-                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$postData['appraiserOverallRating'], AppraisalStatus::DEFAULT_RATING=>'Y', AppraisalStatus::ANNUAL_RATING_COMPETENCY=>"", AppraisalStatus::ANNUAL_RATING_KPI=>""], $appraisalId, $employeeId);
+                        if($defaultRating=='Y'){
+                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$appraiserOverallRating, AppraisalStatus::DEFAULT_RATING=>'Y', AppraisalStatus::ANNUAL_RATING_COMPETENCY=>"", AppraisalStatus::ANNUAL_RATING_KPI=>""], $appraisalId, $employeeId);
                             $appraisalKPIRepo->updateColumnByEmpAppId([AppraisalKPI::APPRAISER_RATING=>""], $employeeId, $appraisalId);
                             $appraisalComRepo->updateColumnByEmpAppId([AppraisalCompetencies::RATING=>""], $employeeId, $appraisalId);
-                            $stageId = 6;
+                            $stageId = 6; //appraisee stage
                         }else{
-                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$postData['appraiserOverallRating'], AppraisalStatus::DEFAULT_RATING=>'N'], $appraisalId, $employeeId);
+                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$appraiserOverallRating, AppraisalStatus::DEFAULT_RATING=>'N'], $appraisalId, $employeeId);
                             $stageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
                         }
                         $appraisalAssignRepo->updateCurrentStageByAppId($stageId, $appraisalId, $employeeId);

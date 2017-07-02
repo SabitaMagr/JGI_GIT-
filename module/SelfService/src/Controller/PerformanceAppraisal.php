@@ -132,7 +132,7 @@ class PerformanceAppraisal extends AbstractActionController{
                 $appraisalAnswerModel = new AppraisalAnswer();
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
-                $appraiseeAgree = $postData['appraiseeAgree'];
+                $appraiseeAgree = (isset($postData['appraiseeAgree']))?$postData['appraiseeAgree']:null;
                 $i=0;
                 $editMode = false;
                 foreach($answer as $key=>$value){

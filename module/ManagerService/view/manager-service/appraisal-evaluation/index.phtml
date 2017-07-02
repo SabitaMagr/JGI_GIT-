@@ -177,15 +177,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #: (END_DATE == null) ? '-' : END_DATE #
         </td>
         <td id="#if(KPI_ANS_NUM>0){ #green#}else{#red#}#">
-            #if(KPI_ANS_NUM>0){   #
+            #if(KPI_ANS_NUM>0 && KPI_SETTING=='Y'){   #
             #= "&\\#10004;" #
-            # }else{ #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            #}else{ #
             #= "&\\#10006;" #
             # } #
         </td>
         <td id="#if(KPI_APPROVED_DATE==null){#red#}else{##}#">
             #if(KPI_APPROVED_DATE!=null){   #
             #= KPI_APPROVED_DATE #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
             # }else{ #
             #= "&\\#10006;" #
             # } #
@@ -193,6 +197,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td id="#if(KPI_SELF_RATING_NUM>0){ #green#}else{#red#}#">
             #if(KPI_SELF_RATING_NUM>0){   #
             #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
             # }else{ #
             #= "&\\#10006;" #
             # } #
@@ -214,6 +220,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
             #if(APPRAISER_OVERALL_RATING!=null){   #
             #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
             # }else{ #
             #= "&\\#10006;" #
             # } #

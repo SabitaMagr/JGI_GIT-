@@ -68,9 +68,11 @@ $disabledKeyAchievement = ($assignedAppraisalDetail['STAGE_ID'] != 7) ? "disable
                     </td>
                 <?php } ?>
             </tr>
-            <?php if ($appCompetenciesRatingDtlNum > 0 && $assignedAppraisalDetail['REVIEWER_AGREE'] == 'Y') {
-                ?>
+            <?php if ($appCompetenciesRatingDtlNum > 0 && $assignedAppraisalDetail['REVIEWER_AGREE'] == 'Y') {?>
                 <tr>
+                    <?php if ($assignedAppraisalDetail['STAGE_ID'] == 1) { ?>
+                    <td></td>
+                    <?php } ?>
                     <td colspan="2">
                         ANNUAL RATING ON COMPETENCIES:
                     </td>
@@ -96,6 +98,10 @@ $disabledKeyAchievement = ($assignedAppraisalDetail['STAGE_ID'] != 7) ? "disable
                             <i class="fa fa-trash-o"></i>
                         </a>
                     </td>
+                    <?php if ($appCompetenciesRatingDtlNum > 0 && $assignedAppraisalDetail['REVIEWER_AGREE'] == 'Y') {?>
+                    <td></td>
+                    <td></td>
+                    <?php } ?>
                     <td></td>
                     <td>
                         <div class="form-group">

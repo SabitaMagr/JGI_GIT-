@@ -97,7 +97,7 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-//        return;
+        return;
         $isValidEmail = function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         };
@@ -1119,7 +1119,7 @@ class HeadNotification {
         } else if ($recieverDetail['USER_TYPE'] == 'APPRAISEE') {
             $notification->route = json_encode(["route" => "performanceAppraisal", "action" => "view", "appraisalId" => $request->appraisalId]);
         }else if ($recieverDetail['USER_TYPE'] == 'SUPER_REVIEWER') {
-            $notification->route = json_encode(["route" => "final-appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
+            $notification->route = json_encode(["route" => "appraisal-final-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         }
         $getValue = function($val) {
             if ($val != null && $val != "") {
@@ -1177,7 +1177,7 @@ class HeadNotification {
         } else if ($recieverDetail['USER_TYPE'] == 'HR') {
             $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         }else if ($recieverDetail['USER_TYPE'] == 'SUPER_REVIEWER') {
-            $notification->route = json_encode(["route" => "final-appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
+            $notification->route = json_encode(["route" => "appraisal-final-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         }
 
         $getValue = function($val) {
