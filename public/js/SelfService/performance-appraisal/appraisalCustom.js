@@ -18,7 +18,7 @@ window.appraisalCustom = (function ($, toastr) {
                                 var errorMsgSpan = $('<span />', {
                                     "class": 'errorMsg',
                                     "id": 'inputRequired',
-                                    text: "This field is required"
+                                    text: "This field is required!!!"
                                 });
                                 errorMsgSpan.appendTo(parentId);
                                 var tabErrorMsgSpanNum = $("#tabContent").find('span#appraisalError');
@@ -57,7 +57,7 @@ window.appraisalCustom = (function ($, toastr) {
                                     var errorMsgSpan = $('<span />', {
                                         "class": 'errorMsg',
                                         "id": 'inputRequired',
-                                        text: "This field is required"
+                                        text: "This field is required!!!"
                                     });
                                     errorMsgSpan.appendTo(parentId);
                                     var tabErrorMsgSpanNum = $("#tabContent").find('span#appraisalError');

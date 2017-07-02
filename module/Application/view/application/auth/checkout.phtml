@@ -1,11 +1,21 @@
-
+<?php
+$this->headScript()->appendFile($this->basePath('js/application/check-in/index.js'));
+?>
 <div>
-    <form action="<?php echo $this->url('checkout', ['action' => 'checkout']); ?>"  method="post">
+    <form action="<?php echo $this->url('checkout', ['action' => 'checkout']); ?>"  method="post" id="registerAttendanceForm">
         
     <label>You are trying to Checkout early Please!! Fill Up the Remarks</label>
-    <textarea rows="4" cols="30"name="remarks" required="required"></textarea>
-    </br>
-    <input class="btn btn-primary" type="submit">
+    <div class="row">
+        <div class="col-sm-12">
+            <textarea rows="4" cols="30" name="checkInRemarks" id="remarks" required="required"></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <input class="btn btn-primary" type="submit" value="submit">
+            <a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-danger pull-right"> Cancel </a>
+        </div>
+    </div>
     <a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-danger pull-right"> Cancel </a>
     </form>
 </div>
