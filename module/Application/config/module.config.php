@@ -87,9 +87,9 @@ return [
                 ],
             ],
             'login' => [
-                'type' => Literal::class,
+                'type' => Segment::class,
                 'options' => [
-                    'route' => '/login',
+                    'route' => '/login[/:type]',
                     'defaults' => [
                         'controller' => Controller\AuthController::class,
                         'action' => 'login',
