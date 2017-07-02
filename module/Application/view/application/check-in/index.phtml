@@ -1,28 +1,29 @@
 <?php
-    $lableData='';
+$this->headScript()->appendFile($this->basePath('js/application/check-in/index.js'));
+
+ $lableData='';
 if($type=='IN'){
     $lableData='You are Late! Fill Up The Remarks';
 }else if($type=='OUT'){
     $lableData='You are trying to Checkout early Please!! Fill Up the Remarks';
 }
-
-
 ?>
-
-    <div>
-        <?php // print_r($attendanceDetails); ?>
-    </div>
 <div>
-        
-    <form method="POST" name="User" role="form" class="login-form" action="<?= $this->url('auth/process', ['action' => 'checkinAuth']); ?>" id="User">   
-    <label> <?=$lableData?>  </label>
-    <textarea rows="4" style="width:100%" name="checkInRemarks" required="required"></textarea>
-    </br>
-    <input type="hidden" name="username" value="<?= $username; ?>"/>
-    <input type="hidden" name="password" value="<?= $password ?>"/>
-    <input type="hidden" name="checkIn" value="1"/>
-    <input class="btn btn-primary" type="submit" value="submit">
-    <a href="<?php echo $this->url('logout'); ?>" class="btn btn-danger pull-right"> Cancel </a>
-    </form>
+    <form method="POST" name="User" role="form" class="login-form" action="<?= $this->url('auth/process', ['action' => 'checkinAuth']); ?>" id="registerAttendanceForm">   
+    <label> <?=$lableData?> </label>
+    <div class="row">
+        <div class="col-sm-12">
+            <textarea rows="4" cols="30" name="checkInRemarks" id="remarks" required="required"></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <input type="hidden" name="username" value="<?= $username; ?>"/>
+            <input type="hidden" name="password" value="<?= $password ?>"/>
+            <input type="hidden" name="checkIn" value="1"/>
+            <input class="btn btn-primary" type="submit" value="submit">
+            <a href="<?php echo $this->url('logout'); ?>" class="btn btn-danger pull-right"> Cancel </a>
+        </div>
+    </div>
 </div>
 
