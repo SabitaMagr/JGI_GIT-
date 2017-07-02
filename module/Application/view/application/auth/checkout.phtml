@@ -1,4 +1,5 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/application/check-in/index.js'));
     $lableData='';
 if($type=='IN'){
     $lableData='You are Late! Fill Up The Remarks';
@@ -7,13 +8,19 @@ if($type=='IN'){
 }
 ?>
 <div>
-    <form action="<?php echo $this->url('checkout', ['action' => 'checkout']); ?>"  method="post">
-        
-    <label><?=$lableData?></label>
-    <textarea rows="4" style="width:100%" name="remarks" required="required"></textarea>
-    </br>
-    <input class="btn btn-primary" type="submit">
-    <a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-danger pull-right"> Cancel </a>
+    <form action="<?php echo $this->url('checkout', ['action' => 'checkout']); ?>"  method="post" id="registerAttendanceForm">
+    <label><?=$lableData?></label>   
+    <div class="row">
+        <div class="col-sm-12">
+            <textarea rows="4" cols="30" name="checkInRemarks" id="remarks" required="required"></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <input class="btn btn-primary" type="submit" value="submit">
+            <a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-danger pull-right"> Cancel </a>
+        </div>
+    </div>
     </form>
 </div>
 
