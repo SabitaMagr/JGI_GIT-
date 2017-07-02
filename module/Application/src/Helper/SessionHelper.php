@@ -32,6 +32,7 @@ class SessionHelper {
             $companyName = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::COMPANY_ID => $companyId], null)[$companyId];
             $companyAddress = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::ADDRESS], [Company::COMPANY_ID => $companyId], null)[$companyId];
             $event->getViewModel()->setVariable("companyName", $companyName);
+            $event->getViewModel()->setVariable("registerAttendance", $register_attendance);
             $event->getViewModel()->setVariable("companyAddress", $companyAddress);
             $companyLogoCode = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::LOGO], [Company::COMPANY_ID => $companyId], null)[$companyId];
             //end to set companu logo details
