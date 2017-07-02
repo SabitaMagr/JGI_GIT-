@@ -44,6 +44,9 @@ $noOfDays = $form->get('noOfDays');
 $noOfDays->setAttributes(['disabled' => "disabled"]);
 $halfDay = $form->get('halfDay');
 $halfDay->setAttributes(['disabled' => "disabled"]);
+$gracePeriod = $form->get('gracePeriod');
+$gracePeriod->setAttributes(['disabled' => "disabled"]);
+$gracePeriod->setValue($gp);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(['disabled' => 'disabled']);
 $recommendedRemarks = $form->get('recommendedRemarks');
@@ -198,7 +201,7 @@ print $this->form()->openTag($form);
                                 <div class="col-sm-6">
                                     <div class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
                                         <?php print $this->formLabel($startDate) ?>
-                                            <?php print $this->formElement($startDate) ?>
+                                        <?php print $this->formElement($startDate) ?>
                                     </div>
                                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                                 </div>     
@@ -250,7 +253,18 @@ print $this->form()->openTag($form);
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
-
+                        <?php
+                        if ($gracePeriod->getValue() != ""):
+                            ?>
+                            <div class="col-sm-4">
+                                <div
+                                    class="form-group">
+                                        <?php print $this->formLabel($gracePeriod); ?>
+                                        <?php print $this->formElement($gracePeriod); ?>
+                                </div>
+                            </div>
+                        <?php endif;
+                        ?>
                         <div class="col-sm-4">
                             <?php if ($remarksDtl != null) { ?>
                                 <div

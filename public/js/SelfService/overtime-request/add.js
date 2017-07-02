@@ -23,7 +23,15 @@
         $employeeId.on("change", function (e) {
             app.floatingProfile.setDataFromRemote($(e.target).val());
         });
-        app.setLoadingOnSubmit("overtimeRequest-form");
+        app.setLoadingOnSubmit("overtimeRequest-form", function ($form) {
+            var formData = new FormData($form[0]);
+            if (formData.getAll('startTime[]').length == 0) {
+                app.showMessage("Minimum One Start time and End time is required.", 'error');
+                return false;
+            } else {
+                return true;
+            }
+        });
     });
 })(window.jQuery, window.app);
 

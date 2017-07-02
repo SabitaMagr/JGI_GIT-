@@ -66,13 +66,7 @@ class AttendanceRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function recordFilter($fromDate, $toDate, $employeeId, $status,$onlyMisPunch) {
-
-//        $sql="SELECT * FROM HRIS_ATTENDANCE_DETAIL
-//            WHERE EMPLOYEE_ID=".$employeeId." AND ATTENDANCE_DT>='".$fromDate."' AND ATTENDANCE_DT<='".$toDate."'";
-//        $statement = $this->adapter->query($sql);
-//        $result = $statement->execute();
-//        return $result;
+    public function recordFilter($fromDate, $toDate, $employeeId, $status, $onlyMisPunch) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -143,11 +137,7 @@ class AttendanceRepository implements RepositoryInterface {
         }
 
         if ($onlyMisPunch != false) {
-            $select->where([
-                "mod((SELECT COUNT(*) FROM HRIS_ATTENDANCE A1
-                WHERE A1.EMPLOYEE_ID = A.EMPLOYEE_ID
-                AND A1.ATTENDANCE_DT = A.ATTENDANCE_DT),2 )<>0"
-            ]);
+            $select->where(["(A.LATE_STATUS='X' OR A.LATE_STATUS='Y')"]);
         }
 
 
@@ -155,6 +145,151 @@ class AttendanceRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+    }
+
+    public function attendanceReport($fromDate, $toDate, $employeeId, $status, $missPunchOnly = false) {
+        $fromDateCondition = "";
+        $toDateCondition = "";
+        $employeeCondition = '';
+        $statusCondition = '';
+        $missPunchOnlyCondition = '';
+        if ($fromDate != null) {
+            $fromDateCondition = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+        }
+        if ($toDate != null) {
+            $toDateCondition = " AND A.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+        }
+        if ($employeeId != null) {
+            $employeeCondition = " AND A.EMPLOYEE_ID ={$employeeId} ";
+        }
+        if ($status == "A") {
+            $statusCondition = "AND A.OVERALL_STATUS = 'AB'";
+        }
+
+        if ($status == "H") {
+            $statusCondition = "AND (A.OVERALL_STATUS = 'HD' OR A.OVERALL_STATUS = 'WH' ) ";
+        }
+
+        if ($status == "L") {
+            $statusCondition = "AND (A.OVERALL_STATUS = 'LV' OR A.OVERALL_STATUS = 'LP' ) ";
+        }
+
+        if ($status == "P") {
+            $statusCondition = "AND (A.OVERALL_STATUS = 'PR' OR A.OVERALL_STATUS = 'WD' OR A.OVERALL_STATUS = 'WH' OR A.OVERALL_STATUS = 'BA' OR A.OVERALL_STATUS = 'LA' OR A.OVERALL_STATUS = 'TP' OR A.OVERALL_STATUS = 'LP' OR A.OVERALL_STATUS = 'VP' ) ";
+        }
+        if ($status == "T") {
+            $statusCondition = "AND (A.OVERALL_STATUS = 'TN' OR A.OVERALL_STATUS = 'TP' ) ";
+        }
+        if ($status == "TVL") {
+            $statusCondition = "AND (A.OVERALL_STATUS = 'TV' OR A.OVERALL_STATUS = 'VP' ) ";
+        }
+        if ($status == "WOH") {
+            $statusCondition = "AND A.OVERALL_STATUS = 'WH'";
+        }
+        if ($status == "LI") {
+            $statusCondition = "AND (A.LATE_STATUS = 'L' OR A.LATE_STATUS = 'B' OR A.LATE_STATUS ='Y') ";
+        }
+        if ($status == "EO") {
+            $statusCondition = "AND (A.LATE_STATUS = 'E' OR A.LATE_STATUS = 'B' ) ";
+        }
+
+        if ($missPunchOnly) {
+            $missPunchOnlyCondition = "AND (A.LATE_STATUS = 'X' OR A.LATE_STATUS = 'Y' ) ";
+        }
+
+        $sql = "
+                SELECT A.ID                                        AS ID,
+                  A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,
+                  INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT,
+                  INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM'))          AS IN_TIME,
+                  INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM'))         AS OUT_TIME,
+                  A.IN_REMARKS                                     AS IN_REMARKS,
+                  A.OUT_REMARKS                                    AS OUT_REMARKS,
+                  MIN_TO_HOUR(A.TOTAL_HOUR)                        AS TOTAL_HOUR,
+                  A.LEAVE_ID                                       AS LEAVE_ID,
+                  A.HOLIDAY_ID                                     AS HOLIDAY_ID,
+                  A.TRAINING_ID                                    AS TRAINING_ID,
+                  A.TRAVEL_ID                                      AS TRAVEL_ID,
+                  A.SHIFT_ID                                       AS SHIFT_ID,
+                  A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
+                  A.LATE_STATUS                                    AS LATE_STATUS,
+                  INITCAP(E.FIRST_NAME)                            AS FIRST_NAME,
+                  INITCAP(E.MIDDLE_NAME)                           AS MIDDLE_NAME,
+                  INITCAP(E.LAST_NAME)                             AS LAST_NAME,
+                  H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
+                  L.LEAVE_ENAME                                    AS LEAVE_ENAME,
+                  T.TRAINING_NAME                                  AS TRAINING_NAME,
+                  TVL.DESTINATION                                  AS TRAVEL_DESTINATION,
+                  (
+                  CASE
+                    WHEN A.OVERALL_STATUS = 'DO'
+                    THEN 'Day Off'
+                    WHEN A.OVERALL_STATUS ='HD'
+                    THEN 'On Holiday('
+                      ||H.HOLIDAY_ENAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='LV'
+                    THEN 'On Leave('
+                      ||L.LEAVE_ENAME
+                      || ')'
+                    WHEN A.OVERALL_STATUS ='TV'
+                    THEN 'On Travel('
+                      ||TVL.DESTINATION
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='TN'
+                    THEN 'On Training('
+                      ||T.TRAINING_NAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='WD'
+                    THEN 'Work On Dayoff'
+                    WHEN A.OVERALL_STATUS ='WH'
+                    THEN 'Work on Holiday('
+                      ||H.HOLIDAY_ENAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='LP'
+                    THEN 'Work on Leave('
+                      ||L.LEAVE_ENAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='VP'
+                    THEN 'Work on Travel('
+                      ||TVL.DESTINATION
+                      ||')'
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='TP'
+                    THEN 'Present('
+                      ||T.TRAINING_NAME
+                      ||')'
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='PR'
+                    THEN 'Present'
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='AB'
+                    THEN 'Absent'
+                    WHEN A.OVERALL_STATUS ='BA'
+                    THEN 'Present(Late In and Early Out)'
+                    WHEN A.OVERALL_STATUS ='LA'
+                    THEN 'Present(Third Day Late)'
+                  END)AS STATUS
+                FROM HRIS_ATTENDANCE_DETAIL A
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON A.EMPLOYEE_ID=E.EMPLOYEE_ID
+                LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP H
+                ON A.HOLIDAY_ID=H.HOLIDAY_ID
+                LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+                ON A.LEAVE_ID=L.LEAVE_ID
+                LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
+                ON A.TRAINING_ID=T.TRAINING_ID
+                LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TVL
+                ON A.TRAVEL_ID      =TVL.TRAVEL_ID
+                WHERE 1=1
+                {$employeeCondition}
+                {$fromDateCondition}
+                {$toDateCondition}
+                {$statusCondition}
+                {$missPunchOnlyCondition}
+                ORDER BY A.ATTENDANCE_DT DESC
+                ";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
     public function delete($id) {

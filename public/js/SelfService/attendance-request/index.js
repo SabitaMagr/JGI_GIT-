@@ -2,9 +2,9 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
-        
-          $("#reset").on("click", function () {
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+
+        $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
                 $.each(document.ids, function (key, value) {
                     $("#" + key).val(value).change();
@@ -74,9 +74,9 @@ angular.module('hris', [])
                         {title: "Action", width: 80}
                     ]
                 });
-                
-                app.searchTable('attendanceRequestTable',['REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','A_STATUS']);
-                
+
+                app.searchTable('attendanceRequestTable', ['REQUESTED_DT', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'A_STATUS']);
+
                 app.pdfExport(
                         'attendanceRequestTable',
                         {
@@ -93,7 +93,7 @@ angular.module('hris', [])
                             'APPROVED_DT': 'Approved Date',
                         }
                 );
-        
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

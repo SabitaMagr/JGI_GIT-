@@ -2,16 +2,16 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
-        
-          $("#reset").on("click", function () {
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+
+        $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
                 $.each(document.ids, function (key, value) {
                     $("#" + key).val(value).change();
                 });
             }
         });
-        
+
     });
 })(window.jQuery, window.app);
 
@@ -79,9 +79,9 @@ angular.module('hris', [])
                         {title: "Action"}
                     ]
                 });
-                
-                app.searchTable('leaveRequestTable',['LEAVE_ENAME','REQUESTED_DT','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS']);
-                
+
+                app.searchTable('leaveRequestTable', ['LEAVE_ENAME', 'REQUESTED_DT', 'FROM_DATE', 'TO_DATE', 'NO_OF_DAYS', 'STATUS']);
+
                 app.pdfExport(
                         'leaveRequestTable',
                         {
@@ -93,8 +93,8 @@ angular.module('hris', [])
                             'STATUS': 'Status',
                         }
                 );
-                
-                
+
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

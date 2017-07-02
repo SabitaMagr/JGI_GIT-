@@ -24,6 +24,7 @@ class LeaveApply extends Model {
     const RECOMMENDED_REMARKS = "RECOMMENDED_REMARKS";
     const APPROVED_REMARKS = "APPROVED_REMARKS";
     const MODIFIED_DT = "MODIFIED_DT";
+    const GRACE_PERIOD = "GRACE_PERIOD";
 
     public $id;
     public $employeeId;
@@ -42,6 +43,7 @@ class LeaveApply extends Model {
     public $recommendedRemarks;
     public $approvedRemarks;
     public $modifiedDt;
+    public $gracePeriod;
     public $mappings = [
         'id' => self::ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -59,7 +61,8 @@ class LeaveApply extends Model {
         'remarks' => self::REMARKS,
         'recommendedRemarks' => self::RECOMMENDED_REMARKS,
         'approvedRemarks' => self::APPROVED_REMARKS,
-        'modifiedDt' => self::MODIFIED_DT
+        'modifiedDt' => self::MODIFIED_DT,
+        'gracePeriod' => self::GRACE_PERIOD,
     ];
 
 }

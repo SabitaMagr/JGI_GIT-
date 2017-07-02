@@ -38,6 +38,7 @@ $noOfDays = $form->get('noOfDays');
 $halfDay = $form->get('halfDay');
 $remarks = $form->get('remarks');
 
+$gracePeriod = $form->get('gracePeriod');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Leave');
 $submit->setAttribute('id', 'request');
@@ -82,6 +83,18 @@ print $this->form()->openTag($form);
                                 </select>
                             </div>
                         </div>
+                        <div class="col-sm-4">
+                            <div class="form-group disabled">
+                                <label for="leaveId">Available Days</label>
+                                <input type="text" READONLY name="availableDays" ng-model="availableDays" required="required" id="availableDays"  class="form-control"  value="">
+                                <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class=" row">
 
                         <div class="col-sm-4">
 
@@ -133,17 +146,6 @@ print $this->form()->openTag($form);
                             </div>
 
                         </div>
-                    </div>
-
-                    <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group disabled">
-                                <label for="leaveId">Available Days</label>
-                                <input type="text" READONLY name="availableDays" ng-model="availableDays" required="required" id="availableDays"  class="form-control"  value="">
-                                <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
-                            </div>
-                        </div>
-
                         <div class="col-sm-4">
                             <div
                                 class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
@@ -154,37 +156,34 @@ print $this->form()->openTag($form);
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group padding-0" id="remarks">
-                                <?php print $this->formLabel($remarks); ?>
-                                <?php print $this->formElement($remarks); ?>
-                            </div>
-                        </div>
-
                     </div>
-
-                    <div class="form-group padding-0">
-                        <label for="noOfDays">
-                            <input type="hidden" name="substituteEmployee" value="0"/>
-                            <div class="md-checkbox">
-                                <input type="checkbox" value="1" ng-model="substituteEmployee" ng-click="viewSubstituteEmployee(substituteEmployee)" id="substituteEmployee" class="md-check" name="substituteEmployee"/>
-                                <label for="substituteEmployee">
-                                    <span></span>
-                                    <span class="check" style="left: 0px !important;"></span>
-                                    <span class="box" style="left: 0px !important;"></span>
-                                    Substitute Employee </label>
+                    <div class="row">
+                        <div class=" col-sm-4 " id="gracePeriodCol">
+                            <div class="form-group" >
+                                <?php print $this->formLabel($gracePeriod); ?>
+                                <?php print $this->formElement($gracePeriod); ?>
                             </div>
-                        </label>
-                        <div ng-if="leaveSubstitute">
-                            <select class="form-control" name="leaveSubstitute" style="cursor: pointer;">
+
+                            <?php print $this->formElementErrors()->render($gracePeriod, ['class' => 'help-block error']); ?>
+                        </div>
+                        <div class="col-sm-4" id="substituteEmployeeCol">
+                            <label for="substituteEmployee">Substitute Employee </label>
+                            <span class="required" aria-required="true">*</span>
+                            <select required class="form-control" name="leaveSubstitute" id="leaveSubstitute" style="cursor: pointer;">
                                 <?php foreach ($employeeList as $key => $value) { ?>
                                     <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
+                        <div class="col-sm-4">
+                            <div class="form-group padding-0" id="remarks">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                        </div>
+
                     </div>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                     <?php print $this->formSubmit($submit); ?>
 
                 </div>

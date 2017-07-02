@@ -14,7 +14,7 @@ class LeaveMasterForm {
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"leave Ename"})
+     * @Annotation\Options({"label":"Leave Ename"})
      * @Annotation\Attributes({ "id":"leaveEname", "class":"form-control" })
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"150"}})
      */
@@ -43,7 +43,7 @@ class LeaveMasterForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Paid"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"paid"})
+     * @Annotation\Attributes({ "id":"paid","value":"N"})
      */
     public $paid;
 
@@ -107,11 +107,30 @@ class LeaveMasterForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
      * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
      */
     public $companyId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Grace Leave"})
+     * @Annotation\Value("N")
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"allowGraceLeave","value":"N"})
+     */
+    public $allowGraceLeave;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Monthly"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"isMonthly","value":"N"})
+     */
+    public $isMonthly;
 
 }

@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 8/31/16
- * Time: 11:52 AM
- */
-
 namespace Setup\Form;
 
 use Application\Model\Model;
@@ -104,6 +97,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Type"})
      * @Annotation\Attributes({ "id":"employeeType","class":"form-control"})
      */
+    
     public $employeeType;
     public $branchId;
     public $departmentId;

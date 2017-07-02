@@ -150,7 +150,7 @@ class TravelRequest extends AbstractActionController {
         $model = new TravelRequestModel();
         if ($request->isPost()) {
             $postData = $request->getPost();
-            $substituteEmployee = $postData->substituteEmployee;
+            $travelSubstitute = $postData->travelSubstitute;
             $this->form->setData($postData);
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
@@ -162,7 +162,7 @@ class TravelRequest extends AbstractActionController {
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
 
-                if ($substituteEmployee == 1) {
+                if ($travelSubstitute != null) {
                     $travelSubstituteModel = new TravelSubstitute();
                     $travelSubstituteRepo = new TravelSubstituteRepository($this->adapter);
 

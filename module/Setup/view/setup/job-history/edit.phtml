@@ -13,10 +13,13 @@ $form->setAttribute('id', 'jobHistory-form');
 
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employeesAll);
+
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
+
 $serviceEventTypeId = $form->get('serviceEventTypeId');
 $serviceEventTypeId->setValueOptions($serviceEventTypes);
+
 $fromServiceTypeId = $form->get('fromServiceTypeId');
 $fromServiceTypeId->setValueOptions($serviceTypes);
 $toServiceTypeId = $form->get('toServiceTypeId');
@@ -96,10 +99,7 @@ print $this->form()->openTag($form);
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepaliStartDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                               class="form-control" value="">
-                                    </div>
+                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate1" class="form-control" value="">
                                 </div>
                             </div>     
                         </div>        

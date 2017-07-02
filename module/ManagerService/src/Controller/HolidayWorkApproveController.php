@@ -250,29 +250,8 @@ class HolidayWorkApproveController extends AbstractActionController {
     private function wohAppAction($requestedEmployeeID, $detail) {
         $rule = $this->holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
 
-
         if ($rule['WOH_FLAG'] === Position::WOH_FLAG_LEAVE) {
-            $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
-            $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-            $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
-            $substituteLeaveId = $substituteLeave['LEAVE_ID'];
-            $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-            if (count($empSubLeaveDtl) > 0) {
-                $preBalance = $empSubLeaveDtl['BALANCE'];
-                $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
-                $balance = $preBalance + $detail['DURATION'];
-                $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
-            } else {
-                $leaveAssign = new LeaveAssign();
-                $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                $leaveAssign->createdBy = $this->employeeId;
-                $leaveAssign->employeeId = $requestedEmployeeID;
-                $leaveAssign->leaveId = $substituteLeaveId;
-                $leaveAssign->totalDays = $detail['DURATION'];
-                $leaveAssign->previousYearBalance = 0;
-                $leaveAssign->balance = $detail['DURATION'];
-                $leaveAssignRepo->add($leaveAssign);
-            }
+            $this->holidayWorkApproveRepository->wohToLeave($this->employeeId, $detail['ID']);
         }
 
         if ($rule['WOH_FLAG'] === Position::WOH_FLAG_OT) {

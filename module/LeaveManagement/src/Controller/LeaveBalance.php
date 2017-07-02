@@ -13,9 +13,12 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use PHPExcel;
 use PHPExcel_IOFactory;
+use SelfService\Model\LeaveSubstitute;
 use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\LeaveSubstituteRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -26,11 +29,14 @@ class LeaveBalance extends AbstractActionController {
     private $repository;
     private $form;
     private $leaveRequestRepository;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new LeaveBalanceRepository($adapter);
         $this->leaveRequestRepository = new LeaveRequestRepository($adapter);
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function initializeForm() {
@@ -76,8 +82,9 @@ class LeaveBalance extends AbstractActionController {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $employeeDtl = $employeeRepository->fetchById($employeeId);
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
-
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
+            $leaveSubstitute = $postedData->leaveSubstitute;
             if ($this->form->isValid()) {
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
@@ -92,10 +99,29 @@ class LeaveBalance extends AbstractActionController {
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
-                try {
-                    HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin('url'));
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
+                if ($leaveSubstitute !== null) {
+                    $leaveSubstituteModel = new LeaveSubstitute();
+                    $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
+
+
+                    $leaveSubstituteModel->leaveRequestId = $leaveRequest->id;
+                    $leaveSubstituteModel->employeeId = $leaveSubstitute;
+                    $leaveSubstituteModel->createdBy = $this->employeeId;
+                    $leaveSubstituteModel->createdDate = Helper::getcurrentExpressionDate();
+                    $leaveSubstituteModel->status = 'E';
+
+                    $leaveSubstituteRepo->add($leaveSubstituteModel);
+                    try {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_SUBSTITUTE_APPLIED, $leaveRequest, $this->adapter, $this->plugin("url"));
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
+                } else {
+                    try {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this->plugin("url"));
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
                 }
                 return $this->redirect()->toRoute("leavestatus");
             }

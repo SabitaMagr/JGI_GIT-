@@ -202,6 +202,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div id="quaConId" ng-app="hris" ng-controller="qualificationController">
+    <div class="row esetup" style="margin-top:10px;">
+        <div class="col-md-12" style="">
+            <a class="btn btn-success pull-right" href="<?= $this->url("employee", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
+                <i class="fa fa-edit"></i>
+            </a>
+        </div>   
+    </div>
     <div id="rootwizard" class="tabbable-custom">
         <ul class="nav nav-tabs">
             <li class="active">

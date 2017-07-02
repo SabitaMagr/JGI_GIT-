@@ -5,14 +5,13 @@ namespace ManagerService\Controller;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
-use LeaveManagement\Model\LeaveAssign;
-use LeaveManagement\Repository\LeaveAssignRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\DayoffWorkApproveRepository;
+use ManagerService\Repository\HolidayWorkApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
+use Setup\Model\Position;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -161,7 +160,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $this->wodApproveAction($requestedEmployeeID, $empSubLeaveDtl);
+                    $this->wodApproveAction($requestedEmployeeID, $detail);
                     $workOnDayoffModel->status = "AP";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
                 }
@@ -220,35 +219,16 @@ class DayoffWorkApproveController extends AbstractActionController {
     }
 
     private function wodApproveAction($requestedEmployeeID, $detail) {
-        $rule = $this->holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
+        $holidayWorkApproveRepository = new HolidayWorkApproveRepository($this->adapter);
+        $rule = $holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
 
 
         if ($rule['WOH_FLAG'] === Position::WOH_FLAG_LEAVE) {
-            $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
-            $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-            $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
-            $substituteLeaveId = $substituteLeave['LEAVE_ID'];
-            $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-            if (count($empSubLeaveDtl) > 0) {
-                $preBalance = $empSubLeaveDtl['BALANCE'];
-                $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
-                $balance = $preBalance + $detail['DURATION'];
-                $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
-            } else {
-                $leaveAssign = new LeaveAssign();
-                $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                $leaveAssign->createdBy = $this->employeeId;
-                $leaveAssign->employeeId = $requestedEmployeeID;
-                $leaveAssign->leaveId = $substituteLeaveId;
-                $leaveAssign->totalDays = $detail['DURATION'];
-                $leaveAssign->previousYearBalance = 0;
-                $leaveAssign->balance = $detail['DURATION'];
-                $leaveAssignRepo->add($leaveAssign);
-            }
+            $this->dayoffWorkApproveRepository->wodToLeave($this->employeeId, $detail['ID']);
         }
 
         if ($rule['WOH_FLAG'] === Position::WOH_FLAG_OT) {
-            $this->holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
+            $holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
         }
     }
 

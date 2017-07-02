@@ -47,6 +47,8 @@ class DashboardController extends AbstractActionController {
             "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
             "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
             'todoList' => $this->getTodoList(),
+            "newEmployees" => $dashboardRepo->fetchJoinedEmployees(),
+            "leftEmployees" => $dashboardRepo->fetchLeftEmployees(),
         ];
         $view = new ViewModel(Helper::addFlashMessagesToArray($this, $data));
         $view->setTemplate("dashboard/employee");
@@ -111,6 +113,8 @@ class DashboardController extends AbstractActionController {
             "pendingLeave" => $dashboardRepo->fetchPendingLeave($empCompanyId, $empBranchId),
             "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth($empCompanyId, $empBranchId),
             "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
+            "newEmployees" => $dashboardRepo->fetchJoinedEmployees(),
+            "leftEmployees" => $dashboardRepo->fetchLeftEmployees(),
         ];
         $view = new ViewModel(Helper::addFlashMessagesToArray($this, $data));
         $view->setTemplate("dashboard/branch-manager");

@@ -24,14 +24,14 @@ class TaskRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->tableGateway->update([TaskModel::DELETED_FLAG=>'Y'],[TaskModel::TASK_ID=>$id]);
+        $this->tableGateway->update([TaskModel::DELETED_FLAG => 'Y'], [TaskModel::TASK_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
-         $data = $model->getArrayCopyForDB();
+        $data = $model->getArrayCopyForDB();
         unset($data[TaskModel::CREATED_BY]);
         unset($data[TaskModel::CREATED_DT]);
-        $this->tableGateway->update($data,[TaskModel::TASK_ID=>$id]);
+        $this->tableGateway->update($data, [TaskModel::TASK_ID => $id]);
     }
 
     public function fetchAll() {
@@ -56,7 +56,7 @@ class TaskRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(['T' => TaskModel::TABLE_NAME]);
         $select->where(["T." . TaskModel::EMPLOYEE_ID . "='" . $id . "'"]);
-         $select->columns(Helper::convertColumnDateFormat($this->adapter, new TaskModel(), [
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new TaskModel(), [
                     'endDate',
                         ], NULL, 'T'), false);
         $select->where(["T." . TaskModel::DELETED_FLAG . "='N'"]);
