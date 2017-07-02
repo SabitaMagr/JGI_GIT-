@@ -6,7 +6,6 @@ use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
 use Application\Model\User;
 use Application\Model\UserLog;
-use Application\Repository\CheckoutRepository;
 use Application\Repository\MonthRepository;
 use Application\Repository\UserLogRepository;
 use AttendanceManagement\Model\Attendance;
@@ -71,20 +70,20 @@ class AuthController extends AbstractActionController {
 
     public function loginAction() {
         //to make register attendance by default checked on login page:: condition start
-        $type = (($this->params()->fromRoute('type'))!==null)?($this->params()->fromRoute('type')):null;
-        if($type!==null){
+        $type = (($this->params()->fromRoute('type')) !== null) ? ($this->params()->fromRoute('type')) : null;
+        if ($type !== null) {
             $this->getSessionStorage()->forgetMe();
             $this->getAuthService()->clearIdentity();
         }
         //end
-        
+
         if ($this->getAuthService()->hasIdentity()) {
-            return $this->redirect()->toRoute('dashboard'); 
+            return $this->redirect()->toRoute('dashboard');
         }
         $form = $this->getForm();
         return new ViewModel([
             'form' => $form,
-            'type'=> $type,
+            'type' => $type,
             'messages' => $this->flashmessenger()->getMessages()
         ]);
     }
@@ -109,6 +108,16 @@ class AuthController extends AbstractActionController {
                 if ($result->isValid()) {
                     //after authentication success get the user specific details
                     $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
+
+                    $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+
+                    $employeeId = $resultRow->EMPLOYEE_ID;
+
+                    $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
+                    $inTime = $todayAttendance['IN_TIME'];
+
+
+                    $attendanceType = ($inTime) ? "OUT" : "IN";
                     $redirect = 'dashboard';
                     //check if it has rememberMe :
                     if (1 == $request->getPost('rememberme')) {
@@ -118,27 +127,30 @@ class AuthController extends AbstractActionController {
                         $this->getAuthService()->setStorage($this->getSessionStorage());
                     }
                     if (1 == $request->getPost('checkIn')) {
+
                         $attendanceRepo = new AttendanceRepository($this->adapter);
-                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-                        
-                        $todayDate = Helper::getcurrentExpressionDate();
-                        $todayTime = Helper::getcurrentExpressionTime();
-                        $employeeId = $resultRow->EMPLOYEE_ID;
-                        
-                        $shiftDetails=$attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
-                        if(!$shiftDetails){
-                        $shiftDetails=$attendanceDetailRepo->fetchEmployeeDefaultShift($employeeId);
+
+                        $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
+                        if (!$shiftDetails) {
+                            $shiftDetails = $attendanceDetailRepo->fetchEmployeeDefaultShift($employeeId);
                         }
-                        
+
                         $currentTimeDatabase = $shiftDetails['CURRENT_TIME'];
                         $checkInTimeDatabase = $shiftDetails['CHECKIN_TIME'];
-                        
+                        $checkOutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
+
                         $currentDateTime = new DateTime($currentTimeDatabase);
                         $checkInDateTime = new DateTime($checkInTimeDatabase);
-                        $diff = date_diff($currentDateTime,$checkInDateTime );
-                        $lateIN = $diff->format("%r");
-                        if ($lateIN == '-') {
-                          return $this->redirect()->toRoute('checkin',['action'=>'index','userId'=>$resultRow->USER_ID]);
+                        $checkOutDateTime = new DateTime($checkOutTimeDatabase);
+
+                        if ($inTime) {
+                            $diff = date_diff($checkOutDateTime, $currentDateTime);
+                        } else {
+                            $diff = date_diff($currentDateTime, $checkInDateTime);
+                        }
+                        $diffNegative = $diff->format("%r");
+                        if ($diffNegative == '-') {
+                            return $this->redirect()->toRoute('checkin', ['action' => 'index', 'userId' => $resultRow->USER_ID, 'type' => $attendanceType]);
                         }
                         $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
                         if (!isset($result)) {
@@ -146,7 +158,7 @@ class AuthController extends AbstractActionController {
                         }
                         $attendanceModel = new Attendance();
                         $attendanceModel->employeeId = $employeeId;
-                        $attendanceModel->attendanceDt = $todayDate;
+                        $attendanceModel->attendanceDt = new Expression("TRUNC(SYSDATE)");
                         $attendanceModel->attendanceTime = new Expression("SYSDATE");
                         $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
                         $attendanceModel->attendanceFrom = 'WEB';
@@ -162,6 +174,7 @@ class AuthController extends AbstractActionController {
                         "user_id" => $resultRow->USER_ID,
                         "employee_id" => $resultRow->EMPLOYEE_ID,
                         "role_id" => $resultRow->ROLE_ID,
+                        'register_attendance' => $attendanceType,
 //                        "role_id" => 8,
 //                        "employee_detail" => $employeeDetail,
                         "fiscal_year" => $fiscalYear
@@ -175,62 +188,61 @@ class AuthController extends AbstractActionController {
         }
         return $this->redirect()->toRoute($redirect);
     }
-    
+
     public function checkinAuthAction() {
         $form = $this->getForm();
         $redirect = 'checkin';
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setData($request->getPost());
-                //check authentication...
-                $this->getAuthService()->getAdapter()
-                        ->setIdentity($request->getPost('username'))
+            //check authentication...
+            $this->getAuthService()->getAdapter()
+                    ->setIdentity($request->getPost('username'))
 //                        ->setCredential(md5($request->getPost('password')))
-                        ->setCredential($request->getPost('password'));
-                $result = $this->getAuthService()->authenticate();
-                foreach ($result->getMessages() as $message) {
-                    //save message temporary into flashmessenger
-                    $this->flashmessenger()->addMessage($message);
-                }
-                if ($result->isValid()) {
-                    //after authentication success get the user specific details
-                    $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
-                    $redirect = 'dashboard';
-                    $attendanceRepo = new AttendanceRepository($this->adapter);
-                    $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-                        
-                    $todayDate = Helper::getcurrentExpressionDate();
-                    $todayTime = Helper::getcurrentExpressionTime();
-                    $employeeId = $resultRow->EMPLOYEE_ID;
+                    ->setCredential($request->getPost('password'));
+            $result = $this->getAuthService()->authenticate();
+            foreach ($result->getMessages() as $message) {
+                //save message temporary into flashmessenger
+                $this->flashmessenger()->addMessage($message);
+            }
+            if ($result->isValid()) {
+                //after authentication success get the user specific details
+                $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
+                $redirect = 'dashboard';
+                $attendanceRepo = new AttendanceRepository($this->adapter);
+                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
 
-                    $attendanceModel = new Attendance();
-                    $attendanceModel->employeeId = $employeeId;
-                    $attendanceModel->attendanceDt = $todayDate;
-                    $attendanceModel->attendanceTime = new Expression("SYSDATE");
-                    $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
-                    $attendanceModel->attendanceFrom = 'WEB';
-                    $attendanceModel->remarks = $this->request->getPost('checkInRemarks');
-                    $attendanceRepo->add($attendanceModel);
+                $employeeId = $resultRow->EMPLOYEE_ID;
+
+                $attendanceModel = new Attendance();
+                $attendanceModel->employeeId = $employeeId;
+                $attendanceModel->attendanceDt = new Expression("TRUNC(SYSDATE)");
+                $attendanceModel->attendanceTime = new Expression("SYSDATE");
+                $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
+                $attendanceModel->attendanceFrom = 'WEB';
+                $attendanceModel->remarks = $this->request->getPost('checkInRemarks');
+                $attendanceRepo->add($attendanceModel);
 
 //                    $employeeRepo = new EmployeeRepository($this->adapter);
 //                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
-                        
-                    $monthRepo = new MonthRepository($this->adapter);
-                    $fiscalYear = $monthRepo->getCurrentFiscalYear();
 
-                    $this->getAuthService()->getStorage()->write([
-                        "user_name" => $request->getPost('username'),
-                        "user_id" => $resultRow->USER_ID,
-                        "employee_id" => $resultRow->EMPLOYEE_ID,
-                        "role_id" => $resultRow->ROLE_ID,
+                $monthRepo = new MonthRepository($this->adapter);
+                $fiscalYear = $monthRepo->getCurrentFiscalYear();
+
+                $this->getAuthService()->getStorage()->write([
+                    "user_name" => $request->getPost('username'),
+                    "user_id" => $resultRow->USER_ID,
+                    "employee_id" => $resultRow->EMPLOYEE_ID,
+                    "role_id" => $resultRow->ROLE_ID,
+                    'register_attendance' => 'OUT',
 //                        "role_id" => 8,
 //                        "employee_detail" => $employeeDetail,
-                        "fiscal_year" => $fiscalYear
-                    ]);
+                    "fiscal_year" => $fiscalYear
+                ]);
 
-                    // to add user log details in HRIS_USER_LOG
-                    $this->setUserLog($this->adapter, $request->getServer('REMOTE_ADDR'), $resultRow->USER_ID);
-                }
+                // to add user log details in HRIS_USER_LOG
+                $this->setUserLog($this->adapter, $request->getServer('REMOTE_ADDR'), $resultRow->USER_ID);
+            }
         }
         return $this->redirect()->toRoute($redirect);
     }
@@ -252,30 +264,43 @@ class AuthController extends AbstractActionController {
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }
-    
+
     public function checkoutAction() {
         $employeeId = $this->storage->read()['employee_id'];
-        $chekoutRepo = new CheckoutRepository($this->adapter);
-        $shiftDetails = $chekoutRepo->fetchEmployeeShfitDetails($employeeId);
-        
-        if(!$shiftDetails){
-            $shiftDetails=$chekoutRepo->fetchEmployeeDefaultShift();
+
+        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+        $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
+        if (!$shiftDetails) {
+            $shiftDetails = $attendanceDetailRepo->fetchEmployeeDefaultShift();
         }
-        
+        $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
+        $inTime = $todayAttendance['IN_TIME'];
+
+
         $currentTimeDatabase = $shiftDetails['CURRENT_TIME'];
-        $checkoutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
+        $checkInTimeDatabase = $shiftDetails['CHECKIN_TIME'];
+        $checkOutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
 
         $currentDateTime = new DateTime($currentTimeDatabase);
-        $checkoutDateTime = new DateTime($checkoutTimeDatabase);
-        $diff = date_diff($checkoutDateTime, $currentDateTime);
-        $earlyOut = $diff->format("%r");
-        
+        $checkInDateTime = new DateTime($checkInTimeDatabase);
+        $checkOutDateTime = new DateTime($checkOutTimeDatabase);
+
+        $attendanceType = 'IN';
+        if ($inTime) {
+            $attendanceType = 'OUT';
+            $diff = date_diff($checkOutDateTime, $currentDateTime);
+        } else {
+            $diff = date_diff($currentDateTime, $checkInDateTime);
+        }
+        $diffNegative = $diff->format("%r");
+
         $request = $this->getRequest();
         $remarks = '';
 
-        if ($earlyOut == '-') {
+        if ($diffNegative == '-') {
             if (!$request->isPost()) {
                 return Helper::addFlashMessagesToArray($this, [
+                            'type' => $attendanceType
                 ]);
             } else {
                 $postData = $request->getPost();
@@ -286,11 +311,9 @@ class AuthController extends AbstractActionController {
         $attendanceRepo = new AttendanceRepository($this->adapter);
         $attendanceModel = new Attendance();
 
-        $todayDate = Helper::getcurrentExpressionDate();
-
         $attendanceModel->employeeId = $this->getAuthService()->getStorage()->read()['employee_id'];
-        $attendanceModel->attendanceDt = $todayDate;
-        $attendanceModel->attendanceTime = new Expression("SYSDATE");;
+        $attendanceModel->attendanceDt = new Expression("TRUNC(SYSDATE)");
+        $attendanceModel->attendanceTime = new Expression("SYSDATE");
         $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
         $attendanceModel->attendanceFrom = 'WEB';
         $attendanceModel->remarks = $remarks;

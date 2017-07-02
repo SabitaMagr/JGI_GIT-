@@ -119,14 +119,14 @@
                                                                 <i class="icon-lock"></i> Lock Screen </a>
                                                         </li>-->
                             <li>
-                                <a class="btn-edit"  href="#" id="passwordChangeMenu">
+                                <a class=""  href="#" id="passwordChangeMenu">
                                     <i class="icon-user"></i> Change Password </a>
                             </li>
                             <!-- commented on JGI -->
-                            <!--                            <li>
+                                                        <li>
                                                             <a href="<?php echo $this->url('checkout', ['action' => 'checkout']); ?>">
-                                                                <i class="icon-key"></i> Check Out </a>
-                                                        </li>-->
+                                                                <i class="icon-key"></i>Check <?=($registerAttendance=='OUT')?'Out':'In'?> </a>
+                                                        </li>
                             <li>
                                 <a href="<?php echo $this->url('logout', ['action' => 'logout']); ?>">
                                     <i class="icon-key"></i> Log Out </a>

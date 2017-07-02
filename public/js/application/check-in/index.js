@@ -17,6 +17,9 @@
                 return false;
             }
         });
+        $("#remarks").blur(function(e){
+             $("#registerAttendanceForm").find('span.errorMsg').remove();
+        });
     });
 })(window.jQuery, window.app);
 

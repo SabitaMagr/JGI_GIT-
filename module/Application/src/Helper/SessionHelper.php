@@ -17,6 +17,7 @@ class SessionHelper {
         $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
         $auth = new AuthenticationService();
         $employeeId = $auth->getStorage()->read()['employee_id'];
+        $registerAttendance = $auth->getStorage()->read()['register_attendance'];
         if ($employeeId != null) {
             $tempEmployeeFileData = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::PROFILE_PICTURE_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null);
             $employeeFileId = (sizeof($tempEmployeeFileData) == 0) ? null : $tempEmployeeFileData[$employeeId];
@@ -32,6 +33,7 @@ class SessionHelper {
             $companyName = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::COMPANY_ID => $companyId], null)[$companyId];
             $companyAddress = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::ADDRESS], [Company::COMPANY_ID => $companyId], null)[$companyId];
             $event->getViewModel()->setVariable("companyName", $companyName);
+            $event->getViewModel()->setVariable("registerAttendance", $registerAttendance);
             $event->getViewModel()->setVariable("companyAddress", $companyAddress);
             $companyLogoCode = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::LOGO], [Company::COMPANY_ID => $companyId], null)[$companyId];
             //end to set companu logo details

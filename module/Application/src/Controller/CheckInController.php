@@ -1,9 +1,8 @@
 <?php
 namespace Application\Controller;
 
-use Application\Factory\ConfigInterface;
 use Application\Helper\Helper;
-use Application\Repository\ForgotPasswordRepository;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use System\Repository\UserSetupRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -25,11 +24,20 @@ class CheckInController extends AbstractActionController{
     }
     public function indexAction() {
         $userId = $this->params()->fromRoute('userId');
+        $type = $this->params()->fromRoute('type');
         $userRepository = new UserSetupRepository($this->adapter);
         $userDetail = $userRepository->fetchById($userId)->getArrayCopy();
+        $employeeId=$userDetail['EMPLOYEE_ID'];
+        
+        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+        $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
+        
+        
         return Helper::addFlashMessagesToArray($this, [
                     'username'=> $userDetail['USER_NAME'],
-                    'password'=> $userDetail['PASSWORD']
+                    'password'=> $userDetail['PASSWORD'],
+                    'type'=> $type,
+                    'attendanceDetails'=> $todayAttendance,
             ]);
     }
 }
