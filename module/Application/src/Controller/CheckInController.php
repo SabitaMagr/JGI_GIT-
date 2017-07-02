@@ -32,12 +32,17 @@ class CheckInController extends AbstractActionController{
         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
         
+        $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
+        if (!$shiftDetails) {
+            $shiftDetails = $attendanceDetailRepo->fetchEmployeeDefaultShift($employeeId);
+        }
         
         return Helper::addFlashMessagesToArray($this, [
                     'username'=> $userDetail['USER_NAME'],
                     'password'=> $userDetail['PASSWORD'],
                     'type'=> $type,
                     'attendanceDetails'=> $todayAttendance,
+                    'shiftDetails'=> $shiftDetails
             ]);
     }
 }

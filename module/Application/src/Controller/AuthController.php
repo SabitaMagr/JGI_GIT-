@@ -300,7 +300,9 @@ class AuthController extends AbstractActionController {
         if ($diffNegative == '-') {
             if (!$request->isPost()) {
                 return Helper::addFlashMessagesToArray($this, [
-                            'type' => $attendanceType
+                            'type' => $attendanceType,
+                            'attendanceDetails'=> $todayAttendance,
+                        'shiftDetails'=> $shiftDetails
                 ]);
             } else {
                 $postData = $request->getPost();
