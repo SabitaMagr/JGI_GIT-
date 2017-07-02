@@ -1,7 +1,18 @@
+<?php
+    $lableData='';
+if($typeId==0){
+    $lableData='You are Late! Fill Up The Remarks';
+}else if($typeId==1){
+    $lableData='You are trying to Checkout early Please!! Fill Up the Remarks';
+}
+
+
+?>
+
 <div>
     <form method="POST" name="User" role="form" class="login-form" action="<?= $this->url('auth/process', ['action' => 'checkinAuth']); ?>" id="User">   
-    <label>You are Late! Fill Up The Remarks</label>
-    <textarea rows="4" cols="30"name="checkInRemarks" required="required"></textarea>
+    <label> <?=$lableData?>  </label>
+    <textarea rows="4" style="width:100%" name="checkInRemarks" required="required"></textarea>
     </br>
     <input type="hidden" name="username" value="<?= $username; ?>"/>
     <input type="hidden" name="password" value="<?= $password ?>"/>

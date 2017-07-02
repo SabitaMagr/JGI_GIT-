@@ -167,7 +167,7 @@ return [
             'checkin' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/checkin[/:action[/:userId]]',
+                    'route' => '/checkin[/:action[/:userId][/:typeId]]',
                     'defaults' => [
                         'controller' => Controller\CheckInController::class,
                         'action' => 'email',
