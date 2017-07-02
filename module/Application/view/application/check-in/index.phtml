@@ -1,16 +1,61 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/application/check-in/index.js'));
 
- $lableData='';
-if($type=='IN'){
-    $lableData='You are Late! Fill Up The Remarks';
-}else if($type=='OUT'){
-    $lableData='You are trying to Checkout early Please!! Fill Up the Remarks';
+$lableData = '';
+if ($type == 'IN') {
+    $lableData = 'You are Late! Fill Up The Remarks';
+} else if ($type == 'OUT') {
+    $lableData = 'You are trying to Checkout early Please!! Fill Up the Remarks';
 }
 ?>
+
+<div class="row">
+    <div class="col-xs-6">
+        <label>Check In Time</label>
+    </div>
+    <div class="col-xs-2">
+        <label>:</label>
+    </div>
+    <div class="col-xs-4">
+        <?php  echo ($shiftDetails)?$shiftDetails['CHECKIN_TIME']:"";  ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <label>Check Out Time</label>
+    </div>
+    <div class="col-xs-2">
+        <label>:</label>
+    </div>
+    <div class="col-xs-4">
+        <?php  echo ($shiftDetails)?$shiftDetails['CHECKOUT_TIME']:"";  ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <label>Logged in  Time</label>
+    </div>
+    <div class="col-xs-2">
+        <label>:</label>
+    </div>
+    <div class="col-xs-4">
+        <?php  echo ($attendanceDetails)?$attendanceDetails['IN_TIME']:"";  ?>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6">
+        <label>Current Time</label>
+    </div>
+    <div class="col-xs-2">
+        <label>:</label>
+    </div>
+    <div class="col-xs-4">
+        <?php  echo ($shiftDetails)?$shiftDetails['CURRENT_TIME']:"";  ?>
+    </div>
+</div>
 <div>
-    <form method="POST" name="User" role="form" class="login-form" action="<?= $this->url('auth/process', ['action' => 'checkinAuth']); ?>" id="registerAttendanceForm">   
-    <label> <?=$lableData?> </label>
+<form method="POST" name="User" role="form" class="login-form" action="<?= $this->url('auth/process', ['action' => 'checkinAuth']); ?>" id="registerAttendanceForm">   
+    <label> <?= $lableData ?> </label>
     <div class="row">
         <div class="col-sm-12">
             <textarea rows="4" cols="30" name="checkInRemarks" id="remarks" required="required"></textarea>

@@ -593,9 +593,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
     }
 
     public function fetchEmployeeShfitDetails($employeeId) {
-        $sql = "SELECT TO_CHAR(SYSDATE, 'HH24:MI:SS') AS CURRENT_TIME,
-            TO_CHAR(S.START_TIME+((S.LATE_IN*60)/86400), 'HH24:MI:SS') AS CHECKIN_TIME, 
-            TO_CHAR(S.END_TIME-((S.EARLY_OUT*60)/86400), 'HH24:MI:SS') AS CHECKOUT_TIME,
+        $sql = "SELECT INITCAP(TO_CHAR(SYSDATE, 'HH:MI AM')) AS CURRENT_TIME,
+            INITCAP(TO_CHAR(S.START_TIME+((S.LATE_IN*60)/86400), 'HH:MI AM')) AS CHECKIN_TIME, 
+            INITCAP(TO_CHAR(S.END_TIME-((S.EARLY_OUT*60)/86400), 'HH:MI AM')) AS CHECKOUT_TIME,
             ESA.*,S.* FROM HRIS_EMPLOYEES E
                 join HRIS_EMPLOYEE_SHIFT_ASSIGN ESA on (ESA.EMPLOYEE_ID=E.EMPLOYEE_ID)
                 JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=ESA.SHIFT_ID)
@@ -608,9 +608,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
     }
 
     public function fetchEmployeeDefaultShift() {
-        $sql = "SELECT TO_CHAR(SYSDATE, 'HH24:MI:SS') AS CURRENT_TIME,
-      TO_CHAR(S.START_TIME+((S.LATE_IN*60)/86400), 'HH24:MI:SS')   AS CHECKIN_TIME,
-      TO_CHAR(S.END_TIME-((S.EARLY_OUT*60)/86400), 'HH24:MI:SS') AS CHECKOUT_TIME,S.*
+        $sql = "SELECT INITCAP(TO_CHAR(SYSDATE, 'HH:MI AM')) AS CURRENT_TIME,
+      INITCAP(TO_CHAR(S.START_TIME+((S.LATE_IN*60)/86400), 'HH:MI AM'))   AS CHECKIN_TIME,
+      INITCAP(TO_CHAR(S.END_TIME-((S.EARLY_OUT*60)/86400), 'HH:MI AM')) AS CHECKOUT_TIME,S.*
             FROM HRIS_SHIFTS S
             WHERE S.DEFAULT_SHIFT='Y'
             AND (TO_DATE(TRUNC(SYSDATE), 'DD-MON-YY') BETWEEN TO_DATE(S.START_DATE, 'DD-MON-YY') AND TO_DATE(S.END_DATE, 'DD-MON-YY'))";
