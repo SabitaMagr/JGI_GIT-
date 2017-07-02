@@ -185,18 +185,19 @@ window.app = (function ($, toastr, App) {
             todayHighlight: true,
             autoclose: true
         }).on('changeDate', function () {
-            oldFromNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val());
-            $fromNepaliDate.val(oldFromNepali);
-            var minDate = nepaliDatePickerExt.getDate($(this).val());
-            $toEnglishDate.datepicker('setStartDate', minDate);
-
+            if($(this).val()!=null && $(this).val()!==""){
+                oldFromNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val());
+                $fromNepaliDate.val(oldFromNepali);
+                var minDate = nepaliDatePickerExt.getDate($(this).val());
+                $toEnglishDate.datepicker('setStartDate', minDate);
+            }
             //to set value of to date from value of from date
             if (typeof setToDate !== "undefined" && setToDate != null && setToDate != false) {
                 $toEnglishDate.datepicker('update', $(this).val());
                 oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
                 $toNepaliDate.val(oldtoNepali);
             }
-
+            
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
                 fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
@@ -262,11 +263,12 @@ window.app = (function ($, toastr, App) {
             todayHighlight: true,
             autoclose: true
         }).on('changeDate', function () {
-            oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
-            $toNepaliDate.val(oldtoNepali);
-            var maxDate = nepaliDatePickerExt.getDate($(this).val());
-            $fromEnglishDate.datepicker('setEndDate', maxDate);
-
+            if($(this).val()!=null && $(this).val()!==""){
+                oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
+                $toNepaliDate.val(oldtoNepali);
+                var maxDate = nepaliDatePickerExt.getDate($(this).val());
+                $fromEnglishDate.datepicker('setEndDate', maxDate);
+            }
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
                 fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
