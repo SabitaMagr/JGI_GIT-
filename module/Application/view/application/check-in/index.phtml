@@ -9,7 +9,11 @@ if($type=='IN'){
 
 ?>
 
+    <div>
+        <?php // print_r($attendanceDetails); ?>
+    </div>
 <div>
+        
     <form method="POST" name="User" role="form" class="login-form" action="<?= $this->url('auth/process', ['action' => 'checkinAuth']); ?>" id="User">   
     <label> <?=$lableData?>  </label>
     <textarea rows="4" style="width:100%" name="checkInRemarks" required="required"></textarea>
