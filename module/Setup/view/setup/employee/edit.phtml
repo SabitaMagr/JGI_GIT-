@@ -151,9 +151,7 @@ $designationId->setValueOptions($designations);
 $departmentId = $formFour->get('appDepartmentId');
 $departmentId->setValueOptions($departments);
 
-//print_r($departmentId->getValue());
-//
-//die();
+
 
 $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
@@ -172,6 +170,8 @@ if ($jobHistoryListNum > 0) {
     $designationId->setAttributes(["disabled" => "disabled"]);
     $positionId->setAttributes(["disabled" => "disabled"]);
     $serviceTypeId->setAttributes(["disabled" => "disabled"]);
+    $employeeType->setAttributes(["disabled" => "disabled"]);
+    $joinDate->setAttributes(["disabled" => "disabled"]);
 }
 
 
@@ -215,16 +215,6 @@ $traDescription = $formEight->get('description');
 $traFromDate = $formEight->get('fromDate');
 $traToDate = $formEight->get('toDate');
 
-//echo '<pre>';
-//print_r($formSix);
-//print_r($formSeven);
-//print_r($formEight);
-//print_r($expOrgType);
-//echo '</pre>';
-//die();
-//print "<pre>";
-//print_r($filePath->getValue());
-//exit;
 
 $empId = isset($id) ? $id : -1;
 
@@ -263,15 +253,15 @@ if ($this->messages) {
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
     document.urlSubmitTraining = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 9]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
-    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>'
+    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';
     document.currentTab = '<?= $tab ?>';
-    document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>'
+    document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>';
     document.fileTypes = <?= json_encode($filetypes); ?>;
     document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
     document.employeeId =<?= $id ?>;
     document.address =<?php echo json_encode($address); ?>;
     document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';
-</script>
+    document.setAppointmentFlag =<?php echo $jobHistoryListNum > 0 ? 'true' : 'false' ?>;</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -974,7 +964,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
 
@@ -987,7 +977,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
+
 
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
@@ -998,11 +988,11 @@ if ($this->messages) {
                                             <div class="row">
                                                 <div class="col-md-6 nopaddinggap">
                                                     <div class="input-group date">
-                                                    <?php print $this->formElement($famSpouseBirthDate); ?>
+                                                        <?php print $this->formElement($famSpouseBirthDate); ?>
                                                     </div>  
                                                 </div>
                                                 <div class="col-md-6">
-                                                     <input type="text"   id="famSpouseBirthDateNepali" class="form-control " value="">
+                                                    <input type="text"   id="famSpouseBirthDateNepali" class="form-control " value="">
                                                 </div>
                                             </div>
                                         </div>
@@ -1010,8 +1000,8 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
-                                            
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group<?= empty($famSpouseWeddingAnniversary->getMessages()) ? "" : "error" ?>">
@@ -1021,11 +1011,11 @@ if ($this->messages) {
                                             <div class="row">
                                                 <div class="col-md-6 nopaddinggap">
                                                     <div class="input-group date">
-                                                    <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
+                                                        <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
                                                     </div>  
                                                 </div>
                                                 <div class="col-md-6">
-                                                <input type="text"   id="weddingAnniversaryDateNepali" class="form-control " value="">
+                                                    <input type="text"   id="weddingAnniversaryDateNepali" class="form-control " value="">
                                                 </div>
                                             </div>
                                         </div>
@@ -1033,7 +1023,7 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
+
 
 
                         </div>
@@ -1112,9 +1102,9 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idDrivingLicenseExpiry->getMessages()) ? "" : "error" ?>">
@@ -1124,11 +1114,11 @@ if ($this->messages) {
                                             <div class="row">
                                                 <div class="col-md-6 nopaddinggap">
                                                     <div class="input-group date">
-                                                <?php print $this->formElement($idDrivingLicenseExpiry); ?>
+                                                        <?php print $this->formElement($idDrivingLicenseExpiry); ?>
                                                     </div>  
                                                 </div>
                                                 <div class="col-md-6">
-                                                     <input type="text"   id="drivingLicenseExpiaryNepali" class="form-control " value="">
+                                                    <input type="text"   id="drivingLicenseExpiaryNepali" class="form-control " value="">
                                                 </div>
                                             </div>
                                         </div>
@@ -1136,8 +1126,8 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
 
@@ -1225,24 +1215,24 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idCitizenshipIssueDate); ?>
-                                           </div>
+                                        </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <div class="row">
                                                 <div class="col-md-6 nopaddinggap">
                                                     <div class="input-group date">
-                                                <?php print $this->formElement($idCitizenshipIssueDate); ?>
+                                                        <?php print $this->formElement($idCitizenshipIssueDate); ?>
                                                     </div>  
                                                 </div>
                                                 <div class="col-md-6">
-                                                     <input type="text"   id="citizenshipIssueDateNepali" class="form-control " value="">
+                                                    <input type="text"   id="citizenshipIssueDateNepali" class="form-control " value="">
                                                 </div>
                                             </div>
                                         </div>
@@ -1250,10 +1240,10 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
-                            
+
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idCitizenshipIssuePlace->getMessages()) ? "" : "error" ?>">
@@ -1265,48 +1255,32 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idPassportExpiry); ?>
-                                           </div>
+                                        </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <div class="row">
                                                 <div class="col-md-6 nopaddinggap">
                                                     <div class="input-group date">
-                                                <?php print $this->formElement($idPassportExpiry); ?>
+                                                        <?php print $this->formElement($idPassportExpiry); ?>
                                                     </div>  
                                                 </div>
                                                 <div class="col-md-6">
-                                                     <input type="text"   id="passportExpiryNepali" class="form-control " value="">
+                                                    <input type="text"   id="passportExpiryNepali" class="form-control " value="">
                                                 </div>
                                             </div>
                                         </div>
-                                            <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
-<!--                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-                                            <div class="input-group date" id="idPassportExpiry">
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                            </div>-->
-                            
-                            
                         </div>
                     </div>
                     <input type="submit" class="hidden" id="btnform3" value="submit">
@@ -1326,20 +1300,20 @@ if ($this->messages) {
                     <div class="status-info"> 
                         <p><i class="fa fa-info-circle ticon ticon"></i>Status Infomation</p>
                         <div class="row clearfix e-setup">
-                            
-                            
-                            
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                             <?php print $this->formLabel($joinDate); ?>
-                                           </div>
+                                        </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
                                             <div class="row">
                                                 <div class="col-md-6 nopaddinggap">
                                                     <div class="input-group date">
-                                                <?php print $this->formElement($joinDate); ?>
+                                                        <?php print $this->formElement($joinDate); ?>
                                                     </div>  
                                                 </div>
                                                 <div class="col-md-6">
@@ -1351,8 +1325,8 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-                            
-                            
+
+
 
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
@@ -1530,7 +1504,27 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                            <label> To Date </label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <input type="text" name="toDate" id="toDate" class="form-control" value="<?php echo $toDate; ?>" />
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="nepaliToDate" class="form-control " value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
 

@@ -203,13 +203,16 @@ class EmployeeController extends AbstractActionController {
         $employeeData = (array) $this->repository->fetchById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $address = [];
-        $getJobHistoryByEmployeeId = $this->jobHistoryRepo->filter(null, null, $id, -1);
+        $getJobHistoryByEmployeeId = $this->jobHistoryRepo->filter(null, null, $id, 2);
         $empJobHistoryList = [];
         foreach ($getJobHistoryByEmployeeId as $row) {
             array_push($empJobHistoryList, $row);
         }
         $jobHistoryListNum = count($empJobHistoryList);
-
+        $toDate = "";
+        if ($jobHistoryListNum > 0) {
+            $toDate = $empJobHistoryList[0][JobHistory::END_DATE];
+        }
         if ($request->isPost()) {
             $postData = $request->getPost();
             switch ($tab) {
@@ -270,6 +273,7 @@ class EmployeeController extends AbstractActionController {
                         $shiftId = $postData->shift;
                         $recommenderId = $postData->recommender;
                         $approverId = $postData->approver;
+                        $toDate = $postData->toDate;
 
                         $shiftAssign = new ShiftAssign();
 
@@ -321,12 +325,20 @@ class EmployeeController extends AbstractActionController {
                         }
 
                         $this->repository->edit($formFourModel, $id);
-
                         if ($jobHistoryListNum == 0) {
-                            if ($formFourModel->appBranchId != null && $formFourModel->appDepartmentId != null && $formFourModel->appDesignationId != null && $formFourModel->appPositionId != null && $formFourModel->appServiceTypeId != null) {
+                            if ($formFourModel->joinDate != null &&
+                                    $formFourModel->employeeType != null &&
+                                    $formFourModel->appBranchId != null &&
+                                    $formFourModel->appDepartmentId != null &&
+                                    $formFourModel->appDesignationId != null &&
+                                    $formFourModel->appPositionId != null &&
+                                    $formFourModel->appServiceTypeId != null) {
                                 $jobHistoryModel->jobHistoryId = (int) Helper::getMaxId($this->adapter, $jobHistoryModel::TABLE_NAME, $jobHistoryModel::JOB_HISTORY_ID) + 1;
                                 $jobHistoryModel->employeeId = $id;
                                 $jobHistoryModel->startDate = Helper::getExpressionDate($formFourModel->joinDate);
+                                if (isset($toDate) && $toDate != null && $toDate != "") {
+                                    $jobHistoryModel->endDate = Helper::getExpressionDate($toDate);
+                                }
                                 $jobHistoryModel->serviceEventTypeId = $formFourModel->appServiceEventTypeId;
 
                                 $jobHistoryModel->fromBranchId = $formFourModel->appBranchId;
@@ -340,6 +352,8 @@ class EmployeeController extends AbstractActionController {
                                 $jobHistoryModel->toDesignationId = $formFourModel->appDesignationId;
                                 $jobHistoryModel->toPositionId = $formFourModel->appPositionId;
                                 $jobHistoryModel->toServiceTypeId = $formFourModel->appServiceTypeId;
+
+
 
                                 $companyId = ApplicationHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::COMPANY_ID], [HrEmployees::EMPLOYEE_ID => $id]);
                                 if (sizeof($companyId) == 0) {
@@ -481,7 +495,8 @@ class EmployeeController extends AbstractActionController {
                     'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC", null, false, true),
                     'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true)
+                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
+                    'toDate' => $toDate
         ]);
     }
 

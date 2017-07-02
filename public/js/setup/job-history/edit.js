@@ -165,7 +165,7 @@
 
         //localstroage if set
         var lastEmpId = localStorage.getItem("ServiceJobHistorylastEmployeeId");
-        if (lastEmpId != null) {
+        if (!(typeof lastEmpId === "undefined" || lastEmpId == null || lastEmpId == "null")) {
             $employeeId.val(lastEmpId).change();
             app.floatingProfile.setDataFromRemote(lastEmpId);
         }

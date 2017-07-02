@@ -116,8 +116,7 @@ class LeaveRequest extends AbstractActionController {
         if ($request->isPost()) {
             $postData = $request->getPost();
             $this->form->setData($postData);
-            $substituteEmployee = $postData->substituteEmployee;
-
+            $leaveSubstitute = $postData->leaveSubstitute;
             if ($this->form->isValid()) {
                 $leaveRequest = new LeaveApply();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
@@ -133,11 +132,10 @@ class LeaveRequest extends AbstractActionController {
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
-                if ($substituteEmployee == 1) {
+                if ($leaveSubstitute !== null) {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
 
-                    $leaveSubstitute = $postData->leaveSubstitute;
 
                     $leaveSubstituteModel->leaveRequestId = $leaveRequest->id;
                     $leaveSubstituteModel->employeeId = $leaveSubstitute;
@@ -237,7 +235,7 @@ class LeaveRequest extends AbstractActionController {
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
 
         //to get the previous balance of selected leave from assigned leave detail
-        $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
+        $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID']);
         $preBalance = $result['BALANCE'];
 
         if (!$request->isPost()) {
@@ -264,7 +262,8 @@ class LeaveRequest extends AbstractActionController {
                     'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
                     'subRemarks' => $detail['SUB_REMARKS'],
                     'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true)
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true),
+                    'gp' => $detail['GRACE_PERIOD']
         ]);
     }
 

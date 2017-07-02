@@ -206,7 +206,7 @@ class LeaveApproveController extends AbstractActionController {
                     $leaveApply->recommendedBy = $this->employeeId;
                     $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
                 }
-                
+
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
 
@@ -218,7 +218,7 @@ class LeaveApproveController extends AbstractActionController {
                 $attendanceDetailModel = new AttendanceDetail();
                 $attendanceDetailModel->leaveId = $detail['LEAVE_ID'];
                 $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-                
+
 //               start of transaction
                 $connection = $this->adapter->getDriver()->getConnection();
                 $connection->beginTransaction();
@@ -271,6 +271,7 @@ class LeaveApproveController extends AbstractActionController {
                     'subRemarks' => $detail['SUB_REMARKS'],
                     'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE)
+                    , 'gp' => $detail['GRACE_PERIOD']
         ]);
     }
 

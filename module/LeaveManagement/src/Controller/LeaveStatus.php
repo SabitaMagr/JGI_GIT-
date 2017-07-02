@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/25/16
- * Time: 12:04 PM
- */
-
 namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper;
@@ -32,7 +25,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Repository\RecommendApproveRepository;
 use SelfService\Repository\LeaveSubstituteRepository;
 use Setup\Model\HrEmployees;
-
 
 class LeaveStatus extends AbstractActionController {
 
@@ -61,7 +53,7 @@ class LeaveStatus extends AbstractActionController {
 
         $leaveFormElement = new Select();
         $leaveFormElement->setName("leave");
-        $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC",NULL,FALSE,TRUE);
+        $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", NULL, FALSE, TRUE);
         $leaves1 = [-1 => "All Type"] + $leaves;
         $leaveFormElement->setValueOptions($leaves1);
         $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
@@ -115,10 +107,10 @@ class LeaveStatus extends AbstractActionController {
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         $recommApprove = 0;
-        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
-            $recommApprove=1;
+        if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+            $recommApprove = 1;
         }
-            
+
         $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
         $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
         $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
@@ -135,7 +127,7 @@ class LeaveStatus extends AbstractActionController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
-        
+
         $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
         $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($detail['ID']);
 
@@ -154,7 +146,7 @@ class LeaveStatus extends AbstractActionController {
             } else if ($action == "Approve") {
                 $leaveApply->status = "AP";
 
-                if ($detail['HALF_DAY']!=null && $detail['HALF_DAY'] != 'N') {
+                if ($detail['HALF_DAY'] != null && $detail['HALF_DAY'] != 'N') {
                     $leaveTaken = 0.5;
                 } else {
                     $leaveTaken = $detail['NO_OF_DAYS'];
@@ -188,12 +180,12 @@ class LeaveStatus extends AbstractActionController {
                     'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
                     'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove'=> $recommApprove,
-                    'subEmployeeId'=> $detail['SUB_EMPLOYEE_ID'],
-                    'subRemarks'=>$detail['SUB_REMARKS'],
-                    'subApprovedFlag'=>$detail['SUB_APPROVED_FLAG'],
-                    'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",FALSE,TRUE)
-        
+                    'recommApprove' => $recommApprove,
+                    'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
+                    'subRemarks' => $detail['SUB_REMARKS'],
+                    'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
+                    'gp' => $detail['GRACE_PERIOD']
         ]);
     }
 

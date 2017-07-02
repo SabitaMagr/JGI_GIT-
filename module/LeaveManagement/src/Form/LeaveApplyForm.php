@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ukesh
  * Date: 9/9/16
  * Time: 10:52 AM
  */
+
 namespace LeaveManagement\Form;
 
 use Zend\Form\Annotation;
@@ -13,9 +15,8 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("leaveApply")
  */
-class LeaveApplyForm
-{
-    
+class LeaveApplyForm {
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
@@ -24,6 +25,7 @@ class LeaveApplyForm
      * @Annotation\Attributes({ "id":"employeeId","class":"form-control"})
      */
     public $employeeId;
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
@@ -72,7 +74,7 @@ class LeaveApplyForm
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"F":"First Half","S":"Second Half","N":"Full Day"},"label":"Early Out"})
+     * @Annotation\Options({"value_options":{"F":"First Half","S":"Second Half","N":"Full Day"},"label":"Leave Type"})
      * @Annotation\Required(false)
      * @Annotation\Attributes({ "id":"halfDay","value":"N"})
      */
@@ -83,7 +85,7 @@ class LeaveApplyForm
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
-     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"height: 50px; font-size:12px"})
      */
     public $remarks;
 
@@ -106,8 +108,18 @@ class LeaveApplyForm
     public $approvedRemarks;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"E":"Early Grace Leave","L":"Late Grace Leave"},"label":"Grace Period"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"gracePeriod","class":"form-control"})
+     */
+    public $gracePeriod;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+
 }

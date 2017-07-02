@@ -51,6 +51,7 @@ class SessionHelper {
                 $config = $app->getServiceManager()->get('config');
                 $event->getViewModel()->setVariable("companyLogoUrl", "NO");
             }
+            $event->getViewModel()->setVariable('selfEmployeeId', $employeeId);
         }
     }
 

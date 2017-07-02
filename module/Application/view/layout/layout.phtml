@@ -74,6 +74,7 @@
                 document.globalSearchemployeeList = <?php echo json_encode($employeeList); ?>;
 <?php } ?>
             document.globalSearchEmployeeProfileUrl = '<?= $this->url("employee", ["action" => "view"]) ?>';
+            document.selfEmployeeId =<?php echo isset($selfEmployeeId) ? $selfEmployeeId : 'null'; ?>;
         </script>
         <div class="page-wrapper" id="hris-page-content">
             <?php

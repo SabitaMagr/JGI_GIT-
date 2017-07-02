@@ -1,6 +1,6 @@
 <?php
-namespace Setup\Form;
 
+namespace Setup\Form;
 
 use Zend\Form\Annotation;
 
@@ -8,14 +8,13 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("JobHistoryForm")
  */
-class JobHistoryForm
-{
+class JobHistoryForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name","value_options":{"1":"Emp1","2":"Emp2"}})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name"})
      * @Annotation\Attributes({ "id":"employeeID","class":"form-control"})
      */
     public $employeeId;
@@ -142,9 +141,8 @@ class JobHistoryForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
-    
-    
-     /**
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})

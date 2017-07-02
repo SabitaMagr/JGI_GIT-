@@ -228,63 +228,8 @@ class WebServiceController extends AbstractActionController {
                     $status = $filtersDetail['status'];
                     $missPunchOnly = ((int) $filtersDetail['missPunchOnly'] == 1) ? true : false;
 
-                    $result = $attendanceRepository->recordFilter($fromDate, $toDate, $employeeId, $status, $missPunchOnly);
-
-                    $temArray = [];
-                    foreach ($result as $row) {
-                        if ($status == 'L') {
-                            $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
-                        } else if ($status == 'H') {
-                            $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
-                        } else if ($status == 'A') {
-                            $row['STATUS'] = "Absent";
-                        } else if ($status == 'P') {
-                            $row['STATUS'] = "Present";
-                        } else if ($status == 'T') {
-                            $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
-                        } else if ($status == 'TVL') {
-                            $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
-                        } else if ($status == 'WOH') {
-                            $row['STATUS'] = "Work On Holiday";
-                        } else if ($status == 'LI') {
-                            $row['STATUS'] = "Present(Late In)";
-                        } else if ($status == 'EO') {
-                            $row['STATUS'] = "Present(Early Out)";
-                        } else if ($status == 'WODO') {
-                            $row['STATUS'] = "Present(Work On DayOff)";
-                        } else {
-                            if ($row['LEAVE_ENAME'] != null) {
-                                $row['STATUS'] = "On Leave[" . $row['LEAVE_ENAME'] . "]";
-                            } else if ($row['HOLIDAY_ENAME'] != null && $row['IN_TIME'] == null) {
-                                $row['STATUS'] = "On Holiday[" . $row['HOLIDAY_ENAME'] . "]";
-                            } else if ($row['HOLIDAY_ENAME'] == null && $row['LEAVE_ENAME'] == null && $row['IN_TIME'] == null && $row['DAYOFF_FLAG'] == 'N') {
-                                $row['STATUS'] = "Absent";
-                            } else if ($row['IN_TIME'] != null && $row['DAYOFF_FLAG'] == 'N' && $row['HOLIDAY_ID'] == null) {
-
-                                //late in condition 
-                                if ($row['LATE_STATUS'] == 'L') {
-                                    $row['STATUS'] = "Present(Late In)";
-                                } else if ($row['LATE_STATUS'] == 'E') {
-                                    $row['STATUS'] = "Present(Early Out)";
-                                } else if ($row['LATE_STATUS'] == 'B') {
-                                    $row['STATUS'] = "Present(Late In and Early Out)";
-                                } else {
-                                    $row['STATUS'] = "Present";
-                                }
-                            } else if ($row['TRAINING_NAME'] != null) {
-                                $row['STATUS'] = "On Training[" . $row['TRAINING_NAME'] . "]";
-                            } elseif ($row['TRAVEL_DESTINATION'] != null) {
-                                $row['STATUS'] = "On Travel[" . $row['TRAVEL_DESTINATION'] . "]";
-                            } elseif ($row['DAYOFF_FLAG'] == 'Y' && $row['IN_TIME'] != null) {
-                                $row['STATUS'] = "Present(Work On DayOff)";
-                            } else if ($row['HOLIDAY_ID'] != null && $row['IN_TIME'] != null) {
-                                $row['STATUS'] = "Present(Work On Holiday)";
-                            } elseif ($row['DAYOFF_FLAG'] == 'Y') {
-                                $row['STATUS'] = "Day Off";
-                            }
-                        }
-                        array_push($temArray, $row);
-                    }
+                    $result = $attendanceRepository->attendanceReport($fromDate, $toDate, $employeeId, $status, $missPunchOnly);
+                    $temArray = Helper::extractDbData($result);
 
                     $responseData = [
                         "success" => true,

@@ -24,6 +24,9 @@ $noOfDays = $form->get('noOfDays');
 $noOfDays->setAttributes(['disabled' => "disabled"]);
 $halfDay = $form->get('halfDay');
 $halfDay->setAttributes(['disabled' => "disabled"]);
+$gracePeriod = $form->get('gracePeriod');
+$gracePeriod->setAttributes(['disabled' => "disabled"]);
+$gracePeriod->setValue($gp);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(['disabled' => 'disabled']);
 
@@ -192,7 +195,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="col-sm-6">
                                     <div class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
                                         <?php print $this->formLabel($startDate) ?>
-                                            <?php print $this->formElement($startDate) ?>
+                                        <?php print $this->formElement($startDate) ?>
                                     </div>
                                     <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
                                 </div>     
@@ -215,7 +218,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="col-sm-6">
                                     <div class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
                                         <?php print $this->formLabel($endDate) ?>
-                                            <?php print $this->formElement($endDate) ?>
+                                        <?php print $this->formElement($endDate) ?>
                                     </div>
                                     <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
                                 </div>     
@@ -243,9 +246,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
+                        <?php
+                        if ($gracePeriod->getValue() != ""):
+                            ?>
+                            <div class="col-sm-4">
+                                <div
+                                    class="form-group">
+                                        <?php print $this->formLabel($gracePeriod); ?>
+                                        <?php print $this->formElement($gracePeriod); ?>
+                                </div>
+                            </div>
+                        <?php endif;
+                        ?>
 
                     </div>
-                    
+
                     <?php if ($remarkDtl != null) { ?>
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($remarks); ?>

@@ -629,10 +629,10 @@ window.app = (function ($, toastr, App) {
         });
     };
     var setLoadingOnSubmit = function (formId, callback) {
-        $('#' + formId).submit(function (e) {
-
+        var $form = $('#' + formId);
+        $form.submit(function (e) {
             if (typeof callback !== "undefined") {
-                var returnBool = callback();
+                var returnBool = callback($form);
                 if (!returnBool) {
                     return false;
                 }
@@ -865,7 +865,6 @@ window.app = (function ($, toastr, App) {
             });
             filteredDataSource.read();
             var data = filteredDataSource.view();
-            console.log(data);
 
 
             var exportData = [];
@@ -976,6 +975,17 @@ window.app = (function ($, toastr, App) {
         }
     };
 
+    var lockField = function (flag, fields) {
+        $.each(fields, function (k, v) {
+            var $v = $('#' + v);
+            if ($v.prev().is('div')) {
+                $v.css('pointer-events', 'none');
+            } else {
+                $v.prop('disabled', flag);
+            }
+        });
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1003,7 +1013,8 @@ window.app = (function ($, toastr, App) {
         searchTable: searchTable,
         pdfExport: pdfExport,
         populateSelect: populateSelect,
-        floatToRound: floatToRound
+        floatToRound: floatToRound,
+        lockField: lockField
     };
 })(window.jQuery, window.toastr, window.App);
 

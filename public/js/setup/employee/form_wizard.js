@@ -25,6 +25,7 @@
                         break;
                     case 4:
                         app.datePickerWithNepali('joinDate', 'nepalijoinDate');
+                        app.datePickerWithNepali('toDate', 'nepaliToDate');
                         break;
                     case 7:
                         break;
@@ -80,5 +81,10 @@
                 $(this).remove();
             });
         });
+        if (document.setAppointmentFlag) {
+            $('#toDate').prop('disabled', true);
+            $('#nepaliToDate').prop('disabled', true);
+        }
+
     });
 })(window.jQuery, window.app);

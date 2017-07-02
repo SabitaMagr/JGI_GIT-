@@ -175,7 +175,7 @@ class AttendanceRequest extends AbstractActionController {
             $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        
+
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
 
@@ -183,16 +183,16 @@ class AttendanceRequest extends AbstractActionController {
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        
+
 
         $status = $detail['STATUS'];
-        
+
         $approvedDT = $detail['APPROVED_DT'];
         $recommended_by = $fullName($detail['RECOMMENDED_BY']);
         $approved_by = $fullName($detail['APPROVED_BY']);
         $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-        
+
 //        $approvedDT = $detail['APPROVED_DT'];
 //        $approved_by = $fullName($detail['APPROVED_BY']);
 //        $authApprover = ( $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
