@@ -20,6 +20,8 @@ use Appraisal\Repository\AppraisalAnswerRepository;
 use Application\Helper\CustomFormElement;
 use Appraisal\Model\AppraisalAnswer;
 use Appraisal\Repository\StageRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use Appraisal\Model\Question;
 use Application\Helper\AppraisalHelper;
 use SelfService\Repository\AppraisalKPIRepository;
@@ -35,6 +37,8 @@ class AppraisalReportController extends AbstractActionController{
     public function __construct(AdapterInterface $adapter){
         $this->adapter = $adapter;
         $this->repository = new AppraisalReportRepository($this->adapter);
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
     public function indexAction() {
         $appraisalFormElement = new Select();
@@ -61,6 +65,7 @@ class AppraisalReportController extends AbstractActionController{
                 ]);
     }
     public function viewAction(){
+        $request = $this->getRequest();
         $appraisalId = $this->params()->fromRoute('appraisalId');
         $employeeId = $this->params()->fromRoute('employeeId');
         $tab = $this->params()->fromRoute('tab');
@@ -146,6 +151,26 @@ class AppraisalReportController extends AbstractActionController{
             'appraiserAvailableAnswer'=>$appraiserAvailableAnswer,
             'reviewerAvailableAnswer'=>$reviewerAvailableAnswer
         ];
+        if($request->isPost()){
+            try{
+                $appraisalStatus = new AppraisalStatus();
+                $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
+                $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
+                $postData = $request->getPost()->getArrayCopy();
+                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::HR_FEEDBACK=>$postData['hrComment']], $appraisalId, $employeeId);
+                $nextStageId = 2; // completed stage
+                $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
+                HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                
+                $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
+                $this->redirect()->toRoute("appraisalReport");
+            }catch(Exception $e){
+                $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
+        }
         $defaultRatingDtl = AppraisalHelper::checkDefaultRatingForEmp($this->adapter, $employeeId, $appraisalTypeId);
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
         $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);

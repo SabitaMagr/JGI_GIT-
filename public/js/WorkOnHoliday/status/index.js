@@ -95,17 +95,17 @@ angular.module('hris', [])
                     'FULL_NAME': 'Name',
                     'HOLIDAY_ENAME': 'Holiday',
                     'REQUESTED_DATE': 'Request Days',
-                    'FROM_DATE': 'FromDate',
+                    'FROM_DATE': 'From Date',
                     'TO_DATE': 'To Date',
                     'DURATION': 'Duration',
                     'RECOMMENDER_NAME': 'Recommender',
                     'APPROVER_NAME': 'Approver',
                     'STATUS': 'Status',
                     'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                 });
                 
                 

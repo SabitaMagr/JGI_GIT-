@@ -1,0 +1,12 @@
+
+<div>
+    <form action="<?php echo $this->url('checkout', ['action' => 'checkout']); ?>"  method="post">
+        
+    <label>You are trying to Checkout early Please!! Fill Up the Remarks</label>
+    <textarea rows="4" cols="30"name="remarks" required="required"></textarea>
+    </br>
+    <input class="btn btn-primary" type="submit">
+    <a href="<?php echo $this->url('dashboard'); ?>" class="btn btn-danger pull-right"> Cancel </a>
+    </form>
+</div>
+

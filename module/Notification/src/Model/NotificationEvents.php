@@ -86,6 +86,10 @@ class NotificationEvents {
     const APPRAISAL_EVALUATION = 64;
     const APPRAISAL_REVIEW = 65;
     const APPRAISEE_FEEDBACK = 66;
+    const APPRAISAL_FINAL_REVIEW = 75;
+    const HR_FEEDBACK = 76;
+    const MONTHLY_APPRAISAL_ASSIGNED = 77;
+    
     
     const ATTENDANCE_RECOMMEND_ACCEPTED = 67;
     const ATTENDANCE_RECOMMEND_REJECTED = 68;

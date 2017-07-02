@@ -46,6 +46,17 @@ class AppraisalReportRepository implements RepositoryInterface {
         
     }
     public function fetchFilterdData($fromDate,$toDate,$employeeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$appraisalId,$appraisalStageId,$reportType=null,$userId=null){
+        if($reportType!=null && $reportType=="appraisalEvaluation"){
+            $userFlag = "AND AQ.APPRAISER_FLAG='Y'";
+            $userQuestionNum = " OR USER_QUESTION_NUM>0";
+        }else if($reportType!=null && $reportType=="appraisalReview"){
+            $userFlag = "AND AQ.REVIEWER_FLAG='Y'";
+            $userQuestionNum = " OR USER_QUESTION_NUM>0";
+        }else{
+            $userFlag = "";
+            $userQuestionNum="";
+        }
+        
         $sql = "SELECT *
 FROM
   (SELECT A.APPRAISAL_ID                         AS APPRAISAL_ID,
@@ -70,6 +81,7 @@ FROM
     APS.APPRAISEE_AGREE                          AS APPRAISEE_AGREE,
     APS.APPRAISED_BY                             AS APPRAISED_BY,
     APS.REVIEWED_BY                              AS REVIEWED_BY,
+    APS.DEFAULT_RATING                           AS DEFAULT_RATING,
     INITCAP(E.FIRST_NAME)                        AS FIRST_NAME,
     INITCAP(E.MIDDLE_NAME)                       AS MIDDLE_NAME,
     INITCAP(E.LAST_NAME)                         AS LAST_NAME,
@@ -94,6 +106,16 @@ FROM
     WHERE APCOM.APPRAISAL_ID = A.APPRAISAL_ID
     AND APCOM.EMPLOYEE_ID    =E.EMPLOYEE_ID
     )                  AS COM_ANS_NUM,
+    (SELECT COUNT(*)
+    FROM HRIS_APPRAISAL_KPI APKPI1
+    WHERE APKPI1.APPRAISAL_ID = A.APPRAISAL_ID
+    AND APKPI1.EMPLOYEE_ID    =E.EMPLOYEE_ID
+    AND APKPI1.SELF_RATING IS NOT NULL
+    )                  AS KPI_SELF_RATING_NUM,
+    (SELECT COUNT(*) FROM HRIS_APPRAISAL_STAGE_QUESTIONS SQ
+LEFT JOIN HRIS_APPRAISAL_QUESTION AQ
+ON SQ.QUESTION_ID = AQ.QUESTION_ID
+WHERE SQ.STAGE_ID=AA.CURRENT_STAGE_ID AND AQ.STATUS='E' AND SQ.STATUS='E' ".$userFlag.") AS USER_QUESTION_NUM,
     INITCAP(TO_CHAR(AKPI.APPROVED_DATE,'DD-MON-YYYY')) AS KPI_APPROVED_DATE
   FROM HRIS_APPRAISAL_SETUP A
   INNER JOIN HRIS_APPRAISAL_ASSIGN AA
@@ -114,12 +136,20 @@ FROM
   AND E.STATUS         ='E'
   AND T.STATUS         ='E'
   AND S.STATUS         ='E'
+  AND (AKPI.SNO = (SELECT MIN(KPI.SNO)
+      FROM HRIS_APPRAISAL_KPI KPI
+      WHERE KPI.EMPLOYEE_ID = APS.EMPLOYEE_ID
+      AND KPI.APPRAISAL_ID  = APS.APPRAISAL_ID
+      ) OR AKPI.SNO IS NULL)
   ";
         if($reportType!=null && $reportType=="appraisalEvaluation"){
             $sql .=" AND AA.APPRAISER_ID  =".$userId." OR AA.ALT_APPRAISER_ID =".$userId;
         }
         if($reportType!=null && $reportType=="appraisalReview"){
             $sql .=" AND AA.REVIEWER_ID  =".$userId." OR AA.ALT_REVIEWER_ID =".$userId;
+        }
+        if($reportType!=null && $reportType=="appraisalFinalReview"){
+            $sql .=" AND AA.SUPER_REVIEWER_ID  =".$userId;
         }
         if($employeeId!=null && $employeeId!=-1){
             $sql .= " AND E.EMPLOYEE_ID=".$employeeId;
@@ -157,7 +187,7 @@ FROM
         if($toDate!=null && $toDate!=""){
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
-        $sql .= " ORDER BY A.APPRAISAL_EDESC)";
+        $sql .= " ORDER BY A.START_DATE DESC,E.FIRST_NAME)";
         $sql .="
 WHERE ( (COMPETENCIES_SETTING = (
   CASE
@@ -171,22 +201,21 @@ OR (KPI_SETTING = (
     THEN ('Y')
   END)
 AND KPI_ANS_NUM>0)
-OR ANSWER_NUM  >0)
-AND (KPI_SNO    = (
-  CASE
-    WHEN KPI_ANS_NUM >0
-    THEN
-      (SELECT MIN(KPI.SNO)
-      FROM HRIS_APPRAISAL_KPI KPI
-      WHERE KPI.EMPLOYEE_ID = EMPLOYEE_ID
-      AND KPI.APPRAISAL_ID  =APPRAISAL_ID
-      )
-       END
- ) OR KPI_SNO IS NULL)
+OR ANSWER_NUM  >0 ".$userQuestionNum.")
 ";
         $statement = $this->adapter->query($sql);
 //        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
+    }
+    public function checkAppraiserQuestionOnStage($stageId){
+        $sql = "SELECT COUNT(*) as NUM FROM HRIS_APPRAISAL_STAGE_QUESTIONS SQ
+LEFT JOIN HRIS_APPRAISAL_QUESTION AQ
+ON SQ.QUESTION_ID = AQ.QUESTION_ID
+WHERE SQ.STAGE_ID=".$stageId." AND AQ.STATUS='E' AND SQ.STATUS='E' AND AQ.APPRAISER_FLAG='Y'";
+        $statement = $this->adapter->query($sql);
+//        print_r($statement->getSql()); die();
+        $result = $statement->execute();
+        return $result->current();
     }
 }

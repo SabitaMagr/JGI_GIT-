@@ -90,18 +90,18 @@ angular.module('hris', [])
                 'overtimeRequestStatusTable',
                 {
                     'FULL_NAME': 'Name',
-                    'REQUESTED_DATE': 'RequestDate',
-                    'OVERTIME_DATE': 'OvertimeDate',
+                    'REQUESTED_DATE': 'Request Date',
+                    'OVERTIME_DATE': 'Overtime Date',
                     'TOTAL_HOUR': 'Total Hour',
                     'DESCRIPTION': 'Description',
                     'RECOMMENDER_NAME': 'Recommender',
                     'APPROVER_NAME': 'Approver',
                     'STATUS': 'Status',
                     'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommender Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approver Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 

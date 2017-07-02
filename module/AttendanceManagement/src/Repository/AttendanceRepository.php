@@ -84,8 +84,8 @@ FROM
       A.ATTENDANCE_TIME,
       (A.ATTENDANCE_TIME - LAG(A.ATTENDANCE_TIME) OVER (ORDER BY A.ATTENDANCE_TIME)) AS DIFF
     FROM HRIS_ATTENDANCE A
-    WHERE A.EMPLOYEE_ID = 7
-    AND A.ATTENDANCE_DT = TO_DATE('10-May-2017','DD-MON-YYYY')
+    WHERE A.EMPLOYEE_ID = ".$employeeId."
+    AND A.ATTENDANCE_DT = TO_DATE('".$attendanceDt."','DD-MON-YYYY')
     )
   GROUP BY MOD(RNUM,2)
   )";
@@ -144,4 +144,20 @@ IN_TIME_QUERY.RNUM1 = OUT_TIME_QUERY.RNUM1
         $result = $statement->execute();
         return $result;
     }
+    
+    
+      public function fetchEmployeeShfitDetails($employeeId) {
+        $sql = "SELECT TO_CHAR(SYSDATE, 'HH24:MI:SS') AS CURRENT_TIME,
+            TO_CHAR(S.END_TIME, 'HH24:MI:SS') AS CHECKOUT_TIME, 
+            ESA.*,S.* FROM HRIS_EMPLOYEES E
+                join HRIS_EMPLOYEE_SHIFT_ASSIGN ESA on (ESA.EMPLOYEE_ID=E.EMPLOYEE_ID)
+                JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=ESA.SHIFT_ID)
+                WHERE E.EMPLOYEE_ID=$employeeId AND ESA.STATUS='E' AND ESA.MODIFIED_DT IS NULL
+                AND (TO_DATE(TRUNC(SYSDATE), 'DD-MON-YY') BETWEEN TO_DATE(S.START_DATE, 'DD-MON-YY') AND TO_DATE(S.END_DATE, 'DD-MON-YY'))";
+        
+        $statement=$this->adapter->query($sql);
+        $result=$statement->execute();
+        return $result->current();
+    }
+    
 }

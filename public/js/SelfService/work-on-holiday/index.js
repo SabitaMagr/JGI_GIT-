@@ -39,17 +39,17 @@
                         'workOnHolidayTbl',
                         {
                             'HOLIDAY_ENAME': 'Holiday',
-                            'REQUESTED_DATE': 'Req Dt',
-                            'FROM_DATE': 'From Dt',
-                            'TO_DATE': 'To Dt',
+                            'REQUESTED_DATE': 'Request Date',
+                            'FROM_DATE': 'From Date',
+                            'TO_DATE': 'To Date',
                             'DURATION': 'Duration',
                             'STATUS': 'Status',
                             'REMARKS': 'Remarks',
                             'RECOMMENDER_NAME': 'Recommender',
                             'APPROVER_NAME': 'Approver',
-//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
                             'RECOMMENDED_DATE': 'Recommended Dt',
-//                            'APPROVED_REMARKS': 'App Remarks',
+                            'APPROVED_REMARKS': 'Approved Remarks',
                             'APPROVED_DATE': 'Approved Dt'
                         }
                 );

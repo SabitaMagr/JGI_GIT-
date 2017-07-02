@@ -39,17 +39,17 @@
                 'dayoffWorkApproveTable',
                 {
                     'FULL_NAME': 'Name',
-                    'REQUESTED_DATE': 'ReqDate',
-                    'FROM_DATE': 'FromDate',
-                    'TO_DATE': 'ToDate',
+                    'REQUESTED_DATE': 'Request Date',
+                    'FROM_DATE': 'From Date',
+                    'TO_DATE': 'To Date',
                     'DURATION': 'Duration',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
                     'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 

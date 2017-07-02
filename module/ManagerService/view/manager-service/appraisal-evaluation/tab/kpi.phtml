@@ -39,27 +39,33 @@
                 <?php } ?>
                 <td><span ng-bind="KPI.counter"></span></td>
                 <td>
-                    <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="title_{{KPI.checkbox}}" ng-model="KPI.title" required="required" <?= $disabledKPICOM ?>></textarea>
-                    <div ng-show="KPIForm.$submitted || KPIForm.title_{{KPI.checkbox}}.$touched">
-                        <ul ng-show="KPIForm.title_{{KPI.checkbox}}.$error.required" class="help-block error">
-                            <li>KPI Detail is required.</li>
-                        </ul>
+                    <div>
+                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="title_{{KPI.checkbox}}" ng-model="KPI.title" required="required" <?= $disabledKPICOM ?>></textarea>
+                        <div ng-show="KPIForm.$submitted || KPIForm.title_{{KPI.checkbox}}.$touched">
+                            <ul ng-show="KPIForm.title_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                <li>KPI Detail is required.</li>
+                            </ul>
+                        </div>
                     </div>
                 </td>
                 <td>
-                    <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="successCriteria_{{KPI.checkbox}}" ng-model="KPI.successCriteria" required="required" <?= $disabledKPICOM ?>></textarea>
-                    <div ng-show="KPIForm.$submitted || KPIForm.successCriteria_{{KPI.checkbox}}.$touched">
-                        <ul ng-show="KPIForm.successCriteria_{{KPI.checkbox}}.$error.required" class="help-block error">
-                            <li>Success Criteria is required.</li>
-                        </ul>
+                    <div>
+                        <textarea cols="25" rows="20" class="form-control" style="height:150px!important" name="successCriteria_{{KPI.checkbox}}" ng-model="KPI.successCriteria" required="required" <?= $disabledKPICOM ?>></textarea>
+                        <div ng-show="KPIForm.$submitted || KPIForm.successCriteria_{{KPI.checkbox}}.$touched">
+                            <ul ng-show="KPIForm.successCriteria_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                <li>Success Criteria is required.</li>
+                            </ul>
+                        </div>
                     </div>
                 </td>
                 <td> 
-                    <input type="number" name="weight_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.weight" required="required" min="0" step='1' <?= $disabledKPICOM ?> style=" width: 100%;"/>
-                    <div ng-show="KPIForm.$submitted || KPIForm.weight_{{KPI.checkbox}}.$touched">
-                        <ul ng-show="KPIForm.weight_{{KPI.checkbox}}.$error.required" class="help-block error">
-                            <li>Weight is required.</li>
-                        </ul>
+                    <div>
+                        <input type="number" name="weight_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.weight" required="required" min="0" step='1' <?= $disabledKPICOM ?> style=" width: 100%;"/>
+                        <div ng-show="KPIForm.$submitted || KPIForm.weight_{{KPI.checkbox}}.$touched">
+                            <ul ng-show="KPIForm.weight_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                <li>Weight is required.</li>
+                            </ul>
+                        </div>
                     </div>
                 </td>
                 <?php if ($keyAchievementDtlNum > 0) { ?>
@@ -82,21 +88,23 @@
                 <?php } ?>
                 <?php if ($assignedAppraisalDetail['STAGE_ID'] == 5 || $appraiserRatingDtlNum > 0) { ?>
                     <td style="width: 10%">
-                        <input type="number" name="appraiserRating_{{KPI.checkbox}}" value="" size="3" ng-model="KPI.appraiserRating" required="required" min="1" step='.2' max="4" style=" width:100%;" <?= $disabledAppraiserRatingComment; ?>/>
-                        <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
-                            <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.required" class="help-block error">
-                                <li>Appraiser Rating is required.</li>
-                            </ul>
-                        </div>
-                        <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
-                            <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.max" class="help-block error">
-                                <li>You exceeded the maximum.(max. value:4)</li>
-                            </ul>
-                        </div>
-                        <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
-                            <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.min" class="help-block error">
-                                <li>You exceeded the minimum.(max. value:0.2)</li>
-                            </ul>
+                        <div>
+                            <input type="number" name="appraiserRating_{{KPI.checkbox}}" class="appraiserKPIRating" value="" size="3" ng-model="KPI.appraiserRating" required="required" min="1" step='.2' max="4" style=" width:100%;" <?= $disabledAppraiserRatingComment; ?>/>
+                            <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
+                                <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.required" class="help-block error">
+                                    <li>Appraiser Rating is required.</li>
+                                </ul>
+                            </div>
+                            <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
+                                <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.max" class="help-block error">
+                                    <li>You exceeded the maximum.(max. value:4)</li>
+                                </ul>
+                            </div>
+                            <div ng-show="KPIForm.$submitted || KPIForm.appraiserRating_{{KPI.checkbox}}.$touched">
+                                <ul ng-show="KPIForm.appraiserRating_{{KPI.checkbox}}.$error.min" class="help-block error">
+                                    <li>You exceeded the minimum.(max. value:0.2)</li>
+                                </ul>
+                            </div>
                         </div>
                     </td>
                 <?php } ?>

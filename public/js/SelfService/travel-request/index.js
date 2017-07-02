@@ -39,21 +39,21 @@
         app.pdfExport(
                         'travelTable',
                         {
-                            'FROM_DATE': 'From Dt',
-                            'TO_DATE': 'To Dt',
-                            'REQUESTED_DATE': 'Req Dt',
+                            'FROM_DATE': 'From Date',
+                            'TO_DATE': 'To Date',
+                            'REQUESTED_DATE': 'Request Date',
                             'DESTINATION': 'Destination',
-                            'REQUESTED_AMOUNT': 'Req Amt',
-                            'REQUESTED_TYPE': 'Req Type',
+                            'REQUESTED_AMOUNT': 'Request Amt',
+                            'REQUESTED_TYPE': 'Request Type',
                             'STATUS': 'Status',
                             'PURPOSE': 'Purpose',
                             'REMARKS': 'Remarks',
                             'RECOMMENDER_NAME': 'Recommender',
                             'APPROVER_NAME': 'Approver',
-//                            'RECOMMENDED_REMARKS': 'Rec Remarks',
-                            'RECOMMENDED_DATE': 'Rec Dt',
-//                            'APPROVED_REMARKS': 'App Remarks',
-                            'APPROVED_DATE': 'App Dt'
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
                         }
                 );
         

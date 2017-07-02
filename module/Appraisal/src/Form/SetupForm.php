@@ -85,6 +85,15 @@ class SetupForm{
     public $competenciesSetting;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"HR Feedback Enable","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"hrFeedbackEnable"})
+     */
+    public $hrFeedbackEnable;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

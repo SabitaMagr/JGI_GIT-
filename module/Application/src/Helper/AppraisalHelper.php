@@ -54,8 +54,9 @@ class AppraisalHelper{
         $list = [];
         foreach($defaultRatingDtl as $defaultRatingRow){
             $defaultRatingRow['DESIGNATION_IDS'] = json_decode($defaultRatingRow['DESIGNATION_IDS']);
-            $defaultRatingRow['POSITION_IDS'] = json_decode($defaultRatingRow['POSITION_IDS']);
-            if(($employeeDtl['DESIGNATION_ID']!=null && in_array($employeeDtl['DESIGNATION_ID'], $defaultRatingRow['DESIGNATION_IDS'], TRUE))&&($employeeDtl['POSITION_ID']!=NULL && in_array($employeeDtl['POSITION_ID'], $defaultRatingRow['POSITION_IDS'], TRUE))){
+//            $defaultRatingRow['POSITION_IDS'] = json_decode($defaultRatingRow['POSITION_IDS']);
+//            if(($employeeDtl['DESIGNATION_ID']!=null && in_array($employeeDtl['DESIGNATION_ID'], $defaultRatingRow['DESIGNATION_IDS'], TRUE))&&($employeeDtl['POSITION_ID']!=NULL && in_array($employeeDtl['POSITION_ID'], $defaultRatingRow['POSITION_IDS'], TRUE))){
+            if($employeeDtl['DESIGNATION_ID']!=null && in_array($employeeDtl['DESIGNATION_ID'], $defaultRatingRow['DESIGNATION_IDS'], TRUE)){
                 array_push($list,$defaultRatingRow);
             }
         }

@@ -33,7 +33,8 @@ class MyAttendance extends AbstractActionController {
             "L" => "On Leave",
             "T" => "On Training",
             "TVL" => "On Travel",
-            "WOH" => "On WOH",
+            "WOH" => "Work on Holiday",
+            "WODO" => "Work on DAYOFF",
             "LI" => "Late In",
             "EO" => "Early Out"
         );

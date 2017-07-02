@@ -41,17 +41,17 @@
                 {
                     'FULL_NAME': 'Name',
                     'ADVANCE_NAME': 'Advance',
-                    'REQUESTED_DATE': 'Req.Date',
-                    'ADVANCE_DATE': 'AdvDate',
-                    'REQUESTED_AMOUNT': 'Req.Amt',
+                    'REQUESTED_DATE': 'Request Date',
+                    'ADVANCE_DATE': 'Advance Date',
+                    'REQUESTED_AMOUNT': 'Request Amt',
                     'TERMS': 'Terms',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'status',
                     'REASON': 'Reason',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommeded Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                 });
                 
         

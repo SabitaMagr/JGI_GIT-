@@ -11,7 +11,7 @@
                         <?php foreach ($reviewerQuestionList['QUESTIONS'] as $reviewerQuestionRow) { ?>
                             <div  class="col-md-12 margin-bottom-10"> 
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-8">
                                         <label> <h7 style="font-size:12px;"><?php echo $reviewerQuestionRow['QUESTION_EDESC']; ?></h7>  </label> 
                                         <?php 
                                         $keyForRQuestion = ($reviewerQuestionRow['ANSWER']==null || count($reviewerQuestionRow['ANSWER'])==0)?$reviewerQuestionRow['QUESTION_ID']:array_keys($reviewerQuestionRow['ANSWER'])[0];
@@ -55,7 +55,7 @@
             </label>
             <div class="md-radio-inline">
                 <div class="md-radio">
-                    <input <?= $disabled ?> type="radio" id="radio14" name="reviewerAgree" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['REVIEWER_AGREE']=='Y')?"checked":""; ?>>
+                    <input <?= $disabled ?> type="radio" id="radio14" name="reviewerAgree" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['REVIEWER_AGREE']=='Y'||$assignedAppraisalDetail['REVIEWER_AGREE']==null)?"checked":""; ?>>
                     <label for="radio14">
                         <span class="inc"></span>
                         <span class="check"></span>

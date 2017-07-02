@@ -93,17 +93,17 @@ angular.module('hris', [])
                 {
                     'FULL_NAME': 'Name',
                     'ADVANCE_NAME': 'Advance',
-                    'REQUESTED_AMOUNT': 'Req.Amt',
-                    'ADVANCE_DATE': 'AdvDate',
+                    'REQUESTED_AMOUNT': 'Request Amt',
+                    'ADVANCE_DATE': 'Advance Date',
                     'TERMS': 'Term',
                     'RECOMMENDER_NAME': 'Recommender',
                     'APPROVER_NAME': 'Approver',
                     'STATUS': 'Status',
                     'REASON': 'Reason',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 

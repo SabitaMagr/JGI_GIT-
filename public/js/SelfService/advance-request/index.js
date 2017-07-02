@@ -38,18 +38,18 @@
                         'advanceTable',
                         {
                             'ADVANCE_NAME': 'Advance',
-                            'REQUESTED_DATE': 'Req Dt',
-                            'ADVANCE_DATE': 'Adv Dt',
-                            'REQUESTED_AMOUNT': 'Req Amt',
+                            'REQUESTED_DATE': 'Request Dt',
+                            'ADVANCE_DATE': 'Advance Dt',
+                            'REQUESTED_AMOUNT': 'Request Amt',
                             'TERMS': 'Terms',
                             'STATUS': 'Status',
                             'REASON': 'Reason',
                             'RECOMMENDER_NAME': 'Recommender',
                             'APPROVER_NAME': 'Approver',
-                            'RECOMMENDED_REMARKS': 'Rec Remarks',
-                            'RECOMMENDED_DATE': 'Rec Dt',
-                            'APPROVED_REMARKS': 'App Remarks',
-                            'APPROVED_DATE': 'App Dt'
+                            'RECOMMENDED_REMARKS': 'Reccommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Dt',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Dt'
                         }
                 );
         

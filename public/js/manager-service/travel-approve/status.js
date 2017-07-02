@@ -93,20 +93,20 @@ angular.module('hris', [])
                 'travelRequestStatusTable',
                 {
                     'FULL_NAME': 'Name',
-                    'FROM_DATE': 'FromDate',
-                    'TO_DATE': 'ToDate',
-                    'REQUESTED_DATE': 'ReqDate',
+                    'FROM_DATE': 'From Date',
+                    'TO_DATE': 'To Date',
+                    'REQUESTED_DATE': 'Request Date',
                     'DESTINATION': 'Destination',
                     'PURPOSE': 'Purpose',
-                    'REQUESTED_AMOUNT': 'Req.Amt',
-                    'REQUESTED_TYPE': 'Req.Type',
+                    'REQUESTED_AMOUNT': 'Request Amt',
+                    'REQUESTED_TYPE': 'Request Type',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
                     'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 

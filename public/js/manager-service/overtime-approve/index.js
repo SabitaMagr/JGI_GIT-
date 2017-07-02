@@ -39,17 +39,17 @@
                 'overtimeApproveTable',
                 {
                     'FULL_NAME': 'Name',
-                    'REQUESTED_DATE': 'RequestDate',
-                    'OVERTIME_DATE': 'OvertimeDate',
+                    'REQUESTED_DATE': 'Request Date',
+                    'OVERTIME_DATE': 'Overtime Date',
                     'TOTAL_HOUR': 'Total Hour',
                     'DESCRIPTION': 'Description',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
                     'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 

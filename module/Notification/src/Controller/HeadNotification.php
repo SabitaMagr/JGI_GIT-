@@ -8,6 +8,7 @@ use Application\Helper\Helper;
 use Application\Model\ForgotPassword;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Appraisal\Model\AppraisalAssign;
 use Appraisal\Model\AppraisalStatus;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Exception;
@@ -70,6 +71,9 @@ class HeadNotification {
     const REJECTED = "Rejected";
     const ASSIGNED = "Assigned";
     const CANCELLED = "Cancelled";
+    const REVIEWER_EVALUATION = "REVIEWER_EVALUATION";
+    const SUPER_REVIEWER_EVALUATION ="SUPER_REVIEWER_EVALUATION";
+    const HR_FEEDBACK = "HR_FEEDBACK";
 
     public static function getNotifications(AdapterInterface $adapter, int $empId) {
         $notiRepo = new NotificationRepo($adapter);
@@ -1080,7 +1084,7 @@ class HeadNotification {
         self::sendEmail($notification, 33, $adapter, $url);
     }
 
-    private static function appraisalReview(AppraisalStatus $request, AdapterInterface $adapter, Url $url, $senderDetail, $recieverDetail) {
+    private static function appraisalReview(AppraisalStatus $request, AdapterInterface $adapter, Url $url,$type, $senderDetail, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1114,6 +1118,8 @@ class HeadNotification {
             $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         } else if ($recieverDetail['USER_TYPE'] == 'APPRAISEE') {
             $notification->route = json_encode(["route" => "performanceAppraisal", "action" => "view", "appraisalId" => $request->appraisalId]);
+        }else if ($recieverDetail['USER_TYPE'] == 'SUPER_REVIEWER') {
+            $notification->route = json_encode(["route" => "final-appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         }
         $getValue = function($val) {
             if ($val != null && $val != "") {
@@ -1125,9 +1131,14 @@ class HeadNotification {
                 return "";
             }
         };
+        $agree = ($type=='REVIEWER_EVALUATION')?$assignedAppraisalDetail['REVIEWER_AGREE']:$assignedAppraisalDetail['SUPER_REVIEWER_AGREE'];
         $title = "Appraisal Review";
-        $desc = $getValue($assignedAppraisalDetail['REVIEWER_AGREE']) . " by"
-                . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
+        if($agree==null){
+            $desc = "Appraisal reviewed";
+        }else{
+            $desc = $getValue($agree);
+        }
+        $desc .=" by ".$notification->fromName." on ". $notification->appraisalName." of type ". $notification->appraisalType;
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 34, $adapter, $url);
@@ -1165,6 +1176,8 @@ class HeadNotification {
             $notification->route = json_encode(["route" => "appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
         } else if ($recieverDetail['USER_TYPE'] == 'HR') {
             $notification->route = json_encode(["route" => "appraisalReport", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
+        }else if ($recieverDetail['USER_TYPE'] == 'SUPER_REVIEWER') {
+            $notification->route = json_encode(["route" => "final-appraisal-review", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId]);
         }
 
         $getValue = function($val) {
@@ -1178,11 +1191,46 @@ class HeadNotification {
             }
         };
         $title = "Final Feedback on Appraisal";
-        $desc = $getValue($assignedAppraisalDetail['APPRAISEE_AGREE']) . " by"
-                . " $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
+        $desc = ($assignedAppraisalDetail['APPRAISEE_AGREE']==null)?"Feedback":$getValue($assignedAppraisalDetail['APPRAISEE_AGREE']);
+        $desc .=" by $notification->fromName on $notification->appraisalName of type $notification->appraisalType";
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 35, $adapter, $url);
+    }
+    
+    public static function monthlyAppraisalAssigned(AppraisalAssign $request, AdapterInterface $adapter,Url $url){
+        $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
+        $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
+
+        $fullName = function($id, $adapter) {
+            if ($id != null) {
+                $empRepository = new EmployeeRepository($adapter);
+                $empDtl = $empRepository->fetchById($id);
+                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+            } else {
+                return "";
+            }
+        };
+        $notification = self::initializeNotificationModel($request->createdBy, $assignedAppraisalDetail['APPRAISER_ID'], AppraisalNotificationModel::class, $adapter);
+
+        $notification->appraisalName = $assignedAppraisalDetail['APPRAISAL_EDESC'];
+        $notification->appraisalType = $assignedAppraisalDetail['APPRAISAL_TYPE_EDESC'];
+        $notification->appraiseeName = $fullName($assignedAppraisalDetail['EMPLOYEE_ID'], $adapter);
+        $notification->appraiserName = $fullName($assignedAppraisalDetail['APPRAISER_ID'], $adapter);
+        $notification->reviewerName = $fullName($assignedAppraisalDetail['REVIEWER_ID'], $adapter);
+        $notification->startDate = $assignedAppraisalDetail['START_DATE'];
+        $notification->endDate = $assignedAppraisalDetail['END_DATE'];
+        $notification->rating = $assignedAppraisalDetail['APPRAISER_OVERALL_RATING'];
+        $notification->currentStage = $assignedAppraisalDetail['STAGE_EDESC'];
+
+        $notification->route = json_encode(["route" => "appraisal-evaluation", "action" => "view", "appraisalId" => $request->appraisalId, "employeeId" => $request->employeeId, "tab" => 1]);
+
+        $title = "Monthly Appraisal Assigned";
+        $desc ="$notification->appraisalName for $notification->appraiseeName is ready to evaluate";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 40, $adapter, $url);
     }
 
     private static function overtimeApplied(Overtime $request, AdapterInterface $adapter, Url $url, $type) {
@@ -1433,10 +1481,19 @@ class HeadNotification {
                 self::appraisalEvaluation($model, $adapter, $url, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISAL_REVIEW:
-                self::appraisalReview($model, $adapter, $url, $senderDetail, $recieverDetail);
+                self::appraisalReview($model, $adapter, $url,self::REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
+                break;
+            case NotificationEvents::APPRAISAL_FINAL_REVIEW:
+                self::appraisalReview($model, $adapter, $url,self::SUPER_REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
+                break;
+            case NotificationEvents::HR_FEEDBACK:
+                self::appraisalReview($model, $adapter, $url,self::HR_FEEDBACK, $senderDetail, $recieverDetail);
                 break;
             case NotificationEvents::APPRAISEE_FEEDBACK:
                 self::appraiseeFeedback($model, $adapter, $url, $recieverDetail);
+                break;
+            case NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED:
+                self::monthlyAppraisalAssigned($model, $adapter, $url);
                 break;
             case NotificationEvents::OVERTIME_APPLIED:
                 self::overtimeApplied($model, $adapter, $url, self::RECOMMENDER);

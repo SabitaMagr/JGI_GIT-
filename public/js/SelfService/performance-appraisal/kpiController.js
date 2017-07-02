@@ -101,14 +101,12 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                         total += parseFloat(total1);
                     });
                     console.log(total);
-//                $scope.annualRating = total;
                     var annualRatingCompetency = angular.element(document.getElementById('annualRatingCompetency')).val();
                     var appraiserOverallRating = angular.element(document.getElementById('appraiserOverallRating'));
-                    if(appraiserOverallRating==null || appraiserOverallRating==""){
+                    if(!isNaN(total)||(annualRatingCompetency!="" && annualRatingCompetency!=null)){
                        appraiserOverallRating.val(((!isNaN(total))?(window.app.floatToRound(total, 2)):"") + annualRatingCompetency);
                     }
-                    return window.app.floatToRound(total, 2);
-                    ;
+                    $scope.annualRating =  window.app.floatToRound(total, 2);
                 }
             }
             $scope.addKPI = function () {
@@ -149,6 +147,7 @@ angular.module('kpiModule', ['use', 'ngMessages'])
                         }
                         $scope.KPIList.splice(i - tempId, 1);
                         tempId++;
+//                        $scope.counter-1;
                     }
                 }
             }

@@ -142,7 +142,8 @@ class AppraisalReview extends AbstractActionController{
             'appraisalId'=>$appraisalId,
             'employeeId'=>$employeeId,
             'appraiseeAvailableAnswer'=>$appraiseeAvailableAnswer,
-            'appraiserAvailableAnswer'=>$appraiserAvailableAnswer
+            'appraiserAvailableAnswer'=>$appraiserAvailableAnswer,
+            'loggedInEmployeeId'=>$this->employeeId
         ];
         if($request->isPost()){
             try{
@@ -155,8 +156,6 @@ class AppraisalReview extends AbstractActionController{
                 $reviewerAgree = (gettype($postData['reviewerAgree'])=='undefined')?null:$postData['reviewerAgree'];
                 $i=0;
                 $editMode = false;
-//                print "<pre>";
-//                print_r($postData); die();
                 foreach($answer as $key=>$value){
                     if(strpos($key,'rr') !== false ){
                         $appraisalAnswerModel->rating = $value;
@@ -201,13 +200,20 @@ class AppraisalReview extends AbstractActionController{
                     break;
                     case 3: 
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE=>$reviewerAgree,AppraisalStatus::REVIEWED_BY=> $this->employeeId], $appraisalId, $employeeId);
-                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
+//                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
+                        $nextStageId = ($reviewerAgree=='N')?5:6;
                         $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
                         
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
-                        if($reviewerAgree==='Y'){
+                        if($reviewerAgree==='Y' && $assignedAppraisalDetail['KPI_SETTING']=='Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){
+                            if($assignedAppraisalDetail['DEFAULT_RATING']=='N' && $assignedAppraisalDetail['SUPER_REVIEWER_ID']!=null){
+                                $appraisalAssignRepo->updateCurrentStageByAppId(8, $appraisalId, $employeeId);
+                                HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['SUPER_REVIEWER_ID'],'USER_TYPE'=>"SUPER_REVIEWER"]);
+                            }
                             HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                        }else if(($reviewerAgree===null || $reviewerAgree==='N')&& $assignedAppraisalDetail['KPI_SETTING']=='N' && $assignedAppraisalDetail['COMPETENCIES_SETTING']=='N'){
+                             HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
                         }
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
                         $adminList1 = $employeeRepo->fetchByAdminFlagList();
                         foreach($adminList1 as $adminRow1){
                             HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);

@@ -67,15 +67,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </li>
                             <?php } ?>
                             <?php if(count($appraiserQuestionTemplate)>0 && $appraiserAvailableAnswer==true){ ?>
-                            <li class="<?= ($tab==2)?"active":""; ?>">
+                            <li class="<?= ($tab==2 || (count($questionTemplate)==0 && $assignedAppraisalDetail['KPI_SETTING']=='N'))?"active":""; ?>">
                                 <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                             </li>
                             <?php } 
-                            if($assignedAppraisalDetail['DEFAULT_RATING']!='Y'){
                             ?>
-                            <?php if(count($reviewerQuestionTemplate)>0){ ?>
+                            <?php if(count($reviewerQuestionTemplate)>0 && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
                             <li class="<?= ($tab==3)?"active":""; ?>">
                                 <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
+                            </li>
+                            <?php } ?>
+                            <?php if ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE']!=null && $assignedAppraisalDetail['DEFAULT_RATING']!='Y'){ ?>
+                            <li class="<?= ($tab==5)?"active":""; ?>">
+                                <a href="#portlet_tab2_5" data-toggle="tab">Super Reviewer's Evaluation </a>
                             </li>
                             <?php } ?>
                             <?php if(count($appraiseeQuestionTemplate)>0 && $appraiseeAvailableAnswer==true){ ?>
@@ -83,7 +87,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
                             <?php } 
-                            }?>
+                            ?>
+                            <?php if ($assignedAppraisalDetail['HR_FEEDBACK']!=null){ ?>
+                            <li class="<?= ($tab==6)?"active":""; ?>">
+                                <a href="#portlet_tab2_6" data-toggle="tab">HR Feedback</a>
+                            </li>
+                            <?php } ?>
                         </ul>
                     </div>
                     <div class="tab-content margin-top-15" id="tabContent">
@@ -98,7 +107,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         print $this->partial('tab/competencies.phtml');
                         ?>
                         <?php
-                        print $this->partial('tab/appraisee-evaluation.phtml');
+                        print $this->partial('tab/performance-evaluation.phtml');
                         ?>
                         <?php
                         print $this->partial('tab/appraiser-evaluation.phtml');
@@ -107,7 +116,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         print $this->partial('tab/reviewer-evaluation.phtml');
                         ?>
                         <?php
+                        print $this->partial('tab/super-reviewer-evaluation.phtml');
+                        ?>
+                        <?php
                         print $this->partial('tab/appraisee-feedback.phtml');
+                        ?>
+                        <?php
+                        print $this->partial('tab/hr-feedback.phtml');
                         ?>
                     </div>
                 </div>

@@ -1,22 +1,25 @@
 <?php
 namespace Appraisal\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
-use Appraisal\Repository\AppraisalAssignRepository;
-use Zend\Authentication\AuthenticationService;
-use Application\Helper\Helper;
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
+use Appraisal\Model\AppraisalAssign;
+use Appraisal\Model\Setup;
+use Appraisal\Repository\AppraisalAssignRepository;
+use Appraisal\Repository\AppraisalReportRepository;
+use Appraisal\Repository\SetupRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\HrEmployees;
-use Appraisal\Model\Setup;
-use Zend\Form\Element\Select;
-use Application\Custom\CustomViewModel;
 use Setup\Repository\EmployeeRepository;
-use Appraisal\Model\AppraisalAssign;
-use Appraisal\Repository\SetupRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class AppraisalAssignController extends AbstractActionController{
     private $adapter;
@@ -125,7 +128,7 @@ class AppraisalAssignController extends AbstractActionController{
                 $middleNameA = ($assignList['MIDDLE_NAME_A'] != null) ? " " . $assignList['MIDDLE_NAME_A'] . " " : " ";
                 $middleNameALTR = ($assignList['MIDDLE_NAME_ALT_R'] != null) ? " " . $assignList['MIDDLE_NAME_ALT_R'] . " " : " ";
                 $middleNameALTA = ($assignList['MIDDLE_NAME_ALT_A'] != null) ? " " . $assignList['MIDDLE_NAME_ALT_A'] . " " : " ";
-                
+                $middleNameSuperR = ($assignList['MIDDLE_NAME_SUPER_R'] != null) ? " " . $assignList['MIDDLE_NAME_SUPER_R'] . " " : " ";
                 if($assignList['RETIRED_R']!='Y' && $assignList['STATUS_R']!='D'){
                     $employeeRow['REVIEWER_NAME'] = $assignList['FIRST_NAME_R'] . $middleNameR . $assignList['LAST_NAME_R'];
                 }else{
@@ -145,6 +148,11 @@ class AppraisalAssignController extends AbstractActionController{
                     $employeeRow['ALT_APPRAISER_NAME'] = $assignList['FIRST_NAME_ALT_A'] . $middleNameALTA . $assignList['LAST_NAME_ALT_A'];
                 }else{
                     $employeeRow['ALT_APPRAISER_NAME'] = "";
+                }
+                if($assignList['RETIRED_SUPER_R']!='Y' && $assignList['STATUS_SUPER_R']!='D'){
+                    $employeeRow['SUPER_REVIEWER_NAME'] = $assignList['FIRST_NAME_SUPER_R'] . $middleNameSuperR . $assignList['LAST_NAME_SUPER_R'];
+                }else{
+                    $employeeRow['SUPER_REVIEWER_NAME'] = "";
                 }
                 $employeeRow['APPRAISAL_EDESC'] = $assignList['APPRAISAL_EDESC'];
             } else {
@@ -195,6 +203,7 @@ class AppraisalAssignController extends AbstractActionController{
         $appraisalId = (int)$data['appraisalId'];
         $altAppraiserId = (int)$data['altAppraiserId'];
         $altReviewerId = (int)$data['altReviewerId'];
+        $superReviewerId = (int)$data['superReviewerId'];
         $appraisalRepo = new SetupRepository($this->adapter);
         $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
 //        print_r($appraisalId); die();
@@ -226,6 +235,14 @@ class AppraisalAssignController extends AbstractActionController{
         } else {
             $altReviewerIdNew = $altReviewerId;
         }
+        
+        if ($superReviewerId == "" || $superReviewerId == null) {
+            $superReviewerIdNew = null;
+        } else if ($employeeId == $superReviewerId || $superReviewerId=='-1') {
+            $superReviewerIdNew = "";
+        } else {
+            $superReviewerIdNew = $superReviewerId;
+        }
 
         if ($altAppraiserId == "" || $altAppraiserId == null) {
             $altAppraiserIdNew = null;
@@ -234,9 +251,11 @@ class AppraisalAssignController extends AbstractActionController{
         } else {
             $altAppraiserIdNew = $altAppraiserId;
         }
-
+//        print_r($superReviewerIdNew); die();
         $appraisalAssign = new AppraisalAssign();
         $employeePreDtl = $this->repository->getDetailByEmpAppraisalId($employeeId,$appraisalId);
+        $appraisalReportRepo = new AppraisalReportRepository($this->adapter);
+        $appraiserQuestionNum = $appraisalReportRepo->checkAppraiserQuestionOnStage($appraisalDtl['CURRENT_STAGE_ID'])['NUM'];
         if ($employeePreDtl == null) {
             $appraisalAssign->employeeId = $employeeId;
             $appraisalAssign->appraisalId = $appraisalId;
@@ -244,6 +263,7 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->appraiserId = $appraiserIdNew;
             $appraisalAssign->altAppraiserId = $altAppraiserIdNew;
             $appraisalAssign->altReviewerId = $altReviewerIdNew;
+            $appraisalAssign->superReviewerId = $superReviewerIdNew;
             $appraisalAssign->createdDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->approvedDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->createdBy = $this->employeeId;
@@ -259,11 +279,17 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->appraiserId = $appraiserIdNew;
             $appraisalAssign->altAppraiserId = $altAppraiserIdNew;
             $appraisalAssign->altReviewerId = $altReviewerIdNew;
+            $appraisalAssign->superReviewerId = $superReviewerIdNew;
             $appraisalAssign->modifiedDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->modifiedBy = $this->employeeId;
             $appraisalAssign->currentStageId = $appraisalDtl['CURRENT_STAGE_ID'];
             $appraisalAssign->status = 'E';
             $this->repository->edit($appraisalAssign, [$employeeId,$appraisalId]);
+        }
+        $appraisalAssign->appraisalId = $appraisalId;
+        $appraisalAssign->createdBy = $this->employeeId;
+        if($appraiserQuestionNum>0 && $appraiserIdNew!=null && $appraiserIdNew!=""){
+            HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this->plugin('url'));
         }
         return [
             "success" => true,

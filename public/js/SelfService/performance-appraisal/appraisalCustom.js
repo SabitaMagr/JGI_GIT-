@@ -4,26 +4,26 @@ window.appraisalCustom = (function ($, toastr) {
         $("#" + submitForm).on("submit", function () {
             App.blockUI({target: "#hris-page-content"});
             var appraiseeTabFail = false;
-            var formOwnTab = false;
+            var formOwnTabFail = false;
             $(this).find('input,select,textarea').each(function () {
                 if ($(this).attr('type') !== 'hidden' && $(this).attr('disabled') !== 'disabled') {
                     if ($(this).attr("required") === "required") {
                         if ($(this).val() === "") {
-                            formOwnTab = true;
+                            formOwnTabFail = true;
                             var parentId = $(this).parent("div");
                             var errorMsgSpan = parentId.find('span#inputRequired');
                             if (errorMsgSpan.length > 0) {
-                                $(this).html("This field is required");
+                                parentId.find('span#inputRequired').html("This field is required");
                             } else {
                                 var errorMsgSpan = $('<span />', {
                                     "class": 'errorMsg',
                                     "id": 'inputRequired',
                                     text: "This field is required"
                                 });
-                                parentId.append(errorMsgSpan);
+                                errorMsgSpan.appendTo(parentId);
                                 var tabErrorMsgSpanNum = $("#tabContent").find('span#appraisalError');
                                 if (tabErrorMsgSpanNum.length > 0) {
-                                    $(this).html("Appraisal Submission Failed!!!!");
+                                    $("#tabContent").find('span#appraisalError').html("Appraisal Submission Failed!!!!");
                                 } else {
                                     var errorMsgSpan1 = $('<span />', {
                                         "class": 'errorMsg',
@@ -37,12 +37,13 @@ window.appraisalCustom = (function ($, toastr) {
                         }
                     }
                 }
-                $(this).on("blur", function () {
+                $(this).on("blur", function () { 
+                    var parentId = $(this).parent("div");
                     parentId.find('span.errorMsg').remove();
-                    $("#tabContent").find('span.errorMsg').remove();
+                    $("#tabContent").find('span#appraisalError').remove();
                 });
             });
-            if (!formOwnTab) {
+            if (!formOwnTabFail) {
                 $('#' + checkingForm).find('input,select,textarea').each(function () {
                     if ($(this).attr('type') !== 'hidden' && $(this).attr('disabled') !== 'disabled') {
                         if ($(this).attr("required") === "required") {
@@ -51,17 +52,17 @@ window.appraisalCustom = (function ($, toastr) {
                                 var parentId = $(this).parent("div");
                                 var errorMsgSpan = parentId.find('span#inputRequired');
                                 if (errorMsgSpan.length > 0) {
-                                    $(this).html("This field is required");
+                                    parentId.find('span#inputRequired').html("This field is required");
                                 } else {
                                     var errorMsgSpan = $('<span />', {
                                         "class": 'errorMsg',
                                         "id": 'inputRequired',
                                         text: "This field is required"
                                     });
-                                    parentId.append(errorMsgSpan);
+                                    errorMsgSpan.appendTo(parentId);
                                     var tabErrorMsgSpanNum = $("#tabContent").find('span#appraisalError');
                                     if (tabErrorMsgSpanNum.length > 0) {
-                                        $(this).html("Appraisal Submission Failed!!!!");
+                                        $("#tabContent").find('span#appraisalError').html("Appraisal Submission Failed!!!!");
                                     } else {
                                         var errorMsgSpan1 = $('<span />', {
                                             "class": 'errorMsg',
@@ -76,8 +77,9 @@ window.appraisalCustom = (function ($, toastr) {
                         }
                     }
                     $(this).on("blur", function () {
+                        var parentId = $(this).parent("div");
                         parentId.find('span.errorMsg').remove();
-                        $("#tabContent").find('span.errorMsg').remove();
+                        $("#tabContent").find('span#appraisalError').remove();
                     });
                 });
                 if (appraiseeTabFail) {
@@ -90,14 +92,10 @@ window.appraisalCustom = (function ($, toastr) {
                     return false;
                 } else {
                     return true;
-
                 }
-            }
-            if(formOwnTab){
+            }else{
                 App.unblockUI("#hris-page-content");
                 return false;
-            }else{
-                return true;
             }
         });
     }

@@ -2105,3 +2105,11 @@ div#ndp-nepali-box{
 .datepicker{
     z-index: 1001 !important;
 }
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+#tabContent h7{
+    font-weight: 600;
+    font-size:11px !important;
+}

@@ -5,6 +5,7 @@ $companyId = $formOne->get('companyId');
 /**
  * Personal Information
  */
+$employeeCode = $formOne->get("employeeCode");
 $firstName = $formOne->get("firstName");
 $middleName = $formOne->get("middleName");
 $lastName = $formOne->get("lastName");
@@ -216,6 +217,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $this->formLabel($emailOfficial); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                 <?php print $employeeData[\Setup\Model\HrEmployees::EMAIL_OFFICIAL]; ?></div>
+                        </div>
+                    </div>  
+                    
+                    <div class="row bottomgap">
+                        <div class="form-group <?= empty($employeeCode->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                <?php print $this->formLabel($employeeCode); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                <?php print $employeeData[\Setup\Model\HrEmployees::EMPLOYEE_CODE]; ?></div>
                         </div>
                     </div>  
 

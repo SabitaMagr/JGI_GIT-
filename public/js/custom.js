@@ -834,10 +834,12 @@ window.app = (function ($, toastr, App) {
 
     var pdfExport = function (kendoId, col) {
 
-        // to create div for pdf table export
-//        var $pdfExportdiv = $("<div id='pdfExportTable'></div>");
-//        $pdfExportdiv.insertAfter("#" + kendoId);
-//        document.body.appendChild($pdfExportdiv);
+        var pageSizeValue;
+        if (kendoId == 'employeeTable') {
+            pageSizeValue = '4A0';
+        } else {
+            pageSizeValue = 'A3';
+        }
 
 //             to create export pdf button
         var $pdfExportButton = $("<li>"
@@ -848,84 +850,66 @@ window.app = (function ($, toastr, App) {
 
         $pdfExportButton.insertAfter($("#export").parent());
 
-        //to create template for export pdf
-
-        var pdfkendoTemplate = "<script id='rowTemplatePDF' type='text/x-kendo-tmpl'><tr>";
-        $.each(col, function (key, value) {
-            if (key != 'MIDDLE_NAME' && key != 'LAST_NAME') {
-                pdfkendoTemplate += "<td>";
-                if (key == 'FIRST_NAME') {
-                    pdfkendoTemplate += "#: (" + key + "== null) ? ' ' :" + key + "#";
-                    pdfkendoTemplate += "#: (MIDDLE_NAME == null) ? ' ' : ' '+MIDDLE_NAME+' ' #";
-                    pdfkendoTemplate += "#: (LAST_NAME == null) ? ' ' : LAST_NAME #";
-                } else {
-                    pdfkendoTemplate += " #: (" + key + "== null) ? ' ' :" + key + "#";
-                }
-                pdfkendoTemplate += "</td>";
-            }
-        });
-
-        pdfkendoTemplate += "</tr></script>";
-        $(pdfkendoTemplate).insertAfter("#rowTemplate");
-
-
         $("#exportPdf").click(function () {
-            $("#pdfExportTable").show();
+            var widthData = [];
+            var bodyHeader = [];
+            $.each(col, function (key, value) {
+                widthData.push('auto');
+                bodyHeader.push(value);
+            });
 
             var dataSource = $("#" + kendoId).data("kendoGrid").dataSource;
             var filteredDataSource = new kendo.data.DataSource({
                 data: dataSource.data(),
                 filter: dataSource.filter()
             });
-
             filteredDataSource.read();
             var data = filteredDataSource.view();
 
+
             var exportData = [];
+            exportData.push(bodyHeader);
             for (var i = 0; i < data.length; i++) {
-                var tempData = {};
+                var tempData = [];
                 $.each(col, function (key, value) {
-                    if (kendoId == 'ruleTable' && key == 'PAY_TYPE_FLAG') {
-                        var tempValModify;
-                        if (data[i][key] == 'A') {
-                            tempValModify = 'Addition';
-                        } else if (data[i][key] == 'Deduction') {
-                            tempValModify = 'deduction';
-                        }
-                        tempData[key] = tempValModify;
+                    if (typeof (data[i][key]) == 'undefined' || data[i][key] == null) {
+                        tempData.push('-');
                     } else {
-                        tempData[key] = data[i][key];
+                        if (kendoId == 'ruleTable' && key == 'PAY_TYPE_FLAG') {
+                            var tempValModify;
+                            if (data[i][key] == 'A') {
+                                tempValModify = 'Addition';
+                            } else if (data[i][key] == 'D') {
+                                tempValModify = 'deduction';
+                            }
+                            tempData.push(tempValModify);
+                        } else {
+                            tempData.push(data[i][key]);
+                        }
                     }
                 });
                 exportData.push(tempData);
-
             }
-//            console.log(exportData);
-            var columns = [];
-            $.each(col, function (key, value) {
-//                var widthVal=100;
-//                if(typeof(colWidth) != 'undefined'){ widthVal=colWidth[key]; }
-                if (key != 'MIDDLE_NAME' && key != 'LAST_NAME') {
-                    columns.push({field: key, title: value});
-                }
-            });
-
-            $("#pdfExportTable").kendoGrid({
-                dataSource: exportData,
-                rowTemplate: $("#rowTemplatePDF").html(),
-                columns: columns
-            });
-
-            kendo.drawing
-                    .drawDOM("#pdfExportTable")
-                    .then(function (group) {
-                        kendo.drawing.pdf.saveAs(group, kendoId + ".pdf")
-                        $("#pdfExportTable").hide();
-                    });
+            ;
 
 
+
+            var docDefinition = {
+                pageSize: pageSizeValue,
+                pageOrientation: 'landscape',
+                content: [
+                    {
+                        table: {
+                            headerRows: 1,
+                            widths: widthData,
+                            body: exportData
+                        }
+                    }
+                ]
+            };
+
+            pdfMake.createPdf(docDefinition).download(kendoId + '.pdf');
         });
-
 
     };
 

@@ -38,17 +38,17 @@
                         'loanTable',
                         {
                             'LOAN_NAME': 'Loan',
-                            'REQUESTED_DATE': 'Req Dt',
+                            'REQUESTED_DATE': 'Request Date',
                             'LOAN_DATE': 'Loan Date',
-                            'REQUESTED_AMOUNT': 'Req Amt',
+                            'REQUESTED_AMOUNT': 'Request Amt',
                             'STATUS': 'Status',
                             'REASON': 'Reason',
                             'RECOMMENDER_NAME': 'Recommender',
                             'APPROVER_NAME': 'Approver',
-                            'RECOMMENDED_REMARKS': 'Rec Remarks',
-                            'RECOMMENDED_DATE': 'Rec Dt',
-                            'APPROVED_REMARKS': 'App Remarks',
-                            'APPROVED_DATE': 'App Date'
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Dt',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
                         }
                 );
         

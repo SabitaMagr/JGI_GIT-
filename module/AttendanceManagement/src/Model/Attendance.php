@@ -12,18 +12,21 @@ class Attendance extends Model {
     const IP_ADDRESS = "IP_ADDRESS";
     const ATTENDANCE_FROM = "ATTENDANCE_FROM";
     const ATTENDANCE_TIME = "ATTENDANCE_TIME";
+    const REMARKS = "REMARKS";
 
     public $employeeId;
     public $attendanceDt;
     public $ipAddress;
     public $attendanceFrom;
     public $attendanceTime;
+    public $remarks;
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
         'attendanceDt' => self::ATTENDANCE_DT,
         'ipAddress' => self::IP_ADDRESS,
         'attendanceFrom' => self::ATTENDANCE_FROM,
-        'attendanceTime' => self::ATTENDANCE_TIME
+        'attendanceTime' => self::ATTENDANCE_TIME,
+        'remarks' => self::REMARKS
     ];
 
 }

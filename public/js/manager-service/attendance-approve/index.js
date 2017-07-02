@@ -39,16 +39,16 @@ console.log(document.attendanceApprove);
                 'attendanceApproveTable',
                 {
                     'FULL_NAME': 'Name',
-                    'REQUESTED_DT': 'Req.Date',
-                    'ATTENDANCE_DT': 'AttenDate',
+                    'REQUESTED_DT': 'Request Date',
+                    'ATTENDANCE_DT': 'Attendance Date',
                     'IN_TIME': 'In Time',
                     'OUT_TIME': 'Out Time',
                     'TOTAL_HOUR': 'Total Hrs',
                     'IN_REMARKS': 'In Remarks',
                     'OUT_REMARKS': 'Out Remarks',
                     'STATUS': 'Status',
-                    'APPROVED_DT': 'A.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
+                    'APPROVED_DT': 'Approved Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
                     
                 });
                 

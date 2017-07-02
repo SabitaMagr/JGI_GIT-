@@ -11,6 +11,7 @@ angular.module("hris",[])
             var displayKendoFirstTime = true;
             $scope.view = function () {
                 var userId = angular.element(document.getElementById('userId')).val();
+                var reportType = angular.element(document.getElementById('reportType')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -39,7 +40,7 @@ angular.module("hris",[])
                         'appraisalStageId': appraisalStageId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'reportType':'appraisalReview',
+                        'reportType':reportType,
                         'userId':userId
                     }
                 }).then(function (success) {
@@ -84,6 +85,7 @@ angular.module("hris",[])
                         {field: "END_DATE", title: "End Date", width: 100},
                         {field: "END_DATE", title: "Objective Set?", width: 130},
                         {field: "END_DATE", title: "Objective Approved?", width: 170},
+                        {field: "END_DATE", title: "Appraisee Self Rating?", width: 170},
                         {field: "END_DATE", title: "Appraiser Evaluation?", width: 170},
                         {field: "END_DATE", title: "Reviewer View?", width: 140},
                         {field: "END_DATE", title: "Final Rating?", width: 120},
@@ -105,7 +107,7 @@ angular.module("hris",[])
                             'APPRAISAL_TYPE_EDESC':'Appraisal Type',
                             'STAGE_EDESC': 'Current Stage',
                             'START_DATE': 'Start Date',
-                            'END_DATE': 'EndDate',
+                            'END_DATE': 'End Date',
                             'APPRAISER_OVERALL_RATING':'Rating',
                             'APPRAISER_NAME': 'Appraiser Name',
                             'ALT_APPRAISER_NAME': 'Alt. Appraiser Name',

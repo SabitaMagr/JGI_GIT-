@@ -94,16 +94,16 @@ angular.module('hris', [])
                 {
                     'FULL_NAME': 'Name',
                     'LOAN_NAME': 'Loan',
-                    'REQUESTED_DATE': 'Req.Date',
-                    'LOAN_DATE': 'LoanDate',
-                    'REQUESTED_AMOUNT': 'ReqAmt',
+                    'REQUESTED_DATE': 'Request Date',
+                    'LOAN_DATE': 'Loan Date',
+                    'REQUESTED_AMOUNT': 'Reqest Amt',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
                     'REASON': 'Reason',
-                    'RECOMMENDED_REMARKS': 'R.Remarks',
-                    'RECOMMENDED_DATE': 'R.Date',
-                    'APPROVED_REMARKS': 'A.Remarks',
-                    'APPROVED_DATE': 'A.Date'
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Date',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Date'
                     
                 });
                 
