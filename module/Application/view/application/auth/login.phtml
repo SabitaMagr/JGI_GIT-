@@ -66,7 +66,7 @@ print $this->form()->openTag($form);
     <div class="pull-right">
         <label class="checkIn check">
             <input type="hidden" name="checkIn" value="0">
-            <input type="checkbox" name="checkIn" class="" value="1">            
+            <input type="checkbox" name="checkIn" class="" value="1" <?= ($type=='att')?"checked":""; ?>>            
             Register Attendance</label>
     </div>
 </div>

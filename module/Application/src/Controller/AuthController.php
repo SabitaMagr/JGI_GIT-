@@ -70,15 +70,21 @@ class AuthController extends AbstractActionController {
     }
 
     public function loginAction() {
-
+        //to make register attendance by default checked on login page:: condition start
+        $type = (($this->params()->fromRoute('type'))!==null)?($this->params()->fromRoute('type')):null;
+        if($type!==null){
+            $this->getSessionStorage()->forgetMe();
+            $this->getAuthService()->clearIdentity();
+        }
+        //end
+        
         if ($this->getAuthService()->hasIdentity()) {
             return $this->redirect()->toRoute('dashboard'); 
         }
-
         $form = $this->getForm();
-
         return new ViewModel([
             'form' => $form,
+            'type'=> $type,
             'messages' => $this->flashmessenger()->getMessages()
         ]);
     }
