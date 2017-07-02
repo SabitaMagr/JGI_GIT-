@@ -1,7 +1,7 @@
 <div>
     <form method="POST" name="User" role="form" class="login-form" action="<?= $this->url('auth/process', ['action' => 'checkinAuth']); ?>" id="User">   
     <label>You are Late! Fill Up The Remarks</label>
-    <textarea rows="4" cols="30"name="checkInRemarks" required="required"></textarea>
+    <textarea rows="4" cols="30" name="checkInRemarks" required="required"></textarea>
     </br>
     <input type="hidden" name="username" value="<?= $username; ?>"/>
     <input type="hidden" name="password" value="<?= $password ?>"/>
