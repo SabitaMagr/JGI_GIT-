@@ -25,13 +25,13 @@ class CheckInController extends AbstractActionController{
     }
     public function indexAction() {
         $userId = $this->params()->fromRoute('userId');
-        $typeId = $this->params()->fromRoute('typeId');
+        $type = $this->params()->fromRoute('type');
         $userRepository = new UserSetupRepository($this->adapter);
         $userDetail = $userRepository->fetchById($userId)->getArrayCopy();
         return Helper::addFlashMessagesToArray($this, [
                     'username'=> $userDetail['USER_NAME'],
                     'password'=> $userDetail['PASSWORD'],
-                    'typeId'=> $typeId
+                    'type'=> $type
             ]);
     }
 }

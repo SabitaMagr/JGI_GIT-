@@ -108,6 +108,17 @@ class AuthController extends AbstractActionController {
                 if ($result->isValid()) {
                     //after authentication success get the user specific details
                     $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
+                    
+                    $attendanceRepo = new AttendanceRepository($this->adapter);
+                    $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+
+                    $employeeId = $resultRow->EMPLOYEE_ID;
+
+                    $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
+                    $inTime = $todayAttendance['IN_TIME'];
+                    
+                    
+                    $attendanceType=($inTime)?"OUT":"IN";
                     $redirect = 'dashboard';
                     //check if it has rememberMe :
                     if (1 == $request->getPost('rememberme')) {
@@ -117,13 +128,7 @@ class AuthController extends AbstractActionController {
                         $this->getAuthService()->setStorage($this->getSessionStorage());
                     }
                     if (1 == $request->getPost('checkIn')) {
-                        $attendanceRepo = new AttendanceRepository($this->adapter);
-                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-
-                        $employeeId = $resultRow->EMPLOYEE_ID;
-
-                        $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
-                        $inTime = $todayAttendance['IN_TIME'];
+                        
 
                         $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
                         if (!$shiftDetails) {
@@ -138,16 +143,14 @@ class AuthController extends AbstractActionController {
                         $checkInDateTime = new DateTime($checkInTimeDatabase);
                         $checkOutDateTime = new DateTime($checkOutTimeDatabase);
                         
-                        $attendanceType = 0;
                         if ($inTime) {
-                        $attendanceType = 1;
                             $diff = date_diff($checkOutDateTime, $currentDateTime);
                         } else {
                             $diff = date_diff($currentDateTime, $checkInDateTime);
                         }
                             $diffNegative = $diff->format("%r");
                         if ($diffNegative == '-') {
-                            return $this->redirect()->toRoute('checkin', ['action' => 'index', 'userId' => $resultRow->USER_ID, 'typeId' => $attendanceType]);
+                            return $this->redirect()->toRoute('checkin', ['action' => 'index', 'userId' => $resultRow->USER_ID, 'type' => $attendanceType]);
                         }
                         $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
                         if (!isset($result)) {
@@ -171,6 +174,7 @@ class AuthController extends AbstractActionController {
                         "user_id" => $resultRow->USER_ID,
                         "employee_id" => $resultRow->EMPLOYEE_ID,
                         "role_id" => $resultRow->ROLE_ID,
+                        'register_attendance'=>$attendanceType,
 //                        "role_id" => 8,
 //                        "employee_detail" => $employeeDetail,
                         "fiscal_year" => $fiscalYear
