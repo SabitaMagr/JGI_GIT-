@@ -111,6 +111,9 @@
             </tr>
             <?php if ($assignedAppraisalDetail['STAGE_ID'] == 5 || $appraiserRatingDtlNum > 0) { ?>
                 <tr>
+                    <?php if ($assignedAppraisalDetail['STAGE_ID'] == 1) { ?>
+                    <td></td>
+                    <?php } ?>
                     <td colspan="6">
                         ANNUAL RATING ON KEY PERFORMANCE INDICATOR:
                     </td>

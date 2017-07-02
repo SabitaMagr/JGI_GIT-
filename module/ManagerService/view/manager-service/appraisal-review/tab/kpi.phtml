@@ -96,6 +96,9 @@
             </tr>
             <?php if ($appraiserRatingDtlNum > 0) { ?>
                 <tr>
+                    <?php if ($assignedAppraisalDetail['STAGE_ID'] == 1) { ?>
+                    <td></td>
+                    <?php } ?>
                     <td colspan="6">
                         ANNUAL RATING ON KEY PERFORMANCE INDICATOR:
                     </td>
@@ -121,6 +124,13 @@
                             <div ng-message="isGeaterHundred" class="help-block error pull-right">{{KPIErrorMsg}}</div>
                         </div>
                     </td>
+                <?php if ($keyAchievementDtlNum > 0) { ?>
+                    <td></td>
+                    <td></td>
+                <?php } ?>
+                <?php if ($appraiserRatingDtlNum > 0) { ?>
+                    <td></td>
+                <?php } ?>
                     <td>
                         <div class="form-group">
                             <button type="submit" id="submit" class="btn btn-success pull-right">

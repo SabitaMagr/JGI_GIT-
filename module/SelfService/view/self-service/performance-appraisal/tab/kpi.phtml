@@ -113,6 +113,9 @@ $disabledKeyAchievement = ($assignedAppraisalDetail['STAGE_ID'] != 7) ? "disable
             </tr>
             <?php if ($appraiserRatingDtlNum > 0 && $assignedAppraisalDetail['REVIEWER_AGREE'] == 'Y') { ?>
                 <tr>
+                    <?php if ($assignedAppraisalDetail['STAGE_ID'] == 1) { ?>
+                    <td></td>
+                    <?php } ?>
                     <td colspan="6">
                         ANNUAL RATING ON KEY PERFORMANCE INDICATOR:
                     </td>

@@ -67,6 +67,9 @@
             <?php if ($assignedAppraisalDetail['STAGE_ID'] == 5 || $appCompetenciesRatingDtlNum > 0) {
                 ?>
                 <tr>
+                    <?php if ($assignedAppraisalDetail['STAGE_ID'] == 1) { ?>
+                    <td></td>
+                    <?php } ?>
                     <td colspan="2">
                         ANNUAL RATING ON COMPETENCIES:
                     </td>
