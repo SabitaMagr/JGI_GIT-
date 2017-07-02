@@ -2101,3 +2101,7 @@ div#ndp-nepali-box{
 #red{
     color:red !important;
 }
+
+.datepicker{
+    z-index: 1001 !important;
+}

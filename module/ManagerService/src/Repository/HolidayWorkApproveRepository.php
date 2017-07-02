@@ -246,4 +246,11 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                     END;");
     }
 
+    public function wohToLeave($auditBy, $wohId) {
+        EntityHelper::rawQueryResult($this->adapter, "
+                    BEGIN
+                      HRIS_SUBSTITUTE_LEAVE_ASSIGN({$auditBy},{$wohId});
+                    END;");
+    }
+
 }

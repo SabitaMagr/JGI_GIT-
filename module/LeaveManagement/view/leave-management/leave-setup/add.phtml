@@ -13,12 +13,13 @@ $maxAccumulateDays = $form->get('maxAccumulateDays');
 $carryForward = $form->get('carryForward');
 $paid = $form->get('paid');
 $cashable = $form->get('cashable');
+$allowGraceLeave = $form->get('allowGraceLeave');
+$isMonthly = $form->get('isMonthly');
 
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
 
 $remarks = $form->get('remarks');
-
 $fiscalYear->setValueOptions($fiscalYears);
 
 $submit = $form->get('submit');
@@ -75,29 +76,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($leaveEname, ['class' => 'help-block error']); ?>
                     </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-group <?= empty($leaveLname->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($leaveLname); ?>
-                            <?php print $this->formElement($leaveLname); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                        <?php print $this->formElementErrors()->render($leaveLname, ['class' => 'help-block error']); ?>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
-                            <?php print $this->formLabel($companyId); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($companyId); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                        <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
-                    </div>
-                </div>
-
-                <div class=" row">
-
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($fiscalYear->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($fiscalYear); ?>
@@ -106,6 +84,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                         <?php print $this->formElementErrors()->render($fiscalYear, ['class' => 'help-block error']); ?>
                     </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($companyId->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
+                    </div>
+                </div>
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group <?= empty($defaultDays->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($defaultDays); ?>
+                            <?php print $this->formElement($defaultDays); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($defaultDays, ['class' => 'help-block error']); ?>
+                    </div>
+
                     <div class="col-sm-4">
                         <div class="form-group <?= empty($maxAccumulateDays->getMessages()) ? "" : "error" ?>">
                             <?php print $this->formLabel($maxAccumulateDays); ?>
@@ -120,23 +119,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                 <div class="padding-5">
                     <div class="row  bg-master-lightest">
-                        <div class=" col-sm-4 ">
-                            <div class="form-group padding-0">
-                                <?php print $this->formLabel($allowHalfday); ?>
-                                <div class="md-radio-inline">
-                                    <?php $customRenderer($allowHalfday); ?>
-                                </div>
-                            </div>
-                            <?php print $this->formElementErrors()->render($allowHalfday, ['class' => 'help-block error']); ?>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group <?= empty($defaultDays->getMessages()) ? "" : "error" ?>">
-                                <?php print $this->formLabel($defaultDays); ?>
-                                <?php print $this->formElement($defaultDays); ?>
-                                <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                            </div>
-                            <?php print $this->formElementErrors()->render($defaultDays, ['class' => 'help-block error']); ?>
-                        </div>
                         <div class="col-sm-4">
                             <div class="form-group padding-0">
                                 <?php print $this->formLabel($paid); ?>
@@ -146,8 +128,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                             <?php print $this->formElementErrors()->render($paid, ['class' => 'help-block error']); ?>
                         </div>
-                    </div>
-                    <div class="row bg-master-lightest">
                         <div class="col-sm-4">
                             <div class="form-group padding-0">
                                 <?php print $this->formLabel($cashable); ?>
@@ -166,6 +146,39 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                             <?php print $this->formElementErrors()->render($carryForward, ['class' => 'help-block error']); ?>
                         </div>
+
+
+
+                    </div>
+                    <div class="row bg-master-lightest">
+                        <div class=" col-sm-4 ">
+                            <div class="form-group padding-0">
+                                <?php print $this->formLabel($allowHalfday); ?>
+                                <div class="md-radio-inline">
+                                    <?php $customRenderer($allowHalfday); ?>
+                                </div>
+                            </div>
+                            <?php print $this->formElementErrors()->render($allowHalfday, ['class' => 'help-block error']); ?>
+                        </div>
+                        <div class=" col-sm-4 ">
+                            <div class="form-group padding-0">
+                                <?php print $this->formLabel($allowGraceLeave); ?>
+                                <div class="md-radio-inline">
+                                    <?php $customRenderer($allowGraceLeave); ?>
+                                </div>
+                            </div>
+                            <?php print $this->formElementErrors()->render($allowGraceLeave, ['class' => 'help-block error']); ?>
+                        </div>
+                        <div class=" col-sm-4 ">
+                            <div class="form-group padding-0">
+                                <?php print $this->formLabel($isMonthly); ?>
+                                <div class="md-radio-inline">
+                                    <?php $customRenderer($isMonthly); ?>
+                                </div>
+                            </div>
+                            <?php print $this->formElementErrors()->render($isMonthly, ['class' => 'help-block error']); ?>
+                        </div>
+
                     </div>
                 </div>
 

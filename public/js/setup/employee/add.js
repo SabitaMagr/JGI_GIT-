@@ -7,7 +7,7 @@
         var addrPermVdcMunicipalityId = $('#addrPermVdcMunicipalityId');
 
         if (addrPermZoneId.val() !== null) {
-            if (typeof document.address !== 'undefined') {
+            if (typeof document.address !== 'undefined' && document.address.length !== 0) {
                 addrPermZoneId.val(document.address.addrPermZoneId).trigger('change');
             }
             app.fetchAndPopulate(document.urlDistrict, addrPermZoneId.val(), addrPermDistrictId, function () {
@@ -42,7 +42,7 @@
         var addrTempVdcMunicipality = $('#addrTempVdcMunicipality');
 
         if (addrTempZoneId.val() !== null) {
-            if (typeof document.address !== 'undefined') {
+            if (typeof document.address !== 'undefined' && document.address.length !== 0) {
                 addrTempZoneId.val(document.address.addrTempZoneId).trigger('change');
             }
             app.fetchAndPopulate(document.urlDistrict, addrTempZoneId.val(), addrTempDistrictId, function () {
@@ -162,6 +162,9 @@
          branchChangeFun();
          */
 
+        if (document.employeeId == document.selfEmployeeId) {
+            app.lockField(true, ['birthdate', 'firstName', 'middleName', 'lastName','nameNepali', 'nepaliBirthDate', 'companyId', 'idCardNo', 'idThumbId', 'idLbrf', 'tab4', 'tab5', 'tab7', 'tab8']);
+        }
     });
 
 })(window.jQuery, window.app);

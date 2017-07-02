@@ -54,7 +54,6 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
 use Training\Model\TrainingAssign;
-use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
@@ -94,7 +93,7 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-        return;
+//        return;
         $isValidEmail = function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         };
@@ -116,7 +115,7 @@ class HeadNotification {
         if (!isset($model->toEmail) || $model->toEmail == null || $model->toEmail == '' || !$isValidEmail($model->toEmail)) {
             throw new Exception("Receiver email is not set or valid.");
         }
-        $mail->setFrom($model->fromEmail, $model->fromName);
+        $mail->setFrom('server@jginepal.com', $model->fromName);
         $mail->addTo($model->toEmail, $model->toName);
 
         $cc = (array) json_decode($template['CC']);
@@ -413,6 +412,7 @@ class HeadNotification {
 
     private static function trainingAssigned(TrainingAssign $request, AdapterInterface $adapter, Url $url, $type) {
         $notification = self::initializeNotificationModel($request->createdBy, $request->employeeId, \Notification\Model\TrainingReqNotificationModel::class, $adapter);
+        
         $training = new Training();
         self::initFullModel(new TrainingRepository($adapter), $training, $request->trainingId);
 
@@ -785,12 +785,10 @@ class HeadNotification {
 
     private static function leaveSubstituteAccepted(LeaveApply $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $request, $request->id);
-
         $leaveSubstituteRepo = new LeaveSubstituteRepository($adapter);
         $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($request->id);
 
-        $notification = new LeaveSubNotificationModel();
-        self::initializeNotificationModel($leaveSubstituteDetail['EMPLOYEE_ID'], $request->employeeId, $notification, $adapter);
+        $notification = self::initializeNotificationModel($leaveSubstituteDetail['EMPLOYEE_ID'], $request->employeeId, LeaveSubNotificationModel::class, $adapter);
 
         $leaveName = self::getName($request->leaveId, new LeaveMasterRepository($adapter), 'LEAVE_ENAME');
         $notification->leaveName = $leaveName;

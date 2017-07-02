@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/29/16
- * Time: 12:47 PM
- */
-
 namespace SelfService\Controller;
 
 use Application\Helper\Helper;
@@ -54,7 +47,7 @@ class MyAttendance extends AbstractActionController {
                     'attendanceList' => $attendanceList,
                     'employeeId' => $this->employeeId,
                     'status' => $statusFormElement,
-                    'fiscalYear'=>$fiscal_year
+                    'fiscalYear' => $fiscal_year
         ]);
     }
 

@@ -928,6 +928,7 @@ class DashboardRepository implements RepositoryInterface {
                       MAX(START_DATE) AS LATEST_START_DATE
                     FROM HRIS_JOB_HISTORY
                     WHERE END_DATE IS NOT NULL
+                    AND ABS(TRUNC(END_DATE)-TRUNC(SYSDATE))<=15
                     GROUP BY EMPLOYEE_ID
                     ) LH
                   WHERE JH.EMPLOYEE_ID =LH.EMPLOYEE_ID

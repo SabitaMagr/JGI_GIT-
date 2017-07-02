@@ -5,8 +5,6 @@
     'use strict';
     $(document).ready(function () {
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
-//        $('#fromDate').datepicker('setDate', nepaliDatePickerExt.getDate('07-Jun-2017'));
-
         $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
                 $.each(document.ids, function (key, value) {
@@ -33,7 +31,6 @@ angular.module('hris', [])
                     missPunchOnly = 1;
                 }
 
-                console.log(status);
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceList',
@@ -82,13 +79,13 @@ angular.module('hris', [])
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
                         {field: "TOTAL_HOUR", title: "Total Hour"},
-                        {field: "STATUS", title: "STATUS"},
+                        {field: "STATUS", title: "Status"},
                         {field: "IN_REMARKS", title: "Late In Reason"},
                         {field: "OUT_REMARKS", title: "Early Out Reason"},
                     ]
                 });
 
-                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR','STATUS' ,'IN_REMARKS', 'OUT_REMARKS']);
+                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
                 app.pdfExport(
                         'attendanceTable',
                         {
@@ -133,7 +130,7 @@ angular.module('hris', [])
 
                 $fromDate.val(fiscalFromDate);
                 $toDate.val(fiscalEndDate);
-                
+
                 if (idFromParameter == 8) {
                     $missPunchOnly.prop("checked", true);
                 } else {

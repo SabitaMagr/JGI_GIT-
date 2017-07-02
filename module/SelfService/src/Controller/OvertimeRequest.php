@@ -177,9 +177,8 @@ class OvertimeRequest extends AbstractActionController {
                 $model->allTotalHour = Helper::hoursToMinutes($postDataArray['allTotalHour']);
                 $this->repository->add($model);
 
-                $overtimeDetailNum = $postDataArray['overtimeDetailNum'];
                 $overtimeDetailModel = new OvertimeDetail();
-                for ($i = 0; $i <= $overtimeDetailNum; $i++) {
+                for ($i = 0; $i < sizeof($postDataArray['startTime']); $i++) {
                     $startTime = $postDataArray['startTime'][$i];
                     $endTime = $postDataArray['endTime'][$i];
                     $totalHour = $postDataArray['totalHour'][$i];

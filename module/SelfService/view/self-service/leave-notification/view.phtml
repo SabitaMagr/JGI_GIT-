@@ -19,10 +19,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 /**
  * Load Javascript files here
  */
-
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
- 
+
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
@@ -240,17 +239,7 @@ print $this->form()->openTag($form);
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
 
-                        <div class="col-sm-4">
-                            <?php if ($allowHalfDay == 'Y') { ?>
-                                <div class="form-group padding-0" id="halfDay">
-                                    <?php print $this->formLabel($halfDay); ?>
-                                    <div class="md-radio-inline">
-                                        <?php $customRenderer($halfDay); ?>
-                                    </div>
-                                </div>
-                                <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
-                            <?php } ?>
-                        </div>
+
 
                         <div class="col-sm-4">
                             <?php if ($remarksDtl != null) { ?>

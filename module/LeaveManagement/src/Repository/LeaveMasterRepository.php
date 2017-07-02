@@ -1,4 +1,5 @@
 <?php
+
 namespace LeaveManagement\Repository;
 
 use Application\Helper\EntityHelper;
@@ -35,42 +36,30 @@ class LeaveMasterRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-//        return $this->tableGateway->select(function(Select $select){
-//            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME]), false);
-//            $select->where([LeaveMaster::STATUS => 'E']);
-//            $select->order(LeaveMaster::LEAVE_ENAME." ASC");
-//        });
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME],NULL,NULL,NULL,NULL,'L',false), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME], NULL, NULL, NULL, NULL, 'L', false), false);
         $select->from(['L' => LeaveMaster::TABLE_NAME]);
-        $select->join(['C'=>Company::TABLE_NAME], "C.".Company::COMPANY_ID."="."L.".LeaveMaster::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
-//        $select->columns(Helper::convertColumnDateFormat($this->adapter, new Shift(), ['startTime','endTime']), false);
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=" . "L." . LeaveMaster::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
         $select->where(["L.STATUS='E'"]);
-        $select->order(LeaveMaster::LEAVE_ENAME." ASC");
+        $select->order(LeaveMaster::LEAVE_ENAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
     }
 
     public function fetchById($id) {
-        $rowset = $this->tableGateway->select(function(Select $select)use($id){
+        $rowset = $this->tableGateway->select(function(Select $select)use($id) {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME]), false);
             $select->where([LeaveMaster::LEAVE_ID => $id, LeaveMaster::STATUS => 'E']);
         });
         return $result = $rowset->current();
-//        if($result!=null){
-//            $r = $result->getArrayCopy();
-//            print_r(($r));
-//        }
-//        //print_r($result->getArrayCopy());
-//         die();
     }
 
     public function fetchActiveRecord() {
-        return $rowset = $this->tableGateway->select(function(Select $select){
+        return $rowset = $this->tableGateway->select(function(Select $select) {
             $select->where([LeaveMaster::STATUS => 'E']);
-            $select->order(LeaveMaster::LEAVE_ENAME." ASC");
+            $select->order(LeaveMaster::LEAVE_ENAME . " ASC");
         });
     }
 
@@ -83,9 +72,10 @@ class LeaveMasterRepository implements RepositoryInterface {
         $leave = $this->tableGateway->select([LeaveMaster::LEAVE_ID => $leaveId, LeaveMaster::STATUS => 'E'])->current();
         return ($leave[LeaveMaster::CASHABLE] == 'Y') ? true : false;
     }
-    
-    public function getSubstituteLeave(){
-        $result =  $this->tableGateway->select([LeaveMaster::STATUS => 'E', LeaveMaster::IS_SUBSTITUTE=>'Y']);
+
+    public function getSubstituteLeave() {
+        $result = $this->tableGateway->select([LeaveMaster::STATUS => 'E', LeaveMaster::IS_SUBSTITUTE => 'Y']);
         return $result->current();
     }
+
 }

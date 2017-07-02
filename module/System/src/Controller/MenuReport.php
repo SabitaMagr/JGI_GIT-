@@ -74,7 +74,7 @@ class MenuReport extends AbstractActionController {
                     throw new Exception("parameter roleId is required");
                 }
 
-                $this->menuSetupRepository->setRoleId(7);
+                $this->menuSetupRepository->setRoleId($roleId);
                 $data = $this->menuSetupRepository->getHierarchicalMenuWithRoleId();
                 $menuList = [];
                 foreach ($data as $key => $row) {

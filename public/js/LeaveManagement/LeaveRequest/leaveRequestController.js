@@ -7,6 +7,29 @@ angular.module('hris', [])
             var employeeId1 = angular.element(document.getElementById('employeeId')).val();
             var halfDay = angular.element(document.getElementById('halfDay'));
 
+            var toggleSubstituteEmployee = function ($flag) {
+                if ($flag) {
+                    $('#substituteEmployeeCol').show();
+                    $('#leaveSubstitute').prop('disabled', false);
+                } else {
+                    $('#substituteEmployeeCol').hide();
+                    $('#leaveSubstitute').prop('disabled', true);
+                }
+            };
+            var toggleGracePeriod  = function ($flag) {
+                if ($flag) {
+                    $('#gracePeriodCol').show();
+                    $('#gracePeriod').prop('disabled', false);
+                } else {
+                    $('#gracePeriodCol').hide();
+                    $('#gracePeriod').prop('disabled', true);
+                }
+            };
+
+            toggleSubstituteEmployee(true);
+            toggleGracePeriod(false);
+
+
             window.app.floatingProfile.setDataFromRemote(employeeId1);
 
             $scope.change = function () {
@@ -22,13 +45,6 @@ angular.module('hris', [])
                     $scope.$apply(function () {
                         var temp = success.data;
                         $scope.availableDays = temp.BALANCE;
-                        $scope.allowHalfDay = temp.ALLOW_HALFDAY;
-
-                        if ($scope.allowHalfDay == 'N') {
-                            halfDay.slideUp();
-                        } else {
-                            halfDay.slideDown();
-                        }
 
                         var availableDays = parseInt(temp.BALANCE);
                         var newValue = parseInt($("#noOfDays").val());
@@ -42,6 +58,19 @@ angular.module('hris', [])
                         }
 
                     });
+                    if (success.data.ALLOW_GRACE_LEAVE == "Y") {
+                        toggleSubstituteEmployee(false);
+                        toggleGracePeriod(true);
+                    } else {
+                        toggleSubstituteEmployee(true);
+                        toggleGracePeriod(false);
+                    }
+
+
+
+
+
+
                 }, function (failure) {
                     console.log(failure);
                 });
@@ -61,17 +90,12 @@ angular.module('hris', [])
                     $scope.$apply(function () {
                         var temp = success.data;
                         var length = (success.leaveList).length;
-                        console.log((success.leaveList).length)
+
                         $scope.leaveList = success.leaveList;
                         $scope.leaveId = $scope.leaveList[0];
                         $scope.availableDays = temp.BALANCE;
-                        $scope.allowHalfDay = temp.ALLOW_HALFDAY;
 
-                        if ($scope.allowHalfDay == 'N') {
-                            halfDay.slideUp();
-                        } else {
-                            halfDay.slideDown();
-                        }
+
                         var availableDays = parseInt(temp.BALANCE);
                         var newValue = parseInt($("#noOfDays").val());
 
@@ -83,21 +107,19 @@ angular.module('hris', [])
                             $("#request").removeAttr("disabled");
                         }
                     });
+
+                    if (success.data.ALLOW_GRACE_LEAVE == 'Y') {
+                        toggleSubstituteEmployee(false);
+                        toggleGracePeriod(true);
+                    } else {
+                        toggleSubstituteEmployee(true);
+                        toggleGracePeriod(false);
+                    }
                 }, function (failure) {
                     console.log(failure);
                 });
 
             }
-            $scope.leaveSubstitute =false;
-            $scope.viewSubstituteEmployee = function(substituteEmployee){
-                console.log(substituteEmployee);
-                if(substituteEmployee==1){
-                    $scope.leaveSubstitute = true;
-                }else{
-                    $scope.leaveSubstitute =false;
-                }
-            }
-
         });
 
 

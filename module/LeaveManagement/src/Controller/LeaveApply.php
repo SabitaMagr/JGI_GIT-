@@ -39,7 +39,6 @@ class LeaveApply extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
-
         $request = $this->getRequest();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());

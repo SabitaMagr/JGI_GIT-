@@ -45,6 +45,11 @@ $noOfDays = $form->get('noOfDays');
 $noOfDays->setAttributes(['disabled' => "disabled"]);
 $halfDay = $form->get('halfDay');
 $halfDay->setAttributes(['disabled' => "disabled"]);
+
+$gracePeriod = $form->get('gracePeriod');
+$gracePeriod->setAttributes(['disabled' => "disabled"]);
+$gracePeriod->setValue($gp);
+
 $remarks = $form->get('remarks');
 $remarks->setAttributes(['disabled' => 'disabled']);
 $recommendedRemarks = $form->get('recommendedRemarks');
@@ -234,7 +239,18 @@ print $this->form()->openTag($form);
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
-
+                        <?php
+                        if ($gracePeriod->getValue() != ""):
+                            ?>
+                            <div class="col-sm-4">
+                                <div
+                                    class="form-group">
+                                        <?php print $this->formLabel($gracePeriod); ?>
+                                        <?php print $this->formElement($gracePeriod); ?>
+                                </div>
+                            </div>
+                        <?php endif;
+                        ?>
                         <div class="col-sm-4">
                             <?php if ($remarksDtl != null) { ?>
                                 <div
@@ -245,6 +261,7 @@ print $this->form()->openTag($form);
                             <?php }
                             ?>
                         </div>
+
                     </div>
 
                     <?php
@@ -279,6 +296,7 @@ print $this->form()->openTag($form);
                             <textarea disabled="disabled" <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks; ?></textarea>
                         </div>
                     <?php } ?>
+
                 </div>
                 <?php if ($subApprovedFlag != 'N') { ?>
                     <div
