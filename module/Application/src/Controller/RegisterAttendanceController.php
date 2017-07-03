@@ -231,7 +231,7 @@ class RegisterAttendanceController extends AbstractActionController{
 
         $this->getSessionStorage()->forgetMe();
         $this->getAuthService()->clearIdentity();
-        $this->flashmessenger()->addMessage("You've been logged out");
+        $this->flashmessenger()->addMessage("Attendance Registered Successfully!!!");
         return $this->redirect()->toRoute('login');
     }
 } 
