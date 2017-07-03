@@ -8,6 +8,8 @@ if($type=='IN'){
 }
 ?>
 
+<div class='font-Size-12px'>
+
 <div class="row">
     <div class="col-xs-6">
         <label>Check In Time</label>
@@ -52,13 +54,14 @@ if($type=='IN'){
         <?php  echo ($shiftDetails)?$shiftDetails['CURRENT_TIME']:"";  ?>
     </div>
 </div>
-
+    
+    </br>
 <div>
     <form action="<?php echo $this->url('registerAttendance', ['action' => 'checkout']); ?>"  method="post" id="registerAttendanceForm">
     <label><?=$lableData?></label>   
     <div class="row">
         <div class="col-sm-12">
-            <textarea rows="4" cols="30" name="remarks" id="remarks" required="required"></textarea>
+            <textarea class="width-100" rows="4" cols="30" name="remarks" id="remarks" required="required"></textarea>
         </div>
     </div>
     <div class="row">
@@ -70,4 +73,6 @@ if($type=='IN'){
     </form>
 </div>
 
+    
+</div>
 
