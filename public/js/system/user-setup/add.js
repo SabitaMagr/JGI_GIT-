@@ -40,7 +40,9 @@
         }
         window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId, function () {
             App.blockUI({target: "#hris-page-content"});
-        });     
-       
+        });
+        
+        $('#form-password').hidePassword(true);
+        $('#form-repassword').hidePassword(true);
     });
 })(window.jQuery, window.app);
