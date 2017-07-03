@@ -2,13 +2,11 @@
     'use strict';
     $(document).ready(function () {
         $('select#form-trainingType').select2();
-//        app.startEndDatePicker("form-startDate", "form-endDate", function (fromDate, toDate) {  
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-startDate', 'nepaliEndDate1', 'form-endDate', function (fromDate, toDate) {
             if (fromDate <= toDate) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((fromDate.getTime() - toDate.getTime()) / (oneDay));
                 var newValue = diffDays + 1;
-                //dateDiff = newValue;
                 $("#form-duration").val(newValue);
             }
         });
@@ -31,7 +29,6 @@
         const DURATION = "DURATION";
         const TRAINING_TYPE = "TRAINING_TYPE";
 
-        console.log(document.trainingList);
         var trainingChange = function ($this) {
             if (typeof document.trainingList === 'undefined' || document.trainingList === null || document.trainingList.length === 0) {
                 return;
@@ -41,8 +38,6 @@
             var endDate = app.getSystemDate(document.trainingList[$this.val()][END_DATE]);
             var duration = document.trainingList[$this.val()][DURATION];
             var trainingType = document.trainingList[$this.val()][TRAINING_TYPE];
-//            $title.val(title);
-
             $startDate.datepicker('setStartDate', startDate);
             $startDate.datepicker('setEndDate', endDate);
             $endDate.datepicker('setStartDate', startDate);
