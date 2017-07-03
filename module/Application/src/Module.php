@@ -27,6 +27,7 @@ use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
+use Application\Controller\RegisterAttendanceController;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
 
@@ -65,6 +66,11 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             ForgotPasswordController::class . "-code",
             ForgotPasswordController::class . "-password",
             ForgotPasswordController::class . "-email",
+            RegisterAttendanceController::class . "-index",
+            RegisterAttendanceController::class . "-getForm",
+            RegisterAttendanceController::class . "-checkIn",
+            RegisterAttendanceController::class . "-checkOut",
+            RegisterAttendanceController::class . "-authenticate",
             Controller\CronController::class . '-index',
             Controller\CronController::class . '-employee-attendance',
         ];
@@ -99,7 +105,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $repository = new RolePermissionRepository($adapter);
             $data = $repository->fetchAllMenuByRoleId($roleId);
             $allowFlag = false;
-            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService'];
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService','registerAttendance'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }
@@ -204,6 +210,9 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             'factories' => [
                 AuthController::class => function ($container) {
                     return new AuthController($container->get('AuthService'), $container->get(DbAdapterInterface::class));
+                },
+                RegisterAttendanceController::class => function ($container) {
+                    return new RegisterAttendanceController($container->get('AuthService'), $container->get(DbAdapterInterface::class));
                 },
             ],
         ];

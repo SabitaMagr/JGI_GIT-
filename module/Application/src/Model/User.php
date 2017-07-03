@@ -35,6 +35,7 @@ class User
 
     /**
      * @Annotation\Type("Zend\Form\Element\Checkbox")
+     * * @Annotation\Required(false)
      * @Annotation\Options({"label":"Remember Me ?:", "label_attributes":{"id":"remember-me"}})
      */
     public $rememberme;

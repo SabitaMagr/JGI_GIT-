@@ -106,16 +106,6 @@ return [
                     ],
                 ],
             ],
-            'checkout' => [
-                'type' => Literal::class,
-                'options' => [
-                    'route' => '/checkout',
-                    'defaults' => [
-                        'controller' => Controller\AuthController::class,
-                        'action' => 'checkout',
-                    ],
-                ],
-            ],
             'dashboard' => [
                 'type' => Segment::class,
                 'options' => [
@@ -170,7 +160,17 @@ return [
                     'route' => '/checkin[/:action[/:userId][/:type]]',
                     'defaults' => [
                         'controller' => Controller\CheckInController::class,
-                        'action' => 'email',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+            'registerAttendance' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/registerAttendance[/:action[/:userId][/:type]]',
+                    'defaults' => [
+                        'controller' => Controller\RegisterAttendanceController::class,
+                        'action' => 'index',
                     ],
                 ],
             ],
@@ -228,7 +228,7 @@ return [
             Controller\TaskController::class => Controller\ControllerFactory::class,
             Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
             Controller\ChangePassword::class => Controller\ControllerFactory::class,
-            Controller\CheckInController::class => Controller\ControllerFactory::class
+            Controller\CheckInController::class => Controller\ControllerFactory::class,
         ],
     ],
     'view_manager' => [
