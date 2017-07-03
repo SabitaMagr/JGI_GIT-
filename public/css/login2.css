@@ -376,3 +376,12 @@ a.codeCancel:hover{
 .passwordLabel {
     font-size:11px;
 }
+
+.font-Size-12px{
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .width-100{
+        width: 100%;
+    }

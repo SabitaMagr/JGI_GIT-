@@ -102,11 +102,10 @@
                                 <a class=""  href="#" id="passwordChangeMenu">
                                     <i class="icon-user"></i> Change Password </a>
                             </li>
-                            <!-- commented on JGI -->
-                            <!--                            <li>
-                                                            <a href="<?php echo $this->url('checkout', ['action' => 'checkout']); ?>">
-                                                                <i class="icon-key"></i>Check <?= ($registerAttendance == 'OUT') ? 'Out' : 'In' ?> </a>
-                                                        </li>-->
+                            <li>
+                                <a href="<?php echo $this->url('registerAttendance', ['action' => 'checkout']); ?>">
+                                    <i class="icon-key"></i>Check <?= ($registerAttendance == 'OUT') ? 'Out' : 'In' ?> </a>
+                            </li>
                             <li>
                                 <a href="<?php echo $this->url('logout', ['action' => 'logout']); ?>">
                                     <i class="icon-key"></i> Log Out </a>

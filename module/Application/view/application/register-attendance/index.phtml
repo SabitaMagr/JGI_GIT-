@@ -14,13 +14,11 @@ $password->setAttribute('class', 'form-control form-control-solid placeholder-no
 $password->setAttribute('placeholder', 'Password...');
 $password->setAttribute('required', true);
 
-$rememberme = $form->get('rememberme');
-$rememberme->setAttribute('class', '');
-
 $submit = $form->get('submit');
+$submit->setAttribute('value', 'Register Time');
 $submit->setAttribute('class', 'btn btn-primary btn-block uppercase loginbtn');
 
-$form->setAttribute('action', $this->url('auth/process', ['action' => 'authenticate']));
+$form->setAttribute('action', $this->url('registerAttendance',['action'=>'authenticate']));
 $form->prepare();
 
 print $this->form()->openTag($form);
@@ -35,7 +33,7 @@ print $this->form()->openTag($form);
     } else {
         ?>
         <span class="form-title">Welcome.</span>
-        <span class="form-subtitle">Please login.</span>
+        <span class="form-subtitle">Please Register Attendance.</span>
         <?php
     }
     ?>
@@ -63,21 +61,9 @@ print $this->form()->openTag($form);
         print $this->formSubmit($submit);
         ?>
     </div>
-    <div class="pull-right">
-        <a href="<?= $this->url('registerAttendance') ?>" id="forget-password" class="forget-password">Register Attendance </a>
+</div>
 
-    </div>
-</div>
-<div class="form-actions ">
-    <div class="pull-left">
-        <label class="rememberme check">
-            <?php print $this->formElement($rememberme); ?>
-            Remember me </label>
-    </div>
-    <div class="pull-right forget-password-block">
-        <a href="<?= $this->url("recover"); ?>" id="forget-password" class="forget-password">Forgot Password?</a>
-    </div>
-</div>
 <?php
 print $this->form()->closeTag();
 ?>
+
