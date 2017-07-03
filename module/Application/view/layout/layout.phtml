@@ -113,17 +113,14 @@
         <![endif]-->
 
         <?php
-        
         // plugin to export  pdf
         $this->headScript()
                 ->prependFile($this->basePath('assets/global/plugins/pdf/build/vfs_fonts.js'))
                 ->prependFile($this->basePath('assets/global/plugins/pdf/build/pdfmake.min.js'));
-        
-        
-        if ($displayGlobalSearch) {
-            $this->headScript()
-                    ->prependFile($this->basePath('js/application/globalSearch.js'));
-        }
+
+
+        $this->headScript()
+                ->prependFile($this->basePath('js/application/globalSearch.js'));
         $this->headScript()
                 ->prependFile($this->basePath('js/user-setting.js'));
         $this->headScript()

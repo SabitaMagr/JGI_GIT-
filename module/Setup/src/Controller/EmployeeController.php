@@ -219,7 +219,10 @@ class EmployeeController extends AbstractActionController {
                 case 1:
                     $this->formOne->setData($postData);
                     if ($this->formOne->isValid()) {
+
                         $formOneModel->exchangeArrayFromForm($this->formOne->getData());
+                        $formOneModel->addrPermVdcMunicipalityId = $this->repository->vdcStringToId($postData['addrPermDistrictId'], $postData['addrPermVdcMunicipalityId']);
+                        $formOneModel->addrTempVdcMunicipalityId = $this->repository->vdcStringToId($postData['addrTempDistrictId'], $postData['addrTempVdcMunicipalityId']);
                         $formOneModel->birthDate = Helper::getExpressionDate($formOneModel->birthDate);
                         $formOneModel->addrPermCountryId = 168;
                         $formOneModel->addrTempCountryId = 168;
@@ -418,6 +421,9 @@ class EmployeeController extends AbstractActionController {
                     $address["addrTempZoneId"] = $tempArray[0];
                 }
             }
+
+            $formOneModel->addrPermVdcMunicipalityId = $this->repository->vdcIdToString($formOneModel->addrPermVdcMunicipalityId);
+            $formOneModel->addrTempVdcMunicipalityId = $this->repository->vdcIdToString($formOneModel->addrTempVdcMunicipalityId);
             $this->formOne->bind($formOneModel);
         }
 
