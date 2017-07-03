@@ -37,7 +37,20 @@
                     'PRIORITY_INDEX': 'Priority',
                     'PAY_EDESC': 'Rules',
                     'PAY_TYPE_FLAG': 'Type'
-                });
+                }, function (data, keyValue) {
+            var tempValModify = data;
+            if (keyValue == 'PAY_TYPE_FLAG') {
+                switch (data) {
+                    case 'A':
+                        tempValModify = 'Addition';
+                        break;
+                    case 'D':
+                        tempValModify = 'Deduction';
+                        break;
+                }
+            }
+            return tempValModify;
+        });
 
         function gridDataBound(e) {
             var grid = e.sender;
@@ -49,7 +62,7 @@
             }
         }
         ;
-        
+
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
@@ -69,13 +82,13 @@
 
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
-                
-                var payType=dataItem['PAY_TYPE_FLAG'];
-                
-                if(dataItem['PAY_TYPE_FLAG']=='A'){
-                    payType='Addition';
-                }else if(dataItem['PAY_TYPE_FLAG']=='D'){
-                    payType='Deduction';
+
+                var payType = dataItem['PAY_TYPE_FLAG'];
+
+                if (dataItem['PAY_TYPE_FLAG'] == 'A') {
+                    payType = 'Addition';
+                } else if (dataItem['PAY_TYPE_FLAG'] == 'D') {
+                    payType = 'Deduction';
                 }
 
                 rows.push({
@@ -89,8 +102,8 @@
             excelExport(rows);
             e.preventDefault();
         });
-        
-         function excelExport(rows) {
+
+        function excelExport(rows) {
             var workbook = new kendo.ooxml.Workbook({
                 sheets: [
                     {
@@ -106,9 +119,9 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "RuleList.xlsx"});
         }
-        
-        
-        
+
+
+
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

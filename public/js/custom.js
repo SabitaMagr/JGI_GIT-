@@ -185,7 +185,7 @@ window.app = (function ($, toastr, App) {
             todayHighlight: true,
             autoclose: true
         }).on('changeDate', function () {
-            if($(this).val()!=null && $(this).val()!==""){
+            if ($(this).val() != null && $(this).val() !== "") {
                 oldFromNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val());
                 $fromNepaliDate.val(oldFromNepali);
                 var minDate = nepaliDatePickerExt.getDate($(this).val());
@@ -197,7 +197,7 @@ window.app = (function ($, toastr, App) {
                 oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
                 $toNepaliDate.val(oldtoNepali);
             }
-            
+
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
                 fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
@@ -263,7 +263,7 @@ window.app = (function ($, toastr, App) {
             todayHighlight: true,
             autoclose: true
         }).on('changeDate', function () {
-            if($(this).val()!=null && $(this).val()!==""){
+            if ($(this).val() != null && $(this).val() !== "") {
                 oldtoNepali = nepaliDatePickerExt.fromEnglishToNepali($(this).val())
                 $toNepaliDate.val(oldtoNepali);
                 var maxDate = nepaliDatePickerExt.getDate($(this).val());
@@ -834,7 +834,8 @@ window.app = (function ($, toastr, App) {
     }
 
 
-    var pdfExport = function (kendoId, col) {
+    var pdfExport = function (kendoId, col, fn) {
+
 
         var pageSizeValue;
         if (kendoId == 'employeeTable') {
@@ -877,14 +878,8 @@ window.app = (function ($, toastr, App) {
                     if (typeof (data[i][key]) == 'undefined' || data[i][key] == null) {
                         tempData.push('-');
                     } else {
-                        if (kendoId == 'ruleTable' && key == 'PAY_TYPE_FLAG') {
-                            var tempValModify;
-                            if (data[i][key] == 'A') {
-                                tempValModify = 'Addition';
-                            } else if (data[i][key] == 'D') {
-                                tempValModify = 'deduction';
-                            }
-                            tempData.push(tempValModify);
+                        if (typeof fn !== 'undefined') {
+                            tempData.push(fn(data[i][key],key));
                         } else {
                             tempData.push(data[i][key]);
                         }
@@ -892,7 +887,6 @@ window.app = (function ($, toastr, App) {
                 });
                 exportData.push(tempData);
             }
-            ;
 
 
 
