@@ -152,10 +152,10 @@ BEGIN
       --      END IF;
       IF (V_LATE_START_TIME-TRUNC(V_LATE_START_TIME))<(V_IN_TIME-TRUNC(V_IN_TIME)) THEN
         V_LATE_STATUS                               :='L';
-        V_LATE_COUNT                                :=V_LATE_COUNT+1;
-        IF (V_LATE_COUNT                            != 0 AND REMAINDER(V_LATE_COUNT,3)=0) THEN
-          V_OVERALL_STATUS                          :='LA';
-        END IF;
+--         V_LATE_COUNT                                :=V_LATE_COUNT+1;
+--         IF (V_LATE_COUNT                            != 0 AND REMAINDER(V_LATE_COUNT,3)=0) THEN
+--           V_OVERALL_STATUS                          :='LA';
+--         END IF;
       END IF;
       IF (V_OUT_TIME     IS NULL) THEN
         IF (V_LATE_STATUS = 'L') THEN
@@ -166,14 +166,14 @@ BEGIN
       END IF;
       IF (V_EARLY_END_TIME-TRUNC(V_EARLY_END_TIME))>(V_OUT_TIME-TRUNC(V_OUT_TIME)) THEN
         V_LATE_STATUS                             :='E';
-        V_LATE_COUNT                              :=V_LATE_COUNT+1;
-        IF (V_LATE_COUNT                          != 0 AND REMAINDER(V_LATE_COUNT,3)=0) THEN
-          V_OVERALL_STATUS                        :='LA';
-        END IF;
+--         V_LATE_COUNT                              :=V_LATE_COUNT+1;
+--         IF (V_LATE_COUNT                          != 0 AND REMAINDER(V_LATE_COUNT,3)=0) THEN
+--           V_OVERALL_STATUS                        :='LA';
+--         END IF;
       END IF;
       IF ((V_LATE_START_TIME-TRUNC(V_LATE_START_TIME))<(V_IN_TIME-TRUNC(V_IN_TIME))) AND ((V_EARLY_END_TIME-TRUNC(V_EARLY_END_TIME))>(V_OUT_TIME-TRUNC(V_OUT_TIME))) THEN
         V_LATE_STATUS                                :='B';
-        V_OVERALL_STATUS                             :='BA';
+--         V_OVERALL_STATUS                             :='BA';
       END IF;
       UPDATE HRIS_ATTENDANCE_DETAIL
       SET LATE_STATUS   =V_LATE_STATUS,
