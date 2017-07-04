@@ -7,7 +7,7 @@
         var addrPermVdcMunicipalityId = $('#addrPermVdcMunicipalityId');
 
         if (addrPermZoneId.val() !== null) {
-            if (typeof document.address !== 'undefined' && document.address.length !== 0) {
+            if (typeof document.address !== 'undefined' && document.address.length !== 0 && typeof document.address.addrPermZoneId !== 'undefined') {
                 addrPermZoneId.val(document.address.addrPermZoneId).trigger('change');
             }
             app.fetchAndPopulate(document.urlDistrict, addrPermZoneId.val(), addrPermDistrictId, function () {
@@ -16,20 +16,41 @@
                         addrPermDistrictId.val(document.address.addrPermDistrictId).trigger('change');
                     }
                     app.fetchAndPopulate(document.urlMunicipality, addrPermDistrictId.val(), addrPermVdcMunicipalityId, function () {
-                        if (typeof document.address !== 'undefined') {
-                            addrPermVdcMunicipalityId.val(document.address.addrPermVdcMunicipalityId).trigger('change');
-                        }
 
                         addrPermZoneId.on('change', function () {
                             app.fetchAndPopulate(document.urlDistrict, addrPermZoneId.val(), addrPermDistrictId, function () {
                                 if (addrPermDistrictId.val() !== null) {
-                                    app.fetchAndPopulate(document.urlMunicipality, addrPermDistrictId.val(), addrPermVdcMunicipalityId);
+                                    app.pullDataById(document.urlMunicipality, {id: addrPermDistrictId.val()}).then(function (data) {
+                                        var nameList = [];
+                                        $.each(data, function (key, item) {
+                                            nameList.push(item);
+                                        });
+                                        addrPermVdcMunicipalityId.val("");
+                                        addrPermVdcMunicipalityId.autocomplete({
+                                            source: nameList
+                                        });
+                                    }, function (error) {
+                                        console.log("Error fetching Districts", error);
+                                    });
                                 }
                             });
                         });
 
                         addrPermDistrictId.on('change', function () {
-                            app.fetchAndPopulate(document.urlMunicipality, addrPermDistrictId.val(), addrPermVdcMunicipalityId);
+                            app.pullDataById(document.urlMunicipality, {id: addrPermDistrictId.val()}).then(function (data) {
+                                var nameList = [];
+                                $.each(data, function (key, item) {
+                                    nameList.push(item);
+                                });
+                                addrPermVdcMunicipalityId.val("");
+                                addrPermVdcMunicipalityId.autocomplete({
+                                    source: nameList
+                                });
+                            }, function (error) {
+                                console.log("Error fetching Districts", error);
+                            });
+
+
                         });
 
                     });
@@ -42,7 +63,7 @@
         var addrTempVdcMunicipality = $('#addrTempVdcMunicipality');
 
         if (addrTempZoneId.val() !== null) {
-            if (typeof document.address !== 'undefined' && document.address.length !== 0) {
+            if (typeof document.address !== 'undefined' && document.address.length !== 0 && typeof document.address.addrTempZoneId !== 'undefined') {
                 addrTempZoneId.val(document.address.addrTempZoneId).trigger('change');
             }
             app.fetchAndPopulate(document.urlDistrict, addrTempZoneId.val(), addrTempDistrictId, function () {
@@ -51,28 +72,47 @@
                         addrTempDistrictId.val(document.address.addrTempDistrictId).trigger('change');
                     }
                     app.fetchAndPopulate(document.urlMunicipality, addrTempDistrictId.val(), addrTempVdcMunicipality, function () {
-                        if (typeof document.address !== 'undefined') {
-                            addrTempVdcMunicipality.val(document.address.addrTempVdcMunicipalityId).trigger('change');
-                        }
 
                         addrTempZoneId.on('change', function () {
                             app.fetchAndPopulate(document.urlDistrict, addrTempZoneId.val(), addrTempDistrictId, function () {
                                 if (addrTempDistrictId.val() !== null) {
-                                    app.fetchAndPopulate(document.urlMunicipality, addrTempDistrictId.val(), addrTempVdcMunicipality);
+                                    app.pullDataById(document.urlMunicipality, {id: addrTempDistrictId.val()}).then(function (data) {
+                                        var nameList = [];
+                                        $.each(data, function (key, item) {
+                                            nameList.push(item);
+                                        });
+                                        addrTempVdcMunicipality.val("");
+                                        addrTempVdcMunicipality.autocomplete({
+                                            source: nameList
+                                        });
+                                    }, function (error) {
+                                        console.log("Error fetching Districts", error);
+                                    });
                                 }
                             });
                         });
 
                         addrTempDistrictId.on('change', function () {
-                            app.fetchAndPopulate(document.urlMunicipality, addrTempDistrictId.val(), addrTempVdcMunicipality);
-                        });
+                            app.pullDataById(document.urlMunicipality, {id: addrTempDistrictId.val()}).then(function (data) {
+                                var nameList = [];
+                                $.each(data, function (key, item) {
+                                    nameList.push(item);
+                                });
+                                addrTempVdcMunicipality.val("");
+                                addrTempVdcMunicipality.autocomplete({
+                                    source: nameList
+                                });
+                            }, function (error) {
+                                console.log("Error fetching Districts", error);
+                            });
 
+
+                        });
 
                     });
                 }
             });
         }
-
 
 
         $('#finishBtn').on('click', function () {
@@ -163,7 +203,7 @@
          */
 
         if (document.employeeId == document.selfEmployeeId) {
-            app.lockField(true, ['birthdate', 'firstName', 'middleName', 'lastName','nameNepali', 'nepaliBirthDate', 'companyId', 'idCardNo', 'idThumbId', 'idLbrf', 'tab4', 'tab5', 'tab7', 'tab8']);
+            app.lockField(true, ['birthdate', 'firstName', 'middleName', 'lastName', 'nameNepali', 'nepaliBirthDate', 'companyId', 'idCardNo', 'idThumbId', 'idLbrf', 'tab4', 'tab5', 'tab7', 'tab8']);
         }
     });
 
