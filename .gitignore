@@ -7,7 +7,7 @@ nbproject
 .idea
 .project
 .settings
-vendor/
+vendor/*
 data/cache/
 data/logs/
 #config/autoload/global.php
