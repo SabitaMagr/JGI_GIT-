@@ -6,8 +6,7 @@ use Application\Model\Model;
 use Zend\Form\Annotation;
 
 class HrEmployeesFormTabOne extends Model {
-    
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
@@ -17,8 +16,6 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Attributes({ "id":"employeeCode", "class":"form-control" })
      */
     public $employeeCode;
-    
-
     public $employeeId;
 
     /**
@@ -240,10 +237,10 @@ class HrEmployeesFormTabOne extends Model {
     public $addrPermStreetAddress;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"VDC or Municipality"})
+     * @Annotation\Options({"label":"VDC or Municipality"})
      * @Annotation\Attributes({ "id":"addrPermVdcMunicipalityId","class":"form-control"})
      */
     public $addrPermVdcMunicipalityId;
@@ -297,9 +294,9 @@ class HrEmployeesFormTabOne extends Model {
     public $addrTempStreetAddress;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"VDC or Municipality"})
+     * @Annotation\Options({"label":"VDC or Municipality"})
      * @Annotation\Required(false)
      * @Annotation\Attributes({ "id":"addrTempVdcMunicipality","class":"form-control"})
      */

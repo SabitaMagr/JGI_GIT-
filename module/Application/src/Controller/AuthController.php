@@ -126,44 +126,7 @@ class AuthController extends AbstractActionController {
                         //set storage again
                         $this->getAuthService()->setStorage($this->getSessionStorage());
                     }
-                    if (1 == $request->getPost('checkIn')) {
 
-                        $attendanceRepo = new AttendanceRepository($this->adapter);
-
-                        $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
-                        if (!$shiftDetails) {
-                            $shiftDetails = $attendanceDetailRepo->fetchEmployeeDefaultShift($employeeId);
-                        }
-
-                        $currentTimeDatabase = $shiftDetails['CURRENT_TIME'];
-                        $checkInTimeDatabase = $shiftDetails['CHECKIN_TIME'];
-                        $checkOutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
-
-                        $currentDateTime = new DateTime($currentTimeDatabase);
-                        $checkInDateTime = new DateTime($checkInTimeDatabase);
-                        $checkOutDateTime = new DateTime($checkOutTimeDatabase);
-
-                        if ($inTime) {
-                            $diff = date_diff($checkOutDateTime, $currentDateTime);
-                        } else {
-                            $diff = date_diff($currentDateTime, $checkInDateTime);
-                        }
-                        $diffNegative = $diff->format("%r");
-                        if ($diffNegative == '-') {
-                            return $this->redirect()->toRoute('checkin', ['action' => 'index', 'userId' => $resultRow->USER_ID, 'type' => $attendanceType]);
-                        }
-                        $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
-                        if (!isset($result)) {
-                            throw new Exception("Today's Attendance of employee with employeeId :$employeeId is not found.");
-                        }
-                        $attendanceModel = new Attendance();
-                        $attendanceModel->employeeId = $employeeId;
-                        $attendanceModel->attendanceDt = new Expression("TRUNC(SYSDATE)");
-                        $attendanceModel->attendanceTime = new Expression("SYSDATE");
-                        $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
-                        $attendanceModel->attendanceFrom = 'WEB';
-                        $attendanceRepo->add($attendanceModel);
-                    }
 //                    $employeeRepo = new EmployeeRepository($this->adapter);
 //                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
                     $monthRepo = new MonthRepository($this->adapter);

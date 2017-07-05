@@ -1,5 +1,8 @@
+<link href="<?= $this->basePath('assets/global/plugins/hide-show-password/css/example.wink.css') ?>" rel="stylesheet"
+              type="text/css"/>
 <?php
 $this->headScript()->appendFile($this->basePath('js/system/user-setup/add.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/hide-show-password/hideShowPassword.min.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'usersetup-form');
