@@ -6,6 +6,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Appraisal\Model\AppraisalAssign;
 use Appraisal\Model\Setup;
+use Appraisal\Model\Stage;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Appraisal\Repository\AppraisalReportRepository;
 use Appraisal\Repository\SetupRepository;
@@ -99,6 +100,7 @@ class AppraisalAssignController extends AbstractActionController{
             'departments'=>$departmentFormElement,
             'designations'=>$designationFormElement,
             'appraisals'=>$appraisalFormElement,
+            'stages'=> EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::ORDER_NO, "ASC",NULL,FALSE,TRUE),
             'searchValues' => EntityHelper::getSearchData($this->adapter),
             'employeeList'=>$employeeList
         ]);
