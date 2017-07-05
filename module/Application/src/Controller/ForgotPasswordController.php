@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -14,15 +15,18 @@ use Notification\Model\NotificationEvents;
 use Notification\Controller\HeadNotification;
 use Application\Custom\CustomViewModel;
 
-class ForgotPasswordController extends AbstractActionController{
+class ForgotPasswordController extends AbstractActionController {
+
     private $adapter;
     private $repository;
     private $appConfig;
-    public function __construct(AdapterInterface $adapter,ConfigInterface $appConfig) {
+
+    public function __construct(AdapterInterface $adapter, ConfigInterface $appConfig) {
         $this->adapter = $adapter;
         $this->appConfig = $appConfig->getApplicationConfig();
         $this->repository = new ForgotPasswordRepository($adapter);
     }
+
     public function setEventManager(EventManagerInterface $events) {
         parent::setEventManager($events);
         $controller = $this;
@@ -30,11 +34,12 @@ class ForgotPasswordController extends AbstractActionController{
             $controller->layout('layout/login');
         }, 100);
     }
+
     public function indexAction() {
         $request = $this->getRequest();
-        if($request->isPost()){
+        if ($request->isPost()) {
             $postData = $request->getPost();
-            switch ($postData->action){
+            switch ($postData->action) {
                 case "checkCodeDetail":
                     $responseData = $this->checkCodeDetail($postData->data);
                     break;
@@ -47,72 +52,71 @@ class ForgotPasswordController extends AbstractActionController{
             return new CustomViewModel($responseData);
         }
     }
-    public function emailAction(){
+
+    public function emailAction() {
         $userRepo = new UserSetupRepository($this->adapter);
         $result = $userRepo->fetchAll();
         $list = [];
-        foreach($result as $row){
+        foreach ($result as $row) {
             array_push($list, $row);
         }
         $request = $this->getRequest();
-        if($request->isPost()){
+        if ($request->isPost()) {
             $postData = $request->getPost()->getArrayCopy();
             $username = $postData['username'];
             $userDetail = $userRepo->fetchByUsername($username);
-            
+
             $employeeId = $userDetail['EMPLOYEE_ID'];
             $code1 = Helper::generateUniqueName();
-            $code = mt_rand(100000,999999);
+            $code = mt_rand(100000, 999999);
             $expiryDate = new \DateTime('now +1 day');
             $dt = $expiryDate->format('d-M-y h:i A');
-            
+
             $detail = $this->repository->fetchByEmployeeId($employeeId);
             $forgotPasswordModel = new ForgotPassword();
             $forgotPasswordModel->employeeId = $employeeId;
-            if($detail==null){
+            if ($detail == null) {
                 $forgotPasswordModel->code = $code;
                 $forgotPasswordModel->expiryDate = Helper::getExpressionDateTime($dt);
                 $this->repository->add($forgotPasswordModel);
-            }else{
-                $forgotPasswordModel->code=$detail['CODE'];
+            } else {
+                $forgotPasswordModel->code = $detail['CODE'];
             }
-            $senderDetail = [
-                "fromName"=>$this->appConfig['default-system-name'],
-                "fromMail"=>$this->appConfig['default-system-mail']
-                ];
-            try{
+            try {
                 $forgotPasswordModel->expiryDate = $dt;
-                HeadNotification::pushNotification(NotificationEvents::FORGOT_PASSWORD,$forgotPasswordModel, $this->adapter,null, $senderDetail);
-            }catch(Exception $e){
+                HeadNotification::pushNotification(NotificationEvents::FORGOT_PASSWORD, $forgotPasswordModel, $this->adapter);
+            } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
-            $this->redirect()->toRoute("recover",[
-                'action'=>"code",
-                'employeeId'=>$employeeId
+            $this->redirect()->toRoute("recover", [
+                'action' => "code",
+                'employeeId' => $employeeId
             ]);
         }
-        return Helper::addFlashMessagesToArray($this, ['userList'=>$list]);
+        return Helper::addFlashMessagesToArray($this, ['userList' => $list]);
     }
-    public function codeAction(){
+
+    public function codeAction() {
         $request = $this->getRequest();
         $employeeId = $this->params()->fromRoute('employeeId');
         $detail = $this->repository->fetchByEmployeeId($employeeId);
-        if($request->isPost()){
+        if ($request->isPost()) {
             $postData = $request->getPost()->getArrayCopy();
-            $this->redirect()->toRoute("recover",[
-                'action'=>"password",
-                'employeeId'=>$employeeId
+            $this->redirect()->toRoute("recover", [
+                'action' => "password",
+                'employeeId' => $employeeId
             ]);
         }
         return Helper::addFlashMessagesToArray($this, [
-            "employeeId"=>$employeeId,
-            "code"=>$detail['CODE']
-            ]);
+                    "employeeId" => $employeeId,
+                    "code" => $detail['CODE']
+        ]);
     }
-    public function passwordAction(){
+
+    public function passwordAction() {
         $employeeId = $this->params()->fromRoute('employeeId');
         $request = $this->getRequest();
-        if($request->isPost()){
+        if ($request->isPost()) {
             $postData = $request->getPost()->getArrayCopy();
             $userRepo = new UserSetupRepository($this->adapter);
             $userRepo->updateByEmpId($employeeId, $postData['password']);
@@ -120,27 +124,29 @@ class ForgotPasswordController extends AbstractActionController{
             $this->redirect()->toRoute("login");
         }
         return Helper::addFlashMessagesToArray($this, [
-            "employeeId"=>$employeeId
-            ]);
+                    "employeeId" => $employeeId
+        ]);
     }
-    public function checkCodeDetail($data){
+
+    public function checkCodeDetail($data) {
         $employeeId = $data['employeeId'];
         $code = $data['code'];
         $detail = $this->repository->fetchByEmployeeId($employeeId);
         $detailCode = $detail['CODE'];
         $errorFlag = false;
-        if($code!==$detailCode){
-            $errorFlag=true;
+        if ($code !== $detailCode) {
+            $errorFlag = true;
             $msg = "* Enter Code doesn't match!!!";
-        }else{
-            $msg="";
+        } else {
+            $msg = "";
         }
         return [
-            "success"=>true,
-            "data"=>[
-                "errorFlag"=>$errorFlag,
-                "msg"=>$msg
+            "success" => true,
+            "data" => [
+                "errorFlag" => $errorFlag,
+                "msg" => $msg
             ]
         ];
     }
+
 }

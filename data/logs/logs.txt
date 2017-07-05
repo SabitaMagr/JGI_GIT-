@@ -879,3 +879,6 @@
 2017-06-14T13:36:57+05:45 INFO (6): Email Sent =>From pramod@itnepal.com To prabin.maharjan@itnepal.com
 2017-06-14T16:01:36+05:45 INFO (6): Email Sent =>From prabin.maharjan@itnepal.com To ukesh.gaiju@itnepal.com
 2017-06-14T16:02:42+05:45 INFO (6): Email Sent =>From prabin.maharjan@itnepal.com To ukesh.gaiju@itnepal.com
+2017-07-05T15:21:45+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To ukesh.gaiju@itnepal.com
+2017-07-05T15:30:32+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To ukesh.gaiju@itnepal.com
+2017-07-05T15:39:30+05:45 INFO (6): Email Sent =>From somkala.pachhai@itnepal.com To ukesh.gaiju@itnepal.com

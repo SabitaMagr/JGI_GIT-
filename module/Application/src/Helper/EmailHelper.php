@@ -11,12 +11,12 @@ class EmailHelper {
     public static function getSmtpTransport(): Smtp {
         $transport = new Smtp();
         $options = new SmtpOptions([
-            'host' => 'smtp.office365.com',
+            'host' => 'duster.websitewelcome.com',
             'port' => 587,
             'connection_class' => 'login',
             'connection_config' => [
-                'username' => 'server@jginepal.com',
-                'password' => 'K@thmandu',
+                'username' => 'ukesh.gaiju@itnepal.com',
+                'password' => 'ukesh@123',
                 'ssl' => 'tls',
             ],
         ]);
@@ -26,6 +26,8 @@ class EmailHelper {
 
     public static function sendEmail(Message $mail) {
         $transport = self::getSmtpTransport();
+        $connectionConfig = $transport->getOptions()->getConnectionConfig();
+        $mail->setFrom($connectionConfig['username']);
         $transport->send($mail);
         return true;
     }
