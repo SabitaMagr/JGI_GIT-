@@ -109,6 +109,9 @@ $this->headScript()
                         <th>
                             Super Reviewer Assigned
                         </th>
+                        <th>
+                            Current Stage
+                        </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
                                 <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -145,6 +148,9 @@ $this->headScript()
                         <td>                       
                             <span ng-bind="employee.SUPER_REVIEWER_NAME"></span>
                         </td>
+                        <td>                       
+                            <span ng-bind="employee.CURRENT_STAGE_NAME"></span>
+                        </td>
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
                                 <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -160,7 +166,7 @@ $this->headScript()
             </table>
         </div>
 
-        <div class="row margin-top-20" ng-show="assignShowHide">  
+        <div class="row margin-top-20 position-relative" ng-show="assignShowHide">  
             <div class="col-sm-3">
                 <label for="appraiserId" style="width:100%">Appraiser</label>             
                 <div class="row">
@@ -230,7 +236,7 @@ $this->headScript()
                 </div>
             </div>
             <div class="col-sm-3">
-                <label for="superReviewerId" style="width:100%; margin-top:2%;">Super Reviewer</label>
+                <label for="superReviewerId" style="width:100%;">Super Reviewer</label>
                 <div class="row">
                     <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
                         <select name="superReviewerId" required="required" id="superReviewerId" class="form-control" ng-options="superReviewer.name for superReviewer in superReviewerOptions track by superReviewer.id" ng-model="superReviewerSelected">
@@ -246,8 +252,27 @@ $this->headScript()
                         </label>
                     </div>  
                 </div>
+                <label for="stageId" style="width:100%; margin-top:2%;">Current Stage</label>
+                <div class="row">
+                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                        <select name="stageId" required="required" id="stageId" class="form-control" >
+                            <?php foreach($stages as $key=>$value){ ?>
+                            <option value="<?= $key; ?>"><?= $value; ?></option>
+                            <?php } ?>
+                        </select>   
+                    </div>
+                    <div class="col-md-3 rlPadding reviewerWrap" style="padding:0px 0px !important;">
+                        <a class="btn-edit" href="javascript::" ng-click="open('STG')" style="height:22px; padding: 0px 7px !important;">
+                            <i class="fa fa-search" style="height:17px;"></i>
+                        </a>
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                            <input class="" ng-model="stageAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="stageAssign"/>
+                            <span></span>
+                        </label>
+                    </div>  
+                </div>
             </div>
-            <div class="col-sm-2 " ng-show="showHideAssignBtn">
+            <div class="col-sm-2 " id="assignBtnWrap" ng-show="showHideAssignBtn">
                 <label height="45"></label>
                 <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search mt-ladda-btn ladda-button mt-progress-demo">
                     Assign

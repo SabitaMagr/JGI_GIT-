@@ -50,7 +50,7 @@ class AppraisalEvaluation extends AbstractActionController{
         $appraisalStageFormElement = new Select();
         $appraisalStageFormElement->setName("Appraisal");
         $appraisalStages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::STAGE_EDESC, "ASC",NULL,FALSE,TRUE);
-        $appraisalStages1 = [-1 => "All Type"] + $appraisalStages;
+        $appraisalStages1 = [-1 => "All Stage"] + $appraisalStages;
         $appraisalStageFormElement->setValueOptions($appraisalStages1);
         $appraisalStageFormElement->setAttributes(["id" => "appraisalStageId", "class" => "form-control"]);
         $appraisalStageFormElement->setLabel("Appraisal Stage");
