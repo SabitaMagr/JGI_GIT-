@@ -5,7 +5,6 @@ return [
     'Zend\InputFilter',
     'Zend\Filter',
     'Zend\Hydrator',
-    'Zend\Mail',
     'Zend\Navigation',
     'Zend\Db',
     'Zend\ServiceManager\Di',

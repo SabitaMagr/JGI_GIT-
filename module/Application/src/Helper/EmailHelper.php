@@ -28,9 +28,6 @@ class EmailHelper {
         $transport = self::getSmtpTransport();
         $connectionConfig = $transport->getOptions()->getConnectionConfig();
         $mail->setFrom($connectionConfig['username']);
-        print "<pre>";
-        print_r($mail);
-        exit;
         $transport->send($mail);
         return true;
     }
