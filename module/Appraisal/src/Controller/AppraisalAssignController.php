@@ -115,7 +115,6 @@ class AppraisalAssignController extends AbstractActionController{
         $companyId = $data['companyId'];
         $serviceTypeId = $data['serviceTypeId'];
         $positionId = $data['positionId'];
-
         
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1,$companyId);
@@ -162,7 +161,7 @@ class AppraisalAssignController extends AbstractActionController{
                 $employeeRow['APPRAISER_NAME'] = "";
                 $employeeRow['APPRAISAL_EDESC'] = "";
             }
-            
+            $employeeRow['CURRENT_STAGE_NAME']=$assignList['STAGE_EDESC'];
             array_push($employeeList, $employeeRow);
         }
 //        print "<pre>";
@@ -206,6 +205,7 @@ class AppraisalAssignController extends AbstractActionController{
         $altAppraiserId = (int)$data['altAppraiserId'];
         $altReviewerId = (int)$data['altReviewerId'];
         $superReviewerId = (int)$data['superReviewerId'];
+        $stageId = (int)$data['stageId'];
         $appraisalRepo = new SetupRepository($this->adapter);
         $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
 //        print_r($appraisalId); die();
@@ -271,7 +271,7 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->createdBy = $this->employeeId;
             $appraisalAssign->companyId = $employeeDetail['COMPANY_ID'];
             $appraisalAssign->branchId = $employeeDetail['BRANCH_ID'];
-            $appraisalAssign->currentStageId = $appraisalDtl['CURRENT_STAGE_ID'];
+            $appraisalAssign->currentStageId = ($stageId==null)?$appraisalDtl['CURRENT_STAGE_ID']:$stageId;
             $appraisalAssign->status = 'E';
             $this->repository->add($appraisalAssign);
         } else if ($employeePreDtl != null) {
@@ -284,7 +284,7 @@ class AppraisalAssignController extends AbstractActionController{
             $appraisalAssign->superReviewerId = $superReviewerIdNew;
             $appraisalAssign->modifiedDate = Helper::getcurrentExpressionDate();
             $appraisalAssign->modifiedBy = $this->employeeId;
-            $appraisalAssign->currentStageId = $appraisalDtl['CURRENT_STAGE_ID'];
+            $appraisalAssign->currentStageId =($stageId==null)?null:$stageId;
             $appraisalAssign->status = 'E';
             $this->repository->edit($appraisalAssign, [$employeeId,$appraisalId]);
         }
@@ -295,7 +295,9 @@ class AppraisalAssignController extends AbstractActionController{
         }
         return [
             "success" => true,
-            "data" => $data
+            "data" => [
+                'CURRENT_STAGE_NAME'=>$appraisalDtl['STAGE_EDESC']
+            ]
         ];
     }
     
