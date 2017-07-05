@@ -2113,3 +2113,11 @@ div#ndp-nepali-box{
     font-weight: 600;
     font-size:11px !important;
 }
+#assignBtnWrap{
+    position: absolute;
+    bottom: 0;
+    right: 7%;
+}
+.position-relative{
+    position: relative;
+}

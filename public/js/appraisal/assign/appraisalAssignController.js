@@ -107,6 +107,12 @@ angular.module('hris', ['ui.bootstrap'])
                             $scope.role = 'Reviewer';
                         } else if (parseInt(type) == 3) {
                             $scope.role = 'Appraiser';
+                        }else if(type == 'A2'){
+                            $scope.role='Alternativce Reviewer';
+                        }else if(type=='A3'){
+                            $scope.role='Alternative Appraiser';
+                        }else if(type=='S2'){
+                            $scope.role=='Super Reviewer';
                         }
                         $scope.cancel = function () {
                             $uibModalInstance.dismiss('cancel');
@@ -172,7 +178,7 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
             $scope.checkReportingHierarchy = function () {
-                if ($scope.reviewerAssign || $scope.appraiserAssign || $scope.altAppraiserAssign || $scope.altReviewerAssign||$scope.superReviewerAssign) {
+                if ($scope.reviewerAssign || $scope.appraiserAssign || $scope.altAppraiserAssign || $scope.altReviewerAssign||$scope.superReviewerAssign||$scope.stageAssign) {
                     $scope.showHideAssignBtn = true;
                 } else {
                     $scope.showHideAssignBtn = false;
@@ -204,6 +210,10 @@ angular.module('hris', ['ui.bootstrap'])
                 var superReviewerId = superReviewerElement.val();
                 var superReviewerName = document.getElementById('superReviewerId').options[document.getElementById('superReviewerId').selectedIndex].text;
                 
+                var stageElement = angular.element(document.getElementById('stageId'));
+                var stageId = stageElement.val();
+                var stageName = document.getElementById('stageId').options[document.getElementById('stageId').selectedIndex].text;
+                
                 var errorFlagR = false;
                 if ($scope.reviewerAssign) {
                     if (reviewerId == "?") {
@@ -234,10 +244,10 @@ angular.module('hris', ['ui.bootstrap'])
 
                 if (!errorFlagR && !errorFlagA) {
                     App.blockUI({target: "#hris-page-content"});
-                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName);
+                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName,stageId,stageName);
                 }
             };
-            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName) {
+            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName,stageId,stageName) {
                 var promises = [];
 
                 if (!$scope.reviewerAssign) {
@@ -270,6 +280,12 @@ angular.module('hris', ['ui.bootstrap'])
                     var altAppraiserId1 = altAppraiserId;
                 }
                 
+                if (!$scope.stageAssign) {
+                    var stageId1 = null;
+                } else {
+                    var stageId1 = stageId;
+                }
+                
                 for (var index in $scope.employeeList) {
                     if ($scope.employeeList[index].checked) {
                         promises.push(window.app.pullDataById(document.url, {
@@ -281,7 +297,8 @@ angular.module('hris', ['ui.bootstrap'])
                                 appraisalId: appraisalId,
                                 altAppraiserId:altAppraiserId1,
                                 altReviewerId:altReviewerId1,
-                                superReviewerId:superReviewerId1
+                                superReviewerId:superReviewerId1,
+                                stageId:stageId1
                             }
                         }));
                     }
@@ -336,7 +353,17 @@ angular.module('hris', ['ui.bootstrap'])
                                     }
                                     $scope.employeeList[index].ALT_APPRAISER_NAME = altAppraiserNameNew;
                                 }
-                                console.log(appraiserName);
+                                if ($scope.stageAssign) {
+                                    if ($scope.employeeList[index].STAGE_ID == stageId) {
+                                        var stageNameNew = null;
+                                    } else {
+                                        var stageNameNew = stageName;
+                                    }
+                                    $scope.employeeList[index].CURRENT_STAGE_NAME = stageNameNew;
+                                }else if($scope.employeeList[index].CURRENT_STAGE_NAME==null){
+                                    $scope.employeeList[index].CURRENT_STAGE_NAME = success[0].data.CURRENT_STAGE_NAME; 
+                                }
+                                console.log(success[0].data.CURRENT_STAGE_NAME);
                             }
                         }
                     });
