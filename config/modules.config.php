@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'Zend\Mail',
     'Zend\I18n',
     'Zend\InputFilter',
     'Zend\Filter',
