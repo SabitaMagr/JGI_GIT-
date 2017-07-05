@@ -50,7 +50,6 @@ class Constraint
 
     /**
      * Fix the given argument in current constraint
-     *
      * @param  integer $type
      * @return void
      */

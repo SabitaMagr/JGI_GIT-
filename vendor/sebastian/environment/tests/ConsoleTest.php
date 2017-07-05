@@ -17,14 +17,14 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \SebastianBergmann\Environment\Console
  */
-final class ConsoleTest extends TestCase
+class ConsoleTest extends TestCase
 {
     /**
      * @var \SebastianBergmann\Environment\Console
      */
     private $console;
 
-    protected function setUp()/*: void*/
+    protected function setUp()
     {
         $this->console = new Console;
     }
@@ -33,7 +33,7 @@ final class ConsoleTest extends TestCase
      * @todo Now that this component is PHP 7-only and uses return type declarations
      * this test makes even less sense than before
      */
-    public function testCanDetectIfStdoutIsInteractiveByDefault()/*: void*/
+    public function testCanDetectIfStdoutIsInteractiveByDefault()
     {
         $this->assertInternalType('boolean', $this->console->isInteractive());
     }
@@ -42,7 +42,7 @@ final class ConsoleTest extends TestCase
      * @todo Now that this component is PHP 7-only and uses return type declarations
      * this test makes even less sense than before
      */
-    public function testCanDetectIfFileDescriptorIsInteractive()/*: void*/
+    public function testCanDetectIfFileDescriptorIsInteractive()
     {
         $this->assertInternalType('boolean', $this->console->isInteractive(STDOUT));
     }
@@ -51,7 +51,7 @@ final class ConsoleTest extends TestCase
      * @todo Now that this component is PHP 7-only and uses return type declarations
      * this test makes even less sense than before
      */
-    public function testCanDetectColorSupport()/*: void*/
+    public function testCanDetectColorSupport()
     {
         $this->assertInternalType('boolean', $this->console->hasColorSupport());
     }
@@ -60,7 +60,7 @@ final class ConsoleTest extends TestCase
      * @todo Now that this component is PHP 7-only and uses return type declarations
      * this test makes even less sense than before
      */
-    public function testCanDetectNumberOfColumns()/*: void*/
+    public function testCanDetectNumberOfColumns()
     {
         $this->assertInternalType('integer', $this->console->getNumberOfColumns());
     }

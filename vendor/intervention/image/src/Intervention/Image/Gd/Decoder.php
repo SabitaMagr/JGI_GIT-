@@ -14,54 +14,37 @@ class Decoder extends \Intervention\Image\AbstractDecoder
      */
     public function initFromPath($path)
     {
-        if ( ! file_exists($path)) {
+        $info = @getimagesize($path);
+
+        if ($info === false) {
             throw new \Intervention\Image\Exception\NotReadableException(
-                "Unable to find file ({$path})."
+                "Unable to read image from file ({$path})."
             );
         }
 
-        // get mime type of file
-        $mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $path);
-
         // define core
-        switch (strtolower($mime)) {
-            case 'image/png':
-            case 'image/x-png':
+        switch ($info[2]) {
+            case IMAGETYPE_PNG:
                 $core = @imagecreatefrompng($path);
                 break;
 
-            case 'image/jpg':
-            case 'image/jpeg':
-            case 'image/pjpeg':
-                $core = @imagecreatefromjpeg($path); 
-                if (!$core) { 
-                    $core= @imagecreatefromstring(file_get_contents($path)); 
-                }
+            case IMAGETYPE_JPEG:
+                $core = @imagecreatefromjpeg($path);
                 break;
 
-            case 'image/gif':
+            case IMAGETYPE_GIF:
                 $core = @imagecreatefromgif($path);
-                break;
-
-            case 'image/webp':
-            case 'image/x-webp':
-                if ( ! function_exists('imagecreatefromwebp')) {
-                    throw new \Intervention\Image\Exception\NotReadableException(
-                        "Unsupported image type. GD/PHP installation does not support WebP format."
-                    );
-                }
-                $core = @imagecreatefromwebp($path);
                 break;
 
             default:
                 throw new \Intervention\Image\Exception\NotReadableException(
-                    "Unsupported image type. GD driver is only able to decode JPG, PNG, GIF or WebP files."
+                    "Unable to read image type. GD driver is only able to decode JPG, PNG or GIF files."
                 );
         }
 
         if (empty($core)) {
             throw new \Intervention\Image\Exception\NotReadableException(
-                "Unable to decode image from file ({$path})."
+                "Unable to read image from file ({$path})."
             );
         }
 
@@ -69,7 +52,7 @@ class Decoder extends \Intervention\Image\AbstractDecoder
 
         // build image
         $image = $this->initFromGdResource($core);
-        $image->mime = $mime;
+        $image->mime = $info['mime'];
         $image->setFileInfoFromPath($path);
 
         return $image;

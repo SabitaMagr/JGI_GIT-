@@ -62,12 +62,11 @@ final class Runtime
                 self::$binary = PHP_BINARY;
             }
 
-            self::$binary = \escapeshellarg(self::$binary) . ' --php' .
-                ' -d hhvm.php7.all=1';
+            self::$binary = \escapeshellarg(self::$binary) . ' --php';
             // @codeCoverageIgnoreEnd
         }
 
-        if (self::$binary === null && PHP_BINARY !== '') {
+        if (PHP_BINARY !== '') {
             self::$binary = \escapeshellarg(PHP_BINARY);
         }
 
