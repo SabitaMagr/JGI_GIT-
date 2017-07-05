@@ -37,7 +37,7 @@ abstract class ResultPrinter extends Printer implements TestListener
     /**
      * @var int
      */
-    protected $testStatus;
+    protected $testStatus = false;
 
     /**
      * @var array
@@ -75,12 +75,12 @@ abstract class ResultPrinter extends Printer implements TestListener
     protected $incomplete = 0;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $currentTestClassPrettified;
 
     /**
-     * @var string|null
+     * @var string
      */
     protected $currentTestMethodPrettified;
 
@@ -272,18 +272,16 @@ abstract class ResultPrinter extends Printer implements TestListener
             $this->tests     = [];
         }
 
-        if ($test instanceof TestCase) {
-            $annotations = $test->getAnnotations();
+        $annotations = $test->getAnnotations();
 
-            if (isset($annotations['method']['testdox'][0])) {
-                $this->currentTestMethodPrettified = $annotations['method']['testdox'][0];
-            } else {
-                $this->currentTestMethodPrettified = $this->prettifier->prettifyTestMethod($test->getName(false));
-            }
+        if (isset($annotations['method']['testdox'][0])) {
+            $this->currentTestMethodPrettified = $annotations['method']['testdox'][0];
+        } else {
+            $this->currentTestMethodPrettified = $this->prettifier->prettifyTestMethod($test->getName(false));
+        }
 
-            if ($test->usesDataProvider()) {
-                $this->currentTestMethodPrettified .= ' ' . $test->dataDescription();
-            }
+        if ($test instanceof TestCase && $test->usesDataProvider()) {
+            $this->currentTestMethodPrettified .= ' ' . $test->dataDescription();
         }
 
         $this->testStatus = BaseTestRunner::STATUS_PASSED;

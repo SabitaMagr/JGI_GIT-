@@ -861,7 +861,7 @@ class Configuration
     /**
      * Returns the test suite configuration.
      *
-     * @return TestSuite|null
+     * @return TestSuite
      */
     public function getTestSuiteConfiguration($testSuiteFilter = null)
     {
