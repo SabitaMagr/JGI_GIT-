@@ -65,33 +65,39 @@ class ForgotPasswordController extends AbstractActionController {
             $postData = $request->getPost()->getArrayCopy();
             $username = $postData['username'];
             $userDetail = $userRepo->fetchByUsername($username);
+            if($userDetail!=null){
+                $employeeId = $userDetail['EMPLOYEE_ID'];
+                $code1 = Helper::generateUniqueName();
+                $code = mt_rand(100000, 999999);
+                $expiryDate = new \DateTime('now +1 day');
+                $dt = $expiryDate->format('d-M-y h:i A');
 
-            $employeeId = $userDetail['EMPLOYEE_ID'];
-            $code1 = Helper::generateUniqueName();
-            $code = mt_rand(100000, 999999);
-            $expiryDate = new \DateTime('now +1 day');
-            $dt = $expiryDate->format('d-M-y h:i A');
-
-            $detail = $this->repository->fetchByEmployeeId($employeeId);
-            $forgotPasswordModel = new ForgotPassword();
-            $forgotPasswordModel->employeeId = $employeeId;
-            if ($detail == null) {
-                $forgotPasswordModel->code = $code;
-                $forgotPasswordModel->expiryDate = Helper::getExpressionDateTime($dt);
-                $this->repository->add($forgotPasswordModel);
-            } else {
-                $forgotPasswordModel->code = $detail['CODE'];
+                $detail = $this->repository->fetchByEmployeeId($employeeId);
+                $forgotPasswordModel = new ForgotPassword();
+                $forgotPasswordModel->employeeId = $employeeId;
+                if ($detail == null) {
+                    $forgotPasswordModel->code = $code;
+                    $forgotPasswordModel->expiryDate = Helper::getExpressionDateTime($dt);
+                    $this->repository->add($forgotPasswordModel);
+                } else {
+                    $forgotPasswordModel->code = $detail['CODE'];
+                }
+                try {
+                    $forgotPasswordModel->expiryDate = $dt;
+                    HeadNotification::pushNotification(NotificationEvents::FORGOT_PASSWORD, $forgotPasswordModel, $this->adapter);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                $this->redirect()->toRoute("recover", [
+                    'action' => "code",
+                    'employeeId' => $employeeId
+                ]);
+            }else{
+                $this->flashmessenger()->addMessage("There is no account registered for submitted username!!!");
+                $this->redirect()->toRoute("recover", [
+                    'action' => "email"
+                ]);
             }
-            try {
-                $forgotPasswordModel->expiryDate = $dt;
-                HeadNotification::pushNotification(NotificationEvents::FORGOT_PASSWORD, $forgotPasswordModel, $this->adapter);
-            } catch (Exception $e) {
-                $this->flashmessenger()->addMessage($e->getMessage());
-            }
-            $this->redirect()->toRoute("recover", [
-                'action' => "code",
-                'employeeId' => $employeeId
-            ]);
         }
         return Helper::addFlashMessagesToArray($this, ['userList' => $list]);
     }
