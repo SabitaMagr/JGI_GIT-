@@ -10,6 +10,7 @@ use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\LeaveApproveRepository;
+use Notification\Controller\EmailController;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Model\LeaveSubstitute;

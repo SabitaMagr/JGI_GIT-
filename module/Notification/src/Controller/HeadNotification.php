@@ -108,10 +108,7 @@ class HeadNotification {
         }
         $mail = new Message();
         $mail->setSubject($template['SUBJECT']);
-//        $htmlDescription = "<img src='$this->basePath('uploads/logo2.gif')' height='50' width='50 id=''/>";
-        $basePath = $this->getRequest()->getBaseUrl();
-        print_r($basePath); die();
-        $htmlDescription .= $model->processString($template['DESCRIPTION'], $url);
+        $htmlDescription = $model->processString($template['DESCRIPTION'], $url);
         $html2txt = new Html2Text($htmlDescription);
         $mail->setBody(trim($html2txt->getText()));
 
