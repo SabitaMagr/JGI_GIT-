@@ -39,6 +39,14 @@ class LeaveApply extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
+        $basePath = $this->getRequest()->getBaseUrl('uploads/logo2.gif');
+        $url = $this->getActionController()->view()->baseUrl();
+        
+        print_r($this->getRequest()->getBaseUrl('uploads/logo2.gif')); die();
+        $htmlDescription = "<img src='' height='50' width='50 id=''/>";
+        
+//        print_r($basePath); 
+        print_r($basePath); die();
         $request = $this->getRequest();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
