@@ -612,7 +612,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                                                     <div class="person-list clearfix">
                                                         <div class="col-xs-5 col-md-3 col-sm-3">
                                                             <div class="person-pic">
-                                                                <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                                <img class="lazy"  data-original="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
                                                         </div>
                                                         <div class="col-xs-7 col-md-5 col-sm-6">
@@ -651,7 +651,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                                                     <div class="person-list clearfix">
                                                         <div class="col-xs-5 col-md-3 col-sm-3">
                                                             <div class="person-pic">
-                                                                <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                                                                <img class="lazy"  data-original="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
                                                             </div>
                                                         </div>
                                                         <div class="col-xs-7 col-md-5 col-sm-6">
