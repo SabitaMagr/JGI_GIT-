@@ -90,6 +90,7 @@ angular.module("hris",[])
                         {field: "END_DATE", title: "Reviewer View?", width: 140},
                         {field: "END_DATE", title: "Final Rating?", width: 120},
                         {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100},
+                        {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170},
                         {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140},
                         {field: "APPRAISER_NAME", title: "Appraiser Name", width: 150},
                         {field: "REVIEWER_NAME", title: "Reviewer Name", width: 150},

@@ -15,6 +15,7 @@ use Appraisal\Model\Type;
 use Appraisal\Model\Stage;
 use Appraisal\Model\AppraisalStatus;
 use Setup\Model\Designation;
+use Setup\Model\Position;
 
 class AppraisalAssignRepository implements RepositoryInterface{
     private $tableGateway;
@@ -158,7 +159,9 @@ WHERE KPI_SETTING='Y' OR COMPETENCIES_SETTING='Y' OR APPRAISEE_QUESTION_NUM>0 OR
                 ->join(['E1'=> HrEmployees::TABLE_NAME],"E1.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::APPRAISER_ID,["FIRST_NAME_A"=>new Expression("INITCAP(E1.FIRST_NAME)"), "MIDDLE_NAME_A"=>new Expression("INITCAP(E1.MIDDLE_NAME)"), "LAST_NAME_A"=>new Expression("INITCAP(E1.LAST_NAME)"),"EMPLOYEE_ID_A"=> HrEmployees::EMPLOYEE_ID],"left")
                 ->join(['E2'=> HrEmployees::TABLE_NAME],"E2.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::REVIEWER_ID,["FIRST_NAME_R"=>new Expression("INITCAP(E2.FIRST_NAME)"),"MIDDLE_NAME_R"=>new Expression("INITCAP(E2.MIDDLE_NAME)"), "LAST_NAME_R"=>new Expression("INITCAP(E2.LAST_NAME)"), "EMPLOYEE_ID_R"=>HrEmployees::EMPLOYEE_ID],"left")
                 ->join(['DES1'=> Designation::TABLE_NAME],"DES1.".Designation::DESIGNATION_ID."=E1.". HrEmployees::DESIGNATION_ID,["DESIGNATION_NAME_A"=>new Expression("INITCAP(DES1.DESIGNATION_TITLE)")],"left")
-                ->join(['DES2'=> Designation::TABLE_NAME],"DES2.".Designation::DESIGNATION_ID."=E2.". HrEmployees::DESIGNATION_ID,["DESIGNATION_NAME_R"=>new Expression("INITCAP(DES2.DESIGNATION_TITLE)")],"left");
+                ->join(['DES2'=> Designation::TABLE_NAME],"DES2.".Designation::DESIGNATION_ID."=E2.". HrEmployees::DESIGNATION_ID,["DESIGNATION_NAME_R"=>new Expression("INITCAP(DES2.DESIGNATION_TITLE)")],"left")
+                ->join(['POS1'=> Position::TABLE_NAME],"POS1.". Position::POSITION_ID."=E1.". HrEmployees::POSITION_ID,["POSITION_NAME_A"=>new Expression("INITCAP(POS1.POSITION_NAME)")],"left")
+                ->join(['POS2'=> Position::TABLE_NAME],"POS2.".Position::POSITION_ID."=E2.". HrEmployees::POSITION_ID,["POSITION_NAME_R"=>new Expression("INITCAP(POS2.POSITION_NAME)")],"left");
         
         $select->where([
             "AA.".AppraisalAssign::EMPLOYEE_ID."=".$employeeId,

@@ -229,6 +229,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td>    
         #: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #
         </td>
+        <td id="#if(SUPER_REVIEWER_AGREE!='Y'){ #green#}else{#red#}#">
+            #if(SUPER_REVIEWER_AGREE=='Y'){   #
+            #= "&\\#10004;" #
+            #}else if(SUPER_REVIEWER_AGREE=='N'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
+        </td>
          <td id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
             #if(APPRAISEE_AGREE=='Yes'){   #
             #= "&\\#10004;" #
