@@ -1,118 +1,138 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $('select').select2();
 
-        var employeeId = $('#employeeId').val();
-        window.app.floatingProfile.setDataFromRemote(employeeId);
-
-        $('select#leaveId').select2();
+        var $employee = $('#employeeId');
+        var $leave = $('#leaveId');
+        var $halfDay = $("#halfDay");
+        var $availableDays = $('#availableDays');
+        var $noOfDays = $('#noOfDays');
+        var $request = $("#request");
+        var $errorMsg = $("#errorMsg");
 
         var dateDiff = "";
-        $("#remarks").hide();
 
-        var checkHalfDay = function () {
-            var availableDays1 = parseInt($("#availableDays").val());
-            var halfDay = $("input[name='halfDay']:checked").val();
-            var startDate = $("#startDate").val();
-            var endDate = $("#endDate").val();
-            var noOfDays1 = parseInt($("#noOfDays").val());
-            if (halfDay === 'F' || halfDay === "S") {
-                $('#noOfDays').attr('readonly', true);
-                if (startDate !== endDate) {
-                    $("#errorMsgDate").html("* Start date and end date must be same in the case of half day leave");
-                    $("#request").attr("disabled", "disabled");
-                } else if (startDate === endDate) {
-                    $("#errorMsgDate").html("");
-                    $("#errorMsg").html("");
-                    $("#request").removeAttr("disabled");
-                }
-            } else if (halfDay === 'N') {
-                $("#errorMsgDate").html("");
-                if (noOfDays1 <= availableDays1) {
-                    $("#errorMsg").html("");
-                    $("#request").removeAttr("disabled");
-                }
-                if (startDate === endDate) {
-                    $('#noOfDays').attr('readonly', true);
-                } else {
-                    $('#noOfDays').attr('readonly', false);
-                }
-            }
-        }
-        var dateDiff = '';
-//        app.startEndDatePicker("startDate", "endDate", function (startDate, endDate) {
+        app.floatingProfile.setDataFromRemote($employee.val());
+
+        var leaveList = [];
+        var availableDays = null;
+
+
+
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate', function (startDate, endDate) {
-            if (startDate <= endDate) {
-                var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-                var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
-                var newValue = diffDays + 1;
-                var availableDays = parseInt($("#availableDays").val());
-                dateDiff = newValue;
-                console.log(dateDiff);
-                $("#noOfDays").val(newValue);
+            var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
 
-                var halfDay1 = $("input[name='halfDay']:checked");
-                var halfDay2 = ""
-                if (typeof (halfDay1.val()) === "undefined") {
-                    halfDay2 = "N";
-                } else {
-                    halfDay2 = halfDay1.val();
-                }
-                checkHalfDay();
-                if (newValue > availableDays) {
-                    $("#errorMsg").html("* Applied days can't be more than available days");
-                    $("#request").attr("disabled", "disabled");
-                } else if ((newValue <= availableDays) && halfDay2 == 'N') {
-                    $("#errorMsg").html("");
-                    $("#request").removeAttr("disabled");
-                } else if ((newValue == availableDays) && (halfDay2 == 'S' || halfDay2 == 'F')) {
-                    $("#errorMsg").html("");
-                    $("#request").removeAttr("disabled");
-                }
+            var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
+            var newValue = diffDays + 1;
+            var availableDays = parseInt($availableDays.val());
 
-                if ((newValue <= availableDays) && (halfDay2 == 'S' || halfDay2 == 'F')) {
-                    $("#errorMsg").html("")
-                }
-            }
+            dateDiff = newValue;
+            $noOfDays.val(newValue);
 
-        });
-//        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
 
-        /* prevent past event post */
-//        $('#startDate').datepicker("setStartDate", new Date());
-//        $('#endDate').datepicker("setStartDate", new Date());
-        /* end of  prevent past event post */
-        
-        
-        $("#noOfDays").on("keyup", function () {
-            console.log(dateDiff);
-            var availableDays = parseInt($("#availableDays").val());
-            var noOfDays = parseInt($(this).val());
-            if (noOfDays > availableDays) {
-                $("#errorMsg").html("* Applied days can't be more than available days");
-                $("#request").attr("disabled", "disabled");
-            }else if(noOfDays > parseInt(dateDiff)){
-                $("#errorMsg").html("* Applied days can't be more than date difference days");
-                $("#request").attr("disabled", "disabled");
-            }
-            else {
-                $("#errorMsg").html("");
-                $("#request").removeAttr("disabled");
-            }
-            if (noOfDays != dateDiff) {
-                $("#form-remarks").attr('required', 'required');
-                $("#remarks").slideDown();
+            if (newValue > availableDays) {
+                $errorMsg.html("* Applied days can't be more than available days");
+                $request.prop("disabled", true);
             } else {
-                $("#form-remarks").removeAttr('required');
-                $("#remarks").slideUp();
+                $errorMsg.html("");
+                $request.prop("disabled", false);
             }
         });
 
-        $(".radioButton").each(function () {
-            $(this).on("click", checkHalfDay);
-        });
+
         app.setLoadingOnSubmit("leaveApply");
 
+
+
+        var toggleSubstituteEmployeeReq = function ($flag) {
+            if ($flag) {
+                $('#substituteEmployeeCol').find('span[class="required"]').show();
+                $('#leaveSubstitute').find('option[value=""]').prop('disabled', true);
+                $('#leaveSubstitute').prop('required', true);
+            } else {
+                $('#substituteEmployeeCol').find('span[class="required"]').hide();
+                $('#leaveSubstitute').find('option[value=""]').prop('disabled', false);
+                $('#leaveSubstitute').prop('required', false);
+            }
+        };
+        var toggleGracePeriod = function ($flag) {
+            if ($flag) {
+                $('#gracePeriodCol').show();
+                $('#gracePeriod').prop('disabled', false);
+            } else {
+                $('#gracePeriodCol').hide();
+                $('#gracePeriod').prop('disabled', true);
+            }
+        };
+        var toggleHalfDay = function ($flag) {
+            if ($flag) {
+                $('#halfDayCol').show();
+                $('#halfDay').prop('disabled', false);
+            } else {
+                $('#halfDayCol').hide();
+                $('#halfDay').prop('disabled', true);
+            }
+        };
+
+        toggleHalfDay(false);
+        toggleGracePeriod(false);
+        toggleSubstituteEmployeeReq(false);
+
+
+
+        var leaveChange = function (obj) {
+            var $this = $(obj);
+            app.pullDataById(document.wsPullLeaveDetail, {
+                'leaveId': $this.val(),
+                'employeeId': $employee.val()
+            }).then(function (success) {
+                console.log(success);
+                var leaveDetail = success.data;
+                availableDays = parseInt(leaveDetail.BALANCE);
+                $availableDays.val(availableDays);
+
+                var noOfDays = parseInt($noOfDays.val());
+
+                if ((availableDays != "" && noOfDays != "") && noOfDays > availableDays) {
+                    $("#errorMsg").html("* Applied days can't be more than available days");
+                    $("#request").attr("disabled", "disabled");
+                } else if ((availableDays != "" && noOfDays != "") && (noOfDays <= availableDays)) {
+                    $("#errorMsg").html("");
+                    $("#request").removeAttr("disabled");
+                }
+
+                toggleGracePeriod(leaveDetail.ALLOW_GRACE_LEAVE === "Y");
+                toggleHalfDay(leaveDetail.ALLOW_HALFDAY === "Y");
+                toggleSubstituteEmployeeReq(leaveDetail.IS_SUBSTITUTE_MANDATORY === 'Y');
+            }, function (failure) {
+                console.log(failure);
+            });
+        };
+
+        $leave.on('change', function () {
+            leaveChange(this);
+        });
+
+
+
+        var employeeChange = function (obj) {
+            var $this = $(obj);
+            app.floatingProfile.setDataFromRemote($this.val());
+            app.pullDataById(document.wsPullLeaveDetailWidEmployeeId, {
+                'employeeId': $this.val()
+            }).then(function (success) {
+                leaveList = success.data;
+                app.populateSelect($leave, leaveList, 'id', 'name', 'Select a Leave', null, null, true);
+            }, function (failure) {
+                console.log(failure);
+            });
+
+        };
+
+        $employee.on('change', function () {
+            employeeChange(this);
+        });
     });
 })(window.jQuery, window.app);
 

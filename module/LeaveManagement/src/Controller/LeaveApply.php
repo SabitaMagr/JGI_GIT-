@@ -2,11 +2,13 @@
 
 namespace LeaveManagement\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
-use LeaveManagement\Model\LeaveApply as LeaveApplyModel;
 use LeaveManagement\Repository\LeaveApplyRepository;
+use SelfService\Repository\LeaveRequestRepository;
 use Setup\Repository\EmployeeRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -39,29 +41,53 @@ class LeaveApply extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $leaveApply = new LeaveApplyModel();
-                $leaveApply->exchangeArrayFromForm($this->form->getData());
-                $leaveApply->requestedDt = Helper::getcurrentExpressionDate();
-                $leaveApply->employeeId = $id;
-                $leaveApply->status = "RQ";
-                $leaveApply->startDate = Helper::getExpressionDate($leaveApply->startDate);
-                $leaveApply->endDate = Helper::getExpressionDate($leaveApply->endDate);
-
-                $this->repository->add($leaveApply);
-                $this->flashmessenger()->addMessage("Leave applied Successfully!!!");
-                return $this->redirect()->toRoute("leaveapply");
-            }
-        }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'leaves' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_LEAVE_MASTER_SETUP", "LEAVE_ID", ["LEAVE_ENAME"], ["STATUS" => 'E'], "LEAVE_ENAME", "ASC", NULL, FALSE, TRUE),
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE),
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N', 'IS_ADMIN' => "N"], "FULL_NAME", "ASC", null, FALSE, TRUE),
                     'customRenderer' => Helper::renderCustomView()
         ]);
+    }
+
+    public function pullLeaveDetailWidEmployeeIdAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $employeeId = $postedData['employeeId'];
+                $leaveList = $leaveRequestRepository->getLeaveList($employeeId);
+
+                $leaveRow = [];
+                foreach ($leaveList as $key => $value) {
+                    array_push($leaveRow, ["id" => $key, "name" => $value]);
+                }
+                return new CustomViewModel(['success' => true, 'data' => $leaveRow, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullLeaveDetailAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $leaveId = $postedData['leaveId'];
+                $employeeId = $postedData['employeeId'];
+                $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId);
+
+                return new CustomViewModel(['success' => true, 'data' => $leaveDetail, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }
