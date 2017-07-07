@@ -11,7 +11,7 @@
         ;
         $(".errorMsg").html("There is no account registered for this username!!!.")
     });
-    $('#usernameForm').submit(function (e) {
+    $('#usernameForm').on("submit",function (e) {
         var err = [];
         $(".errorMsg").each(function () {
             var erroMsg = $.trim($(this).html());

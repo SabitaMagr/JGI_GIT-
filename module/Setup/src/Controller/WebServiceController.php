@@ -121,45 +121,6 @@ class WebServiceController extends AbstractActionController {
                         "data" => $tempArray
                     ];
                     break;
-
-                case "pullLeaveDetail":
-                    $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                    $inputData = $postedData->data;
-                    $leaveId = $inputData['leaveId'];
-                    $employeeId = $inputData['employeeId'];
-                    $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId);
-
-                    $responseData = [
-                        "success" => true,
-                        "data" => $leaveDetail,
-                    ];
-                    break;
-                case "pullLeaveDetailWidEmployeeId":
-                    $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                    $inputData = $postedData->data;
-                    $employeeId = $inputData['employeeId'];
-                    $leaveList = $leaveRequestRepository->getLeaveList($employeeId);
-
-                    $leaveRow = [];
-                    foreach ($leaveList as $key => $value) {
-                        array_push($leaveRow, ["id" => $key, "name" => $value]);
-                    }
-                    if (count($leaveRow) > 0) {
-                        $empLeaveId = $leaveRow[0]['id'];
-                        $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $empLeaveId);
-                    } else {
-                        $leaveDetail = [
-                            'BALANCE' => "",
-                            'ALLOW_HALFDAY' => 'N'
-                        ];
-                    }
-                    $responseData = [
-                        "success" => true,
-                        "data" => $leaveDetail,
-                        'leaveList' => $leaveRow
-                    ];
-                    break;
-
                 case "pullRecommendApproveList":
                     $employeeRepository = new EmployeeRepository($this->adapter);
                     $recommendApproveRepository = new RecommendApproveRepository($this->adapter);

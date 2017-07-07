@@ -6,30 +6,22 @@ $this->headScript()
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/application/forgot-password/checkUsername.js'))
 ?>
-<?php
-if ($this->messages) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages;
-    print '</div>';
-}
-?>
 <script>
     document.userList =<?= json_encode($userList) ?>;
 </script>
+<?php
+if ($this->messages) {
+    foreach ($this->messages as $message) {
+        print '<div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+        <strong>Warning!</strong> ';
+        print $message;
+        print '</div>';
+    }
+} 
+?>
 <div class="form-title codeTitle">
     <span class="form-title">Forgot Your Password?</span>
-    <?php
-    if ($this->messages) {
-        foreach ($this->messages as $message) {
-            print '<span class="form-subtitle error-message">' . $message . '</span>';
-        }
-    } else {
-        ?>
-        <?php
-    }
-    ?>
 </div>
 <form action="<?= $this->url("recover",["action"=>"email"])?>" id="usernameForm" method="post">
     <div class="form-group">
