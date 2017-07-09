@@ -2114,7 +2114,7 @@ div#ndp-nepali-box{
     font-size:11px !important;
 }
 #tabContent label{
-    width:100%;
+    /*width:100%;*/
 }
 #assignBtnWrap{
     position: absolute;
@@ -2144,4 +2144,7 @@ div#ndp-nepali-box{
 }
 .questionWrapRow{
     padding: 0px 14px !important;
+}
+#printable h5{
+    margin-top:0px !important;
 }

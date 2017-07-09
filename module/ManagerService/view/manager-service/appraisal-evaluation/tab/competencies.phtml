@@ -1,6 +1,7 @@
 <?php
     $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID']!=1)?"disabled":""; 
     $disabledAppraiserRatingComment = ($assignedAppraisalDetail['STAGE_ID']!=5)?"disabled":"";
+    if($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){
 ?>
 <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
     <?php $disabledCompetenciesRating = ($assignedAppraisalDetail['STAGE_ID'] != 5) ? "disabled" : ""; ?>
@@ -123,3 +124,4 @@
     print $this->partial('appraisal/layout/competency-remarks.phtml');
     ?>
 </div>
+<?php } ?>

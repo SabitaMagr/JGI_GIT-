@@ -31,8 +31,8 @@
                                 style:'font-size:11px'
                             });
                             parentId.append(innertext);
+                            $(this).parent('div').parent('div').remove();
                         }
-                        $(this).parent('div').parent('div').remove();
                     }else if($(this).is('select')){
                             val = $(this).find("option:selected").text();
                             var parentId = $(this).parent("div");

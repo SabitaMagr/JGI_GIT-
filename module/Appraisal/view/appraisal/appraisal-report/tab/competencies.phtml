@@ -1,4 +1,6 @@
-<?php $disabledKPICOM = "disabled"; ?>
+<?php $disabledKPICOM = "disabled"; 
+if($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){
+?>
 <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
     <h6 class="appHeading">
         COMPETENCIES AND COMMENT
@@ -75,3 +77,4 @@
     print $this->partial('appraisal/layout/competency-remarks.phtml');
     ?>
 </div>
+<?php } ?>

@@ -1,6 +1,7 @@
 <?php
 $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID'] != 1) ? "disabled" : "";
 $disabledKeyAchievement = ($assignedAppraisalDetail['STAGE_ID'] != 7) ? "disabled" : "";
+if($assignedAppraisalDetail['COMPETENCIES_SETTING']=='Y'){
 ?>
 <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
     <form name="competenciesForm" id="competenciesForm" ng-submit="submitCompetenciesForm()" novalidate>
@@ -118,3 +119,4 @@ $disabledKeyAchievement = ($assignedAppraisalDetail['STAGE_ID'] != 7) ? "disable
     print $this->partial('appraisal/layout/competency-remarks.phtml');
     ?>
 </div>
+<?php } ?>

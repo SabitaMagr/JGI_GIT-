@@ -1,4 +1,6 @@
-<?php $disabledKPICOM = "disabled"; ?>
+<?php $disabledKPICOM = "disabled"; 
+if($assignedAppraisalDetail['KPI_SETTING']=='Y'){
+?>
 <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING'] == 'Y')) ? 'active' : '' ?>" id="portlet_tab2_KPI" ng-controller="kpiController">
     <h6 class="appHeading">
         KEY ACHIEVEMENTS AND RATING
@@ -105,3 +107,4 @@
     print $this->partial('appraisal/layout/kpi-remarks.phtml');
     ?>
 </div>
+<?php } ?>
