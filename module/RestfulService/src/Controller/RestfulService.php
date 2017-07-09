@@ -2588,9 +2588,6 @@ class RestfulService extends AbstractRestfulController {
         } else {
             $approverIdNew = $approverId;
         }
-
-
-
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
         $recommendApprove = new RecommendApprove();
         $employeePreDtl = $recommApproverRepo->fetchById($employeeId);
