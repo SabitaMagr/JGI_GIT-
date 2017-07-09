@@ -54,6 +54,7 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
 use Training\Model\TrainingAssign;
+use Travel\Repository\RecommenderApproverRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
@@ -96,7 +97,7 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-        return;
+//        return;
         $isValidEmail = function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         };
@@ -344,7 +345,7 @@ class HeadNotification {
 
     private static function travelApplied(TravelRequest $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -367,7 +368,7 @@ class HeadNotification {
 
     private static function travelRecommend(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -390,7 +391,7 @@ class HeadNotification {
 
     private static function travelApprove(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -1561,5 +1562,15 @@ class HeadNotification {
 
         return $recommdAppModel;
     }
+    
+    public static function findRecAppForTrvl($employeeId,$adapter){
+        $recommdAppRepo = new RecommenderApproverRepository($adapter);
+        $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($employeeId);
 
+        if ($recommdAppModel == null) {
+            throw new Exception("recommender and approver not set for employee with id =>" . $employeeId);
+        }
+
+        return $recommdAppModel;
+    }
 }

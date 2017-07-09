@@ -19,6 +19,7 @@ use SelfService\Repository\TravelSubstituteRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Travel\Repository\RecommenderApproverRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -47,7 +48,7 @@ class TravelRequest extends AbstractActionController {
     }
 
     public function getRecommendApprover() {
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
 
         if ($empRecommendApprove != null) {

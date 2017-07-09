@@ -88,7 +88,7 @@ class TravelStatusRepository implements RepositoryInterface{
                 E1.EMPLOYEE_ID=TR.RECOMMENDED_BY
                 LEFT OUTER JOIN HRIS_EMPLOYEES E2 ON
                 E2.EMPLOYEE_ID=TR.APPROVED_BY
-                LEFT OUTER JOIN HRIS_RECOMMENDER_APPROVER RA ON
+                LEFT OUTER JOIN HRIS_TRVL_RECOMMENDER_APPROVER RA ON
                 TR.EMPLOYEE_ID = RA.EMPLOYEE_ID
                 LEFT OUTER JOIN HRIS_EMPLOYEES RECM ON
                 RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
