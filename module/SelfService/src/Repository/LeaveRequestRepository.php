@@ -206,4 +206,9 @@ class LeaveRequestRepository implements RepositoryInterface {
         return $rawResult->current();
     }
 
+    public function validateLeaveRequest($fromDate, $toDate, $employeeId) {
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_VALIDATE_LEAVE_REQUEST({$fromDate},{$toDate},{$employeeId}) AS ERROR FROM DUAL");
+        return $rawResult->current();
+    }
+
 }

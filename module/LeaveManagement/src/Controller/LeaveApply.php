@@ -106,4 +106,20 @@ class LeaveApply extends AbstractActionController {
         }
     }
 
+    public function validateLeaveRequestAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $error = $leaveRequestRepository->validateLeaveRequest(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                return new CustomViewModel(['success' => true, 'data' => $error, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
 }
