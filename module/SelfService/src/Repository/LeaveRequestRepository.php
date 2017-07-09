@@ -9,6 +9,8 @@
 
 namespace SelfService\Repository;
 
+use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveApply;
@@ -117,7 +119,7 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $currentDate = \Application\Helper\Helper::getcurrentExpressionDate();
+        $currentDate = Helper::getcurrentExpressionDate();
         $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
     }
 
@@ -197,6 +199,11 @@ class LeaveRequestRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+    }
+
+    public function fetchAvailableDays($fromDate, $toDate, $employeeId) {
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_AVAILABLE_LEAVE_DAYS({$fromDate},{$toDate},{$employeeId}) AS AVAILABLE_DAYS FROM DUAL");
+        return $rawResult->current();
     }
 
 }

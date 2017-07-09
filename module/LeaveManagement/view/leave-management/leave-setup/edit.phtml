@@ -32,6 +32,7 @@ $paid = $form->get('paid');
 $cashable = $form->get('cashable');
 $allowGraceLeave = $form->get('allowGraceLeave');
 $isMonthly = $form->get('isMonthly');
+$isSubstituteMandatory = $form->get('isSubstituteMandatory');
 
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
@@ -179,6 +180,15 @@ print $this->form()->openTag($form);
                 </div>
 
                 <div class=" row">
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($isSubstituteMandatory); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($isSubstituteMandatory); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($isMonthly, ['class' => 'help-block error']); ?>
+                    </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
