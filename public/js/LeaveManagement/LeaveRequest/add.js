@@ -10,6 +10,7 @@
         var $noOfDays = $('#noOfDays');
         var $request = $("#request");
         var $errorMsg = $("#errorMsg");
+        var $startDate = $('#startDate'), $endDate = $('#endDate');
 
         var dateDiff = "";
 
@@ -52,10 +53,30 @@
                 return;
             }
             calculateAvailableDays(startDateStr, endDateStr, employeeId);
+            checkForErrors(startDateStr, endDateStr, employeeId);
         });
 
+        var $form = $('#leaveApply');
+        var checkForErrors = function (startDateStr, endDateStr, employeeId) {
+            app.pullDataById(document.wsValidateLeaveRequest, {startDate: startDateStr, endDate: endDateStr, employeeId: employeeId}).then(function (response) {
+                if (response.data['ERROR'] === null) {
+                    $form.prop('valid', 'true');
+                } else {
+                    $form.prop('valid', 'false');
+                    app.showMessage(response.data['ERROR'], 'error');
+                }
+            }, function (error) {
+                app.showMessage(error, 'error');
+            });
+        }
 
-        app.setLoadingOnSubmit("leaveApply");
+        app.setLoadingOnSubmit("leaveApply", function ($form) {
+            if ($form.prop('valid') === 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        });
 
 
 
@@ -146,7 +167,6 @@
                 leaveList = success.data;
                 app.populateSelect($leave, leaveList, 'id', 'name', 'Select a Leave', null, null, false);
 
-                var $startDate = $('#startDate'), $endDate = $('#endDate');
                 if ($startDate.val() != '' && $endDate.val() != '') {
                     calculateAvailableDays($startDate.val(), $endDate.val(), $this.val());
                 }
