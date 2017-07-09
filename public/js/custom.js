@@ -164,7 +164,7 @@ window.app = (function ($, toastr, App) {
 
                             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
                             }
 
                         } else {
@@ -200,7 +200,7 @@ window.app = (function ($, toastr, App) {
 
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
             }
 
         });
@@ -240,7 +240,7 @@ window.app = (function ($, toastr, App) {
 
                             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
                             }
 
                         } else {
@@ -271,7 +271,7 @@ window.app = (function ($, toastr, App) {
             }
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
             }
         });
 
@@ -1020,4 +1020,3 @@ window.app = (function ($, toastr, App) {
         lockField: lockField
     };
 })(window.jQuery, window.toastr, window.App);
-

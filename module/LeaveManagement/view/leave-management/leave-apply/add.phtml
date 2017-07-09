@@ -1,5 +1,5 @@
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\leaveapply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -26,23 +26,22 @@ $this->headScript()
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveRequest/add.js'));
 ?>
 
+
 <?php
-$form->setAttribute('leaveApply', 'form');
+$form->setAttribute('role', 'form');
+
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $noOfDays = $form->get('noOfDays');
 $halfDay = $form->get('halfDay');
 $remarks = $form->get('remarks');
-$employeeId = $form->get('employeeId');
-$employeeId->setValueOptions($employees);
-$submit = $form->get('submit');
-
 
 $gracePeriod = $form->get('gracePeriod');
+$submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Leave');
 $submit->setAttribute('id', 'request');
 
-$form->setAttribute('action', $this->url('leavebalance', ['action' => 'apply']));
+$form->setAttribute('action', $this->url('leaverequest', ['action' => 'add']));
 
 
 $form->prepare();
@@ -51,8 +50,8 @@ print $this->form()->openTag($form);
 <script>
     document.wsPullLeaveDetailWidEmployeeId = '<?= $this->url("leaveapply", ["action" => "pullLeaveDetailWidEmployeeId"]) ?>';
     document.wsPullLeaveDetail = '<?= $this->url("leaveapply", ["action" => "pullLeaveDetail"]) ?>';
+    document.wsFetchAvailableDays = '<?= $this->url("leaveapply", ["action" => "fetchAvailableDays"]) ?>';
 </script>
-
 
 <div class="row margin-top-20" >
     <div class="col-sm-12">
@@ -67,27 +66,20 @@ print $this->form()->openTag($form);
                 </div>
             </div>
             <div class="portlet-body">
+                <div class="form-group">
+                    <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                </div>
 
                 <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group <?= empty($employeeId->getMessages()) ? "" : "error" ?> ">
-                            <?php print $this->formLabel($employeeId) ?>
-                            <span class="required" aria-required="true">*</span>
-                            <select name="employeeId" id="employeeId" required="required"  class="form-control">
-                                <option value="" disabled="" selected="" class="ng-binding">Please select</option>                           
-                                <?php foreach ($employees as $key => $value) { ?>
-                                    <option value="<?php echo $key; ?>"><?php echo $value; ?></option> 
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?> 
-                    </div>
-
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="leaveId">Leave Type</label>
                             <span class="required" aria-required="true">*</span>
                             <select name="leaveId" required="required" id="leaveId" class="form-control">
+                                <option value="" disabled="" selected="" >Please select</option>
+                                <?php foreach ($leave as $key => $value) { ?>
+                                    <option value="<?php echo $key ?>"><?php echo $value ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -98,10 +90,10 @@ print $this->form()->openTag($form);
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-
                 </div>
 
                 <div class=" row">
+
                     <div class="col-sm-4">
 
                         <div class="row">
@@ -120,15 +112,17 @@ print $this->form()->openTag($form);
                                            class="form-control" value="">
                                 </div>
                             </div>     
-                        </div>   
+                        </div>
 
                     </div>
+
                     <div class="col-sm-4">
 
                         <div class="row">
                             <div class="col-sm-6">
-                                <div class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                                    <?php print $this->formLabel($endDate) ?>
+                                <div
+                                    class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
+                                        <?php print $this->formLabel($endDate) ?>
                                     <span class="required" aria-required="true">*</span>
                                     <?php print $this->formElement($endDate) ?>
                                     <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
@@ -142,10 +136,9 @@ print $this->form()->openTag($form);
                                            class="form-control" value="">
                                 </div>
                             </div>     
-                        </div> 
+                        </div>
 
                     </div>
-
                     <div class="col-sm-4">
                         <div
                             class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
@@ -161,9 +154,9 @@ print $this->form()->openTag($form);
                     <div class="col-sm-4" id="substituteEmployeeCol">
                         <label for="substituteEmployee">Substitute Employee </label>
                         <span class="required" aria-required="true">*</span>
-                        <select class="form-control" name="leaveSubstitute" id="leaveSubstitute" style="cursor: pointer;">
+                        <select required class="form-control" name="leaveSubstitute" id="leaveSubstitute" style="cursor: pointer;">
                             <option style="cursor: pointer;" value="">---</option>
-                            <?php foreach ($employees as $key => $value) { ?>
+                            <?php foreach ($employeeList as $key => $value) { ?>
                                 <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
                             <?php } ?>
                         </select>
@@ -176,7 +169,6 @@ print $this->form()->openTag($form);
 
                         <?php print $this->formElementErrors()->render($gracePeriod, ['class' => 'help-block error']); ?>
                     </div>
-
                     <div class=" col-sm-4 " id="halfDayCol">
                         <div class="form-group" >
                             <?php print $this->formLabel($halfDay); ?>
@@ -185,16 +177,16 @@ print $this->form()->openTag($form);
 
                         <?php print $this->formElementErrors()->render($halfDay, ['class' => 'help-block error']); ?>
                     </div>
+
                     <div class="col-sm-4">
                         <div class="form-group padding-0" id="remarks">
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>
                         </div>
-
                         <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                     </div>
-                </div>
 
+                </div>
                 <?php print $this->formSubmit($submit); ?>
 
             </div>
