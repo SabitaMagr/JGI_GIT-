@@ -48,10 +48,10 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.wsPullLeaveDetailWidEmployeeId = '<?= $this->url("leaveapply", ["action" => "pullLeaveDetailWidEmployeeId"]) ?>';
-    document.wsPullLeaveDetail = '<?= $this->url("leaveapply", ["action" => "pullLeaveDetail"]) ?>';
-    document.wsFetchAvailableDays = '<?= $this->url("leaveapply", ["action" => "fetchAvailableDays"]) ?>';
-    document.wsValidateLeaveRequest = '<?= $this->url("leaveapply", ["action" => "validateLeaveRequest"]) ?>';
+    document.wsPullLeaveDetailWidEmployeeId = '<?= $this->url("leaverequest", ["action" => "pullLeaveDetailWidEmployeeId"]) ?>';
+    document.wsPullLeaveDetail = '<?= $this->url("leaverequest", ["action" => "pullLeaveDetail"]) ?>';
+    document.wsFetchAvailableDays = '<?= $this->url("leaverequest", ["action" => "fetchAvailableDays"]) ?>';
+    document.wsValidateLeaveRequest = '<?= $this->url("leaverequest", ["action" => "validateLeaveRequest"]) ?>';
 </script>
 
 <div class="row margin-top-20" >
