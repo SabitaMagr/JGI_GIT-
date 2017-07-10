@@ -1,7 +1,6 @@
 (function ($) {
     'use strict';
-    $(document).ready(function () {    
-        console.log(document.leaves);
+    $(document).ready(function () {
         $("#leaveTable").kendoGrid({
             excel: {
                 fileName: "LeaveList.xlsx",
@@ -20,10 +19,9 @@
                 input: true,
                 numeric: false
             },
-            dataBound:gridDataBound,
+            dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-//                {field: "LEAVE_CODE", title: "Leave Code"},
                 {field: "LEAVE_ENAME", title: "Leave"},
                 {field: "COMPANY_NAME", title: "Company"},
                 {field: "ALLOW_HALFDAY", title: "Allow Halfday"},
@@ -33,10 +31,10 @@
                 {field: "PAID", title: "Paid"},
                 {title: "Action"}
             ]
-        }); 
-        
-        app.searchTable('leaveTable',['LEAVE_ENAME','COMPANY_NAME','ALLOW_HALFDAY','DEFAULT_DAYS','CARRY_FORWARD','CASHABLE','PAID']);
-        
+        });
+
+        app.searchTable('leaveTable', ['LEAVE_ENAME', 'COMPANY_NAME', 'ALLOW_HALFDAY', 'DEFAULT_DAYS', 'CARRY_FORWARD', 'CASHABLE', 'PAID']);
+
         app.pdfExport(
                 'leaveTable',
                 {
@@ -48,7 +46,7 @@
                     'CASHABLE': 'Cashable',
                     'PAID': 'Paid'
                 });
-        
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -57,13 +55,14 @@
                         .find('tbody')
                         .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
             }
-        };
-        
+        }
+        ;
+
         $("#export").click(function (e) {
             var grid = $("#leaveTable").data("kendoGrid");
             grid.saveAsExcel();
         });
         window.app.UIConfirmations();
-    
-    });   
+
+    });
 })(window.jQuery, window.app);

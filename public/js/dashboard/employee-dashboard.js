@@ -4,6 +4,11 @@
         // Index.init();
         // Index.initCalendar();
 
+        $("img.lazy").lazyload({
+//            effect: "fadeIn",
+             threshold : 5000
+        });
+
         if (!$().fullCalendar) {
             return;
         }
@@ -41,19 +46,19 @@
 
         var isViewLoading = true;
         $('#calendar').fullCalendar('destroy'); // destroy the calendar
-        $('#calendar').fullCalendar({ //re-initialize the calendar
+        $('#calendar').fullCalendar({//re-initialize the calendar
             //defaultDate: '2017-03-12',
-            disableDragging : false,
-            viewRender: function( view, element ) {
+            disableDragging: false,
+            viewRender: function (view, element) {
                 $('#calendar .html-loading').remove();
-                var intervalId = setInterval(function() {
+                var intervalId = setInterval(function () {
                     var $dataHtml = element.find('.fc-content-skeleton');
                     if (!isViewLoading && $dataHtml) {
                         clearInterval(intervalId);
-                        $dataHtml.find('tbody').each(function(k,v) {
+                        $dataHtml.find('tbody').each(function (k, v) {
                             var $attnRow = $(v).find('tr:eq(0)');
-                            if ('undefined' != typeof($attnRow)) {
-                                $attnRow.find('.fc-title').html(function(i,inOutTxt) {
+                            if ('undefined' != typeof ($attnRow)) {
+                                $attnRow.find('.fc-title').html(function (i, inOutTxt) {
                                     var inOutTime = inOutTxt.split(' ');
                                     if (inOutTime.length) {
                                         var output = "";
@@ -70,7 +75,7 @@
                                 })
                             }
                             var $eventRow = $(v).find('tr:gt(0)');
-                            if ('undefined' != typeof($eventRow)) {
+                            if ('undefined' != typeof ($eventRow)) {
                                 $eventRow.find('.fc-title').css('color', '#fff');
                             }
                         });
@@ -85,11 +90,11 @@
             events: {
                 url: document.calendarJsonFeedUrl,
                 type: 'POST',
-                error: function() {
+                error: function () {
 
                 }
             },
-            loading: function(isLoading, view) {
+            loading: function (isLoading, view) {
                 isViewLoading = isLoading;
             }
         });
@@ -102,11 +107,11 @@
     $('.tab-pane-birthday').slimScroll({
         height: '300px'
     });
-      $('.upcomingholidays').slimScroll({
-        height: '218px'  
-     });
+    $('.upcomingholidays').slimScroll({
+        height: '218px'
+    });
 
-    $('.ln-nav-tab-birthday').on('click', function(e) {
+    $('.ln-nav-tab-birthday').on('click', function (e) {
         e.preventDefault();
         $('.ln-birthday').removeClass('active');
         $('.ln-birthday a').attr('aria-expanded', 'false');
@@ -115,30 +120,28 @@
         if ($(this).is('#ln-birthday-today')) {
             $('#tab-birthday-upcoming').hide().removeClass('active');
             $('#tab-birthday-today').show().addClass('active');
-        }
-        else {
+        } else {
             $('#tab-birthday-today').hide().removeClass('active');
             $('#tab-birthday-upcoming').show().addClass('active');
         }
     });
 
-    $('#task-save').on('click', function(e) {
+    $('#task-save').on('click', function (e) {
         var taskDate = $.trim($('#inp-task-dt').val());
         var taskName = $.trim($('#inp-task-name').val());
         if (taskDate && taskName) {
             var taskLi =
-                '<li>' +
+                    '<li>' +
                     '<div class="task-list-content clearfix">' +
-                        '<h4>' + taskName + '</h4>' +
-                        '<div class="positon">' + $('.employee-details span:eq(1)').text() + '</div>' +
-                        '<div class="name">' + $('.employee-details h4').text() + '</div>' +
+                    '<h4>' + taskName + '</h4>' +
+                    '<div class="positon">' + $('.employee-details span:eq(1)').text() + '</div>' +
+                    '<div class="name">' + $('.employee-details h4').text() + '</div>' +
                     '</div>' +
-                '</li>';
+                    '</li>';
 
             if ($('.task-list').length) {
                 $('.task-list ul').append(taskLi);
-            }
-            else {
+            } else {
                 $('.notask').remove();
                 $('.portlet-inner-task-wrapper').append('<div class="task-list"><ul>' + taskLi + '</ul></div>')
             }

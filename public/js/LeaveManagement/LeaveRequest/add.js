@@ -1,120 +1,190 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $('select').select2();
 
-        var employeeId = $('#employeeId').val();
-        window.app.floatingProfile.setDataFromRemote(employeeId);
-
-        $('select#leaveId').select2();
+        var $employee = $('#employeeId');
+        var $leave = $('#leaveId');
+        var $halfDay = $("#halfDay");
+        var $availableDays = $('#availableDays');
+        var $noOfDays = $('#noOfDays');
+        var $request = $("#request");
+        var $errorMsg = $("#errorMsg");
+        var $startDate = $('#startDate'), $endDate = $('#endDate');
 
         var dateDiff = "";
-        $("#remarks").hide();
 
-        var checkHalfDay = function () {
-            var availableDays1 = parseInt($("#availableDays").val());
-            var halfDay = $("input[name='halfDay']:checked").val();
-            var startDate = $("#startDate").val();
-            var endDate = $("#endDate").val();
-            var noOfDays1 = parseInt($("#noOfDays").val());
-            if (halfDay === 'F' || halfDay === "S") {
-                $('#noOfDays').attr('readonly', true);
-                if (startDate !== endDate) {
-                    $("#errorMsgDate").html("* Start date and end date must be same in the case of half day leave");
-                    $("#request").attr("disabled", "disabled");
-                } else if (startDate === endDate) {
-                    $("#errorMsgDate").html("");
-                    $("#errorMsg").html("");
-                    $("#request").removeAttr("disabled");
+        app.floatingProfile.setDataFromRemote($employee.val());
+
+        var leaveList = [];
+        var availableDays = null;
+
+
+        var calculateAvailableDays = function (startDateStr, endDateStr, employeeId) {
+            App.blockUI({target: "#hris-page-content", message: "Calculating Days"});
+            app.pullDataById(document.wsFetchAvailableDays, {startDate: startDateStr, endDate: endDateStr, employeeId: employeeId}).then(function (response) {
+                App.unblockUI("#hris-page-content");
+                if (!response.success) {
+                    app.showMessage(response.error, 'error');
+                    return;
                 }
-            } else if (halfDay === 'N') {
-                $("#errorMsgDate").html("");
-                if (noOfDays1 <= availableDays1) {
-                    $("#errorMsg").html("");
-                    $("#request").removeAttr("disabled");
-                }
-                if (startDate === endDate) {
-                    $('#noOfDays').attr('readonly', true);
+
+                var dateDiff = response.data['AVAILABLE_DAYS'];
+                var availableDays = parseInt($availableDays.val());
+
+                $noOfDays.val(dateDiff);
+
+                if (dateDiff > availableDays) {
+                    $errorMsg.html("* Applied days can't be more than available days");
+                    $request.prop("disabled", true);
                 } else {
-                    $('#noOfDays').attr('readonly', false);
+                    $errorMsg.html("");
+                    $request.prop("disabled", false);
                 }
+
+            }, function (error) {
+                App.unblockUI("#hris-page-content");
+                app.showMessage(error, 'error');
+            });
+        };
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate', function (startDate, endDate, startDateStr, endDateStr) {
+            var employeeId = $employee.val();
+            if (typeof employeeId === 'undefined' || employeeId === null || employeeId === '' || employeeId === -1) {
+                return;
             }
-        }
-        var dateDiff = '';
-//        app.startEndDatePicker("startDate", "endDate", function (startDate, endDate) {
-        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate', function (startDate, endDate) {
-            if (startDate <= endDate) {
-                var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-                var diffDays = Math.abs((startDate.getTime() - endDate.getTime()) / (oneDay));
-                var newValue = diffDays + 1;
-                var availableDays = parseInt($("#availableDays").val());
-                dateDiff = newValue;
-                console.log(dateDiff);
-                $("#noOfDays").val(newValue);
+            calculateAvailableDays(startDateStr, endDateStr, employeeId);
+            checkForErrors(startDateStr, endDateStr, employeeId);
+        });
 
-                var halfDay1 = $("input[name='halfDay']:checked");
-                var halfDay2 = ""
-                if (typeof (halfDay1.val()) === "undefined") {
-                    halfDay2 = "N";
+        var $form = $('#leaveApply');
+        var checkForErrors = function (startDateStr, endDateStr, employeeId) {
+            app.pullDataById(document.wsValidateLeaveRequest, {startDate: startDateStr, endDate: endDateStr, employeeId: employeeId}).then(function (response) {
+                if (response.data['ERROR'] === null) {
+                    $form.prop('valid', 'true');
                 } else {
-                    halfDay2 = halfDay1.val();
+                    $form.prop('valid', 'false');
+                    app.showMessage(response.data['ERROR'], 'error');
                 }
-                checkHalfDay();
-                if (newValue > availableDays) {
+            }, function (error) {
+                app.showMessage(error, 'error');
+            });
+        }
+
+        app.setLoadingOnSubmit("leaveApply", function ($form) {
+            if ($form.prop('valid') === 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+
+
+        var toggleSubstituteEmployeeReq = function ($flag) {
+            if ($flag) {
+                $('#substituteEmployeeCol').find('span[class="required"]').show();
+                $('#leaveSubstitute').find('option[value=""]').prop('disabled', true);
+                $('#leaveSubstitute').prop('required', true);
+            } else {
+                $('#substituteEmployeeCol').find('span[class="required"]').hide();
+                $('#leaveSubstitute').find('option[value=""]').prop('disabled', false);
+                $('#leaveSubstitute').prop('required', false);
+            }
+        };
+        var toggleGracePeriod = function ($flag) {
+            if ($flag) {
+                $('#gracePeriodCol').show();
+                $('#gracePeriod').prop('disabled', false);
+            } else {
+                $('#gracePeriodCol').hide();
+                $('#gracePeriod').prop('disabled', true);
+            }
+        };
+        var toggleHalfDay = function ($flag) {
+            if ($flag) {
+                $('#halfDayCol').show();
+                $('#halfDay').prop('disabled', false);
+            } else {
+                $('#halfDayCol').hide();
+                $('#halfDay').prop('disabled', true);
+            }
+        };
+
+        toggleHalfDay(false);
+        toggleGracePeriod(false);
+        toggleSubstituteEmployeeReq(false);
+
+
+
+        var leaveChange = function (obj) {
+            var $this = $(obj);
+            if ($this.val() === null || $this.val() === '' || $this.val() === '-1') {
+                return;
+            }
+            App.blockUI({target: "#hris-page-content", message: "Calculating Leave Days"});
+            app.pullDataById(document.wsPullLeaveDetail, {
+                'leaveId': $this.val(),
+                'employeeId': $employee.val()
+            }).then(function (success) {
+                App.unblockUI("#hris-page-content");
+                var leaveDetail = success.data;
+                availableDays = parseInt(leaveDetail.BALANCE);
+                $availableDays.val(availableDays);
+
+                var noOfDays = parseInt($noOfDays.val());
+
+                if ((availableDays != "" && noOfDays != "") && noOfDays > availableDays) {
                     $("#errorMsg").html("* Applied days can't be more than available days");
                     $("#request").attr("disabled", "disabled");
-                } else if ((newValue <= availableDays) && halfDay2 == 'N') {
-                    $("#errorMsg").html("");
-                    $("#request").removeAttr("disabled");
-                } else if ((newValue == availableDays) && (halfDay2 == 'S' || halfDay2 == 'F')) {
+                } else if ((availableDays != "" && noOfDays != "") && (noOfDays <= availableDays)) {
                     $("#errorMsg").html("");
                     $("#request").removeAttr("disabled");
                 }
 
-                if ((newValue <= availableDays) && (halfDay2 == 'S' || halfDay2 == 'F')) {
-                    $("#errorMsg").html("")
+                toggleGracePeriod(leaveDetail.ALLOW_GRACE_LEAVE === "Y");
+                toggleHalfDay(leaveDetail.ALLOW_HALFDAY === "Y");
+                toggleSubstituteEmployeeReq(leaveDetail.IS_SUBSTITUTE_MANDATORY === 'Y');
+            }, function (failure) {
+                App.unblockUI("#hris-page-content");
+                console.log(failure);
+            });
+        };
+
+        $leave.on('change', function () {
+            leaveChange(this);
+        });
+
+
+
+        var employeeChange = function (obj) {
+            var $this = $(obj);
+            app.floatingProfile.setDataFromRemote($this.val());
+            App.blockUI({target: "#hris-page-content", message: "Fetching Employee Leaves"});
+            app.pullDataById(document.wsPullLeaveDetailWidEmployeeId, {
+                'employeeId': $this.val()
+            }).then(function (success) {
+                App.unblockUI("#hris-page-content");
+                leaveList = success.data;
+                app.populateSelect($leave, leaveList, 'id', 'name', 'Select a Leave', null, null, false);
+
+                if ($startDate.val() != '' && $endDate.val() != '') {
+                    calculateAvailableDays($startDate.val(), $endDate.val(), $this.val());
                 }
-            }
 
+            }, function (failure) {
+                App.unblockUI("#hris-page-content");
+                console.log(failure);
+            });
+
+
+
+
+        };
+
+        $employee.on('change', function () {
+            employeeChange(this);
         });
-//        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
-
-        /* prevent past event post */
-//        $('#startDate').datepicker("setStartDate", new Date());
-//        $('#endDate').datepicker("setStartDate", new Date());
-        /* end of  prevent past event post */
-        
-        
-        $("#noOfDays").on("keyup", function () {
-            console.log(dateDiff);
-            var availableDays = parseInt($("#availableDays").val());
-            var noOfDays = parseInt($(this).val());
-            if (noOfDays > availableDays) {
-                $("#errorMsg").html("* Applied days can't be more than available days");
-                $("#request").attr("disabled", "disabled");
-            }else if(noOfDays > parseInt(dateDiff)){
-                $("#errorMsg").html("* Applied days can't be more than date difference days");
-                $("#request").attr("disabled", "disabled");
-            }
-            else {
-                $("#errorMsg").html("");
-                $("#request").removeAttr("disabled");
-            }
-            if (noOfDays != dateDiff) {
-                $("#form-remarks").attr('required', 'required');
-                $("#remarks").slideDown();
-            } else {
-                $("#form-remarks").removeAttr('required');
-                $("#remarks").slideUp();
-            }
-        });
-
-        $(".radioButton").each(function () {
-            $(this).on("click", checkHalfDay);
-        });
-        app.setLoadingOnSubmit("leaveApply");
-
     });
 })(window.jQuery, window.app);
-
 
 

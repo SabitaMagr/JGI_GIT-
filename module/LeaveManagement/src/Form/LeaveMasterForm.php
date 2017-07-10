@@ -133,4 +133,13 @@ class LeaveMasterForm {
      */
     public $isMonthly;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Substitute Mandatory"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"isSubstituteMandatory","value":"N"})
+     */
+    public $isSubstituteMandatory;
+
 }

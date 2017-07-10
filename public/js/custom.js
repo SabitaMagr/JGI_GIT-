@@ -164,7 +164,7 @@ window.app = (function ($, toastr, App) {
 
                             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
                             }
 
                         } else {
@@ -200,7 +200,7 @@ window.app = (function ($, toastr, App) {
 
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
             }
 
         });
@@ -240,7 +240,7 @@ window.app = (function ($, toastr, App) {
 
                             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
                             }
 
                         } else {
@@ -271,7 +271,7 @@ window.app = (function ($, toastr, App) {
             }
             if (typeof fn !== "undefined" && fn != null && typeof $fromEnglishDate !== "undefined" &&
                     $fromEnglishDate.val() != "" && typeof $toEnglishDate !== "undefined" && $toEnglishDate.val() != "") {
-                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()));
+                fn(getDate($fromEnglishDate.val()), getDate($toEnglishDate.val()), $fromEnglishDate.val(), $toEnglishDate.val());
             }
         });
 
@@ -879,7 +879,7 @@ window.app = (function ($, toastr, App) {
                         tempData.push('-');
                     } else {
                         if (typeof fn !== 'undefined') {
-                            tempData.push(fn(data[i][key],key));
+                            tempData.push(fn(data[i][key], key));
                         } else {
                             tempData.push(data[i][key]);
                         }
@@ -937,9 +937,16 @@ window.app = (function ($, toastr, App) {
         });
     })();
 
-    var populateSelect = function ($element, list, id, value, defaultMessage, selectedId) {
+    var populateSelect = function ($element, list, id, value, defaultMessage, defaultValue, selectedId, isMandatory) {
+        if (typeof defaultValue === 'undefined') {
+            defaultValue = -1;
+        }
         $element.html('');
-        $element.append($("<option></option>").val(-1).text(defaultMessage));
+        var $defaultOption = $("<option></option>").val(defaultValue).text(defaultMessage);
+        if (typeof isMandatory !== 'undefined' && isMandatory !== null && isMandatory) {
+            $defaultOption.prop('disabled', true);
+        }
+        $element.append($defaultOption);
         var concatArray = function (keyList, list, concatWith) {
             var temp = '';
             if (typeof concatWith === 'undefined') {
@@ -1013,4 +1020,3 @@ window.app = (function ($, toastr, App) {
         lockField: lockField
     };
 })(window.jQuery, window.toastr, window.App);
-

@@ -67,16 +67,16 @@ class LeaveApplyForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"No of Days"})
      * @Annotation\Required(true)
-     * @Annotation\Attributes({ "id":"noOfDays","min":"0", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"noOfDays","min":"0", "class":"form-control","readonly":"true"})
      */
     public $noOfDays;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"F":"First Half","S":"Second Half","N":"Full Day"},"label":"Leave Type"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"halfDay","value":"N"})
+     * @Annotation\Attributes({ "id":"halfDay","class":"form-control","value":"N"})
      */
     public $halfDay;
 
