@@ -132,7 +132,7 @@ class LeaveRequest extends AbstractActionController {
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
-                if ($leaveSubstitute !== null) {
+                if ($leaveSubstitute !== null && $leaveSubstitute!=="") {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
 
