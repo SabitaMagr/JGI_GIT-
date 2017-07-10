@@ -8,8 +8,9 @@ nbproject
 .project
 .settings
 vendor/*
-data/cache/
-data/logs/
+data/cache/*
+data/logs/*
+composer.lock
 #config/autoload/global.php
 #config/autoload/doctrine.global.php
 #composer.phar
