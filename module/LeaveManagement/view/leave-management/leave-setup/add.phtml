@@ -16,6 +16,8 @@ $cashable = $form->get('cashable');
 $allowGraceLeave = $form->get('allowGraceLeave');
 $isMonthly = $form->get('isMonthly');
 $isSubstituteMandatory = $form->get('isSubstituteMandatory');
+$assignOnEmployeeSetup = $form->get('assignOnEmployeeSetup');
+$isProdataBasis = $form->get('isProdataBasis');
 
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
@@ -193,6 +195,24 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($isMonthly, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($assignOnEmployeeSetup); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($assignOnEmployeeSetup); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($assignOnEmployeeSetup, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($isProdataBasis); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($isProdataBasis); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($isProdataBasis, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">

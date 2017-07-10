@@ -1,21 +1,4 @@
 <?php
-//    echo 'this is line manager dashboard';    
-//    
-//    echo '<br>';
-//    echo 'presnt '. $present['PRESENT'];
-//    echo '<br>';
-//    echo 'leave '. $leave['LEAVE'];
-//    echo '<br>';
-//    echo 'WOH '. $WOH['WOH'];
-//    echo '<br>';
-//    echo 'travel '. $travel['TRAVEL'];
-//    echo '<br>';
-//    echo 'training '. $training['TRAINING'];
-//    echo '<br>';
-?>
-
-
-<?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-datepicker/css/datepicker3.css'))
         ->appendStylesheet($this->basePath('assets/global/plugins/fullcalendar/fullcalendar.min.css'))
@@ -40,6 +23,7 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/highcharts/js/highcharts-3d.js'))
         ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/no-data-to-display.js'))
 //    ->appendFile($this->basePath('assets/global/plugins/highcharts/modules/exporting.js'))
+        ->appendFile($this->basePath('jquery_lazyload-master/jquery.lazyload.min.js'))
         ->appendFile($this->basePath('assets/global/scripts/metronic.js'))
         ->appendFile($this->basePath('js/dashboard/hrm-dashboard.js'));
 
@@ -645,8 +629,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                             <p class="mt-user-title"><?php print $emp['DESIGNATION_TITLE']; ?> </p>
                                                             <div class="mt-stats">
                                                                 <div class="btn-group btn-group btn-group-justified">
-<!--                                                                    <a href="javascript:;" class="btn font-green">
-                                                                        <i class="fa fa-plus"></i> <?php print $emp['JOIN_DATE']; ?> </a>-->
+                                                                    <!--                                                                    <a href="javascript:;" class="btn font-green">
+                                                                                                                                            <i class="fa fa-plus"></i> <?php print $emp['JOIN_DATE']; ?> </a>-->
                                                                     <a href="javascript:;" class="btn font-red">
                                                                         <i class="fa fa-minus"></i> <?php print $emp['EXIT_DATE']; ?> </a>
                                                                 </div>

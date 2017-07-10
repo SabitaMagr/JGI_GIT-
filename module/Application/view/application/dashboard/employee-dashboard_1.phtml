@@ -280,6 +280,87 @@ $missPunchUrl = $this->url('myattendance', ['action' => 'index', 'id' => 8]);
     </div>
 
     <div class="col-md-6">
+        <div class="row widget-row">
+            <div class="col-sm-6 col-md-6">
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="wigetbox wigetbox-colorone clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgone">
+                        <h4 class="widget-thumb-heading">Average Office Hrs</h4>
+                        <div class="widget-thumb-body">
+                            <?php
+                            $avgOfficeHourParts[0] = $employeeDetail['AVG_HOURS'] ? ((1 == $employeeDetail['AVG_HOURS']) ? "1 hr" : number_format($employeeDetail['AVG_HOURS']) . " hrs") : "";
+                            $avgOfficeHourParts[1] = $employeeDetail['AVG_MINUTES'] ? ((1 == $employeeDetail['AVG_MINUTES']) ? "1 min" : number_format($employeeDetail['AVG_MINUTES']) . " mins") : "";
+                            $avgOfficeHours = trim(implode(" ", $avgOfficeHourParts));
+                            ?>
+                            <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $avgOfficeHours ? $avgOfficeHours : 0; ?></span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon  fa fa-user colorone"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- BEGIN WIDGET THUMB -->
+            <div class="col-sm-6 col-md-6">
+                <div class="wigetbox wigetbox-colortwo clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgtwo">
+                        <h4 class="widget-thumb-heading">Average Timesheet Hrs</h4>
+                        <div class="widget-thumb-body">
+                            <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon fa fa-user-plus colortwo"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-6">
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="wigetbox wigetbox-colorthree clearfix widget-thumb widget-bg-color-lightgreen margin-bottom-20 bordered green-haze">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgthree">
+                        <h4 class="widget-thumb-heading">Total OT Hrs</h4>
+                        <div class="widget-thumb-body">
+                            <span class="widget-thumb-body-stat" data-counter="counterup">0</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon fa fa fa-user-times colorthree"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-6">
+                <!-- BEGIN WIDGET THUMB -->
+                <div class="wigetbox wigetbox-colorfour clearfix widget-thumb margin-bottom-20 bordered green-haze widget-woh">
+                    <div class="widget-thumb-wrap widget-thumb-wrap-bgfour">
+                        <h4 class="widget-thumb-heading">Work on Holiday</h4>
+                        <div class="widget-thumb-body">
+                            <ul>
+                                <li class="line">
+                                    <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['CUR_MONTH_WOH']; ?></span>
+                                    This Month
+                                </li>
+                                <li>
+                                    <span class="widget-thumb-body-stat" data-counter="counterup"><?php print $employeeDetail['PREV_MONTH_WOH']; ?></span>
+                                    Last Month
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="icons">
+                            <i class="widget-thumb-icon  fa fa-users colorfour"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12 holidays">
                 <!-- BEGIN PORTLET -->
@@ -495,8 +576,8 @@ $missPunchUrl = $this->url('myattendance', ['action' => 'index', 'id' => 8]);
                                                         <p class="mt-user-title"><?php print $emp['DESIGNATION_TITLE']; ?> </p>
                                                         <div class="mt-stats">
                                                             <div class="btn-group btn-group btn-group-justified">
-                                                                <!--                                                                <a href="javascript:;" class="btn font-green">
-                                                                                                                                    <i class="fa fa-plus"></i> <?php print $emp['JOIN_DATE']; ?> </a>-->
+<!--                                                                <a href="javascript:;" class="btn font-green">
+                                                                    <i class="fa fa-plus"></i> <?php print $emp['JOIN_DATE']; ?> </a>-->
                                                                 <a href="javascript:;" class="btn font-red">
                                                                     <i class="fa fa-minus"></i> <?php print $emp['EXIT_DATE']; ?> </a>
                                                             </div>
