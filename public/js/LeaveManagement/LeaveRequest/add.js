@@ -29,13 +29,16 @@
                     return;
                 }
 
-                var dateDiff = response.data['AVAILABLE_DAYS'];
+                var dateDiff = parseInt(response.data['AVAILABLE_DAYS']);
                 var availableDays = parseInt($availableDays.val());
 
                 $noOfDays.val(dateDiff);
 
                 if (dateDiff > availableDays) {
-                    $errorMsg.html("* Applied days can't be more than available days");
+                    $errorMsg.html("* Applied days can't be more than available days.");
+                    $request.prop("disabled", true);
+                } else if (dateDiff === 0) {
+                    $errorMsg.html("* Applied days can't be 0 day.");
                     $request.prop("disabled", true);
                 } else {
                     $errorMsg.html("");
