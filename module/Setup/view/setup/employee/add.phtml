@@ -154,7 +154,8 @@ $employeeTypeValue = [
     'C' => 'Contract'
 ];
 $employeeType->setValueOptions($employeeTypeValue);
-
+$isHR = $formFour->get('isHR');
+$isCEO = $formFour->get('isCEO');
 
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
@@ -1466,9 +1467,56 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
                         </div>
-
-
-
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <label> To Date </label>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                        <div class="row">
+                                            <div class="col-md-6 nopaddinggap">
+                                                <div class="input-group date">
+                                                    <input type="text" name="toDate" id="toDate" class="form-control" value="<?php echo $toDate; ?>" />
+                                                </div>  
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text"   id="nepaliToDate" class="form-control " value="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                        <?= $this->formLabel($isHR) ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                        <div class="md-radio-inline">
+                                            <?php $customRender($isHR); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                        <?= $this->formLabel($isCEO) ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                        <div class="md-radio-inline">
+                                            <?php $customRender($isCEO); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <input type="submit" class="hidden" id="btnform4" value="submit">
                     <?php

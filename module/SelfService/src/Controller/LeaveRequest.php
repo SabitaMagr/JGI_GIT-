@@ -236,7 +236,11 @@ class LeaveRequest extends AbstractActionController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID']);
         $preBalance = $result['BALANCE'];
-
+        
+        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
+        
+        print_r($detail); die();
+        
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
