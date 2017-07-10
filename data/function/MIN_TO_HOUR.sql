@@ -12,3 +12,4 @@ V_HOUR :=TRUNC(P_MIN/60,0);
 V_MIN  :=MOD(P_MIN,60) ;
 RETURN V_HOUR||':'||V_MIN;
 END;
+ 
