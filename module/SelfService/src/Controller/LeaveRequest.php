@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -133,7 +134,7 @@ class LeaveRequest extends AbstractActionController {
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
-                if ($leaveSubstitute !== null) {
+                if ($leaveSubstitute !== null && $leaveSubstitute!=="") {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
 
@@ -308,6 +309,80 @@ class LeaveRequest extends AbstractActionController {
             "approver" => $approver
         ];
         return $responseData;
+    }
+
+    public function pullLeaveDetailWidEmployeeIdAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $employeeId = $postedData['employeeId'];
+                $leaveList = $leaveRequestRepository->getLeaveList($employeeId);
+
+                $leaveRow = [];
+                foreach ($leaveList as $key => $value) {
+                    array_push($leaveRow, ["id" => $key, "name" => $value]);
+                }
+                return new CustomViewModel(['success' => true, 'data' => $leaveRow, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullLeaveDetailAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $leaveId = $postedData['leaveId'];
+                $employeeId = $postedData['employeeId'];
+                $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId);
+
+                return new CustomViewModel(['success' => true, 'data' => $leaveDetail, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchAvailableDaysAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function validateLeaveRequestAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $error = $leaveRequestRepository->validateLeaveRequest(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                return new CustomViewModel(['success' => true, 'data' => $error, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

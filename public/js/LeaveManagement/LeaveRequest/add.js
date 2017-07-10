@@ -81,8 +81,6 @@
             }
         });
 
-
-
         var toggleSubstituteEmployeeReq = function ($flag) {
             if ($flag) {
                 $('#substituteEmployeeCol').find('span[class="required"]').show();
