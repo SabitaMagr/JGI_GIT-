@@ -54,6 +54,7 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
 use Training\Model\TrainingAssign;
+use Travel\Repository\RecommenderApproverRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\Plugin\Url;
@@ -73,6 +74,8 @@ class HeadNotification {
     const REVIEWER_EVALUATION = "REVIEWER_EVALUATION";
     const SUPER_REVIEWER_EVALUATION = "SUPER_REVIEWER_EVALUATION";
     const HR_FEEDBACK = "HR_FEEDBACK";
+    const TRAVEL_EXPENSE_REQUEST = "ep";    //value from travel request form
+    const TRAVEL_ADVANCE_REQUEST = "ad";
 
     public static function getNotifications(AdapterInterface $adapter, int $empId) {
         $notiRepo = new NotificationRepo($adapter);
@@ -344,7 +347,7 @@ class HeadNotification {
 
     private static function travelApplied(TravelRequest $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -355,8 +358,18 @@ class HeadNotification {
         $notification->purpose = $request->purpose;
         $notification->requestedAmount = $request->requestedAmount;
         $notification->requestedType = $request->requestedType;
-
-        $notification->route = json_encode(["route" => "travelApprove", "action" => "view", "id" => $request->travelId, "role" => $roleAndId['role']]);
+        
+        switch($request->requestedType){
+            case self::TRAVEL_ADVANCE_REQUEST:
+                $notification->route = json_encode(["route" => "travelApprove", "action" => "view", "id" => $request->travelId, "role" => $roleAndId['role']]);
+                break;
+            case self::TRAVEL_EXPENSE_REQUEST :
+                $notification->route = json_encode(["route" => "travelApprove", "action" => "expenseDetail", "id" => $request->travelId, "role" => $roleAndId['role']]);
+                break;
+            default:
+                $notification->route = json_encode(["route" => "travelApprove", "action" => "view", "id" => $request->travelId, "role" => $roleAndId['role']]);
+                break;
+        }
         $title = "Travel Request";
         $desc = "Travel Request";
 
@@ -367,7 +380,7 @@ class HeadNotification {
 
     private static function travelRecommend(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -379,8 +392,18 @@ class HeadNotification {
         $notification->requestedType = $request->requestedType;
 
         $notification->status = $status;
-
-        $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+        
+        switch($request->requestedType){
+            case self::TRAVEL_ADVANCE_REQUEST:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+            case self::TRAVEL_EXPENSE_REQUEST :
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "viewExpense", "id" => $request->travelId]);
+                break;
+            default:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+        }
         $title = "Travel Recommendation";
         $desc = "Travel Recommendation {$status}";
 
@@ -390,7 +413,7 @@ class HeadNotification {
 
     private static function travelApprove(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -403,7 +426,17 @@ class HeadNotification {
 
         $notification->status = $status;
 
-        $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+        switch($request->requestedType){
+            case self::TRAVEL_ADVANCE_REQUEST:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+            case self::TRAVEL_EXPENSE_REQUEST :
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "viewExpense", "id" => $request->travelId]);
+                break;
+            default:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+        }
         $title = "Travel Approval";
         $desc = "Travel Approval {$status}";
 
@@ -1561,5 +1594,15 @@ class HeadNotification {
 
         return $recommdAppModel;
     }
+    
+    public static function findRecAppForTrvl($employeeId,$adapter){
+        $recommdAppRepo = new RecommenderApproverRepository($adapter);
+        $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($employeeId);
 
+        if ($recommdAppModel == null) {
+            throw new Exception("recommender and approver not set for employee with id =>" . $employeeId);
+        }
+
+        return $recommdAppModel;
+    }
 }

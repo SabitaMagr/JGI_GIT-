@@ -19,7 +19,7 @@ use Setup\Model\ServiceType;
 use Zend\Form\Element\Select;
 use Setup\Model\ServiceEventType;
 use Zend\Authentication\AuthenticationService;
-use Setup\Repository\RecommendApproveRepository;
+use Travel\Repository\RecommenderApproverRepository;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Setup\Repository\EmployeeRepository;
 use Application\Helper\NumberHelper;
@@ -86,7 +86,7 @@ class TravelStatus extends AbstractActionController
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         $recommApprove = 0;
         if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
@@ -211,7 +211,7 @@ class TravelStatus extends AbstractActionController
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+        $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         $recommApprove = 0;
         if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){

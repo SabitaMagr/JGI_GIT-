@@ -3,12 +3,17 @@
 namespace RestfulService\Controller;
 
 use Advance\Repository\AdvanceStatusRepository;
+use Application\Helper\AppraisalHelper;
 use Application\Helper\ConstraintHelper;
 use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
 use Application\Repository\MonthRepository;
+use Appraisal\Model\AppraisalStatus;
+use Appraisal\Repository\AppraisalAssignRepository;
+use Appraisal\Repository\AppraisalReportRepository;
+use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Repository\HeadingRepository;
 use Appraisal\Repository\QuestionRepository;
 use Asset\Repository\IssueRepository;
@@ -42,6 +47,10 @@ use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
+use SelfService\Model\AppraisalCompetencies;
+use SelfService\Model\AppraisalKPI;
+use SelfService\Repository\AppraisalCompetenciesRepo;
+use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\OvertimeDetailRepository;
@@ -75,6 +84,7 @@ use System\Repository\UserSetupRepository;
 use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
 use Training\Repository\TrainingStatusRepository;
+use Travel\Repository\RecommenderApproverRepository;
 use Travel\Repository\TravelStatusRepository;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
@@ -83,17 +93,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Application\Repository\ForgotPasswordRepository;
-use ServiceQuestion\Repository\EmpServiceQuestionRepo;
-use SelfService\Repository\AppraisalKPIRepository;
-use SelfService\Model\AppraisalKPI;
-use SelfService\Model\AppraisalCompetencies;
-use SelfService\Repository\AppraisalCompetenciesRepo;
-use Appraisal\Repository\AppraisalAssignRepository;
-use Application\Helper\AppraisalHelper;
-use Appraisal\Repository\AppraisalStatusRepository;
-use Appraisal\Model\AppraisalStatus;
-use Appraisal\Repository\AppraisalReportRepository;
+use function Zend\Filter\File\move_uploaded_file;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -1908,7 +1908,7 @@ class RestfulService extends AbstractRestfulController {
         };
 
         foreach ($result as $row) {
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
 
             $status = $getValue($row['STATUS']);
@@ -2588,9 +2588,6 @@ class RestfulService extends AbstractRestfulController {
         } else {
             $approverIdNew = $approverId;
         }
-
-
-
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
         $recommendApprove = new RecommendApprove();
         $employeePreDtl = $recommApproverRepo->fetchById($employeeId);
