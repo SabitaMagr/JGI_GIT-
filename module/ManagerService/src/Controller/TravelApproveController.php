@@ -17,7 +17,7 @@ use SelfService\Model\TravelRequest;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
+use Travel\Repository\RecommenderApproverRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -84,7 +84,7 @@ class TravelApproveController extends AbstractActionController {
         };
         foreach ($list as $row) {
             $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
 
             $dataArray = [

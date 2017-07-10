@@ -1,4 +1,4 @@
-<div class="<?= ($assignedAppraisalDetail['KPI_SETTING'] == 'Y') ? 'display-block' : 'display-none'; ?>">
+<div class="<?= ($assignedAppraisalDetail['KPI_SETTING'] == 'Y') ? 'display-block' : 'display-none'; ?> appRemarks">
     <table class="table table-bordered" id="dataTables-example">
         <tr>
             <td class="label" id="home" style="color:#428bca;font:bold;"><b>KEY ACHIEVEMENTS
@@ -32,74 +32,24 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1.0</td>
-                            <td>0%-19%</td>
-                            <td rowspan="3">Poor</td>
+                            <td>1.0-1.99</td>
+                            <td>0%-99%</td>
+                            <td>Under achievement</td>
                         </tr>
                         <tr>
-                            <td>1.2</td>
-                            <td>20%-39%</td>
+                            <td>2.0-2.99</td>
+                            <td>100%-149%</td>
+                            <td>Good</td>
                         </tr>
                         <tr>
-                            <td>1.4</td>
-                            <td>40%-59%</td>
-                        </tr>
-                        <tr>
-                            <td>1.6</td>
-                            <td>60%-79%</td>
-                            <td rowspan="2">Improvement Needed</td>
-                        </tr>
-                        <tr>
-                            <td>1.8</td>
-                            <td>80%-99%</td>
-                        </tr>
-                        <tr>
-                            <td>2.0</td>
-                            <td>100%-119%</td>
-                            <td rowspan="3">Satisfactory/Meets expectation</td>
-                        </tr>
-                        <tr>
-                            <td>2.2</td>
-                            <td>120%-139%</td>
-                        </tr>
-                        <tr>
-                            <td>2.4</td>
-                            <td>140%-159%</td>
-                        </tr>
-                        <tr>
-                            <td>2.6</td>
-                            <td>160%-179%</td>
-                            <td rowspan="4">Exceeds Expectations</td>
-                        </tr>
-                        <tr>
-                            <td>2.8</td>
-                            <td>180%-199%</td>
-                        </tr>
-                        <tr>
-                            <td>3.0</td>
-                            <td>200%-219%</td>
-                        </tr>
-
-                        <tr>
-                            <td>3.2</td>
-                            <td>220%-239%</td>
-                        </tr>
-                        <tr>
-                            <td>3.4</td>
-                            <td>240%-259%</td>
-                            <td rowspan="4">Excellent</td>
-                        </tr>
-                        <tr>
-                            <td>3.6</td>
-                            <td>260%-279%</td>
-                        </tr>
-                        <tr>
-                            <td>3.8</td>
-                            <td>280%-299%</td>
+                            <td>3.0-3.99</td>
+                            <td>150%-199%</td>
+                            <td>Very Good</td>
                         </tr>
                         <tr>
                             <td>4.0</td>
-                            <td>300% or above</td>
+                            <td>200% achievement</td>
+                            <td>Excellent</td>
                         </tr>
                     </tbody>
                 </table>

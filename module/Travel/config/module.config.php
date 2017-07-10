@@ -5,6 +5,7 @@ use Application\Controller\ControllerFactory;
 use Travel\Controller\TravelStatus;
 use Travel\Controller\TravelApply;
 use Zend\Router\Http\Segment;
+use Travel\Controller\RecommenderApprover;
 
 return [
     'router' => [
@@ -33,6 +34,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => TravelApply::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'recommenderApprover' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/travel/recommenderApprover[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => RecommenderApprover::class,
                         'action' => 'index'
                     ],
                 ],
@@ -99,12 +114,40 @@ return [
                 ],
             ],
         ],
+        'recommenderApprover' => [
+                [
+                'label' => "Travel Recommender Approver",
+                'route' => "recommenderApprover"
+            ],
+                [
+                'label' => "Travel Recommender Approver",
+                'route' => "recommenderApprover",
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'recommenderApprover',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'recommenderApprover',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'recommenderApprover',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     
     'controllers' => [
         'factories' => [
             Controller\TravelStatus::class => ControllerFactory::class,
-            Controller\TravelApply::class => ControllerFactory::class
+            Controller\TravelApply::class => ControllerFactory::class,
+            Controller\RecommenderApprover::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
