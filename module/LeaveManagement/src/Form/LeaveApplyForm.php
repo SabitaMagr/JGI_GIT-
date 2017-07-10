@@ -67,7 +67,7 @@ class LeaveApplyForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"No of Days"})
      * @Annotation\Required(true)
-     * @Annotation\Attributes({ "id":"noOfDays","min":"0", "class":"form-control","readonly":"true"})
+     * @Annotation\Attributes({ "id":"noOfDays","min":"1", "class":"form-control","readonly":"true"})
      */
     public $noOfDays;
 
