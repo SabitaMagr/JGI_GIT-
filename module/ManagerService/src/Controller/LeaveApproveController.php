@@ -17,6 +17,7 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -136,6 +137,13 @@ class LeaveApproveController extends AbstractActionController {
         $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
         $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
         $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
+        $empRepository = new EmployeeRepository($this->adapter);
+        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
+        if($CEOFlag){
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+            $recommender=$approver;
+            $approver =($CEODtl!=null) ? $CEODtl['FIRST_NAME']." ".$CEODtl['MIDDLE_NAME']." ".$CEODtl['LAST_NAME']:"";
+        }
         $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
         $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
         $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";

@@ -60,6 +60,7 @@ use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 use Setup\Model\EmployeeExperience;
 use Setup\Model\EmployeeQualification;
 use Setup\Model\EmployeeTraining;
+use Setup\Model\HrEmployees;
 use Setup\Model\RecommendApprove;
 use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
@@ -1727,12 +1728,13 @@ class RestfulService extends AbstractRestfulController {
 
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRepository = new EmployeeRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
 
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DT'];
-
+            
             $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
             $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
 

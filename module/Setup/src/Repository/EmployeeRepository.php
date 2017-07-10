@@ -475,5 +475,19 @@ class EmployeeRepository implements RepositoryInterface {
             return null;
         }
     }
-
+    public function fetchByCondition($where) {
+        $rowset = $this->gateway->select(function (Select $select) use ($where) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME, HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+                        HrEmployees::BIRTH_DATE,
+                        HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+                        HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                        HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+                        HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+                        HrEmployees::ID_PASSPORT_EXPIRY,
+                        HrEmployees::JOIN_DATE
+                    ]), false);
+            $select->where($where);
+        });
+        return $rowset->current();
+    }
 }

@@ -212,14 +212,18 @@ class LeaveRequest extends AbstractActionController {
             $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-
+        $detail = $leaveApproveRepository->fetchById($id);
+        $empRepository = new EmployeeRepository($this->adapter);
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-
+        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
+        if($CEOFlag){
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+            $recommenderName=$approverName;
+            $approverName =($CEODtl!=null) ? $fullName($CEODtl['EMPLOYEE_ID']):"";
+        }
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();
-
-        $detail = $leaveApproveRepository->fetchById($id);
 
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
@@ -236,11 +240,6 @@ class LeaveRequest extends AbstractActionController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID']);
         $preBalance = $result['BALANCE'];
-        
-        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
-        
-        print_r($detail); die();
-        
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
