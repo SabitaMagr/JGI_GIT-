@@ -63,6 +63,27 @@ class EmployeeRepository implements RepositoryInterface {
         return $tempArray;
     }
 
+    public function fetchSubstituteEmployees($employeeId = null, $excludeSelf = false, $excludeRecAndApp = false) {
+        $condition = " WHERE 1=1 ";
+        if ($employeeId != null && $excludeSelf && !$excludeRecAndApp) {
+            $condition = " WHERE EMPLOYEE != {$employeeId} ";
+        } else
+        if ($employeeId != null && $excludeSelf && $excludeRecAndApp) {
+            $condition = ",( SELECT EMPLOYEE_ID,RECOMMEND_BY,APPROVED_BY FROM HRIS_RECOMMENDER_APPROVER WHERE EMPLOYEE_ID = {$employeeId} ) RA WHERE E.EMPLOYEE != RA.EMPLOYEE_ID AND E.EMPLOYEE != RA.RECOMMEND_BY AND E.EMPLOYEE != RA.APPROVED_ID";
+        }
+
+        $sql = "
+                SELECT EMPLOYEE_ID,
+                  FULL_NAME
+                FROM HRIS_EMPLOYEES E
+                {$condition} 
+                AND E.STATUS    ='E'
+                AND E.RETIRED_FLAG='N'
+                AND E.IS_ADMIN    ='N'";
+        print $sql;
+        exit;
+    }
+
     public function fetchAllForAttendance() {
         $sql = "SELECT E.* FROM HRIS_EMPLOYEES E
         JOIN HRIS_EMPLOYEE_SHIFT_ASSIGN ESA ON (E.EMPLOYEE_ID=ESA.EMPLOYEE_ID) JOIN HRIS_SHIFTS S ON (ESA.SHIFT_ID=S.SHIFT_ID) 

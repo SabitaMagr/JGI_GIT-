@@ -426,6 +426,7 @@ window.app = (function ($, toastr, App) {
             minMaxBtn: $('#floating-profile #min-max-btn')
         },
         data: {
+            employeeId: null,
             firstName: null,
             middleName: null,
             lastName: null,
@@ -445,8 +446,11 @@ window.app = (function ($, toastr, App) {
             mobileNo: null,
             recommenderName: null,
             approverName: null,
+            recommenderId: null,
+            approverId: null,
             imageFilePath: null
         },
+        registeredFunctions: [],
         makeDraggable: function () {
             $(this.obj).draggable();
         },
@@ -461,41 +465,44 @@ window.app = (function ($, toastr, App) {
                 console.log("Unknown Employee Id");
                 return;
             }
-            var tempData = this.data;
             pullDataById(document.restfulUrl, {
                 action: 'pullEmployeeDetailById',
                 data: {employeeId: empId}
-            }).then(function (success) {
-                console.log("profile detail response", success);
-                if (typeof success.data === "undefined" || success.data == null) {
+            }).then(function (response) {
+                if (!response.success || typeof response.data === "undefined" || response.data === null) {
                     return;
                 }
-                this.data.firstName = success.data['FIRST_NAME'];
-                this.data.middleName = (success.data['MIDDLE_NAME'] == null) ? "" : success.data['MIDDLE_NAME'];
-                this.data.lastName = success.data['LAST_NAME'];
-                this.data.appDate = success.data['JOIN_DATE'];
+                this.data.employeeId = response.data['EMPLOYEE_ID'];
+                this.data.firstName = response.data['FIRST_NAME'];
+                this.data.middleName = (response.data['MIDDLE_NAME'] == null) ? "" : response.data['MIDDLE_NAME'];
+                this.data.lastName = response.data['LAST_NAME'];
+                this.data.appDate = response.data['JOIN_DATE'];
 
-                this.data.appBranch = success.data['APP_BRANCH'];
-                this.data.appDepartment = success.data['APP_DEPARTMENT'];
-                this.data.appDesignation = success.data['APP_DESIGNATION'];
-                this.data.appPosition = (success.data['APP_POSITION'] == null) ? "" : success.data['APP_POSITION'];
-                this.data.appServiceType = (success.data['APP_SERVICE_TYPE'] == null) ? "" : success.data['APP_SERVICE_TYPE'];
-                this.data.appServiceEventType = (success.data['APP_SERVICE_EVENT_TYPE'] == null) ? "" : success.data['APP_SERVICE_EVENT_TYPE'];
+                this.data.appBranch = response.data['APP_BRANCH'];
+                this.data.appDepartment = response.data['APP_DEPARTMENT'];
+                this.data.appDesignation = response.data['APP_DESIGNATION'];
+                this.data.appPosition = (response.data['APP_POSITION'] == null) ? "" : response.data['APP_POSITION'];
+                this.data.appServiceType = (response.data['APP_SERVICE_TYPE'] == null) ? "" : response.data['APP_SERVICE_TYPE'];
+                this.data.appServiceEventType = (response.data['APP_SERVICE_EVENT_TYPE'] == null) ? "" : response.data['APP_SERVICE_EVENT_TYPE'];
 
-                this.data.branch = (success.data['BRANCH'] == null) ? "" : success.data['BRANCH'];
-                this.data.department = success.data['DEPARTMENT'];
-                this.data.designation = success.data['DESIGNATION'];
-                this.data.position = (success.data['POSITION'] == null) ? "" : success.data['POSITION'];
-                this.data.serviceType = (success.data['SERVICE_TYPE'] == null) ? "" : success.data['SERVICE_TYPE'];
-                this.data.serviceEventType = (success.data['SERVICE_EVENT_TYPE'] == null) ? "" : success.data['SERVICE_EVENT_TYPE'];
+                this.data.branch = (response.data['BRANCH'] == null) ? "" : response.data['BRANCH'];
+                this.data.department = response.data['DEPARTMENT'];
+                this.data.designation = response.data['DESIGNATION'];
+                this.data.position = (response.data['POSITION'] == null) ? "" : response.data['POSITION'];
+                this.data.serviceType = (response.data['SERVICE_TYPE'] == null) ? "" : response.data['SERVICE_TYPE'];
+                this.data.serviceEventType = (response.data['SERVICE_EVENT_TYPE'] == null) ? "" : response.data['SERVICE_EVENT_TYPE'];
 
-                this.data.mobileNo = (success.data['MOBILE_NO'] == null) ? "" : success.data['MOBILE_NO'];
-                this.data.imageFilePath = (success.data['FILE_NAME'] == null) ? "" : success.data['FILE_NAME'];
-                this.data.recommenderName = (success.data['RECOMMENDER'] == null) ? "" : success.data['RECOMMENDER'];
-                this.data.approverName = (success.data['APPROVER'] == null) ? "" : success.data['APPROVER'];
-
+                this.data.mobileNo = (response.data['MOBILE_NO'] == null) ? "" : response.data['MOBILE_NO'];
+                this.data.imageFilePath = (response.data['FILE_NAME'] == null) ? "" : response.data['FILE_NAME'];
+                this.data.recommenderName = (response.data['RECOMMENDER'] == null) ? "" : response.data['RECOMMENDER'];
+                this.data.approverName = (response.data['APPROVER'] == null) ? "" : response.data['APPROVER'];
+                this.data.recommenderId = (response.data['RECOMMENDER_ID'] == null) ? "" : response.data['RECOMMENDER_ID'];
+                this.data.approverId = (response.data['APPROVER_ID'] == null) ? "" : response.data['APPROVER_ID'];
                 this.refreshView();
                 this.show();
+                for (var i = 0; i < this.registeredFunctions.length; i++) {
+                    this.registeredFunctions[i](this.data);
+                }
             }.bind(this), function (failure) {
                 console.log(failure);
             });
@@ -557,6 +564,9 @@ window.app = (function ($, toastr, App) {
                     this.minimize();
                 }
             }.bind(this));
+        },
+        registerListener: function (fn) {
+            this.registeredFunctions.push(fn);
         }
     };
     floatingProfile.initialize();
