@@ -186,10 +186,6 @@ class PerformanceAppraisal extends AbstractActionController{
                     if($assignedAppraisalDetail['SUPER_REVIEWER_ID']!=null){
                         HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['SUPER_REVIEWER_ID'],'USER_TYPE'=>"SUPER_REVIEWER"]);
                     }
-                    $adminList = $employeeRepo->fetchByAdminFlagList();
-                    foreach($adminList as $adminRow){
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
-                    }
                 }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("performanceAppraisal");
