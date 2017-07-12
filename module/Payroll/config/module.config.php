@@ -41,7 +41,7 @@ return [
             'generate' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/payroll/generate[/:action[/:id]]',
+                    'route' => '/payroll/generate[/:action[/:id][/:mcode]]',
                     'defaults' => [
                         'controller' => Controller\Generate::class,
                         'action' => 'index'
@@ -154,6 +154,16 @@ return [
                         'label' => 'List',
                         'route' => 'generate',
                         'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Tax Sheet',
+                        'route' => 'generate',
+                        'action' => 'taxsheet',
+                    ],
+                    [
+                        'label' => 'Pay Slip',
+                        'route' => 'generate',
+                        'action' => 'payslip',
                     ],
                 ]
             ]
