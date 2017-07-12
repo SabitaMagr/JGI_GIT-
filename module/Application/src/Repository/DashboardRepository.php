@@ -190,8 +190,8 @@ class DashboardRepository implements RepositoryInterface {
             ON TRAINING_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
           ";
 
-        print_r($sql);
-        exit;
+//        print_r($sql);
+//        exit;
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
