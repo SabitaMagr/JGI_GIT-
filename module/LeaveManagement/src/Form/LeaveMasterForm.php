@@ -142,4 +142,22 @@ class LeaveMasterForm {
      */
     public $isSubstituteMandatory;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Assign On Employee Setup"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"assignOnEmployeeSetup","value":"N"})
+     */
+    public $assignOnEmployeeSetup;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Prodata Basis"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"isProdataBasis","value":"N"})
+     */
+    public $isProdataBasis;
+
 }
