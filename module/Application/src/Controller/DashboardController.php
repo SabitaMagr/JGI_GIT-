@@ -70,8 +70,6 @@ class DashboardController extends AbstractActionController {
             "headCountLocation" => $dashboardRepo->fetchLocationHeadCount(),
             "departmentAttendance" => $dashboardRepo->fetchDepartmentAttendance(),
             'todoList' => $this->getTodoList(),
-            "pendingLeave" => $dashboardRepo->fetchPendingLeave(),
-            "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth(),
             "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays(),
             "employeeContracts" => $dashboardRepo->fetchEmployeeContracts(),
             "newEmployees" => $dashboardRepo->fetchJoinedEmployees(),
@@ -90,17 +88,18 @@ class DashboardController extends AbstractActionController {
 
         $empCompanyId = $employeeDetail['COMPANY_ID'];
         $empBranchId = $employeeDetail['BRANCH_ID'];
+        $attendanceDetail = $dashboardRepo->fetchManagerAttendanceDetail($this->employeeId);
 
         $data = [
             "employeeDetail" => $dashboardRepo->fetchManagerDashboardDetail($this->employeeId, Helper::getCurrentDate()),
-            "present" => $dashboardRepo->fetchPresentCount($empBranchId)['PRESENT'],
-            "leave" => $dashboardRepo->fetchLeaveCount($empCompanyId, $empBranchId)['LEAVE'],
-            "training" => $dashboardRepo->fetchTrainingCount($empCompanyId, $empBranchId)['TRAINING'],
-            "travel" => $dashboardRepo->fetchTravelCount($empCompanyId, $empBranchId)['TRAVEL'],
-            "WOH" => $dashboardRepo->fetchWOHCount($empCompanyId, $empBranchId)['WOH'],
-            'lateIn' => $dashboardRepo->fetchLateInCount($empCompanyId, $empBranchId)['LATE_IN'],
-            'earlyOut' => $dashboardRepo->fetchEarlyOutCount($empCompanyId, $empBranchId)['EARLY_OUT'],
-            'missedPunch' => $dashboardRepo->fetchMissedPunchCount($empCompanyId, $empBranchId)['MISSED_PUNCH'],
+            "present" => $attendanceDetail['PRESENT_DAY'],
+            "leave" => $attendanceDetail['LEAVE'],
+            "training" => $attendanceDetail['TRAINING'],
+            "travel" => $attendanceDetail['TOUR'],
+            "WOH" => $attendanceDetail['WOH'],
+            'lateIn' => $attendanceDetail['LATE_IN'],
+            'earlyOut' => $attendanceDetail['EARLY_OUT'],
+            'missedPunch' => $attendanceDetail['MISSED_PUNCH'],
             "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
             "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
             "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
@@ -110,8 +109,6 @@ class DashboardController extends AbstractActionController {
             "headCountLocation" => $dashboardRepo->fetchLocationHeadCount(),
             "departmentAttendance" => $dashboardRepo->fetchDepartmentAttendance(),
             'todoList' => $this->getTodoList(),
-            "pendingLeave" => $dashboardRepo->fetchPendingLeave($empCompanyId, $empBranchId),
-            "employeeJoinCM" => $dashboardRepo->fetchEmployeeJoiningCurrentMonth($empCompanyId, $empBranchId),
             "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
             "newEmployees" => $dashboardRepo->fetchJoinedEmployees(),
             "leftEmployees" => $dashboardRepo->fetchLeftEmployees(),
