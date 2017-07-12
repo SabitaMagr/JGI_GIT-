@@ -42,17 +42,17 @@ class DashboardRepository implements RepositoryInterface {
      */
 
     public function fetchEmployeeDashboardDetail($employeeId, $startDate, $endDate) {
-        $sql = "-- EMPLOYEE DETAIL
+        $sql = "
             SELECT EMPLOYEE_TBL.*,
-              NVL(LATE_TBL.LATE_IN, 0) LATE_IN,
-              NVL(EARLY_TBL.EARLY_OUT, 0) EARLY_OUT,
-              NVL(MISSED_PUNCH_TBL.MISSED_PUNCH, 0) MISSED_PUNCH,
-              NVL(PRESENT_TBL.PRESENT_DAY, 0) PRESENT_DAY,
-              NVL(ABSENT_TBL.ABSENT_DAY, 0) ABSENT_DAY,
-              NVL(LEAVE_TBL.LEAVE, 0) LEAVE,
-              NVL(WOH_TBL.WOH, 0) WOH,
-              NVL(TOUR_TBL.TOUR, 0) TOUR,
-              NVL(TRAINING_TBL.TRAINING, 0) TRAINING
+              LATE_ATTEN_TBL.\"'L'\"+LATE_ATTEN_TBL.\"'B'\"+LATE_ATTEN_TBL.\"'Y'\" LATE_IN,
+              LATE_ATTEN_TBL.\"'E'\"+LATE_ATTEN_TBL.\"'B'\" EARLY_OUT,
+              LATE_ATTEN_TBL.\"'X'\"+LATE_ATTEN_TBL.\"'Y'\" MISSED_PUNCH,
+              ATTEN_TBL.\"'PR'\"    +ATTEN_TBL.\"'WD'\"+ATTEN_TBL.\"'WH'\"+ ATTEN_TBL.\"'TP'\"+ ATTEN_TBL.\"'LP'\"+ATTEN_TBL.\"'VP'\" PRESENT_DAY,
+              ATTEN_TBL.\"'AB'\"    +ATTEN_TBL.\"'BA'\"+ATTEN_TBL.\"'LA'\" ABSENT_DAY,
+              ATTEN_TBL.\"'LV'\" LEAVE,
+              ATTEN_TBL.\"'WH'\" WOH,
+              ATTEN_TBL.\"'TV'\" TOUR,
+              ATTEN_TBL.\"'TN'\"+ATTEN_TBL.\"'TP'\" TRAINING
             FROM
               (SELECT EMP.EMPLOYEE_ID,
                 EMP.FULL_NAME,
@@ -73,389 +73,34 @@ class DashboardRepository implements RepositoryInterface {
               WHERE EMP.DESIGNATION_ID   = DSG.DESIGNATION_ID(+)
               AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
               AND EMP.RETIRED_FLAG       = 'N'
-              AND EMP.EMPLOYEE_ID = {$employeeId}
+              AND EMP.EMPLOYEE_ID        = {$employeeId}
               ) EMPLOYEE_TBL
             LEFT JOIN
-              (SELECT ATTEN.EMPLOYEE_ID,
-                COUNT (*) LATE_IN
-              FROM HRIS_ATTENDANCE_DETAIL ATTEN
-              WHERE (ATTEN.LATE_STATUS = 'L'
-              OR ATTEN.LATE_STATUS     ='B')
-              AND ATTEN.EMPLOYEE_ID    ={$employeeId}
-              AND (ATTEN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
-              GROUP BY ATTEN.EMPLOYEE_ID
-              ) LATE_TBL
-            ON LATE_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            LEFT JOIN (
-              SELECT ATTEN.EMPLOYEE_ID,
-                COUNT (*) EARLY_OUT
-              FROM HRIS_ATTENDANCE_DETAIL ATTEN
-              WHERE (ATTEN.LATE_STATUS = 'E'
-              OR ATTEN.LATE_STATUS     ='B')
-              AND ATTEN.EMPLOYEE_ID    ={$employeeId}
-              AND (ATTEN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
-              GROUP BY ATTEN.EMPLOYEE_ID
-              ) EARLY_TBL
-            ON EARLY_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
+              (SELECT *
+              FROM
+                (SELECT EMPLOYEE_ID,
+                  OVERALL_STATUS
+                FROM HRIS_ATTENDANCE_DETAIL
+                WHERE (ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
+                ) PIVOT (COUNT(OVERALL_STATUS) FOR OVERALL_STATUS IN ('DO','HD','LV','TV','TN','PR','AB','WD','WH','BA','LA','TP','LP','VP'))
+              ) ATTEN_TBL
+            ON (EMPLOYEE_TBL.EMPLOYEE_ID = ATTEN_TBL.EMPLOYEE_ID)
             LEFT JOIN
-              (
-              SELECT ATTEN.EMPLOYEE_ID,
-                COUNT(*) MISSED_PUNCH
-              FROM HRIS_ATTENDANCE_DETAIL ATTEN
-              WHERE ATTEN.EMPLOYEE_ID = {$employeeId}
-              AND ATTEN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-              AND ATTEN.OUT_TIME IS NULL
-              AND ATTEN.IN_TIME IS NOT NULL
-              GROUP BY ATTEN.EMPLOYEE_ID
-              ) MISSED_PUNCH_TBL
-            ON MISSED_PUNCH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            LEFT JOIN          
-            (SELECT ATTEN.EMPLOYEE_ID,
-              COUNT (*) PRESENT_DAY
-            FROM
-              (SELECT EMPLOYEE_ID
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE (IN_TIME IS NOT NULL
-              OR LEAVE_ID    IS NOT NULL
-              OR HOLIDAY_ID  IS NOT NULL
-              OR TRAINING_ID IS NOT NULL
-              OR TRAVEL_ID   IS NOT NULL)
-              AND DAYOFF_FLAG = 'N'
-              AND EMPLOYEE_ID = {$employeeId}
-              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-              ) ATTEN
-            GROUP BY ATTEN.EMPLOYEE_ID) PRESENT_TBL
-
-            ON PRESENT_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            LEFT JOIN
-              (SELECT EMPLOYEE_ID,
-                COUNT (*) ABSENT_DAY
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE IN_TIME   IS NULL
-              AND LEAVE_ID    IS NULL
-              AND HOLIDAY_ID  IS NULL
-              AND TRAINING_ID IS NULL
-              AND TRAVEL_ID   IS NULL
-              AND DAYOFF_FLAG  = 'N'
-              AND EMPLOYEE_ID  = {$employeeId}
-              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-              GROUP BY EMPLOYEE_ID
-              ) ABSENT_TBL
-            ON ABSENT_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            LEFT JOIN
-              (SELECT EMPLOYEE_ID,
-                COUNT (*) LEAVE
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE LEAVE_ID IS NOT NULL
-              AND DAYOFF_FLAG = 'N'
-              AND EMPLOYEE_ID = {$employeeId}
-              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-              GROUP BY EMPLOYEE_ID
-              ) LEAVE_TBL
-            ON LEAVE_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            LEFT JOIN
-              (SELECT EMPLOYEE_ID,
-                COUNT (*) WOH
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE HOLIDAY_ID IS NOT NULL
-              AND IN_TIME      IS NOT NULL
-              AND OUT_TIME     IS NOT NULL
-              AND DAYOFF_FLAG   = 'N'
-              AND EMPLOYEE_ID   = {$employeeId}
-              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-              GROUP BY EMPLOYEE_ID
-              ) WOH_TBL
-            ON WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            LEFT JOIN
-              (SELECT EMPLOYEE_ID,
-                COUNT (*) TOUR
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE TRAVEL_ID IS NOT NULL
-              AND DAYOFF_FLAG  = 'N'
-              AND EMPLOYEE_ID  = {$employeeId}
-              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-              GROUP BY EMPLOYEE_ID
-              ) TOUR_TBL
-            ON TOUR_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            LEFT JOIN
-              (SELECT EMPLOYEE_ID,
-                COUNT (*) TRAINING
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE HOLIDAY_ID IS NULL
-              AND TRAINING_ID  IS NOT NULL
-              AND EMPLOYEE_ID   = {$employeeId}
-              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-              GROUP BY EMPLOYEE_ID
-              ) TRAINING_TBL
-            ON TRAINING_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
+              (SELECT *
+              FROM
+                (SELECT EMPLOYEE_ID,
+                  LATE_STATUS
+                FROM HRIS_ATTENDANCE_DETAIL
+                WHERE (ATTENDANCE_DT BETWEEN TO_DATE('15-Jun-2017', 'DD-MON-YYYY') AND TO_DATE('12-Jul-2017', 'DD-MON-YYYY'))
+                ) PIVOT (COUNT(LATE_STATUS) FOR LATE_STATUS IN ('L','E','B','N','X','Y'))
+              ) LATE_ATTEN_TBL
+            ON (EMPLOYEE_TBL.EMPLOYEE_ID = LATE_ATTEN_TBL.EMPLOYEE_ID)
           ";
-
-        print_r($sql);
-        exit;
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
         return $result;
     }
-
-//    public function fetchEmployeeDashboardDetail($employeeId, $startDate, $endDate) {
-//        $sql = "-- EMPLOYEE DETAIL
-//            SELECT EMPLOYEE_TBL.*,
-//              NVL(LATE_TBL.LATE_IN, 0) LATE_IN,
-//              NVL(EARLY_TBL.EARLY_OUT, 0) EARLY_OUT,
-//              NVL(MISSED_PUNCH_TBL.MISSED_PUNCH, 0) MISSED_PUNCH,
-//              NVL(PRESENT_TBL.PRESENT_DAY, 0) PRESENT_DAY,
-//              NVL(ABSENT_TBL.ABSENT_DAY, 0) ABSENT_DAY,
-//              NVL(LEAVE_TBL.LEAVE, 0) LEAVE,
-//              NVL(WOH_TBL.WOH, 0) WOH,
-//              NVL(TOUR_TBL.TOUR, 0) TOUR,
-//              NVL(TRAINING_TBL.TRAINING, 0) TRAINING,
-//              NVL(AVERAGE_OFFICE_HRS_TBL.AVG_HOURS, 0) AVG_HOURS,
-//              NVL(AVERAGE_OFFICE_HRS_TBL.AVG_MINUTES, 0) AVG_MINUTES,
-//              NVL(CUR_MONTH_WOH_TBL.CUR_MONTH_WOH, 0) CUR_MONTH_WOH,
-//              NVL(PREV_MONTH_WOH_TBL.PREV_MONTH_WOH, 0) PREV_MONTH_WOH,
-//              NVL(JOINED_THIS_MONTH_TBL.JOINED_THIS_MONTH, 0) JOINED_THIS_MONTH
-//            FROM
-//              (SELECT EMP.EMPLOYEE_ID,
-//                (
-//                CASE
-//                  WHEN MIDDLE_NAME IS NULL
-//                  THEN EMP.FIRST_NAME
-//                    || ' '
-//                    || EMP.LAST_NAME
-//                  ELSE EMP.FIRST_NAME
-//                    || ' '
-//                    || EMP.MIDDLE_NAME
-//                    || ' '
-//                    || EMP.LAST_NAME
-//                END ) FULL_NAME,
-//                EMP.GENDER_ID,
-//                EMP.COMPANY_ID,
-//                EMP.BRANCH_ID,
-//                EMP.EMAIL_OFFICIAL,
-//                EMP.EMAIL_PERSONAL,
-//                TO_CHAR(EMP.JOIN_DATE, 'DD-MON-YYYY') JOIN_DATE,
-//                TRUNC(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE) / 12)                                        AS SERVICE_YEARS,
-//                TRUNC(MOD(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE), 12))                                    AS SERVICE_MONTHS,
-//                TRUNC(SYSDATE) - ADD_MONTHS(EMP.JOIN_DATE, TRUNC(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE))) AS SERVICE_DAYS,
-//                DSG.DESIGNATION_TITLE,
-//                EFL.FILE_PATH
-//              FROM HRIS_EMPLOYEES EMP,
-//                HRIS_DESIGNATIONS DSG,
-//                HRIS_EMPLOYEE_FILE EFL
-//              WHERE EMP.DESIGNATION_ID   = DSG.DESIGNATION_ID(+)
-//              AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
-//              AND EMP.RETIRED_FLAG       = 'N'
-//                -- AND EMP.COMPANY_ID = 2
-//              AND EMP.EMPLOYEE_ID = {$employeeId}
-//              ) EMPLOYEE_TBL
-//              -- LATE IN
-//            LEFT JOIN
-//              (SELECT ATTEN.EMPLOYEE_ID,
-//                COUNT (*) LATE_IN
-//              FROM HRIS_ATTENDANCE_DETAIL ATTEN
-//              WHERE (ATTEN.LATE_STATUS = 'L'
-//              OR ATTEN.LATE_STATUS     ='B')
-//              AND ATTEN.EMPLOYEE_ID    ={$employeeId}
-//              AND (ATTEN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
-//              GROUP BY ATTEN.EMPLOYEE_ID
-//              ) LATE_TBL
-//            ON LATE_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- EARLY OUT
-//            LEFT JOIN (
-//              SELECT ATTEN.EMPLOYEE_ID,
-//                COUNT (*) EARLY_OUT
-//              FROM HRIS_ATTENDANCE_DETAIL ATTEN
-//              WHERE (ATTEN.LATE_STATUS = 'E'
-//              OR ATTEN.LATE_STATUS     ='B')
-//              AND ATTEN.EMPLOYEE_ID    ={$employeeId}
-//              AND (ATTEN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
-//              GROUP BY ATTEN.EMPLOYEE_ID
-//              ) EARLY_TBL
-//            ON EARLY_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- MISSED PUNCH
-//            LEFT JOIN
-//              --  (SELECT EMPLOYEE_ID,
-//              --    COUNT(*) MISSED_PUNCH
-//              --  FROM
-//              --    (SELECT EMPLOYEE_ID,
-//              --      ATTENDANCE_DT,
-//              --      COUNT (*)
-//              --    FROM HRIS_ATTENDANCE
-//              --    WHERE EMPLOYEE_ID = {$employeeId}
-//              --    AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              --    GROUP BY EMPLOYEE_ID,
-//              --      ATTENDANCE_DT
-//              --    HAVING MOD(COUNT(*), 2) <> 0
-//              --    )
-//              --  GROUP BY EMPLOYEE_ID
-//              --  ) MISSED_PUNCH_TBL
-//              (
-//              SELECT ATTEN.EMPLOYEE_ID,
-//                COUNT(*) MISSED_PUNCH
-//              FROM HRIS_ATTENDANCE_DETAIL ATTEN
-//              WHERE ATTEN.EMPLOYEE_ID = {$employeeId}
-//              AND ATTEN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              AND ATTEN.OUT_TIME IS NULL
-//              AND ATTEN.IN_TIME IS NOT NULL
-//              GROUP BY ATTEN.EMPLOYEE_ID
-//              ) MISSED_PUNCH_TBL
-//            ON MISSED_PUNCH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- PRESENT DAY
-//            LEFT JOIN
-//            --  (SELECT EMPLOYEE_ID,
-//            --    COUNT (*) PRESENT_DAY
-//            --  FROM HRIS_ATTENDANCE_DETAIL
-//            --  WHERE IN_TIME  IS NOT NULL
-//            --  OR LEAVE_ID    IS NOT NULL
-//            --  OR HOLIDAY_ID  IS NOT NULL
-//            --  OR TRAINING_ID IS NOT NULL
-//            --  OR TRAVEL_ID   IS NOT NULL
-//            --  AND DAYOFF_FLAG = 'N'
-//            --  AND EMPLOYEE_ID = {$employeeId}
-//            --  AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//            --  GROUP BY EMPLOYEE_ID
-//            --  ) PRESENT_TBL
-//
-//            (SELECT ATTEN.EMPLOYEE_ID,
-//              COUNT (*) PRESENT_DAY
-//            FROM
-//              (SELECT EMPLOYEE_ID
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE (IN_TIME IS NOT NULL
-//              OR LEAVE_ID    IS NOT NULL
-//              OR HOLIDAY_ID  IS NOT NULL
-//              OR TRAINING_ID IS NOT NULL
-//              OR TRAVEL_ID   IS NOT NULL)
-//              AND DAYOFF_FLAG = 'N'
-//              AND EMPLOYEE_ID = {$employeeId}
-//              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              ) ATTEN
-//            GROUP BY ATTEN.EMPLOYEE_ID) PRESENT_TBL
-//
-//            ON PRESENT_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- ABSENT DAY
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT (*) ABSENT_DAY
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE IN_TIME   IS NULL
-//              AND LEAVE_ID    IS NULL
-//              AND HOLIDAY_ID  IS NULL
-//              AND TRAINING_ID IS NULL
-//              AND TRAVEL_ID   IS NULL
-//              AND DAYOFF_FLAG  = 'N'
-//              AND EMPLOYEE_ID  = {$employeeId}
-//              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              GROUP BY EMPLOYEE_ID
-//              ) ABSENT_TBL
-//            ON ABSENT_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- LEAVE COUNT
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT (*) LEAVE
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE LEAVE_ID IS NOT NULL
-//              AND DAYOFF_FLAG = 'N'
-//              AND EMPLOYEE_ID = {$employeeId}
-//              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              GROUP BY EMPLOYEE_ID
-//              ) LEAVE_TBL
-//            ON LEAVE_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- WOH
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT (*) WOH
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE HOLIDAY_ID IS NOT NULL
-//              AND IN_TIME      IS NOT NULL
-//              AND OUT_TIME     IS NOT NULL
-//              AND DAYOFF_FLAG   = 'N'
-//              AND EMPLOYEE_ID   = {$employeeId}
-//              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              GROUP BY EMPLOYEE_ID
-//              ) WOH_TBL
-//            ON WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- ON TOUR
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT (*) TOUR
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE TRAVEL_ID IS NOT NULL
-//              AND DAYOFF_FLAG  = 'N'
-//              AND EMPLOYEE_ID  = {$employeeId}
-//              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              GROUP BY EMPLOYEE_ID
-//              ) TOUR_TBL
-//            ON TOUR_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT (*) TRAINING
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE HOLIDAY_ID IS NULL
-//              AND TRAINING_ID  IS NOT NULL
-//              AND EMPLOYEE_ID   = {$employeeId}
-//              AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//              GROUP BY EMPLOYEE_ID
-//              ) TRAINING_TBL
-//            ON TRAINING_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- AVERAGE OFFICE HOURS
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                FLOOR(AVERAGE_TOTAL_OFFICE_HRS     /3600) AVG_HOURS,
-//                (MOD(AVERAGE_TOTAL_OFFICE_HRS,3600)/60) AVG_MINUTES,
-//                AVERAGE_TOTAL_OFFICE_HRS
-//              FROM
-//                (SELECT EMPLOYEE_ID,
-//                  AVG(SYSDATE + (OUT_TIME - IN_TIME)*24*60*60 - SYSDATE) AVERAGE_TOTAL_OFFICE_HRS
-//                FROM HRIS_ATTENDANCE_DETAIL
-//                WHERE EMPLOYEE_ID = {$employeeId}
-//                AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY')
-//                GROUP BY EMPLOYEE_ID
-//                )
-//              ) AVERAGE_OFFICE_HRS_TBL
-//            ON AVERAGE_OFFICE_HRS_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- CURRENT MONTH WOH
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT(*) CUR_MONTH_WOH
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE TO_CHAR (ATTENDANCE_DT, 'MM') = TO_CHAR (SYSDATE, 'MM')
-//              AND IN_TIME                        IS NOT NULL
-//              AND (DAYOFF_FLAG                    = 'Y'
-//              OR HOLIDAY_ID                      IS NOT NULL)
-//              AND EMPLOYEE_ID                     = {$employeeId}
-//              GROUP BY EMPLOYEE_ID
-//              ) CUR_MONTH_WOH_TBL
-//            ON CUR_MONTH_WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- PREVIOUS MONTH WOH
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT(*) PREV_MONTH_WOH
-//              FROM HRIS_ATTENDANCE_DETAIL
-//              WHERE ADD_MONTHS (TRUNC (SYSDATE, 'MM'), -1) = ADD_MONTHS (TRUNC (ATTENDANCE_DT, 'MM'), 0)
-//              AND IN_TIME                                 IS NOT NULL
-//              AND (DAYOFF_FLAG                             = 'Y'
-//              OR HOLIDAY_ID                               IS NOT NULL)
-//              AND EMPLOYEE_ID                              = {$employeeId}
-//              GROUP BY EMPLOYEE_ID
-//              ) PREV_MONTH_WOH_TBL
-//            ON PREV_MONTH_WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-//              -- JOINED THIS MONTH
-//            LEFT JOIN
-//              (SELECT EMPLOYEE_ID,
-//                COUNT (*) JOINED_THIS_MONTH
-//              FROM HRIS_EMPLOYEES
-//              WHERE TO_CHAR(JOIN_DATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
-//              AND STATUS                         = 'E'
-//              GROUP BY EMPLOYEE_ID
-//              ) JOINED_THIS_MONTH_TBL
-//            ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID";
-//
-//        $statement = $this->adapter->query($sql);
-//        $result = $statement->execute()->current();
-//        return $result;
-//    }
 
     public function fetchUpcomingHolidays($employeeId = null) {
         if ($employeeId == null) {
@@ -701,142 +346,53 @@ class DashboardRepository implements RepositoryInterface {
 
     public function fetchAdminDashboardDetail($employeeId, $date) {
         $sql = "
-                  SELECT EMPLOYEE_TBL.*,
-                  NVL(LATE_TBL.LATE_IN, 0) LATE_IN,
-                  NVL(EARLY_TBL.EARLY_OUT, 0) EARLY_OUT,
-                  NVL(MISSED_PUNCH_TBL.MISSED_PUNCH, 0) MISSED_PUNCH,
-                  NVL(PRESENT_TBL.PRESENT_DAY, 0) PRESENT_DAY,
-                  NVL(ABSENT_TBL.ABSENT_DAY, 0) ABSENT_DAY,
-                  NVL(LEAVE_TBL.LEAVE, 0) LEAVE,
-                  NVL(WOH_TBL.WOH, 0) WOH,
-                  NVL(TOUR_TBL.TOUR, 0) TOUR,
-                  NVL(TRAINING_TBL.TRAINING, 0) TRAINING,
-                  NVL(JOINED_THIS_MONTH_TBL.JOINED_THIS_MONTH, 0) JOINED_THIS_MONTH
-                FROM
-                  (SELECT EMP.EMPLOYEE_ID,
-                    (
-                    CASE
-                      WHEN MIDDLE_NAME IS NULL
-                      THEN EMP.FIRST_NAME
-                        || ' '
-                        || EMP.LAST_NAME
-                      ELSE EMP.FIRST_NAME
-                        || ' '
-                        || EMP.MIDDLE_NAME
-                        || ' '
-                        || EMP.LAST_NAME
-                    END ) FULL_NAME,
-                    EMP.GENDER_ID,
-                    EMP.COMPANY_ID,
-                    EMP.BRANCH_ID,
-                    EMP.EMAIL_OFFICIAL,
-                    EMP.EMAIL_PERSONAL,
-                    TO_CHAR(EMP.JOIN_DATE, 'DD-MON-YYYY') JOIN_DATE,
-                    TRUNC(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE) / 12)                                        AS SERVICE_YEARS,
-                    TRUNC(MOD(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE), 12))                                    AS SERVICE_MONTHS,
-                    TRUNC(SYSDATE) - ADD_MONTHS(EMP.JOIN_DATE, TRUNC(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE))) AS SERVICE_DAYS,
-                    DSG.DESIGNATION_TITLE,
-                    EFL.FILE_PATH
-                  FROM HRIS_EMPLOYEES EMP,
-                    HRIS_DESIGNATIONS DSG,
-                    HRIS_EMPLOYEE_FILE EFL
-                  WHERE EMP.DESIGNATION_ID   = DSG.DESIGNATION_ID(+)
-                  AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
-                  AND EMP.RETIRED_FLAG       = 'N'
-                    -- AND EMP.COMPANY_ID = 2
-                  AND EMP.EMPLOYEE_ID = {$employeeId}
-                  ) EMPLOYEE_TBL
-                  -- JOINED THIS MONTH
-                LEFT JOIN
-                  (SELECT EMPLOYEE_ID,
-                    COUNT (*) JOINED_THIS_MONTH
-                  FROM HRIS_EMPLOYEES
-                  WHERE TO_CHAR(JOIN_DATE, 'YYYYMM') = TO_CHAR(SYSDATE, 'YYYYMM')
-                  AND STATUS                         = 'E'
-                  GROUP BY EMPLOYEE_ID
-                  ) JOINED_THIS_MONTH_TBL
-                ON JOINED_THIS_MONTH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID,
-                  -- PRESENT DAY
-                  (
-                  SELECT COUNT (*) PRESENT_DAY
-                  FROM HRIS_ATTENDANCE_DETAIL
-                  WHERE (IN_TIME   IS NOT NULL
-                  OR LEAVE_ID      IS NOT NULL
-                  OR HOLIDAY_ID    IS NOT NULL
-                  OR TRAINING_ID   IS NOT NULL
-                  OR TRAVEL_ID     IS NOT NULL)
-                  AND DAYOFF_FLAG   = 'N'
-                  AND ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YYYY')
-                  ) PRESENT_TBL,
-                  -- ABSENT DAY
-                  (
-                  SELECT COUNT (*) ABSENT_DAY
-                  FROM HRIS_ATTENDANCE_DETAIL
-                  WHERE IN_TIME    IS NULL
-                  AND LEAVE_ID     IS NULL
-                  AND HOLIDAY_ID   IS NULL
-                  AND TRAINING_ID  IS NULL
-                  AND TRAVEL_ID    IS NULL
-                  AND DAYOFF_FLAG   = 'N'
-                  AND ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YYYY')
-                  ) ABSENT_TBL,
-                  -- LATE IN
-                  (
-                  SELECT COUNT (*) LATE_IN
-                  FROM HRIS_ATTENDANCE_DETAIL ATTEN
-                  WHERE (ATTEN.LATE_STATUS = 'L'
-                  OR ATTEN.LATE_STATUS     ='B')
-                  AND ATTEN.ATTENDANCE_DT  = TO_DATE('{$date}', 'DD-MON-YYYY')
-                  ) LATE_TBL,
-                  -- EARLY OUT
-                  (
-                  SELECT COUNT (*) EARLY_OUT
-                  FROM HRIS_ATTENDANCE_DETAIL ATTEN
-                  WHERE (ATTEN.LATE_STATUS = 'E'
-                  OR ATTEN.LATE_STATUS     ='B')
-                  AND ATTEN.ATTENDANCE_DT  = TRUNC(SYSDATE-1)
-                  ) EARLY_TBL,
-                  -- MISSED PUNCH
-                  (
-                  SELECT COUNT(*) MISSED_PUNCH
-                  FROM HRIS_ATTENDANCE_DETAIL ATTEN
-                  WHERE ATTEN.ATTENDANCE_DT = TRUNC(SYSDATE-1)
-                  AND ATTEN.OUT_TIME       IS NULL
-                  AND ATTEN.IN_TIME        IS NOT NULL
-                  ) MISSED_PUNCH_TBL,
-                  -- LEAVE COUNT
-                  (
-                  SELECT COUNT (*) LEAVE
-                  FROM HRIS_ATTENDANCE_DETAIL
-                  WHERE LEAVE_ID   IS NOT NULL
-                  AND DAYOFF_FLAG   = 'N'
-                  AND ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YYYY')
-                  ) LEAVE_TBL,
-                  -- WOH
-                  (
-                  SELECT EMPLOYEE_ID,
-                    COUNT (*) WOH
-                  FROM HRIS_ATTENDANCE_DETAIL
-                  WHERE (HOLIDAY_ID IS NOT NULL OR DAYOFF_FLAG= 'Y') 
-                  AND IN_TIME      IS NOT NULL
-                  AND OUT_TIME     IS NOT NULL
-                  AND DAYOFF_FLAG   = 'N'
-                  AND ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YYYY')
-                  ) WOH_TBL,
-                  -- ON TOUR
-                  (
-                  SELECT COUNT (*) TOUR
-                  FROM HRIS_ATTENDANCE_DETAIL
-                  WHERE TRAVEL_ID  IS NOT NULL
-                  AND DAYOFF_FLAG   = 'N'
-                  AND ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YYYY')
-                  ) TOUR_TBL,
-                  (SELECT COUNT (*) TRAINING
-                  FROM HRIS_ATTENDANCE_DETAIL
-                  WHERE HOLIDAY_ID IS NULL
-                  AND TRAINING_ID  IS NOT NULL
-                  AND ATTENDANCE_DT = TO_DATE('{$date}', 'DD-MON-YYYY')
-                  ) TRAINING_TBL
+            SELECT EMPLOYEE_TBL.*,
+              LATE_ATTEN_TBL.\"'L'\"+LATE_ATTEN_TBL.\"'B'\"+LATE_ATTEN_TBL.\"'Y'\" LATE_IN,
+              LATE_ATTEN_TBL.\"'E'\"+LATE_ATTEN_TBL.\"'B'\" EARLY_OUT,
+              LATE_ATTEN_TBL.\"'X'\"+LATE_ATTEN_TBL.\"'Y'\" MISSED_PUNCH,
+              ATTEN_TBL.\"'PR'\"    +ATTEN_TBL.\"'WD'\"+ATTEN_TBL.\"'WH'\"+ ATTEN_TBL.\"'TP'\"+ ATTEN_TBL.\"'LP'\"+ATTEN_TBL.\"'VP'\" PRESENT_DAY,
+              ATTEN_TBL.\"'AB'\"    +ATTEN_TBL.\"'BA'\"+ATTEN_TBL.\"'LA'\" ABSENT_DAY,
+              ATTEN_TBL.\"'LV'\" LEAVE,
+              ATTEN_TBL.\"'WH'\" WOH,
+              ATTEN_TBL.\"'TV'\" TOUR,
+              ATTEN_TBL.\"'TN'\"+ATTEN_TBL.\"'TP'\" TRAINING
+            FROM
+              (SELECT EMP.EMPLOYEE_ID,
+                EMP.FULL_NAME,
+                EMP.GENDER_ID,
+                EMP.COMPANY_ID,
+                EMP.BRANCH_ID,
+                EMP.EMAIL_OFFICIAL,
+                EMP.EMAIL_PERSONAL,
+                TO_CHAR(EMP.JOIN_DATE, 'DD-MON-YYYY') JOIN_DATE,
+                TRUNC(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE) / 12)                                        AS SERVICE_YEARS,
+                TRUNC(MOD(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE), 12))                                    AS SERVICE_MONTHS,
+                TRUNC(SYSDATE) - ADD_MONTHS(EMP.JOIN_DATE, TRUNC(MONTHS_BETWEEN(SYSDATE, EMP.JOIN_DATE))) AS SERVICE_DAYS,
+                DSG.DESIGNATION_TITLE,
+                EFL.FILE_PATH
+              FROM HRIS_EMPLOYEES EMP,
+                HRIS_DESIGNATIONS DSG,
+                HRIS_EMPLOYEE_FILE EFL
+              WHERE EMP.DESIGNATION_ID   = DSG.DESIGNATION_ID(+)
+              AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
+              AND EMP.RETIRED_FLAG       = 'N'
+              AND EMP.EMPLOYEE_ID        = {$employeeId}
+              ) EMPLOYEE_TBL,
+              (SELECT *
+              FROM
+                (SELECT OVERALL_STATUS
+                FROM HRIS_ATTENDANCE_DETAIL
+                WHERE (ATTENDANCE_DT                               = TRUNC(SYSDATE) )
+                ) PIVOT (COUNT(OVERALL_STATUS) FOR OVERALL_STATUS IN ('DO','HD','LV','TV','TN','PR','AB','WD','WH','BA','LA','TP','LP','VP'))
+              ) ATTEN_TBL,
+              (SELECT *
+              FROM
+                (SELECT LATE_STATUS
+                FROM HRIS_ATTENDANCE_DETAIL
+                WHERE (ATTENDANCE_DT                         = TRUNC(SYSDATE-1))
+                ) PIVOT (COUNT(LATE_STATUS) FOR LATE_STATUS                IN ('L','E','B','N','X','Y'))
+              ) LATE_ATTEN_TBL   
+           
 ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
@@ -972,97 +528,10 @@ class DashboardRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function fetchPendingLeave($companyId = null, $branchId = null) {
-        $sql = "SELECT COUNT(*)AS PENDING_LEAVE FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
-                LEFT OUTER JOIN HRIS_LEAVE_MASTER_SETUP L
-                ON L.LEAVE_ID=LA.LEAVE_ID
-                LEFT OUTER JOIN HRIS_EMPLOYEES E
-                ON E.EMPLOYEE_ID=LA.EMPLOYEE_ID
-                LEFT OUTER JOIN HRIS_EMPLOYEES E1
-                ON E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
-                LEFT OUTER JOIN HRIS_EMPLOYEES E2
-                ON E2.EMPLOYEE_ID=LA.APPROVED_BY
-                LEFT OUTER JOIN HRIS_RECOMMENDER_APPROVER RA
-                ON LA.EMPLOYEE_ID = RA.EMPLOYEE_ID
-                LEFT OUTER JOIN HRIS_EMPLOYEES RECM
-                ON RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
-                LEFT OUTER JOIN HRIS_EMPLOYEES APRV
-                ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
-                LEFT OUTER JOIN HRIS_LEAVE_SUBSTITUTE LS
-                ON LA.ID          = LS.LEAVE_REQUEST_ID
-                WHERE L.STATUS    ='E'
-                AND E.STATUS      ='E'
-                AND E.RETIRED_FLAG='N'
-                AND (E1.STATUS    =
-                  CASE
-                    WHEN E1.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E1.STATUS  IS NULL)
-                AND (E2.STATUS =
-                  CASE
-                    WHEN E2.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E2.STATUS    IS NULL)
-                AND (RECM.STATUS =
-                  CASE
-                    WHEN RECM.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR RECM.STATUS  IS NULL)
-                AND (APRV.STATUS =
-                  CASE
-                    WHEN APRV.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR APRV.STATUS       IS NULL)
-                AND (LS.APPROVED_FLAG =
-                  CASE
-                    WHEN LS.EMPLOYEE_ID IS NOT NULL
-                    THEN ('Y')
-                  END
-                OR LS.EMPLOYEE_ID IS NULL)
-                AND LA.STATUS ='RQ'";
-
-        if ($companyId != null and $branchId != null) {
-            $sql .= " AND LA.EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
-    public function fetchEmployeeJoiningCurrentMonth($companyId = null, $branchId = null) {
-        $sql = "SELECT count(*) AS ECMJ FROM HRIS_EMPLOYEES E,HRIS_MONTH_CODE MC
-              WHERE E.JOIN_DATE BETWEEN MC.FROM_DATE AND MC.TO_DATE  
-              AND SYSDATE BETWEEN MC.FROM_DATE AND MC.TO_DATE ";
-
-        if ($companyId != null and $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
     public function fetchEmployeeContracts() {
         $sql = "
                 SELECT EMP.EMPLOYEE_ID,
-                  (
-                  CASE
-                    WHEN EMP.MIDDLE_NAME IS NULL
-                    THEN EMP.FIRST_NAME
-                      || ' '
-                      || EMP.LAST_NAME
-                    ELSE EMP.FIRST_NAME
-                      || ' '
-                      || EMP.MIDDLE_NAME
-                      || ' '
-                      || EMP.LAST_NAME
-                  END ) AS FULL_NAME,
+                  EMP.FULL_NAME,
                   EF.FILE_PATH,
                   D.DESIGNATION_TITLE,
                   S.END_DATE,
@@ -1118,18 +587,8 @@ class DashboardRepository implements RepositoryInterface {
 
     public function fetchJoinedEmployees() {
         $sql = "
-                    SELECT (
-                      CASE
-                        WHEN E.MIDDLE_NAME IS NULL
-                        THEN E.FIRST_NAME
-                          || ' '
-                          || E.LAST_NAME
-                        ELSE E.FIRST_NAME
-                          || ' '
-                          || E.MIDDLE_NAME
-                          || ' '
-                          || E.LAST_NAME
-                      END ) AS FULL_NAME,
+                    SELECT 
+                      E.FULL_NAME,
                       EF.FILE_PATH,
                       D.DESIGNATION_TITLE,
                       E.JOIN_DATE
@@ -1152,18 +611,8 @@ class DashboardRepository implements RepositoryInterface {
 
     public function fetchLeftEmployees() {
         $sql = "
-                SELECT (
-                  CASE
-                    WHEN E.MIDDLE_NAME IS NULL
-                    THEN E.FIRST_NAME
-                      || ' '
-                      || E.LAST_NAME
-                    ELSE E.FIRST_NAME
-                      || ' '
-                      || E.MIDDLE_NAME
-                      || ' '
-                      || E.LAST_NAME
-                  END ) AS FULL_NAME,
+                SELECT 
+                  E.FULL_NAME,
                   EF.FILE_PATH,
                   D.DESIGNATION_TITLE,
                   R.EXIT_DATE,
@@ -1199,108 +648,13 @@ class DashboardRepository implements RepositoryInterface {
      * MANAGER DASHBOARD FUNCTIONS
      */
 
-    public function fetchPresentCount($companyId = null, $branchId = null) {
-        $sql = "
-                SELECT COUNT (*) AS PRESENT
-                FROM HRIS_ATTENDANCE_DETAIL
-                WHERE IN_TIME    IS NOT NULL
-                AND ATTENDANCE_DT = TRUNC(SYSDATE) 
-             ";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
-    public function fetchLeaveCount($companyId = null, $branchId = null) {
-        $sql = "SELECT COUNT (*) AS LEAVE
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE    LEAVE_ID IS NOT NULL
-              AND ATTENDANCE_DT = TRUNC(SYSDATE) ";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
-    public function fetchTrainingCount($companyId = null, $branchId = null) {
-        $sql = " SELECT COUNT (*) AS TRAINING 
-            FROM HRIS_ATTENDANCE_DETAIL 
-            WHERE    TRAINING_ID IS NOT NULL 
-            AND ATTENDANCE_DT = TRUNC(SYSDATE)";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
-    public function fetchTravelCount($companyId = null, $branchId = null) {
-        $sql = "SELECT COUNT (*) AS TRAVEL
-              FROM HRIS_ATTENDANCE_DETAIL
-             WHERE TRAVEL_ID IS NOT NULL 
-             AND DAYOFF_FLAG = 'N' 
-             AND ATTENDANCE_DT = TRUNC(SYSDATE)";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
-    public function fetchWOHCount($companyId = null, $branchId = null) {
-        $sql = "SELECT COUNT (*) AS WOH
-              FROM HRIS_ATTENDANCE_DETAIL
-              WHERE    HOLIDAY_ID IS NOT NULL
-              AND IN_TIME IS NOT NULL 
-              AND ATTENDANCE_DT = TRUNC(SYSDATE) ";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
     public function fetchManagerDashboardDetail($employeeId, $date) {
         $sql = "
                 SELECT EMPLOYEE_TBL.*,
                   NVL(JOINED_THIS_MONTH_TBL.JOINED_THIS_MONTH, 0) JOINED_THIS_MONTH
                 FROM
                   (SELECT EMP.EMPLOYEE_ID,
-                    (
-                    CASE
-                      WHEN MIDDLE_NAME IS NULL
-                      THEN EMP.FIRST_NAME
-                        || ' '
-                        || EMP.LAST_NAME
-                      ELSE EMP.FIRST_NAME
-                        || ' '
-                        || EMP.MIDDLE_NAME
-                        || ' '
-                        || EMP.LAST_NAME
-                    END ) FULL_NAME,
+                    EMP.FULL_NAME,
                     EMP.GENDER_ID,
                     EMP.COMPANY_ID,
                     EMP.BRANCH_ID,
@@ -1337,61 +691,50 @@ class DashboardRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function fetchLateInCount($companyId = null, $branchId = null) {
+    public function fetchManagerAttendanceDetail($employeeId) {
         $sql = "
-                SELECT COUNT (*) LATE_IN
-                FROM HRIS_ATTENDANCE_DETAIL ATTEN
-                WHERE (ATTEN.LATE_STATUS = 'L'
-                OR ATTEN.LATE_STATUS     ='B')
-                AND ATTEN.ATTENDANCE_DT  = TRUNC(SYSDATE)
+            SELECT 
+              LATE_ATTEN_TBL.\"'L'\"+LATE_ATTEN_TBL.\"'B'\"+LATE_ATTEN_TBL.\"'Y'\" LATE_IN,
+              LATE_ATTEN_TBL.\"'E'\"+LATE_ATTEN_TBL.\"'B'\" EARLY_OUT,
+              LATE_ATTEN_TBL.\"'X'\"+LATE_ATTEN_TBL.\"'Y'\" MISSED_PUNCH,
+              ATTEN_TBL.\"'PR'\"    +ATTEN_TBL.\"'WD'\"+ATTEN_TBL.\"'WH'\"+ ATTEN_TBL.\"'TP'\"+ ATTEN_TBL.\"'LP'\"+ATTEN_TBL.\"'VP'\" PRESENT_DAY,
+              ATTEN_TBL.\"'AB'\"    +ATTEN_TBL.\"'BA'\"+ATTEN_TBL.\"'LA'\" ABSENT_DAY,
+              ATTEN_TBL.\"'LV'\" LEAVE,
+              ATTEN_TBL.\"'WH'\" WOH,
+              ATTEN_TBL.\"'TV'\" TOUR,
+              ATTEN_TBL.\"'TN'\"+ATTEN_TBL.\"'TP'\" TRAINING
+            FROM
+              (SELECT *
+              FROM
+                (SELECT OVERALL_STATUS
+                FROM HRIS_ATTENDANCE_DETAIL
+                WHERE (ATTENDANCE_DT                               = TRUNC(SYSDATE) 
+                AND EMPLOYEE_ID                    IN
+                  (SELECT EMPLOYEE_ID
+                  FROM HRIS_RECOMMENDER_APPROVER
+                  WHERE RECOMMEND_BY={$employeeId}
+                  OR APPROVED_BY    = {$employeeId}
+                  ) )
+                ) PIVOT (COUNT(OVERALL_STATUS) FOR OVERALL_STATUS IN ('DO','HD','LV','TV','TN','PR','AB','WD','WH','BA','LA','TP','LP','VP'))
+              ) ATTEN_TBL,
+              (SELECT *
+              FROM
+                (SELECT LATE_STATUS
+                FROM HRIS_ATTENDANCE_DETAIL
+                WHERE (ATTENDANCE_DT                         = TRUNC(SYSDATE-1) 
+                AND EMPLOYEE_ID                    IN
+                  (SELECT EMPLOYEE_ID
+                  FROM HRIS_RECOMMENDER_APPROVER
+                  WHERE RECOMMEND_BY={$employeeId}
+                  OR APPROVED_BY    = {$employeeId}
+                  ))
+                ) PIVOT (COUNT(LATE_STATUS) FOR LATE_STATUS                IN ('L','E','B','N','X','Y'))
+              ) LATE_ATTEN_TBL   
+           
 ";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
-    public function fetchEarlyOutCount($companyId = null, $branchId = null) {
-        $sql = "
-                  SELECT COUNT (*) EARLY_OUT
-                  FROM HRIS_ATTENDANCE_DETAIL ATTEN
-                  WHERE (ATTEN.LATE_STATUS = 'E'
-                  OR ATTEN.LATE_STATUS     ='B')
-                  AND ATTEN.ATTENDANCE_DT  = TRUNC(SYSDATE)
-";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
-    }
-
-    public function fetchMissedPunchCount($companyId = null, $branchId = null) {
-        $sql = "
-                  SELECT COUNT(*) MISSED_PUNCH
-                  FROM HRIS_ATTENDANCE_DETAIL ATTEN
-                  WHERE ATTEN.ATTENDANCE_DT = TRUNC(SYSDATE)
-                  AND ATTEN.OUT_TIME       IS NULL
-                  AND ATTEN.IN_TIME        IS NOT NULL
-";
-
-        if ($companyId != null && $branchId != null) {
-            $sql .= " AND EMPLOYEE_ID IN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE COMPANY_ID = $companyId AND BRANCH_ID = $branchId)";
-        }
-
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result->current();
+        $result = $statement->execute()->current();
+        return $result;
     }
 
     /*
