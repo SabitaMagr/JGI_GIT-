@@ -55,18 +55,7 @@ class DashboardRepository implements RepositoryInterface {
               NVL(TRAINING_TBL.TRAINING, 0) TRAINING
             FROM
               (SELECT EMP.EMPLOYEE_ID,
-                (
-                CASE
-                  WHEN MIDDLE_NAME IS NULL
-                  THEN EMP.FIRST_NAME
-                    || ' '
-                    || EMP.LAST_NAME
-                  ELSE EMP.FIRST_NAME
-                    || ' '
-                    || EMP.MIDDLE_NAME
-                    || ' '
-                    || EMP.LAST_NAME
-                END ) FULL_NAME,
+                EMP.FULL_NAME,
                 EMP.GENDER_ID,
                 EMP.COMPANY_ID,
                 EMP.BRANCH_ID,
@@ -84,10 +73,8 @@ class DashboardRepository implements RepositoryInterface {
               WHERE EMP.DESIGNATION_ID   = DSG.DESIGNATION_ID(+)
               AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
               AND EMP.RETIRED_FLAG       = 'N'
-                -- AND EMP.COMPANY_ID = 2
               AND EMP.EMPLOYEE_ID = {$employeeId}
               ) EMPLOYEE_TBL
-              -- LATE IN
             LEFT JOIN
               (SELECT ATTEN.EMPLOYEE_ID,
                 COUNT (*) LATE_IN
@@ -99,7 +86,6 @@ class DashboardRepository implements RepositoryInterface {
               GROUP BY ATTEN.EMPLOYEE_ID
               ) LATE_TBL
             ON LATE_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-              -- EARLY OUT
             LEFT JOIN (
               SELECT ATTEN.EMPLOYEE_ID,
                 COUNT (*) EARLY_OUT
@@ -111,7 +97,6 @@ class DashboardRepository implements RepositoryInterface {
               GROUP BY ATTEN.EMPLOYEE_ID
               ) EARLY_TBL
             ON EARLY_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-              -- MISSED PUNCH
             LEFT JOIN
               (
               SELECT ATTEN.EMPLOYEE_ID,
@@ -124,7 +109,6 @@ class DashboardRepository implements RepositoryInterface {
               GROUP BY ATTEN.EMPLOYEE_ID
               ) MISSED_PUNCH_TBL
             ON MISSED_PUNCH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-              -- PRESENT DAY
             LEFT JOIN          
             (SELECT ATTEN.EMPLOYEE_ID,
               COUNT (*) PRESENT_DAY
@@ -143,7 +127,6 @@ class DashboardRepository implements RepositoryInterface {
             GROUP BY ATTEN.EMPLOYEE_ID) PRESENT_TBL
 
             ON PRESENT_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-              -- ABSENT DAY
             LEFT JOIN
               (SELECT EMPLOYEE_ID,
                 COUNT (*) ABSENT_DAY
@@ -159,7 +142,6 @@ class DashboardRepository implements RepositoryInterface {
               GROUP BY EMPLOYEE_ID
               ) ABSENT_TBL
             ON ABSENT_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-              -- LEAVE COUNT
             LEFT JOIN
               (SELECT EMPLOYEE_ID,
                 COUNT (*) LEAVE
@@ -171,7 +153,6 @@ class DashboardRepository implements RepositoryInterface {
               GROUP BY EMPLOYEE_ID
               ) LEAVE_TBL
             ON LEAVE_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-              -- WOH
             LEFT JOIN
               (SELECT EMPLOYEE_ID,
                 COUNT (*) WOH
@@ -185,7 +166,6 @@ class DashboardRepository implements RepositoryInterface {
               GROUP BY EMPLOYEE_ID
               ) WOH_TBL
             ON WOH_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-              -- ON TOUR
             LEFT JOIN
               (SELECT EMPLOYEE_ID,
                 COUNT (*) TOUR
@@ -197,7 +177,6 @@ class DashboardRepository implements RepositoryInterface {
               GROUP BY EMPLOYEE_ID
               ) TOUR_TBL
             ON TOUR_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
-            -- ON TRAINING
             LEFT JOIN
               (SELECT EMPLOYEE_ID,
                 COUNT (*) TRAINING
@@ -210,6 +189,9 @@ class DashboardRepository implements RepositoryInterface {
               ) TRAINING_TBL
             ON TRAINING_TBL.EMPLOYEE_ID = EMPLOYEE_TBL.EMPLOYEE_ID
           ";
+
+        print_r($sql);
+        exit;
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
