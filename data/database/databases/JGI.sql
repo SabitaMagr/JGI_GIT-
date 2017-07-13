@@ -96,7 +96,7 @@ INSERT INTO HRIS_ROLE_PERMISSIONS
 SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
     NULL,
     328,
-    'Attendnace Report',
+    'Attendance Report',
     5,
     NULL,
     'managerReport',
