@@ -153,10 +153,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div id="quaConId" ng-app="hris" ng-controller="qualificationController">
+<div id="quaConId">
     <div class="row esetup" style="margin-top:10px;">
         <div class="col-md-12" style="">
-            <a class="btn btn-success pull-right" href="<?= $this->url("employee", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
+            <a class="btn btn-success pull-right" href="<?= $this->url("profile", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
                 <i class="fa fa-edit"></i>
             </a>
         </div>   
@@ -219,7 +219,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $employeeData[\Setup\Model\HrEmployees::EMAIL_OFFICIAL]; ?></div>
                         </div>
                     </div>  
-                    
+
                     <div class="row bottomgap">
                         <div class="form-group <?= empty($employeeCode->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
@@ -330,11 +330,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
 
-
-
-
-
-
                     <div class="row bottomgap">
                         <div class="form-group <?= empty($extensionNo->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
@@ -343,13 +338,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $employeeData[\Setup\Model\HrEmployees::EXTENSION_NO]; ?></div>
                         </div>
                     </div>
-
-
-
-
-
-
-
 
                     <div class="row bottomgap">
                         <div class="form-group  <?= empty($socialNetwork->getMessages()) ? "" : "error" ?>">
@@ -1226,19 +1214,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 ?>
                                             </td>
                                             <td>
-    <?php
-    print ($jobHistory['FROM_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['FROM_DESIGNATION_TITLE'] . " - ";
-    print ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE']
-    ?>
+                                                <?php
+                                                print ($jobHistory['FROM_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['FROM_DESIGNATION_TITLE'] . " - ";
+                                                print ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE']
+                                                ?>
                                             </td>
                                             <td>
-                                        <?php
-                                        print ($jobHistory['FROM_POSITION_NAME'] == null) ? ' ' : $jobHistory['FROM_POSITION_NAME'] . " - ";
-                                        print ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME']
-                                        ?>
+                                                <?php
+                                                print ($jobHistory['FROM_POSITION_NAME'] == null) ? ' ' : $jobHistory['FROM_POSITION_NAME'] . " - ";
+                                                print ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME']
+                                                ?>
                                             </td>
                                         </tr>
-<?php } ?>
+                                    <?php } ?>
                                 </table>
                             </div>
                         </div>
@@ -1257,12 +1245,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td><label>Document Name</label></td>
                                         <td><label>Action</label></td>
                                     </tr>
-                                            <?php
-                                            foreach ($employeeFile as $file) {
-                                                ?>
+                                    <?php
+                                    foreach ($employeeFile as $file) {
+                                        ?>
                                         <tr>
                                             <td>
-    <?php print $file['FILE_NAME']; ?>
+                                                <?php print $file['FILE_NAME']; ?>
                                             </td>
 
                                             <td width="10%">
@@ -1272,7 +1260,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 </a>
                                             </td>
                                         </tr>
-<?php } ?>
+                                    <?php } ?>
                                 </table>
                             </div>
                         </div>
@@ -1298,9 +1286,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td><label>Returned Date</label></td>
                                     </tr>
 
-                                            <?php
-                                            foreach ($assetDetails as $asset) {
-                                                ?>
+                                    <?php
+                                    foreach ($assetDetails as $asset) {
+                                        ?>
                                         <tr>
                                             <td>
                                                 <?php print $asset['ASSET_GROUP_EDESC']; ?>
@@ -1309,24 +1297,28 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php print $asset['ASSET_EDESC']; ?>
                                             </td>
                                             <td>
-                                                <?php if ($asset['RETURNABLE'] == 'Y') {
+                                                <?php
+                                                if ($asset['RETURNABLE'] == 'Y') {
                                                     print 'Yes';
                                                 } else {
                                                     print 'NO';
-                                                } ?>
+                                                }
+                                                ?>
                                             </td>
                                             <td>
-    <?php print $asset['RETURN_DATE']; ?>
+                                                <?php print $asset['RETURN_DATE']; ?>
                                             </td>
                                             <td>
-    <?php if (empty($asset['RETURNED_DATE']) && $asset['RETURNABLE'] == 'Y') {
-        print 'Not returned';
-    } else {
-        print $asset['RETURNED_DATE'];
-    } ?>
+                                                <?php
+                                                if (empty($asset['RETURNED_DATE']) && $asset['RETURNABLE'] == 'Y') {
+                                                    print 'Not returned';
+                                                } else {
+                                                    print $asset['RETURNED_DATE'];
+                                                }
+                                                ?>
                                             </td>
                                         </tr>
-<?php } ?>
+                                    <?php } ?>
 
                                 </table>
                             </div>

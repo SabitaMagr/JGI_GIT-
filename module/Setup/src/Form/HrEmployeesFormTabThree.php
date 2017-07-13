@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 8/31/16
- * Time: 11:51 AM
- */
-
 namespace Setup\Form;
 
 use Application\Model\Model;
@@ -19,7 +12,7 @@ class HrEmployeesFormTabThree extends Model {
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Card No"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      * @Annotation\Attributes({ "id":"idCardNo", "class":"form-control" })
      */
     public $idCardNo;
@@ -123,7 +116,7 @@ class HrEmployeesFormTabThree extends Model {
     public $idRetirementNo;
 
     /**
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship No"})
@@ -133,7 +126,7 @@ class HrEmployeesFormTabThree extends Model {
     public $idCitizenshipNo;
 
     /**
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship Issue Date"})
@@ -168,6 +161,7 @@ class HrEmployeesFormTabThree extends Model {
      * @Annotation\Attributes({"class":"form-control","id":"idPassportExpiry" })
      */
     public $idPassportExpiry;
+   
     public $modifiedBy;
     public $modifiedDt;
     public $mappings = [
