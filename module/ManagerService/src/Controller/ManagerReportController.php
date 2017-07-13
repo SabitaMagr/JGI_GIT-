@@ -85,7 +85,6 @@ class ManagerReportController extends AbstractActionController{
 
 
         return Helper::addFlashMessagesToArray($this, [
-                    'attendanceList' => $attendanceList,
                     'employeeId' => $this->employeeId,
                     'status' => $statusFormElement,
                     'employeeFromElement'=>$employeeFormElement,
