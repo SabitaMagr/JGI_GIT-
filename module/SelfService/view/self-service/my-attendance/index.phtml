@@ -25,7 +25,7 @@ $this->headScript()
 
 
 <script>
-    document.ids =<?php echo json_encode(["fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
+    document.ids =<?php echo json_encode(["fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => "", "statusId" => "All"]) ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.fiscalYear = '<?php echo json_encode($fiscalYear); ?>';
 </script>
