@@ -74,6 +74,26 @@ INTO HRIS_MENUS
   )
   VALUES
   (
+    'EMP',
+    325,
+    'Edit My Profile',
+    6,
+    NULL,
+    'employee',
+    'E',
+    to_date('13-JUL-17','DD-MON-RR'),
+    NULL,
+    'fa fa-wrench',
+    'edit',
+    44,
+    NULL,
+    NULL,
+    'N'
+  );
+INSERT INTO HRIS_ROLE_PERMISSIONS
+  (MENU_ID,ROLE_ID,STATUS
+  )
+SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
     NULL,
     328,
     'Attendnace Report',
