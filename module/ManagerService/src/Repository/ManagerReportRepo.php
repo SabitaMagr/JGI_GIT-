@@ -48,7 +48,7 @@ class ManagerReportRepo implements RepositoryInterface {
         $result = $statement->execute();
 
         $list = [];
-        $list[-1] = 'ALL EMPLOYEE';
+        $list[-1] = 'All Employee';
         foreach ($result as $data) {
             $list[$data['EMPLOYEE_ID']] = $data['FULL_NAME'];
         }

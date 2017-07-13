@@ -4,6 +4,7 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $('select').select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {

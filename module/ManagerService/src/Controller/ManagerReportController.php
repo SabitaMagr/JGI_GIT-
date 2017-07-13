@@ -80,7 +80,7 @@ class ManagerReportController extends AbstractActionController{
         $employeeFormElement->setName('Employee');
         $employeeFormElement->setValueOptions($employees);
         $employeeFormElement->setAttributes(["id" => "employeeId", "class" => "form-control"]);
-        $employeeFormElement->setLabel("employee");
+        $employeeFormElement->setLabel("Employee");
         
 
 
