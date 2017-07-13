@@ -19,7 +19,7 @@ BEGIN
         ''
       END ),LOWER(TRIM(CUR_EMP.LAST_NAME)));
       INSERT
-      INTO HRIS.HRIS_USERS
+      INTO HRIS_USERS
         (
           USER_ID,
           EMPLOYEE_ID,
