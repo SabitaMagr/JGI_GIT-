@@ -60,7 +60,7 @@ class TravelApply extends AbstractActionController {
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
 
 
-                if ($travelSubstitute !== null) {
+                if($travelSubstitute !== null && $travelSubstitute!="") {
                     $travelSubstituteModel = new TravelSubstitute();
                     $travelSubstituteRepo = new TravelSubstituteRepository($this->adapter);
 

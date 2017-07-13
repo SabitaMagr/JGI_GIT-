@@ -177,7 +177,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-4">
                         <label for="substituteEmployee">Substitute Employee </label>
                         <span class="required" aria-required="true">*</span>
-                        <select required class="form-control" name="travelSubstitute" style="cursor: pointer;">
+                        <select class="form-control" name="travelSubstitute" style="cursor: pointer;">
+                            <option value="">----</option>
                             <?php foreach ($employees as $key => $value) { ?>
                                 <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
                             <?php } ?>
