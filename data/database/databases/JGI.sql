@@ -94,3 +94,21 @@ INSERT INTO HRIS_ROLE_PERMISSIONS
   (MENU_ID,ROLE_ID,STATUS
   )
 SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
+    NULL,
+    328,
+    'Attendnace Report',
+    5,
+    NULL,
+    'managerReport',
+    'E',
+    TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'index',
+    19,
+    NULL,
+    NULL,
+    'Y'
+  );
+
+
