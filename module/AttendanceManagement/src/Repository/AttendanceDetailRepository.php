@@ -201,6 +201,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $toDateCondition = "";
         $employeeCondition = '';
         $branchCondition = '';
+        $companyCondition = '';
         $departmentCondition = '';
         $positionCondition = '';
         $designationCondition = '';
@@ -216,6 +217,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
         if ($employeeId != null && $employeeId != -1) {
             $employeeCondition = " AND A.EMPLOYEE_ID ={$employeeId} ";
+        }
+        if ($companyId != null && $companyId != -1) {
+            $companyCondition = " AND E.COMPANY_ID ={$companyId} ";
         }
         if ($branchId != null && $branchId != -1) {
             $branchCondition = " AND E.BRANCH_ID ={$branchId} ";
@@ -357,6 +361,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON A.TRAVEL_ID      =TVL.TRAVEL_ID
                 WHERE 1=1
                 {$employeeCondition}
+                {$companyCondition}
                 {$branchCondition}
                 {$departmentCondition}
                 {$positionCondition}

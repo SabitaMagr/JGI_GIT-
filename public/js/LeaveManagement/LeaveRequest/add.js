@@ -11,11 +11,31 @@
         var $request = $("#request");
         var $errorMsg = $("#errorMsg");
         var $startDate = $('#startDate'), $endDate = $('#endDate');
+        var $leaveSubstitute = $('#leaveSubstitute');
 
         var dateDiff = "";
+        var substituteEmp = {
+            list: [],
+            disable: function (employeeIds) {
+                console.log('empIds', employeeIds);
+                if (this.list.length > 0) {
+                    $.each(this.list, function (key, value) {
+                        $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled', false);
+                        console.log('false', $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled'));
+                    });
+                    this.list = [];
+                }
+                $.each(employeeIds, function (key, value) {
+                    $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled', true);
+                    console.log('true', $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled'));
+                });
+                this.list = employeeIds;
+            }};
 
+        app.floatingProfile.registerListener(function (data) {
+            substituteEmp.disable([data.employeeId, data.recommenderId, data.approverId]);
+        });
         app.floatingProfile.setDataFromRemote($employee.val());
-
         var leaveList = [];
         var availableDays = null;
 
@@ -176,10 +196,6 @@
                 App.unblockUI("#hris-page-content");
                 console.log(failure);
             });
-
-
-
-
         };
 
         $employee.on('change', function () {

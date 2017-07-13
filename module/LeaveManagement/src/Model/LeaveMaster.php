@@ -29,6 +29,8 @@ class LeaveMaster extends Model {
     const ALLOW_GRACE_LEAVE = "ALLOW_GRACE_LEAVE";
     const IS_MONTHLY = "IS_MONTHLY";
     const IS_SUBSTITUTE_MANDATORY = "IS_SUBSTITUTE_MANDATORY";
+    const ASSIGN_ON_EMPLOYEE_SETUP = "ASSIGN_ON_EMPLOYEE_SETUP";
+    const IS_PRODATA_BASIS = "IS_PRODATA_BASIS";
 
     public $leaveId;
     public $leaveCode;
@@ -52,6 +54,8 @@ class LeaveMaster extends Model {
     public $allowGraceLeave;
     public $isMonthly;
     public $isSubstituteMandatory;
+    public $assignOnEmployeeSetup;
+    public $isProdataBasis;
     public $mappings = [
         'leaveId' => self::LEAVE_ID,
         'leaveCode' => self::LEAVE_CODE,
@@ -74,7 +78,9 @@ class LeaveMaster extends Model {
         'isSubstitute' => self::IS_SUBSTITUTE,
         'allowGraceLeave' => self::ALLOW_GRACE_LEAVE,
         'isMonthly' => self::IS_MONTHLY,
-        'isSubstituteMandatory' => self::IS_SUBSTITUTE_MANDATORY
+        'isSubstituteMandatory' => self::IS_SUBSTITUTE_MANDATORY,
+        'assignOnEmployeeSetup' => self::ASSIGN_ON_EMPLOYEE_SETUP,
+        'isProdataBasis' => self::IS_PRODATA_BASIS,
     ];
 
 }
