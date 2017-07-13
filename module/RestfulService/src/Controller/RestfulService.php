@@ -3,12 +3,17 @@
 namespace RestfulService\Controller;
 
 use Advance\Repository\AdvanceStatusRepository;
+use Application\Helper\AppraisalHelper;
 use Application\Helper\ConstraintHelper;
 use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
 use Application\Repository\MonthRepository;
+use Appraisal\Model\AppraisalStatus;
+use Appraisal\Repository\AppraisalAssignRepository;
+use Appraisal\Repository\AppraisalReportRepository;
+use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Repository\HeadingRepository;
 use Appraisal\Repository\QuestionRepository;
 use Asset\Repository\IssueRepository;
@@ -25,6 +30,7 @@ use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use Loan\Repository\LoanStatusRepository;
+use ManagerService\Repository\ManagerReportRepo;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use Overtime\Repository\OvertimeStatusRepository;
@@ -42,6 +48,10 @@ use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
+use SelfService\Model\AppraisalCompetencies;
+use SelfService\Model\AppraisalKPI;
+use SelfService\Repository\AppraisalCompetenciesRepo;
+use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\OvertimeDetailRepository;
@@ -83,17 +93,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Application\Repository\ForgotPasswordRepository;
-use ServiceQuestion\Repository\EmpServiceQuestionRepo;
-use SelfService\Repository\AppraisalKPIRepository;
-use SelfService\Model\AppraisalKPI;
-use SelfService\Model\AppraisalCompetencies;
-use SelfService\Repository\AppraisalCompetenciesRepo;
-use Appraisal\Repository\AppraisalAssignRepository;
-use Application\Helper\AppraisalHelper;
-use Appraisal\Repository\AppraisalStatusRepository;
-use Appraisal\Model\AppraisalStatus;
-use Appraisal\Repository\AppraisalReportRepository;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -427,6 +426,10 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullAppraisalViewList":
                         $responseData = $this->pullAppraisalViewList($postedData->data);
+                        break;
+                    case "pullManagerAttendaceReport":
+                        $responseData = $this->pullManagerAttendaceReport($postedData->data);
+//                        $responseData = $this->pullAttendanceList($postedData->data);
                         break;
                     default:
                         throw new Exception("action not found");
@@ -3729,5 +3732,28 @@ class RestfulService extends AbstractRestfulController {
             'data' => $list
         ];
     }
+    
+    
+    public function pullManagerAttendaceReport($data){
+        
+        $filtersDetail = $data;
+        $employeeId = $filtersDetail['employeeId'];
+        $fromDate = $filtersDetail['fromDate'];
+        $toDate = $filtersDetail['toDate'];
+        $status = $filtersDetail['status'];
+        $missPunchOnly = ((int) $filtersDetail['missPunchOnly'] == 1) ? true : false;
+        
+        
+        $managerReport= new ManagerReportRepo($this->adapter);
+        $result=$managerReport->attendanceReport($fromDate, $toDate, $employeeId, $status, $missPunchOnly);
+        
+        return [
+            "success" => true,
+            'data' => $data
+        ];
+        
+        
+    }
+    
 
 }
