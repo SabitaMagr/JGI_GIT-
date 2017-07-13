@@ -3,7 +3,6 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
-//        $('#fromDate').datepicker('setDate', nepaliDatePickerExt.getDate('07-Jun-2017'));
 
     });
 })(window.jQuery, window.app);
@@ -226,7 +225,7 @@ angular.module('hris', [])
                         columns:
                                 [
                                     {
-                                        template: "<img class='img-thumbnail' style='height:35px;width:40px;' src='"+document.picUrl+"' id=''/>",
+                                        template: "<img class='img-thumbnail' style='height:35px;width:40px;' src='" + document.picUrl + "' id=''/>",
                                         field: "IN_REMARKS", title: "Attendance Photo"
                                     },
                                 ]

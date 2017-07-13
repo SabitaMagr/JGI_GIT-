@@ -120,7 +120,6 @@ angular.module('hris', [])
             var fiscalYear = jQuery.parseJSON(document.fiscalYear);
             if (parseInt(idFromParameter) > 0) {
 
-                console.log(idFromParameter);
                 var $status = angular.element(document.getElementById('statusId'));
                 var $fromDate = angular.element(document.getElementById('fromDate'));
                 var $toDate = angular.element(document.getElementById('toDate'));
@@ -137,9 +136,6 @@ angular.module('hris', [])
                 } else {
                     $status.val(map[idFromParameter]).change();
                 }
-
-
-
                 $scope.view();
             }
 
