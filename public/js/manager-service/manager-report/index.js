@@ -77,6 +77,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
+                        {field: "FULL_NAME", title: "Employee"},
                         {field: "ATTENDANCE_DT", title: "Attendance Date"},
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
@@ -87,10 +88,11 @@ angular.module('hris', [])
                     ]
                 });
 
-                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
+                app.searchTable('attendanceTable', ['FULL_NAME','ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
                 app.pdfExport(
                         'attendanceTable',
                         {
+                            'FULL_NAME': 'Employee',
                             'ATTENDANCE_DT': ' Attendance Date',
                             'IN_TIME': 'In Time',
                             'OUT_TIME': 'Out Time',

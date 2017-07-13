@@ -55,7 +55,7 @@ class ManagerReportRepo implements RepositoryInterface {
         return $list;
     }
     
-    public function attendanceReport($fromDate, $toDate, $employeeId, $status, $missPunchOnly = false) {
+    public function attendanceReport($currentEmployeeId,$fromDate, $toDate, $employeeId, $status, $missPunchOnly = false) {
         $fromDateCondition = "";
         $toDateCondition = "";
         $employeeCondition = '';
@@ -69,6 +69,9 @@ class ManagerReportRepo implements RepositoryInterface {
         }
         if ($employeeId != null) {
             $employeeCondition = " AND A.EMPLOYEE_ID ={$employeeId} ";
+            if($employeeId==-1){
+            $employeeCondition = " AND (RA.RECOMMEND_BY=$currentEmployeeId OR RA.APPROVED_BY = $currentEmployeeId)";
+            }
         }
         if ($status == "A") {
             $statusCondition = "AND A.OVERALL_STATUS = 'AB'";
@@ -107,6 +110,7 @@ class ManagerReportRepo implements RepositoryInterface {
 
         $sql = "
                 SELECT A.ID                                        AS ID,
+                  E.FULL_NAME                                      AS FULL_NAME,
                   A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,
                   INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT,
                   INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM'))          AS IN_TIME,
@@ -189,6 +193,8 @@ class ManagerReportRepo implements RepositoryInterface {
                 ON A.TRAINING_ID=T.TRAINING_ID
                 LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TVL
                 ON A.TRAVEL_ID      =TVL.TRAVEL_ID
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER  RA
+                ON RA.EMPLOYEE_ID=E.EMPLOYEE_ID
                 WHERE 1=1
                 {$employeeCondition}
                 {$fromDateCondition}
@@ -198,10 +204,9 @@ class ManagerReportRepo implements RepositoryInterface {
                 ORDER BY A.ATTENDANCE_DT DESC
                 ";
                 
-                echo $sql;
-                die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
+        return $result;
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use ManagerService\Repository\ManagerReportRepo;
 use Zend\Authentication\AuthenticationService;
@@ -21,6 +22,35 @@ class ManagerReportController extends AbstractActionController{
         $detail = $authService->getIdentity();
         $this->employeeId = $detail['employee_id'];
     }
+    
+    
+    public function pullAttendanceAction(){
+        $request = $this->getRequest();
+        $postedData = $request->getPost();
+        
+        $filtersDetail = $postedData['data'];
+        $currentEmployeeId = $filtersDetail['currentEmployee'];
+        $employeeId = $filtersDetail['employeeId'];
+        $fromDate = $filtersDetail['fromDate'];
+        $toDate = $filtersDetail['toDate'];
+        $status = $filtersDetail['status'];
+        $missPunchOnly = ((int) $filtersDetail['missPunchOnly'] == 1) ? true : false;
+        
+        $result=$this->repository->attendanceReport($currentEmployeeId,$fromDate, $toDate, $employeeId, $status, $missPunchOnly);
+        
+        $list = [];
+        foreach ($result as $row) {
+            array_push($list, $row);
+        }
+        
+        
+        return new CustomViewModel([
+            "success" => true,
+            'data' => $list
+        ]);
+
+    }
+    
    
     public function indexAction(){
         $statusFormElement = new Select();
