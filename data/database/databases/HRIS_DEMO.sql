@@ -22,7 +22,7 @@ INTO HRIS_MENUS
     'EMP',
     325,
     'Edit My Profile',
-    6,
+    53,
     NULL,
     'employee',
     'E',
@@ -35,6 +35,10 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
+  
+
+  
+  
 INSERT INTO HRIS_ROLE_PERMISSIONS
   (MENU_ID,ROLE_ID,STATUS
   )
