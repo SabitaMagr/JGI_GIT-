@@ -27,6 +27,7 @@ class TravelRequest extends Model{
     const DEPARTURE_DATE = "DEPARTURE_DATE";
     const RETURNED_DATE = "RETURNED_DATE";
     const TRANSPORT_TYPE = "TRANSPORT_TYPE";
+    const APPROVER_ROLE = 'APPROVER_ROLE';
     
     public $travelId;
     public $employeeId;
@@ -50,6 +51,7 @@ class TravelRequest extends Model{
     public $departureDate;
     public $returnedDate;
     public $transportType;
+    public $approverRole;
     
     public $mappings= [
         'travelId'=>self::TRAVEL_ID,
@@ -73,6 +75,7 @@ class TravelRequest extends Model{
         'referenceTravelId'=>self::REFERENCE_TRAVEL_ID,
         'departureDate'=>self::DEPARTURE_DATE,
         'returnedDate'=>self::RETURNED_DATE,
-        'transportType'=>self::TRANSPORT_TYPE
+        'transportType'=>self::TRANSPORT_TYPE,
+        'approverRole'=>self::APPROVER_ROLE
     ];   
 }

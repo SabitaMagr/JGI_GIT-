@@ -22,6 +22,7 @@ $transportType = $form->get('transportType');
 $transportType->setValueOptions($transportTypes);
 $purpose = $form->get('purpose');
 $remarks = $form->get('remarks');
+$approver = $form->get('approver');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -181,6 +182,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
                             <?php } ?>
                         </select>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="row bottomgap">
+                            <div class="form-group">
+                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                    <?= $this->formLabel($isCEO) ?>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                    <div class="md-radio-inline">
+                                        <?php $customRender($isCEO); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">

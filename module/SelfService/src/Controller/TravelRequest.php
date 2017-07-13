@@ -163,7 +163,7 @@ class TravelRequest extends AbstractActionController {
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
 
-                if ($travelSubstitute != null) {
+                if ($travelSubstitute != null && $travelSubstitute!="") {
                     $travelSubstituteModel = new TravelSubstitute();
                     $travelSubstituteRepo = new TravelSubstituteRepository($this->adapter);
 
@@ -205,6 +205,7 @@ class TravelRequest extends AbstractActionController {
                     'employeeId' => $this->employeeId,
                     'requestTypes' => $requestType,
                     'transportTypes' => $transportTypes,
+                    'customRender' => Helper::renderCustomView(),
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
         ]);
     }
@@ -517,6 +518,7 @@ class TravelRequest extends AbstractActionController {
                     'advanceAmount' => $advanceAmount,
                     'subDetail' => $subDetail,
                     'duration' => $duration,
+                    'customRender' => Helper::renderCustomView(),
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
         ]);
     }
