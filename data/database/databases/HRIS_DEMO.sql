@@ -66,7 +66,7 @@ INTO HRIS_MENUS
   (
     NULL,
     328,
-    'Attendnace Report',
+    'Attendance Report',
     5,
     NULL,
     'managerReport',
