@@ -144,67 +144,6 @@
             $(this).find(':disabled').removeAttr('disabled');
         });
 
-//        var inputFieldId = "employeeCode";
-//        var formId = "form1";
-//        var tableName =  "HRIS_EMPLOYEES";
-//        var columnName = "EMPLOYEE_CODE";
-//        var checkColumnName = "EMPLOYEE_ID";
-//        var selfId = $("#employeeId").val();
-//        if (typeof(selfId) == "undefined"){
-//            selfId=0;
-//        }
-//        window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId);
-//
-//        
-
-        /*
-         document.editDepartmentValue = <?php echo ($departmentId->getValue() == null) ? -1 : $departmentId->getValue(); ?>;
-         */
-
-        /* commented as no company wise branch, designation, position and department is needed
-         var branchChangeFun = function () {
-         var selectedBranchId = $('#branchId').val();
-         $('#departmentId').html('');
-         if (selectedBranchId > 0) {
-         window.app.pullDataById(document.url, {
-         action: 'pullDepartmentAccordingToBranch',
-         data: {
-         'branchId': selectedBranchId
-         }
-         }).then(function (success) {
-         $.each(success.data, function (key, dep) {
-         if (document.editDepartmentValue == key) {
-         $('#departmentId').append($("<option selected='selected'></option>")
-         .attr("value", key)
-         .text(dep));
-         } else {
-         $('#departmentId').append($("<option></option>")
-         .attr("value", key)
-         .text(dep));
-         }
-         });
-         
-         }, function (failure) {
-         console.log(failure);
-         });
-         
-         } else {
-         $('#departmentId').append($("<option></option>")
-         .attr("value", "")
-         .text("Select Branch First"));
-         }
-         }
-         
-         $('#branchId').on('change', function () {
-         branchChangeFun();
-         });
-         
-         branchChangeFun();
-         */
-
-        if (document.employeeId == document.selfEmployeeId) {
-            app.lockField(true, ['birthdate', 'firstName', 'middleName', 'lastName', 'nameNepali', 'nepaliBirthDate', 'companyId', 'idCardNo', 'idThumbId', 'idLbrf', 'tab4', 'tab5', 'tab7', 'tab8']);
-        }
     });
 
 })(window.jQuery, window.app);

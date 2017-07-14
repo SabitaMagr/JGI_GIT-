@@ -1823,7 +1823,12 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     font-size:11px !important;
     padding: 3px !important;
 }
-
+.current-details h5{
+    background-color: #ddd;
+    padding: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    }
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {

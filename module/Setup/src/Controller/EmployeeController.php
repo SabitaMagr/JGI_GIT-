@@ -526,7 +526,7 @@ class EmployeeController extends AbstractActionController {
 //        $formFourModel = new HrEmployeesFormTabFour();
 //        $formSixModel = new HrEmployeesFormTabSix();
 
-        $employeeData = (array) $this->repository->getById($id);
+        $employeeData = (array) $this->repository->fetchForProfileById($id);
         $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
         $filePathArray = ApplicationHelper::getTableKVList($this->adapter, EmployeeFileModel::TABLE_NAME, null, [EmployeeFileModel::FILE_PATH], [EmployeeFileModel::FILE_CODE => $profilePictureId], null);
         $filePath = empty($filePathArray) ? $this->config->getApplicationConfig()['default-profile-picture'] : $filePathArray[0];

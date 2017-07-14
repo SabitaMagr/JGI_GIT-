@@ -360,8 +360,15 @@ class LeaveRequest extends AbstractActionController {
             $request = $this->getRequest();
             if ($request->isPost()) {
                 $postedData = $request->getPost();
-                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                
+                $startdate=date_create($postedData['startDate']);
+                $endDate=date_create($postedData['endDate']);
+                $diff=date_diff($startdate,$endDate);
+                $daysDifferent=$diff->format("%a")+1;
+                $availableDays = ['AVAILABLE_DAYS'=>$daysDifferent];
+                
+//                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+//                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
                 return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
