@@ -353,7 +353,7 @@ angular.module('hris', [])
                     $toDate.val(yesterdayDate);
                 } else {
                     $status.val(map[idFromParameter]).change();
-                    if (idFromParameter == 7) {
+                    if (idFromParameter == 7 ||idFromParameter == 6) {
                         $fromDate.val(yesterdayDate);
                         $toDate.val(yesterdayDate);
                     } else {
