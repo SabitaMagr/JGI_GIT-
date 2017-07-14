@@ -40,8 +40,11 @@ class ManagerReportRepo implements RepositoryInterface {
         $sql = "SELECT RA.EMPLOYEE_ID,E.FULL_NAME
                 FROM HRIS_RECOMMENDER_APPROVER  RA
                 LEFT join HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=RA.EMPLOYEE_ID)
-                  WHERE RA.RECOMMEND_BY={$employeeId}
-                  OR RA.APPROVED_BY    = {$employeeId}";
+                  WHERE (RA.RECOMMEND_BY={$employeeId}
+                  OR RA.APPROVED_BY    = {$employeeId})
+                  AND E.STATUS = 'E'
+                AND E.RETIRED_FLAG = 'N'";
+                  
 
 
         $statement = $this->adapter->query($sql);

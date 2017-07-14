@@ -399,33 +399,31 @@ class DashboardRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function fetchAllEmployee($companyId = null, $branchId = null) {
+    public function fetchAllEmployee($employeeId = null) {
         $sql = "SELECT EMP.EMPLOYEE_ID,
                   EMP.EMPLOYEE_CODE,
                   EMP.FIRST_NAME,
                   EMP.MIDDLE_NAME,
                   EMP.LAST_NAME,
-                  ( CASE
-                     WHEN MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
-                     ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
-                  END ) FULL_NAME,
+                  EMP.FULL_NAME,
                   EMP.DESIGNATION_ID,
                   DSG.DESIGNATION_TITLE,
                   EMP.DEPARTMENT_ID,
                   DPT.DEPARTMENT_NAME
-                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_DEPARTMENTS DPT
+                FROM HRIS_EMPLOYEES EMP 
+                JOIN HRIS_DESIGNATIONS DSG ON (EMP.DESIGNATION_ID = DSG.DESIGNATION_ID)
+                JOIN HRIS_DEPARTMENTS DPT ON (EMP.DEPARTMENT_ID = DPT.DEPARTMENT_ID)
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA ON (EMP.EMPLOYEE_ID=RA.EMPLOYEE_ID)
                 WHERE 1 = 1
-                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
-                AND EMP.DEPARTMENT_ID = DPT.DEPARTMENT_ID
                 AND EMP.STATUS = 'E'
                 AND EMP.RETIRED_FLAG = 'N'";
 
-        if ($companyId != null and $branchId != null) {
-            $sql .= " AND EMP.COMPANY_ID=$companyId AND EMP.BRANCH_ID=$branchId";
+        if ($employeeId != null) {
+            $sql .= " AND (RECOMMEND_BY=$employeeId OR APPROVED_BY = $employeeId)";
         }
 
         $sql .= " AND EMP.IS_ADMIN='N'
-                ORDER BY UPPER(EMP.FIRST_NAME), UPPER(EMP.MIDDLE_NAME), UPPER(EMP.LAST_NAME)";
+                ORDER BY UPPER(EMP.FULL_NAME)";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
