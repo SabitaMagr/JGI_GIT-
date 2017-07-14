@@ -67,7 +67,7 @@ class AppraisalAnswerRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['APS' => AppraisalAnswer::TABLE_NAME])
-                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=APS.'.AppraisalAnswer::QUESTION_ID, ["QUESTION_EDESC"=>new Expression("INITCAP(Q.QUESTION_EDESC)"),"ANSWER_TYPE","APPRAISEE_FLAG","APPRAISER_FLAG","REVIEWER_FLAG","APPRAISEE_RATING","APPRAISER_RATING","REVIEWER_RATING","MIN_VALUE","MAX_VALUE"], "left")
+                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=APS.'.AppraisalAnswer::QUESTION_ID, ["QUESTION_EDESC","ANSWER_TYPE","APPRAISEE_FLAG","APPRAISER_FLAG","REVIEWER_FLAG","APPRAISEE_RATING","APPRAISER_RATING","REVIEWER_RATING","MIN_VALUE","MAX_VALUE"], "left")
                 ->join(['H' => Heading::TABLE_NAME], "H.".Heading::HEADING_ID.'=Q.'.Question::HEADING_ID, ["HEADING_EDESC"=>new Expression("INITCAP(H.HEADING_EDESC)")], "left")
                 ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=APS.'.AppraisalAnswer::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")], "left");
         $select->where([

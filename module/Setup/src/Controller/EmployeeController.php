@@ -144,7 +144,7 @@ class EmployeeController extends AbstractActionController {
             "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
             "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY),
             "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_ZONES),
-            "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_RELIGIONS),
+            "religions" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_RELIGIONS", "RELIGION_ID", ["RELIGION_NAME"], ["STATUS" => "E"], "RELIGION_NAME", "ASC", null, true, true),
             "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
             "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
             'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_FILE_TYPE),
@@ -162,7 +162,8 @@ class EmployeeController extends AbstractActionController {
             'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC", null, false, true),
             'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
             'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-            'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true)
+            'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
+            'customRender' => Helper::renderCustomView()
         ]);
     }
 
@@ -478,7 +479,7 @@ class EmployeeController extends AbstractActionController {
                     "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
                     "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY),
                     "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_ZONES),
-                    "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_RELIGIONS),
+                    "religions" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_RELIGIONS", "RELIGION_ID", ["RELIGION_NAME"], ["STATUS" => "E"], "RELIGION_NAME", "ASC", null, true, true),
                     "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
                     "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
                     'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_FILE_TYPE),
@@ -500,9 +501,10 @@ class EmployeeController extends AbstractActionController {
                     'approverId' => ($employeePreDtl != null) ? $employeePreDtl['APPROVED_BY'] : 0,
                     'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC", null, false, true),
                     'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
-                    'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-                    'toDate' => $toDate
+                    'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", true, true),
+                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", true, true),
+                    'toDate' => $toDate,
+                     'customRender' => Helper::renderCustomView()
         ]);
     }
 

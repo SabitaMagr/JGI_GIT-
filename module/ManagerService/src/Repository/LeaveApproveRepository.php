@@ -51,8 +51,23 @@ class LeaveApproveRepository implements RepositoryInterface
                 INITCAP(E.FULL_NAME) AS FULL_NAME,
                 LA.RECOMMENDED_BY,
                 LA.APPROVED_BY,
-                RA.RECOMMEND_BY AS RECOMMENDER,
-                RA.APPROVED_BY AS APPROVER,
+                  (CASE
+                    WHEN L.PAID      ='N'
+                    AND LA.NO_OF_DAYS>3
+                    THEN RA.APPROVED_BY
+                    ELSE RA.RECOMMEND_BY
+                  END) AS RECOMMENDER,
+                  (CASE
+                    WHEN L.PAID      ='N'
+                    AND LA.NO_OF_DAYS>3
+                    THEN
+                      (SELECT EMPLOYEE_ID
+                      FROM HRIS_EMPLOYEES
+                      WHERE IS_CEO    ='Y'
+                      AND STATUS      ='E'
+                      AND RETIRED_FLAG='N')
+                    ELSE RA.APPROVED_BY
+                  END) AS APPROVER,
                 LS.APPROVED_FLAG AS APPROVED_FLAG,
                 INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY')) AS SUB_APPROVED_DATE,
                 LS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
@@ -71,10 +86,21 @@ class LeaveApproveRepository implements RepositoryInterface
                 ON LA.ID = LS.LEAVE_REQUEST_ID
                  WHERE E.STATUS='E' AND E.RETIRED_FLAG='N' AND";
         if($status==null){
-            $sql .=" ((RA.RECOMMEND_BY=".$id." AND LA.STATUS='RQ' AND
-                    (LS.APPROVED_FLAG = CASE WHEN LS.EMPLOYEE_ID IS NOT NULL
-                         THEN ('Y')     
-                    END OR  LS.EMPLOYEE_ID is null)) OR (RA.APPROVED_BY=".$id." AND LA.STATUS='RC') )";
+            $sql .=" ((('$id' =CASE WHEN L.PAID='N' AND LA.NO_OF_DAYS>3
+                    THEN RA.APPROVED_BY
+                    ELSE RA.RECOMMEND_BY END)
+                    AND LA.STATUS         ='RQ'
+                    AND (LS.APPROVED_FLAG =
+                      CASE
+                        WHEN LS.EMPLOYEE_ID IS NOT NULL
+                        THEN ('Y')
+                      END
+                    OR LS.EMPLOYEE_ID IS NULL))
+                    OR (
+                    ('$id' =CASE WHEN L.PAID='N' AND LA.NO_OF_DAYS>3
+                    THEN (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE IS_CEO='Y' AND STATUS='E' AND RETIRED_FLAG='N')
+                    ELSE RA.APPROVED_BY END)
+                    AND LA.STATUS      ='RC') )";
         }else if($status=='RC'){
             $sql .= " LA.STATUS='RC' AND
                 LA.RECOMMENDED_BY=".$id;
@@ -128,6 +154,7 @@ class LeaveApproveRepository implements RepositoryInterface
         ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
+            ->join(['L'=>"HRIS_LEAVE_MASTER_SETUP"],"L.LEAVE_ID=LA.LEAVE_ID",["LEAVE_ENAME","PAID","CASHABLE"])
             ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")],"left")
             ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=LA.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
             ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=LA.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left")

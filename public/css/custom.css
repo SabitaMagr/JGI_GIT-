@@ -2113,6 +2113,9 @@ div#ndp-nepali-box{
     font-weight: 600;
     font-size:11px !important;
 }
+#tabContent label{
+    /*width:100%;*/
+}
 #assignBtnWrap{
     position: absolute;
     bottom: 0;
@@ -2120,4 +2123,28 @@ div#ndp-nepali-box{
 }
 .position-relative{
     position: relative;
+}
+.appHeading{
+    border-bottom: 1px solid #ddd; 
+    padding-bottom: 1%; 
+    color: black; 
+    font-weight: 400;
+    margin-top:0px;
+}
+.questionWrap{
+    width: 100%;
+    float: left;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+#tabContent table{
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+.appQuestion{
+    padding: 0px 5px !important;
+}
+.questionWrapRow{
+    padding: 0px 14px !important;
+}
+#printable h5{
+    margin-top:0px !important;
 }

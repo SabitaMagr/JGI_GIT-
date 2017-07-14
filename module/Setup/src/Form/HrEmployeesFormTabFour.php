@@ -99,6 +99,34 @@ class HrEmployeesFormTabFour extends Model {
      */
     
     public $employeeType;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"HR Flag","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"form-HRFlag","class":"form-control","value":"N"})
+     */
+    public $isHR;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"CEO Flag","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"form-CEOFlag","class":"form-control","value":"N"})
+     */
+    public $isCEO;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"DCEO Flag","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"form-DCEOFlag","class":"form-control","value":"N"})
+     */
+    public $isDCEO;
+    
     public $branchId;
     public $departmentId;
     public $designationId;
@@ -126,6 +154,9 @@ class HrEmployeesFormTabFour extends Model {
         'employeeType' => 'EMPLOYEE_TYPE',
         'modifiedBy' => 'MODIFIED_BY',
         'modifiedDt' => 'MODIFIED_DT',
+        'isHR'=>'IS_HR',
+        'isCEO'=>'IS_CEO',
+        'isDCEO'=>'IS_DCEO'
     ];
 
 }

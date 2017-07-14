@@ -164,6 +164,10 @@ $employeeTypeValue = [
 ];
 $employeeType->setValueOptions($employeeTypeValue);
 
+$isHR = $formFour->get('isHR');
+$isCEO = $formFour->get('isCEO');
+$isDCEO = $formFour->get('isDCEO');
+
 if ($jobHistoryListNum > 0) {
     $departmentId->setAttributes(["disabled" => "disabled"]);
     $branchId->setAttributes(["disabled" => "disabled"]);
@@ -468,7 +472,6 @@ if ($this->messages) {
                                 <div class="form-group ">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($religionId) ?>
-                                        <span class="required" aria-required="true">*</span>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($religionId) ?>
@@ -513,7 +516,6 @@ if ($this->messages) {
                                 <div class="form-group">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($mobileNo); ?>
-                                        <span class="required" aria-required="true">*</span>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($mobileNo); ?>
@@ -830,7 +832,6 @@ if ($this->messages) {
                                 <div class="form-group  <?= empty($emergContactNo->getMessages()) ? "" : "error" ?>">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($emergContactNo); ?>
-                                        <span class="required" aria-required="true">*</span>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($emergContactNo); ?></div>
@@ -1452,7 +1453,7 @@ if ($this->messages) {
                                             <label> Recommender</label>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <select required="required" name="recommender">
+                                            <select name="recommender">
                                                 <?php
                                                 foreach ($recommenders as $recommenderKey => $recommenderValue) {
                                                     $recommenderSelected = ($recommenderId == $recommenderKey) ? "selected" : "";
@@ -1472,7 +1473,7 @@ if ($this->messages) {
                                             <label> Approver</label>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <select required="required" name="approver">
+                                            <select name="approver">
                                                 <?php
                                                 foreach ($approvers as $approverKey => $approverValue) {
                                                     $approverSelected = ($approverId == $approverKey) ? "selected" : "";
@@ -1525,7 +1526,48 @@ if ($this->messages) {
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                            <?= $this->formLabel($isHR) ?>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                            <div class="md-radio-inline">
+                                                <?php $customRender($isHR); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                            <?= $this->formLabel($isCEO) ?>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                            <div class="md-radio-inline">
+                                                <?php $customRender($isCEO); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                            <?= $this->formLabel($isDCEO) ?>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                            <div class="md-radio-inline">
+                                                <?php $customRender($isDCEO); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
 

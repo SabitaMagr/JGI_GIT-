@@ -100,9 +100,14 @@ class TravelStatus extends AbstractActionController
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
         
+        $empRepository = new EmployeeRepository($this->adapter);
+        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
+        
         $employeeName = $fullName($detail['EMPLOYEE_ID']);        
         $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $approverDetail['EMPLOYEE_ID'] : $detail['APPROVED_BY'];
 
 
         if (!$request->isPost()) {
@@ -188,6 +193,7 @@ class TravelStatus extends AbstractActionController
                     'advanceAmount'=>$advanceAmount,
                     'subDetail'=>$subDetail,
                     'duration'=>$duration,
+                    'customRender' => Helper::renderCustomView(),
                     'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
         
         ]);
@@ -224,10 +230,14 @@ class TravelStatus extends AbstractActionController
             $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
+        $empRepository = new EmployeeRepository($this->adapter);
+        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
         
         $employeeName = $fullName($detail['EMPLOYEE_ID']);        
         $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $approverDetail['EMPLOYEE_ID'] : $detail['APPROVED_BY'];
 
         if($detail['REFERENCE_TRAVEL_ID']!=null){
             $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);

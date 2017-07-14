@@ -9,6 +9,8 @@ use Zend\Mail\Transport\SmtpOptions;
 class EmailHelper {
 
     public static function getSmtpTransport(): Smtp {
+//        print "Configure the Email configuration first.";
+//        exit;
         $transport = new Smtp();
         $options = new SmtpOptions([
             'host' => 'duster.websitewelcome.com',

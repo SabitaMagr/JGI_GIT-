@@ -202,6 +202,29 @@ print $this->form()->openTag($form);
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                            <table>
+                                <tr>
+                                    <td width="40%"><label for="form-approver">Approver :</label></td>  
+                                    <td>
+                                        <div class="md-radio-inline">
+                                            <div class="md-radio"><input disabled="disabled" <?= ($detail['APPROVER_ROLE']=='CEO')?"checked":"" ?> type="radio" value="CEO" name="approverRole" id="approverRole+CEO" class="md-radiobtn radioButton approverRole"><label for="approverRole+CEO">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> CEO
+                                                </label>
+                                            </div>
+                                            <div class="md-radio"><input disabled="disabled" <?= ($detail['APPROVER_ROLE']=='DCEO')?"checked":"" ?> type="radio" value="DCEO" name="approverRole" id="approverRole+DCEO" class="md-radiobtn radioButton approverRole"><label for="approverRole+DCEO">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> DCEO
+                                                </label>
+                                            </div>                            
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                             <!--                            <table>
                                 <tr>
                                     <td width="40%">

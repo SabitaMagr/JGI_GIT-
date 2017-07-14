@@ -1,4 +1,6 @@
-<?php $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID'] != 1) ? "disabled" : ""; ?>
+<?php $disabledKPICOM = ($assignedAppraisalDetail['STAGE_ID'] != 1) ? "disabled" : ""; 
+if($assignedAppraisalDetail['KPI_SETTING']=='Y'){
+?>
 <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING'] == 'Y')) ? 'active' : '' ?>" id="portlet_tab2_KPI" ng-controller="kpiController">
     <form name="KPIForm" id="KPIForm" ng-submit="submitKPIForm()" novalidate>
         <table class="table">
@@ -146,3 +148,4 @@
     print $this->partial('appraisal/layout/kpi-remarks.phtml');
     ?>
 </div>
+<?php } ?>

@@ -106,7 +106,11 @@ class TravelApproveController extends AbstractActionController {
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $approverFlag =($row['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+            $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+            $approverDetail = $empRepository->fetchByCondition($whereCondition);
+            if ($empRecommendApprove['APPROVED_BY'] == $approverDetail['EMPLOYEE_ID']) {
                 $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
                 $dataArray['ROLE'] = 4;
             }
@@ -141,6 +145,14 @@ class TravelApproveController extends AbstractActionController {
         $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
         $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
         $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
+        
+        $recommender = $approver;
+        $empRepository = new EmployeeRepository($this->adapter);
+        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
+        $approver =($approverDetail!=null) ? $approverDetail['FIRST_NAME']." ".$approverDetail['MIDDLE_NAME']." ".$approverDetail['LAST_NAME']:"";
+        
         $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
         $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
@@ -294,6 +306,7 @@ class TravelApproveController extends AbstractActionController {
                     'advanceAmount' => $advanceAmount,
                     'subDetail' => $subDetail,
                     'duration' => $duration,
+                    'customRender'=>Helper::renderCustomView(),
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true)
         ]);
     }
@@ -324,6 +337,14 @@ class TravelApproveController extends AbstractActionController {
         $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
         $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
         $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
+        
+        $recommender = $approver;
+        $empRepository = new EmployeeRepository($this->adapter);
+        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
+        $approver =($approverDetail!=null) ? $approverDetail['FIRST_NAME']." ".$approverDetail['MIDDLE_NAME']." ".$approverDetail['LAST_NAME']:"";
+        
         $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
         $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
@@ -397,5 +418,4 @@ class TravelApproveController extends AbstractActionController {
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
-
 }

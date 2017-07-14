@@ -13,7 +13,8 @@
                 ];
                 $scope.travelDetail = {
                     departureDateMain :'',
-                    returnedDate:''
+                    returnedDate:'',
+                    approverRole:'CEO'
                 };
                 $scope.expenseDtlFormTemplate = {
                     id: 0,
@@ -51,6 +52,7 @@
                             var num = tempData.numExpenseDtlList;
                             $scope.travelDetail.departureDateMain = travelDtl.DEPARTURE_DATE;
                             $scope.travelDetail.returnedDate=travelDtl.RETURNED_DATE;
+                            $scope.travelDetail.approverRole=travelDtl.APPROVER_ROLE;
                             if (num > 0) {
                                 $scope.counter = num;
                                 for (var j = 0; j < num; j++) {
@@ -177,7 +179,7 @@
 //                            var totalValue = parseFloat(angular.element(document.getElementById(totalId)).val());
 //                            item.total=totalValue;
 //                        });
-                        console.log($scope.expenseDtlFormList);
+                        console.log($scope.travelDetail.approverRole);
                         window.app.pullDataById(document.urlExpenseRequest, {
                             data: {
                                 expenseDtlList: $scope.expenseDtlFormList,
@@ -186,7 +188,8 @@
                                 returnedDate: $scope.travelDetail.returnedDate,
                                 requestedType: requestedType,
                                 sumAllTotal:sumAllTotal,
-                                expenseDtlEmpty: parseInt($scope.expenseDtlEmpty)
+                                expenseDtlEmpty: parseInt($scope.expenseDtlEmpty),
+                                approverRole:$scope.travelDetail.approverRole
                             },
                         }).then(function (success) {
                             $scope.$apply(function () {

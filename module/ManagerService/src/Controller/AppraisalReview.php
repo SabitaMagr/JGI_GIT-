@@ -216,10 +216,6 @@ class AppraisalReview extends AbstractActionController{
                              HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
                         }
                         HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
-                        $adminList1 = $employeeRepo->fetchByAdminFlagList();
-                        foreach($adminList1 as $adminRow1){
-                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
-                        }
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-review");
                     break;

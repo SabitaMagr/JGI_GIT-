@@ -85,8 +85,6 @@ class StageQuestionRepository implements RepositoryInterface{
     public function getByStageIdHeadingId($headingId,$currentStageId,$flag=null,$orderCondition=null){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
-                [Question::QUESTION_EDESC, Question::QUESTION_NDESC],null,null,null,null,'Q'),false);
         $select->from(['Q' => Question::TABLE_NAME])
                 ->join(['QS' => StageQuestion::TABLE_NAME], "Q.". Question::QUESTION_ID.'=QS.'.StageQuestion::QUESTION_ID, [StageQuestion::QUESTION_ID])
                 ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=QS.'.StageQuestion::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")]);
