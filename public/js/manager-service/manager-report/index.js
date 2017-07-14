@@ -89,7 +89,7 @@ angular.module('hris', [])
                     ]
                 });
 
-                app.searchTable('attendanceTable', ['FULL_NAME','ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
+                app.searchTable('attendanceTable', ['FULL_NAME', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
                 app.pdfExport(
                         'attendanceTable',
                         {
@@ -118,8 +118,8 @@ angular.module('hris', [])
                     grid.saveAsExcel();
                 });
             }
-            
-            
+
+
             //            start to get the current Date in  DD-MON-YYY format
             var m_names = new Array("Jan", "Feb", "Mar",
                     "Apr", "May", "Jun", "Jul", "Aug", "Sep",
@@ -156,7 +156,7 @@ angular.module('hris', [])
                     $toDate.val(yesterdayDate);
                 } else {
                     $status.val(map[idFromParameter]).change();
-                    if (idFromParameter == 7) {
+                    if (idFromParameter == 7 || idFromParameter == 6) {
                         $fromDate.val(yesterdayDate);
                         $toDate.val(yesterdayDate);
                     } else {
@@ -168,7 +168,7 @@ angular.module('hris', [])
             }
 
 
-            
+
 
 
 
