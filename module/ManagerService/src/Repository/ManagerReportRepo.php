@@ -8,12 +8,10 @@ use Zend\Db\Adapter\AdapterInterface;
 
 class ManagerReportRepo implements RepositoryInterface {
 
-//    private $tableGateway;
     private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-//        $this->tableGateway = new TableGateway(AdvanceRequest::TABLE_NAME,$adapter);
     }
 
     public function add(Model $model) {
@@ -57,8 +55,8 @@ class ManagerReportRepo implements RepositoryInterface {
         }
         return $list;
     }
-    
-    public function attendanceReport($currentEmployeeId,$fromDate, $toDate, $employeeId, $status, $missPunchOnly = false) {
+
+    public function attendanceReport($currentEmployeeId, $fromDate, $toDate, $employeeId, $status, $missPunchOnly = false) {
         $fromDateCondition = "";
         $toDateCondition = "";
         $employeeCondition = '';
@@ -72,8 +70,8 @@ class ManagerReportRepo implements RepositoryInterface {
         }
         if ($employeeId != null) {
             $employeeCondition = " AND A.EMPLOYEE_ID ={$employeeId} ";
-            if($employeeId==-1){
-            $employeeCondition = " AND (RA.RECOMMEND_BY=$currentEmployeeId OR RA.APPROVED_BY = $currentEmployeeId)";
+            if ($employeeId == -1) {
+                $employeeCondition = " AND (RA.RECOMMEND_BY=$currentEmployeeId OR RA.APPROVED_BY = $currentEmployeeId)";
             }
         }
         if ($status == "A") {
@@ -99,6 +97,9 @@ class ManagerReportRepo implements RepositoryInterface {
         }
         if ($status == "WOH") {
             $statusCondition = "AND A.OVERALL_STATUS = 'WH'";
+        }
+        if ($status == "WOD") {
+            $statusCondition = "AND A.OVERALL_STATUS = 'WD'";
         }
         if ($status == "LI") {
             $statusCondition = "AND (A.LATE_STATUS = 'L' OR A.LATE_STATUS = 'B' OR A.LATE_STATUS ='Y') ";
@@ -206,11 +207,10 @@ class ManagerReportRepo implements RepositoryInterface {
                 {$missPunchOnlyCondition}
                 ORDER BY A.ATTENDANCE_DT DESC
                 ";
-                
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
     }
-
 
 }

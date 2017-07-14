@@ -77,7 +77,7 @@ INTO HRIS_MENUS
     'EMP',
     325,
     'Edit My Profile',
-    6,
+    53,
     NULL,
     'employee',
     'E',
@@ -90,11 +90,38 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
+  
+
+  
+  
 INSERT INTO HRIS_ROLE_PERMISSIONS
   (MENU_ID,ROLE_ID,STATUS
   )
 SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
-    NULL,
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+ NULL,
     328,
     'Attendance Report',
     5,

@@ -64,7 +64,7 @@ class ManagerReportController extends AbstractActionController{
             "T" => "On Training",
             "TVL" => "On Travel",
             "WOH" => "Work on Holiday",
-            "WODO" => "Work on DAYOFF",
+            "WOD" => "Work on DAYOFF",
             "LI" => "Late In",
             "EO" => "Early Out"
         );
