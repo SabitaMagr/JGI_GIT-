@@ -107,7 +107,7 @@
                         var employee = document.searchManager.getEmployeeById(item);
                         $assignedEmployeeList.append('<div class="col-sm-2"><div class="alert alert-info alert-dismissable">' +
                                 '<button data-id="' + item + '" type="button" class="close remove-employee" data-dismiss="alert" aria-hidden="true"></button>' +
-                                employee['FIRST_NAME'] + '</div></div>');
+                                employee['FULL_NAME'] + '</div></div>');
                     });
                 }
             }
@@ -166,7 +166,7 @@
             var filteredEmployeeList = document.searchManager.getEmployee();
             $.each(filteredEmployeeList, function (k, v) {
                 var appendData = "<tr>"
-                        + "<td>" + v.FIRST_NAME + "</td>"
+                        + "<td>" + v.FULL_NAME + "</td>"
                         + "<td>"
                         + "<div class='th-inner'><label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
                         + "<input class='check' type='checkbox' name='checkapply[]' value='" + v.EMPLOYEE_ID + "'>"

@@ -186,6 +186,9 @@ class AttendanceRepository implements RepositoryInterface {
         if ($status == "WOH") {
             $statusCondition = "AND A.OVERALL_STATUS = 'WH'";
         }
+        if ($status == "WOD") {
+            $statusCondition = "AND A.OVERALL_STATUS = 'WD'";
+        }
         if ($status == "LI") {
             $statusCondition = "AND (A.LATE_STATUS = 'L' OR A.LATE_STATUS = 'B' OR A.LATE_STATUS ='Y') ";
         }
