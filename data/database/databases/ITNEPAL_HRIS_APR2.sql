@@ -1,0 +1,42 @@
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    328,
+    'Attendnace Report',
+    5,
+    NULL,
+    'managerReport',
+    'E',
+    TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'index',
+    19,
+    NULL,
+    NULL,
+    'Y'
+  );
+ALTER TABLE HRIS_EMPLOYEES
+ADD IS_DCEO CHAR (1 BYTE) CHECK (IS_DCEO IN ('Y','N'));
+
+ALTER TABLE HRIS_EMPLOYEE_TRAVEL_REQUEST
+ADD APPROVER_ROLE VARCHAR2(50 BYTE);
