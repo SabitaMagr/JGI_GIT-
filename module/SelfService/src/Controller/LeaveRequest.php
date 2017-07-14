@@ -130,7 +130,8 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
-
+//                print "<pre>";
+//                print_r($leaveRequest); die();
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
                 if ($leaveSubstitute !== null && $leaveSubstitute!=="") {

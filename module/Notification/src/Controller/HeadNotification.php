@@ -17,6 +17,7 @@ use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Repository\LeaveApplyRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Model\SalaryDetail;
+use ManagerService\Repository\LeaveApproveRepository;
 use ManagerService\Repository\SalaryDetailRepo;
 use Notification\Model\AppraisalNotificationModel;
 use Notification\Model\LeaveRequestNotificationModel;
@@ -48,6 +49,7 @@ use SelfService\Repository\TravelRequestRepository;
 use SelfService\Repository\TravelSubstituteRepository;
 use SelfService\Repository\WorkOnDayoffRepository;
 use SelfService\Repository\WorkOnHolidayRepository;
+use Setup\Model\HrEmployees;
 use Setup\Model\RecommendApprove;
 use Setup\Model\Training;
 use Setup\Repository\EmployeeRepository;
@@ -157,10 +159,20 @@ class HeadNotification {
     private static function leaveApplied(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
         $recommdAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
+        
+        $leaveApproveRepository = new LeaveApproveRepository($adapter);
+        $empRepository = new EmployeeRepository($adapter);
+        $detail = $leaveApproveRepository->fetchById($leaveApply->id);
+        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
+        if($CEOFlag){
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+            $recommdAppModel['RECOMMEND_BY']=$recommdAppModel['APPROVED_BY'];
+            $recommdAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+        }
+        
         $idAndRole = self::findRoleType($recommdAppModel, $type);
         $leaveReqNotiMod = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $idAndRole['id'], LeaveRequestNotificationModel::class, $adapter);
 
-//
         $leaveName = self::getName($leaveApply->leaveId, new LeaveMasterRepository($adapter), 'LEAVE_ENAME');
 
         $leaveReqNotiMod->fromDate = $leaveApply->startDate;
@@ -170,7 +182,7 @@ class HeadNotification {
         $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
 
         $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => $idAndRole['role']]);
-//
+        
         $notificationTitle = "Leave Request";
         $notificationDesc = "Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
 
@@ -181,8 +193,17 @@ class HeadNotification {
     private static function leaveRecommend(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
         $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
-        $leaveReqNotiMod = self::initializeNotificationModel($leaveApply->employeeId, $recommendAppModel[RecommendApprove::RECOMMEND_BY], LeaveRequestNotificationModel::class, $adapter);
-
+        $leaveApproveRepository = new LeaveApproveRepository($adapter);
+        $empRepository = new EmployeeRepository($adapter);
+        $detail = $leaveApproveRepository->fetchById($leaveApply->id);
+        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
+        if($CEOFlag){
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+            $recommdAppModel['RECOMMEND_BY']=$recommdAppModel['APPROVED_BY'];
+            $recommdAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+        }
+        $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::RECOMMEND_BY],$leaveApply->employeeId,  LeaveRequestNotificationModel::class, $adapter);
+        
 //
         $leaveReqNotiMod->fromDate = $leaveApply->startDate;
         $leaveReqNotiMod->toDate = $leaveApply->endDate;
@@ -203,6 +224,15 @@ class HeadNotification {
     public static function leaveApprove(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
         $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
+        $leaveApproveRepository = new LeaveApproveRepository($adapter);
+        $empRepository = new EmployeeRepository($adapter);
+        $detail = $leaveApproveRepository->fetchById($leaveApply->id);
+        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
+        if($CEOFlag){
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+            $recommdAppModel['RECOMMEND_BY']=$recommdAppModel['APPROVED_BY'];
+            $recommdAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+        }
         $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::APPROVED_BY], $leaveApply->employeeId, LeaveRequestNotificationModel::class, $adapter);
 
 

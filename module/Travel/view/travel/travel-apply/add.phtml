@@ -178,20 +178,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php } ?>
                         </select>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-6">
-                        <div class="row bottomgap">
-                            <div class="form-group">
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
-                                    <?= $this->formLabel($isCEO) ?>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                    <div class="md-radio-inline">
-                                        <?php $customRender($isCEO); ?>
-                                    </div>
-                                </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($approver); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRender($approver); ?>
                             </div>
+                            <?php print $this->formElementErrors()->render($approver, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
