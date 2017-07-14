@@ -34,10 +34,11 @@ class TravelRequestRepository implements RepositoryInterface {
         $this->tableGateway->update([
             TravelRequest::DEPARTURE_DATE=>Helper::getExpressionDate($departureDate),
             TravelRequest::RETURNED_DATE=>Helper::getExpressionDate($returnedDate),
-            TravelRequest::REQUESTED_AMOUNT=>$requestedAmt
-                ],[TravelRequest::TRAVEL_ID => $travelId]);
+            TravelRequest::REQUESTED_AMOUNT=>$requestedAmt],[TravelRequest::TRAVEL_ID => $travelId]);
     }
-
+    public function updateStatus($status,$travelId){
+        $this->tableGateway->update([TravelRequest::STATUS=>$status],[TravelRequest::TRAVEL_ID => $travelId]);
+    }
     public function edit(Model $model, $id) {
         
     }

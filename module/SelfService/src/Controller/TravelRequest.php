@@ -92,6 +92,8 @@ class TravelRequest extends AbstractActionController {
                 return "Approved";
             } else if ($status == "C") {
                 return "Cancelled";
+            }else if ($status == "SC") {
+                return "Settlement Checked";
             }
         };
         $getAction = function($status) {
@@ -253,11 +255,9 @@ class TravelRequest extends AbstractActionController {
             } else if ($requestedType == 'ep') {
                 $this->repository->updateDates($departureDate, $returnedDate, $requestedAmt, $travelId);
             }
-
             foreach ($expenseDtlList as $expenseDtl) {
                 $transportType = $expenseDtl['transportType'];
                 $id = (int) $expenseDtl['id'];
-
                 $expenseDtlModel->departureDate = Helper::getExpressionDate($expenseDtl['departureDate']);
                 $expenseDtlModel->departurePlace = $expenseDtl['departurePlace'];
                 $expenseDtlModel->departureTime = Helper::getExpressionTime($expenseDtl['departureTime']);
@@ -272,7 +272,10 @@ class TravelRequest extends AbstractActionController {
                 $expenseDtlModel->totalAmount = (float) $expenseDtl['total'];
                 $expenseDtlModel->remarks = ($expenseDtl['remarks'] != null) ? $expenseDtl['remarks'] : null;
                 $expenseDtlModel->status = 'E';
-
+                $expenseDtlModel->fareFlag = ($expenseDtl['fareFlag']=="true" && $expenseDtl['fareFlag']!="")?'Y':'N';
+                $expenseDtlModel->allowanceFlag = ($expenseDtl['allowanceFlag']=="true" && $expenseDtl['allowanceFlag']!="")?'Y':'N';
+                $expenseDtlModel->localConveyenceFlag = ($expenseDtl['localConveyenceFlag']=="true" && $expenseDtl['localConveyenceFlag']!="")?'Y':'N';
+                $expenseDtlModel->miscExpensesFlag = ($expenseDtl['miscExpenseFlag']=="true" && $expenseDtl['miscExpenseFlag']!="")?'Y':'N';
                 if ($id == 0) {
                     $expenseDtlModel->id = ((int) Helper::getMaxId($this->adapter, TravelExpenseDetail::TABLE_NAME, TravelExpenseDetail::ID)) + 1;
                     $expenseDtlModel->travelId = ($requestedType == 'ad') ? $model->travelId : $travelId;

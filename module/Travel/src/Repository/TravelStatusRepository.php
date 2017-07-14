@@ -140,7 +140,7 @@ class TravelStatusRepository implements RepositoryInterface{
         if($recomApproveId!=null){
             if($travelRequestStatusId==-1){
                 $sql .=" AND ((RA.APPROVED_BY=".$recomApproveId." AND  TR.STATUS='RQ') "
-                        . "OR (TR.RECOMMENDED_BY=".$recomApproveId." AND (TR.STATUS='RC' OR TR.STATUS='R' OR TR.STATUS='AP')) "
+                        . "OR (TR.RECOMMENDED_BY=".$recomApproveId." AND (TR.STATUS='RC' OR TR.STATUS='R' OR TR.STATUS='AP' OR TR.STATUS='SC')) "
                         . "OR ((".$recomApproveId."=
                             CASE
                               WHEN TR.APPROVER_ROLE='DCEO'
@@ -159,7 +159,7 @@ class TravelStatusRepository implements RepositoryInterface{
                                 AND RETIRED_FLAG='N'
                                 )
                             END) AND  TR.STATUS='RC' ) "
-                        . "OR (TR.APPROVED_BY=".$recomApproveId." AND (TR.STATUS='AP' OR (TR.STATUS='R' AND TR.APPROVED_DATE IS NOT NULL))) )";
+                        . "OR (TR.APPROVED_BY=".$recomApproveId." AND (TR.STATUS='AP' OR TR.STATUS='SC' OR (TR.STATUS='R' AND TR.APPROVED_DATE IS NOT NULL))) )";
             }else if($travelRequestStatusId=='RQ'){
                 $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND TR.STATUS='RQ')";
             }

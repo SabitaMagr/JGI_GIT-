@@ -12,13 +12,12 @@ $this->headScript()
         ->appendFile($this->basePath('js/SelfService/travel-request/expenseDtlController.js'));
 ?>
 <script>
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.urlExpenseRequest = '<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>';
-    document.urlTravelRequest = '<?= $this->url("travelRequest", ["action" => "index"]) ?>';
+    document.urlExpenseRequest = '<?= $this->url("travelStatus", ["action" => "checkSettlement"]) ?>';
+    document.urlTravelRequest = '<?= $this->url("travelStatus", ["action" => "index"]) ?>';
     document.urlExpenseDetailList = '<?= $this->url("travelRequest", ["action" => "expenseDetailList"]) ?>';
-    document.urlDeleteExpenseDetail = '<?= $this->url("travelRequest", ["action" => "deleteExpenseDetail"]) ?>';</script>
+</script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\travelStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -164,8 +163,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <th rowspan="3">Daily Allowance</th>
                                     <th rowspan="3">Local Conveyence</th>
                                     <th rowspan="3">Misc. Expenses</th>
+                                    <th rowspan="3">Total</th>
                                     <th rowspan="3">Remarks</th>
-                                    <th rowspan="3"></th>
                                 </tr>
                                 <tr>
                                     <th colspan="3">Departure</th>
@@ -236,54 +235,44 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </select>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="fareFlag_{{expenseDtlForm.checkbox}}" name="fareFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.fareFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="fareFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
+                                        <div ng-show="(expenseDtlForm.fareFlag==true)">
+                                            <input type="number" required="required" name="fare_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.fare" style="width: 60px;" step="0.01" min="0"/>
+                                            <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.fare_{{expenseDtlForm.checkbox}}.$touched">
+                                                <ul ng-show="travelExpenseForm.fare_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
+                                                    <li>Fare is required.</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" ng-model="expenseDtlForm.fareFlag"/>
+                                    </td>
+                                    <td>
+                                        <div ng-show="(expenseDtlForm.allowanceFlag==true)">
+                                            <input type="number" ng-model="expenseDtlForm.allowance" style="width: 60px;" step="0.01" min="0"/>
+                                            <input type="hidden" ng-model="expenseDtlForm.allowanceFlag"/>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="allowanceFlag_{{expenseDtlForm.checkbox}}" name="allowanceFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.allowanceFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="allowanceFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
+                                        <div ng-show="(expenseDtlForm.localConveyenceFlag==true)">
+                                            <input type="number" ng-model="expenseDtlForm.localConveyence"style="width: 69px;" step="0.01" min="0"/>
+                                            <input type="hidden" ng-model="expenseDtlForm.localConveyenceFlag"/>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="localConveyenceFlag_{{expenseDtlForm.checkbox}}" name="localConveyenceFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.localConveyenceFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="localConveyenceFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
+                                        <div ng-show="(expenseDtlForm.miscExpenseFlag==true)">
+                                            <input type="number" ng-model="expenseDtlForm.miscExpense" style="width: 60px;" step="0.01" min="0"/>
+                                            <input type="hidden" ng-model="expenseDtlForm.miscExpenseFlag"/>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="miscExpenseFlag_{{expenseDtlForm.checkbox}}" name="miscExpenseFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.miscExpenseFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="miscExpenseFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
+                                        <input type="number" id="total_{{expenseDtlForm.checkbox}}" readonly="readonly" ng-model="expenseDtlForm.total"  name="total_{{expenseDtlForm.checkbox}}" style="width: 72px;" step="0.01" min="0"/>
+                                        <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$touched">
+                                            <ul ng-show="travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
+                                                <li>Total is required.</li>
+                                            </ul>
                                         </div>
                                     </td>
                                     <td>
                                         <input type="text" ng-model="expenseDtlForm.remarks" size="11"/>
-                                    </td>
-                                    <td width="1%"  class="checkboxgap">
-                                        <div class="md-checkbox">
-                                            <input type="checkbox" id="{{expenseDtlForm.checkbox}}" class="md-check"
-                                                   ng-model="expenseDtlForm.checked">
-                                            <label for="{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span>
-                                            </label>
-                                        </div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -297,18 +286,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <td></td>
                                     <td></td>
                                     <td></td>
+                                    <td><b>Total:</b></td>
+                                    <td>
+                                        <input type="number" id="sumAllTotal" step="0.01" min="0" readonly="readonly" style="width: 72px;" value="{{sumAllTotal(expenseDtlFormList)}}" />
+                                    </td>
                                     <td></td>
-                                    <td>
-                                        <a href="javascript:;" class="btn btn-icon-only default pull-right"
-                                           ng-click="addExpenseDtl()">
-                                            <i class="fa fa-plus"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="javascript:;" class="btn btn-icon-only default" ng-click="deleteExpenseDtl()">
-                                            <i class="fa fa-trash-o"></i>
-                                        </a>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>

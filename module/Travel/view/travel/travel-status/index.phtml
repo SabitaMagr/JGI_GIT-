@@ -188,6 +188,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     href="<?= $this->url("travelStatus", ["action" => "view"]); ?>/#:TRAVEL_ID #" style="height:17px;" title="view">
     <i class="fa fa-search-plus"></i>
     </a>
+    # } if(CHECK_SETTLEMENT==1){#
+    <a class="btn-edit"
+    href="<?= $this->url("travelStatus", ["action" => "checkSettlement"]); ?>/#:TRAVEL_ID #" style="height:17px;" title="check settlement">
+    <i class="fa fa-send-o"></i>
+    </a>
     # } #
     </td>
     </tr>
