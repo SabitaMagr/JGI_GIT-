@@ -152,6 +152,20 @@ return [
                     ]
                 ],
             ],
+            'managerReport' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/managerReport[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\ManagerReportController::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ]
     ],
     'navigation' => [
@@ -542,7 +556,8 @@ return [
             Controller\OvertimeApproveController::class => ControllerFactory::class,
             Controller\AppraisalEvaluation::class => ControllerFactory::class,
             Controller\AppraisalReview::class => ControllerFactory::class,
-            Controller\AppraisalFinalReview::class => ControllerFactory::class
+            Controller\AppraisalFinalReview::class => ControllerFactory::class,
+            Controller\ManagerReportController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
