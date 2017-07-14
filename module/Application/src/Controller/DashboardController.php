@@ -103,7 +103,7 @@ class DashboardController extends AbstractActionController {
             "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
             "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
             "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
-            "employeeList" => $dashboardRepo->fetchAllEmployee($empCompanyId, $empBranchId),
+            "employeeList" => $dashboardRepo->fetchAllEmployee($this->employeeId),
             "headCountGender" => $dashboardRepo->fetchGenderHeadCount(),
             "headCountDepartment" => $dashboardRepo->fetchDepartmentHeadCount(),
             "headCountLocation" => $dashboardRepo->fetchLocationHeadCount(),
