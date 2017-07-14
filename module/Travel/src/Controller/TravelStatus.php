@@ -19,7 +19,7 @@ use Setup\Model\ServiceType;
 use Zend\Form\Element\Select;
 use Setup\Model\ServiceEventType;
 use Zend\Authentication\AuthenticationService;
-use Travel\Repository\RecommenderApproverRepository;
+use Setup\Repository\RecommendApproveRepository;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Setup\Repository\EmployeeRepository;
 use Application\Helper\NumberHelper;
@@ -86,7 +86,7 @@ class TravelStatus extends AbstractActionController
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         $recommApprove = 0;
         if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
@@ -100,9 +100,14 @@ class TravelStatus extends AbstractActionController
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
         
+        $empRepository = new EmployeeRepository($this->adapter);
+        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
+        
         $employeeName = $fullName($detail['EMPLOYEE_ID']);        
         $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $approverDetail['EMPLOYEE_ID'] : $detail['APPROVED_BY'];
 
 
         if (!$request->isPost()) {
@@ -188,6 +193,7 @@ class TravelStatus extends AbstractActionController
                     'advanceAmount'=>$advanceAmount,
                     'subDetail'=>$subDetail,
                     'duration'=>$duration,
+                    'customRender' => Helper::renderCustomView(),
                     'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
         
         ]);
@@ -211,7 +217,7 @@ class TravelStatus extends AbstractActionController
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
+        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         $recommApprove = 0;
         if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
@@ -224,10 +230,14 @@ class TravelStatus extends AbstractActionController
             $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
+        $empRepository = new EmployeeRepository($this->adapter);
+        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
         
         $employeeName = $fullName($detail['EMPLOYEE_ID']);        
         $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $approverDetail['EMPLOYEE_ID'] : $detail['APPROVED_BY'];
 
         if($detail['REFERENCE_TRAVEL_ID']!=null){
             $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);

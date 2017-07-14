@@ -1725,7 +1725,6 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRepository = new EmployeeRepository($this->adapter);
@@ -1748,9 +1747,16 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
+            $empRepository = new EmployeeRepository($this->adapter);
+            $CEOFlag = ($row['PAID']=='N' && $row['NO_OF_DAYS']>3)?true:false;
+            if($CEOFlag){
+                $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+                $empRecommendApprove['RECOMMEND_BY']=$empRecommendApprove['APPROVED_BY'];
+                $empRecommendApprove['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+            }
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $role['YOUR_ROLE'] = 'Recommender\Approver';
-                $role['ROLE'] = 4;
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
             }
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
@@ -1910,13 +1916,13 @@ class RestfulService extends AbstractRestfulController {
         };
 
         foreach ($result as $row) {
-            $recommendApproveRepository = new RecommenderApproverRepository($this->adapter);
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
 
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-
+            
             $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
             $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
 
@@ -1930,9 +1936,14 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $role['YOUR_ROLE'] = 'Recommender\Approver';
-                $role['ROLE'] = 4;
+            
+            $empRepository = new EmployeeRepository($this->adapter);
+            $approverFlag =($row['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+            $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+            $approverDetail = $empRepository->fetchByCondition($whereCondition);
+            if ($empRecommendApprove['APPROVED_BY'] == $approverDetail['EMPLOYEE_ID']) {
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
             }
             $new_row = array_merge($row, ['STATUS' => $status, 'REQUESTED_TYPE' => $getRequestType($row['REQUESTED_TYPE'])]);
             $final_record = array_merge($new_row, $role);

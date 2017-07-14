@@ -55,6 +55,8 @@ $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
 $approvedRemarks->setAttributes(['required' => 'true']);
+$approverRole = $form->get('approverRole');
+$approverRole->setAttributes(['disabled'=>'disabled']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
@@ -225,13 +227,12 @@ print $this->form()->openTag($form);
                             </div>        
 
                         </div>
-                        
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <?php print $this->formLabel($purpose); ?>
-                                <?php print $this->formElement($purpose); ?>
-                                <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
-                            </div>
+                                <?php print $this->formLabel($requestedType); ?>
+                                <?php print $this->formElement($requestedType); ?>
+                                <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
+                            </div> 
                         </div>
                         
                     </div>
@@ -245,21 +246,19 @@ print $this->form()->openTag($form);
                                 <?php print $this->formElementErrors()->render($destination, ['class' => 'help-block']); ?>
                             </div>               
                         </div>
-
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($purpose); ?>
+                                <?php print $this->formElement($purpose); ?>
+                                <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($requestedAmount); ?>
                                 <?php print $this->formElement($requestedAmount); ?>
                                 <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                             </div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($requestedType); ?>
-                                <?php print $this->formElement($requestedType); ?>
-                                <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
-                            </div> 
                         </div>
                     </div>
 
@@ -271,8 +270,17 @@ print $this->form()->openTag($form);
                                 <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
                             </div> 
                         </div>
-
-
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($approverRole); ?>
+                                <div class="md-radio-inline">
+                                    <?php $customRender($approverRole); ?>
+                                </div>
+                                <?php print $this->formElementErrors()->render($approverRole, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($remarks); ?>

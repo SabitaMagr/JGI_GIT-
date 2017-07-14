@@ -115,7 +115,7 @@ class TravelRequestForm{
      * @Annotation\Options({"label":"Approver","value_options":{"CEO":"CEO","DCEO":"DCEO"}})
      * @Annotation\Attributes({"id":"form-approver","class":"form-control","value":"CEO"})
      */
-    public $approver;
+    public $approverRole;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

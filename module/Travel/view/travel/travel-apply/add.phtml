@@ -22,7 +22,7 @@ $transportType = $form->get('transportType');
 $transportType->setValueOptions($transportTypes);
 $purpose = $form->get('purpose');
 $remarks = $form->get('remarks');
-$approver = $form->get('approver');
+$approver = $form->get('approverRole');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -77,8 +77,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
                         </div>  
                     </div>
-
-
                     <div class="col-sm-4">
                         <div class="row">
                             <div class="col-sm-6">
@@ -122,12 +120,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>     
                         </div>
                     </div>
-
                 </div>
-
-
                 <div class="row">
-
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($destination); ?>

@@ -101,6 +101,13 @@ class LeaveApproveController extends AbstractActionController {
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
+            $empRepository = new EmployeeRepository($this->adapter);
+            $CEOFlag = ($row['PAID']=='N' && $row['NO_OF_DAYS']>3)?true:false;
+            if($CEOFlag){
+                $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+                $empRecommendApprove['RECOMMEND_BY']=$empRecommendApprove['APPROVED_BY'];
+                $empRecommendApprove['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+            }
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
                 $dataArray['ROLE'] = 4;

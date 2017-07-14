@@ -64,14 +64,32 @@ class TravelStatusRepository implements RepositoryInterface{
                 TR.DESTINATION AS DESTINATION,
                 TR.PURPOSE AS PURPOSE,
                 TR.EMPLOYEE_ID AS EMPLOYEE_ID,
+                TR.APPROVER_ROLE AS APPROVER_ROLE,
                 INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
                 INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
                 INITCAP(E.FULL_NAME) AS FULL_NAME,
                 INITCAP(E.FIRST_NAME) AS FIRST_NAME,INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,INITCAP(E.LAST_NAME) AS LAST_NAME,
                 INITCAP(E1.FIRST_NAME) AS FN1,INITCAP(E1.MIDDLE_NAME) AS MN1,INITCAP(E1.LAST_NAME) AS LN1,
                 INITCAP(E2.FIRST_NAME) AS FN2,INITCAP(E2.MIDDLE_NAME) AS MN2,INITCAP(E2.LAST_NAME) AS LN2,
-                RA.RECOMMEND_BY AS RECOMMENDER,
-                RA.APPROVED_BY AS APPROVER,
+                RA.APPROVED_BY  AS RECOMMENDER,
+                (
+                CASE
+                  WHEN TR.APPROVER_ROLE='DCEO'
+                  THEN
+                    (SELECT EMPLOYEE_ID
+                    FROM HRIS_EMPLOYEES
+                    WHERE IS_DCEO   ='Y'
+                    AND STATUS      ='E'
+                    AND RETIRED_FLAG='N'
+                    )
+                  ELSE
+                    (SELECT EMPLOYEE_ID
+                    FROM HRIS_EMPLOYEES
+                    WHERE IS_CEO    ='Y'
+                    AND STATUS      ='E'
+                    AND RETIRED_FLAG='N'
+                    )
+                END) AS APPROVER,
                 INITCAP(RECM.FIRST_NAME) AS RECM_FN,INITCAP(RECM.MIDDLE_NAME) AS RECM_MN,INITCAP(RECM.LAST_NAME) AS RECM_LN,
                 INITCAP(APRV.FIRST_NAME) AS APRV_FN,INITCAP(APRV.MIDDLE_NAME) AS APRV_MN,INITCAP(APRV.LAST_NAME) AS APRV_LN,
                 TR.RECOMMENDED_BY AS RECOMMENDED_BY,
@@ -88,7 +106,7 @@ class TravelStatusRepository implements RepositoryInterface{
                 E1.EMPLOYEE_ID=TR.RECOMMENDED_BY
                 LEFT OUTER JOIN HRIS_EMPLOYEES E2 ON
                 E2.EMPLOYEE_ID=TR.APPROVED_BY
-                LEFT OUTER JOIN HRIS_TRVL_RECOMMENDER_APPROVER RA ON
+                LEFT OUTER JOIN HRIS_RECOMMENDER_APPROVER RA ON
                 TR.EMPLOYEE_ID = RA.EMPLOYEE_ID
                 LEFT OUTER JOIN HRIS_EMPLOYEES RECM ON
                 RECM.EMPLOYEE_ID = RA.RECOMMEND_BY
@@ -121,9 +139,26 @@ class TravelStatusRepository implements RepositoryInterface{
         }
         if($recomApproveId!=null){
             if($travelRequestStatusId==-1){
-                $sql .=" AND ((RA.RECOMMEND_BY=".$recomApproveId." AND  TR.STATUS='RQ') "
+                $sql .=" AND ((RA.APPROVED_BY=".$recomApproveId." AND  TR.STATUS='RQ') "
                         . "OR (TR.RECOMMENDED_BY=".$recomApproveId." AND (TR.STATUS='RC' OR TR.STATUS='R' OR TR.STATUS='AP')) "
-                        . "OR (RA.APPROVED_BY=".$recomApproveId." AND  TR.STATUS='RC' ) "
+                        . "OR ((".$recomApproveId."=
+                            CASE
+                              WHEN TR.APPROVER_ROLE='DCEO'
+                              THEN
+                                (SELECT EMPLOYEE_ID
+                                FROM HRIS_EMPLOYEES
+                                WHERE IS_DCEO   ='Y'
+                                AND STATUS      ='E'
+                                AND RETIRED_FLAG='N'
+                                )
+                              ELSE
+                                (SELECT EMPLOYEE_ID
+                                FROM HRIS_EMPLOYEES
+                                WHERE IS_CEO    ='Y'
+                                AND STATUS      ='E'
+                                AND RETIRED_FLAG='N'
+                                )
+                            END) AND  TR.STATUS='RC' ) "
                         . "OR (TR.APPROVED_BY=".$recomApproveId." AND (TR.STATUS='AP' OR (TR.STATUS='R' AND TR.APPROVED_DATE IS NOT NULL))) )";
             }else if($travelRequestStatusId=='RQ'){
                 $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND TR.STATUS='RQ')";
