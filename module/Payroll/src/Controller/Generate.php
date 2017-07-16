@@ -45,6 +45,7 @@ class Generate extends AbstractActionController {
     public function printPayslipAction(){
         $employeeid = $this->params()->fromRoute('id');
         $mcode = $this->params()->fromRoute('mcode');
+        $this->layout()->setTemplate('layout/print-layout');
         return Helper::addFlashMessagesToArray($this, ['employeeId'=>$employeeid,'mcode'=>$mcode]);
     }
     public function taxsheetAction(){
