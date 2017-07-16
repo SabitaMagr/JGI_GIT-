@@ -70,6 +70,7 @@ class HolidayRepository implements RepositoryInterface {
             new Expression("INITCAP(HOLIDAY_LNAME) AS HOLIDAY_LNAME"),
             new Expression("STATUS AS STATUS"),
             new Expression("HALFDAY AS HALFDAY"),
+            new Expression("ASSIGN_ON_EMPLOYEE_SETUP AS ASSIGN_ON_EMPLOYEE_SETUP"),
             new Expression("REMARKS AS REMARKS"),
                 ], true);
 
