@@ -199,8 +199,8 @@ class HeadNotification {
         $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
         if($CEOFlag){
             $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
-            $recommdAppModel['RECOMMEND_BY']=$recommdAppModel['APPROVED_BY'];
-            $recommdAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+            $recommendAppModel['RECOMMEND_BY']=$recommendAppModel['APPROVED_BY'];
+            $recommendAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
         }
         $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::RECOMMEND_BY],$leaveApply->employeeId,  LeaveRequestNotificationModel::class, $adapter);
         
@@ -230,8 +230,8 @@ class HeadNotification {
         $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
         if($CEOFlag){
             $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
-            $recommdAppModel['RECOMMEND_BY']=$recommdAppModel['APPROVED_BY'];
-            $recommdAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+            $recommendAppModel['RECOMMEND_BY']=$recommendAppModel['APPROVED_BY'];
+            $recommendAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
         }
         $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::APPROVED_BY], $leaveApply->employeeId, LeaveRequestNotificationModel::class, $adapter);
 
@@ -377,7 +377,7 @@ class HeadNotification {
 
     private static function travelApplied(TravelRequest $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter,$request->approverRole);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -401,8 +401,7 @@ class HeadNotification {
                 break;
         }
         $title = "Travel Request";
-        $desc = "Travel Request";
-
+        $desc = "Travel Request of $notification->fromName from $notification->fromDate to $notification->toDate";
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 9, $adapter, $url);
@@ -410,7 +409,7 @@ class HeadNotification {
 
     private static function travelRecommend(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter,$request->approverRole);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -435,7 +434,9 @@ class HeadNotification {
                 break;
         }
         $title = "Travel Recommendation";
-        $desc = "Travel Recommendation {$status}";
+        $desc = "Recommendation of Travel Request by"
+                . " $notification->fromName from $notification->fromDate"
+                . " to $notification->toDate is $notification->status";
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 10, $adapter, $url);
@@ -443,7 +444,7 @@ class HeadNotification {
 
     private static function travelApprove(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
-        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter,$request->approverRole);
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
 
@@ -468,7 +469,9 @@ class HeadNotification {
                 break;
         }
         $title = "Travel Approval";
-        $desc = "Travel Approval {$status}";
+        $desc = "Approval of Travel Request by"
+                . " $notification->fromName from $notification->fromDate"
+                . " to $notification->toDate is $notification->status";
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 11, $adapter, $url);
@@ -1625,10 +1628,18 @@ class HeadNotification {
         return $recommdAppModel;
     }
     
-    public static function findRecAppForTrvl($employeeId,$adapter){
-        $recommdAppRepo = new RecommenderApproverRepository($adapter);
+    public static function findRecAppForTrvl($employeeId,$adapter,$approverRole){
+        $recommdAppRepo = new RecommendApproveRepository($adapter);
+        $empRepository = new EmployeeRepository($adapter);
+        
         $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($employeeId);
-
+        $approverFlag =($approverRole=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
+        
+        $recommdAppModel[RecommendApprove::RECOMMEND_BY]=$recommdAppModel[RecommendApprove::APPROVED_BY];  
+        $recommdAppModel[RecommendApprove::APPROVED_BY] = $approverDetail['EMPLOYEE_ID'];
+        
         if ($recommdAppModel == null) {
             throw new Exception("recommender and approver not set for employee with id =>" . $employeeId);
         }

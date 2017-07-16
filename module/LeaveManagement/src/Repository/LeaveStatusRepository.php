@@ -86,6 +86,7 @@ class LeaveStatusRepository implements RepositoryInterface {
 
         $sql = "SELECT INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
                 LA.NO_OF_DAYS,
+                L.PAID AS PAID,
                 INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))     AS START_DATE,
                 INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))       AS END_DATE,
                 INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY'))   AS APPLIED_DATE,
@@ -204,6 +205,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
+                L.PAID AS PAID,
                 LA.EMPLOYEE_ID AS EMPLOYEE_ID,
                 INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
                 INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT,

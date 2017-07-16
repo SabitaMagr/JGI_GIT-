@@ -29,6 +29,10 @@
                     allowance: 0,
                     localConveyence:0,
                     miscExpense: 0,
+                    fareFlag:false,
+                    allowanceFlag:false,
+                    localConveyenceFlag:false,
+                    miscExpenseFlag:false,
                     total: 0,
                     remarks: "",
                     checkbox: "checkboxt0",
@@ -78,6 +82,10 @@
                                         allowance: parseFloat(expenseDtlList[j].ALLOWANCE),
                                         localConveyence: parseFloat(expenseDtlList[j].LOCAL_CONVEYENCE),
                                         miscExpense: parseFloat(expenseDtlList[j].MISC_EXPENSES),
+                                        fareFlag: (expenseDtlList[j].FARE_FLAG==='Y')?true:false,
+                                        allowanceFlag: (expenseDtlList[j].ALLOWANCE_FLAG==='Y')?true:false,
+                                        localConveyenceFlag: (expenseDtlList[j].LOCAL_CONVEYENCE_FLAG==='Y')?true:false,
+                                        miscExpenseFlag: (expenseDtlList[j].MISC_EXPENSES_FLAG==='Y')?true:false,
                                         remarks: expenseDtlList[j].REMARKS,
                                         checkbox: "checkboxt" + j,
                                         checked: false
@@ -110,6 +118,10 @@
                         allowance: 0,
                         localConveyence:0,
                         miscExpense: 0,
+                        fareFlag:false,
+                        allowanceFlag:false,
+                        localConveyenceFlag:false,
+                        miscExpenseFlag:false,
                         total:0,
                         remarks: "",
                         checkbox: "checkboxt" + $scope.counter,
@@ -179,7 +191,7 @@
 //                            var totalValue = parseFloat(angular.element(document.getElementById(totalId)).val());
 //                            item.total=totalValue;
 //                        });
-                        console.log($scope.travelDetail.approverRole);
+                        console.log(document.urlExpenseRequest);
                         window.app.pullDataById(document.urlExpenseRequest, {
                             data: {
                                 expenseDtlList: $scope.expenseDtlFormList,

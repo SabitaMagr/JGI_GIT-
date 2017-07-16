@@ -45,6 +45,7 @@ class LeaveApproveRepository implements RepositoryInterface
                 LA.STATUS AS STATUS,
                 LA.EMPLOYEE_ID,
                 LA.ID AS ID,
+                L.PAID AS PAID,
                 INITCAP(E.FIRST_NAME) AS FIRST_NAME,
                 INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                 INITCAP(E.LAST_NAME) AS LAST_NAME,

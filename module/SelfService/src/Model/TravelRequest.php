@@ -4,6 +4,15 @@ namespace SelfService\Model;
 use Application\Model\Model;
 
 class TravelRequest extends Model{
+    const TRAVEL_STATUS = [
+        'Pending'=>'RQ',
+        'Recommended'=>'RC',
+        'Approved'=>'AP',
+        'Rejected'=>'R',
+        'Cancelled'=>'C',
+        'Settlement Checked'=>'SC'
+    ];
+    
     const TABLE_NAME = "HRIS_EMPLOYEE_TRAVEL_REQUEST";
     const TRAVEL_ID = "TRAVEL_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
