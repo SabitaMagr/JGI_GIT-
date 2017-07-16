@@ -1480,10 +1480,10 @@ ul#personalInfo li{
 .dtlTravel ul{
     padding: 0px !important;
 }
-.font-common{
+/*.font-common{
     font-family: Impact, Charcoal, sans-serif;
     font-size:12px;
-}
+}*/
 
 .detailOfRequest ul{
     padding: 0px !important;
@@ -2152,4 +2152,8 @@ div#ndp-nepali-box{
 }
 #printable h5{
     margin-top:0px !important;
+}
+#printableInnerArea{
+    font-family:"Open Sans",sans-serif !important;
+    font-size:11px !important;
 }

@@ -438,6 +438,7 @@ print $this->form()->openTag($form);
 
     <div class="row">
         <div id="printableArea" class="col-md-8"  style="border:1px solid; display: none;">
+            <div id="printableInnerArea">
             <div class="wrapper">
                 <div class="col-sm-8 col-sm-offset-2">
                     <ul id="headingList">
@@ -632,7 +633,7 @@ print $this->form()->openTag($form);
                     </div>
                 </div>
             </div>
-
+            </div>
         </div>
         <?php if($status=='SC'){ ?>
             <div class="col-md-12" style="text-align:center;">
