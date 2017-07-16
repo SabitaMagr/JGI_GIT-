@@ -1,3 +1,33 @@
+
+<style>
+   .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{
+   
+  
+} 
+    
+    
+  table tr td
+  {
+      font-size:12px !important;
+      padding:2px 5px !important;
+        color: #555555 !important;
+        font-weight:400 !important;
+  }  
+  .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+    border-bottom-width: 1px !important;
+}
+.btn-go{
+    padding:5px !important;
+    color:#fff !important;
+    height:28px !important;  
+}   
+ 
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+  
+    padding: 2px;
+}
+ 
+</style>
 <?php
 $db_host = "192.168.4.102";
 $db_user = "root";
@@ -41,8 +71,8 @@ if (isset($_POST['mcode'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2"><input type="submit" value="Go" style="padding-right:30px;"
-                                               class="btn btn-primary"
+                        <td colspan="2"><input type="submit" value="Go"
+                                               class="btn btn-color-green form-control btn-go"
                                                label="Filter"/></td>
                     </tr>
                 </table>
@@ -76,7 +106,7 @@ order by TAX_NO";
                                                 <?php
                                                 echo $res['TAX_DESC'];
                                                 ?></td>
-                                            <td class='rowAA'><p style='float:right;'><?php
+                                            <td class='rowAA'><span style='float:right;'><?php
                                                     $pay_code = $res['PAY_CODE'];
                                                    if(strLen($pay_code) == 3)
                                                    {
@@ -100,7 +130,7 @@ order by TAX_NO";
                                                     $amount = $row['AMOUNT'];
                                                     echo number_format($row['AMOUNT'], 2);
                                                     $total = $total + $amount; ?>
-                                                </p>
+                                                </span>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -131,7 +161,7 @@ order by TAX_NO";
                                                 <?php
                                                 echo $res['TAX_DESC'];
                                                 ?></td>
-                                            <td><p style='float:right;'><?php
+                                            <td><span style='float:right;'><?php
                                                     $pay_code = $res['PAY_CODE'];
 
                                                    if(strLen($pay_code) == 3)
@@ -154,7 +184,7 @@ order by TAX_NO";
                                                     $sst = mysqli_query($connect,$sql1);
                                                     $row = mysqli_fetch_assoc($sst);
                                                     echo $amount = number_format($row['AMOUNT'], 2); ?>
-                                                </p>
+                                                </span>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -186,7 +216,7 @@ order by TAX_NO";
                                                 <?php
                                                 echo $res['TAX_DESC'];
                                                 ?></td>
-                                            <td><p style='float:right;'>
+                                            <td><span style='float:right;'>
                                                 <?php
                                                     $pay_code = $res['PAY_CODE'];
                                                    if(strLen($pay_code) == 3)
@@ -208,7 +238,7 @@ order by TAX_NO";
                                                     $sst = mysqli_query($connect,$sql1);
                                                     $row = mysqli_fetch_assoc($sst);
                                                     echo $amount = number_format($row['AMOUNT'], 2); ?>
-                                                </p>
+                                                </span>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -224,7 +254,7 @@ order by TAX_NO";
                             <table class="table table-bordered">
                                 <tr>
                                     <td colspan="2">
-                                        <?php echo 'TOTAL INCOME: ' ?></td>
+                                         <?php echo 'TOTAL INCOME: ' ?></td>
                                     <td style="text-align: right"><?php echo number_format($total, 2); ?>
                                     </td>
                                 </tr>
@@ -329,7 +359,7 @@ order by TAX_NO";
                                                 <?php
                                                 echo $res['TAX_DESC'];
                                                 ?></td>
-                                            <td><p style='float:right;'><?php
+                                            <td><span style='float:right;'><?php
                                                     $pay_code = $res['PAY_CODE'];
                                                 if(strLen($pay_code) == 3)
                                                    {
@@ -350,7 +380,7 @@ order by TAX_NO";
                                                     $sst = mysqli_query($connect,$sql1);
                                                     $row = mysqli_fetch_assoc($sst);
                                                     echo $amount = number_format($row['AMOUNT'], 2); ?>
-                                                </p>
+                                                </span>
                                             </td>
                                         </tr>
                                     <?php } ?>
