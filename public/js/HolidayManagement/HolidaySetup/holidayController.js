@@ -7,6 +7,7 @@ angular.module('hris', [])
                 startDate: '',
                 endDate: '',
                 halfday: '',
+                assignOnEmployeeSetup: '',
                 remarks: ''
             };
 
@@ -23,7 +24,7 @@ angular.module('hris', [])
                         if (!response.success) {
                             throw response.error;
                         }
-
+console.log(response);
                         $scope.$apply(function () {
                             var temp = response.data;
                             $scope.holidayDtl.holidayCode = temp.HOLIDAY_CODE;
@@ -33,6 +34,7 @@ angular.module('hris', [])
                             $scope.holidayDtl.endDate = temp.END_DATE;
                             $scope.holidayDtl.halfday = temp.HALFDAY;
                             $scope.holidayDtl.remarks = temp.REMARKS;
+                            $scope.holidayDtl.assignOnEmployeeSetup = temp.ASSIGN_ON_EMPLOYEE_SETUP;
 
                             setTimeout(function () {
                                 window.app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
