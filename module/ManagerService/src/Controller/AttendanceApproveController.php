@@ -164,7 +164,7 @@ class AttendanceApproveController extends AbstractActionController {
 
                 try {
                     $model->id = $id;
-                    HeadNotification::pushNotification(($model->status == 'RC') ? NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED : NotificationEvents::ATTENDANCE_RECOMMEND_REJECTED, $model, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($model->status == 'RC') ? NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED : NotificationEvents::ATTENDANCE_RECOMMEND_REJECTED, $model, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
@@ -188,7 +188,7 @@ class AttendanceApproveController extends AbstractActionController {
 
                 try {
                     $model->id = $id;
-                    HeadNotification::pushNotification(($model->status == 'AP') ? NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED : NotificationEvents::ATTENDANCE_APPROVE_REJECTED, $model, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($model->status == 'AP') ? NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED : NotificationEvents::ATTENDANCE_APPROVE_REJECTED, $model, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

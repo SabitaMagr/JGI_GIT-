@@ -182,7 +182,7 @@ class TravelRequest extends AbstractActionController {
                     }
                 }else{
                     try {
-                        HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                        HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
                     } catch (Exception $e) {
                         $this->flashmessenger()->addMessage($e->getMessage());
                     }
@@ -276,7 +276,7 @@ class TravelRequest extends AbstractActionController {
                 }
             }
             try {
-                HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }

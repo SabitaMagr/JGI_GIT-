@@ -173,9 +173,9 @@ class LeaveApproveController extends AbstractActionController {
                 $leaveApply->approvedBy = $detail['APPROVER'];
                 try {
                     if ($leaveApply->status == 'RC') {
-                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
                     } else {
-                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
                     }
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
@@ -241,7 +241,7 @@ class LeaveApproveController extends AbstractActionController {
 //                end of transaction
 
                 try {
-                    HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
