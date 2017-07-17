@@ -84,6 +84,11 @@ return [
                         'route' => 'travelStatus',
                         'action' => 'expenseDetail',
                     ],
+                    [
+                        'label' => 'Check Settlement',
+                        'route' => 'travelStatus',
+                        'action' => 'checkSettlement',
+                    ],
                 ],
             ],
         ],

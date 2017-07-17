@@ -183,9 +183,9 @@ class LeaveRequest extends AbstractActionController {
             $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
             $preBalance = $result['BALANCE'];
 
-            if ($detail['HALF_DAY'] != 'N') {
+            if ($detail['HALF_DAY'] != 'N' && $detail['HALF_DAY'] !="" && $detail['HALF_DAY'] !=null){
                 $leaveTaken = 0.5;
-            } else {
+            }else{
                 $leaveTaken = $detail['NO_OF_DAYS'];
             }
             $newBalance = $preBalance + $leaveTaken;
@@ -360,8 +360,15 @@ class LeaveRequest extends AbstractActionController {
             $request = $this->getRequest();
             if ($request->isPost()) {
                 $postedData = $request->getPost();
-                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                
+                $startdate=date_create($postedData['startDate']);
+                $endDate=date_create($postedData['endDate']);
+                $diff=date_diff($startdate,$endDate);
+                $daysDifferent=$diff->format("%a")+1;
+                $availableDays = ['AVAILABLE_DAYS'=>$daysDifferent];
+                
+//                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+//                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
                 return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");

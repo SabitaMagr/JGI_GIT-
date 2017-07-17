@@ -7,7 +7,7 @@
 })(window.jQuery, window.app);
 
 angular.module('hris', [])
-        .controller("travelStatusListController", function ($scope, $http) {
+        .controller("travelStatusListController", function ($scope, $http,$window) {
             var $tableContainer = $("#travelRequestStatusTable");
             var displayKendoFirstTime = true;
             $scope.view = function () {
@@ -210,4 +210,10 @@ angular.module('hris', [])
                
                 window.app.UIConfirmations();
             };
+            $scope.msg =  $window.localStorage.getItem("msg");
+            if($window.localStorage.getItem("msg")){
+                window.toastr.success($scope.msg, "Notifications");
+            }
+            $window.localStorage.removeItem("msg");
         });
+        

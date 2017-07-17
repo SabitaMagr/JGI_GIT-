@@ -1903,6 +1903,8 @@ class RestfulService extends AbstractRestfulController {
                 return "Approved";
             } else if ($status == "C") {
                 return "Cancelled";
+            }else if ($status == "SC") {
+                return "Settlement Checked";
             }
         };
         $getRequestType = function($requestType) {
@@ -1945,11 +1947,11 @@ class RestfulService extends AbstractRestfulController {
                 $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
                 $dataArray['ROLE'] = 4;
             }
+            $row['CHECK_SETTLEMENT']=($row['REQUESTED_TYPE']=='ep' && $row['STATUS']=='AP')?1:0;
             $new_row = array_merge($row, ['STATUS' => $status, 'REQUESTED_TYPE' => $getRequestType($row['REQUESTED_TYPE'])]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
         }
-
         return [
             "success" => "true",
             "data" => $recordList,

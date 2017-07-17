@@ -299,6 +299,7 @@ print $this->form()->openTag($form);
                         </label>
                         <div>
                             <select disabled="disabled" class="form-control" name="travelSubstitute">
+                                <option style="cursor: pointer;" value="">---</option>
                                 <?php
                                 foreach ($employeeList as $key => $value) {
                                     $selected = ($key == $subEmployeeId) ? "selected" : "";
@@ -348,6 +349,7 @@ print $this->form()->closeTag();
 
 
     <div style="border:1px solid; display: none" id="printableArea" class="col-md-8">
+        <div id="printableInnerArea">
         <div class="row">
             <div class="col-md-8 col-sm-offset-2">
                 <ul id="headingList">
@@ -441,6 +443,7 @@ print $this->form()->closeTag();
                 </div>
             </div>
         <?php } ?>
+        </div>
     </div>
 
     <div class="col-md-12" style="text-align:center;">

@@ -93,14 +93,14 @@ if ($currentMonth=='12'){
 }
 
 }
-if(!isset($_POST['mcode'])){
+if(!isset($mcode)){
     $monthCode=getMonthcode($currentMonth);
-}else if($_POST['mcode']==''){
+}else if($mcode==''){
     $monthCode=getMonthcode($currentMonth);
 }else{
-    $monthCode = $_POST['mcode'];
+    $monthCode = $mcode;
 }
- // echo $monthCode; exit;
+//  echo $mcode; exit;
 
 
 ?>
@@ -187,7 +187,7 @@ $base_url = "http://10.15.15.170/neohris/";
            $employee_name=ucwords($employee);
 
 ?>
-<img src= "<?php echo $base_url. 'users/img/lg.gif';?>" width="275" height="70"></img>
+<!--<img src= "<?php // echo $base_url. 'users/img/lg.gif';?>" width="275" height="70"></img>-->
 <div class="panel-body" style="overflow-y:auto;height:auto;">
 <h4> Generate Pay Slip </td></h4>
 <div class="page-heading">

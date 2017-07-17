@@ -205,6 +205,10 @@ print $this->form()->openTag($form);
                                             $currentStatus = "Rejected";
                                         } else if ($status == "C") {
                                             $currentStatus = "Cancelled";
+                                        }else if($status=='CS'){
+                                            $currentStatus = "Check Settlement";
+                                        }else if($status=='SC'){
+                                            $currentStatus = 'Settlement Checked';
                                         }
                                         ?>
                                         <input  value="<?php echo $currentStatus; ?>" type="text" disabled="disabled" name="returnedDate" id="returnedDate" class="form-control"> 
@@ -246,7 +250,9 @@ print $this->form()->openTag($form);
                                     <th rowspan="3">Daily Allowance</th>
                                     <th rowspan="3">Local Conveyence</th>
                                     <th rowspan="3">Misc. Expenses</th>
-                                    <th rowspan="3">Total</th>
+                                    <?php if($status=='SC'){ ?>
+                                        <th rowspan="3">Total</th>
+                                    <?php } ?>
                                     <th rowspan="3">Remarks</th>
                                 </tr>
                                 <tr>
@@ -294,44 +300,88 @@ print $this->form()->openTag($form);
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="number" value="<?= $expenseDtlRow['FARE']; ?>" readonly="readonly" name="fare" style="width: 60px;" step="0.01" min="0"/>
+                                            <?php if($status=='SC' && $expenseDtlRow['FARE_FLAG']=='Y'){ ?>
+                                                <input type="number" value="<?= $expenseDtlRow['FARE']; ?>" readonly="readonly" name="fare" style="width: 60px;" step="0.01" min="0"/>
+                                            <?php }else if($status!='SC'){  ?>
+                                            <div class="md-checkbox pull-right">
+                                                <input type="checkbox" id="fareFlag" name="fareFlag" disabled="disabled" <?=($expenseDtlRow['FARE_FLAG']=='Y')?"checked":""; ?> class="md-check ng-pristine ng-untouched ng-valid ng-empty">
+                                                <label for="fareFlag">
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span></label>
+                                            </div>
+                                            <?php } ?>
                                         </td>
                                         <td>
-                                            <input type="number" value="<?= $expenseDtlRow['ALLOWANCE']; ?>"  readonly="readonly" style="width: 60px;" step="0.01" min="0"/>
+                                            <?php if($status=='SC' && $expenseDtlRow['ALLOWANCE_FLAG']=='Y'){ ?>
+                                                <input type="number" value="<?= $expenseDtlRow['ALLOWANCE']; ?>"  readonly="readonly" style="width: 60px;" step="0.01" min="0"/>
+                                            <?php }else if($status!='SC'){  ?>
+                                            <div class="md-checkbox pull-right">
+                                                <input type="checkbox" id="fareFlag" name="allowanceFlag" disabled="disabled" <?=($expenseDtlRow['ALLOWANCE_FLAG']=='Y')?"checked":""; ?> class="md-check ng-pristine ng-untouched ng-valid ng-empty">
+                                                <label for="allowanceFlag">
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span></label>
+                                            </div>
+                                            <?php } ?>
                                         </td>
                                         <td>
-                                            <input type="number" value="<?= $expenseDtlRow['LOCAL_CONVEYENCE']; ?>"  readonly="readonly" style="width: 69px;" step="0.01" min="0"/>
+                                            <?php if($status=='SC' && $expenseDtlRow['LOCAL_CONVEYENCE_FLAG']=='Y'){ ?>
+                                                <input type="number" value="<?= $expenseDtlRow['LOCAL_CONVEYENCE']; ?>"  readonly="readonly" style="width: 69px;" step="0.01" min="0"/>
+                                            <?php }else if($status!='SC'){ ?>
+                                            <div class="md-checkbox pull-right">
+                                                <input type="checkbox" id="fareFlag" name="localConveyenceFlag" disabled="disabled" <?=($expenseDtlRow['LOCAL_CONVEYENCE_FLAG']=='Y')?"checked":""; ?> class="md-check ng-pristine ng-untouched ng-valid ng-empty">
+                                                <label for="localConveyenceFlag">
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span></label>
+                                            </div>
+                                            <?php } ?>
                                         </td>
                                         <td>
-                                            <input type="number" value="<?= $expenseDtlRow['MISC_EXPENSES']; ?>"  readonly="readonly" style="width: 60px;" step="0.01" min="0"/>
+                                            <?php if($status=='SC' && $expenseDtlRow['MISC_EXPENSES_FLAG']=='Y'){ ?>
+                                                <input type="number" value="<?= $expenseDtlRow['MISC_EXPENSES']; ?>"  readonly="readonly" style="width: 60px;" step="0.01" min="0"/>
+                                            <?php }else if($status!='SC'){  ?>
+                                            <div class="md-checkbox pull-right">
+                                                <input type="checkbox" id="fareFlag" name="miscExpenseFlag" disabled="disabled" <?=($expenseDtlRow['MISC_EXPENSES_FLAG']=='Y')?"checked":""; ?> class="md-check ng-pristine ng-untouched ng-valid ng-empty">
+                                                <label for="miscExpenseFlag">
+                                                    <span class="inc"></span>
+                                                    <span class="check"></span>
+                                                    <span class="box"></span></label>
+                                            </div>
+                                            <?php } ?>
                                         </td>
-                                        <td>
-                                            <input type="number" value="<?= $expenseDtlRow['TOTAL_AMOUNT']; ?>"  id="total"  readonly="readonly" name="total" style="width: 72px;" step="0.01" min="0"/>
-                                        </td>
+                                        <?php if($status=='SC'){ ?>
+                                            <td>
+                                                <input type="number" value="<?= $expenseDtlRow['TOTAL_AMOUNT']; ?>"  id="total"  readonly="readonly" name="total" style="width: 72px;" step="0.01" min="0"/>
+                                            </td>
+                                        <?php } ?>
                                         <td>
                                             <input type="text" value="<?= $expenseDtlRow['REMARKS']; ?>" readonly="readonly" size="11"/>
                                         </td>
                                     </tr>
                                 <?php } ?>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                    </td>
-                                    <td><b>Total:</b></td>
-                                    <td>
-                                        <input type="number" value="<?= $detail['REQUESTED_AMOUNT']; ?>"  readonly="readonly" id="sumAllTotal" step="0.01" min="0" readonly="readonly" style="width: 72px;" />
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
+                                <?php if($status=='SC'){ ?>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                        </td>
+                                        <td><b>Total:</b></td>
+                                        <td>
+                                            <input type="number" value="<?= $detail['REQUESTED_AMOUNT']; ?>"  readonly="readonly" id="sumAllTotal" step="0.01" min="0" readonly="readonly" style="width: 72px;" />
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -343,7 +393,7 @@ print $this->form()->openTag($form);
                                     <?php print $this->formElement($recommendedRemarks); ?>
                             </div>
                         <?php } ?>
-                        <?php if ($role == 2 && ($status == 'AP' || ($status == 'R' && $approvedDT != null))) { ?>
+                        <?php if ($role == 2 && ($status == 'AP' || $status == 'SC' || ($status == 'R' && $approvedDT != null))) { ?>
                             <div
                                 class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
                                 <label>Reason for action [From Approver]</label>
@@ -388,6 +438,7 @@ print $this->form()->openTag($form);
 
     <div class="row">
         <div id="printableArea" class="col-md-8"  style="border:1px solid; display: none;">
+            <div id="printableInnerArea">
             <div class="wrapper">
                 <div class="col-sm-8 col-sm-offset-2">
                     <ul id="headingList">
@@ -582,11 +633,13 @@ print $this->form()->openTag($form);
                     </div>
                 </div>
             </div>
-
+            </div>
         </div>
-        <div class="col-md-12" style="text-align:center;">
-            <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
-        </div>
+        <?php if($status=='SC'){ ?>
+            <div class="col-md-12" style="text-align:center;">
+                <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
+            </div>
+        <?php } ?>
     </div>
 
 </div>
