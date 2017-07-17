@@ -92,7 +92,7 @@ class TrainingAssignController extends AbstractActionController {
         $model->employeeId = $employeeId;
         $this->flashmessenger()->addMessage("Training Assign Successfully Cancelled!!!");
         try {
-            HeadNotification::pushNotification(NotificationEvents::TRAINING_CANCELLED, $model, $this->adapter, $this->plugin('url'));
+            HeadNotification::pushNotification(NotificationEvents::TRAINING_CANCELLED, $model, $this->adapter, $this);
         } catch (Exception $e) {
             $this->flashmessenger()->addMessage($e->getMessage());
         }

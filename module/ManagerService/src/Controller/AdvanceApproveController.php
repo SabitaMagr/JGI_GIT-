@@ -155,7 +155,7 @@ class AdvanceApproveController extends AbstractActionController {
 
                 try {
                     $advanceRequestModel->advanceRequestId = $id;
-                    HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
@@ -178,7 +178,7 @@ class AdvanceApproveController extends AbstractActionController {
 
                 try {
                     $advanceRequestModel->advanceRequestId = $id;
-                    HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

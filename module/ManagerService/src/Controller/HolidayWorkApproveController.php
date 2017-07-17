@@ -156,7 +156,7 @@ class HolidayWorkApproveController extends AbstractActionController {
                 $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
                 try {
                     $workOnHolidayModel->id = $id;
-                    HeadNotification::pushNotification(($workOnHolidayModel->status == 'RC') ? NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED : NotificationEvents::WORKONHOLIDAY_RECOMMEND_REJECTED, $workOnHolidayModel, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($workOnHolidayModel->status == 'RC') ? NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED : NotificationEvents::WORKONHOLIDAY_RECOMMEND_REJECTED, $workOnHolidayModel, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
@@ -179,7 +179,7 @@ class HolidayWorkApproveController extends AbstractActionController {
                 $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
                 try {
                     $workOnHolidayModel->id = $id;
-                    HeadNotification::pushNotification(($workOnHolidayModel->status == 'AP') ? NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED : NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED, $workOnHolidayModel, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($workOnHolidayModel->status == 'AP') ? NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED : NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED, $workOnHolidayModel, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

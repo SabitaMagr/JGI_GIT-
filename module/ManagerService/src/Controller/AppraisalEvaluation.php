@@ -198,7 +198,7 @@ class AppraisalEvaluation extends AbstractActionController{
                             $stageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
                         }
                         $appraisalAssignRepo->updateCurrentStageByAppId($stageId, $appraisalId, $employeeId);
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
                         
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-evaluation");

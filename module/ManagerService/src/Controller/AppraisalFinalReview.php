@@ -161,10 +161,10 @@ class AppraisalFinalReview extends AbstractActionController{
                 $nextStageId = ($superReviewerAgree=='N')?5:6; //appraiser evaluation:appraisee stage
                 $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
                 if($superReviewerAgree==='Y'){
-                    HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                    HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
                 }
-                HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
-                HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this->plugin('url'),['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("appraisal-final-review");
             }catch(Exception $e){

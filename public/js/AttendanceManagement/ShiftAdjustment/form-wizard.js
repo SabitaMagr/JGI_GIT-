@@ -97,6 +97,9 @@
                 $('#form_wizard_1').find('.progress-bar').css({
                     width: $percent + '%'
                 });
+                if (index == 1) {
+                    $('select').select2();
+                }
                 if (index === 2) {
                     $adjustmentStartDateLabel.html(shiftAdjustment.adjustmentStartDate);
                     $adjustmentEndDateLabel.html(shiftAdjustment.adjustmentEndDate);

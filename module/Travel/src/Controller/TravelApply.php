@@ -80,7 +80,7 @@ class TravelApply extends AbstractActionController {
                     }
                 } else {
                     try {
-                        HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                        HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
                     } catch (Exception $e) {
                         $this->flashmessenger()->addMessage($e->getMessage());
                     }

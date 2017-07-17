@@ -291,7 +291,7 @@ class AppraisalAssignController extends AbstractActionController{
         $appraisalAssign->appraisalId = $appraisalId;
         $appraisalAssign->createdBy = $this->employeeId;
         if($appraiserQuestionNum>0 && $appraiserIdNew!=null && $appraiserIdNew!=""){
-            HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this->plugin('url'));
+            HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this);
         }
         return [
             "success" => true,

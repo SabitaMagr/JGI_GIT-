@@ -21,6 +21,7 @@ class Holiday extends Model {
     const REMARKS = "REMARKS";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const ASSIGN_ON_EMPLOYEE_SETUP = "ASSIGN_ON_EMPLOYEE_SETUP";
 
     public $holidayId;
     public $holidayCode;
@@ -36,6 +37,7 @@ class Holiday extends Model {
     public $remarks;
     public $createdBy;
     public $modifiedBy;
+    public $assignOnEmployeeSetup;
     public $mappings = [
         'holidayId' => self::HOLIDAY_ID,
         'holidayCode' => self::HOLIDAY_CODE,
@@ -51,6 +53,7 @@ class Holiday extends Model {
         'remarks' => self::REMARKS,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
+        'assignOnEmployeeSetup' => self::ASSIGN_ON_EMPLOYEE_SETUP,
     ];
 
 }

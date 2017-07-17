@@ -71,5 +71,14 @@ class HolidayForm {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Assign On Employee Setup"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"assignOnEmployeeSetup","value":"N"})
+     */
+    public $assignOnEmployeeSetup;
 
 }

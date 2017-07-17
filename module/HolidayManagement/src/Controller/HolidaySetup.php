@@ -227,6 +227,7 @@ class HolidaySetup extends AbstractActionController {
             $holidayModel->remarks = (isset($data['remarks']) ? $data['remarks'] : "" );
             $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
             $holidayModel->modifiedBy = $this->employeeId;
+            $holidayModel->assignOnEmployeeSetup = (isset($data['assignOnEmployeeSetup']) ? $data['assignOnEmployeeSetup'] : "" );
 
             $resultSet = $holidayRepository->edit($holidayModel, $inputData['holidayId']);
             return new CustomViewModel([
