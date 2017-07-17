@@ -375,7 +375,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 {$toDateCondition}
                 {$statusCondition}
                 {$missPunchOnlyCondition}
-                ORDER BY A.ATTENDANCE_DT DESC
+                ORDER BY A.ATTENDANCE_DT DESC ,A.IN_TIME ASC
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
