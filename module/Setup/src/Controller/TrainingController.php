@@ -68,7 +68,8 @@ class TrainingController extends AbstractActionController {
                     'form' => $this->form,
                     'instituteNameList' => EntityHelper::getTableKVListWithSortOption($this->adapter, Institute::TABLE_NAME, Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME], [Institute::STATUS => 'E'], Institute::INSTITUTE_NAME, "ASC", null, true, true),
                     'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, false, true),
-                    'trainingTypeList' => self::TRAINING_TYPES
+                    'trainingTypeList' => self::TRAINING_TYPES,
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
@@ -103,7 +104,8 @@ class TrainingController extends AbstractActionController {
                     'id' => $id,
                     'instituteNameList' => EntityHelper::getTableKVListWithSortOption($this->adapter, Institute::TABLE_NAME, Institute::INSTITUTE_ID, [Institute::INSTITUTE_NAME], [Institute::STATUS => 'E'], Institute::INSTITUTE_NAME, "ASC", null, true, true),
                     'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, false, true),
-                    'trainingTypeList' => self::TRAINING_TYPES
+                    'trainingTypeList' => self::TRAINING_TYPES,
+                    'customRenderer' => Helper::renderCustomView()
                         ]
         );
     }
