@@ -148,7 +148,7 @@ class WorkOnDayoff extends AbstractActionController {
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Work on Day-off Request Successfully added!!!");
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::WORKONDAYOFF_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                    HeadNotification::pushNotification(NotificationEvents::WORKONDAYOFF_APPLIED, $model, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

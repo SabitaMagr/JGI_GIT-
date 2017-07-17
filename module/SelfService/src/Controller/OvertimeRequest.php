@@ -194,7 +194,7 @@ class OvertimeRequest extends AbstractActionController {
                 }
                 $this->flashmessenger()->addMessage("Overtime Request Successfully added!!!");
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::OVERTIME_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                    HeadNotification::pushNotification(NotificationEvents::OVERTIME_APPLIED, $model, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
