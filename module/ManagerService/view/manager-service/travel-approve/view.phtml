@@ -306,6 +306,7 @@ print $this->form()->openTag($form);
                             </label>
                             <div>
                                 <select disabled="disabled" class="form-control" name="travelSubstitute">
+                                    <option style="cursor: pointer;" value="">---</option>
                                     <?php
                                     foreach ($employeeList as $key => $value) {
                                         $selected = ($key == $subEmployeeId) ? "selected" : "";

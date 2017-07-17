@@ -183,9 +183,9 @@ class LeaveRequest extends AbstractActionController {
             $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
             $preBalance = $result['BALANCE'];
 
-            if ($detail['HALF_DAY'] != 'N') {
+            if ($detail['HALF_DAY'] != 'N' && $detail['HALF_DAY'] !="" && $detail['HALF_DAY'] !=null){
                 $leaveTaken = 0.5;
-            } else {
+            }else{
                 $leaveTaken = $detail['NO_OF_DAYS'];
             }
             $newBalance = $preBalance + $leaveTaken;
