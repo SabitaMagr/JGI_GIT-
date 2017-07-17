@@ -103,7 +103,7 @@ class AttendanceRequest extends AbstractActionController {
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $model, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $model, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

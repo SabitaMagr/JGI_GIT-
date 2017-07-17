@@ -59,6 +59,7 @@ use Training\Model\TrainingAssign;
 use Travel\Repository\RecommenderApproverRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\Plugin\Url;
 
 class HeadNotification {
@@ -1362,7 +1363,12 @@ class HeadNotification {
         self::sendEmail($notification, 39, $adapter, $url);
     }
 
-    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, Url $url = null, $senderDetail = null, $recieverDetail = null) {
+    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, AbstractActionController $context = null, $senderDetail = null, $receiverDetail = null) {
+        $url = null;
+        if ($context != null) {
+            $url = $context->plugin('url');
+        }
+
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
                 self::leaveApplied($model, $adapter, $url, self::RECOMMENDER);
@@ -1529,28 +1535,28 @@ class HeadNotification {
                 self::salaryReview($model, $adapter, $url);
                 break;
             case NotificationEvents::KPI_SETTING:
-                self::kpiSetting($model, $adapter, $url, $recieverDetail);
+                self::kpiSetting($model, $adapter, $url, $receiverDetail);
                 break;
             case NotificationEvents::KPI_APPROVED:
-                self::kpiApproved($model, $adapter, $url, $senderDetail, $recieverDetail);
+                self::kpiApproved($model, $adapter, $url, $senderDetail, $receiverDetail);
                 break;
             case NotificationEvents::KEY_ACHIEVEMENT:
-                self::keyAchievement($model, $adapter, $url, $recieverDetail);
+                self::keyAchievement($model, $adapter, $url, $receiverDetail);
                 break;
             case NotificationEvents::APPRAISAL_EVALUATION:
-                self::appraisalEvaluation($model, $adapter, $url, $senderDetail, $recieverDetail);
+                self::appraisalEvaluation($model, $adapter, $url, $senderDetail, $receiverDetail);
                 break;
             case NotificationEvents::APPRAISAL_REVIEW:
-                self::appraisalReview($model, $adapter, $url, self::REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
+                self::appraisalReview($model, $adapter, $url, self::REVIEWER_EVALUATION, $senderDetail, $receiverDetail);
                 break;
             case NotificationEvents::APPRAISAL_FINAL_REVIEW:
-                self::appraisalReview($model, $adapter, $url, self::SUPER_REVIEWER_EVALUATION, $senderDetail, $recieverDetail);
+                self::appraisalReview($model, $adapter, $url, self::SUPER_REVIEWER_EVALUATION, $senderDetail, $receiverDetail);
                 break;
             case NotificationEvents::HR_FEEDBACK:
-                self::appraisalReview($model, $adapter, $url, self::HR_FEEDBACK, $senderDetail, $recieverDetail);
+                self::appraisalReview($model, $adapter, $url, self::HR_FEEDBACK, $senderDetail, $receiverDetail);
                 break;
             case NotificationEvents::APPRAISEE_FEEDBACK:
-                self::appraiseeFeedback($model, $adapter, $url, $recieverDetail);
+                self::appraiseeFeedback($model, $adapter, $url, $receiverDetail);
                 break;
             case NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED:
                 self::monthlyAppraisalAssigned($model, $adapter, $url);

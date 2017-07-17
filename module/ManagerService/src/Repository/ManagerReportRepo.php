@@ -205,7 +205,7 @@ class ManagerReportRepo implements RepositoryInterface {
                 {$toDateCondition}
                 {$statusCondition}
                 {$missPunchOnlyCondition}
-                ORDER BY A.ATTENDANCE_DT DESC
+                ORDER BY A.ATTENDANCE_DT DESC,A.IN_TIME ASC
                 ";
 
         $statement = $this->adapter->query($sql);

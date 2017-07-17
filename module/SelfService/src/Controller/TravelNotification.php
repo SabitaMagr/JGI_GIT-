@@ -162,13 +162,13 @@ class TravelNotification extends AbstractActionController{
             $this->repository->edit($travelSubstituteModel, $id);
             $travelRequest->travelId = $id;
             try {
-                HeadNotification::pushNotification(($travelSubstituteModel->approvedFlag == 'Y') ? NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED : NotificationEvents::TRAVEL_SUBSTITUTE_REJECTED, $travelRequest, $this->adapter, $this->plugin('url'));
+                HeadNotification::pushNotification(($travelSubstituteModel->approvedFlag == 'Y') ? NotificationEvents::TRAVEL_SUBSTITUTE_ACCEPTED : NotificationEvents::TRAVEL_SUBSTITUTE_REJECTED, $travelRequest, $this->adapter, $this);
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
             if($action=='Approve'){
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $travelRequest, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $travelRequest, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
