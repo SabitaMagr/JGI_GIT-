@@ -1368,7 +1368,10 @@ class HeadNotification {
         if ($context != null) {
             $url = $context->plugin('url');
         }
-
+        $basePath = $context->getRequest()->getBasePath();
+       echo  "<img src='".$basePath."/uploads/logo2.gif' alt='logo' class='logo-default1 companylogo'>";
+            
+        print_r($basePath); die();
         switch ($eventType) {
             case NotificationEvents::LEAVE_APPLIED:
                 self::leaveApplied($model, $adapter, $url, self::RECOMMENDER);
