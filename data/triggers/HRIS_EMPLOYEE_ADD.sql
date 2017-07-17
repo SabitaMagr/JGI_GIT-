@@ -65,4 +65,26 @@ CREATE OR REPLACE TRIGGER HRIS_EMPLOYEE_ADD AFTER
           );
       END LOOP;
     END;
+    BEGIN
+      FOR holiday IN
+      (SELECT HOLIDAY_ID
+        FROM HRIS_HOLIDAY_MASTER_SETUP
+        WHERE ASSIGN_ON_EMPLOYEE_SETUP = 'Y'
+        AND STATUS                     ='E'
+        AND START_DATE                >=TRUNC(SYSDATE)
+      )
+      LOOP
+        INSERT
+        INTO HRIS_EMPLOYEE_HOLIDAY
+          (
+            EMPLOYEE_ID,
+            HOLIDAY_ID
+          )
+          VALUES
+          (
+            :new.EMPLOYEE_ID,
+            holiday.HOLIDAY_ID
+          );
+      END LOOP;
+    END;
   END;
