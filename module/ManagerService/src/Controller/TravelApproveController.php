@@ -46,7 +46,6 @@ class TravelApproveController extends AbstractActionController {
 
     public function indexAction() {
         $list = $this->travelApproveRepository->getAllRequest($this->employeeId);
-
         $travelApprove = [];
         $getValue = function($recommender, $approver) {
             if ($this->employeeId == $recommender) {
@@ -103,6 +102,7 @@ class TravelApproveController extends AbstractActionController {
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'TRAVEL_ID' => $row['TRAVEL_ID'],
                 'TRAVEL_CODE' => $row['TRAVEL_CODE'],
+                'ADVANCE_AMOUNT'=>$row['ADVANCE_AMOUNT'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
@@ -247,7 +247,7 @@ class TravelApproveController extends AbstractActionController {
             $advanceAmt = 0;
         }
         $transportTypes = array(
-            'AP' => 'Aero Plane',
+            'AP' => 'Flight',
             'OV' => 'Office Vehicles',
             'TI' => 'Taxi',
             'BS' => 'Bus'

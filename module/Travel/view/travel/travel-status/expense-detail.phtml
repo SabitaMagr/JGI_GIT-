@@ -136,7 +136,7 @@ print $this->form()->openTag($form);
                                         <label for="advanceAmount">Advance Amount :</label> 
                                     </td>
                                     <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $advanceAmt; ?>" name="advanceAmount" id="advanceAmount" class="form-control">
+                                        <input type="text" disabled="disabled" value="<?php echo $detail['ADVANCE_AMOUNT']; ?>" name="advanceAmount" id="advanceAmount" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -579,9 +579,9 @@ print $this->form()->openTag($form);
             <div class="wrapper font-common">
                 <div id="employeeDtl1">
                     <ul>
-                        <li>Advance taken for travel in Rs. <?= $advanceAmt ?> expenses incured during travel in Rs. <?= $totalAmount; ?>
+                        <li>Advance taken for travel in Rs. <?= $detail['ADVANCE_AMOUNT'] ?> expenses incured during travel in Rs. <?= $totalAmount; ?>
                             Balance amount after expenses Rs. <?php
-                            $balance = $advanceAmt - $totalAmount;
+                            $balance =  $detail['ADVANCE_AMOUNT'] - $totalAmount;
                             echo $balance;
                             ?></li>
                         <li>Total Expenses(in words): <?= $totalExpense; ?> </li>
