@@ -173,7 +173,7 @@ class TrainingRequest extends AbstractActionController {
                 $model->status = 'RQ';
                 $this->repository->add($model);
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this->plugin("url"));
+                    HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
