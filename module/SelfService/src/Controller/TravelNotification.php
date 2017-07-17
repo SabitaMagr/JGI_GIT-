@@ -176,7 +176,7 @@ class TravelNotification extends AbstractActionController{
             $this->redirect()->toRoute('travelNotification');
         }
         $transportTypes = array(
-            'AP'=>'Aero Plane',
+            'AP'=>'Flight',
             'OV'=>'Office Vehicles',
             'TI'=>'Taxi',
             'BS'=>'Bus'

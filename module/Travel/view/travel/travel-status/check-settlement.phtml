@@ -44,7 +44,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="portlet-body div-font-11">
                 <form name="travelExpenseForm" id="travelRequest-form" ng-submit="submitExpenseDtl()" novalidate>
                     <input type="hidden" id="travelId" value="<?php echo $id; ?>" />
-                    <input type="hidden" id="requestedType" value="<?php echo $requestedType ?>"/>
+                    <input type="hidden" id="requestedType" value="<?php echo $currentRequestType; ?>"/>
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                            <table>
@@ -53,7 +53,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="purpose">Purpose :</label> 
                                     </td>
                                     <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $detail['PURPOSE']; ?>" name="purpose" required="required" id="purpose" class="form-control">
+                                        <input type="text" disabled="disabled" ng-model="travelDetail.purpose" name="purpose" required="required" id="purpose" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -66,7 +66,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="advanceAmount">Advance Amount :</label> 
                                     </td>
                                     <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $detail['REQUESTED_AMOUNT']; ?>" name="advanceAmount" required="required" id="advanceAmount" class="form-control">
+                                        <input type="text" disabled="disabled" ng-model="travelDetail.advanceAmount" name="advanceAmount" required="required" id="advanceAmount" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -78,7 +78,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="destination">Destination :</label> 
                                     </td>
                                     <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $detail['DESTINATION'] ?>" name="destination" required="required" id="destination" class="form-control">
+                                        <input type="text" disabled="disabled" ng-model="travelDetail.destination" name="destination" required="required" id="destination" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -92,7 +92,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="departureDate">Departure Date :</label>
                                     </td>
                                     <td>
-                                        <input dvalue="{{travelDetail.departureDateMain}}" datepicker type="text" required="required" ng-model="travelDetail.departureDateMain" name="departureDate" id="departureDate" class="form-control">
+                                        <input disabled="disabled" dvalue="{{travelDetail.departureDateMain}}" datepicker type="text" required="required" ng-model="travelDetail.departureDateMain" name="departureDate" id="departureDate" class="form-control">
                                         <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.departureDate.$touched">
                                             <ul ng-show="travelExpenseForm.departureDate.$error.required" class="help-block error">
                                                 <li>Departure Date is required.</li>
@@ -110,7 +110,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="employeeCode">Returned Date :</label> 
                                     </td>
                                     <td>
-                                        <input dvalue="{{travelDetail.returnedDate}}" datepicker value="" type="text" ng-model="travelDetail.returnedDate" required="required" name="returnedDate" id="returnedDate" class="form-control"> 
+                                        <input disabled="disabled" dvalue="{{travelDetail.returnedDate}}" datepicker value="" type="text" ng-model="travelDetail.returnedDate" required="required" name="returnedDate" id="returnedDate" class="form-control"> 
                                         <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.returnedDate.$touched">
                                             <ul ng-show="travelExpenseForm.returnedDate.$error.required" class="help-block error">
                                                 <li>Returned Date is required.</li>
@@ -126,13 +126,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <td width="40%"><label for="form-approver">Approver :</label></td>  
                                     <td>
                                         <div class="md-radio-inline">
-                                            <div class="md-radio"><input checked="checked" type="radio" value="CEO" name="approverRole" id="approverRole+CEO" class="md-radiobtn radioButton approverRole" ng-model="travelDetail.approverRole"><label for="approverRole+CEO">
+                                            <div class="md-radio"><input disabled="disabled"  checked="checked" type="radio" value="CEO" name="approverRole" id="approverRole+CEO" class="md-radiobtn radioButton approverRole" ng-model="travelDetail.approverRole"><label for="approverRole+CEO">
                                                 <span></span>
                                                 <span class="check"></span>
                                                 <span class="box"></span> CEO
                                                 </label>
                                             </div>
-                                            <div class="md-radio"><input type="radio" value="DCEO" name="approverRole" id="approverRole+DCEO" class="md-radiobtn radioButton approverRole" ng-model="travelDetail.approverRole"><label for="approverRole+DCEO">
+                                            <div class="md-radio"><input disabled="disabled" type="radio" value="DCEO" name="approverRole" id="approverRole+DCEO" class="md-radiobtn radioButton approverRole" ng-model="travelDetail.approverRole"><label for="approverRole+DCEO">
                                                 <span></span>
                                                 <span class="check"></span>
                                                 <span class="box"></span> DCEO

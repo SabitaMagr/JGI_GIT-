@@ -29,8 +29,7 @@
                 {field: "TO_DATE", title: "To Date", width: 100},
                 {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
                 {field: "DESTINATION", title: "Destination", width: 110},
-                {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 140},
-                {field: "REQUESTED_TYPE", title: "Request For", width: 120},
+                {field: "ADVANCE_AMOUNT", title: "Advance Amt.", width: 140},
                 {title: "Action", width: 80}
             ]
         });

@@ -63,7 +63,8 @@ class TravelApproveRepository implements RepositoryInterface{
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.APPROVER_ROLE AS APPROVER_ROLE"),
             new Expression("TR.TRANSPORT_TYPE AS TRANSPORT_TYPE"),
-             new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
+            new Expression("TR.ADVANCE_AMOUNT AS ADVANCE_AMOUNT"),
+            new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE") 
         ], true);
@@ -103,6 +104,7 @@ class TravelApproveRepository implements RepositoryInterface{
                     TR.APPROVED_REMARKS,
                     TR.DESTINATION,
                     TR.APPROVER_ROLE,
+                    TR.ADVANCE_AMOUNT,
                     INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
                     INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
                     INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,

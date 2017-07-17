@@ -6,7 +6,7 @@
                 $scope.counter = '';
                 var l;
                 $scope.transportTypeList = [
-                    {"id": "AP", "name": "Aero Plane"},
+                    {"id": "AP", "name": "Flight"},
                     {"id": "OV", "name": "Office Vehicles"},
                     {"id": "TI", "name": "Taxi"},
                     {"id": "BS", "name": "Bus"},
@@ -14,7 +14,10 @@
                 $scope.travelDetail = {
                     departureDateMain :'',
                     returnedDate:'',
-                    approverRole:'CEO'
+                    approverRole:'CEO',
+                    destination:'',
+                    purpose:'',
+                    advanceAmount:''
                 };
                 $scope.expenseDtlFormTemplate = {
                     id: 0,
@@ -57,6 +60,9 @@
                             $scope.travelDetail.departureDateMain = travelDtl.DEPARTURE_DATE;
                             $scope.travelDetail.returnedDate=travelDtl.RETURNED_DATE;
                             $scope.travelDetail.approverRole=travelDtl.APPROVER_ROLE;
+                            $scope.travelDetail.destination = travelDtl.DESTINATION;
+                            $scope.travelDetail.purpose = travelDtl.PURPOSE;
+                            $scope.travelDetail.advanceAmount = travelDtl.ADVANCE_AMOUNT;
                             if (num > 0) {
                                 $scope.counter = num;
                                 for (var j = 0; j < num; j++) {
@@ -201,7 +207,10 @@
                                 requestedType: requestedType,
                                 sumAllTotal:sumAllTotal,
                                 expenseDtlEmpty: parseInt($scope.expenseDtlEmpty),
-                                approverRole:$scope.travelDetail.approverRole
+                                approverRole:$scope.travelDetail.approverRole,
+                                destination:$scope.travelDetail.destination,
+                                purpose:$scope.travelDetail.purpose,
+                                advanceAmount:$scope.travelDetail.advanceAmount
                             },
                         }).then(function (success) {
                             $scope.$apply(function () {

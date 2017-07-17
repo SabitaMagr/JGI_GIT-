@@ -44,8 +44,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="portlet-body div-font-11">
                 <form name="travelExpenseForm" id="travelRequest-form" ng-submit="submitExpenseDtl()" novalidate>
-                    <input type="hidden" id="travelId" value="<?php echo $id; ?>" />
-                    <input type="hidden" id="requestedType" value="<?php echo $requestedType ?>"/>
+                    <input type="hidden" id="travelId" value="<?= $id; ?>" />
+                    <input type="hidden" id="requestedType" value="<?= $currentRequestType; ?>"/>
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                            <table>
@@ -54,7 +54,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="purpose">Purpose :</label> 
                                     </td>
                                     <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $detail['PURPOSE']; ?>" name="purpose" required="required" id="purpose" class="form-control">
+                                        <input type="text"  value="" name="purpose" ng-model="travelDetail.purpose" required="required" id="purpose" class="form-control">
+                                        <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.purpose.$touched">
+                                            <ul ng-show="travelExpenseForm.purpose.$error.required" class="help-block error">
+                                                <li>Purpose is required.</li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -67,7 +72,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="advanceAmount">Advance Amount :</label> 
                                     </td>
                                     <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $detail['REQUESTED_AMOUNT']; ?>" name="advanceAmount" required="required" id="advanceAmount" class="form-control">
+                                        <input type="text"  value="" name="advanceAmount" ng-model="travelDetail.advanceAmount" id="advanceAmount" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -79,7 +84,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="destination">Destination :</label> 
                                     </td>
                                     <td>
-                                        <input type="text" disabled="disabled" value="<?php echo $detail['DESTINATION'] ?>" name="destination" required="required" id="destination" class="form-control">
+                                        <input type="text"  value="" name="destination" ng-model="travelDetail.destination" required="required" id="destination" class="form-control">
+                                        <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.destination.$touched">
+                                            <ul ng-show="travelExpenseForm.destination.$error.required" class="help-block error">
+                                                <li>Destination is required.</li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             </table>

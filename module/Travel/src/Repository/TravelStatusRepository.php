@@ -65,6 +65,7 @@ class TravelStatusRepository implements RepositoryInterface{
                 TR.PURPOSE AS PURPOSE,
                 TR.EMPLOYEE_ID AS EMPLOYEE_ID,
                 TR.APPROVER_ROLE AS APPROVER_ROLE,
+                TR.ADVANCE_AMOUNT AS ADVANCE_AMOUNT,
                 INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
                 INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
                 INITCAP(E.FULL_NAME) AS FULL_NAME,

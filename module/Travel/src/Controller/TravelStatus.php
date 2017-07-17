@@ -140,7 +140,7 @@ class TravelStatus extends AbstractActionController
             $advanceAmt = 0 ;
         }
         $transportTypes = array(
-            'AP'=>'Aero Plane',
+            'AP'=>'Flight',
             'OV'=>'Office Vehicles',
             'TI'=>'Taxi',
             'BS'=>'Bus'
@@ -344,18 +344,15 @@ class TravelStatus extends AbstractActionController
             return new CustomViewModel(['success' => true, 'data' => ['msg' => 'Travel Request Successfully added!!!']]);
         } else {
             $id = (int) $this->params()->fromRoute('id');
+            $currentRequestType = 'ep';
             if ($id === 0) {
-                return $this->redirect()->toRoute("travelRequest");
+                $id=0;
+                $currentRequestType = 'ad';
             }
-            $detail = $travelRequestRepo->fetchById($id);
-            $travelId = ($detail['REQUESTED_TYPE'] == 'ep') ? $detail['REFERENCE_TRAVEL_ID'] : $id;
-            $referenceDetail = $travelRequestRepo->fetchById($travelId);
             return Helper::addFlashMessagesToArray($this, [
-                        'form' => $this->form,
-                        'advanceAmt' => $referenceDetail['REQUESTED_AMOUNT'],
-                        'detail' => $referenceDetail,
-                        'id' => $id,
-                        'requestedType' => $detail['REQUESTED_TYPE']
+                    'form' => $this->form,
+                    'id' => $id,
+                    'currentRequestType'=>$currentRequestType
             ]);
         }
     }
