@@ -187,15 +187,6 @@ class LeaveApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
                 } else if ($action == "Approve") {
                     $leaveApply->status = "AP";
-                    if ($detail['HALF_DAY'] != null && $detail['HALF_DAY'] != 'N') {
-                        $leaveTaken = 0.5;
-                    } else {
-                        $leaveTaken = $detail['NO_OF_DAYS'];
-                    }
-                    $newBalance = $preBalance - $leaveTaken;
-                    //to update the previous balance
-                    $this->repository->updateLeaveBalance($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'], $newBalance);
-
                     $this->flashmessenger()->addMessage("Leave Request Approved");
                 }
                 unset($leaveApply->halfDay);
