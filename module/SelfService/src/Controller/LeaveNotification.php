@@ -160,13 +160,13 @@ class LeaveNotification extends AbstractActionController{
             $this->repository->edit($leaveSubstitute, $id);
             $leaveApply->id = $id;
             try {
-                HeadNotification::pushNotification(($leaveSubstitute->approvedFlag == 'Y') ? NotificationEvents::LEAVE_SUBSTITUTE_ACCEPTED : NotificationEvents::LEAVE_SUBSTITUTE_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                HeadNotification::pushNotification(($leaveSubstitute->approvedFlag == 'Y') ? NotificationEvents::LEAVE_SUBSTITUTE_ACCEPTED : NotificationEvents::LEAVE_SUBSTITUTE_REJECTED, $leaveApply, $this->adapter, $this);
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
             if($action=='Approve'){
                 try {
-                    HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveApply, $this->adapter, $this->plugin("url"));
+                    HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveApply, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

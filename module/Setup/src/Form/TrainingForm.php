@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Form;
 
 use Zend\Form\Annotation;
@@ -7,8 +8,8 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Training")
  */
-class TrainingForm
-{ 
+class TrainingForm {
+
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
@@ -16,7 +17,8 @@ class TrainingForm
      * @Annotation\Options({"label":"Training Name"})
      * @Annotation\Attributes({ "id":"form-trainingName", "class":"form-trainingName form-control" })
      */
-    public $trainingName;  
+    public $trainingName;
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
@@ -24,7 +26,8 @@ class TrainingForm
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Type"})
      * @Annotation\Attributes({ "id":"trainingType","class":"form-control form-trainingType"})
      */
-    public $trainingType;    
+    public $trainingType;
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
@@ -33,7 +36,8 @@ class TrainingForm
      * @Annotation\Attributes({ "id":"instituteId","class":"form-control form-instituteId"})
      */
     public $instituteId;
-     /**
+
+    /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -41,7 +45,8 @@ class TrainingForm
      * @Annotation\Attributes({ "id":"startDate", "class":"form-startDate form-control" })
      */
     public $startDate;
-     /**
+
+    /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -49,7 +54,7 @@ class TrainingForm
      * @Annotation\Attributes({ "id":"endDate", "class":"form-endDate form-control" })
      */
     public $endDate;
-  
+
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -58,7 +63,7 @@ class TrainingForm
      * @Annotation\Attributes({ "id":"form-duration","min":"0","step":"0.01", "class":"form-duration form-control" })
      */
     public $duration;
-    
+
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
@@ -82,7 +87,7 @@ class TrainingForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
@@ -92,6 +97,12 @@ class TrainingForm
      */
     public $companyId;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Within Company"})
+     * @Annotation\Attributes({ "id":"isWithinCompany"})
+     */
+    public $isWithinCompany;
 
 }
-

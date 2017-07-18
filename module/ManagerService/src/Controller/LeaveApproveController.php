@@ -173,9 +173,9 @@ class LeaveApproveController extends AbstractActionController {
                 $leaveApply->approvedBy = $detail['APPROVER'];
                 try {
                     if ($leaveApply->status == 'RC') {
-                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
                     } else {
-                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
                     }
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
@@ -187,15 +187,6 @@ class LeaveApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
                 } else if ($action == "Approve") {
                     $leaveApply->status = "AP";
-                    if ($detail['HALF_DAY'] != null && $detail['HALF_DAY'] != 'N') {
-                        $leaveTaken = 0.5;
-                    } else {
-                        $leaveTaken = $detail['NO_OF_DAYS'];
-                    }
-                    $newBalance = $preBalance - $leaveTaken;
-                    //to update the previous balance
-                    $this->repository->updateLeaveBalance($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'], $newBalance);
-
                     $this->flashmessenger()->addMessage("Leave Request Approved");
                 }
                 unset($leaveApply->halfDay);
@@ -241,7 +232,7 @@ class LeaveApproveController extends AbstractActionController {
 //                end of transaction
 
                 try {
-                    HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this->plugin('url'));
+                    HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }

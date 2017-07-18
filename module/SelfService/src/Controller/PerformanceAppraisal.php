@@ -181,14 +181,14 @@ class PerformanceAppraisal extends AbstractActionController{
                     $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $this->employeeId);
 //                }
                 if($assignedAppraisalDetail['STAGE_ID']!=1){
-                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>($assignedAppraisalDetail['REVIEWED_BY']!=null)?$assignedAppraisalDetail['REVIEWED_BY']:$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
-                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['APPRAISED_BY'],'USER_TYPE'=>"APPRAISER"]);
+                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>($assignedAppraisalDetail['REVIEWED_BY']!=null)?$assignedAppraisalDetail['REVIEWED_BY']:$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$assignedAppraisalDetail['APPRAISED_BY'],'USER_TYPE'=>"APPRAISER"]);
                     if($assignedAppraisalDetail['SUPER_REVIEWER_ID']!=null){
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$assignedAppraisalDetail['SUPER_REVIEWER_ID'],'USER_TYPE'=>"SUPER_REVIEWER"]);
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$assignedAppraisalDetail['SUPER_REVIEWER_ID'],'USER_TYPE'=>"SUPER_REVIEWER"]);
                     }
                     $adminList = $employeeRepo->fetchByAdminFlagList();
                     foreach($adminList as $adminRow){
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this->plugin('url'),null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
+                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
                     }
                 }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");

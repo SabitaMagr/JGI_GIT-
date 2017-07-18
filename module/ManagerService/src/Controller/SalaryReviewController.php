@@ -60,7 +60,7 @@ class SalaryReviewController extends AbstractActionController {
 
             $successFlag = $this->repo->add($salaryDetail);
             try {
-                HeadNotification::pushNotification( NotificationEvents::SALARY_REVIEW , $salaryDetail, $this->adapter, $this->plugin('url'));
+                HeadNotification::pushNotification( NotificationEvents::SALARY_REVIEW , $salaryDetail, $this->adapter, $this);
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
