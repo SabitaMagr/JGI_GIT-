@@ -120,27 +120,7 @@ class WorkOnHolidayStatus extends AbstractActionController {
                 $workOnHolidayModel->status = "R";
                 $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
             } else if ($action == "Approve") {
-                $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
-                $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-                $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
-                $substituteLeaveId = $substituteLeave['LEAVE_ID'];
-                $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-                if (count($empSubLeaveDtl) > 0) {
-                    $preBalance = $empSubLeaveDtl['BALANCE'];
-                    $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
-                    $balance = $preBalance + $detail['DURATION'];
-                    $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID, $substituteLeaveId, 0, $total, $balance);
-                } else {
-                    $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
-                    $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                    $leaveAssign->createdBy = $this->employeeId;
-                    $leaveAssign->employeeId = $requestedEmployeeID;
-                    $leaveAssign->leaveId = $substituteLeaveId;
-                    $leaveAssign->totalDays = $detail['DURATION'];
-                    $leaveAssign->previousYearBalance = 0;
-                    $leaveAssign->balance = $detail['DURATION'];
-                    $leaveAssignRepo->add($leaveAssign);
-                }
+                $this->wohAppAction($requestedEmployeeID, $detail);
                 $workOnHolidayModel->status = "AP";
                 $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
             }
@@ -179,6 +159,18 @@ class WorkOnHolidayStatus extends AbstractActionController {
             $holidayObjList[$holidayRow['HOLIDAY_ID']] = $holidayRow;
         }
         return ['holidayKVList' => $holidayList, 'holidayList' => $holidayObjList];
+    }
+
+    private function wohAppAction($requestedEmployeeID, $detail) {
+        $rule = $this->holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
+
+        if ($rule['WOH_FLAG'] === Position::WOH_FLAG_LEAVE) {
+            $this->holidayWorkApproveRepository->wohToLeave($this->employeeId, $detail['ID']);
+        }
+
+        if ($rule['WOH_FLAG'] === Position::WOH_FLAG_OT) {
+            $this->holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
+        }
     }
 
 }
