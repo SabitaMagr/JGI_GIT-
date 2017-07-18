@@ -112,11 +112,11 @@ class LeaveStatus extends AbstractActionController {
         $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
         $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
         $empRepository = new EmployeeRepository($this->adapter);
-        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
-        if($CEOFlag){
-            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
-            $recommender=$approver;
-            $approver =($CEODtl!=null) ? $CEODtl['FIRST_NAME']." ".$CEODtl['MIDDLE_NAME']." ".$CEODtl['LAST_NAME']:"";
+        $CEOFlag = ($detail['PAID'] == 'N' && $detail['NO_OF_DAYS'] > 3) ? true : false;
+        if ($CEOFlag) {
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS => 'E', HrEmployees::IS_CEO => 'Y', HrEmployees::RETIRED_FLAG => 'N']);
+            $recommender = $approver;
+            $approver = ($CEODtl != null) ? $CEODtl['FIRST_NAME'] . " " . $CEODtl['MIDDLE_NAME'] . " " . $CEODtl['LAST_NAME'] : "";
         }
         $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
         $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
@@ -147,16 +147,6 @@ class LeaveStatus extends AbstractActionController {
                 $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
             } else if ($action == "Approve") {
                 $leaveApply->status = "AP";
-
-                if ($detail['HALF_DAY'] != null && $detail['HALF_DAY'] != 'N' && $detail['HALF_DAY'] !="") {
-                    $leaveTaken = 0.5;
-                } else {
-                    $leaveTaken = $detail['NO_OF_DAYS'];
-                }
-                $newBalance = $preBalance - $leaveTaken;
-                //to update the previous balance
-                $leaveApproveRepository->updateLeaveBalance($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'], $newBalance);
-
                 $this->flashmessenger()->addMessage("Leave Request Approved");
             }
             unset($leaveApply->halfDay);
