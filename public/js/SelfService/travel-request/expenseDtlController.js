@@ -13,6 +13,7 @@
                 ];
                 $scope.travelDetail = {
                     departureDateMain :'',
+                    employeeId:0,
                     returnedDate:'',
                     approverRole:'CEO',
                     destination:'',
@@ -47,12 +48,14 @@
                 var requestedType = angular.element(document.getElementById('requestedType')).val();
                 console.log(requestedType);
                 if (requestedType == 'ep') {
+                    App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.urlExpenseDetailList, {
                         data: {
                             'travelId': travelId
                         }
                     }).then(function (success) {
                         $scope.$apply(function () {
+                            App.unblockUI("#hris-page-content");
                             var tempData = success.data;
                             var travelDtl = tempData.travelDetail;
                             var expenseDtlList = tempData.expenseDtlList;
@@ -63,6 +66,7 @@
                             $scope.travelDetail.destination = travelDtl.DESTINATION;
                             $scope.travelDetail.purpose = travelDtl.PURPOSE;
                             $scope.travelDetail.advanceAmount = travelDtl.ADVANCE_AMOUNT;
+                            $scope.travelDetail.employeeId = travelDtl.EMPLOYEE_ID;
                             if (num > 0) {
                                 $scope.counter = num;
                                 for (var j = 0; j < num; j++) {
@@ -210,7 +214,8 @@
                                 approverRole:$scope.travelDetail.approverRole,
                                 destination:$scope.travelDetail.destination,
                                 purpose:$scope.travelDetail.purpose,
-                                advanceAmount:$scope.travelDetail.advanceAmount
+                                advanceAmount:$scope.travelDetail.advanceAmount,
+                                employeeId:$scope.travelDetail.employeeId
                             },
                         }).then(function (success) {
                             $scope.$apply(function () {

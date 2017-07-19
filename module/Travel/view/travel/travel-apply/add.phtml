@@ -12,13 +12,13 @@ $this->headScript()
         ->appendFile($this->basePath('js/SelfService/travel-request/expenseDtlController.js'));
 ?>
 <script>
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.urlExpenseRequest = '<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>';
-    document.urlTravelRequest = '<?= $this->url("travelRequest", ["action" => "index"]) ?>';
+    document.urlExpenseRequest = '<?= $this->url("travelApply", ["action" => "add"]) ?>';
+    document.urlTravelRequest = '<?= $this->url("travelStatus", ["action" => "index"]) ?>';
     document.urlExpenseDetailList = '<?= $this->url("travelRequest", ["action" => "expenseDetailList"]) ?>';
-    document.urlDeleteExpenseDetail = '<?= $this->url("travelRequest", ["action" => "deleteExpenseDetail"]) ?>';</script>
+    document.urlDeleteExpenseDetail = '<?= $this->url("travelRequest", ["action" => "deleteExpenseDetail"]) ?>';
+</script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\travelApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -48,7 +48,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <input type="hidden" id="requestedType" value="<?= $currentRequestType; ?>"/>
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                           <table>
+                            <table width="100%">
+                                <tr>
+                                    <td width="40%">
+                                        <label for="purpose">Employee :</label> 
+                                    </td>
+                                    <td width="60%">
+                                        <select name="employeeId" ng-model="travelDetail.employeeId" required="required" id="employeeId" class="form-control">
+                                            <?php 
+                                            $i=0;
+                                            foreach($employees as $key=>$value){ ?>
+                                            <option value="<?= $key ?>" ng-selected="<?=($i==0)?true:false; ?>"><?= $value; ?></option>
+                                            <?php 
+                                            $i++;
+                                            } ?>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
+                           <table width="100%">
                                 <tr>
                                     <td width="40%">
                                         <label for="purpose">Purpose :</label> 
@@ -66,7 +86,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
 
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
                                     <td width="40%">
                                         <label for="advanceAmount">Advance Amount :</label> 
@@ -77,8 +97,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </tr>
                             </table>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
                                     <td width="40%">
                                         <label for="destination">Destination :</label> 
@@ -94,10 +116,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </tr>
                             </table>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
                                     <td width="40%">
                                         <label for="departureDate">Departure Date :</label>
@@ -115,7 +135,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
 
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
                                     <td width="40%">
                                         <label for="employeeCode">Returned Date :</label> 
@@ -132,7 +152,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </table>
                         </div>
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
+                            <table width="100%">
                                 <tr>
                                     <td width="40%"><label for="form-approver">Approver :</label></td>  
                                     <td>
