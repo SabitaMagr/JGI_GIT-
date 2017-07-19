@@ -77,7 +77,7 @@ INTO HRIS_MENUS
     'EMP',
     325,
     'Edit My Profile',
-    6,
+    53,
     NULL,
     'employee',
     'E',
@@ -90,13 +90,40 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
+  
+
+  
+  
 INSERT INTO HRIS_ROLE_PERMISSIONS
   (MENU_ID,ROLE_ID,STATUS
   )
 SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
-    NULL,
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+ NULL,
     328,
-    'Attendnace Report',
+    'Attendance Report',
     5,
     NULL,
     'managerReport',
@@ -111,4 +138,9 @@ SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
     'Y'
   );
 
+ALTER TABLE HRIS_HOLIDAY_MASTER_SETUP 
+ADD ASSIGN_ON_EMPLOYEE_SETUP CHAR(1 BYTE) DEFAULT 'Y'NOT NULL CHECK (ASSIGN_ON_EMPLOYEE_SETUP IN ('Y','N'));
 
+
+
+ALTER TABLE HRIS_TRAINING_MASTER_SETUP ADD IS_WITHIN_COMPANY CHAR( 1 BYTE) DEFAULT 'Y' NOT NULL CHECK (IS_WITHIN_COMPANY IN ('Y','N'));

@@ -4,6 +4,8 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $('select').select2();
+//        console.log(document.currentEmployeeId);
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
@@ -33,8 +35,9 @@ angular.module('hris', [])
 
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
-                    action: 'pullAttendanceList',
+                    action: 'pullManagerAttendaceReport',
                     data: {
+                        'currentEmployee': document.currentEmployeeId,
                         'fromDate': fromDate,
                         'toDate': toDate,
                         'employeeId': employeeId,
@@ -75,6 +78,7 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
+                        {field: "FULL_NAME", title: "Employee"},
                         {field: "ATTENDANCE_DT", title: "Attendance Date"},
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
@@ -85,10 +89,11 @@ angular.module('hris', [])
                     ]
                 });
 
-                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
+                app.searchTable('attendanceTable', ['FULL_NAME', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
                 app.pdfExport(
                         'attendanceTable',
                         {
+                            'FULL_NAME': 'Employee',
                             'ATTENDANCE_DT': ' Attendance Date',
                             'IN_TIME': 'In Time',
                             'OUT_TIME': 'Out Time',
@@ -115,32 +120,55 @@ angular.module('hris', [])
             }
 
 
-            var idFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-            var fiscalYear = jQuery.parseJSON(document.fiscalYear);
-            if (parseInt(idFromParameter) > 0) {
+            //            start to get the current Date in  DD-MON-YYY format
+            var m_names = new Array("Jan", "Feb", "Mar",
+                    "Apr", "May", "Jun", "Jul", "Aug", "Sep",
+                    "Oct", "Nov", "Dec");
 
-                console.log(idFromParameter);
+            var d = new Date();
+
+            //to get today Date
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth();
+            var curr_year = d.getFullYear();
+            var todayDate = curr_date + "-" + m_names[curr_month] + "-" + curr_year;
+
+            //to get yesterday Date
+            var yes_date = new Date(d);
+            yes_date.setDate(d.getDate() - 1);
+            var yesterday_date = yes_date.getDate();
+            var yesterday_month = yes_date.getMonth();
+            var yesterday_year = yes_date.getFullYear();
+            var yesterdayDate = yesterday_date + "-" + m_names[yesterday_month] + "-" + yesterday_year;
+
+            //End to get Current Date and YesterDay Date
+
+            var idFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
+            if (parseInt(idFromParameter) > 0) {
                 var $status = angular.element(document.getElementById('statusId'));
+                var $missPunchOnly = angular.element(document.getElementById('missPunchOnly'));
                 var $fromDate = angular.element(document.getElementById('fromDate'));
                 var $toDate = angular.element(document.getElementById('toDate'));
-                var $missPunchOnly = angular.element(document.getElementById('missPunchOnly'));
-                var fiscalFromDate = fiscalYear.FROM_DATE;
-                var fiscalEndDate = fiscalYear.TO_DATE;
                 var map = {1: 'P', 2: 'L', 3: 'T', 4: 'TVL', 5: 'WOH', 6: 'LI', 7: 'EO'};
-
-                $fromDate.val(fiscalFromDate);
-                $toDate.val(fiscalEndDate);
-
                 if (idFromParameter == 8) {
                     $missPunchOnly.prop("checked", true);
+                    $fromDate.val(yesterdayDate);
+                    $toDate.val(yesterdayDate);
                 } else {
                     $status.val(map[idFromParameter]).change();
+                    if (idFromParameter == 7 || idFromParameter == 6) {
+                        $fromDate.val(yesterdayDate);
+                        $toDate.val(yesterdayDate);
+                    } else {
+                        $fromDate.val(todayDate);
+                        $toDate.val(todayDate);
+                    }
                 }
-
-
-
                 $scope.view();
             }
+
+
+
 
 
 

@@ -84,8 +84,10 @@
             app.pullDataById(document.wsValidateLeaveRequest, {startDate: startDateStr, endDate: endDateStr, employeeId: employeeId}).then(function (response) {
                 if (response.data['ERROR'] === null) {
                     $form.prop('valid', 'true');
+                    $form.prop('error-message', '');
                 } else {
                     $form.prop('valid', 'false');
+                    $form.prop('error-message', response.data['ERROR']);
                     app.showMessage(response.data['ERROR'], 'error');
                 }
             }, function (error) {
@@ -97,6 +99,7 @@
             if ($form.prop('valid') === 'true') {
                 return true;
             } else {
+                app.showMessage($form.prop('error-message'), 'error');
                 return false;
             }
         });

@@ -128,10 +128,10 @@ class DayoffWorkApproveRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function wodToLeave($auditBy, $wohId) {
+    public function wodReward($wodId) {
         EntityHelper::rawQueryResult($this->adapter, "
                     BEGIN
-                      HRIS_WOD_LEAVE_ADDITION({$auditBy},{$wohId});
+                      HRIS_WOD_REWQRD({$wodId});
                     END;");
     }
 

@@ -263,6 +263,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($status == "WOH") {
             $statusCondition = "AND A.OVERALL_STATUS = 'WH'";
         }
+        if ($status == "WOD") {
+            $statusCondition = "AND A.OVERALL_STATUS = 'WH'";
+        }
         if ($status == "LI") {
             $statusCondition = "AND (A.LATE_STATUS = 'L' OR A.LATE_STATUS = 'B' OR A.LATE_STATUS ='Y') ";
         }
@@ -372,7 +375,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 {$toDateCondition}
                 {$statusCondition}
                 {$missPunchOnlyCondition}
-                ORDER BY A.ATTENDANCE_DT DESC
+                ORDER BY A.ATTENDANCE_DT DESC ,A.IN_TIME ASC
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }

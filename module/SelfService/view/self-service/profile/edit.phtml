@@ -1,26 +1,34 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
-
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/boostrap-form-wizard/js/jquery.bootstrap.wizard.min.js'));
-$this->headScript()->appendFile($this->basePath('js/form_wizard.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/employee/form_wizard.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/add.js'));
 $this->headScript()->appendFile($this->basePath('js/setup/employee/employeeEditController.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/Profile/lock.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 ?>
 
 <?php
 $formOne->setAttribute('role', 'form');
 $formOne->setAttribute('id', 'form1');
 
+//$employeeCode = $formOne->get('employeeCode');
 $companyId = $formOne->get('companyId');
 /**
  * Personal Information
  */
+$employeeCode = $formOne->get("employeeCode");
 $firstName = $formOne->get("firstName");
 $middleName = $formOne->get("middleName");
 $lastName = $formOne->get("lastName");
@@ -56,7 +64,6 @@ $addrPermStreetAddress = $formOne->get('addrPermStreetAddress');
 $addrPermVdcMunicipalityId = $formOne->get('addrPermVdcMunicipalityId');
 $addrPermDistrictId = $formOne->get('addrPermDistrictId');
 $addrPermZoneId = $formOne->get('addrPermZoneId');
-
 $addrTempHouseNo = $formOne->get('addrTempHouseNo');
 $addrTempWardNo = $formOne->get('addrTempWardNo');
 $addrTempStreetAddress = $formOne->get('addrTempStreetAddress');
@@ -71,6 +78,21 @@ $addrPermZoneId->setOptions(["value_options" => $zones]);
 $addrTempZoneId->setOptions(["value_options" => $zones]);
 $companyId->setOptions(["value_options" => $companies]);
 $countryId->setValueOptions($countries);
+
+//Custom validation
+if (key($mobileNo->getMessages()) == "regexNotMatch") {
+    $mobileNo->setMessages(["regexNotMatch" => "Invalid Mobile Number"]);
+}
+if (key($emailOfficial->getMessages()) == "regexNotMatch") {
+    $emailOfficial->setMessages(["regexNotMatch" => "Invalid Email Address"]);
+}
+if (key($emailPersonal->getMessages()) == "regexNotMatch") {
+    $emailPersonal->setMessages(["regexNotMatch" => "Invalid Email Address"]);
+}
+if (key($telephoneNo->getMessages()) == "regexNotMatch") {
+    $telephoneNo->setMessages(["regexNotMatch" => "Invalid Telephone Number"]);
+}
+
 
 
 $formTwo->setAttribute('id', 'form2');
@@ -120,27 +142,43 @@ $serviceEventTypeId->setValueOptions($serviceEventTypes);
 
 $serviceTypeId = $formFour->get('appServiceTypeId');
 $serviceTypeId->setValueOptions($serviceTypes);
-//$serviceTypeId->setAttributes(["disabled"=>"disabled"]);
 
 $positionId = $formFour->get('appPositionId');
 $positionId->setValueOptions($positions);
-//$positionId->setAttributes(["disabled"=>"disabled"]);
 
 $designationId = $formFour->get('appDesignationId');
 $designationId->setValueOptions($designations);
-//$designationId->setAttributes(["disabled"=>"disabled"]);
 
 $departmentId = $formFour->get('appDepartmentId');
 $departmentId->setValueOptions($departments);
-//$departmentId->setAttributes(["disabled"=>"disabled"]);
+
+
 
 $branchId = $formFour->get('appBranchId');
 $branchId->setValueOptions($branches);
-//$branchId->setAttributes(["disabled"=>"disabled"]);
+
+
+$employeeType = $formFour->get('employeeType');
+$employeeTypeValue = [
+    'R' => 'Regular',
+    'C' => 'Contract'
+];
+$employeeType->setValueOptions($employeeTypeValue);
+
+if ($jobHistoryListNum > 0) {
+    $departmentId->setAttributes(["disabled" => "disabled"]);
+    $branchId->setAttributes(["disabled" => "disabled"]);
+    $designationId->setAttributes(["disabled" => "disabled"]);
+    $positionId->setAttributes(["disabled" => "disabled"]);
+    $serviceTypeId->setAttributes(["disabled" => "disabled"]);
+    $employeeType->setAttributes(["disabled" => "disabled"]);
+    $joinDate->setAttributes(["disabled" => "disabled"]);
+}
 
 
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
+//print_r($academicDegree); die();
 $academicDegreeId->setValueOptions($academicDegree);
 $academicUniversityId = $formSix->get('academicUniversityId');
 $academicUniversityId->setValueOptions($academicUniversity);
@@ -153,9 +191,31 @@ $rankType->setValueOptions($rankTypes);
 $rankValue = $formSix->get('rankValue');
 $passedYr = $formSix->get('passedYr');
 
-//print "<pre>";
-//print_r($filePath->getValue());
-//exit;
+
+
+$formSeven->setAttribute('id', 'form7');
+
+$expOrgName = $formSeven->get('organizationName');
+$orgType = [
+    'Financial' => 'Financial',
+    'Non-Financial' => 'Non-Financial'
+];
+$expOrgType = $formSeven->get('organizationType');
+$expOrgType->setValueOptions($orgType);
+$expPosition = $formSeven->get('position');
+$expFromDate = $formSeven->get('fromDate');
+$expToDate = $formSeven->get('toDate');
+
+
+
+
+$formEight->setAttribute('id', 'form8');
+
+$traName = $formEight->get('trainingName');
+$traDescription = $formEight->get('description');
+$traFromDate = $formEight->get('fromDate');
+$traToDate = $formEight->get('toDate');
+
 
 $empId = isset($id) ? $id : -1;
 
@@ -163,52 +223,50 @@ $empId = isset($id) ? $id : -1;
 if ($countryId->getValue() == 168) {
     $name = $idCitizenshipIssuePlace->getAttributes()['name'];
     $label = $idCitizenshipIssuePlace->getLabel();
+    $value = $idCitizenshipIssuePlace->getValue();
 
     $idCitizenshipIssuePlace = clone($addrPermDistrictId);
     $idCitizenshipIssuePlace->setAttributes(['name' => $name]);
     $idCitizenshipIssuePlace->setValueOptions($districts);
     $idCitizenshipIssuePlace->setLabel($label);
-} else {
+    $idCitizenshipIssuePlace->setValue($value);
+} else if ($countryId->getValue() != null) {
     $idCitizenshipIssuePlace->setAttributes(['value' => $countries[$countryId->getValue()]]);
+    $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);
+} else {
     $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);
 }
 ?>
 
-<script>
-    document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
-    document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
-    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>'
-            document.currentTab = '<?= $tab ?>';
-    document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>'
-            document.fileTypes = <?= json_encode($filetypes); ?>;
-    document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
-    document.employeeId =<?= $id ?>;</script>
-
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Profile')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-</div>
 <?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
 }
 ?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
+<script>
+
+    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
+    document.urlSubmitExperience = '<?= $this->url('profile', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
+    document.urlSubmitTraining = '<?= $this->url('profile', ['action' => 'edit', 'id' => $id, 'tab' => 9]) ?>';
+    document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
+    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';
+    document.currentTab = '<?= $tab ?>';
+    document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>';
+    document.fileTypes = <?= json_encode($filetypes); ?>;
+    document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
+    document.employeeId =<?= $id ?>;
+    document.address =<?php echo json_encode($address); ?>;
+    document.urlSetupComplete = '<?php echo $this->url('profile', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';
+    document.setAppointmentFlag =<?php echo $jobHistoryListNum > 0 ? 'true' : 'false' ?>;</script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <div id="quaConId" ng-app="hris" ng-controller="qualificationController">
-    <div class="row esetup" style="margin-top:10px;">
-        <div class="col-md-12" style="">
-            <a class="btn btn-success pull-right" href="<?= $this->url("employee", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
-                <i class="fa fa-edit"></i>
-            </a>
-        </div>   
-    </div>
     <div id="rootwizard" class="tabbable-custom">
         <ul class="nav nav-tabs">
             <li class="active">
@@ -243,14 +301,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </li>
             <li class="">
                 <a data-toggle="tab" href="#tab7">
-                    <i class="fa fa-plus-circle ticon" aria-hidden="true"></i> Add. Information
+                    <i class="fa fa-plus-circle ticon" aria-hidden="true"></i>
+                    Experience
+                </a>
+            </li>
+            <li class="">
+                <a data-toggle="tab" href="#tab8">
+                    <i class="fa fa-plus-circle ticon" aria-hidden="true"></i>
+                    Training
+                </a>
+            </li>
+            <li class="">
+                <a data-toggle="tab" href="#tab9">
+                    <i class="fa fa-plus-circle ticon" aria-hidden="true"></i>
+                    Add. Information
                 </a>
             </li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab1" style="min-height: 400px;">
                 <?php
-                $formOne->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 1]));
+                $formOne->setAttribute('action', $this->url('profile', ['action' => 'edit', 'id' => $empId, 'tab' => 1]));
                 $formOne->setAttribute("name", "employeeForm");
                 $formOne->prepare();
                 print $this->form()->openTag($formOne);
@@ -262,47 +333,59 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="form-group">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                        <?php print $this->formLabel($companyId); ?></div>
+                                <div class="form-group <?= empty($employeeCode->getMessages()) ? '' : 'hasError' ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
+                                        <?php print $this->formLabel($employeeCode) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($companyId); ?></div>
-                                    <?php print $this->formElementErrors()->render($companyId, ['class' => 'error']) ?>
+                                        <?php print $this->formElement($employeeCode) ?>
+                                        <?php print $this->formElementErrors()->render($employeeCode, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
+
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="form-group">
+                                <div class="form-group <?= empty($firstName->getMessages()) ? '' : 'hasError' ?>">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
-                                        <?php print $this->formLabel($firstName) ?></div>
+                                        <?php print $this->formLabel($firstName) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($firstName) ?></div>
-                                    <?php print $this->formElementErrors()->render($firstName, ['class' => 'error']) ?>
+                                        <?php print $this->formElement($firstName) ?>
+                                        <?php print $this->formElementErrors()->render($firstName, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="form-group <?= empty($middleName->getMessages()) ? "" : "error" ?>">
+                                <div class="form-group <?= empty($middleName->getMessages()) ? "" : "hasError" ?>">
                                     <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                                         <?php print $this->formLabel($middleName) ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($middleName) ?></div>
-                                    <?php print $this->formElementErrors()->render($middleName, ['class' => 'error']) ?>
+                                        <?php print $this->formElement($middleName) ?>
+                                        <?php print $this->formElementErrors()->render($middleName, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
                             </div> 
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                    <?php print $this->formLabel($lastName) ?></div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                    <?php print $this->formElement($lastName) ?>
+                                <div class="form-group  <?= empty($lastName->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                        <?php print $this->formLabel($lastName) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($lastName) ?>
+                                        <?php print $this->formElementErrors()->render($lastName, ['class' => 'error']) ?>
+                                    </div>
                                 </div>
-                                <?php print $this->formElementErrors()->render($lastName, ['class' => 'error']) ?>
                             </div>
                         </div>
 
@@ -312,46 +395,147 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
                                         <?php print $this->formLabel($nameNepali); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($nameNepali); ?></div>
-                                    <?php print $this->formElementErrors()->render($nameNepali, ['class' => ' error']); ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                            <div class="row bottomgap">
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                    <?php print $this->formLabel($genderId); ?></div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                    <?php print $this->formElement($genderId); ?></div>
-                                <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                            <div class="row bottomgap">
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                    <?php print $this->formLabel($bloodGroupId) ?></div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                    <?php print $this->formElement($bloodGroupId) ?></div>
-                                <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                            <div class="row bottomgap">
-                                <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                                    <?php print $this->formLabel($birthDate) ?></div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                    <div class="input-group date" id="employeeBirthDate">
-                                        <?php print $this->formElement($birthDate) ?>
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <?php print $this->formElement($nameNepali); ?>
+                                        <?php print $this->formElementErrors()->render($nameNepali, ['class' => ' error']); ?>
                                     </div>
-                                    <?php print $this->formElementErrors()->render($birthDate, ['class' => 'help-block error']) ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($genderId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                        <?php print $this->formLabel($genderId); ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($genderId); ?>
+                                        <?php print $this->formElementErrors()->render($genderId, ['class' => 'help-block error']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($birthDate->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                        <?php print $this->formLabel($birthDate) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <div class="input-group date" id="employeeBirthDate">
+                                            <?php print $this->formElement($birthDate) ?>
+                                        </div>
+                                        <?php print $this->formElementErrors()->render($birthDate, ['class' => 'help-block error']) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <label for="nepaliStartDate">Birth Date(Nepali)</label>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <div class="input-group date">
+                                            <input type="text"   id="nepaliBirthDate" class="form-control " value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($countryId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($countryId); ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($countryId); ?>
+                                        <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
 
+
+
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group ">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($religionId) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($religionId) ?>
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($religionId, ['class' => 'help-block error']) ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group <?= empty($companyId->getMessages()) ? '' : 'hasError' ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($companyId); ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($companyId); ?>
+                                        <?php print $this->formElementErrors()->render($companyId, ['class' => 'error']) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group  <?= empty($bloodGroupId->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
+                                        <?php print $this->formLabel($bloodGroupId) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($bloodGroupId) ?>
+                                        <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($mobileNo); ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($mobileNo); ?>
+                                        <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
+                            <div class="row bottomgap">
+                                <div class="form-group <?= empty($telephoneNo->getMessages()) ? "" : "hasError" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                        <?php print $this->formLabel($telephoneNo); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                        <?php print $this->formElement($telephoneNo); ?>
+                                        <?php print $this->formElementErrors()->render($telephoneNo, ['class' => 'help-block error']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
@@ -364,54 +548,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                            <div class="row bottomgap">
-                                <div class="form-group ">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                        <?php print $this->formLabel($religionId) ?></div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($religionId) ?>
-                                    </div>
-                                    <?php print $this->formElementErrors()->render($religionId, ['class' => 'help-block error']) ?>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                            <div class="row bottomgap">
-                                <div class="form-group <?= empty($telephoneNo->getMessages()) ? "" : "error" ?>">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                        <?php print $this->formLabel($telephoneNo); ?></div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($telephoneNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($telephoneNo, ['class' => 'help-block error']); ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                            <div class="row bottomgap">
-                                <div class="form-group">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                        <?php print $this->formLabel($mobileNo); ?>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($mobileNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
-                                </div>
-                            </div>
-                        </div>
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
                                 <div class="form-group <?= empty($extensionNo->getMessages()) ? "" : "error" ?>">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($extensionNo); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($extensionNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($extensionNo); ?>
+                                        <?php print $this->formElementErrors()->render($extensionNo, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                             <div class="row bottomgap">
@@ -419,19 +569,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($emailOfficial); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($emailOfficial); ?></div>
+                                        <?php print $this->formElement($emailOfficial); ?>
+                                        <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
-                            <?php
-                            if (key($emailOfficial->getMessages()) == "regexNotMatch") {
-                                $emailOfficial->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
-                            }
-                            if (key($emailPersonal->getMessages()) == "regexNotMatch") {
-                                $emailPersonal->setMessages(["regexNotMatch" => "Value is not a valid Email"]);
-                            }
-                            ?>
-
-                            <?php print $this->formElementErrors()->render($emailOfficial, ['class' => 'help-block error']); ?>
                         </div> 
 
                         <div class="col-xs-12 col-sm-6 col-md-3 col-box">
@@ -440,8 +582,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($emailPersonal); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($emailPersonal); ?></div>
-                                    <?php print $this->formElementErrors()->render($emailPersonal, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($emailPersonal); ?>
+                                        <?php print $this->formElementErrors()->render($emailPersonal, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -452,24 +595,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($socialNetwork); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($socialNetwork); ?></div>
-                                    <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block error']); ?>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-box">
-                            <div class="row bottomgap">
-                                <div class="form-group  <?= empty($countryId->getMessages()) ? "" : "error" ?>">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                        <?php print $this->formLabel($countryId); ?>
+                                        <?php print $this->formElement($socialNetwork); ?>
+                                        <?php print $this->formElementErrors()->render($socialNetwork, ['class' => 'help-block error']); ?>
                                     </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($countryId); ?></div>
-                                    <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -486,8 +616,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermHouseNo); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermHouseNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermHouseNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermHouseNo); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermHouseNo, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -498,8 +629,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermWardNo); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermWardNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermWardNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermWardNo); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermWardNo, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -510,8 +642,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermStreetAddress); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermStreetAddress); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermStreetAddress, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermStreetAddress); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermStreetAddress, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -522,8 +655,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                         <?php print $this->formLabel($addrPermZoneId); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                                        <?php print $this->formElement($addrPermZoneId); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermZoneId, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElement($addrPermZoneId); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermZoneId, ['class' => 'help-block error']); ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -696,7 +830,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                                 <div class="form-group  <?= empty($emergContactNo->getMessages()) ? "" : "error" ?>">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
-                                        <?php print $this->formLabel($emergContactNo); ?></div>
+                                        <?php print $this->formLabel($emergContactNo); ?>
+                                        <span class="required" aria-required="true">*</span>
+                                    </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($emergContactNo); ?></div>
                                     <?php print $this->formElementErrors()->render($emergContactNo, ['class' => 'help-block error']); ?>
@@ -716,7 +852,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             <div class="tab-pane" id="tab2">
                 <?php
-                $formTwo->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 2]));
+                $formTwo->setAttribute('action', $this->url('profile', ['action' => 'edit', 'id' => $empId, 'tab' => 2]));
                 $formTwo->setAttribute("name", "employeeForm");
                 $formTwo->prepare();
                 print $this->form()->openTag($formTwo);
@@ -769,7 +905,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                                     <div class="form-group  <?= empty($maritualStatus->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-                                            <?php print $this->formLabel($maritualStatus); ?></div>
+                                            <?php print $this->formLabel($maritualStatus); ?>
+                                            <span class="required" aria-required="true">*</span>
+                                        </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($maritualStatus); ?></div>
                                         <?php print $this->formElementErrors()->render($maritualStatus, ['class' => 'help-block error']); ?>
@@ -827,6 +965,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
 
@@ -840,16 +979,22 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
 
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
-
                                     <div class="form-group <?= empty($famSpouseBirthDate->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famSpouseBirthDate); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                            <div class="input-group date" id="famSpouseBirthDate">
-                                                <?php print $this->formElement($famSpouseBirthDate); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <?php print $this->formElement($famSpouseBirthDate); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="famSpouseBirthDateNepali" class="form-control " value="">
+                                                </div>
                                             </div>
                                         </div>
                                         <?php print $this->formElementErrors()->render($famSpouseBirthDate, ['class' => 'help-block error']); ?>
@@ -857,21 +1002,29 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
 
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group<?= empty($famSpouseWeddingAnniversary->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
                                             <?php print $this->formLabel($famSpouseWeddingAnniversary); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                            <div class="input-group date" id="famSpouseWeddingAnniversary">
-                                                <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="weddingAnniversaryDateNepali" class="form-control " value="">
+                                                </div>
                                             </div>
                                         </div>
                                         <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
+
 
 
                         </div>
@@ -885,7 +1038,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="tab-pane" id="tab3">
                 <?php
-                $formThree->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 3]));
+                $formThree->setAttribute('action', $this->url('profile', ['action' => 'edit', 'id' => $empId, 'tab' => 3]));
                 $formThree->setAttribute("name", "employeeForm");
                 $formThree->prepare();
                 print $this->form()->openTag($formThree);
@@ -902,6 +1055,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <?php print $this->formLabel($idCardNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idCardNo); ?></div>
+                                        <?php print $this->formElementErrors()->render($idCardNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -951,21 +1105,31 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
 
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idDrivingLicenseExpiry->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
                                             <?php print $this->formLabel($idDrivingLicenseExpiry); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">  
-                                            <div class="input-group date" id="idDrivingLicenseExpiry">
-                                                <?php print $this->formElement($idDrivingLicenseExpiry); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <?php print $this->formElement($idDrivingLicenseExpiry); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="drivingLicenseExpiaryNepali" class="form-control " value="">
+                                                </div>
                                             </div>
                                         </div>
                                         <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
 
@@ -1044,27 +1208,44 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idCitizenshipNo->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                            <?php print $this->formLabel($idCitizenshipNo); ?></div>
+                                            <?php print $this->formLabel($idCitizenshipNo); ?>
+                                            <span class="required" aria-required="true">*</span>
+                                        </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idCitizenshipNo); ?></div>
                                         <?php print $this->formElementErrors()->render($idCitizenshipNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                            <?php print $this->formLabel($idCitizenshipIssueDate); ?></div>
+                                            <?php print $this->formLabel($idCitizenshipIssueDate); ?>
+                                        </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-                                            <div class="input-group date" id="idCitizenshipIssueDate">
-                                                <?php print $this->formElement($idCitizenshipIssueDate); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <?php print $this->formElement($idCitizenshipIssueDate); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="citizenshipIssueDateNepali" class="form-control " value="">
+                                                </div>
                                             </div>
-                                        </div> <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block error']); ?>
+                                        </div>
+                                        <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
+
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group  <?= empty($idCitizenshipIssuePlace->getMessages()) ? "" : "error" ?>">
@@ -1076,22 +1257,32 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     </div>
                                 </div>
                             </div>
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group   <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                            <?php print $this->formLabel($idPassportExpiry); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-                                            <div class="input-group date" id="idPassportExpiry">
-                                                <?php print $this->formElement($idPassportExpiry); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            </div>
-                                            <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formLabel($idPassportExpiry); ?>
                                         </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <?php print $this->formElement($idPassportExpiry); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="passportExpiryNepali" class="form-control " value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
-
                             </div>
+
                         </div>
                     </div>
                     <input type="submit" class="hidden" id="btnform3" value="submit">
@@ -1102,7 +1293,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="tab-pane" id="tab4">
                 <?php
-                $formFour->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $empId, 'tab' => 4]));
+                $formFour->setAttribute('action', $this->url('profile', ['action' => 'edit', 'id' => $empId, 'tab' => 4]));
                 $formFour->setAttribute("name", "employeeForm");
                 $formFour->prepare();
                 print $this->form()->openTag($formFour);
@@ -1111,19 +1302,42 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="status-info"> 
                         <p><i class="fa fa-info-circle ticon ticon"></i>Status Infomation</p>
                         <div class="row clearfix e-setup">
+
+
+
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
                                     <div class="form-group">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                            <?php print $this->formLabel($joinDate); ?></div>
-                                        <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <div class="input-group date" id="joinDate"> 
-
-                                                <?php print $this->formElement($joinDate); ?>
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <?php print $this->formLabel($joinDate); ?>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <?php print $this->formElement($joinDate); ?>
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="nepalijoinDate" class="form-control " value="">
+                                                </div>
                                             </div>
                                         </div>
                                         <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group<?= empty($employeeType->getMessages()) ? "" : "error" ?>">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                            <?php print $this->formLabel($employeeType); ?></div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <?php print $this->formElement($employeeType); ?></div>
+                                        <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1182,26 +1396,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
-
-                                    <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
+                                    <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                            <?php print $this->formLabel($positionId); ?></div>
+                                            <?php print $this->formLabel($branchId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <?php print $this->formElement($positionId); ?></div>
-                                        <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block error']); ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-
-                                    <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-
-                                            <?php print $this->formLabel($designationId); ?></div>
-                                        <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <?php print $this->formElement($designationId); ?></div>
-                                        <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElement($branchId); ?></div>
+                                        <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1220,18 +1420,117 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
-                                    <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
+
+                                    <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                            <?php print $this->formLabel($branchId); ?></div>
+
+                                            <?php print $this->formLabel($designationId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <?php print $this->formElement($branchId); ?></div>
-                                        <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElement($designationId); ?></div>
+                                        <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
-
-
                             </div>
+
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+
+                                    <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                            <?php print $this->formLabel($positionId); ?></div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <?php print $this->formElement($positionId); ?></div>
+                                        <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block error']); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                            <label> Recommender</label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <select required="required" name="recommender">
+                                                <?php
+                                                foreach ($recommenders as $recommenderKey => $recommenderValue) {
+                                                    $recommenderSelected = ($recommenderId == $recommenderKey) ? "selected" : "";
+                                                    ?>
+                                                    <option  value="<?php echo $recommenderKey; ?>" <?php echo $recommenderSelected; ?>><?php echo $recommenderValue; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                            <label> Approver</label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <select required="required" name="approver">
+                                                <?php
+                                                foreach ($approvers as $approverKey => $approverValue) {
+                                                    $approverSelected = ($approverId == $approverKey) ? "selected" : "";
+                                                    ?>
+                                                    <option  value="<?php echo $approverKey; ?>" <?php echo $approverSelected; ?>><?php echo $approverValue; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                            <label> Shift </label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 cgap-4">
+                                            <select required="required" name="shift">
+                                                <?php
+                                                foreach ($shifts as $shiftKey => $shiftValue) {
+                                                    $shiftSelected = ($shiftId == $shiftKey) ? "selected" : "";
+                                                    ?>
+                                                    <option  value="<?php echo $shiftKey; ?>" <?php echo $shiftSelected; ?>><?php echo $shiftValue; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                            <label> To Date </label>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                            <div class="row">
+                                                <div class="col-md-6 nopaddinggap">
+                                                    <div class="input-group date">
+                                                        <input type="text" name="toDate" id="toDate" class="form-control" value="<?php echo $toDate; ?>" />
+                                                    </div>  
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="text"   id="nepaliToDate" class="form-control " value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
+
+
 
                         <input type="submit" class="hidden" id="btnform4" value="submit">
                         <?php
@@ -1244,7 +1543,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             <div class="tab-pane" id="tab5" style="min-height: 400px;">
                 <div class="row esetup">
-
                     <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
                     <div class="col-sm-12">
                         <table class="table table-striped table-bordered table-hover no-footer customtbl" id="qualificationTbl">
@@ -1262,31 +1560,31 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <tr ng-repeat="qualificationForm in qualificationFormList">
                                 <td>
                                     <input type="hidden" ng-model="qualificationForm.id"/>
-                                    <select class="form-control"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="degree.name for degree in degreeList track by degree.id"
                                             ng-model="qualificationForm.academicDegreeId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="university.name for university in universityList track by university.id"
                                             ng-model="qualificationForm.academicUniversityId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="program.name for program in programList track by program.id"
                                             ng-model="qualificationForm.academicProgramId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="course.name for course in courseList track by course.id"
                                             ng-model="qualificationForm.academicCourseId">
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="form-control"
+                                    <select select2 class="form-control academicSelect"
                                             ng-options="rankTypes.name for rankTypes in rankType track by rankTypes.id"
                                             ng-model="qualificationForm.rankType">
                                     </select>
@@ -1295,11 +1593,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                                 <td>
                                     <input ng-model="qualificationForm.rankValue" required="required"
-                                           class="rankValue-weight form-control" size="7" type="text" value="">
+                                           class="rankValue-weight form-control" size="1" type="text" value="">
                                 </td>
                                 <td>
                                     <input type="text" class="form-passedYr form-control" value=""
-                                           ng-model="qualificationForm.passedYr">
+                                           ng-model="qualificationForm.passedYr" size="2">
                                 </td>
                                 <td width="1%" style="padding:15px;" class="checkboxgap">
                                     <div class="md-checkbox">
@@ -1348,6 +1646,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                       class="dropzone"
                                       id="my-awesome-dropzone">
                                 </form>
+                                <span ng-show="noImageSelected" class="errorMsg">Please Select an Image!</span>
                                 <div ng-hide="(file.fileCode == null || file.editMode)" class="cbp-caption-defaultWrap">
                                     <image style="width:100%;height:144px;"   src="{{viewImage(file.filePath)}}"/>
                                 </div>
@@ -1426,53 +1725,205 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
             </div>
-            <div class="tab-pane" id="tab7" style="min-height: 400px;">
-                <div class="row clearfix esetup">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Experience
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Qualification
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row clearfix esetup">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                References
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Training
-                            </label>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row clearfix esetup">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Relative Working in Related Organisation
-                            </label>
-                        </div>
+            <div class="tab-pane aditional" id="tab7">
+                <div class="row esetup">
+                    <div class="col-md-12">
+                        <form name="employeeExperienceForm" ng-submit="submitExperience()" id="form7" novalidate>
+                            <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+                            <table class="table table-striped table-bordered table-hover no-footer customtbl" id="qualificationTbl">
+                                <tr>
+                                    <td><?php print $this->formLabel($expOrgType); ?></td>
+                                    <td><?php print $this->formLabel($expOrgName); ?></td>
+                                    <td><?php print $this->formLabel($expPosition); ?></td>
+                                    <td><?php print $this->formLabel($expFromDate); ?></td>
+                                    <td><?php print $this->formLabel($expToDate); ?></td>
+
+                                    <td width="1%"></td>
+                                </tr>
+                                <tr ng-repeat="experience in experienceFormList">
+                                    <td>
+                                        <select select2 name="organizationType" ng-model="experience.organizationTypeId" ng-options="organizationTypeList.name for organizationTypeList in organizationType track by organizationTypeList.id" required="required" id="organizationType" class="form-control">
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-model="experience.organizationName" name="organizationName_{{experience.checkbox}}" required="required" id="organizationName" class="form-control" value="">
+                                        <div ng-show="employeeExperienceForm.$submitted || employeeExperienceForm.organizationName_{{experience.checkbox}}.$touched">
+                                            <ul ng-show="employeeExperienceForm.organizationName_{{experience.checkbox}}.$error.required" class="help-block error">
+                                                <li>Organization Name is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-model="experience.position" name="position_{{experience.checkbox}}" required="required" id="position" class="form-control" value="">
+                                        <div ng-show="employeeExperienceForm.$submitted || employeeExperienceForm.position_{{experience.checkbox}}.$touched">
+                                            <ul ng-show="employeeExperienceForm.position_{{experience.checkbox}}.$error.required" class="help-block error">
+                                                <li>Position is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input dvalue="{{experience.fromDate}}" datepicker type="text" ng-model="experience.fromDate" name="fromDate_{{experience.checkbox}}" required="required" class="form-control" id="expfromDate_{{experience.checkbox}}" value="">
+                                        <div ng-show="employeeExperienceForm.$submitted || employeeExperienceForm.fromDate_{{experience.checkbox}}.$touched">
+                                            <ul ng-show="employeeExperienceForm.fromDate_{{experience.checkbox}}.$error.required" class="help-block error">
+                                                <li>From Date is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input dvalue="{{experience.toDate}}" datepicker type="text" ng-model="experience.toDate" name="toDate_{{experience.checkbox}}" required="required" class="form-control" id="exptoDate_{{experience.checkbox}}" value="">
+                                        <div ng-show="employeeExperienceForm.$submitted || employeeExperienceForm.toDate_{{experience.checkbox}}.$touched">
+                                            <ul ng-show="employeeExperienceForm.toDate_{{experience.checkbox}}.$error.required" class="help-block error">
+                                                <li>To Date is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td width="1%" style="padding:15px;" class="checkboxgap">
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" id="{{experience.checkbox}}" class="md-check"
+                                                   ng-model="experience.checked">
+                                            <label for="{{experience.checkbox}}">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <a href="javascript:;" class="btn btn-icon-only default pull-right"
+                                           ng-click="addExperience()">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:;" class="btn btn-icon-only default" ng-click="deleteExperience()">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <input type="submit" class="hidden" id="btnform7" value="submit">
+                        </form>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>
-                                Children Information
-                            </label>
+                </div>      
+            </div>
+            <div class="tab-pane aditional" id="tab8">
+                <div class="row clearfix">
+                    <div class="col-md-12">
+                        <form name="employeeTrainingForm" ng-submit="submitTraining()" id="form8" novalidate>
+                            <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+                            <table class="table table-striped table-bordered table-hover no-footer customtbl" id="qualificationTbl">
+                                <tr>
+                                    <td><?php print $this->formLabel($traName); ?></td>
+                                    <td><?php print $this->formLabel($traDescription); ?></td>
+                                    <td><?php print $this->formLabel($traFromDate); ?></td>
+                                    <td><?php print $this->formLabel($traToDate); ?></td>
+
+                                    <td width="1%"></td>
+                                </tr>
+                                <tr ng-repeat="training in trainingFormList">
+                                    <td>
+                                        <input type="text" ng-model="training.trainingName" name="trainingName_{{training.checkbox}}" required="required" id="trainingName" class="form-control" value="">
+                                        <div ng-show="employeeTrainingForm.$submitted || employeeTrainingForm.trainingName_{{training.checkbox}}.$touched">
+                                            <ul ng-show="employeeTrainingForm.trainingName_{{training.checkbox}}.$error.required" class="help-block error">
+                                                <li>Training Name is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" ng-model="training.description" name="description_{{training.checkbox}}" required="required" id="description" class="form-control" value="">
+                                        <div ng-show="employeeTrainingForm.$submitted || employeeTrainingForm.description_{{training.checkbox}}.$touched">
+                                            <ul ng-show="employeeTrainingForm.description_{{training.checkbox}}.$error.required" class="help-block error">
+                                                <li>Description is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input dvalue="{{training.fromDate}}" datepicker type="text" ng-model="training.fromDate" name="fromDate_{{training.checkbox}}" required="required" class="form-control" id="expfromDate_{{training.checkbox}}" value="">
+                                        <div ng-show="employeeTrainingForm.$submitted || employeeTrainingForm.fromDate_{{training.checkbox}}.$touched">
+                                            <ul ng-show="employeeTrainingForm.fromDate_{{training.checkbox}}.$error.required" class="help-block error">
+                                                <li>From Date is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input dvalue="{{training.toDate}}" datepicker type="text" ng-model="training.toDate" name="toDate_{{training.checkbox}}" required="required" class="form-control" id="exptoDate_{{training.checkbox}}" value="">
+                                        <div ng-show="employeeTrainingForm.$submitted || employeeTrainingForm.toDate_{{training.checkbox}}.$touched">
+                                            <ul ng-show="employeeTrainingForm.toDate_{{training.checkbox}}.$error.required" class="help-block error">
+                                                <li>To Date is required.</li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td width="1%" style="padding:15px;" class="checkboxgap">
+                                        <div class="md-checkbox">
+                                            <input type="checkbox" id="{{training.checkbox}}" class="md-check"
+                                                   ng-model="training.checked">
+                                            <label for="{{training.checkbox}}">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span>
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <a href="javascript:;" class="btn btn-icon-only default pull-right"
+                                           ng-click="addTraining()">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="javascript:;" class="btn btn-icon-only default" ng-click="deleteTraining()">
+                                            <i class="fa fa-trash-o"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                            <input type="submit" class="hidden"  id="btnform8" value="submit">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane aditional" id="tab9">
+                <div class="col-md-offset-2 col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 margin gapspaceing">
+                    <div class="identification-infomation">  
+                        <p><i class="fa fa-plus-circle ticon" aria-hidden="true"></i>
+                            Additional Infomation</p>
+                        <div class="row clearfix e-setup">
+                            <div class="col-md-12">
+                                <div id="rolePanel">
+                                    <ul id="roleList">
+                                        <li>
+                                            Leave Assign
+                                            <a href="<?php echo $this->url("leaveassign", ["action" => "assign", "eid" => $id]) ?>">
+                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            Training Assign
+                                            <a href="<?php echo $this->url("trainingAssign", ["action" => "assign", "employeeId" => $id]) ?>">
+                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            Appraisal Assign
+                                            <a href="<?php echo $this->url("appraisalAssign", ["action" => "index", "id" => $id]) ?>">
+                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1483,8 +1934,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <li class="next">
                         <button
                             class="btn btn-default pull-right">
+                            <span>Save & Continue</span>
                             <i class="fa fa-arrow-right iconcolor" aria-hidden="true"></i>
-                            <span>Next</span>
                         </button>
                     </li>
                     <li class="next finish hidden">

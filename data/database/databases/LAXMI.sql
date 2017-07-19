@@ -1,41 +1,3 @@
-INSERT
-INTO HRIS_MENUS
-  (
-    MENU_CODE,
-    MENU_ID,
-    MENU_NAME,
-    PARENT_MENU,
-    MENU_DESCRIPTION,
-    ROUTE,
-    STATUS,
-    CREATED_DT,
-    MODIFIED_DT,
-    ICON_CLASS,
-    ACTION,
-    MENU_INDEX,
-    CREATED_BY,
-    MODIFIED_BY,
-    IS_VISIBLE
-  )
-  VALUES
-  (
-    NULL,
-    328,
-    'Attendnace Report',
-    5,
-    NULL,
-    'managerReport',
-    'E',
-    TRUNC(SYSDATE),
-    NULL,
-    'fa fa-pencil',
-    'index',
-    19,
-    NULL,
-    NULL,
-    'Y'
-  ) ; 
-
 ALTER TABLE HRIS_EMPLOYEES
 ADD IS_CEO CHAR (1 BYTE) CHECK (IS_CEO IN ('Y','N'));
 
@@ -45,6 +7,7 @@ ADD IS_HR CHAR (1 BYTE) CHECK (IS_HR IN ('Y','N'));
 
 ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD ASSIGN_ON_EMPLOYEE_SETUP CHAR(1 BYTE) DEFAULT 'Y'NOT NULL CHECK (ASSIGN_ON_EMPLOYEE_SETUP IN ('Y','N'));
 ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD IS_PRODATA_BASIS CHAR(1 BYTE) DEFAULT 'Y'NOT NULL CHECK (IS_PRODATA_BASIS IN ('Y','N'));
+
 
 INSERT
 INTO HRIS_MENUS
@@ -70,7 +33,7 @@ INTO HRIS_MENUS
     'EMP',
     325,
     'Edit My Profile',
-    6,
+    53,
     NULL,
     'employee',
     'E',
@@ -83,7 +46,55 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
+  
+
+  
+  
 INSERT INTO HRIS_ROLE_PERMISSIONS
   (MENU_ID,ROLE_ID,STATUS
   )
 SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    328,
+    'Attendance Report',
+    5,
+    NULL,
+    'managerReport',
+    'E',
+    TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'index',
+    19,
+    NULL,
+    NULL,
+    'Y'
+  );
+
+ALTER TABLE HRIS_HOLIDAY_MASTER_SETUP 
+ADD ASSIGN_ON_EMPLOYEE_SETUP CHAR(1 BYTE) DEFAULT 'Y'NOT NULL CHECK (ASSIGN_ON_EMPLOYEE_SETUP IN ('Y','N'));
+
+
+ALTER TABLE HRIS_TRAINING_MASTER_SETUP ADD IS_WITHIN_COMPANY CHAR( 1 BYTE) DEFAULT 'Y' NOT NULL CHECK (IS_WITHIN_COMPANY IN ('Y','N'));
