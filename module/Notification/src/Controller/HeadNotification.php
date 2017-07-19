@@ -1596,7 +1596,6 @@ class HeadNotification {
     public static function mailHeader(AbstractActionController $context){
         $basePath = $context->getRequest()->getBasePath();
         $headerImg =  "<div style='background-color:#F48B2F; width:100%;text-align:center;'><img src='http://laxmi.laxmibank.com/assets/upload/images/config/logo2.gif' align='middle' style='text-align:center'></div>";
-//        echo $headerImg; die();
         return $headerImg;
     }
     public static function mailFooter(AbstractActionController $context){
