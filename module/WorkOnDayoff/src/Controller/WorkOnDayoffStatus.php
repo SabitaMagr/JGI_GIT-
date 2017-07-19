@@ -1,4 +1,5 @@
 <?php
+
 namespace WorkOnDayoff\Controller;
 
 use Application\Helper\Helper;
@@ -23,29 +24,28 @@ use Setup\Repository\RecommendApproveRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use LeaveManagement\Repository\LeaveAssignRepository;
 
-class WorkOnDayoffStatus extends AbstractActionController
-{
+class WorkOnDayoffStatus extends AbstractActionController {
+
     private $adapter;
     private $dayoffWorkApproveRepository;
     private $workonDayoffStatusRepository;
     private $form;
     private $employeeId;
-    
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->dayoffWorkApproveRepository = new DayoffWorkApproveRepository($adapter);
         $this->workonDayoffStatusRepository = new WorkOnDayoffStatusRepository($adapter);
         $auth = new AuthenticationService();
-        $this->employeeId =  $auth->getStorage()->read()['employee_id'];       
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
-    
-    public function initializeForm(){
+
+    public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new WorkOnDayoffForm();
         $this->form = $builder->createForm($form);
     }
 
-    
     public function indexAction() {
         $status = [
             '-1' => 'All',
@@ -53,7 +53,7 @@ class WorkOnDayoffStatus extends AbstractActionController
             'RC' => 'Recommended',
             'AP' => 'Approved',
             'R' => 'Rejected',
-            'C'=>'Cancelled'
+            'C' => 'Cancelled'
         ];
         $statusFormElement = new Select();
         $statusFormElement->setName("status");
@@ -66,6 +66,7 @@ class WorkOnDayoffStatus extends AbstractActionController
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
+
     public function viewAction() {
         $this->initializeForm();
 
@@ -86,21 +87,21 @@ class WorkOnDayoffStatus extends AbstractActionController
         $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
         $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
         $recommApprove = 0;
-        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
-            $recommApprove=1;
+        if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+            $recommApprove = 1;
         }
-        
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];        
-        $RECM_MN = ($detail['RECM_MN']!=null)? " ".$detail['RECM_MN']." ":" ";
-        $recommender = $detail['RECM_FN'].$RECM_MN.$detail['RECM_LN'];        
-        $APRV_MN = ($detail['APRV_MN']!=null)? " ".$detail['APRV_MN']." ":" ";
-        $approver = $detail['APRV_FN'].$APRV_MN.$detail['APRV_LN'];
-        $MN1 = ($detail['MN1']!=null)? " ".$detail['MN1']." ":" ";
-        $recommended_by = $detail['FN1'].$MN1.$detail['LN1'];        
-        $MN2 = ($detail['MN2']!=null)? " ".$detail['MN2']." ":" ";
-        $approved_by = $detail['FN2'].$MN2.$detail['LN2'];
-        $authRecommender = ($status=='RQ' || $status=='C')?$recommender:$recommended_by;
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))?$approver:$approved_by;
+
+        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
+        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
+        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
+        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
+        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
+        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
+        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
+        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
+        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
+        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommender : $recommended_by;
+        $authApprover = ($status == 'RC' || $status == 'C' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
 
 
         if (!$request->isPost()) {
@@ -116,27 +117,7 @@ class WorkOnDayoffStatus extends AbstractActionController
                 $workOnDayoffModel->status = "R";
                 $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
             } else if ($action == "Approve") {
-                $leaveMasterRepo = new LeaveMasterRepository($this->adapter);
-                $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-                $substituteLeave = $leaveMasterRepo->getSubstituteLeave()->getArrayCopy();
-                $substituteLeaveId = $substituteLeave['LEAVE_ID'];
-                $empSubLeaveDtl = $leaveAssignRepo->filterByLeaveEmployeeId($substituteLeaveId, $requestedEmployeeID);
-                if(count($empSubLeaveDtl)>0){
-                    $preBalance = $empSubLeaveDtl['BALANCE'];
-                    $total = $empSubLeaveDtl['TOTAL_DAYS'] + $detail['DURATION'];
-                    $balance = $preBalance + $detail['DURATION'];
-                    $leaveAssignRepo->updatePreYrBalance($requestedEmployeeID,$substituteLeaveId, 0,$total, $balance);
-                }else{
-                    $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
-                    $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                    $leaveAssign->createdBy = $this->employeeId;
-                    $leaveAssign->employeeId = $requestedEmployeeID;
-                    $leaveAssign->leaveId = $substituteLeaveId;
-                    $leaveAssign->totalDays = $detail['DURATION'];
-                    $leaveAssign->previousYearBalance = 0;
-                    $leaveAssign->balance = $detail['DURATION'];
-                    $leaveAssignRepo->add($leaveAssign);
-                }
+                $this->wodApproveAction($detail);
                 $workOnDayoffModel->status = "AP";
                 $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
             }
@@ -153,12 +134,16 @@ class WorkOnDayoffStatus extends AbstractActionController
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
-                    'approvedDT'=>$detail['APPROVED_DATE'],
+                    'approvedDT' => $detail['APPROVED_DATE'],
                     'approver' => $authApprover,
                     'status' => $status,
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove'=>$recommApprove
+                    'recommApprove' => $recommApprove
         ]);
     }
-    
+
+    private function wodApproveAction($detail) {
+        $this->dayoffWorkApproveRepository->wodReward($detail['ID']);
+    }
+
 }

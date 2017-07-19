@@ -177,21 +177,6 @@ class LeaveRequest extends AbstractActionController {
             return $this->redirect()->toRoute('leaverequest');
         }
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
-        $detail = $leaveApproveRepository->fetchById($id);
-        if ($detail['STATUS'] == 'AP') {
-            //to get the previous balance of selected leave from assigned leave detail
-            $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
-            $preBalance = $result['BALANCE'];
-
-            if ($detail['HALF_DAY'] != 'N' && $detail['HALF_DAY'] !="" && $detail['HALF_DAY'] !=null){
-                $leaveTaken = 0.5;
-            }else{
-                $leaveTaken = $detail['NO_OF_DAYS'];
-            }
-            $newBalance = $preBalance + $leaveTaken;
-            //to update the previous balance
-            $leaveApproveRepository->updateLeaveBalance($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'], $newBalance);
-        }
         $this->leaveRequestRepository->delete($id);
         $this->flashmessenger()->addMessage("Leave Request Successfully Cancelled!!!");
         return $this->redirect()->toRoute('leaverequest');

@@ -160,7 +160,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $this->wodApproveAction($requestedEmployeeID, $detail);
+                    $this->wodApproveAction($detail);
                     $workOnDayoffModel->status = "AP";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
                 }
@@ -218,18 +218,8 @@ class DayoffWorkApproveController extends AbstractActionController {
         ]);
     }
 
-    private function wodApproveAction($requestedEmployeeID, $detail) {
-        $holidayWorkApproveRepository = new HolidayWorkApproveRepository($this->adapter);
-        $rule = $holidayWorkApproveRepository->getWOHRuleType($requestedEmployeeID);
-
-
-        if ($rule['WOH_FLAG'] === Position::WOH_FLAG_LEAVE) {
-            $this->dayoffWorkApproveRepository->wodToLeave($this->employeeId, $detail['ID']);
-        }
-
-        if ($rule['WOH_FLAG'] === Position::WOH_FLAG_OT) {
-            $holidayWorkApproveRepository->wohToOT($detail['EMPLOYEE_ID'], $detail['RECOMMENDER'], $detail['APPROVER'], $detail['REQUESTED_DATE'], $detail['FROM_DATE'], $detail['TO_DATE']);
-        }
+    private function wodApproveAction($detail) {
+        $this->dayoffWorkApproveRepository->wodReward($detail['ID']);
     }
 
 }
