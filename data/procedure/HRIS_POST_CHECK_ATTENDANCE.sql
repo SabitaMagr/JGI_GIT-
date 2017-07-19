@@ -35,7 +35,7 @@ BEGIN
   LOOP
     V_LATE_STATUS              :=attendance.LATE_STATUS;
     V_OVERALL_STATUS           :=attendance.OVERALL_STATUS;
-    IF attendance.OUT_TIME     IS NULL THEN
+    IF attendance.IN_TIME      IS NOT NULL AND attendance.OUT_TIME IS NULL THEN
       IF attendance.LATE_STATUS ='L' THEN
         V_LATE_STATUS          := 'Y';
       ELSE
@@ -43,17 +43,20 @@ BEGIN
       END IF;
     END IF;
     --
-    SELECT COUNT(*)
-    INTO V_LATE_COUNT
-    FROM HRIS_ATTENDANCE_DETAIL
-    WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
-    AND (ATTENDANCE_DT BETWEEN V_FROM_DATE AND V_TO_DATE )
-    AND OVERALL_STATUS ='PR'
-    AND LATE_STATUS   IN ('E','L','Y') ;
-    --
-    IF V_LATE_COUNT    != 0 AND MOD(V_LATE_COUNT,3)=0 THEN
-      V_OVERALL_STATUS := 'LA';
+    IF V_LATE_STATUS IN ('L','E','Y') THEN
+      SELECT COUNT(   *)
+      INTO V_LATE_COUNT
+      FROM HRIS_ATTENDANCE_DETAIL
+      WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
+      AND (ATTENDANCE_DT BETWEEN V_FROM_DATE AND V_TO_DATE )
+      AND OVERALL_STATUS ='PR'
+      AND LATE_STATUS   IN ('E','L','Y') ;
+      --
+      IF V_LATE_COUNT    != 0 AND MOD(V_LATE_COUNT,3)=0 THEN
+        V_OVERALL_STATUS := 'LA';
+      END IF;
     END IF;
+    --
     IF V_LATE_STATUS   ='B' AND V_OVERALL_STATUS='PR' THEN
       V_OVERALL_STATUS:='BA';
     END IF;
