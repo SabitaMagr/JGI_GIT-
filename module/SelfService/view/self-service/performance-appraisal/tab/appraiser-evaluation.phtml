@@ -4,11 +4,12 @@
         <?php
         foreach ($appraiserQuestionTemplate as $appraiserQuestionRow) { ?>
             <div class="col-md-12 margin-bottom-10">
-                <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
-                    <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $appraiserQuestionRow['HEADING_EDESC']; ?></h6>
-                    <div class="row">
+                <div style="">
+                    <h6 class="appHeading"><?php echo $appraiserQuestionRow['HEADING_EDESC']; ?></h6>
+                    <div class="row questionWrapRow">
+                        <div class="questionWrap">
                         <?php foreach ($appraiserQuestionRow['QUESTIONS'] as $questionRow) { ?>
-                            <div  class="col-md-12 margin-bottom-10"> 
+                            <div  class="col-md-12 margin-bottom-5 appQuestion"> 
                                 <div class="row">
                                     <div class="<?= ($questionRow['REVIEWER_FLAG']=='Y')?"col-sm-3":"col-sm-8"; ?>">
                                         <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label> 
@@ -61,6 +62,7 @@
                                 </div>
                             </div>
                         <?php } ?>
+                        </div>
                     </div>
                 </div>
             </div>

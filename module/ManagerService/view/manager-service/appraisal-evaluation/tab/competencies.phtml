@@ -6,7 +6,7 @@
 <div class="tab-pane" id="portlet_tab2_COM" ng-controller="competenciesController">
     <?php $disabledCompetenciesRating = ($assignedAppraisalDetail['STAGE_ID'] != 5) ? "disabled" : ""; ?>
     <form name="competenciesForm" id="competenciesForm" ng-submit="submitCompetenciesForm()" novalidate>
-        <table class="table">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <?php if ($assignedAppraisalDetail['STAGE_ID'] == 1) { ?>
