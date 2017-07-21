@@ -85,7 +85,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
                             <?php } ?>
-                            <?php if (($assignedAppraisalDetail['STAGE_ID']==9 || $assignedAppraisalDetail['HR_FEEDBACK']!=null)){ ?>
+                            <?php
+                            if (count($hrQuestionTemplate)>0){  ?>
                             <li class="<?= ($tab==6)?"active":""; ?>">
                                 <a href="#portlet_tab2_6" data-toggle="tab">HR Feedback </a>
                             </li>

@@ -26,7 +26,7 @@ class QuestionForm{
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Question Name (in Eng.)"})
      * @Annotation\Attributes({"id":"questionEdesc","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
      */
     public $questionEdesc;
     

@@ -53,7 +53,7 @@ class QuestionRepository implements RepositoryInterface{
     public function fetchById($id) {
         $rowset = $this->tableGateway->select(function(Select $select) use($id){
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
-                [Question::QUESTION_EDESC,Question::QUESTION_NDESC]),false);
+                null),false);
             $select->where([Question::QUESTION_ID => $id, Question::STATUS => 'E']);
         });
         return $result = $rowset->current();

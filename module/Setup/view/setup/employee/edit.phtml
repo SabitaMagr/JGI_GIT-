@@ -163,6 +163,7 @@ $employeeTypeValue = [
     'C' => 'Contract'
 ];
 $employeeType->setValueOptions($employeeTypeValue);
+$isHr = $formFour->get('isHr');
 
 if ($jobHistoryListNum > 0) {
     $departmentId->setAttributes(["disabled" => "disabled"]);
@@ -1520,6 +1521,20 @@ if ($this->messages) {
                                                 <div class="col-md-6">
                                                     <input type="text"   id="nepaliToDate" class="form-control " value="">
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-6">
+                                <div class="row bottomgap">
+                                    <div class="form-group">
+                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                            <?= $this->formLabel($isHr) ?>
+                                        </div>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                            <div class="md-radio-inline">
+                                                <?php $customRender($isHr); ?>
                                             </div>
                                         </div>
                                     </div>

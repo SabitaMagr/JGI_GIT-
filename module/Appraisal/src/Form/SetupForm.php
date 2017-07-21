@@ -71,7 +71,7 @@ class SetupForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"KPI Setting","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"kpiSettting"})
+     * @Annotation\Attributes({"id":"kpiSettting","value":"N"})
      */
     public $kpiSetting;
     
@@ -80,7 +80,7 @@ class SetupForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Competencies Setting","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"competenciesSetting"})
+     * @Annotation\Attributes({"id":"competenciesSetting","value":"N"})
      */
     public $competenciesSetting;
     
@@ -89,7 +89,7 @@ class SetupForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"HR Feedback Enable","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"hrFeedbackEnable"})
+     * @Annotation\Attributes({"id":"hrFeedbackEnable","value":"N"})
      */
     public $hrFeedbackEnable;
     

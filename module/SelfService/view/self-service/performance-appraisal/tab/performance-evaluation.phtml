@@ -12,7 +12,7 @@
                         <?php foreach ($questionTemplateRow['QUESTIONS'] as $questionRow) { ?>
                             <div class="col-md-12 margin-top-10">
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-8">
                                         <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label>
                                         <?php 
                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];

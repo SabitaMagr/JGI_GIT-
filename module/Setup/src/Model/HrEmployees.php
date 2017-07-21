@@ -92,6 +92,7 @@ class HrEmployees extends Model {
     public $modifiedBy;
     public $modifiedDt;
     public $fullName;
+    public $isHr;
 
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -179,6 +180,7 @@ class HrEmployees extends Model {
     const MODIFIED_BY = "MODIFIED_BY";
     const MODIFIED_DT = "MODIFIED_DT";
     const FULL_NAME = "FULL_NAME";
+    const IS_HR = "IS_HR";
 
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -266,6 +268,7 @@ class HrEmployees extends Model {
         'modifiedBy' => self::MODIFIED_BY,
         'modifiedDt' => self::MODIFIED_DT,
         'fullName' => self::FULL_NAME,
+        'isHr'=>self::IS_HR
     ];
 
 }

@@ -154,7 +154,7 @@ $employeeTypeValue = [
     'C' => 'Contract'
 ];
 $employeeType->setValueOptions($employeeTypeValue);
-
+$isHr = $formFour->get('isHr');
 
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
@@ -1469,9 +1469,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div>
                         </div>
-
-
-
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
+                                        <?= $this->formLabel($isHr) ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                        <div class="md-radio-inline">
+                                            <?php $customRender($isHr); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <input type="submit" class="hidden" id="btnform4" value="submit">
                     <?php

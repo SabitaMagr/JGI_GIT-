@@ -10,8 +10,8 @@ return [
         )
         )',
         
-        'username' => 'HRIS',
-          'password' => 'NEO_HRIS',
+//        'username' => 'HRIS',
+//          'password' => 'NEO_HRIS',
 //          
 //        'username' => 'LAXMI_HRIS_APR28',
 //        'password' => 'LAXMI_HRIS_APR28',
@@ -33,6 +33,8 @@ return [
 //        
 //        'username' => 'HRIS_MODERN',
 //        'password' => 'HRIS_MODERN',
+        'username'=>'HRIS_VIANET',
+        'password'=>'HRIS_VIANET',
         'platform_options' => ['quote_identifiers' => false]
     ],
     'service_manager' => [
