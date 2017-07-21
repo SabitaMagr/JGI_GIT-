@@ -54,7 +54,7 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Appraisee Flag","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"appraiseeFlag"})
+     * @Annotation\Attributes({"id":"appraiseeFlag","value":"N"})
      */
     public $appraiseeFlag;
     
@@ -63,7 +63,7 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Appraiser Flag","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"appraiserFlag"})
+     * @Annotation\Attributes({"id":"appraiserFlag","value":"N"})
      */
     public $appraiserFlag;
     
@@ -72,7 +72,7 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Reviewer Flag","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"reviewerFlag"})
+     * @Annotation\Attributes({"id":"reviewerFlag","value":"N"})
      */
     public $reviewerFlag;
     
@@ -80,8 +80,17 @@ class QuestionForm{
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"HR Flag","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"hrFlag","value":"N"})
+     */
+    public $hrFlag;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Appraisee Rating","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"appraiseeRating"})
+     * @Annotation\Attributes({"id":"appraiseeRating","value":"N"})
      */
     public $appraiseeRating;
     
@@ -90,7 +99,7 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Appraiser Rating","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"appraiserRating"})
+     * @Annotation\Attributes({"id":"appraiserRating","value":"N"})
      */
     public $appraiserRating;
     
@@ -99,9 +108,18 @@ class QuestionForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Reviewer Rating","value_options":{"Y":"Yes","N":"No"}})
-     * @Annotation\Attributes({"id":"reviewerRating"})
+     * @Annotation\Attributes({"id":"reviewerRating","value":"N"})
      */
     public $reviewerRating;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"HR Rating","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"hrRating","value":"N"})
+     */
+    public $hrRating;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Number")

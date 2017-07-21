@@ -441,7 +441,6 @@ class EmployeeRepository implements RepositoryInterface {
         $result = $this->gateway->select(["IS_ADMIN='Y' AND STATUS='E'"]);
         return $result;
     }
-
     public function fetchEmployeeFullNameList() {
         $sql = "
             SELECT EMPLOYEE_ID AS EMPLOYEE_ID,
@@ -496,5 +495,12 @@ class EmployeeRepository implements RepositoryInterface {
             return null;
         }
     }
-
+     public function fetchByHRFlagList() {
+        $result = $this->gateway->select(["IS_HR='Y' AND STATUS='E'"]);
+        $list = [];
+        foreach($result as $row){
+            array_push($list, $row['EMPLOYEE_ID']);
+        }
+        return $list;
+    }
 }

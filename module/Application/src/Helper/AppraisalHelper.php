@@ -9,7 +9,7 @@ use Appraisal\Repository\StageRepository;
 use Setup\Repository\EmployeeRepository;
 
 class AppraisalHelper{
-    public static function getAllQuestionWidOptions($adapter,$headingId,$currentStageId,$flag,$appraisalId=null,$employeeId=null,$userId=null,$orderCondition=null,$appraiserId=null, $reviewerId=null){
+    public static function getAllQuestionWidOptions($adapter,$headingId,$currentStageId,$flag,$appraisalId=null,$employeeId=null,$userId=null,$orderCondition=null,$appraiserId=null, $reviewerId=null,$hrId=null){
         $stageQuestionRepo = new StageQuestionRepository($adapter);
         $questionOptionRepo = new QuestionOptionRepository($adapter);
         $appraisalAnswerRepo = new AppraisalAnswerRepository($adapter);
@@ -23,7 +23,7 @@ class AppraisalHelper{
         $availableAnswer = false;
         foreach($result as $row){
             $optionList = $questionOptionRepo->fetchByQuestionId($row['QUESTION_ID']);
-            $answerDtl  = $appraisalAnswerRepo->fetchByAllDtl($appraisalId, $row['QUESTION_ID'], $employeeId, $userId,$appraiserId,$reviewerId);
+            $answerDtl  = $appraisalAnswerRepo->fetchByAllDtl($appraisalId, $row['QUESTION_ID'], $employeeId, $userId,$appraiserId,$reviewerId,$hrId);
             $options = [];
             foreach($optionList as $optionRow){
                 $options[$optionRow['OPTION_ID']]=$optionRow['OPTION_EDESC'];
