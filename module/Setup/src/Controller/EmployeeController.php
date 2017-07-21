@@ -228,6 +228,10 @@ class EmployeeController extends AbstractActionController {
                         $formOneModel->addrTempCountryId = 168;
                         $formOneModel->modifiedBy = $this->loggedIdEmployeeId;
                         $formOneModel->modifiedDt = Helper::getcurrentExpressionDate();
+//                        print "<pre>";
+//                        print_r($formOneModel);
+//                        print $id;
+//                        exit;
                         $this->repository->edit($formOneModel, $id);
                         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 2]);
                     }
