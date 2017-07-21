@@ -50,13 +50,7 @@ class AttendanceByHr extends AbstractActionController {
         $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
         $statusFormElement->setLabel("Status");
 
-        $attendanceList = $this->repository->fetchAll();
-        $attendanceByHr = [];
-        foreach ($attendanceList as $attendanceRow) {
-            array_push($attendanceByHr, $attendanceRow);
-        }
         return Helper::addFlashMessagesToArray($this, [
-                    'attendanceByHr' => $attendanceByHr,
                     'status' => $statusFormElement,
                     'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
