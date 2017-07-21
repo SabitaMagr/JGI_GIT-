@@ -1,5 +1,5 @@
 <div class="tab-pane <?= ($tab==3)?"active":""; ?>" id="portlet_tab2_3">
-    <form method="post" action="<?= $this->url("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]) ?>" name="performanceAppraisalForm" id="appraisalReview2">
+    <form method="post" action="<?= $this->url("appraisalReport",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]) ?>" name="performanceAppraisalForm" id="appraisalReview2">
     <div class="row">
         <?php
         $disabled = ($questionForCurStage==0)?'disabled':'';

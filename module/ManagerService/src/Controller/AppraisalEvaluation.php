@@ -96,7 +96,7 @@ class AppraisalEvaluation extends AbstractActionController{
         foreach($headingList as $headingRow){
             //get question list for appraisee with current stage id
             $questionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId,$employeeId,$employeeId,"=1",[$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['ALT_APPRAISER_ID']],[$assignedAppraisalDetail['REVIEWER_ID'],$assignedAppraisalDetail['ALT_REVIEWER_ID']],$hrId);
-            $appraiserQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiserFlag,$appraisalId,$employeeId,[$this->employeeId,$assignedAppraisalDetail['ALT_APPRAISER_ID']],null,null,[$assignedAppraisalDetail['REVIEWER_ID'],$assignedAppraisalDetail['ALT_REVIEWER_ID']],$hrId);
+            $appraiserQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiserFlag,$appraisalId,$employeeId,[$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['ALT_APPRAISER_ID']],null,null,[$assignedAppraisalDetail['REVIEWER_ID'],$assignedAppraisalDetail['ALT_REVIEWER_ID']],$hrId);
             $appraiseeQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $appraiseeFlag, $appraisalId,$employeeId,$employeeId,"!=1");
             $reviewerQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $reviewerFlag, $appraisalId,$employeeId,[$assignedAppraisalDetail['REVIEWER_ID'],$assignedAppraisalDetail['ALT_REVIEWER_ID']],null,null,null,$hrId);
             $hrQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter, $headingRow['HEADING_ID'], $currentStageId, $hrFlag, $appraisalId, $employeeId, $hrId);
@@ -152,8 +152,6 @@ class AppraisalEvaluation extends AbstractActionController{
                 $appraisalStatus = new AppraisalStatus();
                 $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId,$appraisalId)->getArrayCopy());
                 $postData = $request->getPost()->getArrayCopy();
-                $defaultRating = (isset($postData['defaultRating']))?$postData['defaultRating']:null;
-                $appraiserOverallRating = (isset($postData['appraiserOverallRating']))?$postData['appraiserOverallRating']:null;
                 $appraisalAnswerModel = new AppraisalAnswer();
                 $answer = $postData['answer'];
 //                print "<pre>";
@@ -202,22 +200,10 @@ class AppraisalEvaluation extends AbstractActionController{
                     case 2: 
 //                        if(!$editMode){
                             //}
-                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
-                        if($defaultRating=='Y'){
-                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$appraiserOverallRating, AppraisalStatus::DEFAULT_RATING=>'Y', AppraisalStatus::ANNUAL_RATING_COMPETENCY=>"", AppraisalStatus::ANNUAL_RATING_KPI=>""], $appraisalId, $employeeId);
-                            $appraisalKPIRepo->updateColumnByEmpAppId([AppraisalKPI::APPRAISER_RATING=>""], $employeeId, $appraisalId);
-                            $appraisalComRepo->updateColumnByEmpAppId([AppraisalCompetencies::RATING=>""], $employeeId, $appraisalId);
-                            $stageId = 6; //appraisee stage
-                        }else{
-                            $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISER_OVERALL_RATING=>$appraiserOverallRating, AppraisalStatus::DEFAULT_RATING=>'N'], $appraisalId, $employeeId);
-                            $stageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
-                        }
+                        $stageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
                         $appraisalAssignRepo->updateCurrentStageByAppId($stageId, $appraisalId, $employeeId);
+                        
                         HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
-                        $adminList1 = $employeeRepo->fetchByAdminFlagList();
-                        foreach($adminList1 as $adminRow1){
-                            HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$adminRow1['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
-                        }
                         
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                         $this->redirect()->toRoute("appraisal-evaluation");
@@ -229,7 +215,6 @@ class AppraisalEvaluation extends AbstractActionController{
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
-        $defaultRatingDtl = AppraisalHelper::checkDefaultRatingForEmp($this->adapter, $employeeId, $appraisalTypeId);
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
         $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($employeeId, $appraisalId)['NUM'];
@@ -254,7 +239,6 @@ class AppraisalEvaluation extends AbstractActionController{
             'keyAchievementDtlNum'=>$keyAchievementDtlNum,
             'appraiserRatingDtlNum'=>$appraiserRatingDtlNum,
             'appCompetenciesRatingDtlNum'=>$appCompetenciesRatingDtlNum,
-            'defaultRatingDtl'=>$defaultRatingDtl,
             'hrAvailableAnswer'=>$hrAvailableAnswer,
             'hrQuestionTemplate'=>$hrQuestionTemplate
             ]);

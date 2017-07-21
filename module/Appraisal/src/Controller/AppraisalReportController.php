@@ -214,21 +214,32 @@ class AppraisalReportController extends AbstractActionController{
                     }
                     $i+=1;
                 }
-                
-                $nextStageId = 2; // completed stage
-                $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
-                HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
-                HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
-                HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
-                
-                $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                $this->redirect()->toRoute("appraisalReport");
+                switch ($tab) {
+                    case 1:    
+                        $this->redirect()->toRoute("appraisal-report",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]);
+                    break;
+                    case 2:   
+                        $this->redirect()->toRoute("appraisal-report",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]);
+                    break;
+                    case 3: 
+                        $this->redirect()->toRoute("appraisal-report",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>6]);
+                    break;
+                    case 6:
+                        $nextStageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1); // completed stage
+                        $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
+                        HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$employeeId,'USER_TYPE'=>"APPRAISEE"]);
+                        HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                        HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this,['ID'=>$this->employeeId],['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+
+                        $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
+                        $this->redirect()->toRoute("appraisalReport");
+                    break;
+                }
             }catch(Exception $e){
                 $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
-        $defaultRatingDtl = AppraisalHelper::checkDefaultRatingForEmp($this->adapter, $employeeId, $appraisalTypeId);
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
         $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($employeeId, $appraisalId)['NUM'];
@@ -238,7 +249,6 @@ class AppraisalReportController extends AbstractActionController{
         $returnData['keyAchievementDtlNum']=$keyAchievementDtlNum;
         $returnData['appraiserRatingDtlNum']=$appraiserRatingDtlNum;
         $returnData['appCompetenciesRatingDtlNum']=$appCompetenciesRatingDtlNum;
-        $returnData['defaultRatingDtl']=$defaultRatingDtl;
         return Helper::addFlashMessagesToArray($this,$returnData);
     }
 }

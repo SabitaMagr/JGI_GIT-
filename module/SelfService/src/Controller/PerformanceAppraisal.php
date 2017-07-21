@@ -146,11 +146,10 @@ class PerformanceAppraisal extends AbstractActionController{
                 $appraisalAnswerModel = new AppraisalAnswer();
                 $postData = $request->getPost()->getArrayCopy();
                 $answer = $postData['answer'];
-                $appraiseeAgree = (isset($postData['appraiseeAgree']))?$postData['appraiseeAgree']:null;
                 $i=0;
                 $editMode = false;
                 foreach($answer as $key=>$value){
-                    if(strpos($key,'sr') !== false ){
+                    if(strpos($key,'sr') !== false){
                         $appraisalAnswerModel->rating = $value;
                         $appraisalAnswerModel->modifiedDate = Helper::getcurrentExpressionDate();
                         $appraisalAnswerModel->modifiedBy = $this->employeeId;
@@ -184,27 +183,13 @@ class PerformanceAppraisal extends AbstractActionController{
                     }
                     $i+=1;
                 }
-                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISEE_AGREE=>$appraiseeAgree], $appraisalId, $this->employeeId);
-                
-                if($assignedAppraisalDetail['HR_FEEDBACK_ENABLE']!=null && $assignedAppraisalDetail['HR_FEEDBACK_ENABLE']=='Y'){
-                    $nextStageId = 9; //hr comment stage
-                }else{
-                    $nextStageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
-                }
+                $nextStageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
 //                 if(!$editMode){
-                    $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $this->employeeId);
+                $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $this->employeeId);
 //                }
-                if($assignedAppraisalDetail['STAGE_ID']!=1){
-                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>($assignedAppraisalDetail['REVIEWED_BY']!=null)?$assignedAppraisalDetail['REVIEWED_BY']:$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
-                    HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$assignedAppraisalDetail['APPRAISED_BY'],'USER_TYPE'=>"APPRAISER"]);
-                    if($assignedAppraisalDetail['SUPER_REVIEWER_ID']!=null){
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$assignedAppraisalDetail['SUPER_REVIEWER_ID'],'USER_TYPE'=>"SUPER_REVIEWER"]);
-                    }
-                    $adminList = $employeeRepo->fetchByAdminFlagList();
-                    foreach($adminList as $adminRow){
-                        HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$adminRow['EMPLOYEE_ID'],'USER_TYPE'=>"HR"]);
-                    }
-                }
+                HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$assignedAppraisalDetail['REVIEWER_ID'],'USER_TYPE'=>"REVIEWER"]);
+                HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this,null,['ID'=>$assignedAppraisalDetail['APPRAISER_ID'],'USER_TYPE'=>"APPRAISER"]);
+                
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
                 $this->redirect()->toRoute("performanceAppraisal");
             }catch(Exception $e){
@@ -212,7 +197,6 @@ class PerformanceAppraisal extends AbstractActionController{
                 $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
-        $defaultRatingDtl = AppraisalHelper::checkDefaultRatingForEmp($this->adapter, $this->employeeId, $appraisalTypeId);
         $appraisalKPI = new AppraisalKPIRepository($this->adapter);
         $appraisalCompetencies = new AppraisalCompetenciesRepo($this->adapter);
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($this->employeeId, $appraisalId)['NUM'];
@@ -236,7 +220,6 @@ class PerformanceAppraisal extends AbstractActionController{
             'keyAchievementDtlNum'=>$keyAchievementDtlNum,
             'appraiserRatingDtlNum'=>$appraiserRatingDtlNum,
             'appCompetenciesRatingDtlNum'=>$appCompetenciesRatingDtlNum,
-            'defaultRatingDtl'=>$defaultRatingDtl,
             'hrAvailableAnswer'=>$hrAvailableAnswer,
             'hrQuestionTemplate'=>$hrQuestionTemplate
             ]);
