@@ -2173,14 +2173,19 @@ class RestfulService extends AbstractRestfulController {
             ]);
             $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $leaveRequestRow['FROM_DATE']);
             $toDayDate = new DateTime();
-            if (($toDayDate < $startDate) && ($statusId == 'RQ' || $statusId == 'RC' || $statusId == 'AP')) {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else if (($toDayDate >= $startDate) && $statusId == 'RQ') {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else if ($toDayDate >= $startDate) {
+//            if (($toDayDate < $startDate) && ($statusId == 'RQ' || $statusId == 'RC' || $statusId == 'AP')) {
+//                $new_row['ALLOW_TO_EDIT'] = 1;
+//            } else if (($toDayDate >= $startDate) && $statusId == 'RQ') {
+//                $new_row['ALLOW_TO_EDIT'] = 1;
+//            } else if ($toDayDate >= $startDate) {
+//                $new_row['ALLOW_TO_EDIT'] = 0;
+//            } else {
+//                $new_row['ALLOW_TO_EDIT'] = 0;
+//            }
+            if ($statusId == 'C' || $statusId == 'R') {
                 $new_row['ALLOW_TO_EDIT'] = 0;
             } else {
-                $new_row['ALLOW_TO_EDIT'] = 0;
+                $new_row['ALLOW_TO_EDIT'] = 1;
             }
             array_push($leaveRequest, $new_row);
         }
