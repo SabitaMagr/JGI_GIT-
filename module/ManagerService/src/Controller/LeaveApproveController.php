@@ -197,15 +197,11 @@ class LeaveApproveController extends AbstractActionController {
                     $leaveApply->recommendedBy = $this->employeeId;
                     $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
                 }
+                $this->repository->edit($leaveApply, $id);
 
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
 
-                $leaveSDate = $detail['START_DATE'];
-                $leaveEDate = $detail['END_DATE'];
-                $currDate = Helper::getCurrentDate();
-                $begin = new DateTime($leaveSDate);
-                $end = new DateTime($leaveEDate);
 
 
                 try {
