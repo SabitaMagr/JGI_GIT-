@@ -92,6 +92,7 @@ class HrEmployees extends Model {
     public $modifiedBy;
     public $modifiedDt;
     public $fullName;
+    public $isHr;
     public $addrTempZoneId;
     public $addrTempDistrictId;
     public $addrPermZoneId;
@@ -183,6 +184,7 @@ class HrEmployees extends Model {
     const MODIFIED_BY = "MODIFIED_BY";
     const MODIFIED_DT = "MODIFIED_DT";
     const FULL_NAME = "FULL_NAME";
+    const IS_HR = "IS_HR";
     const ADDR_PERM_ZONE_ID = "ADDR_PERM_ZONE_ID";
     const ADDR_PERM_DISTRICT_ID = "ADDR_PERM_DISTRICT_ID";
     const ADDR_TEMP_ZONE_ID = "ADDR_TEMP_ZONE_ID";
@@ -274,6 +276,7 @@ class HrEmployees extends Model {
         'modifiedBy' => self::MODIFIED_BY,
         'modifiedDt' => self::MODIFIED_DT,
         'fullName' => self::FULL_NAME,
+        'isHr'=>self::IS_HR,
         'addrTempZoneId' => self::ADDR_TEMP_ZONE_ID,
         'addrTempDistrictId' => self::ADDR_TEMP_DISTRICT_ID,
         'addrPermZoneId' => self::ADDR_PERM_ZONE_ID,

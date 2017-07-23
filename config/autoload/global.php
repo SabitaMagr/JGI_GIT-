@@ -25,14 +25,16 @@ return [
 //        'username' => 'JWL_HRIS_APR4',
 //        'password' => 'JWL_HRIS_APR4',
 //        
-        'username' => 'ITNEPAL_HRIS_APR2',
-        'password' => 'ITNEPAL_HRIS_APR2',
+//        'username' => 'ITNEPAL_HRIS_APR2',
+//        'password' => 'ITNEPAL_HRIS_APR2',
         
 //        'username'      => 'HRIS_JWL',
 //        'password'      => 'HRIS_JWL',
 //        
 //        'username' => 'HRIS_MODERN',
 //        'password' => 'HRIS_MODERN',
+        'username'=>'HRIS_VIANET',
+        'password'=>'HRIS_VIANET',
         'platform_options' => ['quote_identifiers' => false]
     ],
     'service_manager' => [
