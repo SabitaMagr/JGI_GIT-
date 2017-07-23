@@ -56,13 +56,11 @@ use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
 use Training\Model\TrainingAssign;
-use Travel\Repository\RecommenderApproverRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Mvc\Controller\Plugin\Url;
-use Zend\Mime\Part as MimePart;
 use Zend\Mime\Message as MimeMessage;
+use Zend\Mime\Part as MimePart;
+use Zend\Mvc\Controller\AbstractController;
 
 class HeadNotification {
 
@@ -103,7 +101,7 @@ class HeadNotification {
         return $notificationRepo->add($notification);
     }
 
-    private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, AbstractActionController $context) {
+    private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, AbstractController $context) {
 //        return;
         $url = $context->plugin('url');
         $isValidEmail = function ($email) {
@@ -171,7 +169,7 @@ class HeadNotification {
         $model->exchangeArrayFromDB($data);
     }
 
-    private static function leaveApplied(LeaveApply $leaveApply, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    private static function leaveApplied(LeaveApply $leaveApply, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
         $recommdAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
         
@@ -205,7 +203,7 @@ class HeadNotification {
         self::sendEmail($leaveReqNotiMod, 1, $adapter, $context);
     }
 
-    private static function leaveRecommend(LeaveApply $leaveApply, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function leaveRecommend(LeaveApply $leaveApply, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
         $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
         $leaveApproveRepository = new LeaveApproveRepository($adapter);
@@ -237,7 +235,7 @@ class HeadNotification {
         self::sendEmail($leaveReqNotiMod, 2, $adapter, $context);
     }
 
-    public static function leaveApprove(LeaveApply $leaveApply, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    public static function leaveApprove(LeaveApply $leaveApply, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
         $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
         $leaveApproveRepository = new LeaveApproveRepository($adapter);
@@ -268,7 +266,7 @@ class HeadNotification {
         self::sendEmail($leaveReqNotiMod, 3, $adapter, $context);
     }
 
-    public static function attendanceRequest(AttendanceRequestModel $request, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    public static function attendanceRequest(AttendanceRequestModel $request, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new AttendanceRequestRepository($adapter), $request, $request->id);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $idAndRole = self::findRoleType($recommdAppModel, $type);
@@ -290,7 +288,7 @@ class HeadNotification {
         self::sendEmail($notification, 4, $adapter, $context);
     }
 
-    public static function attendanceRecommend(AttendanceRequestModel $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    public static function attendanceRecommend(AttendanceRequestModel $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new AttendanceRequestRepository($adapter), $request, $request->id);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
@@ -312,7 +310,7 @@ class HeadNotification {
         self::sendEmail($notification, 5, $adapter, $context);
     }
 
-    public static function attendanceApprove(AttendanceRequestModel $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    public static function attendanceApprove(AttendanceRequestModel $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new AttendanceRequestRepository($adapter), $request, $request->id);
         $recApp = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recApp[AttendanceRequestModel::APPROVED_BY], $request->employeeId, \Notification\Model\AttendanceRequestNotificationModel::class, $adapter);
@@ -334,7 +332,7 @@ class HeadNotification {
         self::sendEmail($notification, 5, $adapter, $context);
     }
 
-    public static function advanceApplied(AdvanceRequest $request, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    public static function advanceApplied(AdvanceRequest $request, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
@@ -353,7 +351,7 @@ class HeadNotification {
         self::sendEmail($notification, 6, $adapter, $context);
     }
 
-    public static function advanceRecommend(AdvanceRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    public static function advanceRecommend(AdvanceRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
@@ -372,7 +370,7 @@ class HeadNotification {
         self::sendEmail($notification, 7, $adapter, $context);
     }
 
-    private static function advanceApprove(AdvanceRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function advanceApprove(AdvanceRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
@@ -391,7 +389,7 @@ class HeadNotification {
         self::sendEmail($notification, 8, $adapter, $context);
     }
 
-    private static function travelApplied(TravelRequest $request, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    private static function travelApplied(TravelRequest $request, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
         $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter,$request->approverRole);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
@@ -423,7 +421,7 @@ class HeadNotification {
         self::sendEmail($notification, 9, $adapter, $context);
     }
 
-    private static function travelRecommend(TravelRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function travelRecommend(TravelRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
         $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter,$request->approverRole);
         $notification = self::initializeNotificationModel(
@@ -458,7 +456,7 @@ class HeadNotification {
         self::sendEmail($notification, 10, $adapter, $context);
     }
 
-    private static function travelApprove(TravelRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function travelApprove(TravelRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
         $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter,$request->approverRole);
         $notification = self::initializeNotificationModel(
@@ -493,7 +491,7 @@ class HeadNotification {
         self::sendEmail($notification, 11, $adapter, $context);
     }
 
-    private static function trainingAssigned(TrainingAssign $request, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    private static function trainingAssigned(TrainingAssign $request, AdapterInterface $adapter, AbstractController $context, $type) {
         $notification = self::initializeNotificationModel($request->createdBy, $request->employeeId, \Notification\Model\TrainingReqNotificationModel::class, $adapter);
 
         $training = new Training();
@@ -517,7 +515,7 @@ class HeadNotification {
         self::sendEmail($notification, 12, $adapter, $context);
     }
 
-    private static function loanApplied(LoanRequest $request, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    private static function loanApplied(LoanRequest $request, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new LoanRequestRepository($adapter), $request, $request->loanRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $request->employeeId);
@@ -537,7 +535,7 @@ class HeadNotification {
         self::sendEmail($notification, 13, $adapter, $context);
     }
 
-    private static function loanRecommend(LoanRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function loanRecommend(LoanRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new LoanRequestRepository($adapter), $request, $request->loanRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\LoanRequestNotificationModel::class, $adapter);
@@ -558,7 +556,7 @@ class HeadNotification {
         self::sendEmail($notification, 14, $adapter, $context);
     }
 
-    private static function loanApprove(LoanRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function loanApprove(LoanRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new LoanRequestRepository($adapter), $request, $request->loanRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\LoanRequestNotificationModel::class, $adapter);
@@ -579,7 +577,7 @@ class HeadNotification {
         self::sendEmail($notification, 15, $adapter, $context);
     }
 
-    private static function workOnDayOffApplied(WorkOnDayoff $workOnDayoff, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    private static function workOnDayOffApplied(WorkOnDayoff $workOnDayoff, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new WorkOnDayoffRepository($adapter), $workOnDayoff, $workOnDayoff->id);
 
         $recommdAppModel = self::findRecApp($workOnDayoff->employeeId, $adapter);
@@ -599,7 +597,7 @@ class HeadNotification {
         self::sendEmail($workOnDayoffReqNotiMod, 16, $adapter, $context);
     }
 
-    private static function workOnDayOffRecommend(WorkOnDayoff $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function workOnDayOffRecommend(WorkOnDayoff $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new WorkOnDayoffRepository($adapter), $request, $request->id);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], WorkOnDayoffNotificationModel::class, $adapter);
@@ -620,7 +618,7 @@ class HeadNotification {
         self::sendEmail($notification, 17, $adapter, $context);
     }
 
-    private static function workOnDayOffApprove(WorkOnDayoff $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function workOnDayOffApprove(WorkOnDayoff $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new WorkOnDayoffRepository($adapter), $request, $request->id);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
@@ -643,7 +641,7 @@ class HeadNotification {
         self::sendEmail($notification, 18, $adapter, $context);
     }
 
-    private static function workOnHoliday(WorkOnHoliday $request, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    private static function workOnHoliday(WorkOnHoliday $request, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new WorkOnHolidayRepository($adapter), $request, $request->id);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
@@ -665,7 +663,7 @@ class HeadNotification {
         self::sendEmail($notification, 19, $adapter, $context);
     }
 
-    private static function workOnHolidayRecommend(WorkOnHoliday $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function workOnHolidayRecommend(WorkOnHoliday $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new WorkOnHolidayRepository($adapter), $request, $request->id);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], WorkOnHolidayNotificationModel::class, $adapter);
@@ -688,7 +686,7 @@ class HeadNotification {
         self::sendEmail($notification, 20, $adapter, $context);
     }
 
-    private static function workOnHolidayApprove(WorkOnHoliday $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function workOnHolidayApprove(WorkOnHoliday $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new WorkOnHolidayRepository($adapter), $request, $request->id);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
@@ -713,7 +711,7 @@ class HeadNotification {
         self::sendEmail($notification, 21, $adapter, $context);
     }
 
-    private static function trainingApplied(TrainingRequest $request, AdapterInterface $adapter,AbstractActionController $context, $type) {
+    private static function trainingApplied(TrainingRequest $request, AdapterInterface $adapter,AbstractController $context, $type) {
         $trainingRequestRepo = new TrainingRequestRepository($adapter);
         $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
         $request->exchangeArrayFromDB($trainingRequestDetail);
@@ -755,7 +753,7 @@ class HeadNotification {
         self::sendEmail($notification, 22, $adapter, $context);
     }
 
-    private static function trainingRecommend(TrainingRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function trainingRecommend(TrainingRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         $trainingRequestRepo = new TrainingRequestRepository($adapter);
         $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
         $request->exchangeArrayFromDB($trainingRequestDetail);
@@ -799,7 +797,7 @@ class HeadNotification {
         self::sendEmail($notification, 23, $adapter, $context);
     }
 
-    private static function trainingApprove(TrainingRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function trainingApprove(TrainingRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         $trainingRequestRepo = new TrainingRequestRepository($adapter);
         $trainingRequestDetail = $trainingRequestRepo->fetchById($request->requestId);
         $request->exchangeArrayFromDB($trainingRequestDetail);
@@ -843,7 +841,7 @@ class HeadNotification {
         self::sendEmail($notification, 24, $adapter, $context);
     }
 
-    private static function leaveSubstituteApplied(LeaveApply $request, AdapterInterface $adapter, AbstractActionController $context) {
+    private static function leaveSubstituteApplied(LeaveApply $request, AdapterInterface $adapter, AbstractController $context) {
         self::initFullModel(new LeaveApplyRepository($adapter), $request, $request->id);
 
         $leaveSubstituteRepo = new LeaveSubstituteRepository($adapter);
@@ -866,7 +864,7 @@ class HeadNotification {
         self::sendEmail($notification, 25, $adapter, $context);
     }
 
-    private static function leaveSubstituteAccepted(LeaveApply $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function leaveSubstituteAccepted(LeaveApply $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $request, $request->id);
         $leaveSubstituteRepo = new LeaveSubstituteRepository($adapter);
         $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($request->id);
@@ -889,7 +887,7 @@ class HeadNotification {
         self::sendEmail($notification, 26, $adapter, $context);
     }
 
-    private static function travelSubstituteApplied(TravelRequest $request, AdapterInterface $adapter, AbstractActionController $context) {
+    private static function travelSubstituteApplied(TravelRequest $request, AdapterInterface $adapter, AbstractController $context) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
 
         $travelSubstituteRepo = new TravelSubstituteRepository($adapter);
@@ -913,7 +911,7 @@ class HeadNotification {
         self::sendEmail($notification, 27, $adapter, $context);
     }
 
-    private static function travelSubstituteAccepted(TravelRequest $request, AdapterInterface $adapter, AbstractActionController $context, string $status) {
+    private static function travelSubstituteAccepted(TravelRequest $request, AdapterInterface $adapter, AbstractController $context, string $status) {
         self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
 
         $travelSubstituteRepo = new TravelSubstituteRepository($adapter);
@@ -968,7 +966,7 @@ class HeadNotification {
         }
     }
 
-    private static function salaryReview(SalaryDetail $request, AdapterInterface $adapter, AbstractActionController $context) {
+    private static function salaryReview(SalaryDetail $request, AdapterInterface $adapter, AbstractController $context) {
         self::initFullModel(new SalaryDetailRepo($adapter), $request, $request->salaryDetailId);
         $notification = self::initializeNotificationModel($request->createdBy, $request->employeeId, SalaryReviewNotificationModel::class, $adapter);
 
@@ -984,7 +982,7 @@ class HeadNotification {
         self::sendEmail($notification, 29, $adapter, $context);
     }
 
-    private static function kpiSetting(AppraisalStatus $request, AdapterInterface $adapter, AbstractActionController $context, $recieverDetail) {
+    private static function kpiSetting(AppraisalStatus $request, AdapterInterface $adapter, AbstractController $context, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1026,7 +1024,7 @@ class HeadNotification {
         self::sendEmail($notification, 30, $adapter, $context);
     }
 
-    private static function kpiApproved(AppraisalStatus $request, AdapterInterface $adapter, AbstractActionController $context, $senderDetail, $recieverDetail) {
+    private static function kpiApproved(AppraisalStatus $request, AdapterInterface $adapter, AbstractController $context, $senderDetail, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1074,7 +1072,7 @@ class HeadNotification {
         self::sendEmail($notification, 31, $adapter, $context);
     }
 
-    private static function keyAchievement(AppraisalStatus $request, AdapterInterface $adapter, AbstractActionController $context, $recieverDetail) {
+    private static function keyAchievement(AppraisalStatus $request, AdapterInterface $adapter, AbstractController $context, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1116,7 +1114,7 @@ class HeadNotification {
         self::sendEmail($notification, 32, $adapter, $context);
     }
 
-    private static function appraisalEvaluation(AppraisalStatus $request, AdapterInterface $adapter, AbstractActionController $context, $senderDetail, $recieverDetail) {
+    private static function appraisalEvaluation(AppraisalStatus $request, AdapterInterface $adapter, AbstractController $context, $senderDetail, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1160,7 +1158,7 @@ class HeadNotification {
         self::sendEmail($notification, 33, $adapter, $context);
     }
 
-    private static function appraisalReview(AppraisalStatus $request, AdapterInterface $adapter, AbstractActionController $context, $type, $senderDetail, $recieverDetail) {
+    private static function appraisalReview(AppraisalStatus $request, AdapterInterface $adapter, AbstractController $context, $type, $senderDetail, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1220,7 +1218,7 @@ class HeadNotification {
         self::sendEmail($notification, 34, $adapter, $context);
     }
 
-    private static function appraiseeFeedback(AppraisalStatus $request, AdapterInterface $adapter,AbstractActionController $context, $recieverDetail) {
+    private static function appraiseeFeedback(AppraisalStatus $request, AdapterInterface $adapter,AbstractController $context, $recieverDetail) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1274,7 +1272,7 @@ class HeadNotification {
         self::sendEmail($notification, 35, $adapter, $context);
     }
 
-    public static function monthlyAppraisalAssigned(AppraisalAssign $request, AdapterInterface $adapter, AbstractActionController $context) {
+    public static function monthlyAppraisalAssigned(AppraisalAssign $request, AdapterInterface $adapter, AbstractController $context) {
         $appraisalAssignRepo = new AppraisalAssignRepository($adapter);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($request->employeeId, $request->appraisalId);
 
@@ -1309,7 +1307,7 @@ class HeadNotification {
         self::sendEmail($notification, 40, $adapter, $context);
     }
 
-    private static function overtimeApplied(Overtime $request, AdapterInterface $adapter, AbstractActionController $context, $type) {
+    private static function overtimeApplied(Overtime $request, AdapterInterface $adapter, AbstractController $context, $type) {
         self::initFullModel(new OvertimeRepository($adapter), $request, $request->overtimeId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
@@ -1332,7 +1330,7 @@ class HeadNotification {
         self::sendEmail($notification, 37, $adapter, $context);
     }
 
-    private static function overtimeRecommend(Overtime $request, AdapterInterface $adapter, AbstractActionController $context, $status) {
+    private static function overtimeRecommend(Overtime $request, AdapterInterface $adapter, AbstractController $context, $status) {
         self::initFullModel(new OvertimeRepository($adapter), $request, $request->overtimeId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
@@ -1355,7 +1353,7 @@ class HeadNotification {
         self::sendEmail($notification, 38, $adapter, $context);
     }
 
-    private static function overtimeApprove(Overtime $request, AdapterInterface $adapter,AbstractActionController $context, $status) {
+    private static function overtimeApprove(Overtime $request, AdapterInterface $adapter,AbstractController $context, $status) {
         self::initFullModel(new OvertimeRepository($adapter), $request, $request->overtimeId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
 
@@ -1378,7 +1376,7 @@ class HeadNotification {
         self::sendEmail($notification, 39, $adapter, $context);
     }
 
-    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, AbstractActionController $context = null, $senderDetail = null, $receiverDetail = null) {
+    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, AbstractController $context = null, $senderDetail = null, $receiverDetail = null) {
         $url = null;
         if ($context != null) {
             $url = $context->plugin('url');
@@ -1593,12 +1591,12 @@ class HeadNotification {
                 break;
         }
     }
-    public static function mailHeader(AbstractActionController $context){
+    public static function mailHeader(AbstractController $context){
         $basePath = $context->getRequest()->getBasePath();
         $headerImg =  "<div style='background-color:#F48B2F; width:100%;text-align:center;'><img src='http://laxmi.laxmibank.com/assets/upload/images/config/logo2.gif' align='middle' style='text-align:center'></div>";
         return $headerImg;
     }
-    public static function mailFooter(AbstractActionController $context){
+    public static function mailFooter(AbstractController $context){
         $footer = "<div style='background-color:#F48B2F;font-size:11px; height:80px; text-align:center;padding:10px;'>
        <label style='margin-bottom:20px'>Disclaimer: This is an automatically generated email. </label><br/>
 <label style='margin-bottom:20px'>\r\nConfidentiality Clause: This electronic mail is confidential, privileged and only for the use of the recipient to whom it is addressed.</label><br/>
