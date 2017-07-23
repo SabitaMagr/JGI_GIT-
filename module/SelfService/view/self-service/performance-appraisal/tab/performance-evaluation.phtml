@@ -1,5 +1,5 @@
 <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')) ?'active':''?>" id="portlet_tab2_1">
-    <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation">
+    <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation1">
     <div class="row">
         <?php 
 //      $selfDisabled = ($questionForCurStage==0 && $appraiserAvailableAnswer===true)?'disabled':'';
