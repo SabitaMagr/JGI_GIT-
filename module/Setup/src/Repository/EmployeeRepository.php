@@ -501,6 +501,6 @@ class EmployeeRepository implements RepositoryInterface {
         foreach($result as $row){
             array_push($list, $row['EMPLOYEE_ID']);
         }
-        return $list;
+        return (count($list)>0)?$list:[0];
     }
 }
