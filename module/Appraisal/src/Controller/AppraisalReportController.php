@@ -96,13 +96,14 @@ class AppraisalReportController extends AbstractActionController{
         $reviewerAvailableAnswer = false;
         $hrAvailableAnswer = false;
         $hrId = $employeeRepo->fetchByHRFlagList();
+        $isHr = (in_array($this->employeeId,$hrId))?true:false;
         foreach($headingList as $headingRow){
             //get question list for appraisee with current stage id
             $questionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiseeFlag,$appraisalId,$employeeId,$employeeId,"=1",[$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['ALT_APPRAISER_ID']],[$assignedAppraisalDetail['REVIEWER_ID'],$assignedAppraisalDetail['ALT_REVIEWER_ID']],$hrId);
             $appraiserQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'],$currentStageId,$appraiserFlag,$appraisalId,$employeeId,[$assignedAppraisalDetail['APPRAISER_ID'],$assignedAppraisalDetail['ALT_APPRAISER_ID']],null,null,[$assignedAppraisalDetail['REVIEWER_ID'],$assignedAppraisalDetail['ALT_REVIEWER_ID']],$hrId);
             $appraiseeQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $appraiseeFlag, $appraisalId,$employeeId,$employeeId,"!=1");
             $reviewerQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter,$headingRow['HEADING_ID'], $currentStageId, $reviewerFlag, $appraisalId,$employeeId,[$assignedAppraisalDetail['REVIEWER_ID'],$assignedAppraisalDetail['ALT_REVIEWER_ID']],null,null,null,$hrId);
-            $hrQuestionList = (in_array($this->employeeId,$hrId))?AppraisalHelper::getAllQuestionWidOptions($this->adapter, $headingRow['HEADING_ID'], $currentStageId, $hrFlag, $appraisalId, $employeeId, $hrId):['questionList'=>[],'questionForCurStage'=>false,'availableAnswer'=>false];;
+            $hrQuestionList = AppraisalHelper::getAllQuestionWidOptions($this->adapter, $headingRow['HEADING_ID'], $currentStageId, $hrFlag, $appraisalId, $employeeId, $hrId);
 //            print_r($hrQuestionList); die();
             if($hrQuestionList['questionForCurStage']){
                 $questionForCurStage+=1;
@@ -167,7 +168,8 @@ class AppraisalReportController extends AbstractActionController{
             'appraiserAvailableAnswer'=>$appraiserAvailableAnswer,
             'reviewerAvailableAnswer'=>$reviewerAvailableAnswer,
             'hrAvailableAnswer'=>$hrAvailableAnswer,
-            'hrQuestionTemplate'=>$hrQuestionTemplate
+            'hrQuestionTemplate'=>$hrQuestionTemplate,
+            'isHr'=>$isHr
         ];
         if($request->isPost()){
             try{

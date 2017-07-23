@@ -200,6 +200,7 @@ class AppraisalEvaluation extends AbstractActionController{
                     case 2: 
 //                        if(!$editMode){
                             //}
+                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISED_BY=>$this->employeeId], $appraisalId, $employeeId);
                         $stageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
                         $appraisalAssignRepo->updateCurrentStageByAppId($stageId, $appraisalId, $employeeId);
                         

@@ -214,6 +214,7 @@ class AppraisalReview extends AbstractActionController{
                         $this->redirect()->toRoute("appraisal-review",['action'=>'view','appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>3]);
                     break;
                     case 3: 
+                        $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWED_BY=> $this->employeeId], $appraisalId, $employeeId);
                         $nextStageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
                         $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
                         
