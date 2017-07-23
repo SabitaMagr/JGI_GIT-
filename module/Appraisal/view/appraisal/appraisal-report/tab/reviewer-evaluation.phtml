@@ -32,13 +32,8 @@
                                         }
                                         ?>
                                     </div>
-                                    <?php if($reviewerQuestionRow['REVIEWER_RATING']=='Y'){ 
-                                        if($reviewerQuestionRow['REVIEWER_FLAG']=='N'){?>
-                                        <input type="hidden" value="<?= (count($reviewerQuestionRow['ANSWER'])>0)?array_keys($reviewerQuestionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
-                                        <input type="hidden" value="" name="<?= "answer[".$keyForRQuestion."]"; ?>"/>
-                                     <?php }?>
+                                    <?php if($reviewerQuestionRow['REVIEWER_RATING']=='Y'){ ?>
                                     <div class="col-sm-1">
-                                        <input type="hidden" value="<?= (count($reviewerQuestionRow['ANSWER'])>0)?array_keys($reviewerQuestionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
                                         <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForRQuestion.".rr]"?>" value="<?= ($reviewerQuestionRow['ANSWER']!=null||count($reviewerQuestionRow['ANSWER'])>0)?array_values($reviewerQuestionRow['ANSWER'])[0]['RATING']:null ?>" <?= 'disabled' ?> min="<?= $reviewerQuestionRow['MIN_VALUE'] ?>" max="<?= $reviewerQuestionRow['MAX_VALUE'] ?>" required="required"/>
                                     </div>
                                     <?php }
@@ -69,7 +64,8 @@
                                             <input type="hidden" value="" name="<?= "answer[".$keyForHrQuestion."]"; ?>"/>
                                             <?php }?>
                                         <div class="col-sm-1">
-                                            <label>HR Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForHrQuestion.".hr]"?>" value="<?= ($reviewerQuestionRow['ANSWER']!=null||count($reviewerQuestionRow['ANSWER'])>0)?array_values($reviewerQuestionRow['ANSWER'])[0]['HR_RATING_VAL']:null ?>"  min="<?= $reviewerQuestionRow['MIN_VALUE'] ?>" max="<?= $reviewerQuestionRow['MAX_VALUE'] ?>" <?= $disabled ?>/>
+                                            <input type="hidden" value="<?= (count($reviewerQuestionRow['ANSWER'])>0)?array_keys($reviewerQuestionRow['ANSWER'])[0]:0; ?>" name="answerId[]"/>
+                                            <label>HR Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForHrQuestion.".hr]"?>" value="<?= ($reviewerQuestionRow['ANSWER']!=null||count($reviewerQuestionRow['ANSWER'])>0)?array_values($reviewerQuestionRow['ANSWER'])[0]['HR_RATING_VAL']:null ?>" <?= $disabled ?> min="<?= $reviewerQuestionRow['MIN_VALUE'] ?>" max="<?= $reviewerQuestionRow['MAX_VALUE'] ?>" required="required"/>
                                         </div>
                                         <?php }
                                     }?>

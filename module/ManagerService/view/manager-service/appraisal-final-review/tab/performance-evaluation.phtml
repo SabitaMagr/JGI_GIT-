@@ -81,14 +81,8 @@
                                                     }?>
                                             </div>
                                         <?php }?>
-                                        <?php if($questionRow['REVIEWER_RATING']=='Y'){ 
-                                            $questionOnPreTab+=1;
-                                            if($questionRow['REVIEWER_FLAG']=='N'){?>
-                                                <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['REVIEWER_ANSWER_ID']:0; ?>" name="answerId[]"/>
-                                                <input type="hidden" value="" name="<?= "answer[".$keyForRevQuestion."]";?>"/>
-                                            <?php } ?>
+                                        <?php if($questionRow['REVIEWER_RATING']=='Y'){ ?>
                                         <div class="col-sm-1">
-                                            <input type="hidden" value="<?= (count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['REVIEWER_ANSWER_ID']:0; ?>" name="answerId[]"/>
                                             <label>Reviewer Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForRevQuestion.".rr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['REVIEWER_RATING_VAL']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" <?= $disabled; ?> required="required"/>
                                         </div>
                                     <?php }
