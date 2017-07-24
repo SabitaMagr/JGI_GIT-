@@ -56,7 +56,7 @@ use Setup\Repository\TrainingRepository;
 use Training\Model\TrainingAssign;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Controller\Plugin\Url;
 
 class HeadNotification {
@@ -1297,7 +1297,7 @@ class HeadNotification {
         self::sendEmail($notification, 39, $adapter, $url);
     }
 
-    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, AbstractActionController $context = null, $senderDetail = null, $receiverDetail = null) {
+    public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, AbstractController $context = null, $senderDetail = null, $receiverDetail = null) {
         $url = null;
         if ($context != null) {
             $url = $context->plugin('url');

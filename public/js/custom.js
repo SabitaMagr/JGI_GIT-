@@ -25,15 +25,20 @@ window.app = (function ($, toastr, App) {
         });
     };
 
-    var populateSelectElement = function (element, data) {
+    var populateSelectElement = function (element, data, selectedId) {
         element.html('');
         for (var key in data) {
-            element.append($('<option>', {value: key, text: data[key]}));
+            var $option = $('<option>', {value: key, text: data[key]});
+            if (typeof selectedId !== 'undefined' && selectedId != null && key == selectedId) {
+                $option.prop('selected', true);
+            }
+            element.append($option);
         }
-    }
+    };
 
     var fetchAndPopulate = function (url, id, element, callback) {
         pullDataById(url, {id: id}).then(function (data) {
+            console.log('data', data);
             populateSelectElement(element, data);
             if (typeof callback !== 'undefined') {
                 callback();

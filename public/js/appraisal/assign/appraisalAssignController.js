@@ -90,8 +90,6 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.altAppraiserSelected = $scope.altAppraiserOptions[0]
             $scope.altReviewerOptions = test;
             $scope.altReviewerSelected = $scope.altReviewerOptions[0];
-            $scope.superReviewerOptions = test;
-            $scope.superReviewerSelected = $scope.superReviewerOptions[0];
             // MODEL CODE
             $ctrl = this;
             $ctrl.animationsEnabled = false;
@@ -111,8 +109,6 @@ angular.module('hris', ['ui.bootstrap'])
                             $scope.role='Alternativce Reviewer';
                         }else if(type=='A3'){
                             $scope.role='Alternative Appraiser';
-                        }else if(type=='S2'){
-                            $scope.role=='Super Reviewer';
                         }
                         $scope.cancel = function () {
                             $uibModalInstance.dismiss('cancel');
@@ -163,10 +159,6 @@ angular.module('hris', ['ui.bootstrap'])
                         selectedItem.unshift({'id':'-1','name':'none'});
                         $scope.altAppraiserOptions = selectedItem;
                         $scope.altAppraiserSelected = $scope.altAppraiserOptions[0];
-                    } else if (type === 'S2') { //for super reviewer
-                        selectedItem.unshift({'id':'-1','name':'none'});
-                        $scope.superReviewerOptions = selectedItem;
-                        $scope.superReviewerSelected = $scope.superReviewerOptions[0];
                     }
                     console.log("Model closed with following result", selectedItem);
                 }, function () {
@@ -178,7 +170,7 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
             $scope.checkReportingHierarchy = function () {
-                if ($scope.reviewerAssign || $scope.appraiserAssign || $scope.altAppraiserAssign || $scope.altReviewerAssign||$scope.superReviewerAssign||$scope.stageAssign) {
+                if ($scope.reviewerAssign || $scope.appraiserAssign || $scope.altAppraiserAssign || $scope.altReviewerAssign||$scope.stageAssign) {
                     $scope.showHideAssignBtn = true;
                 } else {
                     $scope.showHideAssignBtn = false;
@@ -205,10 +197,6 @@ angular.module('hris', ['ui.bootstrap'])
                 var altReviewerId = altReviewerElement.val();
                 var altReviewerName = document.getElementById('altReviewerId').options[document.getElementById('altReviewerId').selectedIndex].text;
                 console.log(appraiserId);
-                
-                var superReviewerElement = angular.element(document.getElementById('superReviewerId'));
-                var superReviewerId = superReviewerElement.val();
-                var superReviewerName = document.getElementById('superReviewerId').options[document.getElementById('superReviewerId').selectedIndex].text;
                 
                 var stageElement = angular.element(document.getElementById('stageId'));
                 var stageId = stageElement.val();
@@ -244,10 +232,10 @@ angular.module('hris', ['ui.bootstrap'])
 
                 if (!errorFlagR && !errorFlagA) {
                     App.blockUI({target: "#hris-page-content"});
-                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName,stageId,stageName);
+                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,stageId,stageName);
                 }
             };
-            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName,stageId,stageName) {
+            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,stageId,stageName) {
                 var promises = [];
 
                 if (!$scope.reviewerAssign) {
@@ -262,12 +250,6 @@ angular.module('hris', ['ui.bootstrap'])
                     var altReviewerId1 = altReviewerId;
                 }
                 
-                if (!$scope.superReviewerAssign) {
-                    var superReviewerId1=null;
-                } else {
-                    var superReviewerId1 = superReviewerId;
-                }
-
                 if (!$scope.appraiserAssign) {
                     var appraiserId1 = null;
                 } else {
@@ -297,7 +279,7 @@ angular.module('hris', ['ui.bootstrap'])
                                 appraisalId: appraisalId,
                                 altAppraiserId:altAppraiserId1,
                                 altReviewerId:altReviewerId1,
-                                superReviewerId:superReviewerId1,
+                                superReviewerId:null,
                                 stageId:stageId1
                             }
                         }));
@@ -325,15 +307,6 @@ angular.module('hris', ['ui.bootstrap'])
                                         var altReviewerNameNew = (altReviewerName=="none")?"":altReviewerName;
                                     }
                                     $scope.employeeList[index].ALT_REVIEWER_NAME = altReviewerNameNew;
-                                }
-                                
-                                if ($scope.superReviewerAssign) {
-                                    if ($scope.employeeList[index].EMPLOYEE_ID == superReviewerId) {
-                                        var superReviewerNameNew = null;
-                                    } else {
-                                        var superReviewerNameNew = (superReviewerName=="none")?"":superReviewerName;
-                                    }
-                                    $scope.employeeList[index].SUPER_REVIEWER_NAME = superReviewerNameNew;
                                 }
 
                                 if ($scope.appraiserAssign) {
