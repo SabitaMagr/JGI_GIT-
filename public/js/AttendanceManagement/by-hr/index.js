@@ -9,60 +9,63 @@
 angular.module('hris', [])
         .controller("attendanceListController", function ($scope, $http) {
             var $tableContainer = $("#attendanceByHrTable");
+            var $employeeId = angular.element(document.getElementById('employeeId'));
+            var $companyId = angular.element(document.getElementById('companyId'));
+            var $branchId = angular.element(document.getElementById('branchId'));
+            var $departmentId = angular.element(document.getElementById('departmentId'));
+            var $designationId = angular.element(document.getElementById('designationId'));
+            var $positionId = angular.element(document.getElementById('positionId'));
+            var $serviceTypeId = angular.element(document.getElementById('serviceTypeId'));
+            var $serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId'));
+            var $fromDate = angular.element(document.getElementById('fromDate'));
+            var $toDate = angular.element(document.getElementById('toDate'));
+            var $status = angular.element(document.getElementById('statusId'));
+            var $missPunchOnly = $("#missPunchOnly");
+
             var firstTime = true;
             var displayKendoFirstTime = true;
             $scope.view = function () {
-                var employeeId = angular.element(document.getElementById('employeeId')).val();
-                var companyId = angular.element(document.getElementById('companyId')).val();
-                var branchId = angular.element(document.getElementById('branchId')).val();
-                var departmentId = angular.element(document.getElementById('departmentId')).val();
-                var designationId = angular.element(document.getElementById('designationId')).val();
-                var positionId = angular.element(document.getElementById('positionId')).val();
-                var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
-                var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
-                var fromDate = angular.element(document.getElementById('fromDate')).val();
-                var toDate = angular.element(document.getElementById('toDate')).val();
-                var status = angular.element(document.getElementById('statusId')).val();
-                var missPunchOnly = 0;
-                if (($("#missPunchOnly").is(":checked"))) {
-                    missPunchOnly = 1;
+                if (displayKendoFirstTime) {
+                    initializekendoGrid();
+                    displayKendoFirstTime = false;
                 }
+                var dataSource = new kendo.data.DataSource({
+                    transport: {
+                        type: "json",
+                        read: {
+                            url: document.pullAttendanceWS,
+                            type: "POST",
+                        },
+                        parameterMap: function (options, type) {
+                            options['employeeId'] = $employeeId.val();
+                            options['companyId'] = $companyId.val();
+                            options['branchId'] = $branchId.val();
+                            options['departmentId'] = $departmentId.val();
+                            options['designationId'] = $designationId.val();
+                            options['positionId'] = $positionId.val();
+                            options['serviceTypeId'] = $serviceTypeId.val();
+                            options['serviceEventTypeId'] = $serviceEventTypeId.val();
+                            options['fromDate'] = $fromDate.val();
+                            options['toDate'] = $toDate.val();
+                            options['status'] = $status.val();
+                            options['missPunchOnly'] = $missPunchOnly.is(":checked") ? 1 : 0;
 
-                App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullAttendanceList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'status': status,
-                        'missPunchOnly': missPunchOnly
-                    }
-                }).then(function (success) {
-                    App.unblockUI("#hris-page-content");
-                    console.log(success.data);
-                    $scope.$apply(function () {
-                        if (displayKendoFirstTime) {
-                            initializekendoGrid();
-                            displayKendoFirstTime = false;
+                            return options;
                         }
-                        var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
-                        var grid = $('#attendanceByHrTable').data("kendoGrid");
-                        dataSource.read();
-                        grid.setDataSource(dataSource);
-                    });
-
-                }, function (failure) {
-                    App.unblockUI("#hris-page-content");
-                    console.log(failure);
+                    },
+                    serverPaging: true,
+                    serverFiltering: true,
+                    serverSorting: true,
+                    pageSize: 50,
+                    schema: {
+                        data: "results", // records are returned in the "data" field of the response
+                        total: "total"
+                    }
                 });
+                var grid = $('#attendanceByHrTable').data("kendoGrid");
+                dataSource.read();
+                grid.setDataSource(dataSource);
+
             };
             function initializekendoGrid() {
                 $("#attendanceByHrTable").kendoGrid({
@@ -107,21 +110,14 @@ angular.module('hris', [])
                             'STATUS': 'Status'
                         }
                 );
-
-
-
             }
-            ;
 
             function detailInit(e) {
                 var dataSource = $("#attendanceByHrTable").data("kendoGrid").dataSource.data();
-                console.log(dataSource);
-                console.log(e.data.ID);
                 var parentId = e.data.ID;
                 var childData = $.grep(dataSource, function (e) {
                     return e.ID === parentId;
                 });
-                console.log(childData)
                 if (firstTime) {
                     App.blockUI({target: "#hris-page-content"});
 
@@ -141,7 +137,6 @@ angular.module('hris', [])
                     } else {
                         App.unblockUI("#attendanceByHrTable");
                     }
-                    console.log(success.data);
                     if (success.data.length > 0) {
                         inOutTimeList = success.data;
                     } else {
@@ -240,7 +235,6 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             }
-            ;
 
             function gridDataBound(e) {
                 var grid = e.sender;
@@ -251,7 +245,7 @@ angular.module('hris', [])
                             .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                 }
             }
-            ;
+
             $("#export").click(function (e) {
                 var rows = [{
                         cells: [
@@ -353,7 +347,7 @@ angular.module('hris', [])
                     $toDate.val(yesterdayDate);
                 } else {
                     $status.val(map[idFromParameter]).change();
-                    if (idFromParameter == 7 ||idFromParameter == 6) {
+                    if (idFromParameter == 7 || idFromParameter == 6) {
                         $fromDate.val(yesterdayDate);
                         $toDate.val(yesterdayDate);
                     } else {
