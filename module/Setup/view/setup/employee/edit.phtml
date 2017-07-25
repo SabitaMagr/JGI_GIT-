@@ -163,7 +163,7 @@ $employeeTypeValue = [
     'C' => 'Contract'
 ];
 $employeeType->setValueOptions($employeeTypeValue);
-$isHr = $formFour->get('isHr');
+$isHR = $formFour->get('isHR');
 
 if ($jobHistoryListNum > 0) {
     $departmentId->setAttributes(["disabled" => "disabled"]);
@@ -1529,11 +1529,11 @@ if ($this->messages) {
                                 <div class="row bottomgap">
                                     <div class="form-group">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
-                                            <?= $this->formLabel($isHr) ?>
+                                            <?= $this->formLabel($isHR) ?>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
                                             <div class="md-radio-inline">
-                                                <?php $customRender($isHr); ?>
+                                                <?php $customRender($isHR); ?>
                                             </div>
                                         </div>
                                     </div>
