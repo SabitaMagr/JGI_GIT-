@@ -1823,6 +1823,10 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     font-size:11px !important;
     padding: 3px !important;
 }
+.jstree-anchor {
+white-space: normal !important;
+
+}
 
 /*Large desktops and laptops*/
 
