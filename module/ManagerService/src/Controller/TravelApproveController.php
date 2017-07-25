@@ -183,7 +183,7 @@ class TravelApproveController extends AbstractActionController {
                     $travelRequestModel->recommendedBy = $this->employeeId;
                     $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
-                
+
                 // to update back date changes
                 $sDate = $detail['FROM_DATE'];
                 $eDate = $detail['TO_DATE'];
@@ -267,7 +267,10 @@ class TravelApproveController extends AbstractActionController {
                 'SUB_APPROVED_DATE' => $detail['SUB_APPROVED_DATE']
             ];
         }
-        $duration = ($detail['TO_DATE'] - $detail['FROM_DATE']) + 1;
+        $fromDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['FROM_DATE']);
+        $toDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['TO_DATE']);
+        $interval = $fromDate->diff($toDate);
+        $duration = $interval->format('%a') + 1;
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
