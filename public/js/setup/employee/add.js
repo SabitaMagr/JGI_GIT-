@@ -1,118 +1,126 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-
+        var address = document.address || {};
         var addrPermZoneId = $('#addrPermZoneId');
         var addrPermDistrictId = $('#addrPermDistrictId');
         var addrPermVdcMunicipalityId = $('#addrPermVdcMunicipalityId');
-
-        if (addrPermZoneId.val() !== null) {
-            if (typeof document.address !== 'undefined' && document.address.length !== 0 && typeof document.address.addrPermZoneId !== 'undefined') {
-                addrPermZoneId.val(document.address.addrPermZoneId).trigger('change');
-            }
-            app.fetchAndPopulate(document.urlDistrict, addrPermZoneId.val(), addrPermDistrictId, function () {
-                if (addrPermDistrictId.val() !== null) {
-                    if (typeof document.address !== 'undefined') {
-                        addrPermDistrictId.val(document.address.addrPermDistrictId).trigger('change');
-                    }
-                    app.fetchAndPopulate(document.urlMunicipality, addrPermDistrictId.val(), addrPermVdcMunicipalityId, function () {
-
-                        addrPermZoneId.on('change', function () {
-                            app.fetchAndPopulate(document.urlDistrict, addrPermZoneId.val(), addrPermDistrictId, function () {
-                                if (addrPermDistrictId.val() !== null) {
-                                    app.pullDataById(document.urlMunicipality, {id: addrPermDistrictId.val()}).then(function (data) {
-                                        var nameList = [];
-                                        $.each(data, function (key, item) {
-                                            nameList.push(item);
-                                        });
-                                        addrPermVdcMunicipalityId.val("");
-                                        addrPermVdcMunicipalityId.autocomplete({
-                                            source: nameList
-                                        });
-                                    }, function (error) {
-                                        console.log("Error fetching Districts", error);
-                                    });
-                                }
-                            });
-                        });
-
-                        addrPermDistrictId.on('change', function () {
-                            app.pullDataById(document.urlMunicipality, {id: addrPermDistrictId.val()}).then(function (data) {
-                                var nameList = [];
-                                $.each(data, function (key, item) {
-                                    nameList.push(item);
-                                });
-                                addrPermVdcMunicipalityId.val("");
-                                addrPermVdcMunicipalityId.autocomplete({
-                                    source: nameList
-                                });
-                            }, function (error) {
-                                console.log("Error fetching Districts", error);
-                            });
-
-
-                        });
-
-                    });
-                }
-            });
-        }
-
         var addrTempZoneId = $('#addrTempZoneId');
         var addrTempDistrictId = $('#addrTempDistrictId');
         var addrTempVdcMunicipality = $('#addrTempVdcMunicipality');
 
-        if (addrTempZoneId.val() !== null) {
-            if (typeof document.address !== 'undefined' && document.address.length !== 0 && typeof document.address.addrTempZoneId !== 'undefined') {
-                addrTempZoneId.val(document.address.addrTempZoneId).trigger('change');
+        /*
+         * 
+         */
+        var onChangePermZone = function (zoneId) {
+            if (zoneId == null) {
+                app.populateSelectElement(addrPermDistrictId, []);
+                onChangePermDistrict(null);
+                return;
             }
-            app.fetchAndPopulate(document.urlDistrict, addrTempZoneId.val(), addrTempDistrictId, function () {
-                if (addrTempDistrictId.val() !== null) {
-                    if (typeof document.address !== 'undefined') {
-                        addrTempDistrictId.val(document.address.addrTempDistrictId).trigger('change');
-                    }
-                    app.fetchAndPopulate(document.urlMunicipality, addrTempDistrictId.val(), addrTempVdcMunicipality, function () {
-
-                        addrTempZoneId.on('change', function () {
-                            app.fetchAndPopulate(document.urlDistrict, addrTempZoneId.val(), addrTempDistrictId, function () {
-                                if (addrTempDistrictId.val() !== null) {
-                                    app.pullDataById(document.urlMunicipality, {id: addrTempDistrictId.val()}).then(function (data) {
-                                        var nameList = [];
-                                        $.each(data, function (key, item) {
-                                            nameList.push(item);
-                                        });
-                                        addrTempVdcMunicipality.val("");
-                                        addrTempVdcMunicipality.autocomplete({
-                                            source: nameList
-                                        });
-                                    }, function (error) {
-                                        console.log("Error fetching Districts", error);
-                                    });
-                                }
-                            });
-                        });
-
-                        addrTempDistrictId.on('change', function () {
-                            app.pullDataById(document.urlMunicipality, {id: addrTempDistrictId.val()}).then(function (data) {
-                                var nameList = [];
-                                $.each(data, function (key, item) {
-                                    nameList.push(item);
-                                });
-                                addrTempVdcMunicipality.val("");
-                                addrTempVdcMunicipality.autocomplete({
-                                    source: nameList
-                                });
-                            }, function (error) {
-                                console.log("Error fetching Districts", error);
-                            });
-
-
-                        });
-
-                    });
-                }
+            app.pullDataById(document.urlDistrict, {id: zoneId}).then(function (data) {
+                app.populateSelectElement(addrPermDistrictId, data, address['addrPermDistrictId']);
+                onChangePermDistrict(addrPermDistrictId.val());
+            }, function (error) {
+                console.log("url=>" + document.urlDistrict, error);
             });
-        }
+        };
+
+        var onChangePermDistrict = function (districtId) {
+            if (districtId == null) {
+                addrPermVdcMunicipalityId.val('');
+                addrPermVdcMunicipalityId.autocomplete({
+                    source: []
+                });
+                return;
+            }
+
+            app.pullDataById(document.urlMunicipality, {id: districtId}).then(function (data) {
+                var nameList = [];
+                var value = "";
+                $.each(data, function (key, item) {
+                    nameList.push(item);
+                    if (address['addrPermVdcMunicipalityId'] == key) {
+                        value = item;
+                    }
+                });
+                addrPermVdcMunicipalityId.val(value);
+                addrPermVdcMunicipalityId.autocomplete({
+                    source: nameList
+                });
+            }, function (error) {
+                console.log("url=>" + document.urlMunicipality, error);
+            });
+        };
+
+        var onChangeTempZone = function (zoneId) {
+            if (zoneId == null) {
+                app.populateSelectElement(addrTempDistrictId, []);
+                onChangeTempDistrict(null);
+                return;
+            }
+            app.pullDataById(document.urlDistrict, {id: zoneId}).then(function (data) {
+                app.populateSelectElement(addrTempDistrictId, data, address['addrTempDistrictId']);
+                onChangeTempDistrict(addrTempDistrictId.val());
+            }, function (error) {
+                console.log("url=>" + document.urlDistrict, error);
+            });
+        };
+
+        var onChangeTempDistrict = function (districtId) {
+            if (districtId == null) {
+                addrTempVdcMunicipality.val('');
+                addrTempVdcMunicipality.autocomplete({
+                    source: []
+                });
+                return;
+            }
+
+            app.pullDataById(document.urlMunicipality, {id: districtId}).then(function (data) {
+                var nameList = [];
+                var value = "";
+                $.each(data, function (key, item) {
+                    nameList.push(item);
+                    if (address['addrTempVdcMunicipalityId'] == key) {
+                        value = item;
+                    }
+                });
+                addrTempVdcMunicipality.val(value);
+                addrTempVdcMunicipality.autocomplete({
+                    source: nameList
+                });
+            }, function (error) {
+                console.log("url=>" + document.urlMunicipality, error);
+            });
+        };
+
+
+        /*
+         * 
+         */
+        addrPermZoneId.on('change', function () {
+            var $this = $(this);
+            onChangePermZone($this.val());
+        });
+
+        addrPermDistrictId.on('change', function () {
+            var $this = $(this);
+            onChangePermDistrict($this.val());
+        });
+
+        addrTempZoneId.on('change', function () {
+            var $this = $(this);
+            onChangeTempZone($this.val());
+        });
+
+        addrTempDistrictId.on('change', function () {
+            var $this = $(this);
+            onChangeTempDistrict($this.val());
+        });
+
+        onChangePermZone(addrPermZoneId.val());
+        onChangeTempZone(addrTempZoneId.val())
+
 
 
         $('#finishBtn').on('click', function () {

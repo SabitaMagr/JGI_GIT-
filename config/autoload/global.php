@@ -33,6 +33,10 @@ return [
 //        
 //        'username' => 'HRIS_MODERN',
 //        'password' => 'HRIS_MODERN',
+        
+        'username'=>'HRIS_VIANET',
+        'password'=>'HRIS_VIANET',
+        
         'platform_options' => ['quote_identifiers' => false]
     ],
     'service_manager' => [

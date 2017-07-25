@@ -212,39 +212,12 @@ class LeaveApproveController extends AbstractActionController {
                     $leaveApply->recommendedBy = $this->employeeId;
                     $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
                 }
+                $this->repository->edit($leaveApply, $id);
 
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
 
-                $leaveSDate = $detail['START_DATE'];
-                $leaveEDate = $detail['END_DATE'];
-                $currDate = Helper::getCurrentDate();
-                $begin = new DateTime($leaveSDate);
-                $end = new DateTime($leaveEDate);
-                $attendanceDetailModel = new AttendanceDetail();
-                $attendanceDetailModel->leaveId = $detail['LEAVE_ID'];
-                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
 
-//               start of transaction
-                $connection = $this->adapter->getDriver()->getConnection();
-                $connection->beginTransaction();
-                try {
-                    if (strtotime($leaveSDate) <= strtotime($currDate)) {
-                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
-                            $leaveDate = $i->format("d-M-Y");
-                            if (strtotime($leaveDate) <= strtotime($currDate)) {
-                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $leaveDate];
-                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
-                            }
-                        }
-                    }
-                    $this->repository->edit($leaveApply, $id);
-                    $connection->commit();
-                } catch (exception $e) {
-                    $connection->rollback();
-                    echo "error message:" . $e->getMessage();
-                }
-//                end of transaction
 
                 try {
                     HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);

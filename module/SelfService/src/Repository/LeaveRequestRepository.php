@@ -121,6 +121,28 @@ class LeaveRequestRepository implements RepositoryInterface {
     public function delete($id) {
         $currentDate = Helper::getcurrentExpressionDate();
         $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+        EntityHelper::rawQueryResult($this->adapter, "
+                   DECLARE
+                      V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
+                      V_STATUS HRIS_EMPLOYEE_LEAVE_REQUEST.STATUS%TYPE;
+                      V_START_DATE HRIS_EMPLOYEE_LEAVE_REQUEST.START_DATE%TYPE;
+                      V_EMPLOYEE_ID HRIS_EMPLOYEE_LEAVE_REQUEST.EMPLOYEE_ID%TYPE;
+                    BEGIN
+                      SELECT ID,
+                        STATUS,
+                        START_DATE,
+                        EMPLOYEE_ID
+                      INTO V_ID,
+                        V_STATUS,
+                        V_START_DATE,
+                        V_EMPLOYEE_ID
+                      FROM HRIS_EMPLOYEE_LEAVE_REQUEST
+                      WHERE ID                                    = {$id};
+                      IF(V_STATUS IN ('AP','C') AND V_START_DATE <=TRUNC(SYSDATE)) THEN
+                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID);
+                      END IF;
+                    END;
+    ");
     }
 
     public function checkEmployeeLeave($employeeId, $date) {

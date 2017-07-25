@@ -89,6 +89,15 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
      */
     public $appBranchId;
+    
+      /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"HR Flag","value_options":{"Y":"Yes","N":"No"}})
+     * @Annotation\Attributes({"id":"isHr","value":"N"})
+     */
+    public $isHr;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")

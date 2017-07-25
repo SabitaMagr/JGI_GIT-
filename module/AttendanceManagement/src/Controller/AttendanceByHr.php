@@ -2,10 +2,10 @@
 
 namespace AttendanceManagement\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Form\AttendanceByHrForm;
-use AttendanceManagement\Model\AttendanceDetail as AttendanceByHrModel;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Exception;
 use Zend\Db\Adapter\AdapterInterface;
@@ -138,6 +138,44 @@ class AttendanceByHr extends AbstractActionController {
 
     public function deleteAction() {
         
+    }
+
+    public function pullAttendanceAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $take = $data['take'];
+            $skip = $data['skip'];
+            $page = $data['page'];
+            $pageSize = $data['pageSize'];
+
+            $max = $pageSize * $page;
+            $min = $pageSize * ($page - 1);
+
+            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+            $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+            $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+            $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+            $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+            $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+            $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
+            $status = $data['status'];
+            $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
+            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, null, false, $missPunchOnly, $min, $max);
+            $total = $this->repository->filterRecordCount($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, null, false, $missPunchOnly);
+
+            $result = [];
+            $result['total'] = $total['TOTAL'];
+            $result['results'] = Helper::extractDbData($results);
+
+            return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

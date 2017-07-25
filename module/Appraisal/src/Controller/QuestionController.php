@@ -180,9 +180,11 @@ class QuestionController extends AbstractActionController{
             $question->appraiseeFlag = $questionDetail['appraiseeFlag'];
             $question->appraiserFlag = $questionDetail['appraiserFlag'];
             $question->reviewerFlag = $questionDetail['reviewerFlag'];
+            $question->hrFlag = $questionDetail['hrFlag'];
             $question->appraiseeRating = $questionDetail['appraiseeRating'];
             $question->appraiserRating = $questionDetail['appraiserRating'];
             $question->reviewerRating = $questionDetail['reviewerRating'];
+            $question->hrRating = $questionDetail['hrRating'];
             $question->orderNo = ($questionDetail['orderNo']!=null) ? (int)$questionDetail['orderNo'] :null;
             $question->remarks = $questionDetail['remarks'];
             $question->minValue = ($questionDetail['minValue']!=null) ? (int)$questionDetail['minValue'] :null;

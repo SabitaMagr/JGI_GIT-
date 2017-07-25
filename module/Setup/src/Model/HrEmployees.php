@@ -95,6 +95,10 @@ class HrEmployees extends Model {
     public $isHR;
     public $isCEO;
     public $isDCEO;
+    public $addrTempZoneId;
+    public $addrTempDistrictId;
+    public $addrPermZoneId;
+    public $addrPermDistrictId;
 
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -185,6 +189,10 @@ class HrEmployees extends Model {
     const IS_HR = "IS_HR";
     const IS_CEO = "IS_CEO";
     const IS_DCEO = "IS_DCEO";
+    const ADDR_PERM_ZONE_ID = "ADDR_PERM_ZONE_ID";
+    const ADDR_PERM_DISTRICT_ID = "ADDR_PERM_DISTRICT_ID";
+    const ADDR_TEMP_ZONE_ID = "ADDR_TEMP_ZONE_ID";
+    const ADDR_TEMP_DISTRICT_ID = "ADDR_TEMP_DISTRICT_ID";
 
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -274,7 +282,11 @@ class HrEmployees extends Model {
         'fullName' => self::FULL_NAME,
         'isHR'=>self::IS_HR,
         'isCEO'=>self::IS_CEO,
-        'isDCEO'=>self::IS_DCEO
+        'isDCEO'=>self::IS_DCEO,
+        'addrTempZoneId' => self::ADDR_TEMP_ZONE_ID,
+        'addrTempDistrictId' => self::ADDR_TEMP_DISTRICT_ID,
+        'addrPermZoneId' => self::ADDR_PERM_ZONE_ID,
+        'addrPermDistrictId' => self::ADDR_PERM_DISTRICT_ID,
     ];
 
 }
