@@ -163,8 +163,6 @@ $employeeTypeValue = [
     'C' => 'Contract'
 ];
 $employeeType->setValueOptions($employeeTypeValue);
-$isHr = $formFour->get('isHr');
-
 $isHR = $formFour->get('isHR');
 $isCEO = $formFour->get('isCEO');
 $isDCEO = $formFour->get('isDCEO');
@@ -1535,6 +1533,7 @@ if ($this->messages) {
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
                                             <div class="md-radio-inline">
                                                 <?php $customRender($isHR); ?>
+<<<<<<< HEAD
                                             </div>
                                         </div>
                                     </div>
@@ -1563,6 +1562,8 @@ if ($this->messages) {
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
                                             <div class="md-radio-inline">
                                                 <?php $customRender($isDCEO); ?>
+=======
+>>>>>>> master
                                             </div>
                                         </div>
                                     </div>
