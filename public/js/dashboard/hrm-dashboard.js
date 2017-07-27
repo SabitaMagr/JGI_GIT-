@@ -1,12 +1,12 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        
+
         $("img.lazy").lazyload({
 //            effect: "fadeIn",
-             threshold : 5000
+            threshold: 5000
         });
-        
+
         // Init Data Tables
         var table = $('#sample_1');
 
@@ -429,24 +429,69 @@
     });
 
     ComponentsPickers.init();
-    
+
     window.app.pullDataById(document.getAdminDashboardUrl, {
-                    action: 'getAdminDashboardUrl',
-                }).then(function (success) {
-                    var dashboardData=success.data;
-                    $('#employeePresentDays').text(dashboardData['PRESENT_DAY']);  //present 
-                    $('#employeeLeaveDays').text(dashboardData['LEAVE']);  //on leave
-                    $('#employeeTrainingDays').text(dashboardData['TRAINING']);  //on training
-                    $('#employeeTravelDays').text(dashboardData['TOUR']);  // on tour
-                    $('#employeeWOHDays').text(dashboardData['WOH']);  // on woh
-                    $('#employeeLateInDays').text(dashboardData['LATE_IN']);  //  late in
-                    $('#employeeEarlyOutDays').text(dashboardData['EARLY_OUT']);  //  early out
-                    $('#employeeMissPunch').text(dashboardData['MISSED_PUNCH']);  //  miss punch
-                    
-                }, function (failure) {
-                    console.log(failure);
-                });
-    
-    
+        action: 'getAdminDashboardUrl',
+    }).then(function (success) {
+        var dashboardData = success.data;
+        $('#employeePresentDays').text(dashboardData['PRESENT_DAY']);  //present 
+        $('#employeeLeaveDays').text(dashboardData['LEAVE']);  //on leave
+        $('#employeeTrainingDays').text(dashboardData['TRAINING']);  //on training
+        $('#employeeTravelDays').text(dashboardData['TOUR']);  // on tour
+        $('#employeeWOHDays').text(dashboardData['WOH']);  // on woh
+        $('#employeeLateInDays').text(dashboardData['LATE_IN']);  //  late in
+        $('#employeeEarlyOutDays').text(dashboardData['EARLY_OUT']);  //  early out
+        $('#employeeMissPunch').text(dashboardData['MISSED_PUNCH']);  //  miss punch
+
+
+        $('#employeeFullName').text(dashboardData['FULL_NAME']);   //full name
+        if (dashboardData['EMAIL_OFFICIAL'] != null) {
+            $('#employeeOfficialEmail').text(dashboardData['EMAIL_OFFICIAL']);  //  email
+        } else {
+            $('#employeeOfficialEmail').next('br').remove();
+        }
+        if (dashboardData['DESIGNATION_TITLE'] != null) {
+            $('#employeeDesignationTitle').text(dashboardData['DESIGNATION_TITLE']);  //  designation Title
+        } else {
+            $('#employeeDesignationTitle').next('br').remove();
+        }
+        if (dashboardData['FILE_PATH'] != null) {
+            $('#employeeImage').attr("src", document.basePath + '/uploads/' + dashboardData['FILE_PATH']);
+        }
+
+
+        var year = ' ';
+        var month = ' ';
+        var days = ' ';
+        if (dashboardData['SERVICE_YEARS'] != 0) {
+            if (dashboardData['SERVICE_YEARS'] == 1) {
+                year = dashboardData['SERVICE_YEARS'] + ' Year ';
+            } else {
+                year = dashboardData['SERVICE_YEARS'] + ' Years ';
+            }
+        }
+        if (dashboardData['SERVICE_MONTHS'] != 0) {
+            if (dashboardData['SERVICE_MONTHS'] == 1) {
+                month = dashboardData['SERVICE_MONTHS'] + ' Month ';
+            } else {
+                month = dashboardData['SERVICE_MONTHS'] + ' Months ';
+            }
+        }
+        if (dashboardData['SERVICE_DAYS'] != 0) {
+            if (dashboardData['SERVICE_DAYS'] == 0) {
+                days = dashboardData['SERVICE_DAYS'] + ' Day';
+            } else {
+                days = dashboardData['SERVICE_DAYS'] + ' Days';
+            }
+        }
+
+        var empServiceDate = "At work for : " + year + month + days;
+        $('#employeeServiceDate').text(empServiceDate);  //  service
+
+    }, function (failure) {
+        console.log(failure);
+    });
+
+
 
 })(window.jQuery, window.app);

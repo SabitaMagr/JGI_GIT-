@@ -160,7 +160,6 @@
         action: 'fetchEmployeeDashBoardDetails',
     }).then(function (success) {
         var empData = success.data;
-        console.log(empData);
         $('#employeePresentDays').text(empData['PRESENT_DAY']);  //present 
         $('#employeeLeaveDays').text(empData['LEAVE']);  //on leave
         $('#employeeTrainingDays').text(empData['TRAINING']);  //on training
@@ -172,21 +171,20 @@
 
 
         $('#employeeFullName').text(empData['FULL_NAME']);   //full name
-        if(empData['EMAIL_OFFICIAL']!=null){
-        $('#employeeOfficialEmail').text(empData['EMAIL_OFFICIAL']);  //  email
-        }else{
+        if (empData['EMAIL_OFFICIAL'] != null) {
+            $('#employeeOfficialEmail').text(empData['EMAIL_OFFICIAL']);  //  email
+        } else {
             $('#employeeOfficialEmail').next('br').remove();
         }
-        if(empData['DESIGNATION_TITLE']!=null){
-        $('#employeeDesignationTitle').text(empData['DESIGNATION_TITLE']);  //  designation Title
-        }else{
+        if (empData['DESIGNATION_TITLE'] != null) {
+            $('#employeeDesignationTitle').text(empData['DESIGNATION_TITLE']);  //  designation Title
+        } else {
             $('#employeeDesignationTitle').next('br').remove();
         }
-        if(empData['FILE_PATH']!=null){
-            $('#employeeImage').attr("src",document.basePath+'uploads/'+empData['FILE_PATH']);
+        if (empData['FILE_PATH'] != null) {
+            $('#employeeImage').attr("src", document.basePath + '/uploads/' + empData['FILE_PATH']);
         }
-        
-        console.log(document.basePath);
+
 
         var year = ' ';
         var month = ' ';
@@ -215,9 +213,7 @@
 
 
         var empServiceDate = "At work for : " + year + month + days;
-        
-        console.log(empServiceDate);
-            $('#employeeServiceDate').text(empServiceDate);  //  service
+        $('#employeeServiceDate').text(empServiceDate);  //  service
 
 
 
