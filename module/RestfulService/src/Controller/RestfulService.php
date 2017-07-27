@@ -1484,9 +1484,10 @@ class RestfulService extends AbstractRestfulController {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId);
+        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId, $employeeTypeId);
         $employeeList = [];
         foreach ($result as $row) {
             if ($row['MARITAL_STATUS'] == 'U') {

@@ -161,12 +161,13 @@ class AttendanceByHr extends AbstractActionController {
             $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
             $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
             $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+            $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
             $fromDate = $data['fromDate'];
             $toDate = $data['toDate'];
             $status = $data['status'];
             $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
-            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, null, false, $missPunchOnly, $min, $max);
-            $total = $this->repository->filterRecordCount($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, null, false, $missPunchOnly);
+            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly, $min, $max);
+            $total = $this->repository->filterRecordCount($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
 
             $result = [];
             $result['total'] = $total['TOTAL'];
