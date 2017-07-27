@@ -36,12 +36,12 @@ class DashboardController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $monthRepo = new MonthRepository($this->adapter);
+//        $monthRepo = new MonthRepository($this->adapter);
         $dashboardRepo = new DashboardRepository($this->adapter);
-        $month = $monthRepo->fetchByDate(Helper::getcurrentExpressionDate());
-        $employeeDetail = $dashboardRepo->fetchEmployeeDashboardDetail($this->employeeId, $month->FROM_DATE, Helper::getCurrentDate());
+//        $month = $monthRepo->fetchByDate(Helper::getcurrentExpressionDate());
+//        $employeeDetail = $dashboardRepo->fetchEmployeeDashboardDetail($this->employeeId, $month->FROM_DATE, Helper::getCurrentDate());
         $data = [
-            "employeeDetail" => $employeeDetail,
+//            "employeeDetail" => $employeeDetail,
             "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($this->employeeId),
             "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($this->employeeId),
             "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
@@ -235,6 +235,41 @@ class DashboardController extends AbstractActionController {
             array_push($list, $nrow);
         }
         return $list;
+    }
+    
+    
+    public function fetchEmployeeDashBoardDetailsAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+            $monthRepo = new MonthRepository($this->adapter);
+            $month = $monthRepo->fetchByDate(Helper::getcurrentExpressionDate());
+            $dashboardRepo = new DashboardRepository($this->adapter);
+            $employeeDetail = $dashboardRepo->fetchEmployeeDashboardDetail($this->employeeId, $month->FROM_DATE, Helper::getCurrentDate());
+                return new CustomViewModel(['success' => true, 'data' => $employeeDetail, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
+    public function fetchAdminDashBoardDetailsAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                
+            $dashboardRepo = new DashboardRepository($this->adapter);
+            $employeeDetail = $dashboardRepo->fetchAdminDashboardDetail($this->employeeId, Helper::getCurrentDate());
+            
+                return new CustomViewModel(['success' => true, 'data' => $employeeDetail, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

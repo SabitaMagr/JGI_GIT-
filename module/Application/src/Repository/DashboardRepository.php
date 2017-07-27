@@ -91,7 +91,7 @@ class DashboardRepository implements RepositoryInterface {
                 (SELECT EMPLOYEE_ID,
                   LATE_STATUS
                 FROM HRIS_ATTENDANCE_DETAIL
-                WHERE (ATTENDANCE_DT BETWEEN TO_DATE('15-Jun-2017', 'DD-MON-YYYY') AND TO_DATE('12-Jul-2017', 'DD-MON-YYYY'))
+                WHERE (ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
                 ) PIVOT (COUNT(LATE_STATUS) FOR LATE_STATUS IN ('L','E','B','N','X','Y'))
               ) LATE_ATTEN_TBL
             ON (EMPLOYEE_TBL.EMPLOYEE_ID = LATE_ATTEN_TBL.EMPLOYEE_ID)

@@ -430,22 +430,7 @@
 
     ComponentsPickers.init();
     
-    window.app.pullDataById(document.getAdminDashboardUrl, {
-                    action: 'getAdminDashboardUrl',
-                }).then(function (success) {
-                    var dashboardData=success.data;
-                    $('#employeePresentDays').text(dashboardData['PRESENT_DAY']);  //present 
-                    $('#employeeLeaveDays').text(dashboardData['LEAVE']);  //on leave
-                    $('#employeeTrainingDays').text(dashboardData['TRAINING']);  //on training
-                    $('#employeeTravelDays').text(dashboardData['TOUR']);  // on tour
-                    $('#employeeWOHDays').text(dashboardData['WOH']);  // on woh
-                    $('#employeeLateInDays').text(dashboardData['LATE_IN']);  //  late in
-                    $('#employeeEarlyOutDays').text(dashboardData['EARLY_OUT']);  //  early out
-                    $('#employeeMissPunch').text(dashboardData['MISSED_PUNCH']);  //  miss punch
-                    
-                }, function (failure) {
-                    console.log(failure);
-                });
+ 
     
     
 
