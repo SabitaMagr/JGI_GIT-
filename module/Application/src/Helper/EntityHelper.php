@@ -182,6 +182,7 @@ class EntityHelper {
                     HrEmployees::SERVICE_TYPE_ID,
                     HrEmployees::SERVICE_EVENT_TYPE_ID,
                     HrEmployees::GENDER_ID,
+                    HrEmployees::EMPLOYEE_TYPE,
                         ], [HrEmployees::STATUS => "E"]);
 
         $searchValues = [
@@ -193,6 +194,7 @@ class EntityHelper {
             'serviceType' => $serviceTypeList,
             'serviceEventType' => $serviceEventTypeList,
             'gender' => $genderList,
+            'employeeType' => [['EMPLOYEE_TYPE_KEY' => 'R', 'EMPLOYEE_TYPE_VALUE' => 'Employee'], ['EMPLOYEE_TYPE_KEY' => 'C', 'EMPLOYEE_TYPE_VALUE' => 'Worker']],
             'employee' => $employeeList
         ];
         /* end of search values */
