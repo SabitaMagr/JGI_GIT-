@@ -502,6 +502,7 @@ class EmployeeRepository implements RepositoryInterface {
             return null;
         }
     }
+
     public function fetchByCondition($where) {
         $rowset = $this->gateway->select(function (Select $select) use ($where) {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME, HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
@@ -517,4 +518,14 @@ class EmployeeRepository implements RepositoryInterface {
         });
         return $rowset->current();
     }
+
+    public function fetchByHRFlagList() {
+        $result = $this->gateway->select(["IS_HR='Y' AND STATUS='E'"]);
+        $list = [];
+        foreach ($result as $row) {
+            array_push($list, $row['EMPLOYEE_ID']);
+        }
+        return (count($list) > 0) ? $list : [0];
+    }
+
 }

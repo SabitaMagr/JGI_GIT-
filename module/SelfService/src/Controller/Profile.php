@@ -386,37 +386,12 @@ class Profile extends AbstractActionController {
 
         if ($tab != 1 || !$request->isPost()) {
             $formOneModel->exchangeArrayFromDB($employeeData);
-
-            if (isset($formOneModel->addrPermVdcMunicipalityId)) {
-                $address['addrPermVdcMunicipalityId'] = $formOneModel->addrPermVdcMunicipalityId;
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrPermVdcMunicipalityId], null, null, null, false, true);
-                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
-                    $formOneModel->addrPermDistrictId = $tempArray[0];
-                    $address["addrPermDistrictId"] = $tempArray[0];
-                }
-            }
-            if (isset($formOneModel->addrPermDistrictId)) {
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrPermDistrictId], null, null, null, false, true);
-                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
-                    $formOneModel->addrPermZoneId = $tempArray[0];
-                    $address["addrPermZoneId"] = $tempArray[0];
-                }
-            }
-            if (isset($formOneModel->addrTempVdcMunicipalityId)) {
-                $address['addrTempVdcMunicipalityId'] = $formOneModel->addrTempVdcMunicipalityId;
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, VdcMunicipalities::TABLE_NAME, null, [VdcMunicipalities::DISTRICT_ID], [VdcMunicipalities::VDC_MUNICIPALITY_ID => $formOneModel->addrTempVdcMunicipalityId], null, null, null, false, true);
-                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
-                    $formOneModel->addrTempDistrictId = $tempArray[0];
-                    $address["addrTempDistrictId"] = $tempArray[0];
-                }
-            }
-            if (isset($formOneModel->addrTempDistrictId)) {
-                $tempArray = ApplicationHelper::getTableKVList($this->adapter, District::TABLE_NAME, null, [District::ZONE_ID], [District::DISTRICT_ID => $formOneModel->addrTempDistrictId], null, null, null, false, true);
-                if (isset($tempArray) && (sizeof($tempArray) > 0)) {
-                    $formOneModel->addrTempZoneId = $tempArray[0];
-                    $address["addrTempZoneId"] = $tempArray[0];
-                }
-            }
+            $address['addrPermZoneId'] = $formOneModel->addrPermZoneId;
+            $address['addrPermDistrictId'] = $formOneModel->addrPermDistrictId;
+            $address['addrPermVdcMunicipalityId'] = $formOneModel->addrPermVdcMunicipalityId;
+            $address['addrTempZoneId'] = $formOneModel->addrTempZoneId;
+            $address['addrTempDistrictId'] = $formOneModel->addrTempDistrictId;
+            $address['addrTempVdcMunicipalityId'] = $formOneModel->addrTempVdcMunicipalityId;
 
             $formOneModel->addrPermVdcMunicipalityId = $this->repository->vdcIdToString($formOneModel->addrPermVdcMunicipalityId);
             $formOneModel->addrTempVdcMunicipalityId = $this->repository->vdcIdToString($formOneModel->addrTempVdcMunicipalityId);
@@ -469,15 +444,13 @@ class Profile extends AbstractActionController {
                     'tab' => $tab,
                     "id" => $id,
                     "jobHistoryListNum" => $jobHistoryListNum,
-                    "bloodGroups" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_BLOOD_GROUPS),
-                    "districts" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS),
-                    "genders" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_GENDERS),
-                    "vdcMunicipalities" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY),
-                    "zones" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_ZONES),
-                    "religions" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_RELIGIONS),
+                    "bloodGroups" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_BLOOD_GROUPS', 'BLOOD_GROUP_ID', ['BLOOD_GROUP_CODE'], NULL, NULL, TRUE),
+                    "genders" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Gender::TABLE_NAME, \Setup\Model\Gender::GENDER_ID, [\Setup\Model\Gender::GENDER_NAME], null, null, true),
+                    "zones" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Zones::TABLE_NAME, \Setup\Model\Zones::ZONE_ID, [\Setup\Model\Zones::ZONE_NAME], null, null, true),
+                    "religions" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_RELIGIONS', 'RELIGION_ID', ['RELIGION_NAME'], null, null, true),
                     "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-                    "countries" => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-                    'filetypes' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_FILE_TYPE),
+                    "countries" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_COUNTRIES', 'COUNTRY_ID', ['COUNTRY_NAME'], null, null, true),
+                    'filetypes' => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_FILE_TYPE', 'FILETYPE_CODE', ['NAME']),
                     'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
                     'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
                     'designations' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true, true),

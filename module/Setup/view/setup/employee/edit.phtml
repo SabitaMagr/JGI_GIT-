@@ -163,6 +163,7 @@ $employeeTypeValue = [
     'C' => 'Contract'
 ];
 $employeeType->setValueOptions($employeeTypeValue);
+$isHr = $formFour->get('isHr');
 
 $isHR = $formFour->get('isHR');
 $isCEO = $formFour->get('isCEO');
@@ -230,7 +231,6 @@ if ($countryId->getValue() == 168) {
 
     $idCitizenshipIssuePlace = clone($addrPermDistrictId);
     $idCitizenshipIssuePlace->setAttributes(['name' => $name]);
-    $idCitizenshipIssuePlace->setValueOptions($districts);
     $idCitizenshipIssuePlace->setLabel($label);
     $idCitizenshipIssuePlace->setValue($value);
 } else if ($countryId->getValue() != null) {

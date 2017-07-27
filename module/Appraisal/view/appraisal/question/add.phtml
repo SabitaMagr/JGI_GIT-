@@ -20,9 +20,11 @@ $headingId->setValueOptions($headings);
 $appraiseeFlag = $form->get('appraiseeFlag');
 $appraiserFlag = $form->get('appraiserFlag');
 $reviewerFlag = $form->get('reviewerFlag');
+$hrFlag = $form->get('hrFlag');
 $appraiseeRating = $form->get('appraiseeRating');
 $appraiserRating = $form->get('appraiserRating');
 $reviewerRating = $form->get('reviewerRating');
+$hrRating = $form->get('hrRating');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -197,11 +199,8 @@ $form->prepare();
                                 </div>
                             </div>
                         </div>
-
-
-
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?php print $this->formLabel($appraiseeFlag); ?>
                                     <div class="md-radio-inline">
@@ -225,7 +224,7 @@ $form->prepare();
                                     <?php print $this->formElementErrors()->render($appraiseeFlag, ['class' => 'help-block']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?php print $this->formLabel($appraiserFlag); ?>
                                     <div class="md-radio-inline">
@@ -249,7 +248,7 @@ $form->prepare();
                                     <?php print $this->formElementErrors()->render($appraiserFlag, ['class' => 'help-block']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?php print $this->formLabel($reviewerFlag); ?>
                                     <div class="md-radio-inline">
@@ -273,10 +272,34 @@ $form->prepare();
                                     <?php print $this->formElementErrors()->render($reviewerFlag, ['class' => 'help-block']); ?>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($hrFlag); ?>
+                                    <div class="md-radio-inline">
+                                        <div class="md-radio">
+                                            <input checked="checked" ng-model="question.hrFlag" type="radio" value="Y" name="hrFlag" id="hrFlag+Yes" class="md-radiobtn radioButton">
+                                            <label for="hrFlag+Yes">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> Yes
+                                            </label>
+                                        </div>
+                                        <div class="md-radio">
+                                            <input type="radio" value="N" ng-model="question.hrFlag" name="hrFlag" id="hrFlag+No" class="md-radiobtn radioButton">
+                                            <label for="hrFlag+No">
+                                                <span class="inc"></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> No
+                                            </label>
+                                        </div>                            
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($hrFlag, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?php print $this->formLabel($appraiseeRating); ?>
                                     <div class="md-radio-inline">
@@ -300,7 +323,7 @@ $form->prepare();
                                     <?php print $this->formElementErrors()->render($appraiseeRating, ['class' => 'help-block']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?php print $this->formLabel($appraiserRating); ?>
                                     <div class="md-radio-inline">
@@ -324,7 +347,7 @@ $form->prepare();
                                     <?php print $this->formElementErrors()->render($appraiserRating, ['class' => 'help-block']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <?php print $this->formLabel($reviewerRating); ?>
                                     <div class="md-radio-inline">
@@ -346,6 +369,30 @@ $form->prepare();
                                         </div>                            
                                     </div>
                                     <?php print $this->formElementErrors()->render($reviewerRating, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($hrRating); ?>
+                                    <div class="md-radio-inline">
+                                        <div class="md-radio">
+                                            <input ng-model="question.hrRating" type="radio" value="Y" name="hrRating" id="hrRating+Yes" class="md-radiobtn radioButton">
+                                            <label for="hrRating+Yes">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> Yes
+                                            </label>
+                                        </div>
+                                        <div class="md-radio">
+                                            <input type="radio" value="N" ng-model="question.hrRating" name="hrRating" id="hrRating+No" class="md-radiobtn radioButton">
+                                            <label for="hrRating+No">
+                                                <span></span>
+                                                <span class="check"></span>
+                                                <span class="box"></span> No
+                                            </label>
+                                        </div>                            
+                                    </div>
+                                    <?php print $this->formElementErrors()->render($hrRating, ['class' => 'help-block']); ?>
                                 </div>
                             </div>
                         </div>

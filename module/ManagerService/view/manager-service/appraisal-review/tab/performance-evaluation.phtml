@@ -14,7 +14,7 @@
                         <?php foreach ($questionTemplateRow['QUESTIONS'] as $questionRow) { ?>
                             <div class="col-md-12 margin-bottom-5 appQuestion">
                                 <div class="row">
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-8">
                                         <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label>   
                                         <?php 
                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
@@ -94,7 +94,31 @@
                                             <label>Reviewer Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForRevQuestion.".rr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['REVIEWER_RATING_VAL']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" <?= $disabled; ?> required="required"/>
                                         </div>
                                     <?php }
-                                        }?>
+                                        }
+                                    if(count($questionRow['ANSWER'])>0 && array_values($questionRow['ANSWER'])[0]['HR_ANSWER_ID']!=null){
+                                        $keyForHrQuestion = (array_values($questionRow['ANSWER'])[0]['HR_ANSWER_ID']==null)?$questionRow['QUESTION_ID']:array_values($questionRow['ANSWER'])[0]['HR_ANSWER_ID'];
+                                        if($questionRow['HR_FLAG']=='Y'){ ?>
+                                            <div class="col-sm-3">
+                                                <label>HR's Comment:</label>
+                                                <?php if($questionRow['ANSWER_TYPE']=="RADIO"){ ?>
+                                                    <div class="md-radio-inline">
+                                                        <?php $customRenderer($performanceAppraisalObj("answer[".$keyForHrQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['HR_ANSWER']:null,"disabled")); ?>
+                                                    </div>
+                                                    <?php } else if($questionRow['ANSWER_TYPE']=="CHECKBOX"){?>
+                                                        <div class="md-checkbox-inline">
+                                                            <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForHrQuestion."][]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['HR_ANSWER']:null,"disabled")); ?>
+                                                        </div>
+                                                    <?php } else{
+                                                        print_r($this->formElement($performanceAppraisalObj("answer[".$keyForHrQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['HR_ANSWER']:null,"disabled")));
+                                                    }?>
+                                            </div>
+                                        <?php }?>
+                                        <?php if($questionRow['HR_RATING']=='Y'){ ?>
+                                        <div class="col-sm-1">
+                                            <label>HR Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForHrQuestion.".hr]"?>" value="<?= ($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['HR_RATING_VAL']:null ?>"  min="<?= $questionRow['MIN_VALUE'] ?>" max="<?= $questionRow['MAX_VALUE'] ?>" disabled="disabled"/>
+                                        </div>
+                                        <?php }
+                                    }?>
                                 </div>
                             </div>
                         <?php } ?>

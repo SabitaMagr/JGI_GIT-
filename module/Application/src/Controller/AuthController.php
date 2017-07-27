@@ -70,7 +70,7 @@ class AuthController extends AbstractActionController {
 
     public function loginAction() {
         //to make register attendance by default checked on login page:: condition start
-        $type = (($this->params()->fromRoute('type')) !== null) ? ($this->params()->fromRoute('type')) : null;
+        $type = $this->params()->fromRoute('type');
         if ($type !== null) {
             $this->getSessionStorage()->forgetMe();
             $this->getAuthService()->clearIdentity();
@@ -152,6 +152,7 @@ class AuthController extends AbstractActionController {
         }
         return $this->redirect()->toRoute($redirect);
     }
+
     private function setUserLog(AdapterInterface $adapter, $clientIp, $userId) {
         $userLogRepo = new UserLogRepository($adapter);
 
@@ -169,4 +170,5 @@ class AuthController extends AbstractActionController {
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
     }
+
 }

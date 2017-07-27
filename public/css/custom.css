@@ -1830,6 +1830,10 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     font-size:11px !important;
     padding: 3px !important;
 }
+.jstree-anchor {
+white-space: normal !important;
+
+}
 
 .btn-color-green{
     background-color:#2f9e1e;
