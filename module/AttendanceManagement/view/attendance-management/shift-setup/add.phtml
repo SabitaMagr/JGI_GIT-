@@ -48,6 +48,10 @@ $weekday7 = $form->get('weekday7');
 $currentShift = $form->get('currentShift');
 $twoDayShift = $form->get('twoDayShift');
 $defaultShift = $form->get('defaultShift');
+if($anotherDefaultShift){
+$defaultShift->setValue('N');
+$defaultShift->setAttributes(['disabled']);
+}
 $remarks = $form->get('remarks');
 
 $companyId = $form->get('companyId');

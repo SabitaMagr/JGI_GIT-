@@ -87,6 +87,7 @@ foreach ($departmentAttendance as $deptAttn) {
     document.todoDeleteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
     document.todoTaskList = <?php echo json_encode($todoList); ?>;
     document.todoTaskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
+    document.getAdminDashboardUrl='<?php echo $this->url('dashboard', ['action' => 'fetchAdminDashBoardDetails']); ?>'
 </script>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -142,7 +143,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                         <a href="<?php echo $presentUrl ?>">
                             <div  class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div class="employee_details-box hexagon-bg1" >
-                                    <span><?php print $employeeDetail['PRESENT_DAY']; ?></span>
+                                    <span id="employeePresentDays"></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">Present</div>
@@ -152,7 +153,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                         <a href="<?php echo $OnLeaveUrl ?>">
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div title="Today" class="employee_details-box hexagon-bg2">
-                                    <span><?php print $employeeDetail['LEAVE']; ?></span>
+                                    <span id="employeeLeaveDays"></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">On Leave</div>
@@ -162,7 +163,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                         <a href="<?php echo $OnTrainingUrl ?>">
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div title="Today" class="employee_details-box hexagon-bg3">
-                                    <span><?php print $employeeDetail['TRAINING']; ?></span>
+                                    <span id="employeeTrainingDays"></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">Training</div>
@@ -172,7 +173,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                         <a  href="<?php echo $OnTravelUrl ?>">
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div title="Today" class="employee_details-box hexagon-bg4">
-                                    <span><?php print $employeeDetail['TOUR']; ?></span>
+                                    <span id="employeeTravelDays"></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">On Tour</div>
@@ -182,7 +183,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                         <a href="<?php echo $wohUrl ?>">
                             <div class="col-xs-6 col-sm-3 col-md-2 hexcustom">
                                 <div title="Today" class="employee_details-box hexagon-bg5">
-                                    <span><?php print $employeeDetail['WOH']; ?></span>
+                                    <span id="employeeWOHDays"></span>
                                     <div class="face1"></div>
                                     <div class="face2"></div>
                                     <div class="headtitle">WOH</div>
@@ -197,7 +198,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                             <a title="Yesterday" href="<?php echo $lateInUrl ?>">
                                 <li class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="hris efficiency efficiency-bg1">
-                                        <span><?php print $employeeDetail['LATE_IN']; ?></span>
+                                        <span id="employeeLateInDays"></span>
                                         <div>Late In</div>
                                     </div>
                                 </li>
@@ -205,7 +206,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                             <a title="Yesterday" href="<?php echo $earlyOutUrl ?>">
                                 <li class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="hris efficiency efficiency-bg2">
-                                        <span><?php print $employeeDetail['EARLY_OUT']; ?></span>
+                                        <span id="employeeEarlyOutDays"></span>
                                         <div>Early Out</div>
                                     </div>
                                 </li>
@@ -213,7 +214,7 @@ $pendingleaveUrl = $this->url('leavestatus', ['action' => 'index', 'id' => 1]);
                             <a title="Yesterday" href="<?php echo $missPunchUrl ?>">
                                 <li class="col-xs-4 col-sm-4 col-md-4">
                                     <div class="hris efficiency efficiency-bg3">
-                                        <span><?php print $employeeDetail['MISSED_PUNCH']; ?></span>
+                                        <span id="employeeMissPunch"></span>
                                         <div>Missed Punch</div>
                                     </div>
                                 </li>
