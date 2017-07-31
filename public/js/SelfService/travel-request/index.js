@@ -1,7 +1,6 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        console.log(document.travelRequestList);
         $("#travelTable").kendoGrid({
             excel: {
                 fileName: "TravelRequestList.xlsx",

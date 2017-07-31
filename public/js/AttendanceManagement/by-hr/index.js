@@ -17,6 +17,7 @@ angular.module('hris', [])
             var $positionId = angular.element(document.getElementById('positionId'));
             var $serviceTypeId = angular.element(document.getElementById('serviceTypeId'));
             var $serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId'));
+            var $employeeTypeId = angular.element(document.getElementById('employeeTypeId'));
             var $fromDate = angular.element(document.getElementById('fromDate'));
             var $toDate = angular.element(document.getElementById('toDate'));
             var $status = angular.element(document.getElementById('statusId'));
@@ -45,6 +46,7 @@ angular.module('hris', [])
                             options['positionId'] = $positionId.val();
                             options['serviceTypeId'] = $serviceTypeId.val();
                             options['serviceEventTypeId'] = $serviceEventTypeId.val();
+                            options['employeeTypeId'] = $employeeTypeId.val();
                             options['fromDate'] = $fromDate.val();
                             options['toDate'] = $toDate.val();
                             options['status'] = $status.val();
@@ -269,6 +271,7 @@ angular.module('hris', [])
                             positionId: $positionId.val(),
                             serviceTypeId: $serviceTypeId.val(),
                             serviceEventTypeId: $serviceEventTypeId.val(),
+                            employeeTypeId: $employeeTypeId.val(),
                             fromDate: $fromDate.val(),
                             toDate: $toDate.val(),
                             status: $status.val(),

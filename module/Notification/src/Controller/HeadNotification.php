@@ -898,7 +898,7 @@ class HeadNotification {
         $notification->travelCode = $request->travelCode;
         $notification->fromDate = $request->fromDate;
         $notification->toDate = $request->toDate;
-        $notification->duration = ($request->toDate - $request->fromDate) + 1;
+        $notification->duration = Helper::dateDiff($request->fromDate, $request->toDate) + 1;
         $notification->destination = $request->destination;
         $notification->purpose = $request->purpose;
         $notification->remarks = $request->remarks;
@@ -922,7 +922,7 @@ class HeadNotification {
         $notification->travelCode = $request->travelCode;
         $notification->fromDate = $request->fromDate;
         $notification->toDate = $request->toDate;
-        $notification->duration = ($request->toDate - $request->fromDate) + 1;
+        $notification->duration = Helper::dateDiff($request->fromDate, $request->toDate) + 1;
         $notification->destination = $request->destination;
         $notification->purpose = $request->purpose;
         $notification->remarks = $request->remarks;

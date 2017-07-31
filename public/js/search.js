@@ -96,7 +96,7 @@
         /*
          * Search javascript code starts here
          */
-        var changeSearchOption = function (companyId, branchId, departmentId, designationId, positionId, serviceTypeId, serviceEventTypeId, employeeId, genderId) {
+        var changeSearchOption = function (companyId, branchId, departmentId, designationId, positionId, serviceTypeId, serviceEventTypeId, employeeId, genderId, employeeTypeId) {
 
 
             var $company = $('#' + companyId);
@@ -109,9 +109,14 @@
             var $employee = $('#' + employeeId);
 
             var $gender = $('#' + "random-random");
+            var $employeeType = $('#' + "random-random");
             if (genderId != null) {
                 $gender = $('#' + genderId);
             }
+            if (typeof employeeTypeId !== 'undefined' && employeeTypeId !== null) {
+                $employeeType = $('#' + employeeTypeId);
+            }
+
             /* setup functions */
             var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
                 $element.html('');
@@ -168,6 +173,9 @@
                 if ($gender.length != 0) {
                     searchParams['GENDER_ID'] = $gender.val();
                 }
+                if ($employeeType.length != 0) {
+                    searchParams['EMPLOYEE_TYPE'] = $employeeType.val();
+                }
                 var employeeList = search(document.searchValues['employee'], searchParams);
                 document.searchManager.setEmployee(employeeList);
                 populateList($employee, employeeList, 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
@@ -194,6 +202,9 @@
 
             if ($gender.length != 0) {
                 populateList($gender, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender');
+            }
+            if ($employeeType.length != 0) {
+                populateList($employeeType, document.searchValues['employeeType'], 'EMPLOYEE_TYPE_KEY', 'EMPLOYEE_TYPE_VALUE', 'All Employee Type');
             }
             /* initialize dropdowns */
 
@@ -236,11 +247,16 @@
                     employeeSearchAndPopulate();
                 });
             }
+            if ($employeeType.length != 0) {
+                onChangeEvent($employeeType, function ($this) {
+                    employeeSearchAndPopulate();
+                });
+            }
         };
-        changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId");
+        changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId");
 
         $("#reset").on("click", function () {
-            changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId");
+            changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId");
             if (typeof document.ids !== "undefined") {
                 $.each(document.ids, function (key, value) {
                     $("#" + key).val(value).change();
