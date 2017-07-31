@@ -174,6 +174,16 @@ return [
                     ],
                 ],
             ],
+            'api' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/api/employee[/:id]',
+                    'defaults' => [
+                        'controller' => Controller\ApiController::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -229,6 +239,7 @@ return [
             Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
             Controller\ChangePassword::class => Controller\ControllerFactory::class,
             Controller\CheckInController::class => Controller\ControllerFactory::class,
+            Controller\ApiController::class => Controller\ControllerFactory::class,
         ],
     ],
     'view_manager' => [
