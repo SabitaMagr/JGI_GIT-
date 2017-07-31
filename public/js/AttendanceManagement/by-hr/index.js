@@ -17,6 +17,7 @@ angular.module('hris', [])
             var $positionId = angular.element(document.getElementById('positionId'));
             var $serviceTypeId = angular.element(document.getElementById('serviceTypeId'));
             var $serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId'));
+            var $employeeTypeId = angular.element(document.getElementById('employeeTypeId'));
             var $fromDate = angular.element(document.getElementById('fromDate'));
             var $toDate = angular.element(document.getElementById('toDate'));
             var $status = angular.element(document.getElementById('statusId'));
@@ -45,6 +46,7 @@ angular.module('hris', [])
                             options['positionId'] = $positionId.val();
                             options['serviceTypeId'] = $serviceTypeId.val();
                             options['serviceEventTypeId'] = $serviceEventTypeId.val();
+                            options['employeeTypeId'] = $employeeTypeId.val();
                             options['fromDate'] = $fromDate.val();
                             options['toDate'] = $toDate.val();
                             options['status'] = $status.val();
@@ -247,44 +249,82 @@ angular.module('hris', [])
             }
 
             $("#export").click(function (e) {
-                var rows = [{
-                        cells: [
-                            {value: "Employee Name"},
-                            {value: "Attendance Date"},
-                            {value: "Check In Time"},
-                            {value: "Check Out Time"},
-                            {value: "Late In Reason"},
-                            {value: "Late Out Reason"},
-                            {value: "Total Hour"},
-                            {value: "Status"}
-                        ]
-                    }];
-                var dataSource = $("#attendanceByHrTable").data("kendoGrid").dataSource;
-                var filteredDataSource = new kendo.data.DataSource({
-                    data: dataSource.data(),
-                    filter: dataSource.filter()
+                var fetchAll = function (fn) {
+                    var page = 1;
+                    var pageSize = 1000;
+                    var total = 0;
+                    var totalPages = 0;
+
+                    var data = [];
+
+                    var fetch = function (page, pageSize) {
+                        window.app.pullDataById(document.pullAttendanceWS, {
+                            take: 50,
+                            skip: 0,
+                            page: page,
+                            pageSize: pageSize,
+                            employeeId: $employeeId.val(),
+                            companyId: $companyId.val(),
+                            branchId: $branchId.val(),
+                            departmentId: $departmentId.val(),
+                            designationId: $designationId.val(),
+                            positionId: $positionId.val(),
+                            serviceTypeId: $serviceTypeId.val(),
+                            serviceEventTypeId: $serviceEventTypeId.val(),
+                            employeeTypeId: $employeeTypeId.val(),
+                            fromDate: $fromDate.val(),
+                            toDate: $toDate.val(),
+                            status: $status.val(),
+                            missPunchOnly: $missPunchOnly.is(":checked") ? 1 : 0
+                        }).then(function (response) {
+                            data = data.concat(response.results);
+                            total = response.total;
+                            totalPages = Math.ceil(total / pageSize);
+                            page++;
+                            if (page <= totalPages) {
+                                fetch(page, pageSize);
+                            } else {
+                                fn(data);
+                            }
+                        }, function (error) {
+
+                        });
+
+                    };
+
+                    fetch(page, pageSize);
+                };
+                fetchAll(function (data) {
+                    var rows = [{
+                            cells: [
+                                {value: "Employee Name"},
+                                {value: "Attendance Date"},
+                                {value: "Check In Time"},
+                                {value: "Check Out Time"},
+                                {value: "Late In Reason"},
+                                {value: "Late Out Reason"},
+                                {value: "Total Hour"},
+                                {value: "Status"}
+                            ]
+                        }];
+                    for (var i = 0; i < data.length; i++) {
+                        var dataItem = data[i];
+                        rows.push({
+                            cells: [
+                                {value: dataItem.EMPLOYEE_NAME},
+                                {value: dataItem.ATTENDANCE_DT},
+                                {value: dataItem.IN_TIME},
+                                {value: dataItem.OUT_TIME},
+                                {value: dataItem.IN_REMARKS},
+                                {value: dataItem.OUT_REMARKS},
+                                {value: dataItem.TOTAL_HOUR},
+                                {value: dataItem.STATUS}
+                            ]
+                        });
+                    }
+                    excelExport(rows);
+                    e.preventDefault();
                 });
-
-                filteredDataSource.read();
-                var data = filteredDataSource.view();
-
-                for (var i = 0; i < data.length; i++) {
-                    var dataItem = data[i];
-                    rows.push({
-                        cells: [
-                            {value: dataItem.EMPLOYEE_NAME},
-                            {value: dataItem.ATTENDANCE_DT},
-                            {value: dataItem.IN_TIME},
-                            {value: dataItem.OUT_TIME},
-                            {value: dataItem.IN_REMARKS},
-                            {value: dataItem.OUT_REMARKS},
-                            {value: dataItem.TOTAL_HOUR},
-                            {value: dataItem.STATUS}
-                        ]
-                    });
-                }
-                excelExport(rows);
-                e.preventDefault();
             });
 
             function excelExport(rows) {

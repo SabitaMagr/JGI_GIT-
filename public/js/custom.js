@@ -926,7 +926,6 @@ window.app = (function ($, toastr, App) {
 
     (function () {
         $('.hris-export-to-excel').on("click", function () {
-            console.log('tet');
             try {
                 var $this = $(this);
                 var targetId = $this.attr("hris-export-to-excel-target");
@@ -938,7 +937,6 @@ window.app = (function ($, toastr, App) {
                     throw {message: "hris-export-to-excel-target is not found."};
                 }
 
-                console.log($target);
                 var grid = $target.data("kendoGrid");
                 if (typeof grid === "undefined") {
                     showMessage("No Table to export data.", "error");

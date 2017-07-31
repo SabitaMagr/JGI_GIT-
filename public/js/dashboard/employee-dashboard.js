@@ -6,7 +6,7 @@
 
         $("img.lazy").lazyload({
 //            effect: "fadeIn",
-             threshold : 5000
+            threshold: 5000
         });
 
         if (!$().fullCalendar) {
@@ -151,5 +151,76 @@
     });
 
     ComponentsPickers.init();
+
+
+//        console.log('sdfdsf');
+
+
+    window.app.pullDataById(document.getEmpDashboardUrl, {
+        action: 'fetchEmployeeDashBoardDetails',
+    }).then(function (success) {
+        var empData = success.data;
+        $('#employeePresentDays').text(empData['PRESENT_DAY']);  //present 
+        $('#employeeLeaveDays').text(empData['LEAVE']);  //on leave
+        $('#employeeTrainingDays').text(empData['TRAINING']);  //on training
+        $('#employeeTravelDays').text(empData['TOUR']);  // on tour
+        $('#employeeWOHDays').text(empData['WOH']);  // on woh
+        $('#employeeLateInDays').text(empData['LATE_IN']);  //  late in
+        $('#employeeEarlyOutDays').text(empData['EARLY_OUT']);  //  early out
+        $('#employeeMissPunch').text(empData['MISSED_PUNCH']);  //  miss punch
+
+
+        $('#employeeFullName').text(empData['FULL_NAME']);   //full name
+        if (empData['EMAIL_OFFICIAL'] != null) {
+            $('#employeeOfficialEmail').text(empData['EMAIL_OFFICIAL']);  //  email
+        } else {
+            $('#employeeOfficialEmail').next('br').remove();
+        }
+        if (empData['DESIGNATION_TITLE'] != null) {
+            $('#employeeDesignationTitle').text(empData['DESIGNATION_TITLE']);  //  designation Title
+        } else {
+            $('#employeeDesignationTitle').next('br').remove();
+        }
+        if (empData['FILE_PATH'] != null) {
+            $('#employeeImage').attr("src", document.basePath + '/uploads/' + empData['FILE_PATH']);
+        }
+
+
+        var year = ' ';
+        var month = ' ';
+        var days = ' ';
+        if (empData['SERVICE_YEARS'] != 0) {
+            if (empData['SERVICE_YEARS'] == 1) {
+                year = empData['SERVICE_YEARS'] + ' Year ';
+            } else {
+                year = empData['SERVICE_YEARS'] + ' Years ';
+            }
+        }
+        if (empData['SERVICE_MONTHS'] != 0) {
+            if (empData['SERVICE_MONTHS'] == 1) {
+                month = empData['SERVICE_MONTHS'] + ' Month ';
+            } else {
+                month = empData['SERVICE_MONTHS'] + ' Months ';
+            }
+        }
+        if (empData['SERVICE_DAYS'] != 0) {
+            if (empData['SERVICE_DAYS'] == 0) {
+                days = empData['SERVICE_DAYS'] + ' Day';
+            } else {
+                days = empData['SERVICE_DAYS'] + ' Days';
+            }
+        }
+
+
+        var empServiceDate = "At work for : " + year + month + days;
+        $('#employeeServiceDate').text(empServiceDate);  //  service
+
+
+
+
+    }, function (failure) {
+        console.log(failure);
+    });
+
 
 })(window.jQuery, window.app);

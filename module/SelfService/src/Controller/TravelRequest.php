@@ -92,7 +92,7 @@ class TravelRequest extends AbstractActionController {
                 return "Approved";
             } else if ($status == "C") {
                 return "Cancelled";
-            }else if ($status == "SC") {
+            } else if ($status == "SC") {
                 return "Settlement Checked";
             }
         };
@@ -119,14 +119,14 @@ class TravelRequest extends AbstractActionController {
             $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
             $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
             $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
-            
+
             $recommenderName = $approverName;
             $empRepository = new EmployeeRepository($this->adapter);
-            $approverFlag =($row['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
-            $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+            $approverFlag = ($row['APPROVER_ROLE'] == 'DCEO') ? [HrEmployees::IS_DCEO => 'Y'] : [HrEmployees::IS_CEO => 'Y'];
+            $whereCondition = array_merge([HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], $approverFlag);
             $approverDetail = $empRepository->fetchByCondition($whereCondition);
-            $approverName =($approverDetail!=null) ? $approverDetail['FIRST_NAME']." ".$approverDetail['MIDDLE_NAME']." ".$approverDetail['LAST_NAME']:"";
-            
+            $approverName = ($approverDetail != null) ? $approverDetail['FIRST_NAME'] . " " . $approverDetail['MIDDLE_NAME'] . " " . $approverDetail['LAST_NAME'] : "";
+
             $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
             $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
@@ -138,10 +138,10 @@ class TravelRequest extends AbstractActionController {
                 'REQUESTED_TYPE' => $getRequestedType($row['REQUESTED_TYPE']),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
-            if ($statusID == 'RQ') {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else {
+            if (in_array($statusID, ['C', 'R'])) {
                 $new_row['ALLOW_TO_EDIT'] = 0;
+            } else {
+                $new_row['ALLOW_TO_EDIT'] = 1;
             }
             $checkForExpense = $this->repository->fetchByReferenceId($row['TRAVEL_ID']);
             //print_r($checkForExpense); die();
@@ -171,7 +171,7 @@ class TravelRequest extends AbstractActionController {
                 $this->repository->add($model);
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
 
-                if ($travelSubstitute != null && $travelSubstitute!="") {
+                if ($travelSubstitute != null && $travelSubstitute != "") {
                     $travelSubstituteModel = new TravelSubstitute();
                     $travelSubstituteRepo = new TravelSubstituteRepository($this->adapter);
 
@@ -189,7 +189,7 @@ class TravelRequest extends AbstractActionController {
                     } catch (Exception $e) {
                         $this->flashmessenger()->addMessage($e->getMessage());
                     }
-                }else{
+                } else {
                     try {
                         HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
                     } catch (Exception $e) {
@@ -214,7 +214,7 @@ class TravelRequest extends AbstractActionController {
                     'requestTypes' => $requestType,
                     'transportTypes' => $transportTypes,
                     'customRender' => Helper::renderCustomView(),
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true)
         ]);
     }
 
@@ -254,9 +254,9 @@ class TravelRequest extends AbstractActionController {
                 $model->requestedType = 'ep';
                 $model->approverRole = $approverRole;
                 $this->repository->add($model);
-            } else if (isset($travelId) && $travelId>0) {
+            } else if (isset($travelId) && $travelId > 0) {
                 $this->repository->edit($model, $travelId);
-            }else{
+            } else {
                 return $this->redirect()->toRoute("travelRequest");
             }
             foreach ($expenseDtlList as $expenseDtl) {
@@ -276,10 +276,10 @@ class TravelRequest extends AbstractActionController {
                 $expenseDtlModel->totalAmount = (float) $expenseDtl['total'];
                 $expenseDtlModel->remarks = ($expenseDtl['remarks'] != null) ? $expenseDtl['remarks'] : null;
                 $expenseDtlModel->status = 'E';
-                $expenseDtlModel->fareFlag = ($expenseDtl['fareFlag']=="true" && $expenseDtl['fareFlag']!="")?'Y':'N';
-                $expenseDtlModel->allowanceFlag = ($expenseDtl['allowanceFlag']=="true" && $expenseDtl['allowanceFlag']!="")?'Y':'N';
-                $expenseDtlModel->localConveyenceFlag = ($expenseDtl['localConveyenceFlag']=="true" && $expenseDtl['localConveyenceFlag']!="")?'Y':'N';
-                $expenseDtlModel->miscExpensesFlag = ($expenseDtl['miscExpenseFlag']=="true" && $expenseDtl['miscExpenseFlag']!="")?'Y':'N';
+                $expenseDtlModel->fareFlag = ($expenseDtl['fareFlag'] == "true" && $expenseDtl['fareFlag'] != "") ? 'Y' : 'N';
+                $expenseDtlModel->allowanceFlag = ($expenseDtl['allowanceFlag'] == "true" && $expenseDtl['allowanceFlag'] != "") ? 'Y' : 'N';
+                $expenseDtlModel->localConveyenceFlag = ($expenseDtl['localConveyenceFlag'] == "true" && $expenseDtl['localConveyenceFlag'] != "") ? 'Y' : 'N';
+                $expenseDtlModel->miscExpensesFlag = ($expenseDtl['miscExpenseFlag'] == "true" && $expenseDtl['miscExpenseFlag'] != "") ? 'Y' : 'N';
                 if ($id == 0) {
                     $expenseDtlModel->id = ((int) Helper::getMaxId($this->adapter, TravelExpenseDetail::TABLE_NAME, TravelExpenseDetail::ID)) + 1;
                     $expenseDtlModel->travelId = ($requestedType == 'ad') ? $model->travelId : $travelId;
@@ -302,13 +302,13 @@ class TravelRequest extends AbstractActionController {
             $id = (int) $this->params()->fromRoute('id');
             $currentRequestType = 'ep';
             if ($id === 0) {
-                $id=0;
+                $id = 0;
                 $currentRequestType = 'ad';
             }
             return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'currentRequestType'=>$currentRequestType
+                        'form' => $this->form,
+                        'id' => $id,
+                        'currentRequestType' => $currentRequestType
             ]);
         }
     }
@@ -382,14 +382,14 @@ class TravelRequest extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DATE'];
         $recommended_by = $fullName($detail['RECOMMENDED_BY']);
         $approved_by = $fullName($detail['APPROVED_BY']);
-        
+
         $recommenderName = $approverName;
         $empRepository = new EmployeeRepository($this->adapter);
-        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
-        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverFlag = ($detail['APPROVER_ROLE'] == 'DCEO') ? [HrEmployees::IS_DCEO => 'Y'] : [HrEmployees::IS_CEO => 'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], $approverFlag);
         $approverDetail = $empRepository->fetchByCondition($whereCondition);
-        $approverName =($approverDetail!=null) ? $approverDetail['FIRST_NAME']." ".$approverDetail['MIDDLE_NAME']." ".$approverDetail['LAST_NAME']:"";
-        
+        $approverName = ($approverDetail != null) ? $approverDetail['FIRST_NAME'] . " " . $approverDetail['MIDDLE_NAME'] . " " . $approverDetail['LAST_NAME'] : "";
+
         $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
@@ -480,14 +480,14 @@ class TravelRequest extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DATE'];
         $recommended_by = $fullName($detail['RECOMMENDED_BY']);
         $approved_by = $fullName($detail['APPROVED_BY']);
-        
+
         $recommenderName = $approverName;
         $empRepository = new EmployeeRepository($this->adapter);
-        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
-        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+        $approverFlag = ($detail['APPROVER_ROLE'] == 'DCEO') ? [HrEmployees::IS_DCEO => 'Y'] : [HrEmployees::IS_CEO => 'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], $approverFlag);
         $approverDetail = $empRepository->fetchByCondition($whereCondition);
-        $approverName =($approverDetail!=null) ? $approverDetail['FIRST_NAME']." ".$approverDetail['MIDDLE_NAME']." ".$approverDetail['LAST_NAME']:"";
-        
+        $approverName = ($approverDetail != null) ? $approverDetail['FIRST_NAME'] . " " . $approverDetail['MIDDLE_NAME'] . " " . $approverDetail['LAST_NAME'] : "";
+
         $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
@@ -526,7 +526,10 @@ class TravelRequest extends AbstractActionController {
                 'SUB_APPROVED_DATE' => $detail['SUB_APPROVED_DATE']
             ];
         }
-        $duration = ($detail['TO_DATE'] - $detail['FROM_DATE']) + 1;
+        $fromDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['FROM_DATE']);
+        $toDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['TO_DATE']);
+        $interval = $fromDate->diff($toDate);
+        $duration = $interval->format('%a') + 1;
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'requestTypes' => $requestType,
@@ -547,7 +550,7 @@ class TravelRequest extends AbstractActionController {
                     'subDetail' => $subDetail,
                     'duration' => $duration,
                     'customRender' => Helper::renderCustomView(),
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true)
         ]);
     }
 

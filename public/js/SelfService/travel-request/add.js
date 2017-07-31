@@ -7,8 +7,8 @@
 //        app.startEndDatePicker('fromDate', 'toDate');
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate')
         /* prevent past event post */
-        $('#form-fromDate').datepicker("setStartDate", new Date());
-        $('#form-toDate').datepicker("setStartDate", new Date());
+//        $('#form-fromDate').datepicker("setStartDate", new Date());
+//        $('#form-toDate').datepicker("setStartDate", new Date());
         /* end of  prevent past event post */
         
         var employeeId = $('#employeeId').val();

@@ -97,7 +97,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"label":"HR Flag","value_options":{"Y":"Yes","N":"No"}})
      * @Annotation\Attributes({"id":"isHr","value":"N"})
      */
-    public $isHr;
+    public $isHR;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
