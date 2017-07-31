@@ -6,8 +6,8 @@
             app.errorMessage("No List to export data from.", "Alert");
         });
 
-        app.searchTable('employeeTable', ['EMPLOYEE_CODE','FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
-        
+        app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
+
         app.pdfExport(
                 'employeeTable',
                 {
@@ -97,6 +97,7 @@ angular.module('hris', [])
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
 
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
@@ -109,7 +110,8 @@ angular.module('hris', [])
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
                         'companyId': companyId,
-                        'serviceEventTypeId': serviceEventTypeId
+                        'serviceEventTypeId': serviceEventTypeId,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     console.log(success.data);

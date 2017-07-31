@@ -249,7 +249,7 @@ class EmployeeRepository implements RepositoryInterface {
         return $statement->execute();
     }
 
-    public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null, $companyId = null) {
+    public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null, $companyId = null, $employeeTypeKey = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -334,6 +334,11 @@ class EmployeeRepository implements RepositoryInterface {
         if ($serviceEventTypeId != -1) {
             $select->where([
                 "E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
+            ]);
+        }
+        if ($employeeTypeKey != null && $employeeTypeKey != -1) {
+            $select->where([
+                "E.EMPLOYEE_TYPE= '{$employeeTypeKey}'"
             ]);
         }
         $select->order("E.FIRST_NAME ASC");
@@ -441,6 +446,7 @@ class EmployeeRepository implements RepositoryInterface {
         $result = $this->gateway->select(["IS_ADMIN='Y' AND STATUS='E'"]);
         return $result;
     }
+
     public function fetchEmployeeFullNameList() {
         $sql = "
             SELECT EMPLOYEE_ID AS EMPLOYEE_ID,
@@ -495,12 +501,14 @@ class EmployeeRepository implements RepositoryInterface {
             return null;
         }
     }
-     public function fetchByHRFlagList() {
+
+    public function fetchByHRFlagList() {
         $result = $this->gateway->select(["IS_HR='Y' AND STATUS='E'"]);
         $list = [];
-        foreach($result as $row){
+        foreach ($result as $row) {
             array_push($list, $row['EMPLOYEE_ID']);
         }
-        return (count($list)>0)?$list:[0];
+        return (count($list) > 0) ? $list : [0];
     }
+
 }

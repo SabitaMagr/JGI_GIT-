@@ -129,10 +129,10 @@ class TravelRequest extends AbstractActionController {
                 'REQUESTED_TYPE' => $getRequestedType($row['REQUESTED_TYPE']),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
-            if ($statusID == 'RQ') {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else {
+            if (in_array($statusID, ['C', 'R'])) {
                 $new_row['ALLOW_TO_EDIT'] = 0;
+            } else {
+                $new_row['ALLOW_TO_EDIT'] = 1;
             }
             $checkForExpense = $this->repository->fetchByReferenceId($row['TRAVEL_ID']);
             //print_r($checkForExpense); die();

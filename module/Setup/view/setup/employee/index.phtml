@@ -99,10 +99,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </select>
                 </div>
                 <div class="col-sm-2">
+                    <select class="form-control" name="employeeType" id="employeeTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
                 </div>
-                <div class="col-sm-4 col-sm-offset-2">
+                <div class="col-sm-4">
                     <button id="reset" class="btn default btn-sm pull-right">
                         Reset
                         <i class="fa fa-refresh"></i>
@@ -118,8 +122,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <div id="employeeTable">
     </div>
-    
-    
+
+
 
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
@@ -163,8 +167,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
         </tr>
     </script>
-    
-    
-    
-    
+
+
+
+
 </div>
