@@ -66,7 +66,8 @@ class ApiController extends AbstractRestfulController {
             }
             return new CustomViewModel($data);
         } catch (Exception $e) {
-            return new CustomViewModel($e->getMessage());
+        return new CustomViewModel(['success'=>false,'error'=>$e->getMessage()]);
+//            return new CustomViewModel($e->getMessage());
         }
     }
 
@@ -81,14 +82,14 @@ class ApiController extends AbstractRestfulController {
 
         $employeeModel = new HrEmployees();
 
-        $employeeModel->exchangeArrayFromForm($postData);
+        $employeeModel->exchangeArrayFromDB($postData);
 
         $employeeModel->employeeId = ((int) Helper::getMaxId($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID")) + 1;
         $employeeModel->status = 'E';
         $employeeModel->createdDt = Helper::getcurrentExpressionDate();
-        $employeeModel->birthDate = Helper::getExpressionDate($employeeModel->birthDate);
-        $employeeModel->addrPermCountryId = 168;
-        $employeeModel->addrTempCountryId = 168;
+//        $employeeModel->addrPermCountryId = 168;
+//        $employeeModel->addrTempCountryId = 168;
+        
         $returnData=$this->repository->add($employeeModel);
         return $returnData;
     }
@@ -101,7 +102,7 @@ class ApiController extends AbstractRestfulController {
     public function editEmployee($editData,$id) {
 
         $employeeModel = new HrEmployees();
-        $employeeModel->exchangeArrayFromForm($editData);
+        $employeeModel->exchangeArrayFromDB($editData);
         $employeeModel->modifiedDt = Helper::getcurrentExpressionDate();
         $returnData=$this->repository->edit($employeeModel, $id);
         return $returnData;
