@@ -11,6 +11,7 @@ namespace Application\Repository;
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Exception;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
@@ -37,11 +38,21 @@ class ApiRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
+        try {
         $this->gateway->insert($model->getArrayCopyForDB());
+            return ['sucess'=>true,];
+        } catch (Exception $e) {
+            return ['sucess'=>false,'error'=>$e->getMessage()];
+        }
     }
 
     public function delete($id) {
+        try {
         $this->gateway->update(['STATUS' => 'D'], ['EMPLOYEE_ID' => $id]);
+            return ['sucess'=>true,];
+        } catch (Exception $e) {
+            return ['sucess'=>false,'error'=>$e->getMessage()];
+        }
     }
 
     public function edit(Model $model, $id) {
@@ -57,7 +68,13 @@ class ApiRepository implements RepositoryInterface {
         if (array_key_exists('STATUS', $tempArray)) {
             unset($tempArray['STATUS']);
         }
+        
+        try {
         $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
+            return ['sucess'=>true,];
+        } catch (Exception $e) {
+            return ['sucess'=>false,'error'=>$e->getMessage()];
+        }
         
         
     }
