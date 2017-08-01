@@ -53,7 +53,7 @@ class ApiController extends AbstractRestfulController {
                     }
                     $editData = array();
                     parse_str($request->getContent(), $editData);
-                    $data= $this->editEmployee($editData, $id);
+                    $data = $this->editEmployee($editData, $id);
                     break;
 
                 case Request::METHOD_DELETE:
@@ -61,12 +61,12 @@ class ApiController extends AbstractRestfulController {
                     if ($id == 0 || $id == NULL) {
                         throw new Exception('id cannot be null or zero');
                     }
-                    $data=$this->deleteEmployee($id);
+                    $data = $this->deleteEmployee($id);
                     break;
             }
             return new CustomViewModel($data);
         } catch (Exception $e) {
-        return new CustomViewModel(['success'=>false,'error'=>$e->getMessage()]);
+            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
 //            return new CustomViewModel($e->getMessage());
         }
     }
@@ -89,22 +89,23 @@ class ApiController extends AbstractRestfulController {
         $employeeModel->createdDt = Helper::getcurrentExpressionDate();
 //        $employeeModel->addrPermCountryId = 168;
 //        $employeeModel->addrTempCountryId = 168;
-        
-        $returnData=$this->repository->add($employeeModel);
+
+        $returnData = $this->repository->add($employeeModel);
+
         return $returnData;
     }
 
     public function deleteEmployee($id) {
-        $returnData=$this->repository->delete($id);
+        $returnData = $this->repository->delete($id);
         return $returnData;
     }
 
-    public function editEmployee($editData,$id) {
+    public function editEmployee($editData, $id) {
 
         $employeeModel = new HrEmployees();
         $employeeModel->exchangeArrayFromDB($editData);
         $employeeModel->modifiedDt = Helper::getcurrentExpressionDate();
-        $returnData=$this->repository->edit($employeeModel, $id);
+        $returnData = $this->repository->edit($employeeModel, $id);
         return $returnData;
     }
 
