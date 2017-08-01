@@ -48,7 +48,12 @@ class ApiController extends AbstractRestfulController {
 
                 case Request::METHOD_PUT:
                     $id = $this->params()->fromRoute('id');
-                    $data= $this->editEmployee($editData, $id)
+                    if ($id == 0 || $id == NULL) {
+                        throw new Exception('id cannot be null or zero');
+                    }
+                    $editData = array();
+                    parse_str($request->getContent(), $editData);
+                    $data= $this->editEmployee($editData, $id);
                     break;
 
                 case Request::METHOD_DELETE:
@@ -56,7 +61,7 @@ class ApiController extends AbstractRestfulController {
                     if ($id == 0 || $id == NULL) {
                         throw new Exception('id cannot be null or zero');
                     }
-                    $this->deleteEmployee($id);
+                    $data=$this->deleteEmployee($id);
                     break;
             }
             return new CustomViewModel($data);
@@ -84,21 +89,22 @@ class ApiController extends AbstractRestfulController {
         $employeeModel->birthDate = Helper::getExpressionDate($employeeModel->birthDate);
         $employeeModel->addrPermCountryId = 168;
         $employeeModel->addrTempCountryId = 168;
-        $this->repository->add($employeeModel);
-
-        return $employeeModel;
+        $returnData=$this->repository->add($employeeModel);
+        return $returnData;
     }
 
     public function deleteEmployee($id) {
-        $this->repository->delete($id);
+        $returnData=$this->repository->delete($id);
+        return $returnData;
     }
 
     public function editEmployee($editData,$id) {
 
         $employeeModel = new HrEmployees();
-        
-
-        return $employeeModel;
+        $employeeModel->exchangeArrayFromForm($editData);
+        $employeeModel->modifiedDt = Helper::getcurrentExpressionDate();
+        $returnData=$this->repository->edit($employeeModel, $id);
+        return $returnData;
     }
 
 }
