@@ -48,7 +48,7 @@ class ApiController extends AbstractRestfulController {
 
                 case Request::METHOD_PUT:
                     $id = $this->params()->fromRoute('id');
-                    $data= $this->editEmployee($editData, $id)
+                    $data = $this->editEmployee($editData, $id);
                     break;
 
                 case Request::METHOD_DELETE:
@@ -93,10 +93,10 @@ class ApiController extends AbstractRestfulController {
         $this->repository->delete($id);
     }
 
-    public function editEmployee($editData,$id) {
+    public function editEmployee($editData, $id) {
 
         $employeeModel = new HrEmployees();
-        
+
 
         return $employeeModel;
     }
