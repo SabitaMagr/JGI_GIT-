@@ -11,6 +11,7 @@ use Appraisal\Model\Stage;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Appraisal\Repository\AppraisalReportRepository;
 use Appraisal\Repository\SetupRepository;
+use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use Setup\Model\Branch;
@@ -201,6 +202,7 @@ class AppraisalAssignController extends AbstractActionController {
     }
 
     public function assignAppraisal($data) {
+        $error = "";
         $employeeId = (int) $data['employeeId'];
         $reviewerId = (int) $data['reviewerId'];
         $appraiserId = (int) $data['appraiserId'];
@@ -211,7 +213,6 @@ class AppraisalAssignController extends AbstractActionController {
         $stageId = (int) $data['stageId'];
         $appraisalRepo = new SetupRepository($this->adapter);
         $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
-//        print_r($appraisalId); die();
 
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
@@ -256,7 +257,6 @@ class AppraisalAssignController extends AbstractActionController {
         } else {
             $altAppraiserIdNew = $altAppraiserId;
         }
-//        print_r($superReviewerIdNew); die();
         $appraisalAssign = new AppraisalAssign();
         $employeePreDtl = $this->repository->getDetailByEmpAppraisalId($employeeId, $appraisalId);
         $appraisalReportRepo = new AppraisalReportRepository($this->adapter);
@@ -294,13 +294,18 @@ class AppraisalAssignController extends AbstractActionController {
         $appraisalAssign->appraisalId = $appraisalId;
         $appraisalAssign->createdBy = $this->employeeId;
         if ($appraiserQuestionNum > 0 && $appraiserIdNew != null && $appraiserIdNew != "") {
-            HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this);
+            try {
+                HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this);
+            } catch (Exception $e) {
+                $error = $e->getMessage();
+            }
         }
         return [
             "success" => true,
             "data" => [
                 'CURRENT_STAGE_NAME' => $appraisalDtl['STAGE_EDESC']
-            ]
+            ],
+            "error" => $error
         ];
     }
 
