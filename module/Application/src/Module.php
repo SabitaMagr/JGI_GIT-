@@ -66,6 +66,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             RegisterAttendanceController::class . "-authenticate",
             Controller\CronController::class . '-index',
             Controller\CronController::class . '-employee-attendance',
+            Controller\ApiController::class . "-index",
         ];
         $app = $event->getApplication();
         $auth = $app->getServiceManager()->get('AuthService');

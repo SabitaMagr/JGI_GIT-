@@ -7,14 +7,15 @@
  */
 namespace ManagerService\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveAssign;
-use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class LeaveApproveRepository implements RepositoryInterface
 {
