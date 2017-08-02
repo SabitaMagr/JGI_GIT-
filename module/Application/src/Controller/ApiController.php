@@ -70,6 +70,17 @@ class ApiController extends AbstractRestfulController {
 //            return new CustomViewModel($e->getMessage());
         }
     }
+    
+    
+    public function setupAction(){
+        $name = $this->params()->fromRoute('name');
+        
+        
+        
+        
+        
+        
+    }
 
     public function fetchemployeeList($id) {
         $data = $this->repository->fetchAllEmployee($id);
