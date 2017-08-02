@@ -2,19 +2,8 @@
 
 namespace Payroll\Controller;
 
-use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
-use Application\Model\Months;
-use Application\Repository\MonthRepository;
-use AttendanceManagement\Model\AttendanceDetail;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
-use DateTime;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use ManagerService\Repository\SalaryDetailRepo;
 use Payroll\Repository\PayrollRepository;
 use SelfService\Repository\AdvanceRequestRepository;
-use Setup\Model\HrEmployees;
-use Setup\Model\ServiceType;
 use Setup\Repository\EmployeeRepository;
 
 class VariableProcessor {
@@ -36,68 +25,100 @@ class VariableProcessor {
     public function processVariable($variable) {
         $processedValue = "";
         switch ($variable) {
-//            "BASIC_SALARY"
+            /*
+             * BASIC_SALARY
+             */
             case PayrollGenerator::VARIABLES[0]:
                 $processedValue = $this->payrollRepo->fetchBasicSalary($this->employeeId);
                 break;
-//            "NO_OF_WORKING_DAYS"
+            /*
+             * NO_OF_WORKING_DAYS
+             */
             case PayrollGenerator::VARIABLES[1]:
                 $processedValue = $this->payrollRepo->getNoOfWorkingDays($this->employeeId, $this->monthId);
                 break;
-//            "NO_OF_DAYS_ABSENT"
+            /*
+             * NO_OF_DAYS_ABSENT
+             */
             case PayrollGenerator::VARIABLES[2]:
                 $processedValue = $this->payrollRepo->getNoOfDaysAbsent($this->employeeId, $this->monthId);
                 break;
-//            "NO_OF_DAYS_WORKED"
+            /*
+             * NO_OF_DAYS_WORKED
+             */
             case PayrollGenerator::VARIABLES[3]:
                 $processedValue = $this->payrollRepo->getNoOfDaysPresent($this->employeeId, $this->monthId);
                 break;
-//            "NO_OF_PAID_LEAVES"
+            /*
+             * NO_OF_PAID_LEAVES
+             */
             case PayrollGenerator::VARIABLES[4]:
                 $processedValue = $this->payrollRepo->getNoOfPaidLeaves($this->employeeId, $this->monthId);
                 break;
-//                "NO_OF_UNPAID_LEAVES"                
+            /*
+             * NO_OF_UNPAID_LEAVES
+             */
             case PayrollGenerator::VARIABLES[5]:
                 $processedValue = $this->payrollRepo->getNoOfUnpaidLeaves($this->employeeId, $this->monthId);
                 break;
-//            "GENDER"
+            /*
+             * GENDER
+             */
             case PayrollGenerator::VARIABLES[6]:
                 $processedValue = $this->payrollRepo->getEmployeeGender($this->employeeId);
                 break;
-//              "MARITUAL_STATUS"
+            /*
+             * MARITUAL_STATUS
+             */
             case PayrollGenerator::VARIABLES[7]:
                 $processedValue = $this->payrollRepo->getEmployeeMaritualStatus($this->employeeId);
                 break;
-//            "TOTAL_DAYS_FROM_JOIN_DATE"
+            /*
+             * TOTAL_DAYS_FROM_JOIN_DATE
+             */
             case PayrollGenerator::VARIABLES[8]:
                 $processedValue = $this->payrollRepo->getEmployeeTotalDaysFromJoinDate($this->employeeId, $this->monthId);
                 break;
-//            "SERVICE_TYPE"
+            /*
+             * SERVICE_TYPE
+             */
             case PayrollGenerator::VARIABLES[9]:
                 $processedValue = $this->payrollRepo->getEmployeeServiceType($this->employeeId);
                 break;
-//             "NO_OF_WORKING_DAYS_INC_HOLIDAYS"
+            /*
+             * NO_OF_WORKING_DAYS_INC_HOLIDAYS
+             */
             case PayrollGenerator::VARIABLES[10]:
                 $processedValue = $this->payrollRepo->getNoOfWorkingDaysIncDayOffAndHoliday($this->employeeId, $this->monthId);
                 break;
-//            "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS"
+            /*
+             * TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS
+             */
             case PayrollGenerator::VARIABLES[11]:
                 $processedValue = $this->payrollRepo->getNoOfDaysWorkedIncDayOffAndHoliday($this->employeeId, $this->monthId);
                 break;
-//            "SALARY_REVIEW_DAY"
+            /*
+             * SALARY_REVIEW_DAY
+             */
             case PayrollGenerator::VARIABLES[12]:
                 $processedValue = $this->payrollRepo->getNoOfDaysWorkedIncDayOffAndHoliday($this->employeeId, $this->monthId);
                 break;
-//            "SALARY_REVIEW_OLD_SALARY"
+            /*
+             * SALARY_REVIEW_OLD_SALARY
+             */
             case PayrollGenerator::VARIABLES[13]:
                 $processedValue = $this->payrollRepo->getEmployeeSalaryReviewDay($this->employeeId, $this->monthId);
                 break;
-//             HAS_ADVANCE
+            /*
+             * HAS_ADVANCE
+             */
             case PayrollGenerator::VARIABLES[14]:
                 $advanceRequestRepo = new AdvanceRequestRepository($this->adapter);
                 $processedValue = $advanceRequestRepo->checkAdvance($this->employeeId, $this->monthId);
                 break;
-//            "ADVANCE_AMT"
+            /*
+             * ADVANCE_AMT
+             */
             case PayrollGenerator::VARIABLES[15]:
                 $advanceRequestRepo = new AdvanceRequestRepository($this->adapter);
                 $processedValue = $advanceRequestRepo->getAdvance($this->employeeId, $this->monthId);
