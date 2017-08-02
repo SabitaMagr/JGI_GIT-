@@ -1,21 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/14/16
- * Time: 12:09 PM
- */
 
 namespace Payroll\Model;
 
-
 use Application\Model\Model;
 
-class FlatValueDetail extends Model
-{
+class FlatValueDetail extends Model {
+
     const TABLE_NAME = "HRIS_FLAT_VALUE_DETAIL";
-
-
     const FLAT_ID = "FLAT_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const FLAT_VALUE = "FLAT_VALUE";
@@ -26,7 +17,6 @@ class FlatValueDetail extends Model
     const REMARKS = "REMARKS";
     const COMPANY_ID = "COMPANY_ID";
 
-
     public $flatId;
     public $employeeId;
     public $flatValue;
@@ -36,7 +26,6 @@ class FlatValueDetail extends Model
     public $status;
     public $remarks;
     public $companyId;
-
     public $mappings = [
         'flatId' => self::FLAT_ID,
         'employeeId' => self::EMPLOYEE_ID,

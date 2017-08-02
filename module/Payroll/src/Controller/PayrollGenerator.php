@@ -10,12 +10,12 @@ use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Model\MonthlyValueDetail;
-use Payroll\Model\PayPositionSetup;
+use Payroll\Model\PayEmployeeSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
-use Payroll\Repository\PayPositionRepo;
+use Payroll\Repository\PayEmployeeRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 
@@ -25,7 +25,7 @@ class PayrollGenerator {
     private $logger;
     private $flatValueDetRepo;
     private $monthlyValueDetRepo;
-    private $payPositionRepo;
+    private $payEmployeeRepo;
     private $ruleDetailRepo;
     private $ruleRepo;
     private $employeeId;
@@ -67,7 +67,7 @@ class PayrollGenerator {
         $this->monthId = $monthId;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
         $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
-        $this->payPositionRepo = new PayPositionRepo($adapter);
+        $this->payEmployeeRepo = new PayEmployeeRepo($adapter);
         $this->ruleDetailRepo = new RulesDetailRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
 
@@ -85,21 +85,15 @@ class PayrollGenerator {
     public function generate($id) {
         $this->employeeId = $id;
 
-        $positionId = $this->getPositionId($id);
-        if ($positionId == null) {
-            $payPositionList = [];
-        } else {
-            $payPositionList = $this->payPositionRepo->test($positionId);
-        }
-        $payList = [];
+        $payList = $this->payEmployeeRepo->fetchByEmployeeId($this->employeeId);
 
-        foreach ($payPositionList as $payPosition) {
-            array_push($payList, $payPosition);
-        }
+
+
+
         $ruleValueKV = [];
         $counter = 0;
         foreach ($payList as $ruleObj) {
-            $ruleId = $ruleObj[PayPositionSetup::PAY_ID];
+            $ruleId = $ruleObj[PayEmployeeSetup::PAY_ID];
             $ruleDetail = $this->ruleDetailRepo->fetchById($ruleId)->getArrayCopy();
             $rule = $ruleDetail[RulesDetail::MNENONIC_NAME];
             $operationType = $ruleObj[Rules::PAY_TYPE_FLAG];

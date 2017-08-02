@@ -15,43 +15,39 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Payroll\Form\MonthlyValue as MonthlyValueForm;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
 
-class MonthlyValue extends AbstractActionController
-{
+class MonthlyValue extends AbstractActionController {
+
     private $adapter;
     private $repository;
     private $form;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new MonthlyValueRepository($adapter);
     }
 
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $builder = new AnnotationBuilder();
         $monthlyValueForm = new MonthlyValueForm();
         $this->form = $builder->createForm($monthlyValueForm);
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $constraint = ConstraintHelper::CONSTRAINTS['YN'];
         $monthlyValueList = $this->repository->fetchAll();
         $montlyValues = [];
-        foreach($monthlyValueList as $monthlyValueRow){
+        foreach ($monthlyValueList as $monthlyValueRow) {
             $showAtRule = $constraint[$monthlyValueRow['SHOW_AT_RULE']];
             $rowRecord = $monthlyValueRow->getArrayCopy();
-            $new_row = array_merge($rowRecord,['SHOW_AT_RULE'=>$showAtRule]);
-            array_push($montlyValues, $new_row);            
+            $new_row = array_merge($rowRecord, ['SHOW_AT_RULE' => $showAtRule]);
+            array_push($montlyValues, $new_row);
         }
         return Helper::addFlashMessagesToArray($this, [
-            'monthlyValues' => $montlyValues            
+                    'monthlyValues' => $montlyValues
         ]);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -59,7 +55,7 @@ class MonthlyValue extends AbstractActionController
             if ($this->form->isValid()) {
                 $monthlyValue = new MonthlyValueModel();
                 $monthlyValue->exchangeArrayFromForm($this->form->getData());
-                $monthlyValue->mthId = ((int)Helper::getMaxId($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID)) + 1;
+                $monthlyValue->mthId = ((int) Helper::getMaxId($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID)) + 1;
                 $monthlyValue->createdDt = Helper::getcurrentExpressionDate();
                 $monthlyValue->status = 'E';
                 $this->repository->add($monthlyValue);
@@ -67,18 +63,15 @@ class MonthlyValue extends AbstractActionController
                 return $this->redirect()->toRoute("monthlyValue");
             }
         }
-        return Helper::addFlashMessagesToArray($this,
-            [
-                'form' => $this->form,
-                'customRenderer' => Helper::renderCustomView()
-            ]
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'customRenderer' => Helper::renderCustomView()
+                        ]
         );
-
     }
 
-    public function editAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function editAction() {
+        $id = (int) $this->params()->fromRoute("id");
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -100,16 +93,14 @@ class MonthlyValue extends AbstractActionController
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form' => $this->form,
-            'id' => $id,
-            'customRenderer' => Helper::renderCustomView()
+                    'form' => $this->form,
+                    'id' => $id,
+                    'customRenderer' => Helper::renderCustomView()
         ]);
-
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {
             return $this->redirect()->toRoute('monthlyValue');
@@ -119,19 +110,12 @@ class MonthlyValue extends AbstractActionController
         return $this->redirect()->toRoute('monthlyValue');
     }
 
-    public function detailAction()
-    {
-        $branches = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME],null,null,null,null,false,true);
-        $departments = EntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME],null,null,null,null,false,true);
-        $designations = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE],null,null,null,null,false,true);
-        $monthlyValues = EntityHelper::getTableKVListWithSortOption($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID, [MonthlyValueModel::MTH_EDESC],null,null,null,null,false,true);
+    public function detailAction() {
+        $monthlyValues = EntityHelper::getTableKVListWithSortOption($this->adapter, MonthlyValueModel::TABLE_NAME, MonthlyValueModel::MTH_ID, [MonthlyValueModel::MTH_EDESC], null, null, null, null, false, true);
 
         return Helper::addFlashMessagesToArray($this, [
-            'branches' => $branches,
-            'departments' => $departments,
-            'designations' => $designations,
-            'monthlyValues'=>$monthlyValues,
-            'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'monthlyValues' => $monthlyValues,
         ]);
     }
 }
