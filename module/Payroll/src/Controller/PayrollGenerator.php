@@ -6,7 +6,6 @@ use Application\Factory\HrLogger;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\RepositoryInterface;
-use Exception;
 use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
