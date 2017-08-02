@@ -174,13 +174,23 @@ return [
                     ],
                 ],
             ],
-            'api' => [
+            'apiEmployee' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/api/employee[/:id]',
                     'defaults' => [
                         'controller' => Controller\ApiController::class,
                         'action' => 'index',
+                    ],
+                ],
+            ],
+            'apiSetup' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/api/setup[/:name]',
+                    'defaults' => [
+                        'controller' => Controller\ApiController::class,
+                        'action' => 'setup',
                     ],
                 ],
             ],
