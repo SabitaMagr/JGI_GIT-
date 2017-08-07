@@ -10,32 +10,26 @@ class FlatValueDetail extends Model {
     const FLAT_ID = "FLAT_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const FLAT_VALUE = "FLAT_VALUE";
-    const BRANCH_ID = "BRANCH_ID";
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
-    const STATUS = "STATUS";
-    const REMARKS = "REMARKS";
-    const COMPANY_ID = "COMPANY_ID";
+    CONST FISCAL_YEAR_ID = "FISCAL_YEAR_ID";
+    CONST MONTH_ID = "MONTH_ID";
 
     public $flatId;
     public $employeeId;
     public $flatValue;
-    public $branchId;
     public $createdDt;
     public $modifiedDt;
-    public $status;
-    public $remarks;
-    public $companyId;
+    public $fiscalYearId;
+    public $monthId;
     public $mappings = [
         'flatId' => self::FLAT_ID,
         'employeeId' => self::EMPLOYEE_ID,
         'flatValue' => self::FLAT_VALUE,
-        'branchId' => self::BRANCH_ID,
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
-        'status' => self::STATUS,
-        'remarks' => self::REMARKS,
-        'companyId' => self::COMPANY_ID
+        'fiscalYearId' => self::FISCAL_YEAR_ID,
+        'monthId' => self::MONTH_ID,
     ];
 
 }
