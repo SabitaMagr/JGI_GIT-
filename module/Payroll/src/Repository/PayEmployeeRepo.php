@@ -26,7 +26,15 @@ class PayEmployeeRepo {
     }
 
     public function fetchByEmployeeId($id) {
-        return $this->gateway->select([PayEmployeeSetup::EMPLOYEE_ID => $id]);
+        $sql = "
+                SELECT P.*
+                FROM HRIS_PAY_EMPLOYEE_SETUP PE
+                JOIN HRIS_PAY_SETUP P
+                ON (PE.PAY_ID        = P.PAY_ID)
+                WHERE PE.EMPLOYEE_ID = {$id}";
+
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
     }
 
     public function deleteByPayId($id) {

@@ -36,7 +36,17 @@ class FlatValueDetailRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        
+        $sql = "
+                SELECT FLAT_VALUE
+                FROM HRIS_FLAT_VALUE_DETAIL
+                WHERE EMPLOYEE_ID = {$id['employeeId']}
+                AND MONTH_ID      = {$id['monthId']}
+                AND FLAT_ID        = {$id['flatId']}";
+
+        $statement = $this->adapter->query($sql);
+        $rawResult = $statement->execute();
+        $result = $rawResult->current();
+        return $result != null ? $result['FLAT_VALUE'] : 0;
     }
 
     public function getFlatValuesDetailById($flatValueId, $fiscalYearId, $employeeFilter, $monthId = null) {

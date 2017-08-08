@@ -5,6 +5,7 @@ namespace Payroll\Repository;
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Exception;
 use Payroll\Model\MonthlyValueDetail;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
@@ -36,7 +37,18 @@ class MonthlyValueDetailRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        
+//        throw new Exception(json_encode($id));
+        $sql = "
+                SELECT MTH_VALUE
+                FROM HRIS_MONTHLY_VALUE_DETAIL
+                WHERE EMPLOYEE_ID = {$id['employeeId']}
+                AND MONTH_ID      = {$id['monthId']}
+                AND MTH_ID        = {$id['mthId']}";
+
+        $statement = $this->adapter->query($sql);
+        $rawResult = $statement->execute();
+        $result = $rawResult->current();
+        return $result != null ? $result['MTH_VALUE'] : 0;
     }
 
     public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $employeeFilter, $monthId = null) {
