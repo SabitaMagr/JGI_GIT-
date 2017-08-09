@@ -1,4 +1,5 @@
 <?php
+
 namespace Overtime\Repository;
 
 use Application\Model\Model;
@@ -6,8 +7,10 @@ use Application\Repository\RepositoryInterface;
 use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 
-class OvertimeStatusRepository implements RepositoryInterface{
+class OvertimeStatusRepository implements RepositoryInterface {
+
     private $adapter;
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
@@ -31,8 +34,8 @@ class OvertimeStatusRepository implements RepositoryInterface{
     public function fetchById($id) {
         
     }
-    
-    public function getFilteredRecord($data,$recomApproveId=null){
+
+    public function getFilteredRecord($data, $recomApproveId = null) {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
@@ -44,13 +47,13 @@ class OvertimeStatusRepository implements RepositoryInterface{
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $requestStatusId = $data['requestStatusId'];
-        
-        if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
+
+        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
-        }else{
+        } else {
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
-        
+
         $sql = "SELECT 
                 INITCAP(TO_CHAR(OT.OVERTIME_DATE, 'DD-MON-YYYY')) AS OVERTIME_DATE,
                 INITCAP(TO_CHAR(OT.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
@@ -66,10 +69,9 @@ class OvertimeStatusRepository implements RepositoryInterface{
                 OT.APPROVED_BY AS APPROVED_BY,
                 OT.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
                 OT.APPROVED_REMARKS AS APPROVED_REMARKS,
-                TRUNC(OT.TOTAL_HOUR/60,0)
-                  ||':'
-                  ||MOD(OT.TOTAL_HOUR,60) AS TOTAL_HOUR,
-                  INITCAP(E.FULL_NAME) AS FULL_NAME,
+                MIN_TO_HOUR(OT.TOTAL_HOUR) AS TOTAL_HOUR,
+                OT.TOTAL_HOUR AS TOTAL_MIN,
+                INITCAP(E.FULL_NAME) AS FULL_NAME,
                 INITCAP(E.FIRST_NAME) AS FIRST_NAME,
                 INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                 INITCAP(E.LAST_NAME) AS LAST_NAME,
@@ -93,7 +95,7 @@ class OvertimeStatusRepository implements RepositoryInterface{
                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV ON
                 APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE 
-                E.STATUS='E'".$retiredFlag."              
+                E.STATUS='E'" . $retiredFlag . "              
                 AND
                 (E1.STATUS = CASE WHEN E1.STATUS IS NOT NULL
                          THEN ('E')     
@@ -107,38 +109,37 @@ class OvertimeStatusRepository implements RepositoryInterface{
                 (APRV.STATUS = CASE WHEN APRV.STATUS IS NOT NULL
                          THEN ('E')       
                     END OR  APRV.STATUS is null)";
-        if($recomApproveId==null){
+        if ($recomApproveId == null) {
             if ($requestStatusId != -1) {
                 $sql .= " AND OT.STATUS ='" . $requestStatusId . "'";
             }
         }
-        if($recomApproveId!=null){
-            if($requestStatusId==-1){
-                $sql .=" AND ((RA.RECOMMEND_BY=".$recomApproveId." AND  OT.STATUS='RQ') "
-                        . "OR (OT.RECOMMENDED_BY=".$recomApproveId." AND (OT.STATUS='RC' OR OT.STATUS='R' OR OT.STATUS='AP')) "
-                        . "OR (RA.APPROVED_BY=".$recomApproveId." AND  OT.STATUS='RC' ) "
-                        . "OR (OT.APPROVED_BY=".$recomApproveId." AND (OT.STATUS='AP' OR (OT.STATUS='R' AND OT.APPROVED_DATE IS NOT NULL))) )";
-            }else if($requestStatusId=='RQ'){
-                $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND OT.STATUS='RQ')";
-            }
-            else if($requestStatusId=='RC'){
+        if ($recomApproveId != null) {
+            if ($requestStatusId == -1) {
+                $sql .= " AND ((RA.RECOMMEND_BY=" . $recomApproveId . " AND  OT.STATUS='RQ') "
+                        . "OR (OT.RECOMMENDED_BY=" . $recomApproveId . " AND (OT.STATUS='RC' OR OT.STATUS='R' OR OT.STATUS='AP')) "
+                        . "OR (RA.APPROVED_BY=" . $recomApproveId . " AND  OT.STATUS='RC' ) "
+                        . "OR (OT.APPROVED_BY=" . $recomApproveId . " AND (OT.STATUS='AP' OR (OT.STATUS='R' AND OT.APPROVED_DATE IS NOT NULL))) )";
+            } else if ($requestStatusId == 'RQ') {
+                $sql .= " AND (RA.RECOMMEND_BY=" . $recomApproveId . " AND OT.STATUS='RQ')";
+            } else if ($requestStatusId == 'RC') {
                 $sql .= " AND OT.STATUS='RC' AND
-                    (OT.RECOMMENDED_BY=".$recomApproveId." OR RA.APPROVED_BY=".$recomApproveId.")";
-            }else if($requestStatusId=='AP'){
+                    (OT.RECOMMENDED_BY=" . $recomApproveId . " OR RA.APPROVED_BY=" . $recomApproveId . ")";
+            } else if ($requestStatusId == 'AP') {
                 $sql .= " AND OT.STATUS='AP' AND
-                    (OT.RECOMMENDED_BY=".$recomApproveId." OR OT.APPROVED_BY=".$recomApproveId.")";
-            }else if($requestStatusId=='R'){
-                $sql .=" AND OT.STATUS='".$requestStatusId."' AND
-                    ((OT.RECOMMENDED_BY=".$recomApproveId.") OR (OT.APPROVED_BY=".$recomApproveId." AND OT.APPROVED_DATE IS NOT NULL) )";
+                    (OT.RECOMMENDED_BY=" . $recomApproveId . " OR OT.APPROVED_BY=" . $recomApproveId . ")";
+            } else if ($requestStatusId == 'R') {
+                $sql .= " AND OT.STATUS='" . $requestStatusId . "' AND
+                    ((OT.RECOMMENDED_BY=" . $recomApproveId . ") OR (OT.APPROVED_BY=" . $recomApproveId . " AND OT.APPROVED_DATE IS NOT NULL) )";
             }
         }
-     
-        if($fromDate!=null){
-            $sql .= " AND OT.OVERTIME_DATE>=TO_DATE('".$fromDate."','DD-MON-YYYY')";
+
+        if ($fromDate != null) {
+            $sql .= " AND OT.OVERTIME_DATE>=TO_DATE('" . $fromDate . "','DD-MON-YYYY')";
         }
-        
-        if($toDate!=null){   
-            $sql .= "AND OT.OVERTIME_DATE<=TO_DATE('".$toDate."','DD-MON-YYYY')";
+
+        if ($toDate != null) {
+            $sql .= "AND OT.OVERTIME_DATE<=TO_DATE('" . $toDate . "','DD-MON-YYYY')";
         }
 
         if ($employeeId != -1) {
@@ -165,12 +166,13 @@ class OvertimeStatusRepository implements RepositoryInterface{
         if ($serviceEventTypeId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
-        
-        $sql .=" ORDER BY OT.REQUESTED_DATE DESC";
+
+        $sql .= " ORDER BY OT.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
 //        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }
+
 }

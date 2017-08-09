@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -78,35 +78,35 @@ angular.module('hris', [])
                         {field: "DETAILS", title: "Time (From-To)", width: 150},
                         {field: "TOTAL_HOUR", title: "Total Hour", width: 100},
                         {field: "RECOMMENDER_NAME", title: "Recommender", width: 130},
-                        {field: "APPROVER_NAME", title: "Approver", width: 120},                        
+                        {field: "APPROVER_NAME", title: "Approver", width: 120},
                         {field: "STATUS", title: "Status", width: 90},
                         {title: "Action", width: 80}
                     ]
                 });
-                
-                app.searchTable('overtimeRequestStatusTable',['FULL_NAME','REQUESTED_DATE','OVERTIME_DATE','TOTAL_HOUR','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
-                
+
+                app.searchTable('overtimeRequestStatusTable', ['FULL_NAME', 'REQUESTED_DATE', 'OVERTIME_DATE', 'TOTAL_HOUR', 'RECOMMENDER_NAME', 'APPROVER_NAME', 'STATUS']);
+
                 app.pdfExport(
-                'overtimeRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'REQUESTED_DATE': 'Request Date',
-                    'OVERTIME_DATE': 'Overtime Date',
-                    'TOTAL_HOUR': 'Total Hour',
-                    'DESCRIPTION': 'Description',
-                    'RECOMMENDER_NAME': 'Recommender',
-                    'APPROVER_NAME': 'Approver',
-                    'STATUS': 'Status',
-                    'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'Recommender Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approver Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                    
-                });
-                
-                
-                
+                        'overtimeRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'REQUESTED_DATE': 'Request Date',
+                            'OVERTIME_DATE': 'Overtime Date',
+                            'TOTAL_HOUR': 'Total Hour',
+                            'DESCRIPTION': 'Description',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDED_REMARKS': 'Recommender Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approver Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+
+                        });
+
+
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -116,9 +116,7 @@ angular.module('hris', [])
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
                 }
-                ;
-
-                $("#export").click(function (e) {
+                var exportAction = function (e) {
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
@@ -145,14 +143,14 @@ angular.module('hris', [])
 
                     filteredDataSource.read();
                     var data = filteredDataSource.view();
-
+                    var totalHours = 0.0;
                     for (var i = 0; i < data.length; i++) {
                         var dataItem = data[i];
                         var mn1 = dataItem.MN1 != null ? " " + dataItem.MN1 + " " : " ";
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         var details = [];
                         for (var j = 0; j < dataItem.DETAILS.length; j++) {
-                            details.push(dataItem.DETAILS[j].START_TIME+"-"+dataItem.DETAILS[j].END_TIME);
+                            details.push(dataItem.DETAILS[j].START_TIME + "-" + dataItem.DETAILS[j].END_TIME);
                         }
                         var details1 = details.toString();
                         rows.push({
@@ -173,11 +171,38 @@ angular.module('hris', [])
                                 {value: dataItem.APPROVED_DATE}
                             ]
                         });
+                        totalHours = totalHours + parseFloat(dataItem.TOTAL_MIN);
+                    }
+                    if (e.target.id === "exportCalculated") {
+                        rows.push({
+                            cells: [
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: app.minToHour(totalHours)},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""},
+                                {value: ""}
+                            ]
+                        });
                     }
                     excelExport(rows);
                     e.preventDefault();
-                });
+                };
 
+                $("#export").click(function (e) {
+                    exportAction(e);
+                });
+                $('#exportCalculated').click(function (e) {
+                    exportAction(e);
+                });
                 function excelExport(rows) {
                     var workbook = new kendo.ooxml.Workbook({
                         sheets: [
@@ -204,7 +229,7 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "OvertimeRequestList.xlsx"});
                 }
-               
+
                 window.app.UIConfirmations();
             };
         });
