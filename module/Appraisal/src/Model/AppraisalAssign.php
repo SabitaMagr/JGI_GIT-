@@ -29,6 +29,7 @@ class AppraisalAssign extends Model{
     const ALT_APPRAISER_ID = "ALT_APPRAISER_ID";
     const ALT_REVIEWER_ID = "ALT_REVIEWER_ID";
     const SUPER_REVIEWER_ID = "SUPER_REVIEWER_ID";
+    const IS_EXECUTIVE ="IS_EXECUTIVE";
 
     public $appraisalId;
     public $employeeId;
@@ -53,6 +54,7 @@ class AppraisalAssign extends Model{
     public $altAppraiserId;
     public $altReviewerId;
     public $superReviewerId;
+    public $isExecutive;
     
     public $mappings = [
         'appraisalId'=>self::APPRAISAL_ID,
@@ -77,6 +79,7 @@ class AppraisalAssign extends Model{
         'appraiserOverallRating'=>self::APPRAISER_OVERALL_RATING,
         'altAppraiserId'=>self::ALT_APPRAISER_ID,
         'altReviewerId'=>self::ALT_REVIEWER_ID,
-        'superReviewerId'=>self::SUPER_REVIEWER_ID
+        'superReviewerId'=>self::SUPER_REVIEWER_ID,
+        'isExecutive'=>self::IS_EXECUTIVE
     ];
 }

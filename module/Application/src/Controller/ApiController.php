@@ -124,8 +124,7 @@ class ApiController extends AbstractRestfulController {
                             break;
 
                         case 'district':
-                            $id = $this->params()->fromRoute('id');
-                            $data = $this->fetchAllDistrict($id);
+                            $data = $this->fetchAllDistrict();
                             break;
 
                         case 'zone':
@@ -249,13 +248,9 @@ class ApiController extends AbstractRestfulController {
         }
     }
 
-    public function fetchAllDistrict($id = null) {
+    public function fetchAllDistrict() {
         try {
-            $whereConditon = "1=1";
-            if ($id != null) {
-                $whereConditon = District::ZONE_ID . "=" . $id;
-            }
-            $district = EntityHelper::getTableList($this->adapter, District::TABLE_NAME, [District::DISTRICT_ID, District::DISTRICT_NAME, District::ZONE_ID], [$whereConditon]);
+            $district = EntityHelper::getTableList($this->adapter, District::TABLE_NAME, [District::DISTRICT_ID, District::DISTRICT_NAME, District::ZONE_ID]);
             return ['success' => true, 'data' => $district];
         } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
