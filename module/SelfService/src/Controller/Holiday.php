@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/29/16
- * Time: 12:36 PM
- */
-
 namespace SelfService\Controller;
 
 use Application\Helper\Helper;
@@ -44,7 +37,7 @@ class Holiday extends AbstractActionController {
             }
         };
         foreach ($holidayList as $holidayRow) {
-            $new_row = array_merge($holidayRow,['HALF_DAY'=>$getValue($holidayRow['HALFDAY'])]);
+            $new_row = array_merge($holidayRow, ['HALF_DAY' => $getValue($holidayRow['HALFDAY'])]);
             unset($holidayRow['HALFDAY']);
             array_push($holidays, $new_row);
         }

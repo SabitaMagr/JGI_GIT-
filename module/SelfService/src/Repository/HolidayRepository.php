@@ -58,7 +58,7 @@ class HolidayRepository implements RepositoryInterface {
             "EH.EMPLOYEE_ID=" . $employeeId,
         ]);
 
-        $select->order("H.START_DATE DESC");
+        $select->order("H.START_DATE ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;

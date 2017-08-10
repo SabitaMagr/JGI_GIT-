@@ -4,7 +4,7 @@
         $("select").select2();
         var months = document.months;
 
-        var $monthlyValueId = $("#monthlyValueId");
+        var $flatValueId = $("#flatValueId");
         var $fiscalYearId = $("#fiscalYearId");
 
         var $companyId = $("#companyId");
@@ -18,19 +18,19 @@
         var $employeeId = $("#employeeId");
 
         var $searchEmployeesBtn = $('#searchEmployeesBtn');
-        var $assignMonthlyValueBtn = $('#assignMonthlyValueBtn');
+        var $assignFlatValueBtn = $('#assignFlatValueBtn');
 
-        var $grid = $('#monthlyValueDetailGrid');
-        var $header = $('#monthlyValuesDetailHeader');
-        var $table = $('#monthlyValueDetailTable');
-        var $footer = $('#monthlyValueDetailFooter');
+        var $grid = $('#flatValueDetailGrid');
+        var $header = $('#flatValuesDetailHeader');
+        var $table = $('#flatValueDetailTable');
+        var $footer = $('#flatValueDetailFooter');
 
-        app.populateSelect($monthlyValueId, document.monthlyValues, "MTH_ID", "MTH_EDESC", "Select Monthly Value");
+        app.populateSelect($flatValueId, document.flatValues, "FLAT_ID", "FLAT_EDESC", "Select Flat Value");
         app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "START_DATE", "Select Fiscal Year");
 
         $searchEmployeesBtn.on('click', function () {
-            app.pullDataById(document.getMonthlyValueDetailWS, {
-                mthId: $monthlyValueId.val(),
+            app.pullDataById(document.getFlatValueDetailWS, {
+                flatId: $flatValueId.val(),
                 fiscalYearId: $fiscalYearId.val(),
                 employeeFilter: {
                     companyId: $companyId.val(),
@@ -56,7 +56,7 @@
             });
 
             if (result.length > 0) {
-                return result[0]['MTH_VALUE'];
+                return result[0]['FLAT_VALUE'];
             } else {
                 return null;
             }
@@ -139,9 +139,9 @@
 
         });
 
-        $assignMonthlyValueBtn.on('click', function () {
+        $assignFlatValueBtn.on('click', function () {
             var fiscalYearId = $fiscalYearId.val();
-            var mthId = $monthlyValueId.val();
+            var flatId = $flatValueId.val();
 
             var promiseList = [];
             App.blockUI({target: "#hris-page-content"});
@@ -151,13 +151,13 @@
                 var colValue = $item.attr('col');
                 var value = $item.val();
                 if (typeof rowValue !== "undefined" && rowValue != null && rowValue != "" && typeof colValue !== "undefined" && colValue != null && colValue != "" && typeof value !== "undefined" && value != null && value != "") {
-                    promiseList.push(app.pullDataById(document.postMonthlyValueDetailWS, {
+                    promiseList.push(app.pullDataById(document.postFlatValueDetailWS, {
                         data: {
-                            mthId: mthId,
+                            flatId: flatId,
                             fiscalYearId: fiscalYearId,
                             employeeId: rowValue,
                             monthId: colValue,
-                            mthValue: value
+                            flatValue: value
                         }
                     }));
                 }
@@ -166,7 +166,7 @@
 
             Promise.all(promiseList).then(function (response) {
                 App.unblockUI("#hris-page-content");
-                app.showMessage("Monthly Value assigned successfully!!!");
+                app.showMessage("Flat Value assigned successfully!!!");
             }, function (error) {
                 App.unblockUI("#hris-page-content");
             });

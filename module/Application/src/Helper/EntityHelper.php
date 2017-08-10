@@ -212,4 +212,46 @@ class EntityHelper {
         self::rawQueryResult($this->adapter, "COMMIT");
     }
 
+    public static function employeesIn($companyId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $employeeTypeId = null, $employeeId = null) {
+        $companyCondition = '';
+        $branchCondition = '';
+        $departmentCondition = '';
+        $designationCondition = '';
+        $positionCondition = '';
+        $serviceTypeCondition = '';
+        $serviceEventtypeCondition = '';
+        $employeeTypeCondition = '';
+        $employeeCondition = '';
+
+        if ($companyId != null && $companyId != -1) {
+            $companyCondition = " AND E.COMPANY_ID ={$companyId} ";
+        }
+        if ($branchId != null && $branchId != -1) {
+            $branchCondition = " AND E.BRANCH_ID ={$branchId} ";
+        }
+        if ($departmentId != null && $departmentId != -1) {
+            $departmentCondition = " AND E.DEPARTMENT_ID ={$departmentId} ";
+        }
+        if ($designationId != null && $designationId != -1) {
+            $designationCondition = " AND E.DESIGNATION_ID ={$designationId} ";
+        }
+        if ($positionId != null && $positionId != -1) {
+            $positionCondition = " AND E.POSITION_ID ={$positionId} ";
+        }
+        if ($serviceTypeId != null && $serviceTypeId != -1) {
+            $serviceTypeCondition = " AND E.SERVICE_TYPE_ID ={$serviceTypeId} ";
+        }
+        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
+            $serviceEventtypeCondition = " AND E.SERVICE_EVENT_TYPE_ID ={$serviceEventTypeId} ";
+        }
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $employeeTypeCondition = " AND E.EMPLOYEE_TYPE = '{$employeeTypeId}' ";
+        }
+        if ($employeeId != null && $employeeId != -1) {
+            $employeeCondition = " AND A.EMPLOYEE_ID ={$employeeId} ";
+        }
+
+        return "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$companyCondition}{$branchCondition}{$departmentCondition}{$designationCondition}{$positionCondition}{$serviceTypeCondition}{$serviceEventtypeCondition}{$employeeTypeCondition}{$employeeCondition}";
+    }
+
 }

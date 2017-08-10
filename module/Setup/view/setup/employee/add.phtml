@@ -291,7 +291,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <p><i class="fa fa-user ticon" aria-hidden="true"></i>
                     Personal Information</p>
                 <div class="row clearfix e-setup">
-                    
+
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group"> 
@@ -304,7 +304,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                         <div class="row bottomgap">
                             <div class="form-group"> 
@@ -918,53 +918,53 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </div>
                             </div> 
                         </div>
-                        
-                        
+
+
                         <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                    <div class="form-group <?= empty($famSpouseBirthDate->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-                                            <?php print $this->formLabel($famSpouseBirthDate); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                            <div class="row">
-                                                <div class="col-md-6 nopaddinggap">
-                                                    <div class="input-group date">
+                            <div class="row bottomgap">
+                                <div class="form-group <?= empty($famSpouseBirthDate->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
+                                        <?php print $this->formLabel($famSpouseBirthDate); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
+                                        <div class="row">
+                                            <div class="col-md-6 nopaddinggap">
+                                                <div class="input-group date">
                                                     <?php print $this->formElement($famSpouseBirthDate); ?>
-                                                    </div>  
-                                                </div>
-                                                <div class="col-md-6">
-                                                     <input type="text"   id="famSpouseBirthDateNepali" class="form-control " value="">
-                                                </div>
+                                                </div>  
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text"   id="famSpouseBirthDateNepali" class="form-control " value="">
                                             </div>
                                         </div>
-                                        <?php print $this->formElementErrors()->render($famSpouseBirthDate, ['class' => 'help-block error']); ?>
                                     </div>
+                                    <?php print $this->formElementErrors()->render($famSpouseBirthDate, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
+                        </div>
 
-                        
+
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                    <div class="form-group<?= empty($famSpouseWeddingAnniversary->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
-                                            <?php print $this->formLabel($famSpouseWeddingAnniversary); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
-                                            <div class="row">
-                                                <div class="col-md-6 nopaddinggap">
-                                                    <div class="input-group date">
+                            <div class="row bottomgap">
+                                <div class="form-group<?= empty($famSpouseWeddingAnniversary->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-2">
+                                        <?php print $this->formLabel($famSpouseWeddingAnniversary); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
+                                        <div class="row">
+                                            <div class="col-md-6 nopaddinggap">
+                                                <div class="input-group date">
                                                     <?php print $this->formElement($famSpouseWeddingAnniversary); ?>
-                                                    </div>  
-                                                </div>
-                                                <div class="col-md-6">
+                                                </div>  
+                                            </div>
+                                            <div class="col-md-6">
                                                 <input type="text"   id="weddingAnniversaryDateNepali" class="form-control " value="">
-                                                </div>
                                             </div>
                                         </div>
-                                        <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary, ['class' => 'help-block error']); ?>
                                     </div>
+                                    <?php print $this->formElementErrors()->render($famSpouseWeddingAnniversary, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
+                        </div>
 
 
 
@@ -1062,26 +1062,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                    <div class="form-group   <?= empty($idDrivingLicenseExpiry->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                            <?php print $this->formLabel($idDrivingLicenseExpiry); ?></div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-                                            <div class="row">
-                                                <div class="col-md-6 nopaddinggap">
-                                                    <div class="input-group date">
-                                                <?php print $this->formElement($idDrivingLicenseExpiry); ?>
-                                                    </div>  
-                                                </div>
-                                                <div class="col-md-6">
-                                                     <input type="text"   id="drivingLicenseExpiaryNepali" class="form-control " value="">
-                                                </div>
+                            <div class="row bottomgap">
+                                <div class="form-group   <?= empty($idDrivingLicenseExpiry->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                        <?php print $this->formLabel($idDrivingLicenseExpiry); ?></div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                        <div class="row">
+                                            <div class="col-md-6 nopaddinggap">
+                                                <div class="input-group date">
+                                                    <?php print $this->formElement($idDrivingLicenseExpiry); ?>
+                                                </div>  
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text"   id="drivingLicenseExpiaryNepali" class="form-control " value="">
                                             </div>
                                         </div>
-                                        <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry, ['class' => 'help-block error']); ?>
                                     </div>
+                                    <?php print $this->formElementErrors()->render($idDrivingLicenseExpiry, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
+                        </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
@@ -1199,55 +1199,55 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                    <div class="form-group   <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                            <?php print $this->formLabel($idCitizenshipIssueDate); ?>
-                                           </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-                                            <div class="row">
-                                                <div class="col-md-6 nopaddinggap">
-                                                    <div class="input-group date">
-                                                <?php print $this->formElement($idCitizenshipIssueDate); ?>
-                                                    </div>  
-                                                </div>
-                                                <div class="col-md-6">
-                                                     <input type="text"   id="citizenshipIssueDateNepali" class="form-control " value="">
-                                                </div>
+                            <div class="row bottomgap">
+                                <div class="form-group   <?= empty($idCitizenshipIssueDate->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                        <?php print $this->formLabel($idCitizenshipIssueDate); ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                        <div class="row">
+                                            <div class="col-md-6 nopaddinggap">
+                                                <div class="input-group date">
+                                                    <?php print $this->formElement($idCitizenshipIssueDate); ?>
+                                                </div>  
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text"   id="citizenshipIssueDateNepali" class="form-control " value="">
                                             </div>
                                         </div>
-                                        <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block error']); ?>
                                     </div>
+                                    <?php print $this->formElementErrors()->render($idCitizenshipIssueDate, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
-                        
-                        
+                        </div>
+
+
                         <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                    <div class="form-group   <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                            <?php print $this->formLabel($idPassportExpiry); ?>
-                                           </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-                                            <div class="row">
-                                                <div class="col-md-6 nopaddinggap">
-                                                    <div class="input-group date">
-                                                <?php print $this->formElement($idPassportExpiry); ?>
-                                                    </div>  
-                                                </div>
-                                                <div class="col-md-6">
-                                                     <input type="text"   id="passportExpiryNepali" class="form-control " value="">
-                                                </div>
+                            <div class="row bottomgap">
+                                <div class="form-group   <?= empty($idPassportExpiry->getMessages()) ? "" : "error" ?>">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                        <?php print $this->formLabel($idPassportExpiry); ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                        <div class="row">
+                                            <div class="col-md-6 nopaddinggap">
+                                                <div class="input-group date">
+                                                    <?php print $this->formElement($idPassportExpiry); ?>
+                                                </div>  
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text"   id="passportExpiryNepali" class="form-control " value="">
                                             </div>
                                         </div>
-                                            <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
                                     </div>
+                                    <?php print $this->formElementErrors()->render($idPassportExpiry, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
+                        </div>
 
 
-                        
-                        
+
+
                     </div>
                     <input type="submit" class="hidden" id="btnform3" value="submit">
                     <?php
@@ -1270,27 +1270,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                    <div class="form-group">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                            <?php print $this->formLabel($joinDate); ?>
-                                           </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                            <div class="row">
-                                                <div class="col-md-6 nopaddinggap">
-                                                    <div class="input-group date">
-                                                <?php print $this->formElement($joinDate); ?>
-                                                    </div>  
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <input type="text"   id="nepalijoinDate" class="form-control " value="">
-                                                </div>
+                            <div class="row bottomgap">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                        <?php print $this->formLabel($joinDate); ?>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
+                                        <div class="row">
+                                            <div class="col-md-6 nopaddinggap">
+                                                <div class="input-group date">
+                                                    <?php print $this->formElement($joinDate); ?>
+                                                </div>  
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="text"   id="nepalijoinDate" class="form-control " value="">
                                             </div>
                                         </div>
-                                        <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>
                                     </div>
+                                    <?php print $this->formElementErrors()->render($joinDate, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
+                        </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
@@ -1632,7 +1632,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="row esetup">
                 <div class="col-md-12">
                     <form name="employeeExperienceForm" ng-submit="submitExperience()" id="form7" novalidate>
-                        <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+                        <input type="hidden" name="employeeId" id="employeeId" >
                         <table class="table table-striped table-bordered table-hover no-footer customtbl" id="qualificationTbl">
                             <tr>
                                 <td><?php print $this->formLabel($expOrgType); ?></td>
@@ -1698,7 +1698,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="row clearfix">
                 <div class="col-md-12">
                     <form name="employeeTrainingForm" ng-submit="submitTraining()" id="form8" novalidate>
-                        <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $id; ?>">
+                        <input type="hidden" name="employeeId" id="employeeId" >
                         <table class="table table-striped table-bordered table-hover no-footer customtbl" id="qualificationTbl">
                             <tr>
                                 <td><?php print $this->formLabel($traName); ?></td>
