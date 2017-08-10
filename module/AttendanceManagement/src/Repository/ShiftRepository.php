@@ -46,7 +46,7 @@ class ShiftRepository implements RepositoryInterface {
                     ShiftSetup::END_TIME,
                     ShiftSetup::HALF_TIME,
                     ShiftSetup::HALF_DAY_END_TIME
-                ],NULL,NULL,'S',FALSE,FALSE,[
+                        ], NULL, NULL, 'S', FALSE, FALSE, [
                     ShiftSetup::LATE_IN,
                     ShiftSetup::EARLY_OUT,
                     ShiftSetup::TOTAL_WORKING_HR,
@@ -54,9 +54,9 @@ class ShiftRepository implements RepositoryInterface {
                 ]), false);
 //        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime']), false);
         $select->from(['S' => ShiftSetup::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=S.". ShiftSetup::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
-        $select->where(["S.".ShiftSetup::STATUS."='E'"]);
-        $select->order("S.".ShiftSetup::SHIFT_ENAME . " ASC");
+        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=S." . ShiftSetup::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
+        $select->where(["S." . ShiftSetup::STATUS . "='E'"]);
+        $select->order("S." . ShiftSetup::SHIFT_ENAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -77,7 +77,7 @@ class ShiftRepository implements RepositoryInterface {
                     ShiftSetup::HALF_DAY_END_TIME,
                     ShiftSetup::GRACE_START_TIME,
                     ShiftSetup::GRACE_END_TIME
-                        ],null,null,null,false,false, [
+                        ], null, null, null, false, false, [
                     ShiftSetup::LATE_IN,
                     ShiftSetup::EARLY_OUT,
                     ShiftSetup::TOTAL_WORKING_HR,
@@ -85,9 +85,9 @@ class ShiftRepository implements RepositoryInterface {
                 ]), false);
 
 //        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime', 'halfTime', 'halfDayEndTime'], null, ['lateIn', 'earlyOut', 'totalWorkingHr', 'actualWorkingHr']), false);
-        $select->where([ShiftSetup::SHIFT_ID.'='.$id]);
+        $select->where([ShiftSetup::SHIFT_ID . '=' . $id]);
         $statement = $sql->prepareStatementForSqlObject($select);
-        
+
 //        print_r($statement->getSql());
 //        die();
 
@@ -98,19 +98,19 @@ class ShiftRepository implements RepositoryInterface {
     public function fetchActiveRecord() {
         return $rowset = $this->tableGateway->select(function(Select $select) {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ShiftSetup::class, [ShiftSetup::SHIFT_ENAME, ShiftSetup::SHIFT_LNAME], [
-                    ShiftSetup::START_DATE,
-                    ShiftSetup::END_DATE
-                        ], [
-                    ShiftSetup::START_TIME,
-                    ShiftSetup::END_TIME,
-                    ShiftSetup::HALF_TIME,
-                    ShiftSetup::HALF_DAY_END_TIME
-                        ],null,null,null,false,false, [
-                    ShiftSetup::LATE_IN,
-                    ShiftSetup::EARLY_OUT,
-                    ShiftSetup::TOTAL_WORKING_HR,
-                    ShiftSetup::ACTUAL_WORKING_HR
-                ]), false);
+                        ShiftSetup::START_DATE,
+                        ShiftSetup::END_DATE
+                            ], [
+                        ShiftSetup::START_TIME,
+                        ShiftSetup::END_TIME,
+                        ShiftSetup::HALF_TIME,
+                        ShiftSetup::HALF_DAY_END_TIME
+                            ], null, null, null, false, false, [
+                        ShiftSetup::LATE_IN,
+                        ShiftSetup::EARLY_OUT,
+                        ShiftSetup::TOTAL_WORKING_HR,
+                        ShiftSetup::ACTUAL_WORKING_HR
+                    ]), false);
             $select->where([ShiftSetup::STATUS => 'E']);
             $select->order(ShiftSetup::SHIFT_ENAME . " ASC");
         });
@@ -118,6 +118,11 @@ class ShiftRepository implements RepositoryInterface {
 
     public function delete($id) {
         $this->tableGateway->update([ShiftSetup::STATUS => 'D'], [ShiftSetup::SHIFT_ID => $id]);
+    }
+
+    public function DefaultShift() {
+        $data = $this->tableGateway->select([ShiftSetup::STATUS => 'E', ShiftSetup::DEFAULT_SHIFT => 'Y']);
+        return $data->current();
     }
 
 }

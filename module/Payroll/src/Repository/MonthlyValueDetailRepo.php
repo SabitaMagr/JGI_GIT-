@@ -1,118 +1,111 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 10/4/16
- * Time: 12:06 PM
- */
 
 namespace Payroll\Repository;
 
-
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Exception;
 use Payroll\Model\MonthlyValueDetail;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
-use Application\Helper\EntityHelper;
 use Zend\Db\TableGateway\TableGateway;
 
-class MonthlyValueDetailRepo implements RepositoryInterface
-{
+class MonthlyValueDetailRepo implements RepositoryInterface {
+
     private $adapter;
     private $gateway;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->gateway = new TableGateway(MonthlyValueDetail::TABLE_NAME, $adapter);
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->gateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
-    {
-        $this->gateway->update($model->getArrayCopyForDB(), [MonthlyValueDetail::EMPLOYEE_ID=>$id[0],MonthlyValueDetail::MTH_ID=>$id[1]]);
+    public function edit(Model $model, $id) {
+        $this->gateway->update($model->getArrayCopyForDB(), [MonthlyValueDetail::EMPLOYEE_ID => $id[0], MonthlyValueDetail::MTH_ID => $id[1]]);
     }
 
-    public function fetchAll()
-    {
-
+    public function fetchAll() {
+        
     }
 
-    public function filter($branchId, $departmentId, $designationId,$id)
-    {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
-                [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],null,null,null,[new Expression("E.EMPLOYEE_ID")],"E"), true);
-        $select->from(['E' => "HRIS_EMPLOYEES"])
-        ->join(['M' => MonthlyValueDetail::TABLE_NAME], 'M.'.MonthlyValueDetail::EMPLOYEE_ID.'=E.EMPLOYEE_ID', [MonthlyValueDetail::MTH_ID, MonthlyValueDetail::MTH_VALUE],Select::JOIN_LEFT);
-        if ($branchId != -1) {
-            $select->where(["E." . Branch::BRANCH_ID . "=$branchId"]);
-        }
-        if ($departmentId != -1) {
-            $select->where(["E." . Department::DEPARTMENT_ID . "=$departmentId"]);
-        }
-        if ($designationId != -1) {
-            $select->where(["E." . Designation::DESIGNATION_ID . "=$designationId"]);
-        }
-//        $select->where("M.".MonthlyValueDetail::MTH_ID."=".$id." OR M.".MonthlyValueDetail::MTH_ID." IS NULL");
-        $select->where("M.".MonthlyValueDetail::MTH_ID."=".$id);
-        $select->order("E.EMPLOYEE_ID ASC");
-
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+    public function delete($id) {
+        
     }
 
-    public function delete($id)
-    {
-        // TODO: Implement delete() method.
+    public function fetchById($id) {
+//        throw new Exception(json_encode($id));
+        $sql = "
+                SELECT MTH_VALUE
+                FROM HRIS_MONTHLY_VALUE_DETAIL
+                WHERE EMPLOYEE_ID = {$id['employeeId']}
+                AND MONTH_ID      = {$id['monthId']}
+                AND MTH_ID        = {$id['mthId']}";
+
+        $statement = $this->adapter->query($sql);
+        $rawResult = $statement->execute();
+        $result = $rawResult->current();
+        return $result != null ? $result['MTH_VALUE'] : 0;
     }
 
-    public function fetchEmployees($branchId, $departmentId, $designationId,$companyId=null,$employeeId=null)
-    {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
-                [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],null,null,null,[new Expression("E.EMPLOYEE_ID")],"E"), true);
-        $select->from(['E' => "HRIS_EMPLOYEES"]);
-        if ($branchId != -1) {
-            $select->where(["E." . Branch::BRANCH_ID . "=$branchId"]);
-        }
-        if ($departmentId != -1) {
-            $select->where(["E." . Department::DEPARTMENT_ID . "=$departmentId"]);
-        }
-        if ($designationId != -1) {
-            $select->where(["E." . Designation::DESIGNATION_ID . "=$designationId"]);
-        }
-        if ($companyId!=null && $companyId != -1) {
-            $select->where(["E." . HrEmployees::COMPANY_ID . "=$companyId"]);
-        }
-        if ($employeeId!=null && $employeeId != -1) {
-            $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$employeeId"]);
-        }
-        $select->order("E.EMPLOYEE_ID ASC");
-
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+    public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $employeeFilter, $monthId = null) {
+        $employeeIn = EntityHelper::employeesIn($employeeFilter['companyId'], $employeeFilter['branchId'], $employeeFilter['departmentId'], $employeeFilter['positionId'], $employeeFilter['designationId'], $employeeFilter['serviceTypeId'], $employeeFilter['serviceEventTypeId'], $employeeFilter['employeeTypeId'], $employeeFilter['employeeId']);
+        $sql = "SELECT * FROM HRIS_MONTHLY_VALUE_DETAIL WHERE MTH_ID = {$monthlyValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$employeeIn} )";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
     }
 
-    public function fetchById($id)
-    {
-      return  $this->gateway->select([MonthlyValueDetail::MTH_ID=>$id[1],MonthlyValueDetail::EMPLOYEE_ID=>$id[0]])->current();
+    public function postMonthlyValuesDetail($data) {
+        $sql = "
+                DECLARE
+                  V_MTH_ID HRIS_MONTHLY_VALUE_DETAIL.MTH_ID%TYPE := {$data['mthId']};
+                  V_EMPLOYEE_ID HRIS_MONTHLY_VALUE_DETAIL.EMPLOYEE_ID%TYPE := {$data['employeeId']};
+                  V_MTH_VALUE HRIS_MONTHLY_VALUE_DETAIL.MTH_VALUE%TYPE := {$data['mthValue']};
+                  V_FISCAL_YEAR_ID HRIS_MONTHLY_VALUE_DETAIL.FISCAL_YEAR_ID%TYPE := {$data['fiscalYearId']};
+                  V_MONTH_ID HRIS_MONTHLY_VALUE_DETAIL.MONTH_ID%TYPE := {$data['monthId']};
+                  V_OLD_MTH_VALUE HRIS_MONTHLY_VALUE_DETAIL.MTH_VALUE%TYPE;
+                BEGIN
+                  SELECT MTH_VALUE
+                  INTO V_OLD_MTH_VALUE
+                  FROM HRIS_MONTHLY_VALUE_DETAIL
+                  WHERE MTH_ID       = V_MTH_ID
+                  AND EMPLOYEE_ID    = V_EMPLOYEE_ID
+                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID
+                  AND MONTH_ID       = V_MONTH_ID;
+                  UPDATE HRIS_MONTHLY_VALUE_DETAIL
+                  SET MTH_VALUE      = V_MTH_VALUE
+                  WHERE MTH_ID       = V_MTH_ID
+                  AND EMPLOYEE_ID    = V_EMPLOYEE_ID
+                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID
+                  AND MONTH_ID       = V_MONTH_ID;
+                EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                  INSERT
+                  INTO HRIS_MONTHLY_VALUE_DETAIL
+                    (
+                      MTH_ID,
+                      EMPLOYEE_ID,
+                      FISCAL_YEAR_ID,
+                      MONTH_ID,
+                      MTH_VALUE,
+                      CREATED_DT
+                    )
+                    VALUES
+                    (
+                      V_MTH_ID,
+                      V_EMPLOYEE_ID,
+                      V_FISCAL_YEAR_ID,
+                      V_MONTH_ID,
+                      V_MTH_VALUE,
+                      TRUNC(SYSDATE)
+                    );
+                END;
+";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
     }
+
 }

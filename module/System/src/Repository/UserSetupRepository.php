@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: root
  * Date: 10/17/16
  * Time: 3:00 PM
  */
+
 namespace System\Repository;
 
 use Application\Model\Model;
@@ -20,24 +22,21 @@ class UserSetupRepository implements RepositoryInterface {
 
     private $adapter;
     private $tableGateway;
-    public function __construct(AdapterInterface $adapter)
-    {
-        $this->tableGateway = new TableGateway(UserSetup::TABLE_NAME,$adapter);
+
+    public function __construct(AdapterInterface $adapter) {
+        $this->tableGateway = new TableGateway(UserSetup::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
-    {
-        $this->tableGateway->update($model->getArrayCopyForDB(),[UserSetup::USER_ID=>$id]);
+    public function edit(Model $model, $id) {
+        $this->tableGateway->update($model->getArrayCopyForDB(), [UserSetup::USER_ID => $id]);
     }
 
-    public function fetchAll()
-    {
+    public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -47,11 +46,11 @@ class UserSetupRepository implements RepositoryInterface {
             new Expression("US.PASSWORD AS PASSWORD"),
             new Expression("US.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("US.ROLE_ID AS ROLE_ID"),
-        ], true);
+                ], true);
 
         $select->from(['US' => UserSetup::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=US.EMPLOYEE_ID",['FIRST_NAME'=>new Expression("INITCAP(E.FIRST_NAME)"),'MIDDLE_NAME'=>new Expression("INITCAP(E.MIDDLE_NAME)"),'LAST_NAME'=>new Expression("INITCAP(E.LAST_NAME)"),'FULL_NAME'=>new Expression("INITCAP(E.FULL_NAME)")])
-            ->join(['R'=>'HRIS_ROLES'],"R.ROLE_ID=US.ROLE_ID",['ROLE_NAME']);
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FIRST_NAME' => new Expression("INITCAP(E.FIRST_NAME)"), 'MIDDLE_NAME' => new Expression("INITCAP(E.MIDDLE_NAME)"), 'LAST_NAME' => new Expression("INITCAP(E.LAST_NAME)"), 'FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")])
+                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME']);
 
         $select->where([
             "US.STATUS='E'",
@@ -65,33 +64,31 @@ class UserSetupRepository implements RepositoryInterface {
     }
 
     //to get the employee list for select option
-    public function getEmployeeList($employeeId=null){
+    public function getEmployeeList($employeeId = null) {
 
-        $sql = "SELECT INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME, INITCAP(LAST_NAME) AS LAST_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HRIS_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
+        $sql = "SELECT FULL_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HRIS_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
 
-        if($employeeId!=null){
+        if ($employeeId != null) {
             $sql .= " UNION 
-SELECT INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME, INITCAP(LAST_NAME) AS LAST_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (".$employeeId.")";
+        SELECT FULL_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (" . $employeeId . ")";
         }
 
         $statement = $this->adapter->query($sql);
-       // print_r($statement->getSql());die();
         $resultset = $statement->execute();
 
         $entitiesArray = array();
         foreach ($resultset as $result) {
-            $entitiesArray[$result['EMPLOYEE_ID']] = $result['FIRST_NAME']." ".$result['MIDDLE_NAME']." ".$result['LAST_NAME'];
+            $entitiesArray[$result['EMPLOYEE_ID']] = $result['FULL_NAME'];
         }
         return $entitiesArray;
     }
 
-    public function fetchById($id)
-    {
-        $result = $this->tableGateway->select([UserSetup::USER_ID=>$id]);
+    public function fetchById($id) {
+        $result = $this->tableGateway->select([UserSetup::USER_ID => $id]);
         return $result->current();
     }
-    
-    public function fetchByUsername($username){
+
+    public function fetchByUsername($username) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -101,16 +98,16 @@ SELECT INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME, IN
             new Expression("US.PASSWORD AS PASSWORD"),
             new Expression("US.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("US.ROLE_ID AS ROLE_ID"),
-        ], true);
+                ], true);
 
         $select->from(['US' => UserSetup::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=US.EMPLOYEE_ID",['FIRST_NAME'=>new Expression("INITCAP(E.FIRST_NAME)"),'MIDDLE_NAME'=>new Expression("INITCAP(E.MIDDLE_NAME)"),'LAST_NAME'=>new Expression("INITCAP(E.LAST_NAME)"),'EMAIL_OFFICIAL'])
-            ->join(['R'=>'HRIS_ROLES'],"R.ROLE_ID=US.ROLE_ID",['ROLE_NAME']);
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FIRST_NAME' => new Expression("INITCAP(E.FIRST_NAME)"), 'MIDDLE_NAME' => new Expression("INITCAP(E.MIDDLE_NAME)"), 'LAST_NAME' => new Expression("INITCAP(E.LAST_NAME)"), 'EMAIL_OFFICIAL'])
+                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME']);
 
         $select->where([
             "US.STATUS='E'",
             "E.STATUS='E'",
-            "US.USER_NAME='".$username."'"
+            "US.USER_NAME='" . $username . "'"
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -119,17 +116,17 @@ SELECT INITCAP(FIRST_NAME) AS FIRST_NAME,INITCAP(MIDDLE_NAME) AS MIDDLE_NAME, IN
         return $result->current();
     }
 
-    public function delete($id)
-    {
-        $this->tableGateway->update([UserSetup::STATUS=>"D"],[UserSetup::USER_ID=>$id]);
+    public function delete($id) {
+        $this->tableGateway->update([UserSetup::STATUS => "D"], [UserSetup::USER_ID => $id]);
     }
-    public function updateByEmpId($employeeId,$password)
-    {
-        $this->tableGateway->update([UserSetup::PASSWORD=>$password],[UserSetup::EMPLOYEE_ID=>$employeeId]);
+
+    public function updateByEmpId($employeeId, $password) {
+        $this->tableGateway->update([UserSetup::PASSWORD => $password], [UserSetup::EMPLOYEE_ID => $employeeId]);
     }
-    
-    public function getUserByEmployeeId($employeeId){
-        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID=>$employeeId]);
+
+    public function getUserByEmployeeId($employeeId) {
+        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID => $employeeId]);
         return $result->current();
     }
+
 }

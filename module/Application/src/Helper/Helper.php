@@ -337,4 +337,11 @@ class Helper {
         return sprintf("%d:%02.0f", $hours, $minutes);
     }
 
+    public static function dateDiff($date1, $date2) {
+        $fromDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $date1);
+        $toDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $date2);
+        $interval = $fromDate->diff($toDate);
+        return $interval->format('%a');
+    }
+
 }

@@ -33,12 +33,10 @@ use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Controller\VariableProcessor;
 use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValueDetail;
-use Payroll\Model\PayPositionSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
-use Payroll\Repository\PayPositionRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
@@ -224,15 +222,6 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullHolidayList":
                         $responseData = $this->pullHolidayList($postedData->data);
-                        break;
-                    case "pullPositionsAssignedByPayId":
-                        $responseData = $this->pullPositionsAssignedByPayId($postedData->data);
-                        break;
-                    case "addPositionAssigned":
-                        $responseData = $this->addPositionAssigned($postedData->data);
-                        break;
-                    case "deletePositionAssigned":
-                        $responseData = $this->deletePositionAssigned($postedData->data);
                         break;
                     case "pullAcademicDetail":
                         $responseData = $this->pullAcademicDetail($postedData->data);
@@ -993,22 +982,6 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
-    public function pullPositionsAssignedByPayId($data) {
-        $payId = $data["payId"];
-        $payPositionRepo = new PayPositionRepo($this->adapter);
-        $positions = $payPositionRepo->fetchById($payId);
-
-        $data = [];
-        foreach ($positions as $position) {
-            array_push($data, $position);
-        }
-
-        return [
-            "success" => true,
-            "data" => $data
-        ];
-    }
-
     public function pullLeaveBalanceDetail($data) {
         $emplyoeeId = $data['employeeId'];
         $companyId = $data['companyId'];
@@ -1075,30 +1048,6 @@ class RestfulService extends AbstractRestfulController {
             "success" => true,
             "data" => $list
         ];
-    }
-
-    public function addPositionAssigned($data) {
-        $payId = $data['payId'];
-        $positions = $data['positions'];
-        $payPositionRepo = new PayPositionRepo($this->adapter);
-        $payPosition = new PayPositionSetup();
-        $payPosition->payId = $payId;
-        foreach ($positions as $position) {
-            $payPosition->positionId = $position;
-            $payPositionRepo->add($payPosition);
-        }
-
-        return ["success" => true, "data" => null];
-    }
-
-    private function deletePositionAssigned($data) {
-        $payId = $data['payId'];
-        $positions = $data['positions'];
-        $payPositionRepo = new PayPositionRepo($this->adapter);
-        foreach ($positions as $position) {
-            $payPositionRepo->delete([$payId, $position]);
-        }
-        return ["success" => true, "data" => null];
     }
 
     private function fetchEmployeePaySlip($data) {
@@ -1484,9 +1433,10 @@ class RestfulService extends AbstractRestfulController {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
 
         $repository = new EmployeeRepository($this->adapter);
-        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId);
+        $result = $repository->filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId, $employeeTypeId);
         $employeeList = [];
         foreach ($result as $row) {
             if ($row['MARITAL_STATUS'] == 'U') {

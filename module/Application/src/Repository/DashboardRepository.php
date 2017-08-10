@@ -91,7 +91,7 @@ class DashboardRepository implements RepositoryInterface {
                 (SELECT EMPLOYEE_ID,
                   LATE_STATUS
                 FROM HRIS_ATTENDANCE_DETAIL
-                WHERE (ATTENDANCE_DT BETWEEN TO_DATE('15-Jun-2017', 'DD-MON-YYYY') AND TO_DATE('12-Jul-2017', 'DD-MON-YYYY'))
+                WHERE (ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'DD-MON-YYYY') AND TO_DATE('{$endDate}', 'DD-MON-YYYY'))
                 ) PIVOT (COUNT(LATE_STATUS) FOR LATE_STATUS IN ('L','E','B','N','X','Y'))
               ) LATE_ATTEN_TBL
             ON (EMPLOYEE_TBL.EMPLOYEE_ID = LATE_ATTEN_TBL.EMPLOYEE_ID)
@@ -282,7 +282,7 @@ class DashboardRepository implements RepositoryInterface {
                    TO_CHAR(TMS.START_DATE, 'YYYY-MM-DD') TRAINING_START_DATE,
                    TO_CHAR(TMS.END_DATE, 'YYYY-MM-DD') TRAINING_END_DATE,
                    ATN.TRAVEL_ID,
-                   ETR.TRAVEL_CODE,
+                   ETR.DESTINATION,
                    TO_CHAR(ETR.FROM_DATE, 'YYYY-MM-DD') TRAVEL_FROM_DATE,
                    TO_CHAR(ETR.TO_DATE, 'YYYY-MM-DD') TRAVEL_TO_DATE,
                    TRIM(TO_CHAR(CAL.MONTH_DAY, 'DAY')) WEEK_DAY,
@@ -330,6 +330,25 @@ class DashboardRepository implements RepositoryInterface {
             WHERE 1 = 1
             ORDER BY CAL.MONTH_DAY ASC";
 
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return Helper::extractDbData($result);
+    }
+
+    public function fetchUpcomingLeaves($employeeId) {
+        $sql = "
+            SELECT L.LEAVE_ENAME,
+             TO_CHAR( EL.START_DATE, 'DD-MON-YYYY') AS START_DATE,
+             TO_CHAR( EL.END_DATE,'DD-MON-YYYY' )   AS END_DATE,
+             TRUNC(END_DATE)- TRUNC(START_DATE) AS DIFF
+            FROM HRIS_EMPLOYEE_LEAVE_REQUEST EL
+            JOIN HRIS_LEAVE_MASTER_SETUP L
+            ON(EL.LEAVE_ID     = L.LEAVE_ID)
+            WHERE EL.STATUS     ='AP'
+            AND TRUNC(SYSDATE) < EL.START_DATE
+            AND EL.EMPLOYEE_ID ={$employeeId}
+            ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
 

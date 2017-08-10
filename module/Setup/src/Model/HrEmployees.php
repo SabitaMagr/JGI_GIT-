@@ -92,7 +92,7 @@ class HrEmployees extends Model {
     public $modifiedBy;
     public $modifiedDt;
     public $fullName;
-    public $isHr;
+    public $isHR;
     public $addrTempZoneId;
     public $addrTempDistrictId;
     public $addrPermZoneId;
@@ -276,7 +276,7 @@ class HrEmployees extends Model {
         'modifiedBy' => self::MODIFIED_BY,
         'modifiedDt' => self::MODIFIED_DT,
         'fullName' => self::FULL_NAME,
-        'isHr'=>self::IS_HR,
+        'isHR'=>self::IS_HR,
         'addrTempZoneId' => self::ADDR_TEMP_ZONE_ID,
         'addrTempDistrictId' => self::ADDR_TEMP_DISTRICT_ID,
         'addrPermZoneId' => self::ADDR_PERM_ZONE_ID,

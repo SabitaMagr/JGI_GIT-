@@ -77,11 +77,15 @@ class ShiftSetup extends AbstractActionController {
                 return $this->redirect()->toRoute("shiftsetup");
             }
         }
+
+        $defaultShift = $this->repository->DefaultShift();
+
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE)
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE),
+                    'anotherDefaultShift' => $defaultShift
                         ]
                 )
         );
@@ -129,12 +133,14 @@ class ShiftSetup extends AbstractActionController {
                 return $this->redirect()->toRoute("shiftsetup");
             }
         }
+        $defaultShift = $this->repository->DefaultShift();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
                     'id' => $id,
                     'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE)
+                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE),
+                    'anotherDefaultShift' => $defaultShift
                         ]
                 )
         );

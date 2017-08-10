@@ -108,7 +108,7 @@
                     continue;
                 }
                 var temp = {};
-                temp.employeeName = searchEmployeeList[i]['FIRST_NAME'];
+                temp.employeeName = searchEmployeeList[i]['FULL_NAME'];
                 for (var j in rules) {
                     temp["h" + j  ] = rows[searchEmployeeList[i]['EMPLOYEE_ID']].ruleValueKV[j];
                 }

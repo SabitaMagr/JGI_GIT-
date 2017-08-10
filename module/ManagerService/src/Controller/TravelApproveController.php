@@ -183,38 +183,42 @@ class TravelApproveController extends AbstractActionController {
                     $travelRequestModel->recommendedBy = $this->employeeId;
                     $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
+
+                $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
+                $this->travelApproveRepository->edit($travelRequestModel, $id);
+                $travelRequestModel->travelId = $id;
                 
                 // to update back date changes
-                $sDate = $detail['FROM_DATE'];
-                $eDate = $detail['TO_DATE'];
-                $currDate = Helper::getCurrentDate();
-                $begin = new DateTime($sDate);
-                $end = new DateTime($eDate);
-                $attendanceDetailModel = new AttendanceDetail();
-                $attendanceDetailModel->travelId = $detail['TRAVEL_ID'];
-                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+//                $sDate = $detail['FROM_DATE'];
+//                $eDate = $detail['TO_DATE'];
+//                $currDate = Helper::getCurrentDate();
+//                $begin = new DateTime($sDate);
+//                $end = new DateTime($eDate);
+//                $attendanceDetailModel = new AttendanceDetail();
+//                $attendanceDetailModel->travelId = $detail['TRAVEL_ID'];
+//                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
 
                 //                start of transaction
-                $connection = $this->adapter->getDriver()->getConnection();
-                $connection->beginTransaction();
-                try {
-                    if (strtotime($sDate) <= strtotime($currDate)) {
-                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
-                            $travelDate = $i->format("d-M-Y");
-                            if (strtotime($travelDate) <= strtotime($currDate)) {
-                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $travelDate];
-                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
-                            }
-                        }
-                    }
-                    $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
-                    $this->travelApproveRepository->edit($travelRequestModel, $id);
-                    $travelRequestModel->travelId = $id;
-                    $connection->commit();
-                } catch (exception $e) {
-                    $connection->rollback();
-                    echo "error message:" . $e->getMessage();
-                }
+//                $connection = $this->adapter->getDriver()->getConnection();
+//                $connection->beginTransaction();
+//                try {
+//                    if (strtotime($sDate) <= strtotime($currDate)) {
+//                        for ($i = $begin; $i <= $end; $i->modify('+1 day')) {
+//                            $travelDate = $i->format("d-M-Y");
+//                            if (strtotime($travelDate) <= strtotime($currDate)) {
+//                                $where = ["EMPLOYEE_ID" => $requestedEmployeeID, "ATTENDANCE_DT" => $travelDate];
+//                                $attendanceDetailRepo->editWith($attendanceDetailModel, $where);
+//                            }
+//                        }
+//                    }
+//                    $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
+//                    $this->travelApproveRepository->edit($travelRequestModel, $id);
+//                    $travelRequestModel->travelId = $id;
+//                    $connection->commit();
+//                } catch (exception $e) {
+//                    $connection->rollback();
+//                    echo "error message:" . $e->getMessage();
+//                }
 //                end of transaction
                 try {
                     HeadNotification::pushNotification(($travelRequestModel->status == 'AP') ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED, $travelRequestModel, $this->adapter, $this);
@@ -267,7 +271,10 @@ class TravelApproveController extends AbstractActionController {
                 'SUB_APPROVED_DATE' => $detail['SUB_APPROVED_DATE']
             ];
         }
-        $duration = ($detail['TO_DATE'] - $detail['FROM_DATE']) + 1;
+        $fromDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['FROM_DATE']);
+        $toDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['TO_DATE']);
+        $interval = $fromDate->diff($toDate);
+        $duration = $interval->format('%a') + 1;
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,

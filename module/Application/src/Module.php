@@ -39,17 +39,10 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
 
     public function onBootstrap(MvcEvent $e) {
         $eventManager = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
-
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, [
             $this,
             'beforeDispatch'
                 ], 100);
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH, [
-            $this,
-            'afterDispatch'
-                ], -100);
     }
 
     function beforeDispatch(MvcEvent $event) {
@@ -73,6 +66,9 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             RegisterAttendanceController::class . "-authenticate",
             Controller\CronController::class . '-index',
             Controller\CronController::class . '-employee-attendance',
+            Controller\ApiController::class . "-index",
+            Controller\ApiController::class . "-employee",
+            Controller\ApiController::class . "-setup",
         ];
         $app = $event->getApplication();
         $auth = $app->getServiceManager()->get('AuthService');
@@ -93,19 +89,19 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         }
         $route = $event->getRouteMatch()->getMatchedRouteName();
         $identity = $auth->getIdentity();
-        
-        if(is_array($identity)){
-        $roleId = $identity['role_id'];
-        }else{
-        $roleId = null;
+
+        if (is_array($identity)) {
+            $roleId = $identity['role_id'];
+        } else {
+            $roleId = null;
         }
-        
+
         if ($roleId != null) {
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
             $repository = new RolePermissionRepository($adapter);
             $data = $repository->fetchAllMenuByRoleId($roleId);
             $allowFlag = false;
-            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService','registerAttendance'];
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService', 'registerAttendance'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }
@@ -173,10 +169,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 $viewModel->setVariable("notifications", []);
             }
         }
-    }
-
-    function afterDispatch(MvcEvent $event) {
-        //print "Called after any controller action called. Do any operation.";
     }
 
     public function getAutoloaderConfig() {
