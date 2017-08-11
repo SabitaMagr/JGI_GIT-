@@ -1,4 +1,4 @@
-create or replace PROCEDURE HRIS_REATTENDANCE(
+CREATE OR REPLACE PROCEDURE HRIS_REATTENDANCE(
     P_FROM_ATTENDANCE_DT HRIS_ATTENDANCE.ATTENDANCE_DT%TYPE,
     P_EMPLOYEE_ID HRIS_ATTENDANCE.EMPLOYEE_ID%TYPE:=NULL )
 AS
@@ -180,15 +180,15 @@ BEGIN
         FROM HRIS_ATTENDANCE_DETAIL
         WHERE EMPLOYEE_ID = employee.EMPLOYEE_ID
         AND (ATTENDANCE_DT BETWEEN V_FROM_DATE AND employee.ATTENDANCE_DT )
-        AND OVERALL_STATUS             IN ('PR','LA')
-        AND LATE_STATUS                IN ('E','L','Y') ;
-        IF V_LATE_STATUS               IN ('E','L','Y') THEN
-          V_LATE_COUNT := V_LATE_COUNT+1;
+        AND OVERALL_STATUS           IN ('PR','LA')
+        AND LATE_STATUS              IN ('E','L','Y') ;
+        IF V_LATE_STATUS             IN ('E','L','Y') THEN
+          V_LATE_COUNT       := V_LATE_COUNT+1;
+          IF V_LATE_COUNT    != 0 AND MOD(V_LATE_COUNT,3)=0 THEN
+            V_OVERALL_STATUS := 'LA';
+          END IF;
         END IF;
         --
-        IF V_LATE_COUNT    != 0 AND MOD(V_LATE_COUNT,3)=0 THEN
-          V_OVERALL_STATUS := 'LA';
-        END IF;
         IF V_LATE_STATUS   ='B' AND V_OVERALL_STATUS='PR' THEN
           V_OVERALL_STATUS:='BA';
         END IF;

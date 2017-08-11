@@ -80,6 +80,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $designationCondition = '';
         $serviceTypeCondition = '';
         $serviceEventtypeCondition = '';
+        $employeeTypeCondition = '';
         $statusCondition = '';
         $missPunchOnlyCondition = '';
         if ($fromDate != null) {
@@ -111,6 +112,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
         if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
             $serviceEventtypeCondition = " AND E.SERVICE_EVENT_TYPE_ID ={$serviceEventTypeId} ";
+        }
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $employeeTypeCondition = " AND E.EMPLOYEE_TYPE = '{$employeeTypeId}' ";
         }
         if ($status == "A") {
             $statusCondition = "AND A.OVERALL_STATUS = 'AB'";
@@ -246,6 +250,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 {$designationCondition}
                 {$serviceTypeCondition}
                 {$serviceEventtypeCondition}
+                {$employeeTypeCondition}
                 {$fromDateCondition}
                 {$toDateCondition}
                 {$statusCondition}
@@ -267,6 +272,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $designationCondition = '';
         $serviceTypeCondition = '';
         $serviceEventtypeCondition = '';
+        $employeeTypeCondition = '';
         $statusCondition = '';
         $missPunchOnlyCondition = '';
         if ($fromDate != null) {
@@ -298,6 +304,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
         if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
             $serviceEventtypeCondition = " AND E.SERVICE_EVENT_TYPE_ID ={$serviceEventTypeId} ";
+        }
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $employeeTypeCondition = " AND E.EMPLOYEE_TYPE = '{$employeeTypeId}' ";
         }
         if ($status == "A") {
             $statusCondition = "AND A.OVERALL_STATUS = 'AB'";
@@ -431,6 +440,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 {$designationCondition}
                 {$serviceTypeCondition}
                 {$serviceEventtypeCondition}
+                {$employeeTypeCondition}
                 {$fromDateCondition}
                 {$toDateCondition}
                 {$statusCondition}

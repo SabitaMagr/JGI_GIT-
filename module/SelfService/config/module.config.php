@@ -7,22 +7,22 @@ use SelfService\Controller\AdvanceRequest;
 use SelfService\Controller\AttendanceRequest;
 use SelfService\Controller\Holiday;
 use SelfService\Controller\Leave;
+use SelfService\Controller\LeaveNotification;
 use SelfService\Controller\LeaveRequest;
 use SelfService\Controller\LoanRequest;
 use SelfService\Controller\MyAttendance;
+use SelfService\Controller\OvertimeRequest;
 use SelfService\Controller\PaySlip;
+use SelfService\Controller\PerformanceAppraisal;
 use SelfService\Controller\Profile;
 use SelfService\Controller\Service;
 use SelfService\Controller\TrainingList;
-use SelfService\Controller\TravelRequest;
-use SelfService\Controller\WorkOnHoliday;
-use SelfService\Controller\WorkOnDayoff;
-use Zend\Router\Http\Segment;
-use SelfService\Controller\PerformanceAppraisal;
-use SelfService\Controller\LeaveNotification;
-use SelfService\Controller\TravelNotification;
 use SelfService\Controller\TrainingRequest;
-use SelfService\Controller\OvertimeRequest;
+use SelfService\Controller\TravelNotification;
+use SelfService\Controller\TravelRequest;
+use SelfService\Controller\WorkOnDayoff;
+use SelfService\Controller\WorkOnHoliday;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [

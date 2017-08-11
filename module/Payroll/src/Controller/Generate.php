@@ -75,7 +75,7 @@ class Generate extends AbstractActionController {
 
             return new CustomViewModel(['success' => true, 'data' => $results, 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
         }
     }
 

@@ -926,7 +926,6 @@ window.app = (function ($, toastr, App) {
 
     (function () {
         $('.hris-export-to-excel').on("click", function () {
-            console.log('tet');
             try {
                 var $this = $(this);
                 var targetId = $this.attr("hris-export-to-excel-target");
@@ -938,7 +937,6 @@ window.app = (function ($, toastr, App) {
                     throw {message: "hris-export-to-excel-target is not found."};
                 }
 
-                console.log($target);
                 var grid = $target.data("kendoGrid");
                 if (typeof grid === "undefined") {
                     showMessage("No Table to export data.", "error");
@@ -1003,6 +1001,11 @@ window.app = (function ($, toastr, App) {
             }
         });
     };
+    var minToHour = function (min) {
+        var hour = Math.floor(min / 60);
+        var min = min % 60;
+        return hour + ":" + min;
+    };
 
     return {
         format: format,
@@ -1032,6 +1035,8 @@ window.app = (function ($, toastr, App) {
         pdfExport: pdfExport,
         populateSelect: populateSelect,
         floatToRound: floatToRound,
-        lockField: lockField
+        lockField: lockField,
+        minToHour: minToHour
+
     };
 })(window.jQuery, window.toastr, window.App);

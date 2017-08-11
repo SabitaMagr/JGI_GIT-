@@ -36,12 +36,8 @@ class DashboardController extends AbstractActionController {
     }
 
     public function indexAction() {
-//        $monthRepo = new MonthRepository($this->adapter);
         $dashboardRepo = new DashboardRepository($this->adapter);
-//        $month = $monthRepo->fetchByDate(Helper::getcurrentExpressionDate());
-//        $employeeDetail = $dashboardRepo->fetchEmployeeDashboardDetail($this->employeeId, $month->FROM_DATE, Helper::getCurrentDate());
         $data = [
-//            "employeeDetail" => $employeeDetail,
             "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($this->employeeId),
             "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($this->employeeId),
             "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
@@ -58,9 +54,7 @@ class DashboardController extends AbstractActionController {
     public function adminAction() {
         $dashboardRepo = new DashboardRepository($this->adapter);
 
-        $employeeDetail = $dashboardRepo->fetchAdminDashboardDetail($this->employeeId, Helper::getCurrentDate());
         $data = [
-            "employeeDetail" => $employeeDetail,
             "employeeNotice" => $dashboardRepo->fetchEmployeeNotice(),
             "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
             "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
@@ -81,26 +75,10 @@ class DashboardController extends AbstractActionController {
     }
 
     public function branchManagerAction() {
+
         $dashboardRepo = new DashboardRepository($this->adapter);
-
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeDetail = $employeeRepo->getById($this->employeeId);
-
-        $empCompanyId = $employeeDetail['COMPANY_ID'];
-        $empBranchId = $employeeDetail['BRANCH_ID'];
-        $attendanceDetail = $dashboardRepo->fetchManagerAttendanceDetail($this->employeeId);
-
         $data = [
-            "employeeDetail" => $dashboardRepo->fetchManagerDashboardDetail($this->employeeId, Helper::getCurrentDate()),
-            "present" => $attendanceDetail['PRESENT_DAY'],
-            "leave" => $attendanceDetail['LEAVE'],
-            "training" => $attendanceDetail['TRAINING'],
-            "travel" => $attendanceDetail['TOUR'],
-            "WOH" => $attendanceDetail['WOH'],
-            'lateIn' => $attendanceDetail['LATE_IN'],
-            'earlyOut' => $attendanceDetail['EARLY_OUT'],
-            'missedPunch' => $attendanceDetail['MISSED_PUNCH'],
-            "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($employeeDetail['EMPLOYEE_ID']),
+            "employeeNotice" => $dashboardRepo->fetchEmployeeNotice($this->employeeId),
             "employeeTask" => $dashboardRepo->fetchEmployeeTask($this->employeeId),
             "employeesBirthday" => $dashboardRepo->fetchEmployeesBirthday(),
             "employeeList" => $dashboardRepo->fetchAllEmployee($this->employeeId),
@@ -109,7 +87,7 @@ class DashboardController extends AbstractActionController {
             "headCountLocation" => $dashboardRepo->fetchLocationHeadCount(),
             "departmentAttendance" => $dashboardRepo->fetchDepartmentAttendance(),
             'todoList' => $this->getTodoList(),
-            "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($employeeDetail['EMPLOYEE_ID']),
+            "upcomingHolidays" => $dashboardRepo->fetchUpcomingHolidays($this->employeeId),
             "newEmployees" => $dashboardRepo->fetchJoinedEmployees(),
             "leftEmployees" => $dashboardRepo->fetchLeftEmployees(),
         ];
@@ -196,17 +174,42 @@ class DashboardController extends AbstractActionController {
                             ];
                         }
                         // Tour
-                        if ($eventData['TRAVEL_CODE']) {
+                        if ($eventData['TRAVEL_ID']) {
+                            if ($eventData['MONTH_DAY'] >= $eventData['TRAVEL_FROM_DATE'] || $eventData['MONTH_DAY'] <= $eventData['TRAVEL_TO_DATE']) {
+                                $calendarJsonFeedArray[] = [
+                                    'title' => $eventData['DESTINATION'],
+                                    'start' => $eventData['MONTH_DAY'],
+                                    'textColor' => '#fff',
+                                    'backgroundColor' => '#e89c0a',
+                                ];
+                            }
+                        }
+
+                        if ($eventData['HOLIDAY_ID']) {
                             $calendarJsonFeedArray[] = [
-                                'title' => $eventData['TRAVEL_CODE'],
-                                'start' => $eventData['TRAVEL_FROM_DATE'],
-                                'end' => $eventData['TRAVEL_TO_DATE'],
+                                'title' => $eventData['HOLIDAY_ENAME'],
+                                'start' => $eventData['MONTH_DAY'],
                                 'textColor' => '#fff',
-                                'backgroundColor' => '#e89c0a',
+                                'backgroundColor' => '#eaea2a',
                             ];
                         }
                     }
                 }
+//                $upcomingLeaves = $dahsboardRepo->fetchUpcomingLeaves($employeeId);
+//                foreach ($upcomingLeaves as $upcomingLeave) {
+//                    for ($i = 0; $i < $upcomingLeave['DIFF']; $i++) {
+//                        $d = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $upcomingLeave['START_DATE']);
+//                        $d->add(new \DateInterval("P{$i}D"));
+//                        $calendarJsonFeedArray[] = [
+//                            'title' => $upcomingLeave['LEAVE_ENAME'],
+//                            'start' => $d->format(Helper::PHP_DATE_FORMAT),
+//                            'textColor' => '#fff',
+//                            'backgroundColor' => '#a7aeaf',
+//                        ];
+//                    }
+//                }
+
+
                 //return new CustomViewModel(['success' => true, 'data' => $calendarJsonFeedArray, 'error' => '']);
                 return new CustomViewModel($calendarJsonFeedArray);
             } else {
@@ -236,16 +239,15 @@ class DashboardController extends AbstractActionController {
         }
         return $list;
     }
-    
-    
+
     public function fetchEmployeeDashBoardDetailsAction() {
         try {
             $request = $this->getRequest();
             if ($request->isPost()) {
-            $monthRepo = new MonthRepository($this->adapter);
-            $month = $monthRepo->fetchByDate(Helper::getcurrentExpressionDate());
-            $dashboardRepo = new DashboardRepository($this->adapter);
-            $employeeDetail = $dashboardRepo->fetchEmployeeDashboardDetail($this->employeeId, $month->FROM_DATE, Helper::getCurrentDate());
+                $monthRepo = new MonthRepository($this->adapter);
+                $month = $monthRepo->fetchByDate(Helper::getcurrentExpressionDate());
+                $dashboardRepo = new DashboardRepository($this->adapter);
+                $employeeDetail = $dashboardRepo->fetchEmployeeDashboardDetail($this->employeeId, $month->FROM_DATE, Helper::getCurrentDate());
                 return new CustomViewModel(['success' => true, 'data' => $employeeDetail, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
@@ -254,16 +256,37 @@ class DashboardController extends AbstractActionController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
+
     public function fetchAdminDashBoardDetailsAction() {
         try {
             $request = $this->getRequest();
             if ($request->isPost()) {
-                
-            $dashboardRepo = new DashboardRepository($this->adapter);
-            $employeeDetail = $dashboardRepo->fetchAdminDashboardDetail($this->employeeId, Helper::getCurrentDate());
-            
+
+                $dashboardRepo = new DashboardRepository($this->adapter);
+                $employeeDetail = $dashboardRepo->fetchAdminDashboardDetail($this->employeeId, Helper::getCurrentDate());
+
                 return new CustomViewModel(['success' => true, 'data' => $employeeDetail, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchManagerDashBoardDetailsAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+
+                $dashboardRepo = new DashboardRepository($this->adapter);
+
+                $managetDashboardDetails = $dashboardRepo->fetchManagerAttendanceDetail($this->employeeId);
+
+                $employeeDetail = $dashboardRepo->fetchManagerDashboardDetail($this->employeeId, Helper::getCurrentDate());
+
+
+                return new CustomViewModel(['success' => true, 'data' => [$managetDashboardDetails, $employeeDetail], 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }

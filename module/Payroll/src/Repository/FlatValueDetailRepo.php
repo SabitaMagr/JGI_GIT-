@@ -2,112 +2,108 @@
 
 namespace Payroll\Repository;
 
-
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Payroll\Model\FlatValueDetail;
-use Payroll\Model\MonthlyValueDetail;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Application\Helper\EntityHelper;
-use Zend\Db\Sql\Expression;
 
-class FlatValueDetailRepo implements RepositoryInterface
-{
+class FlatValueDetailRepo implements RepositoryInterface {
+
     private $adapter;
     private $gateway;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->gateway = new TableGateway(FlatValueDetail::TABLE_NAME, $adapter);
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->gateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
-    {
-        $this->gateway->update($model->getArrayCopyForDB(), [FlatValueDetail::EMPLOYEE_ID => $id[0], FlatValueDetail::FLAT_ID => $id[1]]);
+    public function edit(Model $model, $id) {
+        
     }
 
-    public function fetchAll()
-    {
-
+    public function fetchAll() {
+        
     }
 
-    public function filter($branchId, $departmentId, $designationId, $id)
-    {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
-                [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],null,null,null,[new Expression("E.EMPLOYEE_ID")],"E"), true);
-        $select->from(['E' => "HRIS_EMPLOYEES"])
-            ->join(['M' => FlatValueDetail::TABLE_NAME], 'M.' . FlatValueDetail::EMPLOYEE_ID . '=E.EMPLOYEE_ID', [FlatValueDetail::FLAT_ID, FlatValueDetail::FLAT_VALUE], Select::JOIN_LEFT);
-        if ($branchId != -1) {
-            $select->where(["E." . Branch::BRANCH_ID . "=$branchId"]);
-        }
-        if ($departmentId != -1) {
-            $select->where(["E." . Department::DEPARTMENT_ID . "=$departmentId"]);
-        }
-        if ($designationId != -1) {
-            $select->where(["E." . Designation::DESIGNATION_ID . "=$designationId"]);
-        }
-        $select->where("M." . FlatValueDetail::FLAT_ID . "=" . $id);
-        $select->order("E.EMPLOYEE_ID ASC");
-
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+    public function delete($id) {
+        
     }
 
+    public function fetchById($id) {
+        $sql = "
+                SELECT FLAT_VALUE
+                FROM HRIS_FLAT_VALUE_DETAIL
+                WHERE EMPLOYEE_ID = {$id['employeeId']}
+                AND MONTH_ID      = {$id['monthId']}
+                AND FLAT_ID        = {$id['flatId']}";
 
-    public function fetchEmployees($branchId, $departmentId, $designationId,$companyId=null,$employeeId=null)
-    {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class,
-                [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],null,null,null,[new Expression("E.EMPLOYEE_ID")],"E"), true);
-        $select->from(['E' => "HRIS_EMPLOYEES"]);
-        if ($branchId != -1) {
-            $select->where(["E." . Branch::BRANCH_ID . "=$branchId"]);
-        }
-        if ($departmentId != -1) {
-            $select->where(["E." . Department::DEPARTMENT_ID . "=$departmentId"]);
-        }
-        if ($designationId != -1) {
-            $select->where(["E." . Designation::DESIGNATION_ID . "=$designationId"]);
-        }
-        if ($companyId!=null && $companyId != -1) {
-            $select->where(["E." . HrEmployees::COMPANY_ID . "=$companyId"]);
-        }
-        if ($employeeId!=null && $employeeId != -1) {
-            $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$employeeId"]);
-        }
-        $select->order("E.EMPLOYEE_ID ASC");
-
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+        $statement = $this->adapter->query($sql);
+        $rawResult = $statement->execute();
+        $result = $rawResult->current();
+        return $result != null ? $result['FLAT_VALUE'] : 0;
     }
 
-    public function fetchById($id)
-    {
-        return $this->gateway->select([FlatValueDetail::FLAT_ID => $id[1], FlatValueDetail::EMPLOYEE_ID => $id[0]])->current();
+    public function getFlatValuesDetailById($flatValueId, $fiscalYearId, $employeeFilter, $monthId = null) {
+        $employeeIn = EntityHelper::employeesIn($employeeFilter['companyId'], $employeeFilter['branchId'], $employeeFilter['departmentId'], $employeeFilter['positionId'], $employeeFilter['designationId'], $employeeFilter['serviceTypeId'], $employeeFilter['serviceEventTypeId'], $employeeFilter['employeeTypeId'], $employeeFilter['employeeId']);
+        $sql = "SELECT * FROM HRIS_FLAT_VALUE_DETAIL WHERE FLAT_ID = {$flatValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$employeeIn} )";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
     }
 
-    public function delete($id)
-    {
-        // TODO: Implement delete() method.
+    public function postFlatValuesDetail($data) {
+        $sql = "
+                DECLARE
+                  V_FLAT_ID HRIS_FLAT_VALUE_DETAIL.FLAT_ID%TYPE := {$data['flatId']};
+                  V_EMPLOYEE_ID HRIS_FLAT_VALUE_DETAIL.EMPLOYEE_ID%TYPE := {$data['employeeId']};
+                  V_FLAT_VALUE HRIS_FLAT_VALUE_DETAIL.FLAT_VALUE%TYPE := {$data['flatValue']};
+                  V_FISCAL_YEAR_ID HRIS_FLAT_VALUE_DETAIL.FISCAL_YEAR_ID%TYPE := {$data['fiscalYearId']};
+                  V_MONTH_ID HRIS_FLAT_VALUE_DETAIL.MONTH_ID%TYPE := {$data['monthId']};
+                  V_OLD_FLAT_VALUE HRIS_FLAT_VALUE_DETAIL.FLAT_VALUE%TYPE;
+                BEGIN
+                  SELECT FLAT_VALUE
+                  INTO V_OLD_FLAT_VALUE
+                  FROM HRIS_FLAT_VALUE_DETAIL
+                  WHERE FLAT_ID       = V_FLAT_ID
+                  AND EMPLOYEE_ID    = V_EMPLOYEE_ID
+                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID
+                  AND MONTH_ID       = V_MONTH_ID;
+                  UPDATE HRIS_FLAT_VALUE_DETAIL
+                  SET FLAT_VALUE      = V_FLAT_VALUE
+                  WHERE FLAT_ID       = V_FLAT_ID
+                  AND EMPLOYEE_ID    = V_EMPLOYEE_ID
+                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID
+                  AND MONTH_ID       = V_MONTH_ID;
+                EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                  INSERT
+                  INTO HRIS_FLAT_VALUE_DETAIL
+                    (
+                      FLAT_ID,
+                      EMPLOYEE_ID,
+                      FISCAL_YEAR_ID,
+                      MONTH_ID,
+                      FLAT_VALUE,
+                      CREATED_DT
+                    )
+                    VALUES
+                    (
+                      V_FLAT_ID,
+                      V_EMPLOYEE_ID,
+                      V_FISCAL_YEAR_ID,
+                      V_MONTH_ID,
+                      V_FLAT_VALUE,
+                      TRUNC(SYSDATE)
+                    );
+                END;
+";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
     }
+
 }
