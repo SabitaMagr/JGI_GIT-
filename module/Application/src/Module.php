@@ -67,6 +67,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             Controller\CronController::class . '-index',
             Controller\CronController::class . '-employee-attendance',
             Controller\ApiController::class . "-index",
+            Controller\ApiController::class . "-employee",
             Controller\ApiController::class . "-setup",
         ];
         $app = $event->getApplication();

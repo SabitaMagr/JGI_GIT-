@@ -6,16 +6,15 @@ use Application\Factory\HrLogger;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\RepositoryInterface;
+use Exception;
 use Payroll\Model\FlatValue as FlatValueModel;
-use Payroll\Model\FlatValueDetail;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
-use Payroll\Model\MonthlyValueDetail;
-use Payroll\Model\PayPositionSetup;
+use Payroll\Model\PayEmployeeSetup;
 use Payroll\Model\Rules;
 use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
-use Payroll\Repository\PayPositionRepo;
+use Payroll\Repository\PayEmployeeRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 
@@ -25,7 +24,7 @@ class PayrollGenerator {
     private $logger;
     private $flatValueDetRepo;
     private $monthlyValueDetRepo;
-    private $payPositionRepo;
+    private $payEmployeeRepo;
     private $ruleDetailRepo;
     private $ruleRepo;
     private $employeeId;
@@ -67,7 +66,7 @@ class PayrollGenerator {
         $this->monthId = $monthId;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
         $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
-        $this->payPositionRepo = new PayPositionRepo($adapter);
+        $this->payEmployeeRepo = new PayEmployeeRepo($adapter);
         $this->ruleDetailRepo = new RulesDetailRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
 
@@ -84,22 +83,12 @@ class PayrollGenerator {
 
     public function generate($id) {
         $this->employeeId = $id;
+        $payList = $this->payEmployeeRepo->fetchByEmployeeId($this->employeeId);
 
-        $positionId = $this->getPositionId($id);
-        if ($positionId == null) {
-            $payPositionList = [];
-        } else {
-            $payPositionList = $this->payPositionRepo->test($positionId);
-        }
-        $payList = [];
-
-        foreach ($payPositionList as $payPosition) {
-            array_push($payList, $payPosition);
-        }
         $ruleValueKV = [];
         $counter = 0;
         foreach ($payList as $ruleObj) {
-            $ruleId = $ruleObj[PayPositionSetup::PAY_ID];
+            $ruleId = $ruleObj[PayEmployeeSetup::PAY_ID];
             $ruleDetail = $this->ruleDetailRepo->fetchById($ruleId)->getArrayCopy();
             $rule = $ruleDetail[RulesDetail::MNENONIC_NAME];
             $operationType = $ruleObj[Rules::PAY_TYPE_FLAG];
@@ -108,12 +97,12 @@ class PayrollGenerator {
             $refRules = $ruleRepo->fetchReferencingRules($ruleId);
             $refRules = Helper::extractDbData($refRules);
 
-            foreach ($this->monthlyValues as $key => $monthlyValue) {
-                $rule = $this->convertConstantToValue($rule, $key, $monthlyValue, $this->monthlyValueDetRepo);
+            foreach ($this->monthlyValues as $monthlyKey => $monthlyValue) {
+                $rule = $this->convertConstantToValue($rule, $monthlyKey, $monthlyValue, $this->monthlyValueDetRepo);
             }
 
-            foreach ($this->flatValues as $key => $flatValue) {
-                $rule = $this->convertConstantToValue($rule, $key, $flatValue, $this->flatValueDetRepo);
+            foreach ($this->flatValues as $flatKey => $flatValue) {
+                $rule = $this->convertConstantToValue($rule, $flatKey, $flatValue, $this->flatValueDetRepo);
             }
 
             foreach (self::VARIABLES as $variable) {
@@ -159,11 +148,11 @@ class PayrollGenerator {
 
     private function generateValue($constant, RepositoryInterface $repository) {
         if ($repository instanceof MonthlyValueDetailRepo) {
-            $monthlyValTmp = $repository->fetchById([$this->employeeId, $constant])[MonthlyValueDetail::MTH_VALUE];
+            $monthlyValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'mthId' => $constant]);
             $monthlyValTmp = (!isset($monthlyValTmp)) ? 0 : $monthlyValTmp;
             return $monthlyValTmp;
         } else if ($repository instanceof FlatValueDetailRepo) {
-            $flatValTmp = $repository->fetchById([$this->employeeId, $constant])[FlatValueDetail::FLAT_VALUE];
+            $flatValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'flatId' => $constant]);
             $flatValTmp = (isset($flatValTmp)) ? $flatValTmp : 0;
             return $flatValTmp;
         }
