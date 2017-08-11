@@ -165,6 +165,15 @@ class AppraisalAssignController extends AbstractActionController {
                 $employeeRow['APPRAISAL_EDESC'] = "";
             }
             $employeeRow['CURRENT_STAGE_NAME'] = $assignList['STAGE_EDESC'];
+
+            if ($assignList['IS_EXECUTIVE'] == 'Y') {
+                $employeeRow['EXECUTIVE'] = "Yes";
+            } else if ($assignList['IS_EXECUTIVE'] == 'N') {
+                $employeeRow['EXECUTIVE'] = "No";
+            } else {
+                $employeeRow['EXECUTIVE'] = "";
+            }
+
             array_push($employeeList, $employeeRow);
         }
 //        print "<pre>";
@@ -211,6 +220,7 @@ class AppraisalAssignController extends AbstractActionController {
         $altReviewerId = (int) $data['altReviewerId'];
         $superReviewerId = (int) $data['superReviewerId'];
         $stageId = (int) $data['stageId'];
+        $executiveEmployee = $data['executive'];
         $appraisalRepo = new SetupRepository($this->adapter);
         $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
 
@@ -276,6 +286,7 @@ class AppraisalAssignController extends AbstractActionController {
             $appraisalAssign->branchId = $employeeDetail['BRANCH_ID'];
             $appraisalAssign->currentStageId = ($stageId == null) ? $appraisalDtl['CURRENT_STAGE_ID'] : $stageId;
             $appraisalAssign->status = 'E';
+            $appraisalAssign->isExecutive = $executiveEmployee;
             $this->repository->add($appraisalAssign);
         } else if ($employeePreDtl != null) {
             $id = $employeePreDtl['EMPLOYEE_ID'];
@@ -289,6 +300,7 @@ class AppraisalAssignController extends AbstractActionController {
             $appraisalAssign->modifiedBy = $this->employeeId;
             $appraisalAssign->currentStageId = ($stageId == null) ? null : $stageId;
             $appraisalAssign->status = 'E';
+            $appraisalAssign->isExecutive = $executiveEmployee;
             $this->repository->edit($appraisalAssign, [$employeeId, $appraisalId]);
         }
         $appraisalAssign->appraisalId = $appraisalId;
