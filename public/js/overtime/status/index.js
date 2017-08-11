@@ -171,7 +171,7 @@ angular.module('hris', [])
                                 {value: dataItem.APPROVED_DATE}
                             ]
                         });
-                        totalHours = totalHours + parseFloat(dataItem.TOTAL_MIN);
+                        totalHours = totalHours + parseFloat(dataItem.TOTAL_HOUR);
                     }
                     if (e.target.id === "exportCalculated") {
                         rows.push({
@@ -180,7 +180,7 @@ angular.module('hris', [])
                                 {value: ""},
                                 {value: ""},
                                 {value: ""},
-                                {value: app.minToHour(totalHours)},
+                                {value: totalHours},
                                 {value: ""},
                                 {value: ""},
                                 {value: ""},
