@@ -164,21 +164,10 @@ class PayrollRepository {
 
     public function getEmployeeMaritualStatus($employeeId) {
         $sql = "
-                SELECT (CASE WHEN MARITAL_STATUS = 'M' THEN 1ELSE 0 END) AS MARITAL_STATUS FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID={$employeeId}                
+                SELECT (CASE WHEN MARITAL_STATUS = 'M' THEN 1 ELSE 0 END) AS MARITAL_STATUS FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID={$employeeId}                
                 ";
         $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
         return $rawResult->current()['MARITAL_STATUS'];
-    }
-
-    public function getEmployeeTotalDaysFromJoinDate($employeeId, $monthId) {
-        $sql = "
-                SELECT (TRUNC(M.FROM_DATE)- TRUNC(JOIN_DATE)) AS TOTAL_DAYS_FROM_JOIN_DATE
-                FROM HRIS_EMPLOYEES E,
-                  (SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID= {$monthId}
-                  ) M WHERE E.EMPLOYEE_ID={$employeeId}
-                ";
-        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return $rawResult->current()['TOTAL_DAYS_FROM_JOIN_DATE'];
     }
 
     public function getNoOfWorkingDaysIncDayOffAndHoliday(int $employeeId, $monthId) {
@@ -224,6 +213,309 @@ class PayrollRepository {
         $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
         $result = $rawResult->current();
         return ($result != null) ? $result['REVIEW_DAY'] : -1;
+    }
+
+    public function getMonthDays($employeeId, $monthId) {
+        $sql = "
+            SELECT TRUNC(TO_DATE)- TRUNC(FROM_DATE) AS MONTH_DAYS
+            FROM HRIS_MONTH_CODE
+            WHERE MONTH_ID= {$monthId}
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['MONTH_DAYS'];
+    }
+
+    public function getPresentDays($employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(*) AS PRESENT_DAYS
+                FROM HRIS_ATTENDANCE_DETAIL A,
+                  (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                  ) M
+                WHERE A.EMPLOYEE_ID = {$employeeId}
+                AND (ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                AND OVERALL_STATUS IN ('PR','TV','TN','VP','TP','BA','LA')
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['PRESENT_DAYS'];
+    }
+
+    public function getAbsentDays($employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(*) AS ABSENT_DAYS
+                FROM HRIS_ATTENDANCE_DETAIL A,
+                  (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                  ) M
+                WHERE A.EMPLOYEE_ID = {$employeeId}
+                AND (ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                AND OVERALL_STATUS = 'AB'
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['ABSENT_DAYS'];
+    }
+
+    public function getPaidLeaves($employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(*) PAID_LEAVES
+                FROM HRIS_LEAVE_MASTER_SETUP L
+                JOIN
+                  (SELECT *
+                  FROM HRIS_ATTENDANCE_DETAIL A,
+                    (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                    ) M
+                  WHERE A.EMPLOYEE_ID = {$employeeId}
+                  AND (ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                  AND OVERALL_STATUS = 'LV'
+                  ) A
+                ON (A.LEAVE_ID = L.LEAVE_ID)
+                WHERE L.PAID   = 'Y'
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['PAID_LEAVES'];
+    }
+
+    public function getUnpaidLeaves($employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(*) AS UNPAID_LEAVES
+                FROM HRIS_LEAVE_MASTER_SETUP L
+                JOIN
+                  (SELECT *
+                  FROM HRIS_ATTENDANCE_DETAIL A,
+                    (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                    ) M
+                  WHERE A.EMPLOYEE_ID = {$employeeId}
+                  AND (ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                  AND OVERALL_STATUS = 'LV'
+                  ) A
+                ON (A.LEAVE_ID = L.LEAVE_ID)
+                WHERE L.PAID   = 'N'
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['UNPAID_LEAVES'];
+    }
+
+    public function getDayoffs($employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(*) AS DAY_OFFS
+                FROM HRIS_ATTENDANCE_DETAIL A,
+                  (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                  ) M
+                WHERE A.EMPLOYEE_ID = {$employeeId}
+                AND (ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                AND OVERALL_STATUS IN ('DO','WD') 
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['DAY_OFFS'];
+    }
+
+    public function getHolidays($employeeId, $monthId) {
+        $sql = "
+                SELECT COUNT(*) AS HOLIDAYS
+                FROM HRIS_ATTENDANCE_DETAIL A,
+                  (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                  ) M
+                WHERE A.EMPLOYEE_ID = {$employeeId}
+                AND (ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                AND OVERALL_STATUS IN ('HD','WH') 
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['HOLIDAYS'];
+    }
+
+    public function getDaysFromJoinDate($employeeId, $monthId) {
+        $sql = "
+                SELECT (TRUNC(M.FROM_DATE)- TRUNC(JOIN_DATE)) AS DAYS_FROM_JOIN_DATE
+                FROM HRIS_EMPLOYEES E,
+                  (SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID= {$monthId}
+                  ) M WHERE E.EMPLOYEE_ID={$employeeId}
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $rawResult->current()['DAYS_FROM_JOIN_DATE'];
+    }
+
+    public function getDaysFromPermanentDate($employeeId, $monthId) {
+        $sql = "
+                SELECT (TRUNC(M.FROM_DATE)- TRUNC(PERMANENT_DATE)) AS DAYS_FROM_PERMANENT_DATE
+                FROM HRIS_EMPLOYEES E,
+                  (SELECT FROM_DATE,TO_DATE FROM HRIS_MONTH_CODE WHERE MONTH_ID= {$monthId}
+                  ) M WHERE E.EMPLOYEE_ID={$employeeId}
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $rawResult->current()['DAYS_FROM_PERMANENT_DATE'];
+    }
+
+    public function isMale($employeeId, $monthId) {
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN GENDER_ID = 1
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_MALE
+                FROM HRIS_EMPLOYEES
+                WHERE EMPLOYEE_ID = {$employeeId}
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['IS_MALE'];
+    }
+
+    public function isFemale($employeeId, $monthId) {
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN GENDER_ID = 2
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_FEMALE
+                FROM HRIS_EMPLOYEES
+                WHERE EMPLOYEE_ID = {$employeeId}
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['IS_FEMALE'];
+    }
+
+    public function isMarried($employeeId, $monthId) {
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN MARITAL_STATUS = 'M'
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_MARRIED
+                FROM HRIS_EMPLOYEES
+                WHERE EMPLOYEE_ID={$employeeId}              
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        return $result['IS_MARRIED'];
+    }
+
+    public function isPermanent($employeeId, $monthId) {
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN TO_SERVICE_TYPE_ID =1
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_PERMANENT
+                FROM
+                  (SELECT *
+                  FROM
+                    (SELECT JH.*
+                    FROM HRIS_JOB_HISTORY JH,
+                      (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                      ) M
+                    WHERE JH.EMPLOYEE_ID = {$employeeId}
+                    AND JH.START_DATE   <= M.FROM_DATE
+                    ORDER BY JH.START_DATE DESC
+                    )
+                  WHERE ROWNUM =1
+                  )           
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        if ($result == null) {
+            return 0;
+        }
+        return $result['IS_PERMANENT'];
+    }
+
+    public function isProbation($employeeId, $monthId) {
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN TO_SERVICE_TYPE_ID =2
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_PERMANENT
+                FROM
+                  (SELECT *
+                  FROM
+                    (SELECT JH.*
+                    FROM HRIS_JOB_HISTORY JH,
+                      (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                      ) M
+                    WHERE JH.EMPLOYEE_ID = {$employeeId}
+                    AND JH.START_DATE   <= M.FROM_DATE
+                    ORDER BY JH.START_DATE DESC
+                    )
+                  WHERE ROWNUM =1
+                  )           
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        if ($result == null) {
+            return 0;
+        }
+        return $result['IS_PERMANENT'];
+    }
+
+    public function isContract($employeeId, $monthId) {
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN TO_SERVICE_TYPE_ID =3
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_PERMANENT
+                FROM
+                  (SELECT *
+                  FROM
+                    (SELECT JH.*
+                    FROM HRIS_JOB_HISTORY JH,
+                      (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                      ) M
+                    WHERE JH.EMPLOYEE_ID = {$employeeId}
+                    AND JH.START_DATE   <= M.FROM_DATE
+                    ORDER BY JH.START_DATE DESC
+                    )
+                  WHERE ROWNUM =1
+                  )           
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        if ($result == null) {
+            return 0;
+        }
+        return $result['IS_PERMANENT'];
+    }
+
+    public function isTemporary($employeeId, $monthId) {
+        $sql = "
+                SELECT (
+                  CASE
+                    WHEN TO_SERVICE_TYPE_ID =4
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_PERMANENT
+                FROM
+                  (SELECT *
+                  FROM
+                    (SELECT JH.*
+                    FROM HRIS_JOB_HISTORY JH,
+                      (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
+                      ) M
+                    WHERE JH.EMPLOYEE_ID = {$employeeId}
+                    AND JH.START_DATE   <= M.FROM_DATE
+                    ORDER BY JH.START_DATE DESC
+                    )
+                  WHERE ROWNUM =1
+                  )           
+                ";
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = $rawResult->current();
+        if ($result == null) {
+            return 0;
+        }
+        return $result['IS_PERMANENT'];
     }
 
 }
