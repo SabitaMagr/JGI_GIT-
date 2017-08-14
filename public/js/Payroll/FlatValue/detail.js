@@ -26,9 +26,19 @@
         var $footer = $('#flatValueDetailFooter');
 
         app.populateSelect($flatValueId, document.flatValues, "FLAT_ID", "FLAT_EDESC", "Select Flat Value");
-        app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "START_DATE", "Select Fiscal Year");
+        app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
 
         $searchEmployeesBtn.on('click', function () {
+            if ($flatValueId.val() == -1) {
+                app.showMessage("No monthly value Selected.", 'error');
+                $flatValueId.focus();
+                return;
+            }
+            if ($fiscalYearId.val() == -1) {
+                app.showMessage("No fiscal year Selected.", 'error');
+                $fiscalYearId.focus();
+                return;
+            }
             app.pullDataById(document.getFlatValueDetailWS, {
                 flatId: $flatValueId.val(),
                 fiscalYearId: $fiscalYearId.val(),
