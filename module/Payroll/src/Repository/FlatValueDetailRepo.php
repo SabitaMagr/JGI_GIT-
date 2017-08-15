@@ -37,11 +37,13 @@ class FlatValueDetailRepo implements RepositoryInterface {
 
     public function fetchById($id) {
         $sql = "
-                SELECT FLAT_VALUE
-                FROM HRIS_FLAT_VALUE_DETAIL
-                WHERE EMPLOYEE_ID = {$id['employeeId']}
-                AND MONTH_ID      = {$id['monthId']}
-                AND FLAT_ID        = {$id['flatId']}";
+                SELECT F.FLAT_VALUE
+                FROM HRIS_FLAT_VALUE_DETAIL F,
+                  (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID={$id['monthId']}
+                  ) Y
+                WHERE F. EMPLOYEE_ID = {$id['employeeId']}
+                AND F.FISCAL_YEAR_ID = F.FISCAL_YEAR_ID
+                AND F.FLAT_ID        = {$id['flatId']}";
 
         $statement = $this->adapter->query($sql);
         $rawResult = $statement->execute();
