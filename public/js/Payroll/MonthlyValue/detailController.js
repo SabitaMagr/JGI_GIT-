@@ -26,9 +26,19 @@
         var $footer = $('#monthlyValueDetailFooter');
 
         app.populateSelect($monthlyValueId, document.monthlyValues, "MTH_ID", "MTH_EDESC", "Select Monthly Value");
-        app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "START_DATE", "Select Fiscal Year");
+        app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
 
         $searchEmployeesBtn.on('click', function () {
+            if ($monthlyValueId.val() == -1) {
+                app.showMessage("No monthly value Selected.", 'error');
+                $monthlyValueId.focus();
+                return;
+            }
+            if ($fiscalYearId.val() == -1) {
+                app.showMessage("No fiscal year Selected.", 'error');
+                $fiscalYearId.focus();
+                return;
+            }
             app.pullDataById(document.getMonthlyValueDetailWS, {
                 mthId: $monthlyValueId.val(),
                 fiscalYearId: $fiscalYearId.val(),
@@ -43,7 +53,6 @@
                     employeeTypeId: $employeeTypeId.val(),
                     employeeId: $employeeId.val()
                 }}).then(function (response) {
-                console.log(response);
                 initTable($fiscalYearId.val(), document.searchManager.getEmployee(), response.data);
             }, function (error) {
                 console.log(error);

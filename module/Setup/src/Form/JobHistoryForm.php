@@ -15,7 +15,7 @@ class JobHistoryForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name"})
-     * @Annotation\Attributes({ "id":"employeeID","class":"form-control"})
+     * @Annotation\Attributes({ "id":"employeeId","class":"form-control"})
      */
     public $employeeId;
 
@@ -48,30 +48,12 @@ class JobHistoryForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Service Type Name"})
-     * @Annotation\Attributes({ "id":"fromServiceTypeId","class":"form-control"})
-     */
-    public $fromServiceTypeId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"To Service Type Name"})
      * @Annotation\Attributes({ "id":"toServiceTypeId","class":"form-control"})
      */
     public $toServiceTypeId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Branch Name"})
-     * @Annotation\Attributes({ "id":"fromBranchId","class":"form-control"})
-     */
-    public $fromBranchId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -84,30 +66,12 @@ class JobHistoryForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Department Name"})
-     * @Annotation\Attributes({ "id":"fromDepartmentId","class":"form-control"})
-     */
-    public $fromDepartmentId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"To Department Name"})
      * @Annotation\Attributes({ "id":"toDepartmentId","class":"form-control"})
      */
     public $toDepartmentId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Designation Name"})
-     * @Annotation\Attributes({ "id":"fromDesignationId","class":"form-control"})
-     */
-    public $fromDesignationId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -120,36 +84,12 @@ class JobHistoryForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Position Name"})
-     * @Annotation\Attributes({ "id":"fromPositionId","class":"form-control"})
-     */
-    public $fromPositionId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"To Position Name"})
      * @Annotation\Attributes({ "id":"toPositionId","class":"form-control"})
      */
     public $toPositionId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
-     */
-    public $submit;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"false"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"From Company Name"})
-     * @Annotation\Attributes({ "id":"fromCompanyId","class":"form-control"})
-     */
-    public $fromCompanyId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -160,7 +100,19 @@ class JobHistoryForm {
      */
     public $toCompanyId;
 
-}
+    /**
+     * @Annotion\Type("Zend\Form\Element\Number")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"To Salary"})
+     * @Annotation\Attributes({ "id":"toSalary", "class":"form-control" })
+     */
+    public $toSalary;
 
-/* End of file JobHistoryForm.php */
-/* Location: ./Setup/src/Form/JobHistoryForm.php */
+    /**
+     * @Annotation\Type("Zend\Form\Element\Submit")
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
+     */
+    public $submit;
+
+}

@@ -23,6 +23,7 @@ $this->headScript()
 <script>
     document.ids =<?php echo json_encode(["serviceEventTypeId1" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.getEmployeeLatestServiceWS = '<?php echo $this->url("jobHistory", ["action" => "getEmployeeLatestService"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -155,19 +156,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
             </td>
             <td>
-             #: (TO_SERVICE_NAME == null) ? ' ' : TO_SERVICE_NAME #
+            #: (TO_SERVICE_NAME == null) ? ' ' : TO_SERVICE_NAME #
             </td>
             <td>
-             #: (TO_BRANCH_NAME == null) ? ' ' : TO_BRANCH_NAME #
+            #: (TO_BRANCH_NAME == null) ? ' ' : TO_BRANCH_NAME #
             </td>
             <td>
-             #: (TO_DEPARTMENT_NAME == null) ? ' ' : TO_DEPARTMENT_NAME #
+            #: (TO_DEPARTMENT_NAME == null) ? ' ' : TO_DEPARTMENT_NAME #
             </td>
             <td>
-             #: (TO_DESIGNATION_TITLE == null) ? ' ' : TO_DESIGNATION_TITLE #
+            #: (TO_DESIGNATION_TITLE == null) ? ' ' : TO_DESIGNATION_TITLE #
             </td>
             <td>
-             #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
+            #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
             </td>
             <td>
             <a class="btn-edit"

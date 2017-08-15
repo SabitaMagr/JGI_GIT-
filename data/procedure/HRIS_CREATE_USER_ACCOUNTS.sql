@@ -1,17 +1,23 @@
-DECLARE
-  C        NUMBER :=20;
-  USERNAME VARCHAR2(255 BYTE);
+create or replace PROCEDURE HRIS_CREATE_USER_ACCOUNTS(
+    P_PASSWORD HRIS_USERS.PASSWORD%TYPE := 'password@123')
+AS
+  V_USER_ID  NUMBER :=20;
+  V_USERNAME VARCHAR2(255 BYTE);
 BEGIN
   FOR CUR_EMP IN
   (SELECT EMPLOYEE_ID,
     FIRST_NAME,
     MIDDLE_NAME,
     LAST_NAME
-  FROM HRIS.HRIS_EMPLOYEES
+  FROM HRIS_EMPLOYEES
+  WHERE EMPLOYEE_ID NOT IN
+    (SELECT EMPLOYEE_ID FROM HRIS_USERS WHERE STATUS ='E'
+    )
   )
   LOOP
     BEGIN
-      USERNAME := CONCAT(CONCAT(CONCAT(LOWER(TRIM(CUR_EMP.FIRST_NAME)),'_'),
+      SELECT NVL(MAX(USER_ID),0)+1 INTO V_USER_ID FROM HRIS_USERS;
+      V_USERNAME := CONCAT(CONCAT(CONCAT(LOWER(TRIM(CUR_EMP.FIRST_NAME)),'_'),
       CASE
       WHEN CUR_EMP.MIDDLE_NAME IS NOT NULL THEN
         CONCAT(LOWER(TRIM(CUR_EMP.MIDDLE_NAME)), '_')
@@ -27,28 +33,18 @@ BEGIN
           PASSWORD,
           ROLE_ID,
           STATUS,
-          CREATED_DT,
-          MODIFIED_DT,
-          CREATED_BY,
-          MODIFIED_BY
+          CREATED_DT
         )
         VALUES
         (
-          C,
+          V_USER_ID,
           CUR_EMP.EMPLOYEE_ID,
-          USERNAME,
-          'password@123',
+          V_USERNAME,
+          P_PASSWORD,
           11,
           'E',
-          TRUNC(SYSDATE),
-          NULL,
-          167,
-          NULL
+          TRUNC(SYSDATE)
         );
-      C:=C+1;
-    EXCEPTION
-    WHEN OTHERS THEN
-      DBMS_OUTPUT.put_line ( 'FAILED: DROP ' || CUR_EMP.EMPLOYEE_ID );
     END;
   END LOOP;
 END;

@@ -293,9 +293,6 @@ class RestfulService extends AbstractRestfulController {
                     case "pullEmployeeListForEmployeeTable":
                         $responseData = $this->pullEmployeeListForEmployeeTable($postedData->data);
                         break;
-                    case "pullJobHistoryList":
-                        $responseData = $this->pullJobHistoryList($postedData->data);
-                        break;
                     case 'pullLeaveRequestStatusList':
                         $responseData = $this->pullLeaveRequestStatusList($postedData->data);
                         break;
@@ -1599,32 +1596,6 @@ class RestfulService extends AbstractRestfulController {
         $employeeFileRepo->add($employeefile);
 
         return["success" => true, "data" => ['fileCode' => $employeefile->fileCode]];
-    }
-
-    public function pullJobHistoryList($data) {
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
-        $employeeId = $data['employeeId'];
-        $companyId = $data['companyId'];
-        $branchId = $data['branchId'];
-        $departmentId = $data['departmentId'];
-        $designationId = $data['designationId'];
-        $positionId = $data['positionId'];
-        $serviceTypeId = $data['serviceTypeId'];
-        $serviceEventTypeId = $data['serviceEventTypeId'];
-
-        $jobHistoryRepository = new JobHistoryRepository($this->adapter);
-        $result = $jobHistoryRepository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId);
-
-        $jobHistoryRecord = [];
-        foreach ($result as $row) {
-            array_push($jobHistoryRecord, $row);
-        }
-
-        return [
-            "success" => "true",
-            "data" => $jobHistoryRecord
-        ];
     }
 
     public function pullLeaveRequestStatusList($data) {
