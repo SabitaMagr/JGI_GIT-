@@ -165,7 +165,7 @@ return [
             'appraisalReport'=>[
                 'type'=>Segment::class,
                 'options'=>[
-                    'route'=> '/appraisal/report[/:action[/:appraisalId][/:employeeId][/:tab]]',
+                    'route'=> '/appraisal/report[/:action[/:appraisalId][/:employeeId]]',
                     'constants'=>[
                         'action'=>'[a-zA-Z][a-zA-Z0-9_-]*',
                         'id'=>'[0-9]+',

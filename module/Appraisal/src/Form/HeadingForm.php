@@ -16,7 +16,7 @@ class HeadingForm{
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Heading Name (in Eng.)"})
      * @Annotation\Attributes({"id":"headingEdesc","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      */
     public $headingEdesc;
     

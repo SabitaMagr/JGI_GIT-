@@ -42,7 +42,7 @@ class AppraisalAnswerRepository implements RepositoryInterface{
     public function fetchById($id) {
         
     }
-    public function fetchByAllDtl($appraisalId,$questionId,$employeeId,$userId,$appraiserId=null,$reviewerId=null,$hrId=null){
+    public function fetchByAllDtl($appraisalId,$questionId,$employeeId,$userId,$appraiserId=null,$reviewerId=null){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['APS' => AppraisalAnswer::TABLE_NAME]);
@@ -58,13 +58,8 @@ class AppraisalAnswerRepository implements RepositoryInterface{
         $select->where([
             "APS.".AppraisalAnswer::APPRAISAL_ID=>$appraisalId,
             "APS.".AppraisalAnswer::EMPLOYEE_ID=>$employeeId,
+            "APS.".AppraisalAnswer::USER_ID=>$userId,
             "APS.".AppraisalAnswer::QUESTION_ID =>$questionId]);
-        if(gettype($userId)=='array'){
-            $user = trim(implode(",",$userId), ",");
-            $select->where(["APS.".AppraisalAnswer::USER_ID." in (".$user.")"]);
-        }else{
-            $select->where(["APS.".AppraisalAnswer::USER_ID=>$userId]);
-        }
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print_r($statement->getSql()); die();
         $result = $statement->execute();
@@ -95,6 +90,7 @@ class AppraisalAnswerRepository implements RepositoryInterface{
         }
         $select->order("Q.ORDER_NO");
         $statement = $sql->prepareStatementForSqlObject($select);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

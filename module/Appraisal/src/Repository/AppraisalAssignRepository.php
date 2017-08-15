@@ -61,8 +61,7 @@ class AppraisalAssignRepository implements RepositoryInterface{
             new Expression("AA.ALT_APPRAISER_ID AS ALT_APPRAISER_ID"),
             new Expression("AA.ALT_REVIEWER_ID AS ALT_REVIEWER_ID"),
             new Expression("AA.REMARKS AS REMARKS"),
-            new Expression("AA.CURRENT_STAGE_ID AS CURRENT_STAGE_ID"),
-            new Expression("AA.IS_EXECUTIVE AS IS_EXECUTIVE")
+            new Expression("AA.CURRENT_STAGE_ID AS CURRENT_STAGE_ID")
         ]);
         $select->from(["AA"=>AppraisalAssign::TABLE_NAME])
                 ->join(["A"=> Setup::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,["APPRAISAL_EDESC"=>new Expression("INITCAP(A.APPRAISAL_EDESC)")],"left")
@@ -150,7 +149,6 @@ WHERE KPI_SETTING='Y' OR COMPETENCIES_SETTING='Y' OR APPRAISEE_QUESTION_NUM>0 OR
             new Expression("A.COMPETENCIES_SETTING AS COMPETENCIES_SETTING"),
             new Expression("INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE"), 
             new Expression("INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("AA.IS_EXECUTIVE AS IS_EXECUTIVE"),
         ]);
         $select->from(["A"=>Setup::TABLE_NAME])
                 ->join(["AA"=> AppraisalAssign::TABLE_NAME],"A.".Setup::APPRAISAL_ID."=AA.".AppraisalAssign::APPRAISAL_ID,[AppraisalAssign::APPRAISAL_ID,AppraisalAssign::APPRAISER_ID,AppraisalAssign::REVIEWER_ID, AppraisalAssign::CURRENT_STAGE_ID,AppraisalAssign::ALT_APPRAISER_ID, AppraisalAssign::ALT_REVIEWER_ID, AppraisalAssign::SUPER_REVIEWER_ID])
