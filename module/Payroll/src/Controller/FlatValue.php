@@ -116,12 +116,10 @@ class FlatValue extends AbstractActionController {
     public function detailAction() {
         $flatValues = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_ID, FlatValueModel::FLAT_EDESC]);
         $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
-        $months = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]);
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'flatValues' => $flatValues,
                     'fiscalYears' => $fiscalYears,
-                    'months' => $months
         ]);
     }
 
@@ -135,7 +133,6 @@ class FlatValue extends AbstractActionController {
             $flatId = $postedData['flatId'];
             $fiscalYearId = $postedData['fiscalYearId'];
             $employeeFilter = $postedData['employeeFilter'];
-
             $detailRepo = new FlatValueDetailRepo($this->adapter);
             $result = $detailRepo->getFlatValuesDetailById($flatId, $fiscalYearId, $employeeFilter);
 

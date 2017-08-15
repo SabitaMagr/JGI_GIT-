@@ -2,7 +2,6 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        var months = document.months;
 
         var $flatValueId = $("#flatValueId");
         var $fiscalYearId = $("#fiscalYearId");
@@ -53,16 +52,15 @@
                     employeeTypeId: $employeeTypeId.val(),
                     employeeId: $employeeId.val()
                 }}).then(function (response) {
-                console.log(response);
                 initTable($fiscalYearId.val(), document.searchManager.getEmployee(), response.data);
             }, function (error) {
                 console.log(error);
             });
         });
 
-        var findMonthValue = function (serverData, employeeId, monthId) {
+        var findMonthValue = function (serverData, employeeId) {
             var result = serverData.filter(function (item) {
-                return item['EMPLOYEE_ID'] == employeeId && item['MONTH_ID'] == monthId;
+                return item['EMPLOYEE_ID'] == employeeId;
             });
 
             if (result.length > 0) {
@@ -73,17 +71,10 @@
         };
 
         var initTable = function (fiscalYearId, employeeList, serverData) {
-            var filteredMonths = months.filter(function (item) {
-                return item['FISCAL_YEAR_ID'] == fiscalYearId;
-            });
-
             $header.html('');
             $header.append($('<th>', {text: 'Id'}));
             $header.append($('<th>', {text: 'Name'}));
-            $.each(filteredMonths, function (index, item) {
-                $header.append($('<th>', {text: item['MONTH_EDESC']}));
-            });
-            $header.append($('<th>', {text: ''}));
+            $header.append($('<th>', {text: 'Value'}));
 
             $grid.html('');
             $.each(employeeList, function (index, item) {
@@ -92,13 +83,8 @@
                 $tr.append($('<td>', {text: item['EMPLOYEE_ID']}));
                 $tr.append($('<td>', {text: item['FULL_NAME']}))
 
-                $.each(filteredMonths, function (k, v) {
-                    var $td = $('<td>');
-                    $td.append($('<input>', {type: 'number', row: item['EMPLOYEE_ID'], col: v['MONTH_ID'], value: findMonthValue(serverData, item['EMPLOYEE_ID'], v['MONTH_ID']), class: 'form-control'}));
-                    $tr.append($td);
-                });
                 var $td = $('<td>');
-                $td.append($('<input>', {type: 'number', row: item['EMPLOYEE_ID'], class: 'group form-control'}));
+                $td.append($('<input>', {type: 'number', col: 'col', row: item['EMPLOYEE_ID'], value: findMonthValue(serverData, item['EMPLOYEE_ID']), class: 'form-control'}));
                 $tr.append($td);
 
                 $grid.append($tr);
@@ -110,11 +96,6 @@
             $tr.append($('<td>', {text: ''}));
             $tr.append($('<td>', {text: ''}))
 
-            $.each(filteredMonths, function (k, v) {
-                var $td = $('<td>');
-                $td.append($('<input>', {type: 'number', col: v['MONTH_ID'], class: 'group form-control'}));
-                $tr.append($td);
-            });
             var $td = $('<td>');
             $td.append($('<input>', {type: 'number', class: 'group form-control'}));
             $tr.append($td);
@@ -126,27 +107,7 @@
         $table.on('change', '.group', function () {
             var $this = $(this);
             var value = $this.val();
-            var row = $this.attr('row');
-            if (typeof row !== typeof undefined && row !== false) {
-                $('input[row=' + row + ']').val(value);
-            }
-            var col = $this.attr('col');
-            if (typeof col !== typeof undefined && col !== false) {
-                $('input[col=' + col + ']').val(value);
-            }
-
-            if ((typeof row === "undefined" || row === false) && (typeof col === "undefined" || col === false)) {
-                $.each($this.parent().parent().children(), function (key, item) {
-                    var $td = $(item);
-                    var $input = $td.find('input');
-                    if ($input.attr('col')) {
-                        $input.val(value);
-                        $input.trigger('change');
-                    }
-                });
-            }
-
-
+            $('input[col="col"]').val(value);
         });
 
         $assignFlatValueBtn.on('click', function () {
@@ -155,18 +116,16 @@
 
             var promiseList = [];
             App.blockUI({target: "#hris-page-content"});
-            $.each($grid.find('input'), function (key, item) {
+            $.each($grid.find('input[col="col"]'), function (key, item) {
                 var $item = $(item);
                 var rowValue = $item.attr('row');
-                var colValue = $item.attr('col');
                 var value = $item.val();
-                if (typeof rowValue !== "undefined" && rowValue != null && rowValue != "" && typeof colValue !== "undefined" && colValue != null && colValue != "" && typeof value !== "undefined" && value != null && value != "") {
+                if (value != null && value != "") {
                     promiseList.push(app.pullDataById(document.postFlatValueDetailWS, {
                         data: {
                             flatId: flatId,
                             fiscalYearId: fiscalYearId,
                             employeeId: rowValue,
-                            monthId: colValue,
                             flatValue: value
                         }
                     }));

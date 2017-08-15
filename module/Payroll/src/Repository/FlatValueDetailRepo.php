@@ -63,7 +63,6 @@ class FlatValueDetailRepo implements RepositoryInterface {
                   V_EMPLOYEE_ID HRIS_FLAT_VALUE_DETAIL.EMPLOYEE_ID%TYPE := {$data['employeeId']};
                   V_FLAT_VALUE HRIS_FLAT_VALUE_DETAIL.FLAT_VALUE%TYPE := {$data['flatValue']};
                   V_FISCAL_YEAR_ID HRIS_FLAT_VALUE_DETAIL.FISCAL_YEAR_ID%TYPE := {$data['fiscalYearId']};
-                  V_MONTH_ID HRIS_FLAT_VALUE_DETAIL.MONTH_ID%TYPE := {$data['monthId']};
                   V_OLD_FLAT_VALUE HRIS_FLAT_VALUE_DETAIL.FLAT_VALUE%TYPE;
                 BEGIN
                   SELECT FLAT_VALUE
@@ -71,14 +70,14 @@ class FlatValueDetailRepo implements RepositoryInterface {
                   FROM HRIS_FLAT_VALUE_DETAIL
                   WHERE FLAT_ID       = V_FLAT_ID
                   AND EMPLOYEE_ID    = V_EMPLOYEE_ID
-                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID
-                  AND MONTH_ID       = V_MONTH_ID;
+                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID;
+                  
                   UPDATE HRIS_FLAT_VALUE_DETAIL
                   SET FLAT_VALUE      = V_FLAT_VALUE
                   WHERE FLAT_ID       = V_FLAT_ID
                   AND EMPLOYEE_ID    = V_EMPLOYEE_ID
-                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID
-                  AND MONTH_ID       = V_MONTH_ID;
+                  AND FISCAL_YEAR_ID = V_FISCAL_YEAR_ID;
+                  
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN
                   INSERT
@@ -87,7 +86,6 @@ class FlatValueDetailRepo implements RepositoryInterface {
                       FLAT_ID,
                       EMPLOYEE_ID,
                       FISCAL_YEAR_ID,
-                      MONTH_ID,
                       FLAT_VALUE,
                       CREATED_DT
                     )
@@ -96,7 +94,6 @@ class FlatValueDetailRepo implements RepositoryInterface {
                       V_FLAT_ID,
                       V_EMPLOYEE_ID,
                       V_FISCAL_YEAR_ID,
-                      V_MONTH_ID,
                       V_FLAT_VALUE,
                       TRUNC(SYSDATE)
                     );
