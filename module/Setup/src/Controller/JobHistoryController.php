@@ -56,31 +56,18 @@ class JobHistoryController extends AbstractActionController {
         $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId1", "class" => "form-control"]);
         $serviceEventTypeFormElement->setLabel("Service Event Type");
 
-        $jobHistory = $this->repository->fetchAll();
         return Helper::addFlashMessagesToArray($this, [
-                    'jobHistoryList' => $jobHistory,
                     'serviceEventType' => $serviceEventTypeFormElement,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 
     public function addAction() {
-        $id = (int) $this->params()->fromRoute("id");
-        $prevAndNextHistory = [];
-        if ($id !== 0) {
-            $jobHistoryRepo = new JobHistoryRepository($this->adapter);
-            $prevAndNextHistory['prev'] = $jobHistoryRepo->fetchById($id);
-            $nextJobHistory = $jobHistoryRepo->fetchAfterJobHistory($id);
-            if (sizeof($nextJobHistory) > 0) {
-                $prevAndNextHistory['next'] = $nextJobHistory[0];
-            }
-        }
         $this->initializeForm();
         $request = $this->getRequest();
 
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
-
             if ($this->form->isValid()) {
 
                 $jobHistory = new JobHistory();
@@ -94,34 +81,8 @@ class JobHistoryController extends AbstractActionController {
 
                 $this->repository->add($jobHistory);
 
-                $stmt = $this->adapter->createStatement();
-                $stmt->prepare("CALL HRIS_UPDATE_EMPLOYEE_SERVICE({$jobHistory->toCompanyId},{$jobHistory->toBranchId},{$jobHistory->toDepartmentId},{$jobHistory->toDesignationId},{$jobHistory->toPositionId},{$jobHistory->toServiceTypeId},{$jobHistory->serviceEventTypeId},{$jobHistory->employeeId},{$jobHistory->startDate->getExpression()})");
-                $stmt->execute();
-
-                $jobHistoryRepo = new JobHistoryRepository($this->adapter);
-                $nextJobHistory = $jobHistoryRepo->fetchAfterStartDate($jobHistory->startDate->getExpression());
-
-                if (sizeof($nextJobHistory) > 0) {
-                    $nJobHistory = new JobHistory();
-                    $nJobHistory->exchangeArrayFromDB($nextJobHistory[0]);
-
-                    $nJobHistory->fromCompanyId = $jobHistory->toCompanyId;
-                    $nJobHistory->fromBranchId = $jobHistory->toBranchId;
-                    $nJobHistory->fromDepartmentId = $jobHistory->toDepartmentId;
-                    $nJobHistory->fromDesignationId = $jobHistory->toDesignationId;
-                    $nJobHistory->fromPositionId = $jobHistory->toPositionId;
-                    $nJobHistory->fromServiceTypeId = $jobHistory->toServiceTypeId;
-
-                    $this->repository->edit($nJobHistory, $nJobHistory->jobHistoryId);
-                }
                 $this->flashmessenger()->addMessage("Job History Successfully added!!!");
-
-                if (sizeof($nextJobHistory) > 0) {
-                    return $this->redirect()->toRoute("jobHistory");
-                } else {
-
-                    return $this->redirect()->toRoute("jobHistory", ['action' => 'add']);
-                }
+                return $this->redirect()->toRoute("jobHistory");
             }
         }
         return Helper::addFlashMessagesToArray(
@@ -135,7 +96,6 @@ class JobHistoryController extends AbstractActionController {
                     'positions' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
                     'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
                     'serviceEventTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
-                    'prevAndNextHistory' => $prevAndNextHistory
                         ]
         );
     }
@@ -256,7 +216,7 @@ class JobHistoryController extends AbstractActionController {
         $jobHistoryDetail = $this->repository->fetchById($id);
         $jobHistory->exchangeArrayFromDb($jobHistoryDetail);
         $this->form->bind($jobHistory);
-        
+
         return Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
@@ -274,8 +234,6 @@ class JobHistoryController extends AbstractActionController {
                     'prevAndNextHistory' => $prevAndNextHistory
                         ]
         );
-        
-        
     }
 
     public function deleteAction() {
@@ -334,6 +292,36 @@ class JobHistoryController extends AbstractActionController {
             } else {
                 throw new Exception("The request should be of type post");
             }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getEmployeeLatestServiceAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception("The request should be of type post");
+            }
+
+            $data = $request->getPost();
+
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
+            $employeeId = $data['employeeId'];
+            $companyId = $data['companyId'];
+            $branchId = $data['branchId'];
+            $departmentId = $data['departmentId'];
+            $designationId = $data['designationId'];
+            $positionId = $data['positionId'];
+            $serviceTypeId = $data['serviceTypeId'];
+            $serviceEventTypeId = $data['serviceEventTypeId'];
+
+            $result = $this->repository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId);
+
+            $jobHistoryRecord = Helper::extractDbData($result);
+
+            return new CustomViewModel(['success' => true, 'data' => $jobHistoryRecord, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

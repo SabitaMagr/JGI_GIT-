@@ -23,20 +23,17 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.restfulUrl, {
-                    action: 'pullJobHistoryList',
-                    data: {
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'employeeId': employeeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                    }
+                window.app.pullDataById(document.getEmployeeLatestServiceWS, {
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'employeeId': employeeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success);
@@ -76,31 +73,31 @@ angular.module('hris', [])
                         {field: "FULL_NAME", title: "Employee Name", width: 200},
                         {field: "START_DATE", title: "Start Date", width: 120},
                         {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 150},
-                        {field: "FROM_SERVICE_NAME", title: "Service Type", width: 150},
-                        {field: "FROM_BRANCH_NAME", title: "Branch", width: 150},
-                        {field: "FROM_DEPARTMENT_NAME", title: "Department", width: 150},
-                        {field: "FROM_DESIGNATION_TITLE", title: "Designation", width: 150},
-                        {field: "FROM_POSITION_NAME", title: "Position", width: 150},
+                        {field: "TO_SERVICE_NAME", title: "Service Type", width: 150},
+                        {field: "TO_BRANCH_NAME", title: "Branch", width: 150},
+                        {field: "TO_DEPARTMENT_NAME", title: "Department", width: 150},
+                        {field: "TO_DESIGNATION_TITLE", title: "Designation", width: 150},
+                        {field: "TO_POSITION_NAME", title: "Position", width: 150},
                         {title: "Action", width: 140}
                     ]
                 });
-                
-                app.searchTable('jobHistoryTable',['FULL_NAME','START_DATE','SERVICE_EVENT_TYPE_NAME','FROM_SERVICE_NAME','FROM_BRANCH_NAME','FROM_DEPARTMENT_NAME','FROM_DESIGNATION_TITLE','FROM_POSITION_NAME']);
-                
+
+                app.searchTable('jobHistoryTable', ['FULL_NAME', 'START_DATE', 'SERVICE_EVENT_TYPE_NAME', 'TO_SERVICE_NAME', 'TO_BRANCH_NAME', 'TO_DEPARTMENT_NAME', 'TO_DESIGNATION_TITLE', 'TO_POSITION_NAME']);
+
                 app.pdfExport(
-                'jobHistoryTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'START_DATE': 'Company',
-                    'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
-                    'FROM_SERVICE_NAME': 'Service',
-                    'FROM_BRANCH_NAME': 'Branch',
-                    'FROM_DEPARTMENT_NAME': 'Department',
-                    'FROM_DESIGNATION_TITLE': 'Designation',
-                    'FROM_POSITION_NAME': 'Position'
-                }
-        );
-                
+                        'jobHistoryTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'START_DATE': 'Company',
+                            'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
+                            'TO_SERVICE_NAME': 'Service',
+                            'TO_BRANCH_NAME': 'Branch',
+                            'TO_DEPARTMENT_NAME': 'Department',
+                            'TO_DESIGNATION_TITLE': 'Designation',
+                            'TO_POSITION_NAME': 'Position'
+                        }
+                );
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -140,11 +137,11 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.SERVICE_EVENT_TYPE_NAME},
-                                {value: dataItem.FROM_SERVICE_NAME + "-" + dataItem.TO_SERVICE_NAME},
-                                {value: dataItem.FROM_BRANCH_NAME + "-" + dataItem.TO_BRANCH_NAME},
-                                {value: dataItem.FROM_DEPARTMENT_NAME + "-" + dataItem.TO_DEPARTMENT_NAME},
-                                {value: dataItem.FROM_DESIGNATION_TITLE + "-" + dataItem.TO_DESIGNATION_TITLE},
-                                {value: dataItem.FROM_POSITION_NAME + "-" + dataItem.TO_POSITION_NAME}
+                                {value: dataItem.TO_SERVICE_NAME},
+                                {value: dataItem.TO_BRANCH_NAME},
+                                {value: dataItem.TO_DEPARTMENT_NAME},
+                                {value: dataItem.TO_DESIGNATION_TITLE},
+                                {value: dataItem.TO_POSITION_NAME}
                             ]
                         });
                     }
