@@ -148,6 +148,7 @@ class JobHistoryRepository implements RepositoryInterface {
             new Expression("H.TO_POSITION_ID AS TO_POSITION_ID"),
             new Expression("H.TO_SERVICE_TYPE_ID AS TO_SERVICE_TYPE_ID"),
             new Expression("H.TO_COMPANY_ID AS TO_COMPANY_ID"),
+            new Expression("H.TO_SALARY AS TO_SALARY"),
                 ], true);
         $select->from(['H' => "HRIS_JOB_HISTORY"]);
         $select->where(['H.JOB_HISTORY_ID' => $id]);
