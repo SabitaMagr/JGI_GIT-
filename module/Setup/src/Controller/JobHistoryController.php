@@ -85,8 +85,7 @@ class JobHistoryController extends AbstractActionController {
                 return $this->redirect()->toRoute("jobHistory");
             }
         }
-        return Helper::addFlashMessagesToArray(
-                        $this, [
+        return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ", false, true),
                     'departments' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true, true),
@@ -96,8 +95,7 @@ class JobHistoryController extends AbstractActionController {
                     'positions' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
                     'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
                     'serviceEventTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
-                        ]
-        );
+        ]);
     }
 
     public function editAction() {
@@ -106,76 +104,32 @@ class JobHistoryController extends AbstractActionController {
             return $this->redirect()->toRoute('jobHistory');
         }
 
-        $prevAndNextHistory = [];
-        if ($id !== 0) {
-            $jobHistoryRepo = new JobHistoryRepository($this->adapter);
-
-            $prevJobHistory = $jobHistoryRepo->fetchBeforeJobHistory($id);
-
-            if (sizeof($prevJobHistory) > 0) {
-                $prevAndNextHistory['prev'] = $prevJobHistory[0];
-            }
-
-            $nextJobHistory = $jobHistoryRepo->fetchAfterJobHistory($id);
-            if (sizeof($nextJobHistory) > 0) {
-                $prevAndNextHistory['next'] = $nextJobHistory[0];
-            }
-        }
         $this->initializeForm();
         $request = $this->getRequest();
 
         $jobHistory = new JobHistory();
-        if (!$request->isPost()) {
-            $jobHistoryDetail = $this->repository->fetchById($id);
-            $jobHistory->exchangeArrayFromDb($jobHistoryDetail);
-            $this->form->bind($jobHistory);
-        } else {
-
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-
                 $jobHistory->exchangeArrayFromForm($this->form->getData());
-
                 $jobHistory->startDate = Helper::getExpressionDate($jobHistory->startDate);
                 $jobHistory->endDate = Helper::getExpressionDate($jobHistory->endDate);
                 $jobHistory->modifiedDt = Helper::getcurrentExpressionDate();
                 $jobHistory->modifiedBy = $this->employeeId;
 
                 $this->repository->edit($jobHistory, $id);
-                $stmt = $this->adapter->createStatement();
-                $stmt->prepare("CALL HRIS_UPDATE_EMPLOYEE_SERVICE({$jobHistory->toCompanyId},{$jobHistory->toBranchId},{$jobHistory->toDepartmentId},{$jobHistory->toDesignationId},{$jobHistory->toPositionId},{$jobHistory->toServiceTypeId},{$jobHistory->serviceEventTypeId},{$jobHistory->employeeId},{$jobHistory->startDate->getExpression()})");
-                $stmt->execute();
-
-
-
-                $jobHistoryRepo = new JobHistoryRepository($this->adapter);
-                $nextJobHistory = $jobHistoryRepo->fetchAfterStartDate($jobHistory->startDate->getExpression());
-
-                if (sizeof($nextJobHistory) > 0) {
-                    $nJobHistory = new JobHistory();
-                    $nJobHistory->exchangeArrayFromDB($nextJobHistory[0]);
-
-                    $nJobHistory->fromCompanyId = $jobHistory->toCompanyId;
-                    $nJobHistory->fromBranchId = $jobHistory->toBranchId;
-                    $nJobHistory->fromDepartmentId = $jobHistory->toDepartmentId;
-                    $nJobHistory->fromDesignationId = $jobHistory->toDesignationId;
-                    $nJobHistory->fromPositionId = $jobHistory->toPositionId;
-                    $nJobHistory->fromServiceTypeId = $jobHistory->toServiceTypeId;
-
-                    $this->repository->edit($nJobHistory, $nJobHistory->jobHistoryId);
-                }
-
                 $this->flashmessenger()->addMessage("Job History Successfully Updated!!!");
                 return $this->redirect()->toRoute("jobHistory");
             }
         }
-        return Helper::addFlashMessagesToArray(
-                        $this, [
-                    'form' => $this->form,
+        $jobHistoryDetail = $this->repository->fetchById($id);
+        $jobHistory->exchangeArrayFromDb($jobHistoryDetail);
+        $this->form->bind($jobHistory);
+
+        return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
-                    'empId' => EntityHelper::getTableKVList($this->adapter, JobHistory::TABLE_NAME, JobHistory::JOB_HISTORY_ID, [JobHistory::EMPLOYEE_ID], [JobHistory::JOB_HISTORY_ID => $id], null)[$id],
-                    'messages' => $this->flashmessenger()->getMessages(),
-                    'employeesAll' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
+                    'form' => $this->form,
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ", false, true),
                     'departments' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true, true),
                     'designations' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true, true),
                     'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => 'E'], "COMPANY_NAME", "ASC", null, true, true),
@@ -183,7 +137,6 @@ class JobHistoryController extends AbstractActionController {
                     'positions' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
                     'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
                     'serviceEventTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
-                    'prevAndNextHistory' => $prevAndNextHistory
                         ]
         );
     }
