@@ -39,8 +39,8 @@ angular.module("hris", [])
                         'appraisalStageId': appraisalStageId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'reportType':'hrReport',
-                        'userId':userId
+                        'reportType': 'hrReport',
+                        'userId': userId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -57,7 +57,7 @@ angular.module("hris", [])
                     console.log(failure);
                 });
             }
-            
+
             $scope.initializekendoGrid = function () {
                 $("#appraisalListTable").kendoGrid({
                     excel: {
@@ -76,8 +76,9 @@ angular.module("hris", [])
                     dataBound: gridDataBound,
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee",width: 150},
-                        {field: "APPRAISAL_EDESC", title: "Appraisal",  width: 120},
+                        {field: "EMPLOYEE_CODE", title: "Code", width: 150, locked: true},
+                        {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
+                        {field: "APPRAISAL_EDESC", title: "Appraisal", width: 120},
                         {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type", width: 150},
                         {field: "STAGE_EDESC", title: "Current Stage", width: 140},
                         {field: "START_DATE", title: "Start Date", width: 120},
@@ -87,7 +88,7 @@ angular.module("hris", [])
                         {field: "END_DATE", title: "Appraisee Self Rating?", width: 170},
                         {field: "END_DATE", title: "Appraiser Evaluation?", width: 170},
                         {field: "END_DATE", title: "Reviewer View?", width: 140},
-                        {field: "END_DATE", title: "Final Rating?", width: 120},
+                        {field: "END_DATE", title: "Final Rating?", width: 120, type: 'number'},
                         {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100},
                         {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170},
                         {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140},
@@ -97,23 +98,24 @@ angular.module("hris", [])
                     ]
                 });
 
-                app.searchTable('appraisalListTable', ['FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
+                app.searchTable('appraisalListTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
 
                 app.pdfExport(
                         'appraisalListTable',
                         {
+                            'EMPLOYEE_CODE': 'Code',
                             'FULL_NAME': 'Name',
                             'APPRAISAL_EDESC': 'Appraisal',
-                            'APPRAISAL_TYPE_EDESC':'Appraisal Type',
+                            'APPRAISAL_TYPE_EDESC': 'Appraisal Type',
                             'STAGE_EDESC': 'Current Stage',
                             'START_DATE': 'Start Date',
                             'END_DATE': 'EndDate',
-                            'APPRAISER_OVERALL_RATING':'Rating',
+                            'APPRAISER_OVERALL_RATING': 'Rating',
                             'APPRAISER_NAME': 'Appraiser Name',
                             'ALT_APPRAISER_NAME': 'Alt. Appraiser Name',
                             'REVIEWER_NAME': 'Reviewer Name',
                             'ALT_REVIEWER_NAME': 'Alt. Reviewer Name'
-                            
+
                         });
 
 
@@ -132,6 +134,7 @@ angular.module("hris", [])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
+                                {value: "Employee Code"},
                                 {value: "Employee Name"},
                                 {value: "Appraisal Name"},
                                 {value: "Appraisal Type Name"},
@@ -160,6 +163,7 @@ angular.module("hris", [])
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
+                                {value: dataItem.EMPLOYEE_CODE},
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.APPRAISAL_EDESC},
                                 {value: dataItem.APPRAISAL_TYPE_EDESC},
@@ -183,6 +187,7 @@ angular.module("hris", [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
