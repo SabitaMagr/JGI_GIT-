@@ -12,8 +12,6 @@ class JobHistoryForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Name"})
      * @Annotation\Attributes({ "id":"employeeId","class":"form-control"})
      */
