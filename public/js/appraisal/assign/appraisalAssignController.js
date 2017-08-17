@@ -177,6 +177,14 @@ angular.module('hris', ['ui.bootstrap'])
                 }
             }
             $scope.assign = function () {
+                
+                var executive='N';
+                var executiveValue="No";
+                if(document.getElementById('executiveYes').checked==true){
+                var executive='Y';
+                var executiveValue="Yes";
+                }
+                
                 var reviewerElement = angular.element(document.getElementById('reviewerId'));
                 var reviewerId = reviewerElement.val();
                 var reviewerName = document.getElementById('reviewerId').options[document.getElementById('reviewerId').selectedIndex].text;
@@ -232,10 +240,10 @@ angular.module('hris', ['ui.bootstrap'])
 
                 if (!errorFlagR && !errorFlagA) {
                     App.blockUI({target: "#hris-page-content"});
-                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,stageId,stageName);
+                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,stageId,stageName,executive,executiveValue);
                 }
             };
-            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,stageId,stageName) {
+            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,stageId,stageName,executive,executiveValue) {
                 var promises = [];
 
                 if (!$scope.reviewerAssign) {
@@ -280,7 +288,8 @@ angular.module('hris', ['ui.bootstrap'])
                                 altAppraiserId:altAppraiserId1,
                                 altReviewerId:altReviewerId1,
                                 superReviewerId:null,
-                                stageId:stageId1
+                                stageId:stageId1,
+                                executive:executive
                             }
                         }));
                     }
@@ -289,6 +298,9 @@ angular.module('hris', ['ui.bootstrap'])
                     App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         for (var index in $scope.employeeList) {
+                            if ($scope.employeeList[index].checked) {
+                            $scope.employeeList[index].EXECUTIVE = executiveValue;
+                            }
                             if ($scope.employeeList[index].checked) {
                                 if ($scope.reviewerAssign) {
                                     if ($scope.employeeList[index].EMPLOYEE_ID == reviewerId) {

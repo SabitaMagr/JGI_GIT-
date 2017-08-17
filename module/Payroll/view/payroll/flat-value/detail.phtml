@@ -13,7 +13,6 @@ $this->headScript()
     document.postFlatValueDetailWS = '<?php echo $this->url("flatValue", ["action" => "postFlatValueDetail"]); ?>';
     document.flatValues =<?php echo json_encode($flatValues); ?>;
     document.fiscalYears =<?php echo json_encode($fiscalYears); ?>;
-    document.months =<?php echo json_encode($months); ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">

@@ -20,41 +20,30 @@ $endDate = $form->get('endDate');
 $serviceEventTypeId = $form->get('serviceEventTypeId');
 $serviceEventTypeId->setValueOptions($serviceEventTypes);
 
-$fromServiceTypeId = $form->get('fromServiceTypeId');
-$fromServiceTypeId->setValueOptions($serviceTypes);
-//$fromServiceTypeId->setAttributes(['disabled' => "disabled"]);
 $toServiceTypeId = $form->get('toServiceTypeId');
 $toServiceTypeId->setValueOptions($serviceTypes);
 
-$fromCompanyId = $form->get('fromCompanyId');
-$fromCompanyId->setValueOptions($companies);
 
 $toCompanyId = $form->get('toCompanyId');
 $toCompanyId->setValueOptions($companies);
 
 
-$fromBranchId = $form->get('fromBranchId');
-$fromBranchId->setValueOptions($branches);
-//$fromBranchId->setAttributes(['disabled' => "disabled"]);
 $toBranchId = $form->get('toBranchId');
 $toBranchId->setValueOptions($branches);
 
-$fromDepartmentId = $form->get('fromDepartmentId');
-$fromDepartmentId->setValueOptions($departments);
-//$fromDepartmentId->setAttributes(['disabled' => "disabled"]);
+
 $toDepartmentId = $form->get('toDepartmentId');
 $toDepartmentId->setValueOptions($departments);
 
-$fromDesignationId = $form->get('fromDesignationId');
-$fromDesignationId->setValueOptions($designations);
-//$fromDesignationId->setAttributes(['disabled' => "disabled"]);
+
 $toDesignationId = $form->get('toDesignationId');
 $toDesignationId->setValueOptions($designations);
 
-$fromPositionId = $form->get('fromPositionId');
-$fromPositionId->setValueOptions($positions);
 
-//$fromPositionId->setAttributes(['disabled' => "disabled"]);
+$toSalary = $form->get('toSalary');
+
+
+
 $toPositionId = $form->get('toPositionId');
 $toPositionId->setValueOptions($positions);
 
@@ -89,7 +78,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <script>
     document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
-    document.prevAndNextHistory = <?php echo json_encode($prevAndNextHistory); ?>;
 </script>
 
 <div class="row margin-top-20">
@@ -120,45 +108,33 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepaliStartDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                               class="form-control" value="">
-                                    </div>
+                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                           class="form-control" value="">
                                 </div>
                             </div>     
-                        </div>        
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($fromServiceTypeId); ?>
-                            <?php print $this->formElement($fromServiceTypeId); ?>
-                            <?php print $this->formElementErrors()->render($fromServiceTypeId, ['class' => 'help-block']); ?>
-                        </div>
+                        </div>     
                         <div class="form-group companyToggle">
-                            <?php print $this->formLabel($fromCompanyId); ?>
-                            <?php print $this->formElement($fromCompanyId); ?>
-                            <?php print $this->formElementErrors()->render($fromCompanyId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toCompanyId); ?>
+                            <?php print $this->formElement($toCompanyId); ?>
+                            <?php print $this->formElementErrors()->render($toCompanyId, ['class' => 'help-block']); ?>
                         </div>
                         <div class="form-group">
-                            <?php print $this->formLabel($fromBranchId); ?>
-                            <?php print $this->formElement($fromBranchId); ?>
-                            <?php print $this->formElementErrors()->render($fromBranchId, ['class' => 'help-block']); ?>
-                        </div>
-                        <div class="form-group">
-                            <?php print $this->formLabel($fromDepartmentId); ?>
-                            <?php print $this->formElement($fromDepartmentId); ?>
-                            <?php print $this->formElementErrors()->render($fromDepartmentId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toDepartmentId); ?>
+                            <?php print $this->formElement($toDepartmentId); ?>
+                            <?php print $this->formElementErrors()->render($toDepartmentId, ['class' => 'help-block']); ?>
                         </div>
 
                         <div class="form-group">
-                            <?php print $this->formLabel($fromDesignationId); ?>
-                            <?php print $this->formElement($fromDesignationId); ?>
-                            <?php print $this->formElementErrors()->render($fromDesignationId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toPositionId); ?>
+                            <?php print $this->formElement($toPositionId); ?>
+                            <?php print $this->formElementErrors()->render($toPositionId, ['class' => 'help-block']); ?>
                         </div>
                         <div class="form-group">
-                            <?php print $this->formLabel($fromPositionId); ?>
-                            <?php print $this->formElement($fromPositionId); ?>
-                            <?php print $this->formElementErrors()->render($fromPositionId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toSalary); ?>
+                            <?php print $this->formElement($toSalary); ?>
+                            <?php print $this->formElementErrors()->render($toSalary, ['class' => 'help-block']); ?>
                         </div>
+
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -178,56 +154,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepaliEndDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                               class="form-control" value="">
-                                    </div>
+                                    <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                           class="form-control" value="">
                                 </div>
                             </div>     
                         </div>        
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($toServiceTypeId); ?>
-                            <?php print $this->formElement($toServiceTypeId); ?>
-                            <?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
-                        </div>
-
-                        <div class="form-group companyToggle">
-                            <?php print $this->formLabel($toCompanyId); ?>
-                            <?php print $this->formElement($toCompanyId); ?>
-                            <?php print $this->formElementErrors()->render($toCompanyId, ['class' => 'help-block']); ?>
-                        </div>
-
                         <div class="form-group">
                             <?php print $this->formLabel($toBranchId); ?>
                             <?php print $this->formElement($toBranchId); ?>
                             <?php print $this->formElementErrors()->render($toBranchId, ['class' => 'help-block']); ?>
                         </div>
-
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($toDepartmentId); ?>
-                            <?php print $this->formElement($toDepartmentId); ?>
-                            <?php print $this->formElementErrors()->render($toDepartmentId, ['class' => 'help-block']); ?>
-                        </div>
-
-
                         <div class="form-group">
                             <?php print $this->formLabel($toDesignationId); ?>
                             <?php print $this->formElement($toDesignationId); ?>
                             <?php print $this->formElementErrors()->render($toDesignationId, ['class' => 'help-block']); ?>
                         </div>
-
-
                         <div class="form-group">
-                            <?php print $this->formLabel($toPositionId); ?>
-                            <?php print $this->formElement($toPositionId); ?>
-                            <?php print $this->formElementErrors()->render($toPositionId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toServiceTypeId); ?>
+                            <?php print $this->formElement($toServiceTypeId); ?>
+                            <?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
                         </div>
-
-
-
-
                     </div>
                 </div>
                 <div class="form-group">

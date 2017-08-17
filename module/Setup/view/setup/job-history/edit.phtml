@@ -6,13 +6,13 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/setup/job-history/edit.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/job-history/add.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'jobHistory-form');
 
 $employeeId = $form->get('employeeId');
-$employeeId->setValueOptions($employeesAll);
+$employeeId->setValueOptions($employees);
 
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
@@ -20,63 +20,72 @@ $endDate = $form->get('endDate');
 $serviceEventTypeId = $form->get('serviceEventTypeId');
 $serviceEventTypeId->setValueOptions($serviceEventTypes);
 
-$fromServiceTypeId = $form->get('fromServiceTypeId');
-$fromServiceTypeId->setValueOptions($serviceTypes);
 $toServiceTypeId = $form->get('toServiceTypeId');
 $toServiceTypeId->setValueOptions($serviceTypes);
-$fromBranchId = $form->get('fromBranchId');
-$fromBranchId->setValueOptions($branches);
+
+
+$toCompanyId = $form->get('toCompanyId');
+$toCompanyId->setValueOptions($companies);
+
+
 $toBranchId = $form->get('toBranchId');
 $toBranchId->setValueOptions($branches);
-$fromDepartmentId = $form->get('fromDepartmentId');
-$fromDepartmentId->setValueOptions($departments);
+
+
 $toDepartmentId = $form->get('toDepartmentId');
 $toDepartmentId->setValueOptions($departments);
-$fromDesignationId = $form->get('fromDesignationId');
-$fromDesignationId->setValueOptions($designations);
+
+
 $toDesignationId = $form->get('toDesignationId');
 $toDesignationId->setValueOptions($designations);
-$fromPositionId = $form->get('fromPositionId');
-$fromPositionId->setValueOptions($positions);
+
+
+$toSalary = $form->get('toSalary');
+
+
+
 $toPositionId = $form->get('toPositionId');
 $toPositionId->setValueOptions($positions);
 
-$fromCompanyId = $form->get('fromCompanyId');
-$fromCompanyId->setValueOptions($companies);
-$toCompanyId = $form->get('toCompanyId');
-$toCompanyId->setValueOptions($companies);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('jobHistory', ['action' => 'edit', 'id' => $id]));
 
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-<script>
-    document.jobHistoryId =<?= $id ?>;
-    document.employeeId =<?= $empId ?>;
-    document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
-    document.prevAndNextHistory = <?php echo json_encode($prevAndNextHistory); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<script>
+    document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
+</script>
+
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-user"></i>Update
+                    <i class="fa fa-user"></i>Job History
                 </div>
             </div>
             <div class="portlet-body">
@@ -99,41 +108,33 @@ print $this->form()->openTag($form);
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepaliStartDate">&nbsp;</label>
-                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate1" class="form-control" value="">
+                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
+                                           class="form-control" value="">
                                 </div>
                             </div>     
-                        </div>        
-                        <div class="form-group">
-                            <?php print $this->formLabel($fromServiceTypeId); ?>
-                            <?php print $this->formElement($fromServiceTypeId); ?>
-                            <?php print $this->formElementErrors()->render($fromServiceTypeId, ['class' => 'help-block']); ?>
-                        </div>
+                        </div>     
                         <div class="form-group companyToggle">
-                            <?php print $this->formLabel($fromCompanyId); ?>
-                            <?php print $this->formElement($fromCompanyId); ?>
-                            <?php print $this->formElementErrors()->render($fromCompanyId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toCompanyId); ?>
+                            <?php print $this->formElement($toCompanyId); ?>
+                            <?php print $this->formElementErrors()->render($toCompanyId, ['class' => 'help-block']); ?>
                         </div>
                         <div class="form-group">
-                            <?php print $this->formLabel($fromBranchId); ?>
-                            <?php print $this->formElement($fromBranchId); ?>
-                            <?php print $this->formElementErrors()->render($fromBranchId, ['class' => 'help-block']); ?>
-                        </div>
-                        <div class="form-group">
-                            <?php print $this->formLabel($fromDepartmentId); ?>
-                            <?php print $this->formElement($fromDepartmentId); ?>
-                            <?php print $this->formElementErrors()->render($fromDepartmentId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toDepartmentId); ?>
+                            <?php print $this->formElement($toDepartmentId); ?>
+                            <?php print $this->formElementErrors()->render($toDepartmentId, ['class' => 'help-block']); ?>
                         </div>
 
                         <div class="form-group">
-                            <?php print $this->formLabel($fromDesignationId); ?>
-                            <?php print $this->formElement($fromDesignationId); ?>
-                            <?php print $this->formElementErrors()->render($fromDesignationId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toPositionId); ?>
+                            <?php print $this->formElement($toPositionId); ?>
+                            <?php print $this->formElementErrors()->render($toPositionId, ['class' => 'help-block']); ?>
                         </div>
                         <div class="form-group">
-                            <?php print $this->formLabel($fromPositionId); ?>
-                            <?php print $this->formElement($fromPositionId); ?>
-                            <?php print $this->formElementErrors()->render($fromPositionId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toSalary); ?>
+                            <?php print $this->formElement($toSalary); ?>
+                            <?php print $this->formElementErrors()->render($toSalary, ['class' => 'help-block']); ?>
                         </div>
+
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -153,54 +154,32 @@ print $this->form()->openTag($form);
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepaliEndDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                               class="form-control" value="">
-                                    </div>
+                                    <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                           class="form-control" value="">
                                 </div>
                             </div>     
                         </div>        
-                        <div class="form-group">
-                            <?php print $this->formLabel($toServiceTypeId); ?>
-                            <?php print $this->formElement($toServiceTypeId); ?>
-                            <?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
-                        </div>
-                        <div class="form-group companyToggle">
-                            <?php print $this->formLabel($toCompanyId); ?>
-                            <?php print $this->formElement($toCompanyId); ?>
-                            <?php print $this->formElementErrors()->render($toCompanyId, ['class' => 'help-block']); ?>
-                        </div>
                         <div class="form-group">
                             <?php print $this->formLabel($toBranchId); ?>
                             <?php print $this->formElement($toBranchId); ?>
                             <?php print $this->formElementErrors()->render($toBranchId, ['class' => 'help-block']); ?>
                         </div>
-
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($toDepartmentId); ?>
-                            <?php print $this->formElement($toDepartmentId); ?>
-                            <?php print $this->formElementErrors()->render($toDepartmentId, ['class' => 'help-block']); ?>
-                        </div>
-
-
                         <div class="form-group">
                             <?php print $this->formLabel($toDesignationId); ?>
                             <?php print $this->formElement($toDesignationId); ?>
                             <?php print $this->formElementErrors()->render($toDesignationId, ['class' => 'help-block']); ?>
                         </div>
-
-
                         <div class="form-group">
-                            <?php print $this->formLabel($toPositionId); ?>
-                            <?php print $this->formElement($toPositionId); ?>
-                            <?php print $this->formElementErrors()->render($toPositionId, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($toServiceTypeId); ?>
+                            <?php print $this->formElement($toServiceTypeId); ?>
+                            <?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <?php print $this->formSubmit($submit); ?>
                 </div>
+
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@ class FiscalYear extends Model {
     const MODIFIED_DT = "MODIFIED_DT";
     const STATUS = "STATUS";
     const REMARKS = "REMARKS";
+    const FISCAL_YEAR_NAME = "FISCAL_YEAR_NAME";
 
     public $fiscalYearId;
     public $startDate;
@@ -20,6 +21,7 @@ class FiscalYear extends Model {
     public $modifiedDt;
     public $status;
     public $remarks;
+    public $fiscalYearName;
     public $mappings = [
         'fiscalYearId' => self::FISCAL_YEAR_ID,
         'startDate' => self::START_DATE,
@@ -28,6 +30,7 @@ class FiscalYear extends Model {
         'modifiedDt' => self::MODIFIED_DT,
         'status' => self::STATUS,
         'remarks' => self::REMARKS,
+        'fiscalYearName' => self::FISCAL_YEAR_NAME,
     ];
 
 }

@@ -186,7 +186,11 @@ class PerformanceAppraisal extends AbstractActionController{
                 }
                 
                 if($assignedAppraisalDetail['APPRAISER_ID']==null){
+                    if($assignedAppraisalDetail['IS_EXECUTIVE']=='Y' && $assignedAppraisalDetail['STAGE_ID']!=1) {
+                    $nextStageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
+                    }else{
                     $nextStageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+2);
+                    }
                 }else{
                     $nextStageId = AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
                 }

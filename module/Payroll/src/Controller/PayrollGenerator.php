@@ -36,21 +36,22 @@ class PayrollGenerator {
 
     const VARIABLES = [
         "BASIC_SALARY",
-        "NO_OF_WORKING_DAYS",
-        "NO_OF_DAYS_ABSENT",
-        "NO_OF_DAYS_WORKED",
-        "NO_OF_PAID_LEAVES",
-        "NO_OF_UNPAID_LEAVES",
-        "GENDER",
-        "MARITUAL_STATUS",
-        "TOTAL_DAYS_FROM_JOIN_DATE",
-        "SERVICE_TYPE",
-        "NO_OF_WORKING_DAYS_INC_HOLIDAYS",
-        "TOTAL_NO_OF_WORK_DAYS_INC_HOLIDAYS",
-        "SALARY_REVIEW_DAY",
-        "SALARY_REVIEW_OLD_SALARY",
-        "HAS_ADVANCE",
-        "ADVANCE_AMT"
+        "MONTH_DAYS",
+        "PRESENT_DAYS",
+        "ABSENT_DAYS",
+        "PAID_LEAVES",
+        "UNPAID_LEAVES",
+        "DAY_OFFS",
+        "HOLIDAYS",
+        "DAYS_FROM_JOIN_DATE",
+        "DAYS_FROM_PERMANENT_DATE",
+        "IS_MALE",
+        "IS_FEMALE",
+        "IS_MARRIED",
+        "IS_PERMANENT",
+        "IS_PROBATION",
+        "IS_CONTRACT",
+        "IS_TEMPORARY"
     ];
     const SYSTEM_RULE = [
         "CUR_MTH_ID",
