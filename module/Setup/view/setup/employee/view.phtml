@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Load Javascript files here
  */
@@ -13,7 +13,6 @@ $companyId = $formOne->get('companyId');
 /**
  * Personal Information
  */
-
 $employeeCode = $formOne->get("employeeCode");
 
 $firstName = $formOne->get("firstName");
@@ -188,7 +187,7 @@ echo json_encode($menu);
                 </div>
 
                 <div class="col-xs-12 col-sm-3 col-md-3 col-box">
-                     <div class="row bottomgap">
+                    <div class="row bottomgap">
                         <div class="form-group">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign"> 
                                 <?php print $this->formLabel($firstName) ?></div>
@@ -233,7 +232,7 @@ echo json_encode($menu);
                                 <?php print $employeeData[\Setup\Model\HrEmployees::EMAIL_OFFICIAL]; ?></div>
                         </div>
                     </div>  
-                    
+
                     <!--EmployeeCode-->
                     <div class="row bottomgap">
                         <div class="form-group <?= empty($employeeCode->getMessages()) ? "" : "error" ?>">
@@ -256,7 +255,7 @@ echo json_encode($menu);
                                 <?php print $employeeData[\Setup\Model\HrEmployees::MIDDLE_NAME]; ?></div>
                         </div>
                     </div>
-                    
+
                     <div class="row bottomgap">
                         <div class="form-group  <?= empty($nameNepali->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
@@ -972,7 +971,7 @@ echo json_encode($menu);
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
                         <div class="form-group<?= empty($employeeType->getMessages()) ? "" : "error" ?>">
@@ -985,16 +984,16 @@ echo json_encode($menu);
 
 
                 </div>
-                
+
                 <!--current-->
-               
-                    <div class="col-md-12">
-                        <div class="current-details">
+
+                <div class="col-md-12">
+                    <div class="current-details">
                         <h5>Current Status</h5>
-                        </div> 
                     </div> 
-        
-                
+                </div> 
+
+
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
                         <div class="form-group   <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
@@ -1067,19 +1066,19 @@ echo json_encode($menu);
 
 
                 </div>
-                
-                
+
+
                 <!--current  end-->
-                
+
                 <!--appointment-->
-                
+
                 <div class="col-md-12">
-                        <div class="current-details appointment">
+                    <div class="current-details appointment">
                         <h5>Appointed Status</h5>
-                        </div> 
+                    </div> 
                 </div> 
 
-                
+
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
                         <div class="form-group   <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
@@ -1152,9 +1151,9 @@ echo json_encode($menu);
 
 
                 </div>
-                
-                 <!--appointment end -->  
-                
+
+                <!--appointment end -->  
+
             </div>
 
         </div>
@@ -1300,7 +1299,7 @@ echo json_encode($menu);
                 <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="status-info"> 
@@ -1313,11 +1312,11 @@ echo json_encode($menu);
                                         <td><label>Start Date</label></td>
                                         <td><label>End Date</label></td>
                                         <td><label>Service Event Type</label></td>
-                                        <td><label>Service Type (From-To)</label></td>
-                                        <td><label>Branch (From-To)</label></td>
-                                        <td><label>Department (From-To)</label></td>
-                                        <td><label>Designation (From-To)</label></td>
-                                        <td><label>Position (From-To)</label></td>
+                                        <td><label>Service Type </label></td>
+                                        <td><label>Branch </label></td>
+                                        <td><label>Department </label></td>
+                                        <td><label>Designation </label></td>
+                                        <td><label>Position </label></td>
                                         <td><label>Action</label></td>
                                     </tr>
                                     <?php
@@ -1331,39 +1330,39 @@ echo json_encode($menu);
                                                 <?php print $jobHistory['END_DATE']; ?>
                                             </td>
                                             <td>
-                                                <?php print ($jobHistory['SERVICE_EVENT_TYPE_NAME']!=null)?$jobHistory['SERVICE_EVENT_TYPE_NAME']:"-"; ?>
+                                                <?php print ($jobHistory['SERVICE_EVENT_TYPE_NAME'] != null) ? $jobHistory['SERVICE_EVENT_TYPE_NAME'] : "-"; ?>
                                             </td>
 
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_SERVICE_NAME'] == null) ? ' ' : $jobHistory['FROM_SERVICE_NAME']." - "; print  ($jobHistory['TO_SERVICE_NAME'] == null) ? ' ' : $jobHistory['TO_SERVICE_NAME'] 
+                                                <?php
+                                                print ($jobHistory['TO_SERVICE_NAME'] == null) ? ' ' : $jobHistory['TO_SERVICE_NAME']
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_BRANCH_NAME'] == null) ? ' ' : $jobHistory['FROM_BRANCH_NAME']." - "; print  ($jobHistory['TO_BRANCH_NAME'] == null) ? ' ' : $jobHistory['TO_BRANCH_NAME'] 
+                                                <?php
+                                                print ($jobHistory['TO_BRANCH_NAME'] == null) ? ' ' : $jobHistory['TO_BRANCH_NAME']
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['FROM_DEPARTMENT_NAME']." - "; print  ($jobHistory['TO_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['TO_DEPARTMENT_NAME'] 
+                                                <?php
+                                                print ($jobHistory['TO_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['TO_DEPARTMENT_NAME']
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['FROM_DESIGNATION_TITLE']." - "; print  ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE'] 
+                                                <?php
+                                                print ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE']
                                                 ?>
                                             </td>
                                             <td>
-                                                <?php 
-                                                print ($jobHistory['FROM_POSITION_NAME'] == null) ? ' ' : $jobHistory['FROM_POSITION_NAME']." - "; print  ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME'] 
+                                                <?php
+                                                print ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME']
                                                 ?>
                                             </td>
                                             <td>
                                                 <a class="btn-edit"
-                                                    href="<?= $this->url("jobHistory", ["action" => "edit","id"=>$jobHistory['JOB_HISTORY_ID']]) ?>" style="height:27px;">
+                                                   href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]) ?>" style="height:27px;">
                                                     <i class="fa fa-search-plus"></i>
-                                                    </a>
+                                                </a>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -1395,7 +1394,7 @@ echo json_encode($menu);
 
                                             <td width="10%">
                                                 <a class="btn-delete"
-                                                    href="<?= $this->basePath() . "/uploads/" . $file['FILE_PATH']; ?>" download="<?php echo $file['FILE_NAME']; ?>" style="height:27px;">
+                                                   href="<?= $this->basePath() . "/uploads/" . $file['FILE_PATH']; ?>" download="<?php echo $file['FILE_NAME']; ?>" style="height:27px;">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
@@ -1409,7 +1408,7 @@ echo json_encode($menu);
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="status-info"> 
@@ -1425,7 +1424,7 @@ echo json_encode($menu);
                                         <td><label>Return Date</label></td>
                                         <td><label>Returned Date</label></td>
                                     </tr>
-                                    
+
                                     <?php
                                     foreach ($assetDetails as $asset) {
                                         ?>
@@ -1437,26 +1436,38 @@ echo json_encode($menu);
                                                 <?php print $asset['ASSET_EDESC']; ?>
                                             </td>
                                             <td>
-                                                <?php if($asset['RETURNABLE']=='Y'){print 'Yes';}else{print 'NO';}?>
+                                                <?php
+                                                if ($asset['RETURNABLE'] == 'Y') {
+                                                    print 'Yes';
+                                                } else {
+                                                    print 'NO';
+                                                }
+                                                ?>
                                             </td>
                                             <td>
                                                 <?php print $asset['RETURN_DATE']; ?>
                                             </td>
                                             <td>
-                                                <?php if(empty($asset['RETURNED_DATE'])&& $asset['RETURNABLE']=='Y'){print 'Not returned';}else{print $asset['RETURNED_DATE'];}  ?>
+                                                <?php
+                                                if (empty($asset['RETURNED_DATE']) && $asset['RETURNABLE'] == 'Y') {
+                                                    print 'Not returned';
+                                                } else {
+                                                    print $asset['RETURNED_DATE'];
+                                                }
+                                                ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
-                                    
+
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
-        
-        
+        </div>
+
+
     </div>
 </div>
 

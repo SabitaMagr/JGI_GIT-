@@ -1,0 +1,78 @@
+<?php
+$this->headLink()
+        ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
+
+$this->headScript()
+        ->appendFile($this->basePath('jquery_lazyload-master/jquery.lazyload.min.js'))
+        ->appendFile($this->basePath('js/SelfService/birthday/index.js'));
+?>
+
+
+<div class="row">
+    <div class="col-sm-6">
+
+        <div class="row">
+            <h1>Birthday Today</h1>
+
+            <?php
+            if (isset($employeesBirthday['TODAY'])) {
+                foreach ($employeesBirthday['TODAY'] as $todayBirthday) :
+                    ?>
+                    <div class="person-list clearfix">
+                        <div class="col-xs-4 col-md-3 col-sm-3">
+                            <div class="person-pic">
+                                <img class="lazy"  data-original="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-md-6 col-sm-6">
+                            <div class="person-details">
+                                <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
+                                <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-2 col-md-3 col-sm-3">
+                            <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                            <a class="btn btn-default" href="<?php echo $this->url("birthday", ["action" => "wish","id"=>$todayBirthday['EMPLOYEE_ID']]) ?>">Wish</a>
+                            <!--button-->
+                        </div>
+                    </div>
+                    <?php
+                endforeach;
+            }
+            ?>
+        </div>
+
+
+        <div class="row ">
+            <h1>Birthday Upcoming</h1>
+            <?php
+            if (isset($employeesBirthday['UPCOMING'])) {
+                foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) :
+                    ?>
+                    <div class="person-list clearfix">
+                        <div class="col-xs-4 col-md-3 col-sm-3">
+                            <div class="person-pic">
+                                <img class="lazy"  data-original="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-md-6 col-sm-6">
+                            <div class="person-details">
+                                <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
+                                <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-2 col-md-3 col-sm-3">
+                            <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
+                        </div>
+                    </div>
+                    <?php
+                endforeach;
+            }
+            ?>
+        </div>
+
+
+
+    </div>
+
+</div>

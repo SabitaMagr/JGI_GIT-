@@ -1,0 +1,26 @@
+
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <h2>
+            Happy BirthDay <b><?php echo $brithdayEmpDtl['FULL_NAME']; ?></b>
+        </h2> 
+    </div>
+</div>
+
+
+<form method="POST" action="<?php echo $this->url("birthday", ["action" => "wish","id"=>$brithdayEmpDtl['EMPLOYEE_ID']]) ?>">
+    <div class="row">
+        <div class=" col-sm-offset-4 col-sm-4">
+            <label><h4> Please type a wish message for <?php echo $brithdayEmpDtl['FULL_NAME']; ?></h4></label>
+            <textarea required="required" name="birthdayMessage" cols="50" rows="10"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-offset-7 col-sm-4">
+            <input type="submit" value="SUBMIT">
+        </div>
+    </div>
+
+
+</form>
