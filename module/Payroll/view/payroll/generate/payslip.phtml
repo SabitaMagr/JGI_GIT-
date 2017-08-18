@@ -1,12 +1,18 @@
 <?php 
-$db_host = "192.168.4.102";
+$db_host = "localhost";
 $db_user = "root";
-$db_password = "root";
-$database = "laxmi";
+$db_password = "";
+$database = "neohrisrecover";
+
+
 $connect =mysqli_connect($db_host,$db_user,$db_password,$database) or die ("couldn't connect!!! to database");
 
+$employeeQuery = mysqli_query($connect,"SELECT * FROM EMPLOYEE_MASTER_SETUP WHERE OFFICIAL_CODE='$employeeCode'");
+$employeeDetail = mysqli_fetch_array($employeeQuery);
+$id = 	$employeeDetail['employee_code'];
+
 //$id=$employeeId;
-$id = 322;
+//$id = 322;
 //$currentMonth=03;
 // $Month=$currentMonth -3; 
 // $preMonth=$Month -1; 

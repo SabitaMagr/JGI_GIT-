@@ -24,6 +24,7 @@ $this->headScript()
 <script>
     document.ids=<?php echo json_encode(["appraisalId"=>-1,"appraisalStageId"=>-1,"fromDate1"=>"","nepaliFromDate1"=>"","toDate1"=>"","nepaliToDate1"=>""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+     document.appraisalReportViewLink='<?php echo $this->url("appraisalReport", ["action" => "view"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\appraisalReport')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -160,91 +161,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </div>
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
-        <td>
-        #: (FULL_NAME == null) ? ' ' : FULL_NAME #
+        
+        
+        
+        
+        
+        <td>#: (END_DATE == null) ? '-' : END_DATE #
         </td>
-        <td>    
-        #: (APPRAISAL_EDESC == null) ? '-' : APPRAISAL_EDESC #
-        </td>
-        <td>    
-        #: (APPRAISAL_TYPE_EDESC == null) ? '-' : APPRAISAL_TYPE_EDESC #
-        </td>
-        <td>    
-        #: (STAGE_EDESC == null) ? '-' : STAGE_EDESC #
-        </td>
-        <td>    
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>    
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td id="#if(KPI_ANS_NUM>0){ #green#}else{#red#}#">
-            #if(KPI_ANS_NUM>0 && KPI_SETTING=='Y'){   #
-            #= "&\\#10004;" #
-            # }else if(KPI_SETTING=='N'){ #
-            #='-'#
-            #}else{ #
-            #= "&\\#10006;" #
-            # } #
-        </td>
-        <td id="#if(KPI_APPROVED_DATE==null){#red#}else{##}#">
-            #if(KPI_APPROVED_DATE!=null){   #
-            #= KPI_APPROVED_DATE #
-            # }else if(KPI_SETTING=='N'){ #
-            #='-'#
-            # }else{ #
-            #= "&\\#10006;" #
-            # } #
-        </td>
-        <td id="#if(KPI_SELF_RATING_NUM>0){ #green#}else{#red#}#">
-            #if(KPI_SELF_RATING_NUM>0){   #
-            #= "&\\#10004;" #
-            # }else if(KPI_SETTING=='N'){ #
-            #='-'#
-            # }else{ #
-            #= "&\\#10006;" #
-            # } #
-        </td>
-        <td id="#if(APPRAISED_BY!=null){ #green#}else{#red#}#">
-            #if(APPRAISED_BY!=null){   #
-            #= "&\\#10004;" #
-            # }else{ #
-            #= "&\\#10006;" #
-            # } #
-        </td>
-        <td id="#if(REVIEWED_BY!=null){ #green#}else{#red#}#">
-            #if(REVIEWED_BY!=null){   #
-            #= "&\\#10004;" #
-            #}else if(REVIEWED_BY==null && DEFAULT_RATING=='N'){ #
-            #= "&\\#10006;" #
-            # }else{#-#}#
-        </td>
-        <td id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
-            #if(APPRAISER_OVERALL_RATING!=null){   #
-            #= "&\\#10004;" #
-            # }else if(KPI_SETTING=='N'){ #
-            #='-'#
-            # }else{ #
-            #= "&\\#10006;" #
-            # } #
-        </td>
-        <td>    
-        #: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #
-        </td>
-        <td id="#if(SUPER_REVIEWER_AGREE!='Y'){ #green#}else{#red#}#">
-            #if(SUPER_REVIEWER_AGREE=='Y'){   #
-            #= "&\\#10004;" #
-            #}else if(SUPER_REVIEWER_AGREE=='N'){ #
-            #= "&\\#10006;" #
-            # }else{#-#}#
-        </td>
-         <td id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
-            #if(APPRAISEE_AGREE=='Yes'){   #
-            #= "&\\#10004;" #
-            # }else if(APPRAISEE_AGREE=='No'){ #
-            #= "&\\#10006;" #
-            # }else{#-#}#
-        </td>
+        
+
+       
+
+
+
+
+         
         <td>    
         #: (APPRAISER_NAME == null) ? '-' : APPRAISER_NAME #
         </td>
@@ -252,10 +183,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #: (REVIEWER_NAME == null) ? '-' : REVIEWER_NAME #
         </td>
         <td>
-        <a class="btn-edit"
-        href="<?= $this->url("appraisalReport", ["action" => "view"]); ?>/#:APPRAISAL_ID#/#:EMPLOYEE_ID#" tital="view" style="height:17px;">
-        <i class="fa fa-search-plus"></i>
-        </a>
+        
         </td>
         </tr>
     </script>
