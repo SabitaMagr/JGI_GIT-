@@ -1,4 +1,5 @@
 <?php
+
 namespace Application\Controller;
 
 use Application\Helper\Helper;
@@ -19,18 +20,19 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class RegisterAttendanceController extends AbstractActionController{
-    
+class RegisterAttendanceController extends AbstractActionController {
+
     protected $form;
     protected $storage;
     protected $authservice;
     protected $adapter;
-    
-    public function __construct(AuthenticationService $authService,AdapterInterface $adapter) {
+
+    public function __construct(AuthenticationService $authService, AdapterInterface $adapter) {
         $this->authservice = $authService;
         $this->storage = $authService->getStorage();
         $this->adapter = $adapter;
     }
+
     public function setEventManager(EventManagerInterface $events) {
         parent::setEventManager($events);
         $controller = $this;
@@ -38,6 +40,7 @@ class RegisterAttendanceController extends AbstractActionController{
             $controller->layout('layout/login');
         }, 100);
     }
+
     public function getForm() {
         if (!$this->form) {
             $user = new User();
@@ -47,6 +50,7 @@ class RegisterAttendanceController extends AbstractActionController{
 
         return $this->form;
     }
+
     public function getAuthService() {
         if (!$this->authservice) {
             $this->authservice = $this->getServiceLocator()
@@ -62,17 +66,19 @@ class RegisterAttendanceController extends AbstractActionController{
         }
         return $this->storage;
     }
-    public function indexAction(){
+
+    public function indexAction() {
         $form = $this->getForm();
         return Helper::addFlashMessagesToArray($this, [
-                'form'=>$form
+                    'form' => $form
         ]);
     }
+
     public function authenticateAction() {
         $request = $this->getRequest();
         $form = $this->getForm();
         $redirect = 'registerAttendance';
-        if($request->isPost()){
+        if ($request->isPost()) {
             $postData = $request->getPost()->getArrayCopy();
             $form->setData($request->getPost());
             if ($form->isValid()) {
@@ -89,7 +95,7 @@ class RegisterAttendanceController extends AbstractActionController{
                     $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                     $employeeId = $resultRow->EMPLOYEE_ID;
                     $attendanceRepo = new AttendanceRepository($this->adapter);
-                    if(!isset($postData['checkInRemarks'])){
+                    if (!isset($postData['checkInRemarks'])) {
                         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
                         $inTime = $todayAttendance['IN_TIME'];
                         $attendanceType = ($inTime) ? "OUT" : "IN";
@@ -125,13 +131,13 @@ class RegisterAttendanceController extends AbstractActionController{
                     $attendanceModel->attendanceTime = new Expression("SYSDATE");
                     $attendanceModel->ipAddress = $request->getServer('REMOTE_ADDR');
                     $attendanceModel->attendanceFrom = 'WEB';
-                    $attendanceModel->remarks = $postData['checkInRemarks'];
+                    $attendanceModel->remarks = isset($postData['checkInRemarks']) ? $postData['checkInRemarks'] : '';
                     $attendanceRepo->add($attendanceModel);
                     // to add user log details in HRIS_USER_LOG
                     $this->setUserLog($this->adapter, $request->getServer('REMOTE_ADDR'), $resultRow->USER_ID);
                     $this->getAuthService()->clearIdentity();
                     $this->flashmessenger()->addMessage("Attendance Register Successfully!!!");
-                }else{
+                } else {
                     foreach ($result->getMessages() as $message) {
                         //save message temporary into flashmessenger
                         $this->flashmessenger()->addMessage($message);
@@ -141,30 +147,32 @@ class RegisterAttendanceController extends AbstractActionController{
         }
         return $this->redirect()->toRoute($redirect);
     }
-    public function checkinAction(){
+
+    public function checkinAction() {
         $userId = $this->params()->fromRoute('userId');
         $type = $this->params()->fromRoute('type');
         $userRepository = new UserSetupRepository($this->adapter);
         $userDetail = $userRepository->fetchById($userId)->getArrayCopy();
-        $employeeId=$userDetail['EMPLOYEE_ID'];
-        
+        $employeeId = $userDetail['EMPLOYEE_ID'];
+
         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
-        
+
         $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
         if (!$shiftDetails) {
             $shiftDetails = $attendanceDetailRepo->fetchEmployeeDefaultShift($employeeId);
         }
-        
+
         return Helper::addFlashMessagesToArray($this, [
-            'username'=> $userDetail['USER_NAME'],
-            'password'=> $userDetail['PASSWORD'],
-            'type'=> $type,
-            'attendanceDetails'=> $todayAttendance,
-            'shiftDetails'=> $shiftDetails
+                    'username' => $userDetail['USER_NAME'],
+                    'password' => $userDetail['PASSWORD'],
+                    'type' => $type,
+                    'attendanceDetails' => $todayAttendance,
+                    'shiftDetails' => $shiftDetails
         ]);
     }
-     private function setUserLog(AdapterInterface $adapter, $clientIp, $userId) {
+
+    private function setUserLog(AdapterInterface $adapter, $clientIp, $userId) {
         $userLogRepo = new UserLogRepository($adapter);
 
         $userLog = new UserLog();
@@ -173,6 +181,7 @@ class RegisterAttendanceController extends AbstractActionController{
 
         $userLogRepo->add($userLog);
     }
+
     public function checkoutAction() {
         $employeeId = $this->storage->read()['employee_id'];
 
@@ -209,8 +218,8 @@ class RegisterAttendanceController extends AbstractActionController{
             if (!$request->isPost()) {
                 return Helper::addFlashMessagesToArray($this, [
                             'type' => $attendanceType,
-                            'attendanceDetails'=> $todayAttendance,
-                        'shiftDetails'=> $shiftDetails
+                            'attendanceDetails' => $todayAttendance,
+                            'shiftDetails' => $shiftDetails
                 ]);
             } else {
                 $postData = $request->getPost();
@@ -234,4 +243,5 @@ class RegisterAttendanceController extends AbstractActionController{
         $this->flashmessenger()->addMessage("Attendance Registered Successfully!!!");
         return $this->redirect()->toRoute('login');
     }
-} 
+
+}
