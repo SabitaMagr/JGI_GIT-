@@ -132,7 +132,7 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             };
-
+            var action = '<a class="btn-edit" title="View" href="' + document.viewLink + '/#:EMPLOYEE_ID#/1" style="height:17px;"><i class="fa fa-search-plus"></i></a>'
 
             $scope.initializekendoGrid = function () {
                 $("#employeeTable").kendoGrid({
@@ -150,9 +150,9 @@ angular.module('hris', [])
                         input: true,
                         numeric: false
                     },
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 180},
+                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 180, template: '<td>#: (EMPLOYEE_CODE == null) ? ' - ' : EMPLOYEE_CODE #</td>', locked: true},
                         {field: "FULL_NAME", title: "Full Name", width: 180},
                         {field: "MOBILE_NO", title: "Mobile No", width: 110},
                         {field: "BIRTH_DATE", title: "Birth Date", width: 110},
@@ -160,7 +160,7 @@ angular.module('hris', [])
                         {field: "BRANCH_NAME", title: "Branch", width: 110},
                         {field: "DEPARTMENT_NAME", title: "Department", width: 130},
                         {field: "DESIGNATION_TITLE", title: "Designation", width: 130},
-                        {title: "Action", width: 120}
+                        {field: "EMPLOYEE_ID", title: "Action", width: 120, template: action}
                     ]
                 });
 
