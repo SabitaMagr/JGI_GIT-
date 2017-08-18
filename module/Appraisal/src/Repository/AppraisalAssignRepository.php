@@ -37,6 +37,9 @@ class AppraisalAssignRepository implements RepositoryInterface{
         $data = $model->getArrayCopyForDB();
         unset($data[AppraisalAssign::CREATED_DATE]);
         unset($data[AppraisalAssign::STATUS]);
+//        if(!isset($data[AppraisalAssign::SUBORDINATE_1])){
+//            $data[AppraisalAssign::SUBORDINATE_1]=null;
+//        }
         $this->tableGateway->update($data,[AppraisalAssign::EMPLOYEE_ID=>$id[0],AppraisalAssign::APPRAISAL_ID=>$id[1]]); 
     }
 
@@ -72,6 +75,7 @@ class AppraisalAssignRepository implements RepositoryInterface{
                 ->join(['E3'=> HrEmployees::TABLE_NAME],"E3.".HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::ALT_REVIEWER_ID,['FIRST_NAME_ALT_R'=>new Expression("INITCAP(E3.FIRST_NAME)"),"MIDDLE_NAME_ALT_R"=>new Expression("INITCAP(E3.MIDDLE_NAME)"),"LAST_NAME_ALT_R"=>new Expression("INITCAP(E3.LAST_NAME)"),"RETIRED_ALT_R"=> HrEmployees::RETIRED_FLAG,"STATUS_ALT_R"=> HrEmployees::STATUS],"left")
                 ->join(['E4'=> HrEmployees::TABLE_NAME],"E4.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::ALT_APPRAISER_ID,['FIRST_NAME_ALT_A'=>new Expression("INITCAP(E4.FIRST_NAME)"),"MIDDLE_NAME_ALT_A"=>new Expression("INITCAP(E4.MIDDLE_NAME)"),"LAST_NAME_ALT_A"=>new Expression("INITCAP(E4.LAST_NAME)"),"RETIRED_ALT_A"=>HrEmployees::RETIRED_FLAG,"STATUS_ALT_A"=>HrEmployees::STATUS],"left")
                 ->join(['E5'=> HrEmployees::TABLE_NAME],"E5.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::SUPER_REVIEWER_ID,['FIRST_NAME_SUPER_R'=>new Expression("INITCAP(E5.FIRST_NAME)"),"MIDDLE_NAME_SUPER_R"=>new Expression("INITCAP(E5.MIDDLE_NAME)"),"LAST_NAME_SUPER_R"=>new Expression("INITCAP(E5.LAST_NAME)"),"RETIRED_SUPER_R"=>HrEmployees::RETIRED_FLAG,"STATUS_SUPER_R"=>HrEmployees::STATUS],"left");
+//                ->join(['E6'=> HrEmployees::TABLE_NAME],"E6.". HrEmployees::EMPLOYEE_ID."=AA.". AppraisalAssign::SUBORDINATE_1,['SUBORDINATE_1'=>new Expression("INITCAP(E6.FULL_NAME)"),"RETIRED_SUPER_R"=>HrEmployees::RETIRED_FLAG,"STATUS_SUPER_R"=>HrEmployees::STATUS],"left")
         
         $select->where([
             "AA.".AppraisalAssign::APPRAISAL_ID."=".$appraisalId,
