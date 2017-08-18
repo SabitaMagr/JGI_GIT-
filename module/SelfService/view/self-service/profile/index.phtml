@@ -1175,11 +1175,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td><label>Start Date</label></td>
                                         <td><label>End Date</label></td>
                                         <td><label>Service Event Type</label></td>
-                                        <td><label>Service Type (From-To)</label></td>
-                                        <td><label>Branch (From-To)</label></td>
-                                        <td><label>Department (From-To)</label></td>
-                                        <td><label>Designation (From-To)</label></td>
-                                        <td><label>Position (From-To)</label></td>
+                                        <td><label>Service Type </label></td>
+                                        <td><label>Branch </label></td>
+                                        <td><label>Department </label></td>
+                                        <td><label>Designation </label></td>
+                                        <td><label>Position </label></td>
                                     </tr>
                                     <?php
                                     foreach ($jobHistoryList as $jobHistory) {
@@ -1197,31 +1197,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                                             <td>
                                                 <?php
-                                                print ($jobHistory['FROM_SERVICE_NAME'] == null) ? ' ' : $jobHistory['FROM_SERVICE_NAME'] . " - ";
                                                 print ($jobHistory['TO_SERVICE_NAME'] == null) ? ' ' : $jobHistory['TO_SERVICE_NAME']
                                                 ?>
                                             </td>
                                             <td>
                                                 <?php
-                                                print ($jobHistory['FROM_BRANCH_NAME'] == null) ? ' ' : $jobHistory['FROM_BRANCH_NAME'] . " - ";
                                                 print ($jobHistory['TO_BRANCH_NAME'] == null) ? ' ' : $jobHistory['TO_BRANCH_NAME']
                                                 ?>
                                             </td>
                                             <td>
                                                 <?php
-                                                print ($jobHistory['FROM_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['FROM_DEPARTMENT_NAME'] . " - ";
                                                 print ($jobHistory['TO_DEPARTMENT_NAME'] == null) ? ' ' : $jobHistory['TO_DEPARTMENT_NAME']
                                                 ?>
                                             </td>
                                             <td>
                                                 <?php
-                                                print ($jobHistory['FROM_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['FROM_DESIGNATION_TITLE'] . " - ";
                                                 print ($jobHistory['TO_DESIGNATION_TITLE'] == null) ? ' ' : $jobHistory['TO_DESIGNATION_TITLE']
                                                 ?>
                                             </td>
                                             <td>
                                                 <?php
-                                                print ($jobHistory['FROM_POSITION_NAME'] == null) ? ' ' : $jobHistory['FROM_POSITION_NAME'] . " - ";
                                                 print ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME']
                                                 ?>
                                             </td>
