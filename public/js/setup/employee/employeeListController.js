@@ -132,7 +132,11 @@ angular.module('hris', [])
                     console.log(failure);
                 });
             };
-            var action = '<a class="btn-edit" title="View" href="' + document.viewLink + '/#:EMPLOYEE_ID#/1" style="height:17px;"><i class="fa fa-search-plus"></i></a>'
+            
+            var viewAction = '<a class="btn-edit" title="View" href="' + document.viewLink + '/#:EMPLOYEE_ID#/1" style="height:17px;"><i class="fa fa-search-plus"></i></a> ';
+            var editAction ='<a class="btn-edit" title="Edit" href="'+document.editLink+'/#:EMPLOYEE_ID#/1" style="height:17px;"> <i class="fa fa-edit"></i></a>';
+            var deleteAction='<a class="confirmation btn-delete" title="Delete" href="'+document.deleteLink+'/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
+            var action = viewAction+editAction+deleteAction;
 
             $scope.initializekendoGrid = function () {
                 $("#employeeTable").kendoGrid({
@@ -153,7 +157,7 @@ angular.module('hris', [])
 //                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "EMPLOYEE_CODE", title: "Employee Code", width: 180, template: '<td>#: (EMPLOYEE_CODE == null) ? ' - ' : EMPLOYEE_CODE #</td>', locked: true},
-                        {field: "FULL_NAME", title: "Full Name", width: 180},
+                        {field: "FULL_NAME", title: "Full Name", width: 180, locked: true},
                         {field: "MOBILE_NO", title: "Mobile No", width: 110},
                         {field: "BIRTH_DATE", title: "Birth Date", width: 110},
                         {field: "COMPANY_NAME", title: "Company", width: 110},

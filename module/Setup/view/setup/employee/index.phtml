@@ -19,6 +19,8 @@ $this->headScript()
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.viewLink='<?= $this->url("employee", ["action" => "view"]) ?>';
+    document.editLink='<?= $this->url("employee", ["action" => "edit"]) ?>';
+    document.deleteLink='<?= $this->url("employee", ["action" => "delete"]) ?>';
 </script>
 
 <div class="page-bar">
