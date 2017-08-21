@@ -117,6 +117,8 @@ class EmployeeController extends AbstractActionController {
                 $formOneModel->employeeId = ((int) Helper::getMaxId($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID")) + 1;
                 $formOneModel->status = 'E';
                 $formOneModel->createdDt = Helper::getcurrentExpressionDate();
+                $formOneModel->addrPermVdcMunicipalityId = $this->repository->vdcStringToId($postData['addrPermDistrictId'], $postData['addrPermVdcMunicipalityId']);
+                $formOneModel->addrTempVdcMunicipalityId = $this->repository->vdcStringToId($postData['addrTempDistrictId'], $postData['addrTempVdcMunicipalityId']);
                 $formOneModel->birthDate = Helper::getExpressionDate($formOneModel->birthDate);
                 $formOneModel->addrPermCountryId = 168;
                 $formOneModel->addrTempCountryId = 168;
@@ -160,8 +162,8 @@ class EmployeeController extends AbstractActionController {
             'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
             'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
             'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-            'customRender'=>Helper::renderCustomView()
-            ]);
+            'customRender' => Helper::renderCustomView()
+        ]);
     }
 
     public function editAction() {
@@ -474,7 +476,7 @@ class EmployeeController extends AbstractActionController {
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
                     'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
                     'toDate' => $toDate,
-            'customRender'=>Helper::renderCustomView()
+                    'customRender' => Helper::renderCustomView()
         ]);
     }
 

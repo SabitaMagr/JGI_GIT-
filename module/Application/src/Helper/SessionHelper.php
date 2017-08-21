@@ -41,7 +41,8 @@ class SessionHelper {
             //end to set companu logo details
             $event->getViewModel()->setVariable("employeeName", $employeeName);
             if ($employeeFileId != null) {
-                $filePath = EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $employeeFileId], null)[$employeeFileId];
+                $file = EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $employeeFileId], null);
+                $filePath = ($file != null) ? $file[$employeeFileId] : null;
                 $event->getViewModel()->setVariable("profilePictureUrl", $filePath);
             } else {
                 $config = $app->getServiceManager()->get('config');
