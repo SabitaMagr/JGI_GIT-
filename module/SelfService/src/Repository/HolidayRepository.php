@@ -41,9 +41,7 @@ class HolidayRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([
             new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
-            new Expression("BS_DATE(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE_NEP"),
             new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("BS_DATE(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE_NEP"),
             new Expression("H.HOLIDAY_ID AS HOLIDAY_ID"),
             new Expression("H.HOLIDAY_CODE AS HOLIDAY_CODE"),
             new Expression("INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME"),

@@ -69,9 +69,7 @@ class TrainingAssignRepository implements RepositoryInterface {
             new Expression("TA.STATUS AS STATUS"),
             new Expression("TA.REMARKS AS REMARKS"),
             new Expression("INITCAP(TO_CHAR(T." . Training::START_DATE . ", 'DD-MON-YYYY')) AS START_DATE"),
-            new Expression("BS_DATE(TO_CHAR(T." . Training::START_DATE . ", 'DD-MON-YYYY')) AS START_DATE_NEP"),
-            new Expression("INITCAP(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("BS_DATE(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE_NEP")
+            new Expression("INITCAP(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE")
                 ], true);
         $select->from(['TA' => TrainingAssign::TABLE_NAME]);
         $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::TRAINING_CODE, Training::DURATION, "TRAINING_NAME"=>new Expression("INITCAP(T.TRAINING_NAME)"),"INSTRUCTOR_NAME"=>new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")

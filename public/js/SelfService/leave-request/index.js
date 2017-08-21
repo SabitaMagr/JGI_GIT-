@@ -72,11 +72,8 @@ angular.module('hris', [])
                     columns: [
                         {field: "LEAVE_ENAME", title: "Leave Name"},
                         {field: "REQUESTED_DT", title: "Applied Date"},
-                        {field: "REQUESTED_DT_NEP", title: "Applied Date Nep"},
                         {field: "FROM_DATE", title: "From Date"},
-                        {field: "FROM_DATE_NEP", title: "From Date Nep"},
                         {field: "TO_DATE", title: "To Date"},
-                        {field: "TO_DATE_NEP", title: "To Date Nep"},
                         {field: "NO_OF_DAYS", title: "Duration"},
                         {field: "STATUS", title: "Status"},
                         {title: "Action"}

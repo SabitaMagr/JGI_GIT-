@@ -80,7 +80,6 @@ angular.module('hris', [])
                     columns: [
                         {field: "FULL_NAME", title: "Employee"},
                         {field: "ATTENDANCE_DT", title: "Attendance Date"},
-                        {field: "ATTENDANCE_DT_NEP", title: "Attendance Date Nep"},
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
                         {field: "TOTAL_HOUR", title: "Total Hour"},

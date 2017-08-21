@@ -91,7 +91,6 @@ angular.module('hris', [])
                     columns: [
                         {field: "EMPLOYEE_NAME", title: "Employee", width: 160},
                         {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
-                        {field: "ATTENDANCE_DT_NEP", title: "Attendance Date Nep", width: 120},
                         {field: "IN_TIME", title: "Check In", width: 110},
                         {field: "OUT_TIME", title: "Check Out", width: 120},
                         {field: "STATUS", title: "Status", width: 150},

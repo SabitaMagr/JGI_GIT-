@@ -25,9 +25,7 @@
             columns: [
                 {field: "TRAINING_NAME", title: "Training",width:90},
                 {field: "START_DATE", title: "Start Date",width:80},
-                {field: "START_DATE", title: "Start Date Nep",width:80},
                 {field: "END_DATE", title: "End Date",width:80},
-                {field: "END_DATE", title: "End Date Nep",width:80},
                 {field: "DURATION", title: "Duration(in hour)",width:100},
                 {field: "INSTITUTE_NAME", title: "Institute Name",width:100},
                 {field: "LOCATION", title: "Location",width:100},

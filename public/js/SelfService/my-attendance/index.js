@@ -77,7 +77,6 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "ATTENDANCE_DT", title: "Attendance Date"},
-                        {field: "ATTENDANCE_DT", title: "Attendance Date Nep"},
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
                         {field: "TOTAL_HOUR", title: "Total Hour"},

@@ -7,13 +7,13 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
 class BirthdayRepository {
-
+    
     private $tableGateway;
     private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway(BirthdayModel::TABLE_NAME, $adapter);
+        $this->tableGateway = new TableGateway(BirthdayModel::TABLE_NAME,$adapter);
     }
 
     public function getBirthdays() {
@@ -53,7 +53,7 @@ class BirthdayRepository {
                 ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        $birthdayResult = array();
+         $birthdayResult = array();
         foreach ($result as $rs) {
             if ('TODAY' == strtoupper($rs['BIRTHDAYFOR'])) {
                 $birthdayResult['TODAY'][$rs['EMPLOYEE_ID']] = $rs;
@@ -65,9 +65,12 @@ class BirthdayRepository {
 
         return $birthdayResult;
     }
-
-    public function add($model) {
-        $this->tableGateway->insert($model->getArrayCopyForDB());
+    
+    public function add($model){
+          $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-}
+       
+    }
+
+

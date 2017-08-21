@@ -24,9 +24,7 @@
             columns: [
                 {field: "ADVANCE_NAME", title: "Advance Name"},
                 {field: "REQUESTED_DATE", title: "Applied Date"},
-                {field: "REQUESTED_DATE_NEP", title: "Applied Date Nep"},
                 {field: "ADVANCE_DATE", title: "Advance Date"},
-                {field: "ADVANCE_DATE_NEP", title: "Advance Date Nep"},
                 {field: "REQUESTED_AMOUNT", title: "Request Amount"},
                 {field: "TERMS", title: "Terms(in month)"},
                 {field: "STATUS", title: "Status"},
