@@ -6,6 +6,7 @@ use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Form\AttendanceByHrForm;
+use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Exception;
 use Zend\Db\Adapter\AdapterInterface;
@@ -65,11 +66,11 @@ class AttendanceByHr extends AbstractActionController {
             if ($request->isPost()) {
                 $this->form->setData($request->getPost());
                 if ($this->form->isValid()) {
-                    $attendanceByHrModel = new AttendanceByHrModel();
+                    $attendanceByHrModel = new AttendanceDetail();
                     $formData = $this->form->getData();
                     $attendanceByHrModel->exchangeArrayFromForm($formData);
                     $attendanceByHrModel->attendanceDt = Helper::getExpressionDate($attendanceByHrModel->attendanceDt);
-                    $attendanceByHrModel->id = ((int) Helper::getMaxId($this->adapter, AttendanceByHrModel::TABLE_NAME, "ID")) + 1;
+                    $attendanceByHrModel->id = ((int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, "ID")) + 1;
                     $attendanceByHrModel->inTime = Helper::getExpressionTime($attendanceByHrModel->inTime);
                     $attendanceByHrModel->outTime = Helper::getExpressionTime($attendanceByHrModel->outTime);
 

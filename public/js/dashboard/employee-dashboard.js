@@ -160,17 +160,36 @@
         action: 'fetchEmployeeDashBoardDetails',
     }).then(function (success) {
         var empData = success.data;
-        $('#employeePresentDays').text(empData['PRESENT_DAY']);  //present 
-        $('#employeeLeaveDays').text(empData['LEAVE']);  //on leave
-        $('#employeeTrainingDays').text(empData['TRAINING']);  //on training
-        $('#employeeTravelDays').text(empData['TOUR']);  // on tour
-        $('#employeeWOHDays').text(empData['WOH']);  // on woh
-        $('#employeeLateInDays').text(empData['LATE_IN']);  //  late in
-        $('#employeeEarlyOutDays').text(empData['EARLY_OUT']);  //  early out
-        $('#employeeMissPunch').text(empData['MISSED_PUNCH']);  //  miss punch
-
-
+        if (empData['PRESENT_DAY'] != null) {
+            $('#employeePresentDays').text(empData['PRESENT_DAY']);  //present 
+        }
+        if (empData['LEAVE'] != null) {
+            $('#employeeLeaveDays').text(empData['LEAVE']);  //on leave
+        }
+        if (empData['TRAINING'] != null) {
+            $('#employeeTrainingDays').text(empData['TRAINING']);  //on training
+        }
+        if (empData['TOUR'] != null) {
+            $('#employeeTravelDays').text(empData['TOUR']);  // on tour
+        }
+        if (empData['WOH'] != null) {
+            $('#employeeWOHDays').text(empData['WOH']);  // on woh
+        }
+        if (empData['LATE_IN'] != null) {
+            $('#employeeLateInDays').text(empData['LATE_IN']);  //  late in
+        }
+        if (empData['EARLY_OUT'] != null) {
+            $('#employeeEarlyOutDays').text(empData['EARLY_OUT']);  //  early out
+        }
+        if (empData['MISSED_PUNCH'] != null) {
+            $('#employeeMissPunch').text(empData['MISSED_PUNCH']);  //  miss punch
+        }
+        
+        if (empData['FULL_NAME']!= null) {
         $('#employeeFullName').text(empData['FULL_NAME']);   //full name
+        }
+
+        
         if (empData['EMAIL_OFFICIAL'] != null) {
             $('#employeeOfficialEmail').text(empData['EMAIL_OFFICIAL']);  //  email
         } else {
@@ -189,21 +208,21 @@
         var year = ' ';
         var month = ' ';
         var days = ' ';
-        if (empData['SERVICE_YEARS'] != 0) {
+        if (empData['SERVICE_YEARS'] != 0 && empData['SERVICE_YEARS'] != null) {
             if (empData['SERVICE_YEARS'] == 1) {
                 year = empData['SERVICE_YEARS'] + ' Year ';
             } else {
                 year = empData['SERVICE_YEARS'] + ' Years ';
             }
         }
-        if (empData['SERVICE_MONTHS'] != 0) {
+        if (empData['SERVICE_MONTHS'] != 0 && empData['SERVICE_MONTHS'] != null) {
             if (empData['SERVICE_MONTHS'] == 1) {
                 month = empData['SERVICE_MONTHS'] + ' Month ';
             } else {
                 month = empData['SERVICE_MONTHS'] + ' Months ';
             }
         }
-        if (empData['SERVICE_DAYS'] != 0) {
+        if (empData['SERVICE_DAYS'] != 0 && empData['SERVICE_DAYS'] != null) {
             if (empData['SERVICE_DAYS'] == 0) {
                 days = empData['SERVICE_DAYS'] + ' Day';
             } else {
