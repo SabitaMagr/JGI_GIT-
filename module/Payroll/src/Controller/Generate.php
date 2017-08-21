@@ -14,23 +14,15 @@ use Payroll\Repository\PayrollRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use Setup\Repository\EmployeeRepository;
 
 class Generate extends AbstractActionController {
 
     private $adapter;
     private $payrollRepo;
-    private $employeeId;
-	private $employeeCode;
-    
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->payrollRepo = new PayrollRepository($this->adapter);
-        $auth = new AuthenticationService();
-		$employeeRepo = new EmployeeRepository($this->adapter);
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-		$this->employeeCode = $employeeRepo->fetchById($this->employeeId)['EMPLOYEE_CODE'];
     }
 
     public function indexAction() {
@@ -43,17 +35,7 @@ class Generate extends AbstractActionController {
                     'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
-    public function payslipAction(){
-        return Helper::addFlashMessagesToArray($this, ['employeeId'=>$this->employeeId,'employeeCode'=>$this->employeeCode]);
-    }
-    public function printPayslipAction(){
-        $employeeid = $this->params()->fromRoute('id');
-        $mcode = $this->params()->fromRoute('mcode');
-        return Helper::addFlashMessagesToArray($this, ['employeeId'=>$employeeid,'mcode'=>$mcode]);
-    }
-    public function taxsheetAction(){
-        return Helper::addFlashMessagesToArray($this, ['employeeId'=>$this->employeeId,'employeeCode'=>$this->employeeCode]);
-    }
+
     public function generateMonthlySheetAction() {
         try {
             $request = $this->getRequest();
@@ -93,7 +75,7 @@ class Generate extends AbstractActionController {
 
             return new CustomViewModel(['success' => true, 'data' => $results, 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
         }
     }
 

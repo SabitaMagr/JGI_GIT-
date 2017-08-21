@@ -227,8 +227,5 @@ class EmailController extends AbstractActionController {
             return $this->redirect()->toRoute('email', ['id' => $postedData['id']]);
         }
     }
-    public function getBasePath(){
-        $basePath = $this->getRequest()->getBaseUrl();
-        return $basePath;
-    }
+
 }

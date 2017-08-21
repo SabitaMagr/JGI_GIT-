@@ -88,9 +88,7 @@ class TravelApproveRepository implements RepositoryInterface {
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
-            new Expression("TR.APPROVER_ROLE AS APPROVER_ROLE"),
             new Expression("TR.TRANSPORT_TYPE AS TRANSPORT_TYPE"),
-            new Expression("TR.ADVANCE_AMOUNT AS ADVANCE_AMOUNT"),
             new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE")
@@ -100,7 +98,7 @@ class TravelApproveRepository implements RepositoryInterface {
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=TR.EMPLOYEE_ID", ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left")
-                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER' => 'APPROVED_BY'], "left")
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER' => 'RECOMMEND_BY', 'APPROVER' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECM_FN' => new Expression("INITCAP(RECM.FIRST_NAME)"), 'RECM_MN' => new Expression("INITCAP(RECM.MIDDLE_NAME)"), 'RECM_LN' => new Expression("INITCAP(RECM.LAST_NAME)")], "left")
                 ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APRV_FN' => new Expression("INITCAP(APRV.FIRST_NAME)"), 'APRV_MN' => new Expression("INITCAP(APRV.MIDDLE_NAME)"), 'APRV_LN' => new Expression("INITCAP(APRV.LAST_NAME)")], "left")
                 ->join(['TS' => "HRIS_TRAVEL_SUBSTITUTE"], "TS.TRAVEL_ID=TR.TRAVEL_ID", ['SUB_EMPLOYEE_ID' => 'EMPLOYEE_ID', 'SUB_APPROVED_DATE' => new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"), 'SUB_REMARKS' => "REMARKS", 'SUB_APPROVED_FLAG' => "APPROVED_FLAG"], "left");
@@ -130,8 +128,6 @@ class TravelApproveRepository implements RepositoryInterface {
                     TR.RECOMMENDED_REMARKS,
                     TR.APPROVED_REMARKS,
                     TR.DESTINATION,
-                    TR.APPROVER_ROLE,
-                    TR.ADVANCE_AMOUNT,
                     INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
                     INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
                     INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
@@ -140,25 +136,8 @@ class TravelApproveRepository implements RepositoryInterface {
                     INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
                     INITCAP(E.LAST_NAME) AS LAST_NAME,
                     INITCAP(E.FULL_NAME) AS FULL_NAME,
-                    RA.APPROVED_BY AS RECOMMENDER,
-                    (
-                    CASE
-                      WHEN TR.APPROVER_ROLE='DCEO'
-                      THEN
-                        (SELECT EMPLOYEE_ID
-                        FROM HRIS_EMPLOYEES
-                        WHERE IS_DCEO   ='Y'
-                        AND STATUS      ='E'
-                        AND RETIRED_FLAG='N'
-                        )
-                      ELSE
-                        (SELECT EMPLOYEE_ID
-                        FROM HRIS_EMPLOYEES
-                        WHERE IS_CEO    ='Y'
-                        AND STATUS      ='E'
-                        AND RETIRED_FLAG='N'
-                        )
-                    END)  AS APPROVER,
+                    RA.RECOMMEND_BY as RECOMMENDER,
+                    RA.APPROVED_BY AS APPROVER,
                     TS.APPROVED_FLAG AS APPROVED_FLAG,
                     INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY')) AS SUB_APPROVED_DATE,
                     TS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
@@ -172,29 +151,11 @@ class TravelApproveRepository implements RepositoryInterface {
                     WHERE E.STATUS='E'
                     AND E.RETIRED_FLAG='N'";
         if ($status == null) {
-            $sql .= " AND ((RA.APPROVED_BY=" . $id . " AND TR.STATUS='RQ'"
+            $sql .= " AND ((RA.RECOMMEND_BY=" . $id . " AND TR.STATUS='RQ'"
                     . " AND
                     (TS.APPROVED_FLAG = CASE WHEN TS.EMPLOYEE_ID IS NOT NULL
                          THEN ('Y')     
-                    END OR  TS.EMPLOYEE_ID is null)) OR (
-                    ('$id'       =
-                    CASE
-                      WHEN TR.APPROVER_ROLE='DCEO'
-                      THEN
-                        (SELECT EMPLOYEE_ID
-                        FROM HRIS_EMPLOYEES
-                        WHERE IS_DCEO   ='Y'
-                        AND STATUS      ='E'
-                        AND RETIRED_FLAG='N'
-                        )
-                      ELSE
-                        (SELECT EMPLOYEE_ID
-                        FROM HRIS_EMPLOYEES
-                        WHERE IS_CEO    ='Y'
-                        AND STATUS      ='E'
-                        AND RETIRED_FLAG='N'
-                        )
-                    END)AND TR.STATUS='RC') )";
+                    END OR  TS.EMPLOYEE_ID is null)) OR (RA.APPROVED_BY=" . $id . " AND TR.STATUS='RC') )";
         } else if ($status == 'RC') {
             $sql .= " AND TR.STATUS='RC' AND
                 RA.RECOMMEND_BY=" . $id;
@@ -207,7 +168,6 @@ class TravelApproveRepository implements RepositoryInterface {
         }
         $sql .= " ORDER BY TR.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
-//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

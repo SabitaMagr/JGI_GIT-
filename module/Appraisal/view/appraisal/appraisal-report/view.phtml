@@ -1,6 +1,5 @@
 <?php
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('assets/global/plugins/jquery-print/jQuery.print.js'));
+$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular-messages.min.js'));
 $this->headScript()->appendFile($this->basePath('js/user-form-error.js'))
                 ->appendFile($this->basePath('js/appraisal/report/add.js'));
@@ -31,7 +30,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     document.listurl = '<?= $this->url("appraisal-review", ["action" => "index"]) ?>';
 </script>
     <div class="row margin-top-20" ng-app="hris">
-    <div class="col-md-12" id="printable">
+    <div class="col-md-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
@@ -46,10 +45,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <?php
                 print $this->partial('appraisal/layout/employee-detail.phtml');
             ?>
-            <div class="portlet-body" style="padding-top:1px; padding:4px 10px!important;">
+            <div class="portlet-body" style="padding-top:1px;">
                 <h5 id="headingForPanel" style="font-weight:600">Performance Evaluation</h5>
                 <div class="portlet-body">
-                    <div class="tabbable-line menusetuptab margin-bottom-10" style="padding-top:0px">
+                    <div class="tabbable-line menusetuptab" style="padding-top:0px">
                         <ul class="nav nav-tabs" id="tabList">
                             <?php if($assignedAppraisalDetail['KPI_SETTING']=='Y'){?>
                             <li class="active">
@@ -86,14 +85,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                             </li>
                             <?php } ?>
-                            <?php if (($assignedAppraisalDetail['STAGE_ID']==9 || $assignedAppraisalDetail['HR_FEEDBACK']!=null)){ ?>
+                            <?php
+                            if (($isHR==true && count($hrQuestionTemplate)>0)||$hrAvailableAnswer==true){  ?>
                             <li class="<?= ($tab==6)?"active":""; ?>">
                                 <a href="#portlet_tab2_6" data-toggle="tab">HR Feedback </a>
                             </li>
                             <?php } ?>
                         </ul>
                     </div>
-                    <div class="tab-content margin-top-5" id="tabContent">
+                    <div class="tab-content margin-top-15" id="tabContent">
                         <input type="hidden" value="<?= $assignedAppraisalDetail['EMPLOYEE_ID']; ?>" name="employeeId" id="employeeId"/>
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
@@ -127,10 +127,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div>
-        <?php if($assignedAppraisalDetail['STAGE_ID']=='2'){ ?>
-        <div class="col-md-12" style="text-align:center;">
-            <a class="btn btn-success print" ng-click="printDiv('printableArea');"> Print</a>
-        </div>
-        <?php } ?>
 </div>
 

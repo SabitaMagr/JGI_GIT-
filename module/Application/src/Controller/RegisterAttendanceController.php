@@ -91,12 +91,6 @@ class RegisterAttendanceController extends AbstractActionController{
                     $attendanceRepo = new AttendanceRepository($this->adapter);
                     if(!isset($postData['checkInRemarks'])){
                         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
-                        $allowRegisterAttendance = ($todayAttendance['TRAVEL_ID']==null && $todayAttendance['LEAVE_ID']==null && $todayAttendance['TRAINING_ID']==null && $todayAttendance['HOLIDAY_ID']==null)?true:false;
-                        if(!$allowRegisterAttendance){
-                            $this->getAuthService()->clearIdentity();
-                            $this->flashmessenger()->addMessage("Register Attendance Is Unavailable!!!");
-                            return $this->redirect()->toRoute('login');
-                        }
                         $inTime = $todayAttendance['IN_TIME'];
                         $attendanceType = ($inTime) ? "OUT" : "IN";
                         $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);

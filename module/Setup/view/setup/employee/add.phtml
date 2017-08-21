@@ -73,7 +73,6 @@ $addrPermZoneId->setOptions(["value_options" => $zones]);
 $addrTempZoneId->setOptions(["value_options" => $zones]);
 $companyId->setOptions(["value_options" => $companies]);
 $countryId->setValueOptions($countries);
-$countryId->setValue(168);
 
 //Custom validation
 if (key($mobileNo->getMessages()) == "regexNotMatch") {
@@ -156,8 +155,6 @@ $employeeTypeValue = [
 ];
 $employeeType->setValueOptions($employeeTypeValue);
 $isHR = $formFour->get('isHR');
-$isCEO = $formFour->get('isCEO');
-$isDCEO = $formFour->get('isDCEO');
 
 $formSix->setAttribute('id', 'form6');
 $academicDegreeId = $formSix->get('academicDegreeId');
@@ -422,6 +419,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="form-group ">
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                     <?php print $this->formLabel($religionId) ?>
+                                    <span class="required" aria-required="true">*</span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">   <?php print $this->formElement($religionId) ?> </div>
                                 <?php print $this->formElementErrors()->render($religionId, ['class' => 'help-block error']) ?>
@@ -460,6 +458,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="form-group "> 
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign">  
                                     <?php print $this->formLabel($mobileNo); ?>
+                                    <span class="required" aria-required="true">*</span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">   <?php print $this->formElement($mobileNo); ?> </div>
                                 <?php print $this->formElementErrors()->render($mobileNo, ['class' => 'help-block error']); ?>
@@ -769,6 +768,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="form-group  <?= empty($emergContactNo->getMessages()) ? "" : "error" ?>">
                                 <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                                     <?php print $this->formLabel($emergContactNo); ?>
+                                    <span class="required" aria-required="true">*</span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                     <?php print $this->formElement($emergContactNo); ?> 
@@ -1423,7 +1423,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label> Recommender</label>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 cgap-4">
-                                        <select name="recommender">
+                                        <select required="required" name="recommender">
                                             <?php foreach ($recommenders as $recommenderKey => $recommenderValue) {
                                                 ?>
                                                 <option  value="<?php echo $recommenderKey; ?>"><?php echo $recommenderValue; ?></option>
@@ -1440,7 +1440,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label> Approver</label>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 cgap-4">
-                                        <select name="approver">
+                                        <select required="required" name="approver">
                                             <?php foreach ($approvers as $approverKey => $approverValue) {
                                                 ?>
                                                 <option  value="<?php echo $approverKey; ?>"><?php echo $approverValue; ?></option>
@@ -1472,62 +1472,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="row bottomgap">
                                 <div class="form-group">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                        <label> To Date </label>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                        <div class="row">
-                                            <div class="col-md-6 nopaddinggap">
-                                                <div class="input-group date">
-                                                    <input type="text" name="toDate" id="toDate" class="form-control" value="" />
-                                                </div>  
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input type="text"   id="nepaliToDate" class="form-control " value="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <div class="row bottomgap">
-                                <div class="form-group">
                                     <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
                                         <?= $this->formLabel($isHR) ?>
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
                                         <div class="md-radio-inline">
                                             <?php $customRender($isHR); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <div class="row bottomgap">
-                                <div class="form-group">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
-                                        <?= $this->formLabel($isCEO) ?>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                        <div class="md-radio-inline">
-                                            <?php $customRender($isCEO); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <div class="row bottomgap">
-                                <div class="form-group">
-                                    <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4" style="margin-top:2%;">
-                                        <?= $this->formLabel($isDCEO) ?>
-                                    </div>
-                                    <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                        <div class="md-radio-inline">
-                                            <?php $customRender($isDCEO); ?>
                                         </div>
                                     </div>
                                 </div>

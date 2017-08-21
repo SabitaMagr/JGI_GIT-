@@ -19,10 +19,6 @@ class TravelExpenseDetail extends Model{
     const ALLOWANCE = "ALLOWANCE";
     const LOCAL_CONVEYENCE = "LOCAL_CONVEYENCE";
     const MISC_EXPENSES = "MISC_EXPENSES";
-    const FARE_FLAG = "FARE_FLAG";
-    const ALLOWANCE_FLAG = "ALLOWANCE_FLAG";
-    const LOCAL_CONVEYENCE_FLAG = "LOCAL_CONVEYENCE_FLAG";
-    const MISC_EXPENSES_FLAG = "MISC_EXPENSES_FLAG";
     const TOTAL_AMOUNT = "TOTAL_AMOUNT";
     const REMARKS = "REMARKS";
     const CREATED_BY = "CREATED_BY";
@@ -44,10 +40,6 @@ class TravelExpenseDetail extends Model{
     public $allowance;
     public $localConveyence;
     public $miscExpenses;
-    public $fareFlag;
-    public $allowanceFlag;
-    public $localConveyenceFlag;
-    public $miscExpensesFlag;
     public $totalAmount;
     public $remarks;
     public $createdBy;
@@ -70,10 +62,6 @@ class TravelExpenseDetail extends Model{
         'allowance'=>self::ALLOWANCE,
         'localConveyence'=>self::LOCAL_CONVEYENCE,
         'miscExpenses'=>self::MISC_EXPENSES,
-        'fareFlag'=>self::FARE_FLAG,
-        'allowanceFlag'=>self::ALLOWANCE_FLAG,
-        'localConveyenceFlag'=>self::LOCAL_CONVEYENCE_FLAG,
-        'miscExpensesFlag'=>self::MISC_EXPENSES_FLAG,
         'totalAmount'=>self::TOTAL_AMOUNT,
         'remarks'=>self::REMARKS,
         'createdBy'=>self::CREATED_BY,

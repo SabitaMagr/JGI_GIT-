@@ -20,9 +20,8 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids =<?php echo json_encode(["appraisalId" => -1, "appraisalStageId" => -1, "fromDate1" => "", "nepaliFromDate1" => "", "toDate1" => "", "nepaliToDate1" => ""]) ?>;
+    document.ids=<?php echo json_encode(["appraisalId"=>-1,"appraisalStageId"=>-1,"fromDate1"=>"","nepaliFromDate1"=>"","toDate1"=>"","nepaliToDate1"=>""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.appraisalReviewViewLink = '<?= $this->url("appraisal-final-review", ["action" => "view"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\appraisal-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -42,7 +41,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
+    <div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
     <input type="hidden" value="<?= $userId; ?>" id="userId" />
     <input type="hidden" value="appraisalFinalReview" id="reportType" />
     <div class="portlet light bg-inverse">
@@ -69,7 +68,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </ul>
                 </div>
             </div>
-
+            
         </div>
         <div class="portlet-body">
             <div class="row">
@@ -144,7 +143,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                    <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
@@ -156,7 +155,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div id="appraisalListTable">
 
     </div>
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         #: (FULL_NAME == null) ? ' ' : FULL_NAME #
@@ -177,71 +176,64 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #: (END_DATE == null) ? '-' : END_DATE #
         </td>
         <td id="#if(KPI_ANS_NUM>0){ #green#}else{#red#}#">
-        #if(KPI_ANS_NUM>0 && KPI_SETTING=='Y'){   #
-        #= "&\\#10004;" #
-        # }else if(KPI_SETTING=='N'){ #
-        #='-'#
-        #}else{ #
-        #= "&\\#10006;" #
-        # } #
+            #if(KPI_ANS_NUM>0 && KPI_SETTING=='Y'){   #
+            #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            #}else{ #
+            #= "&\\#10006;" #
+            # } #
         </td>
         <td id="#if(KPI_APPROVED_DATE==null){#red#}else{##}#">
-        #if(KPI_APPROVED_DATE!=null){   #
-        #= KPI_APPROVED_DATE #
-        # }else if(KPI_SETTING=='N'){ #
-        #='-'#
-        # }else{ #
-        #= "&\\#10006;" #
-        # } #
+            #if(KPI_APPROVED_DATE!=null){   #
+            #= KPI_APPROVED_DATE #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
         </td>
         <td id="#if(KPI_SELF_RATING_NUM>0){ #green#}else{#red#}#">
-        #if(KPI_SELF_RATING_NUM>0){   #
-        #= "&\\#10004;" #
-        # }else if(KPI_SETTING=='N'){ #
-        #='-'#
-        # }else{ #
-        #= "&\\#10006;" #
-        # } #
+            #if(KPI_SELF_RATING_NUM>0){   #
+            #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
         </td>
         <td id="#if(APPRAISED_BY!=null){ #green#}else{#red#}#">
-        #if(APPRAISED_BY!=null){   #
-        #= "&\\#10004;" #
-        # }else{ #
-        #= "&\\#10006;" #
-        # } #
+            #if(APPRAISED_BY!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
         </td>
         <td id="#if(REVIEWED_BY!=null){ #green#}else{#red#}#">
-        #if(REVIEWED_BY!=null){   #
-        #= "&\\#10004;" #
-        #}else if(REVIEWED_BY==null && DEFAULT_RATING=='N'){ #
-        #= "&\\#10006;" #
-        # }else{#-#}#
+            #if(REVIEWED_BY!=null){   #
+            #= "&\\#10004;" #
+            #}else if(REVIEWED_BY==null && DEFAULT_RATING=='N'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
         </td>
         <td id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
-        #if(APPRAISER_OVERALL_RATING!=null){   #
-        #= "&\\#10004;" #
-        # }else if(KPI_SETTING=='N'){ #
-        #='-'#
-        # }else{ #
-        #= "&\\#10006;" #
-        # } #
+            #if(APPRAISER_OVERALL_RATING!=null){   #
+            #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
         </td>
         <td>    
         #: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #
         </td>
-        <td id="#if(SUPER_REVIEWER_AGREE!='Y'){ #green#}else{#red#}#">
-        #if(SUPER_REVIEWER_AGREE=='Y'){   #
-        #= "&\\#10004;" #
-        #}else if(SUPER_REVIEWER_AGREE=='N'){ #
-        #= "&\\#10006;" #
-        # }else{#-#}#
-        </td>
-        <td id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
-        #if(APPRAISEE_AGREE=='Yes'){   #
-        #= "&\\#10004;" #
-        # }else if(APPRAISEE_AGREE=='No'){ #
-        #= "&\\#10006;" #
-        # }else{#-#}#
+         <td id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
+            #if(APPRAISEE_AGREE=='Yes'){   #
+            #= "&\\#10004;" #
+            # }else if(APPRAISEE_AGREE=='No'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
         </td>
         <td>    
         #: (APPRAISER_NAME == null) ? '-' : APPRAISER_NAME #
@@ -251,7 +243,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("appraisal-final-review", ["action" => "view"]); ?>/#:APPRAISAL_ID#/#:EMPLOYEE_ID#" tital="view" style="height:17px;">
+        href="<?= $this->url("appraisal-final-review", ["action" => "view"]); ?>/#:APPRAISAL_ID#/#:EMPLOYEE_ID#/1" tital="view" style="height:17px;">
         <i class="fa fa-search-plus"></i>
         </a>
         </td>

@@ -44,8 +44,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="portlet-body div-font-11">
                 <form name="travelExpenseForm" id="travelRequest-form" ng-submit="submitExpenseDtl()" novalidate>
-                    <input type="hidden" id="travelId" value="<?= $id; ?>" />
-                    <input type="hidden" id="requestedType" value="<?= $currentRequestType; ?>"/>
+                    <input type="hidden" id="travelId" value="<?php echo $id; ?>" />
+                    <input type="hidden" id="requestedType" value="<?php echo $requestedType ?>"/>
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
                            <table>
@@ -54,12 +54,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="purpose">Purpose :</label> 
                                     </td>
                                     <td>
-                                        <input type="text"  value="" name="purpose" ng-model="travelDetail.purpose" required="required" id="purpose" class="form-control">
-                                        <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.purpose.$touched">
-                                            <ul ng-show="travelExpenseForm.purpose.$error.required" class="help-block error">
-                                                <li>Purpose is required.</li>
-                                            </ul>
-                                        </div>
+                                        <input type="text" disabled="disabled" value="<?php echo $detail['PURPOSE']; ?>" name="purpose" required="required" id="purpose" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -72,7 +67,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="advanceAmount">Advance Amount :</label> 
                                     </td>
                                     <td>
-                                        <input type="text"  value="" name="advanceAmount" ng-model="travelDetail.advanceAmount" id="advanceAmount" class="form-control">
+                                        <input type="text" disabled="disabled" value="<?php echo $detail['REQUESTED_AMOUNT']; ?>" name="advanceAmount" required="required" id="advanceAmount" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -84,12 +79,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <label for="destination">Destination :</label> 
                                     </td>
                                     <td>
-                                        <input type="text"  value="" name="destination" ng-model="travelDetail.destination" required="required" id="destination" class="form-control">
-                                        <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.destination.$touched">
-                                            <ul ng-show="travelExpenseForm.destination.$error.required" class="help-block error">
-                                                <li>Destination is required.</li>
-                                            </ul>
-                                        </div>
+                                        <input type="text" disabled="disabled" value="<?php echo $detail['DESTINATION'] ?>" name="destination" required="required" id="destination" class="form-control">
                                     </td>
                                 </tr>
                             </table>
@@ -131,29 +121,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                            <table>
-                                <tr>
-                                    <td width="40%"><label for="form-approver">Approver :</label></td>  
-                                    <td>
-                                        <div class="md-radio-inline">
-                                            <div class="md-radio"><input checked="checked" type="radio" value="CEO" name="approverRole" id="approverRole+CEO" class="md-radiobtn radioButton approverRole" ng-model="travelDetail.approverRole"><label for="approverRole+CEO">
-                                                <span></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span> CEO
-                                                </label>
-                                            </div>
-                                            <div class="md-radio"><input type="radio" value="DCEO" name="approverRole" id="approverRole+DCEO" class="md-radiobtn radioButton approverRole" ng-model="travelDetail.approverRole"><label for="approverRole+DCEO">
-                                                <span></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span> DCEO
-                                                </label>
-                                            </div>                            
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
+                        
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
 <!--                             <table>
                                 <tr>
@@ -163,6 +131,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </tr>
                             </table>-->
                         </div>
+                        
                     </div>
                     <div class="margin-top-10 scrollbar-horizantal">
                         <table width="100%" align="center" class="table table-striped table-bordered table-hover no-footer customTable div-font-11">
@@ -174,6 +143,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <th rowspan="3">Daily Allowance</th>
                                     <th rowspan="3">Local Conveyence</th>
                                     <th rowspan="3">Misc. Expenses</th>
+                                    <th rowspan="3">Total</th>
                                     <th rowspan="3">Remarks</th>
                                     <th rowspan="3"></th>
                                 </tr>
@@ -246,39 +216,28 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </select>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="fareFlag_{{expenseDtlForm.checkbox}}" name="fareFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.fareFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="fareFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
+                                        <input type="number" required="required" name="fare_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.fare" style="width: 60px;" step="0.01" min="0"/>
+                                        <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.fare_{{expenseDtlForm.checkbox}}.$touched">
+                                            <ul ng-show="travelExpenseForm.fare_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
+                                                <li>Fare is required.</li>
+                                            </ul>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="allowanceFlag_{{expenseDtlForm.checkbox}}" name="allowanceFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.allowanceFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="allowanceFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
-                                        </div>
+                                        <input type="number" ng-model="expenseDtlForm.allowance" style="width: 60px;" step="0.01" min="0"/>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="localConveyenceFlag_{{expenseDtlForm.checkbox}}" name="localConveyenceFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.localConveyenceFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="localConveyenceFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
-                                        </div>
+                                        <input type="number" ng-model="expenseDtlForm.localConveyence"style="width: 69px;" step="0.01" min="0"/>
                                     </td>
                                     <td>
-                                        <div class="md-checkbox pull-right">
-                                            <input type="checkbox" id="miscExpenseFlag_{{expenseDtlForm.checkbox}}" name="miscExpenseFlag_{{expenseDtlForm.checkbox}}" ng-model="expenseDtlForm.miscExpenseFlag" class="md-check ng-pristine ng-untouched ng-valid ng-empty">
-                                            <label for="miscExpenseFlag_{{expenseDtlForm.checkbox}}">
-                                                <span class="inc"></span>
-                                                <span class="check"></span>
-                                                <span class="box"></span></label>
+                                        <input type="number" ng-model="expenseDtlForm.miscExpense" style="width: 60px;" step="0.01" min="0"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="total_{{expenseDtlForm.checkbox}}" readonly="readonly" ng-model="expenseDtlForm.total"  name="total_{{expenseDtlForm.checkbox}}" style="width: 72px;" step="0.01" min="0"/>
+                                        <div ng-show="travelExpenseForm.$submitted || travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$touched">
+                                            <ul ng-show="travelExpenseForm.total_{{expenseDtlForm.checkbox}}.$error.required" class="help-block error">
+                                                <li>Total is required.</li>
+                                            </ul>
                                         </div>
                                     </td>
                                     <td>
@@ -307,7 +266,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td></td>
+                                    <td><b>Total:</b></td>
+                                    <td>
+                                        <input type="number" id="sumAllTotal" step="0.01" min="0" readonly="readonly" style="width: 72px;" value="{{sumAllTotal(expenseDtlFormList)}}" />
+                                    </td>
                                     <td>
                                         <a href="javascript:;" class="btn btn-icon-only default pull-right"
                                            ng-click="addExpenseDtl()">

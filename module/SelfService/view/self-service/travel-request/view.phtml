@@ -52,8 +52,6 @@ $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(["disabled" => "disabled"]);
 $approvedRemarks = $form->get('approvedRemarks');
 $approvedRemarks->setAttributes(["disabled" => "disabled"]);
-$approverRole = $form->get('approverRole');
-$approverRole->setAttributes(['disabled'=>'disabled']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -200,13 +198,6 @@ print $this->form()->openTag($form);
                                 </div>     
                             </div>     
                         </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($requestedType); ?>
-                                <?php print $this->formElement($requestedType); ?>
-                                <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
-                            </div>   
-                        </div>
                     </div>
 
                     <div class=" row">
@@ -225,12 +216,13 @@ print $this->form()->openTag($form);
                                 <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
                             </div>
                         </div>
+
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <?php print $this->formLabel($requestedAmount); ?>
-                                <?php print $this->formElement($requestedAmount); ?>
-                                <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                            </div>
+                                <?php print $this->formLabel($requestedType); ?>
+                                <?php print $this->formElement($requestedType); ?>
+                                <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
+                            </div>   
                         </div>
                     </div>
 
@@ -242,17 +234,15 @@ print $this->form()->openTag($form);
                                 <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
                             </div> 
                         </div>
+
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <?php print $this->formLabel($approverRole); ?>
-                                <div class="md-radio-inline">
-                                    <?php $customRender($approverRole); ?>
-                                </div>
-                                <?php print $this->formElementErrors()->render($approverRole, ['class' => 'help-block']); ?>
+                                <?php print $this->formLabel($requestedAmount); ?>
+                                <?php print $this->formElement($requestedAmount); ?>
+                                <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
+
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($remarks); ?>
@@ -279,7 +269,6 @@ print $this->form()->openTag($form);
                             </label>
                             <div>
                                 <select disabled="disabled" class="form-control" name="travelSubstitute">
-                                    <option style="cursor: pointer;" value="">---</option>
                                     <?php
                                     foreach ($employeeList as $key => $value) {
                                         $selected = ($key == $subEmployeeId) ? "selected" : "";
@@ -319,7 +308,6 @@ print $this->form()->openTag($form);
     print $this->form()->closeTag();
     ?>
         <div style="border:1px solid; display: none;" id="printableArea" class="col-md-8">
-            <div id="printableInnerArea">
             <div class="row">
                 <div class="col-md-8 col-sm-offset-2">
                     <ul id="headingList">
@@ -413,7 +401,6 @@ print $this->form()->openTag($form);
                     </div>
                 </div>
             <?php } ?>
-            </div>
         </div>
 
         <div class="col-md-12" style="text-align:center;">

@@ -55,8 +55,7 @@ return [
         'factories' => [
             Controller\NotificationController::class => \Application\Controller\ControllerFactory::class,
             Controller\EmailController::class => \Application\Controller\ControllerFactory::class,
-            Controller\NewsController::class => \Application\Controller\ControllerFactory::class ,
-            Controller\BasePathDetail::class => \Application\Controller\ControllerFactory::class
+            Controller\NewsController::class => \Application\Controller\ControllerFactory::class
         ],
     ],
     'navigation' => [

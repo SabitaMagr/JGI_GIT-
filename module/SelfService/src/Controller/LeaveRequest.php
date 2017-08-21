@@ -11,7 +11,6 @@ use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\LeaveApproveRepository;
-use Notification\Controller\EmailController;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Model\LeaveSubstitute;
@@ -130,13 +129,14 @@ class LeaveRequest extends AbstractActionController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
-//                print "<pre>";
-//                print_r($leaveRequest); die();
+
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
+
                 if ($leaveSubstitute !== null && $leaveSubstitute!=="") {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
+
 
                     $leaveSubstituteModel->leaveRequestId = $leaveRequest->id;
                     $leaveSubstituteModel->employeeId = $leaveSubstitute;
@@ -199,18 +199,14 @@ class LeaveRequest extends AbstractActionController {
             $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        $detail = $leaveApproveRepository->fetchById($id);
-        $empRepository = new EmployeeRepository($this->adapter);
+
         $recommenderName = $fullName($this->recommender);
         $approverName = $fullName($this->approver);
-        $CEOFlag = ($detail['PAID']=='N' && $detail['NO_OF_DAYS']>3)?true:false;
-        if($CEOFlag){
-            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
-            $recommenderName=$approverName;
-            $approverName =($CEODtl!=null) ? $fullName($CEODtl['EMPLOYEE_ID']):"";
-        }
+
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();
+
+        $detail = $leaveApproveRepository->fetchById($id);
 
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
@@ -227,6 +223,7 @@ class LeaveRequest extends AbstractActionController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID']);
         $preBalance = $result['BALANCE'];
+
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
@@ -345,15 +342,8 @@ class LeaveRequest extends AbstractActionController {
             $request = $this->getRequest();
             if ($request->isPost()) {
                 $postedData = $request->getPost();
-                
-                $startdate=date_create($postedData['startDate']);
-                $endDate=date_create($postedData['endDate']);
-                $diff=date_diff($startdate,$endDate);
-                $daysDifferent=$diff->format("%a")+1;
-                $availableDays = ['AVAILABLE_DAYS'=>$daysDifferent];
-                
-//                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-//                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
                 return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");

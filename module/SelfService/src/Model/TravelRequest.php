@@ -4,15 +4,6 @@ namespace SelfService\Model;
 use Application\Model\Model;
 
 class TravelRequest extends Model{
-    const TRAVEL_STATUS = [
-        'Pending'=>'RQ',
-        'Recommended'=>'RC',
-        'Approved'=>'AP',
-        'Rejected'=>'R',
-        'Cancelled'=>'C',
-        'Settlement Checked'=>'SC'
-    ];
-    
     const TABLE_NAME = "HRIS_EMPLOYEE_TRAVEL_REQUEST";
     const TRAVEL_ID = "TRAVEL_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -36,8 +27,6 @@ class TravelRequest extends Model{
     const DEPARTURE_DATE = "DEPARTURE_DATE";
     const RETURNED_DATE = "RETURNED_DATE";
     const TRANSPORT_TYPE = "TRANSPORT_TYPE";
-    const APPROVER_ROLE = 'APPROVER_ROLE';
-    const ADVANCE_AMOUNT = "ADVANCE_AMOUNT";
     
     public $travelId;
     public $employeeId;
@@ -61,8 +50,6 @@ class TravelRequest extends Model{
     public $departureDate;
     public $returnedDate;
     public $transportType;
-    public $approverRole;
-    public $advanceAmount;
     
     public $mappings= [
         'travelId'=>self::TRAVEL_ID,
@@ -86,8 +73,6 @@ class TravelRequest extends Model{
         'referenceTravelId'=>self::REFERENCE_TRAVEL_ID,
         'departureDate'=>self::DEPARTURE_DATE,
         'returnedDate'=>self::RETURNED_DATE,
-        'transportType'=>self::TRANSPORT_TYPE,
-        'approverRole'=>self::APPROVER_ROLE,
-        'advanceAmount'=>self::ADVANCE_AMOUNT
+        'transportType'=>self::TRANSPORT_TYPE
     ];   
 }

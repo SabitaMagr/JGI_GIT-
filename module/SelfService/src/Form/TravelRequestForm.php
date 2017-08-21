@@ -107,15 +107,6 @@ class TravelRequestForm{
      * @Annotation\Attributes({"id":"form-approvedRemarks","class":"form-reason form-control","style":"    height: 50px; font-size:12px"})
      */
     public $approvedRemarks;
-    
-    /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Approver","value_options":{"CEO":"CEO","DCEO":"DCEO"}})
-     * @Annotation\Attributes({"id":"form-approver","class":"form-control","value":"CEO"})
-     */
-    public $approverRole;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

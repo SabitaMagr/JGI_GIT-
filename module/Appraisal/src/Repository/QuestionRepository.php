@@ -38,6 +38,8 @@ class QuestionRepository implements RepositoryInterface{
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
+                [Question::QUESTION_EDESC,Question::QUESTION_NDESC],null,null,null,null,"AQ"),false);
         $select->from(['AQ' => "HRIS_APPRAISAL_QUESTION"])
                 ->join(['AH' => 'HRIS_APPRAISAL_HEADING'], 'AH.HEADING_ID=AQ.HEADING_ID', ["HEADING_EDESC"=>new Expression("INITCAP(AH.HEADING_EDESC)")], "left");
         
@@ -50,12 +52,16 @@ class QuestionRepository implements RepositoryInterface{
 
     public function fetchById($id) {
         $rowset = $this->tableGateway->select(function(Select $select) use($id){
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
+                null),false);
             $select->where([Question::QUESTION_ID => $id, Question::STATUS => 'E']);
         });
         return $result = $rowset->current();
     }
     public function fetchByHeadingId($headingId){
         $rowset= $this->tableGateway->select(function(Select $select) use($headingId) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Question::class,
+                [Question::QUESTION_EDESC,Question::QUESTION_NDESC]),false);
             $select->where([Question::STATUS=>'E',Question::HEADING_ID=>$headingId]);
             $select->order(Question::QUESTION_ID." ASC");
         });

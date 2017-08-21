@@ -931,6 +931,7 @@ echo json_encode($menu);
             </div>
         </div>
 
+
         <div class="status-info"> 
             <p><i class="fa fa-info-circle ticon ticon"></i>Status Infomation</p>
             <div class="row clearfix e-setup">
@@ -973,6 +974,79 @@ echo json_encode($menu);
 
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
+                        <div class="form-group   <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($serviceTypeId); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $employeeData[Setup\Model\ServiceType::SERVICE_TYPE_NAME]; ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group   <?= empty($serviceEventTypeId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($serviceEventTypeId); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $employeeData[Setup\Model\ServiceEventType::SERVICE_EVENT_TYPE_NAME]; ?></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+
+                        <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($positionId); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $employeeData[Setup\Model\Position::POSITION_NAME]; ?></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+
+                        <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+
+                                <?php print $this->formLabel($designationId); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $employeeData[Setup\Model\Designation::DESIGNATION_TITLE]; ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group   <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($departmentId); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $employeeData[\Setup\Model\Department::DEPARTMENT_NAME]; ?></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($branchId); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print $employeeData[\Setup\Model\Branch::BRANCH_NAME]; ?></div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
                         <div class="form-group<?= empty($employeeType->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                 <?php print $this->formLabel($employeeType); ?></div>
@@ -983,176 +1057,6 @@ echo json_encode($menu);
 
 
                 </div>
-
-                <!--current-->
-
-                <div class="col-md-12">
-                    <div class="current-details">
-                        <h5>Current Status</h5>
-                    </div> 
-                </div> 
-
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group   <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <label></label>
-                                <?php print $this->formLabel($serviceTypeId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['SERVICE_TYPE']; ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group   <?= empty($serviceEventTypeId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($serviceEventTypeId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['SERVICE_EVENT_TYPE']; ?></div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-
-                        <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($positionId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['POSITION']; ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-
-                        <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($designationId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['DESIGNATION']; ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group   <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($departmentId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['DEPARTMENT']; ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($branchId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['BRANCH']; ?></div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-
-                <!--current  end-->
-
-                <!--appointment-->
-
-                <div class="col-md-12">
-                    <div class="current-details appointment">
-                        <h5>Appointed Status</h5>
-                    </div> 
-                </div> 
-
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group   <?= empty($serviceTypeId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <label></label>
-                                <?php print $this->formLabel($serviceTypeId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['APP_SERVICE_TYPE']; ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group   <?= empty($serviceEventTypeId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($serviceEventTypeId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['APP_SERVICE_EVENT_TYPE']; ?></div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-
-                        <div class="form-group   <?= empty($positionId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($positionId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['APP_POSITION']; ?></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-
-                        <div class="form-group   <?= empty($designationId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($designationId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['APP_DESIGNATION']; ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group   <?= empty($departmentId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($departmentId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['APP_DEPARTMENT']; ?></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($branchId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData['APP_BRANCH']; ?></div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <!--appointment end -->  
-
             </div>
 
         </div>

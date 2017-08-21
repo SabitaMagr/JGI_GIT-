@@ -82,7 +82,6 @@ FROM
     APS.APPRAISER_OVERALL_RATING                 AS APPRAISER_OVERALL_RATING,
     APS.REVIEWER_AGREE                           AS REVIEWER_AGREE,
     APS.APPRAISEE_AGREE                          AS APPRAISEE_AGREE,
-    APS.SUPER_REVIEWER_AGREE                     AS SUPER_REVIEWER_AGREE,
     APS.APPRAISED_BY                             AS APPRAISED_BY,
     APS.REVIEWED_BY                              AS REVIEWED_BY,
     APS.DEFAULT_RATING                           AS DEFAULT_RATING,

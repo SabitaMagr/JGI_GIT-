@@ -42,7 +42,7 @@ class AppraisalAnswerRepository implements RepositoryInterface{
     public function fetchById($id) {
         
     }
-    public function fetchByAllDtl($appraisalId,$questionId,$employeeId,$userId,$appraiserId=null,$reviewerId=null){
+    public function fetchByAllDtl($appraisalId,$questionId,$employeeId,$userId,$appraiserId=null,$reviewerId=null,$hrId=null){
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['APS' => AppraisalAnswer::TABLE_NAME]);
@@ -54,12 +54,21 @@ class AppraisalAnswerRepository implements RepositoryInterface{
            $reId = trim(implode(",",$reviewerId), ",");
            $select->join(['APS2' => "(SELECT ANSWER, RATING, ANSWER_ID,APPRAISAL_ID,QUESTION_ID,EMPLOYEE_ID,USER_ID FROM HRIS_APPRAISAL_ANSWER WHERE USER_ID in (".$reId."))"], "(APS2.APPRAISAL_ID = APS.APPRAISAL_ID AND APS2.EMPLOYEE_ID = APS.EMPLOYEE_ID AND APS2.QUESTION_ID = APS.QUESTION_ID)", ["REVIEWER_ANSWER"=>"ANSWER","REVIEWER_RATING_VAL"=>"RATING","REVIEWER_ANSWER_ID"=>"ANSWER_ID"], "left");
         }
+        if($hrId!=null){
+           $hr = trim(implode(",",$hrId), ",");
+           $select->join(['APS3' => "(SELECT ANSWER, RATING, ANSWER_ID,APPRAISAL_ID,QUESTION_ID,EMPLOYEE_ID,USER_ID FROM HRIS_APPRAISAL_ANSWER WHERE USER_ID in (".$hr."))"], "(APS3.APPRAISAL_ID = APS.APPRAISAL_ID AND APS3.EMPLOYEE_ID = APS.EMPLOYEE_ID AND APS3.QUESTION_ID = APS.QUESTION_ID)", ["HR_ANSWER"=>"ANSWER","HR_RATING_VAL"=>"RATING","HR_ANSWER_ID"=>"ANSWER_ID"], "left");
+        }
         
         $select->where([
             "APS.".AppraisalAnswer::APPRAISAL_ID=>$appraisalId,
             "APS.".AppraisalAnswer::EMPLOYEE_ID=>$employeeId,
-            "APS.".AppraisalAnswer::USER_ID=>$userId,
             "APS.".AppraisalAnswer::QUESTION_ID =>$questionId]);
+        if(gettype($userId)=='array'){
+            $user = trim(implode(",",$userId), ",");
+            $select->where(["APS.".AppraisalAnswer::USER_ID." in (".$user.")"]);
+        }else{
+            $select->where(["APS.".AppraisalAnswer::USER_ID=>$userId]);
+        }
         $statement = $sql->prepareStatementForSqlObject($select);
 //        print_r($statement->getSql()); die();
         $result = $statement->execute();
@@ -69,18 +78,18 @@ class AppraisalAnswerRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['APS' => AppraisalAnswer::TABLE_NAME])
-                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=APS.'.AppraisalAnswer::QUESTION_ID, ["QUESTION_EDESC","ANSWER_TYPE","APPRAISEE_FLAG","APPRAISER_FLAG","REVIEWER_FLAG","APPRAISEE_RATING","APPRAISER_RATING","REVIEWER_RATING","MIN_VALUE","MAX_VALUE"], "left")
+                ->join(['Q' => Question::TABLE_NAME], "Q.". Question::QUESTION_ID.'=APS.'.AppraisalAnswer::QUESTION_ID, ["QUESTION_EDESC","ANSWER_TYPE","APPRAISEE_FLAG","APPRAISER_FLAG","REVIEWER_FLAG","APPRAISEE_RATING","APPRAISER_RATING","REVIEWER_RATING",'HR_FLAG','HR_RATING',"MIN_VALUE","MAX_VALUE"], "left")
                 ->join(['H' => Heading::TABLE_NAME], "H.".Heading::HEADING_ID.'=Q.'.Question::HEADING_ID, ["HEADING_EDESC"=>new Expression("INITCAP(H.HEADING_EDESC)")], "left")
                 ->join(['S' => Stage::TABLE_NAME], "S.".Stage::STAGE_ID.'=APS.'.AppraisalAnswer::STAGE_ID, ["STAGE_EDESC"=>new Expression("INITCAP(S.STAGE_EDESC)")], "left");
         $select->where([
-            "APS.".AppraisalAnswer::APPRAISAL_ID=>$appraisalId,
-            "APS.".AppraisalAnswer::EMPLOYEE_ID=>$employeeId,
-            "H.".Heading::HEADING_ID =>$headingId]);
+            "APS.".AppraisalAnswer::APPRAISAL_ID."=".$appraisalId,
+            "APS.".AppraisalAnswer::EMPLOYEE_ID."=".$employeeId,
+            "H.".Heading::HEADING_ID ."=".$headingId]);
         if(gettype($userId)=='array'){
             $user = trim(implode(",",$userId), ",");
             $select->where(["APS.".AppraisalAnswer::USER_ID." in (".$user.")"]);
         }else{
-            $select->where(["APS.".AppraisalAnswer::USER_ID=>$userId]);
+            $select->where(["APS.".AppraisalAnswer::USER_ID=>(int)($userId)]);
         }
         if($orderCondition!=null){
             $select->where(["S.ORDER_NO".$orderCondition]);
@@ -90,7 +99,6 @@ class AppraisalAnswerRepository implements RepositoryInterface{
         }
         $select->order("Q.ORDER_NO");
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

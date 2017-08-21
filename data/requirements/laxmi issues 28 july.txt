@@ -1,5 +1,0 @@
-1)backdate training attendnace
--> while taking training attendnce of employee. it should affect the attendndance of the employee.
-
-2) training report
--. euta employee leh kun kun trainign leyo

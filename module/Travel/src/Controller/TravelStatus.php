@@ -1,26 +1,29 @@
 <?php
 namespace Travel\Controller;
 
-use Application\Custom\CustomViewModel;
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Helper\NumberHelper;
-use Exception;
-use ManagerService\Repository\TravelApproveRepository;
-use SelfService\Form\TravelRequestForm;
-use SelfService\Model\TravelExpenseDetail;
-use SelfService\Model\TravelRequest;
-use SelfService\Repository\TravelExpenseDtlRepository;
-use SelfService\Repository\TravelRequestRepository;
-use Setup\Model\HrEmployees;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
+use Application\Helper\EntityHelper;
 use Travel\Repository\TravelStatusRepository;
-use Zend\Authentication\AuthenticationService;
+use ManagerService\Repository\TravelApproveRepository;
+use SelfService\Repository\TravelRequestRepository;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use SelfService\Form\TravelRequestForm;
+use Zend\Form\Annotation\AnnotationBuilder;
+use SelfService\Model\TravelRequest;
+use Setup\Model\Branch;
+use Setup\Model\Department;
+use Setup\Model\Designation;
+use Setup\Model\Position;
+use Setup\Model\ServiceType;
+use Zend\Form\Element\Select;
+use Setup\Model\ServiceEventType;
+use Zend\Authentication\AuthenticationService;
+use Setup\Repository\RecommendApproveRepository;
+use SelfService\Repository\TravelExpenseDtlRepository;
+use Setup\Repository\EmployeeRepository;
+use Application\Helper\NumberHelper;
+use Setup\Model\HrEmployees;
 
 class TravelStatus extends AbstractActionController
 {
@@ -97,14 +100,9 @@ class TravelStatus extends AbstractActionController
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
         
-        $empRepository = new EmployeeRepository($this->adapter);
-        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
-        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
-        $approverDetail = $empRepository->fetchByCondition($whereCondition);
-        
         $employeeName = $fullName($detail['EMPLOYEE_ID']);        
         $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $approverDetail['EMPLOYEE_ID'] : $detail['APPROVED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
 
 
         if (!$request->isPost()) {
@@ -140,7 +138,7 @@ class TravelStatus extends AbstractActionController
             $advanceAmt = 0 ;
         }
         $transportTypes = array(
-            'AP'=>'Flight',
+            'AP'=>'Aero Plane',
             'OV'=>'Office Vehicles',
             'TI'=>'Taxi',
             'BS'=>'Bus'
@@ -190,7 +188,6 @@ class TravelStatus extends AbstractActionController
                     'advanceAmount'=>$advanceAmount,
                     'subDetail'=>$subDetail,
                     'duration'=>$duration,
-                    'customRender' => Helper::renderCustomView(),
                     'employeeList'=>  EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME],[HrEmployees::STATUS => "E",HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ",false,true)
         
         ]);
@@ -227,14 +224,10 @@ class TravelStatus extends AbstractActionController
             $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
             return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
         };
-        $empRepository = new EmployeeRepository($this->adapter);
-        $approverFlag =($detail['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
-        $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
-        $approverDetail = $empRepository->fetchByCondition($whereCondition);
         
         $employeeName = $fullName($detail['EMPLOYEE_ID']);        
         $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $approverDetail['EMPLOYEE_ID'] : $detail['APPROVED_BY'];
+        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
 
         if($detail['REFERENCE_TRAVEL_ID']!=null){
             $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);
@@ -280,80 +273,5 @@ class TravelStatus extends AbstractActionController
                     'empDtl'=>$empDtl,
                     'totalExpense'=>$totalExpense
         ]);
-    }
-    
-     public function checkSettlementAction() {
-        $request = $this->getRequest();
-        $model = new TravelRequest();
-        
-        $travelRequestRepo = new TravelRequestRepository($this->adapter);
-        if ($request->isPost()) {
-            $postData = $request->getPost()->getArrayCopy();
-            $expenseDtlList = $postData['data']['expenseDtlList'];
-            $departureDate = $postData['data']['departureDate'];
-            $returnedDate = $postData['data']['returnedDate'];
-            $requestedType = $postData['data']['requestedType'];
-            $sumAllTotal = (float) $postData['data']['sumAllTotal'];
-            $travelId = (int) $postData['data']['travelId'];
-            $approverRole = $postData['data']['approverRole'];
-            $detail = $this->travelApproveRepository->fetchById($travelId);
-            $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
-            $expenseDtlModel = new TravelExpenseDetail();
-
-            $requestedAmt = $sumAllTotal;
-            $travelRequestRepo->updateDates($departureDate, $returnedDate, $requestedAmt, $travelId);
-            $travelRequestRepo->updateStatus('SC',$travelId);
-            foreach ($expenseDtlList as $expenseDtl) {
-                $transportType = $expenseDtl['transportType'];
-                $id = (int) $expenseDtl['id'];
-                $expenseDtlModel->departureDate = Helper::getExpressionDate($expenseDtl['departureDate']);
-                $expenseDtlModel->departurePlace = $expenseDtl['departurePlace'];
-                $expenseDtlModel->departureTime = Helper::getExpressionTime($expenseDtl['departureTime']);
-                $expenseDtlModel->destinationDate = Helper::getExpressionDate($expenseDtl['destinationDate']);
-                $expenseDtlModel->destinationPlace = $expenseDtl['destinationPlace'];
-                $expenseDtlModel->destinationTime = Helper::getExpressionTime($expenseDtl['destinationTime']);
-                $expenseDtlModel->transportType = $transportType['id'];
-                $expenseDtlModel->fare = (float) $expenseDtl['fare'];
-                $expenseDtlModel->allowance = ($expenseDtl['allowance'] != null) ? (float) $expenseDtl['allowance'] : null;
-                $expenseDtlModel->localConveyence = ($expenseDtl['localConveyence'] != null) ? (float) $expenseDtl['localConveyence'] : null;
-                $expenseDtlModel->miscExpenses = ($expenseDtl['miscExpense'] != null) ? (float) $expenseDtl['miscExpense'] : null;
-                $expenseDtlModel->totalAmount = (float) $expenseDtl['total'];
-                $expenseDtlModel->remarks = ($expenseDtl['remarks'] != null) ? $expenseDtl['remarks'] : null;
-                $expenseDtlModel->status = 'E';
-                $expenseDtlModel->fareFlag = ($expenseDtl['fareFlag']=="true" && $expenseDtl['fareFlag']!="")?'Y':'N';
-                $expenseDtlModel->allowanceFlag = ($expenseDtl['allowanceFlag']=="true" && $expenseDtl['allowanceFlag']!="")?'Y':'N';
-                $expenseDtlModel->localConveyenceFlag = ($expenseDtl['localConveyenceFlag']=="true" && $expenseDtl['localConveyenceFlag']!="")?'Y':'N';
-                $expenseDtlModel->miscExpensesFlag = ($expenseDtl['miscExpenseFlag']=="true" && $expenseDtl['miscExpenseFlag']!="")?'Y':'N';
-                if ($id == 0) {
-                    $expenseDtlModel->id = ((int) Helper::getMaxId($this->adapter, TravelExpenseDetail::TABLE_NAME, TravelExpenseDetail::ID)) + 1;
-                    $expenseDtlModel->travelId = ($requestedType == 'ad') ? $model->travelId : $travelId;
-                    $expenseDtlModel->createdBy = $this->employeeId;
-                    $expenseDtlModel->createdDate = Helper::getcurrentExpressionDate();
-                    $expenseDtlRepo->add($expenseDtlModel);
-                } else {
-                    $expenseDtlModel->modifiedBy = (int) $this->employeeId;
-                    $expenseDtlModel->modifiedDate = Helper::getcurrentExpressionDate();
-                    $expenseDtlRepo->edit($expenseDtlModel, $id);
-                }
-            }
-            try {
-                //HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
-            } catch (Exception $e) {
-                $this->flashmessenger()->addMessage($e->getMessage());
-            }
-            return new CustomViewModel(['success' => true, 'data' => ['msg' => 'Travel Request Successfully added!!!']]);
-        } else {
-            $id = (int) $this->params()->fromRoute('id');
-            $currentRequestType = 'ep';
-            if ($id === 0) {
-                $id=0;
-                $currentRequestType = 'ad';
-            }
-            return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'currentRequestType'=>$currentRequestType
-            ]);
-        }
     }
 }

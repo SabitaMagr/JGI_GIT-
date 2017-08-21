@@ -102,13 +102,10 @@
                                 <a class=""  href="#" id="passwordChangeMenu">
                                     <i class="icon-user"></i> Change Password </a>
                             </li>
-                            <?php
-                            if($allowRegisterAttendance){ ?>
                             <li>
                                 <a href="<?php echo $this->url('registerAttendance', ['action' => 'checkout']); ?>">
                                     <i class="icon-key"></i>Check <?= ($registerAttendance == 'OUT') ? 'Out' : 'In' ?> </a>
                             </li>
-                            <?php } ?>
                             <li>
                                 <a href="<?php echo $this->url('logout', ['action' => 'logout']); ?>">
                                     <i class="icon-key"></i> Log Out </a>

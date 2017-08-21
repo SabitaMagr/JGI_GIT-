@@ -24,7 +24,6 @@ $transportType = $form->get('transportType');
 $transportType->setValueOptions($transportTypes);
 $purpose = $form->get('purpose');
 $remarks = $form->get('remarks');
-$approver = $form->get('approverRole');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -170,24 +169,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                     <div class="col-sm-4">
                         <label for="substituteEmployee">Substitute Employee </label>
-                        <select class="form-control" name="travelSubstitute" style="cursor: pointer;">
-                            <option value="">----</option>
+                        <span class="required" aria-required="true">*</span>
+                        <select required class="form-control" name="travelSubstitute" style="cursor: pointer;">
                             <?php foreach ($employeeList as $key => $value) { ?>
                                 <option style="cursor: pointer;" value="<?php echo $key; ?>"><?php echo $value; ?></option>
                             <?php } ?>
                         </select>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($approver); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRender($approver); ?>
-                            </div>
-                            <?php print $this->formElementErrors()->render($approver, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
+
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>

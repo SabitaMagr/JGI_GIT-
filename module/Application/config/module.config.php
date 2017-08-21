@@ -249,7 +249,6 @@ return [
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => [
-            'layout/print-layout' => __DIR__ . '/../view/layout/print-layout.phtml',
             'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
             'layout/login' => __DIR__ . '/../view/layout/login.phtml',
             'layout/json' => __DIR__ . '/../view/layout/json.phtml',

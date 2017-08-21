@@ -1,16 +1,18 @@
 <?php
+
 namespace SelfService\Repository;
 
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
-use Application\Repository\RepositoryInterface;
 use Application\Model\Model;
-//use Appraisal\Model\
+use Application\Repository\RepositoryInterface;
+use Zend\Db\Adapter\AdapterInterface;
 
-class PerformanceAppraisalRepository implements RepositoryInterface{
+class SubordinatesReviewRepository implements RepositoryInterface {
+    
+    private $adapter;
+
     
     public function __construct(AdapterInterface $adapter) {
-        
+        $this->adapter=$adapter;
     }
 
     public function add(Model $model) {

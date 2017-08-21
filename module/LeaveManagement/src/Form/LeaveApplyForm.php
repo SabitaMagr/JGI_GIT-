@@ -84,7 +84,7 @@ class LeaveApplyForm {
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Reason for Leave"})
+     * @Annotation\Options({"label":"Remarks"})
      * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"height: 50px; font-size:12px"})
      */
     public $remarks;

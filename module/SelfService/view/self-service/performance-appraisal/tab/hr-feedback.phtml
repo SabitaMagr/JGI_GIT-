@@ -1,23 +1,46 @@
- <div class="tab-pane " id="portlet_tab2_6">
+ <div class="tab-pane <?= ($tab==6)?"active":""; ?>" id="portlet_tab2_6">
     <form method="post"  name="performanceAppraisalForm" id="hrAppraisalReview">
     <div class="row">
-        <div class="col-md-12 margin-bottom-10">
-            <div style="">
-                <h6 class="appHeading">For Use Of HR</h6>
-                <div class="row questionWrapRow">
-                    <div class="questionWrap">
-                        <div  class="col-md-12 margin-bottom-5 appQuestion"> 
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <label> <h7 style="font-size:12px;">Overall Comment</h7>  </label> 
-                                    <textarea name="hrComment" id="hrComment" class="form-control" style="height:50px!important" required="required" disabled="disabled"><?= $assignedAppraisalDetail['HR_FEEDBACK']; ?></textarea>
+        <?php
+        foreach ($hrQuestionTemplate as $hrQuestionList) { ?>
+            <div class="col-md-12 margin-bottom-10">
+                <div style="border: 1px solid #ddd; padding: 0px 10px 10px 10px;">
+                    <h6 style="border-bottom: 1px solid #ddd; padding-bottom: 1%; color: black; font-weight: 400;"><?php echo $hrQuestionList['HEADING_EDESC']; ?></h6>
+                    <div class="row">
+                        <?php foreach ($hrQuestionList['QUESTIONS'] as $hrQuestionRow) { ?>
+                            <div  class="col-md-12 margin-bottom-10">  
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <label><h7 style="font-size:12px;"><?php echo $hrQuestionRow['QUESTION_EDESC']; ?></h7> </label> 
+                                        <?php 
+                                        $keyForHRQuestion = ($hrQuestionRow['ANSWER']==null || count($hrQuestionRow['ANSWER'])==0)?$hrQuestionRow['QUESTION_ID']:array_keys($hrQuestionRow['ANSWER'])[0];
+                                        if($hrQuestionRow['HR_FLAG']=='Y'){
+                                            if($hrQuestionRow['ANSWER_TYPE']=="RADIO"){ ?>
+                                            <div class="md-radio-inline">
+                                                <?php $customRenderer($performanceAppraisalObj("answer[".$keyForHRQuestion."]", $hrQuestionRow['ANSWER_TYPE'],(count($hrQuestionRow['QUESTION_OPTIONS'])>0)?$hrQuestionRow['QUESTION_OPTIONS']:null,($hrQuestionRow['ANSWER']!=null && count($hrQuestionRow['ANSWER'])>0)?array_values($hrQuestionRow['ANSWER'])[0]['ANSWER']:null,"disabled")); ?>
+                                            </div>
+                                            <?php } else if($hrQuestionRow['ANSWER_TYPE']=="CHECKBOX"){?>
+                                                <div class="md-checkbox-inline">
+                                                    <?php $customRendererForCheckbox($performanceAppraisalObj("answer[".$keyForHRQuestion."][]", $hrQuestionRow['ANSWER_TYPE'],(count($hrQuestionRow['QUESTION_OPTIONS'])>0)?$hrQuestionRow['QUESTION_OPTIONS']:null,($hrQuestionRow['ANSWER']!=null && count($hrQuestionRow['ANSWER'])>0)?array_values($hrQuestionRow['ANSWER'])[0]['ANSWER']:null,"disabled")); ?>
+                                                </div>
+                                            <?php } else{
+                                                print_r($this->formElement($performanceAppraisalObj("answer[".$keyForHRQuestion."]", $hrQuestionRow['ANSWER_TYPE'],(count($hrQuestionRow['QUESTION_OPTIONS'])>0)?$hrQuestionRow['QUESTION_OPTIONS']:null,($hrQuestionRow['ANSWER']!=null && count($hrQuestionRow['ANSWER'])>0)?array_values($hrQuestionRow['ANSWER'])[0]['ANSWER']:null,"disabled")));
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    <?php if($hrQuestionRow['HR_RATING']=='Y'){ ?>
+                                        <div class="col-sm-1">
+                                            <label>Self Rating:</label><input class="form-control" type="number" name="<?= "answer[".$keyForHRQuestion.".sr]"?>" value="<?= ($hrQuestionRow['ANSWER']!=null||count($hrQuestionRow['ANSWER'])>0)?array_values($hrQuestionRow['ANSWER'])[0]['RATING']:null ?>" disabled="disabled" min="<?= $hrQuestionRow['MIN_VALUE'] ?>" max="<?= $hrQuestionRow['MAX_VALUE'] ?>"/>
+                                        </div>
+                                    <?php }?>
                                 </div>
                             </div>
-                        </div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
-        </div>
+        <?php } ?>
     </div>
     </form>
 </div>

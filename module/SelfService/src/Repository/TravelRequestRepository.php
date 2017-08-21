@@ -57,15 +57,14 @@ class TravelRequestRepository implements RepositoryInterface {
 
     public function updateDates($departureDate, $returnedDate, $requestedAmt, $travelId) {
         $this->tableGateway->update([
-            TravelRequest::DEPARTURE_DATE=>Helper::getExpressionDate($departureDate),
-            TravelRequest::RETURNED_DATE=>Helper::getExpressionDate($returnedDate),
-            TravelRequest::REQUESTED_AMOUNT=>$requestedAmt],[TravelRequest::TRAVEL_ID => $travelId]);
+            TravelRequest::DEPARTURE_DATE => Helper::getExpressionDate($departureDate),
+            TravelRequest::RETURNED_DATE => Helper::getExpressionDate($returnedDate),
+            TravelRequest::REQUESTED_AMOUNT => $requestedAmt
+                ], [TravelRequest::TRAVEL_ID => $travelId]);
     }
-    public function updateStatus($status,$travelId){
-        $this->tableGateway->update([TravelRequest::STATUS=>$status],[TravelRequest::TRAVEL_ID => $travelId]);
-    }
+
     public function edit(Model $model, $id) {
-        $this->tableGateway->update($model->getArrayCopyForDB(),$id);
+        
     }
 
     public function fetchAll() {
@@ -101,10 +100,8 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
-            new Expression("TR.APPROVER_ROLE AS APPROVER_ROLE"),
             new Expression("TR.TRANSPORT_TYPE AS TRANSPORT_TYPE"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE"),
-            new Expression("TR.ADVANCE_AMOUNT AS ADVANCE_AMOUNT"),
             new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE")
                 ], true);
@@ -145,8 +142,6 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("TR.REMARKS AS REMARKS"),
-            new Expression("TR.ADVANCE_AMOUNT AS ADVANCE_AMOUNT"),
-            new Expression("TR.APPROVER_ROLE AS APPROVER_ROLE"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE")
                 ], true);
 
