@@ -22,9 +22,9 @@ $this->headScript()
 
 
 <script>
-    document.ids=<?php echo json_encode(["appraisalId"=>-1,"appraisalStageId"=>-1,"fromDate1"=>"","nepaliFromDate1"=>"","toDate1"=>"","nepaliToDate1"=>""]) ?>;
+    document.ids =<?php echo json_encode(["appraisalId" => -1, "appraisalStageId" => -1, "fromDate1" => "", "nepaliFromDate1" => "", "toDate1" => "", "nepaliToDate1" => ""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-     document.appraisalReportViewLink='<?php echo $this->url("appraisalReport", ["action" => "view"]); ?>';
+    document.appraisalReportViewLink = '<?php echo $this->url("appraisalReport", ["action" => "view"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\appraisalReport')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -44,9 +44,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-    <div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
+<div class="margin-top-20" ng-app="hris" ng-controller="appraisalList">
     <input type="hidden" value="<?= $userId; ?>" id="userId" />
-     <div class="portlet light bg-inverse">
+    <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-paper-plane font-green-haze"></i>
@@ -70,7 +70,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </ul>
                 </div>
             </div>
-            
+
         </div>
         <div class="portlet-body">
             <div class="row">
@@ -145,7 +145,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                    <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
@@ -157,34 +157,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div id="appraisalListTable">
 
     </div>
-	
-    </div>
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        
-        
-        
-        
-        
-        <td>#: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        
 
-       
-
-
-
-
-         
-        <td>    
-        #: (APPRAISER_NAME == null) ? '-' : APPRAISER_NAME #
-        </td>
-        <td>    
-        #: (REVIEWER_NAME == null) ? '-' : REVIEWER_NAME #
-        </td>
-        <td>
-        
-        </td>
-        </tr>
-    </script>
 </div>
+

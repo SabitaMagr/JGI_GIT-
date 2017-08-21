@@ -6,8 +6,8 @@
     });
 })(window.jQuery);
 
-angular.module("hris",[])
-        .controller("appraisalList",function($scope,$http,$window){
+angular.module("hris", [])
+        .controller("appraisalList", function ($scope, $http, $window) {
             var displayKendoFirstTime = true;
             $scope.view = function () {
                 var userId = angular.element(document.getElementById('userId')).val();
@@ -40,8 +40,8 @@ angular.module("hris",[])
                         'appraisalStageId': appraisalStageId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'reportType':reportType,
-                        'userId':userId
+                        'reportType': reportType,
+                        'userId': userId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -58,7 +58,91 @@ angular.module("hris",[])
                     console.log(failure);
                 });
             }
+
+            var objectiveSet = `
+            <span id="#if(KPI_ANS_NUM>0){ #green#}else{#red#}#">
+            #if(KPI_ANS_NUM>0 && KPI_SETTING=='Y'){   #
+            #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            #}else{ #
+            #= "&\\#10006;" #
+            # } #
+        </span> `;
+
+            var objectiveApproved = `
+            <span id="#if(KPI_APPROVED_DATE==null){#red#}else{##}#">
+            #if(KPI_APPROVED_DATE!=null){   #
+            #= KPI_APPROVED_DATE #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </span>`;
+
+            var appraiseeSelfRating = `
+            <span id="#if(KPI_SELF_RATING_NUM>0){ #green#}else{#red#}#">
+            #if(KPI_SELF_RATING_NUM>0){   #
+            #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </span>`;
+
+            var appraiserEvaluation = `
+            <span id="#if(APPRAISED_BY!=null){ #green#}else{#red#}#">
+            #if(APPRAISED_BY!=null){   #
+            #= "&\\#10004;" #
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </span>`;
+
+            var reviewerView = `
+            <span id="#if(REVIEWED_BY!=null){ #green#}else{#red#}#">
+            #if(REVIEWED_BY!=null){   #
+            #= "&\\#10004;" #
+            #}else if(REVIEWED_BY==null && DEFAULT_RATING=='N'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
+        </span>`;
+
+            var finalRating =
+                    `<span id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
+            #if(APPRAISER_OVERALL_RATING!=null){   #
+            #= "&\\#10004;" #
+            # }else if(KPI_SETTING=='N'){ #
+            #='-'#
+            # }else{ #
+            #= "&\\#10006;" #
+            # } #
+        </span>`;
             
+            var rating=`#: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #`;
+
+            var superReviewerAgree = `<span id="#if(SUPER_REVIEWER_AGREE!='Y'){ #green#}else{#red#}#">
+            #if(SUPER_REVIEWER_AGREE=='Y'){   #
+            #= "&\\#10004;" #
+            #}else if(SUPER_REVIEWER_AGREE=='N'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
+        </span>`;
+
+            var ApraiseeAgree =
+                    `<span id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
+            #if(APPRAISEE_AGREE=='Yes'){   #
+            #= "&\\#10004;" #
+            # }else if(APPRAISEE_AGREE=='No'){ #
+            #= "&\\#10006;" #
+            # }else{#-#}#
+        </span>`;
+            
+            var action='<a class="btn-edit" href="'+document.appraisalReviewViewLink+'/#:APPRAISAL_ID#/#:EMPLOYEE_ID#/1" tital="view" style="height:17px;"><i class="fa fa-search-plus"></i></a>';
+
+
             $scope.initializekendoGrid = function () {
                 $("#appraisalListTable").kendoGrid({
                     excel: {
@@ -75,26 +159,27 @@ angular.module("hris",[])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 150},
-                        {field: "APPRAISAL_EDESC", title: "Appraisal", width: 120},
+                        {field: "EMPLOYEE_CODE", title: "Employee Code", width: 150, locked: true},
+                        {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
+                        {field: "APPRAISAL_EDESC", title: "Appraisal", width: 120, locked: true},
                         {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type", width: 150},
                         {field: "STAGE_EDESC", title: "Current Stage", width: 140},
                         {field: "START_DATE", title: "Start Date", width: 120},
                         {field: "END_DATE", title: "End Date", width: 100},
-                        {field: "END_DATE", title: "Objective Set?", width: 130},
-                        {field: "END_DATE", title: "Objective Approved?", width: 170},
-                        {field: "END_DATE", title: "Appraisee Self Rating?", width: 170},
-                        {field: "END_DATE", title: "Appraiser Evaluation?", width: 170},
-                        {field: "END_DATE", title: "Reviewer View?", width: 140},
-                        {field: "END_DATE", title: "Final Rating?", width: 120},
-                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100},
-                        {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170},
-                        {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140},
+                        {field: ["KPI_ANS_NUM", "KPI_SETTING"], title: "Objective Set?", width: 130, template: objectiveSet},
+                        {field: ["KPI_APPROVED_DATE", "KPI_SETTING"], title: "Objective Approved?", width: 170, template: objectiveApproved},
+                        {field: ["KPI_SELF_RATING_NUM", "KPI_SETTING"], title: "Appraisee Self Rating?", width: 170, template: appraiseeSelfRating},
+                        {field: "APPRAISED_BY", title: "Appraiser Evaluation?", width: 170, template: appraiserEvaluation},
+                        {field: ["REVIEWED_BY", "DEFAULT_RATING"], title: "Reviewer View?", width: 140, template: reviewerView},
+                        {field: ["KPI_SETTING","APPRAISER_OVERALL_RATING"], title: "Final Rating?", width: 120,template:finalRating },
+                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100, template:rating},
+                        {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170,template:superReviewerAgree},
+                        {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140,template:ApraiseeAgree},
                         {field: "APPRAISER_NAME", title: "Appraiser Name", width: 150},
                         {field: "REVIEWER_NAME", title: "Reviewer Name", width: 150},
-                        {title: "Action", width: 90}
+                        {field:["APPRAISAL_ID","EMPLOYEE_ID"] ,title: "Action", width: 90,template:action}
                     ]
                 });
 
@@ -105,16 +190,16 @@ angular.module("hris",[])
                         {
                             'FULL_NAME': 'Name',
                             'APPRAISAL_EDESC': 'Appraisal',
-                            'APPRAISAL_TYPE_EDESC':'Appraisal Type',
+                            'APPRAISAL_TYPE_EDESC': 'Appraisal Type',
                             'STAGE_EDESC': 'Current Stage',
                             'START_DATE': 'Start Date',
                             'END_DATE': 'End Date',
-                            'APPRAISER_OVERALL_RATING':'Rating',
+                            'APPRAISER_OVERALL_RATING': 'Rating',
                             'APPRAISER_NAME': 'Appraiser Name',
                             'ALT_APPRAISER_NAME': 'Alt. Appraiser Name',
                             'REVIEWER_NAME': 'Reviewer Name',
                             'ALT_REVIEWER_NAME': 'Alt. Reviewer Name'
-                            
+
                         });
 
 
@@ -203,10 +288,10 @@ angular.module("hris",[])
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AppraisalViewList.xlsx"});
                 }
             };
-            
-            $scope.msg =  $window.localStorage.getItem("msg");
-            if($window.localStorage.getItem("msg")){
+
+            $scope.msg = $window.localStorage.getItem("msg");
+            if ($window.localStorage.getItem("msg")) {
                 window.toastr.success($scope.msg, "Notifications");
             }
             $window.localStorage.removeItem("msg");
-});
+        });

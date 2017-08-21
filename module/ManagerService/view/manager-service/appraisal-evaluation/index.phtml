@@ -36,6 +36,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     print '</div>';
 }
 ?>
+<script>
+    document.appraisalEvalViewLink='<?= $this->url("appraisal-evaluation", ["action" => "view"]); ?>';
+</script>
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>

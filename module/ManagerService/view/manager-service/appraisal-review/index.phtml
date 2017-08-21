@@ -35,9 +35,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     print '</div>';
 }
 ?>
+
+    <script>
+        document.appraisalReviewViewLink = '<?= $this->url("appraisal-review", ["action" => "view"]); ?>';
+    </script>
+
 <?php if ($this->messages) { ?>
     <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages); ?>;
+//        document.appraisalReviewViewLink = '<?= $this->url("appraisal-review", ["action" => "view"]); ?>';
     </script>
 <?php } ?>
 
@@ -216,6 +222,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             #= "&\\#10006;" #
             # }else{#-#}#
         </td>
+        
         <td id="#if(APPRAISER_OVERALL_RATING!=null){ #green#}else{#red#}#">
             #if(APPRAISER_OVERALL_RATING!=null){   #
             #= "&\\#10004;" #

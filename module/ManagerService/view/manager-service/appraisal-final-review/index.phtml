@@ -22,6 +22,8 @@ $this->headScript()
 <script>
     document.ids=<?php echo json_encode(["appraisalId"=>-1,"appraisalStageId"=>-1,"fromDate1"=>"","nepaliFromDate1"=>"","toDate1"=>"","nepaliToDate1"=>""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    
+    document.appraisalReviewViewLink='<?= $this->url("appraisal-final-review", ["action" => "view"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\appraisal-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
