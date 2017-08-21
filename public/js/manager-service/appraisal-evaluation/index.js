@@ -6,8 +6,8 @@
     });
 })(window.jQuery);
 
-angular.module("hris",[])
-        .controller("appraisalList",function($scope,$http,$window){
+angular.module("hris", [])
+        .controller("appraisalList", function ($scope, $http, $window) {
             var displayKendoFirstTime = true;
             $scope.view = function () {
                 var userId = angular.element(document.getElementById('userId')).val();
@@ -39,8 +39,8 @@ angular.module("hris",[])
                         'appraisalStageId': appraisalStageId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'reportType':'appraisalEvaluation',
-                        'userId':userId
+                        'reportType': 'appraisalEvaluation',
+                        'userId': userId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -57,8 +57,8 @@ angular.module("hris",[])
                     console.log(failure);
                 });
             }
-            
-            
+
+
             var objectiveSet = `
             <span id="#if(KPI_ANS_NUM>0){ #green#}else{#red#}#">
             #if(KPI_ANS_NUM>0 && KPI_SETTING=='Y'){   #
@@ -120,8 +120,8 @@ angular.module("hris",[])
             #= "&\\#10006;" #
             # } #
         </span>`;
-            
-            var rating=`#: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #`;
+
+            var rating = `#: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #`;
 
             var superReviewerAgree = `<span id="#if(SUPER_REVIEWER_AGREE!='Y'){ #green#}else{#red#}#">
             #if(SUPER_REVIEWER_AGREE=='Y'){   #
@@ -139,9 +139,9 @@ angular.module("hris",[])
             #= "&\\#10006;" #
             # }else{#-#}#
         </span>`;
-            
-            var action=' <a class="btn-edit" href="'+document.appraisalEvalViewLink+'/#:APPRAISAL_ID#/#:EMPLOYEE_ID#/1" title="view" style="height:17px;"><i class="fa fa-search-plus"></i></a>';
-            
+
+            var action = ' <a class="btn-edit" href="' + document.appraisalEvalViewLink + '/#:APPRAISAL_ID#/#:EMPLOYEE_ID#/1" title="view" style="height:17px;"><i class="fa fa-search-plus"></i></a>';
+
             $scope.initializekendoGrid = function () {
                 $("#appraisalListTable").kendoGrid({
                     excel: {
@@ -172,33 +172,34 @@ angular.module("hris",[])
                         {field: ["KPI_SELF_RATING_NUM", "KPI_SETTING"], title: "Appraisee Self Rating?", width: 170, template: appraiseeSelfRating},
                         {field: "APPRAISED_BY", title: "Appraiser Evaluation?", width: 170, template: appraiserEvaluation},
                         {field: ["REVIEWED_BY", "DEFAULT_RATING"], title: "Reviewer View?", width: 140, template: reviewerView},
-                        {field: ["KPI_SETTING","APPRAISER_OVERALL_RATING"], title: "Final Rating?", width: 120,template:finalRating },
-                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100, template:rating},
-                        {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170,template:superReviewerAgree},
-                        {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140,template:ApraiseeAgree},
+                        {field: ["KPI_SETTING", "APPRAISER_OVERALL_RATING"], title: "Final Rating?", width: 120, template: finalRating},
+                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100, template: rating},
+                        {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170, template: superReviewerAgree},
+                        {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140, template: ApraiseeAgree},
                         {field: "APPRAISER_NAME", title: "Appraiser Name", width: 150},
                         {field: "REVIEWER_NAME", title: "Reviewer Name", width: 150},
-                        {field:["APPRAISAL_ID","EMPLOYEE_ID"] ,title: "Action", width: 90,template:action}
+                        {field: ["APPRAISAL_ID", "EMPLOYEE_ID"], title: "Action", width: 90, template: action}
                     ]
                 });
 
-                app.searchTable('appraisalListTable', ['FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
+                app.searchTable('appraisalListTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
 
                 app.pdfExport(
                         'appraisalListTable',
                         {
+                            'EMPLOYEE_CODE': 'Code',
                             'FULL_NAME': 'Name',
                             'APPRAISAL_EDESC': 'Appraisal',
-                            'APPRAISAL_TYPE_EDESC':'Appraisal Type',
+                            'APPRAISAL_TYPE_EDESC': 'Appraisal Type',
                             'STAGE_EDESC': 'Current Stage',
                             'START_DATE': 'Start Date',
                             'END_DATE': 'EndDate',
-                            'APPRAISER_OVERALL_RATING':'Rating',
+                            'APPRAISER_OVERALL_RATING': 'Rating',
                             'APPRAISER_NAME': 'Appraiser Name',
                             'ALT_APPRAISER_NAME': 'Alt. Appraiser Name',
                             'REVIEWER_NAME': 'Reviewer Name',
                             'ALT_REVIEWER_NAME': 'Alt. Reviewer Name'
-                            
+
                         });
 
 
@@ -217,6 +218,7 @@ angular.module("hris",[])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
+                                {value: "Employee Code"},
                                 {value: "Employee Name"},
                                 {value: "Appraisal Name"},
                                 {value: "Appraisal Type Name"},
@@ -245,6 +247,7 @@ angular.module("hris",[])
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
+                                {value: dataItem.EMPLOYEE_CODE},
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.APPRAISAL_EDESC},
                                 {value: dataItem.APPRAISAL_TYPE_EDESC},
@@ -278,6 +281,8 @@ angular.module("hris",[])
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                 ],
                                 title: "Appraisal List",
                                 rows: rows
@@ -287,10 +292,10 @@ angular.module("hris",[])
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AppraisalViewList.xlsx"});
                 }
             };
-            
-            $scope.msg =  $window.localStorage.getItem("msg");
-            if($window.localStorage.getItem("msg")){
+
+            $scope.msg = $window.localStorage.getItem("msg");
+            if ($window.localStorage.getItem("msg")) {
                 window.toastr.success($scope.msg, "Notifications");
             }
             $window.localStorage.removeItem("msg");
-});
+        });

@@ -120,8 +120,8 @@ angular.module("hris", [])
             #= "&\\#10006;" #
             # } #
         </span>`;
-            
-            var rating=`#: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #`;
+
+            var rating = `#: (APPRAISER_OVERALL_RATING == null) ? '-' : APPRAISER_OVERALL_RATING #`;
 
             var superReviewerAgree = `<span id="#if(SUPER_REVIEWER_AGREE!='Y'){ #green#}else{#red#}#">
             #if(SUPER_REVIEWER_AGREE=='Y'){   #
@@ -139,8 +139,8 @@ angular.module("hris", [])
             #= "&\\#10006;" #
             # }else{#-#}#
         </span>`;
-            
-            var action='<a class="btn-edit" href="'+document.appraisalReviewViewLink+'/#:APPRAISAL_ID#/#:EMPLOYEE_ID#/1" tital="view" style="height:17px;"><i class="fa fa-search-plus"></i></a>';
+
+            var action = '<a class="btn-edit" href="' + document.appraisalReviewViewLink + '/#:APPRAISAL_ID#/#:EMPLOYEE_ID#/1" tital="view" style="height:17px;"><i class="fa fa-search-plus"></i></a>';
 
 
             $scope.initializekendoGrid = function () {
@@ -159,7 +159,6 @@ angular.module("hris", [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "EMPLOYEE_CODE", title: "Employee Code", width: 150, locked: true},
                         {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
@@ -173,21 +172,22 @@ angular.module("hris", [])
                         {field: ["KPI_SELF_RATING_NUM", "KPI_SETTING"], title: "Appraisee Self Rating?", width: 170, template: appraiseeSelfRating},
                         {field: "APPRAISED_BY", title: "Appraiser Evaluation?", width: 170, template: appraiserEvaluation},
                         {field: ["REVIEWED_BY", "DEFAULT_RATING"], title: "Reviewer View?", width: 140, template: reviewerView},
-                        {field: ["KPI_SETTING","APPRAISER_OVERALL_RATING"], title: "Final Rating?", width: 120,template:finalRating },
-                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100, template:rating},
-                        {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170,template:superReviewerAgree},
-                        {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140,template:ApraiseeAgree},
+                        {field: ["KPI_SETTING", "APPRAISER_OVERALL_RATING"], title: "Final Rating?", width: 120, template: finalRating},
+                        {field: "APPRAISER_OVERALL_RATING", title: "Rating", width: 100, template: rating},
+                        {field: "SUPER_REVIEWER_AGREE", title: "Super Reviewer Agree", width: 170, template: superReviewerAgree},
+                        {field: "APPRAISEE_AGREE", title: "Appraisee Agree", width: 140, template: ApraiseeAgree},
                         {field: "APPRAISER_NAME", title: "Appraiser Name", width: 150},
                         {field: "REVIEWER_NAME", title: "Reviewer Name", width: 150},
-                        {field:["APPRAISAL_ID","EMPLOYEE_ID"] ,title: "Action", width: 90,template:action}
+                        {field: ["APPRAISAL_ID", "EMPLOYEE_ID"], title: "Action", width: 90, template: action}
                     ]
                 });
 
-                app.searchTable('appraisalListTable', ['FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
+                app.searchTable('appraisalListTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'APPRAISAL_EDESC', 'APPRAISAL_TYPE_EDESC', 'STAGE_EDESC', 'START_DATE', 'END_DATE', 'APPRAISER_NAME', 'REVIEWER_NAME']);
 
                 app.pdfExport(
                         'appraisalListTable',
                         {
+                            'EMPLOYEE_CODE': 'Code',
                             'FULL_NAME': 'Name',
                             'APPRAISAL_EDESC': 'Appraisal',
                             'APPRAISAL_TYPE_EDESC': 'Appraisal Type',
@@ -218,6 +218,7 @@ angular.module("hris", [])
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
+                                {value: "Employee Code"},
                                 {value: "Employee Name"},
                                 {value: "Appraisal Name"},
                                 {value: "Appraisal Type Name"},
@@ -246,6 +247,7 @@ angular.module("hris", [])
                         var mn2 = dataItem.MN2 != null ? " " + dataItem.MN2 + " " : " ";
                         rows.push({
                             cells: [
+                                {value: dataItem.EMPLOYEE_CODE},
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.APPRAISAL_EDESC},
                                 {value: dataItem.APPRAISAL_TYPE_EDESC},
@@ -269,6 +271,8 @@ angular.module("hris", [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

@@ -283,6 +283,7 @@ angular.module("hris", [])
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
+                                    {autoWidth: true},
                                 ],
                                 title: "Appraisal List",
                                 rows: rows
