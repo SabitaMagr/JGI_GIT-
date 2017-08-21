@@ -6,14 +6,19 @@
                 $scope.counter = '';
                 var l;
                 $scope.transportTypeList = [
-                    {"id": "AP", "name": "Aero Plane"},
+                    {"id": "AP", "name": "Flight"},
                     {"id": "OV", "name": "Office Vehicles"},
                     {"id": "TI", "name": "Taxi"},
                     {"id": "BS", "name": "Bus"},
                 ];
                 $scope.travelDetail = {
                     departureDateMain :'',
-                    returnedDate:''
+                    employeeId:0,
+                    returnedDate:'',
+                    approverRole:'CEO',
+                    destination:'',
+                    purpose:'',
+                    advanceAmount:''
                 };
                 $scope.expenseDtlFormTemplate = {
                     id: 0,
@@ -28,6 +33,10 @@
                     allowance: 0,
                     localConveyence:0,
                     miscExpense: 0,
+                    fareFlag:false,
+                    allowanceFlag:false,
+                    localConveyenceFlag:false,
+                    miscExpenseFlag:false,
                     total: 0,
                     remarks: "",
                     checkbox: "checkboxt0",
@@ -39,18 +48,25 @@
                 var requestedType = angular.element(document.getElementById('requestedType')).val();
                 console.log(requestedType);
                 if (requestedType == 'ep') {
+                    App.blockUI({target: "#hris-page-content"});
                     window.app.pullDataById(document.urlExpenseDetailList, {
                         data: {
                             'travelId': travelId
                         }
                     }).then(function (success) {
                         $scope.$apply(function () {
+                            App.unblockUI("#hris-page-content");
                             var tempData = success.data;
                             var travelDtl = tempData.travelDetail;
                             var expenseDtlList = tempData.expenseDtlList;
                             var num = tempData.numExpenseDtlList;
                             $scope.travelDetail.departureDateMain = travelDtl.DEPARTURE_DATE;
                             $scope.travelDetail.returnedDate=travelDtl.RETURNED_DATE;
+                            $scope.travelDetail.approverRole=travelDtl.APPROVER_ROLE;
+                            $scope.travelDetail.destination = travelDtl.DESTINATION;
+                            $scope.travelDetail.purpose = travelDtl.PURPOSE;
+                            $scope.travelDetail.advanceAmount = travelDtl.ADVANCE_AMOUNT;
+                            $scope.travelDetail.employeeId = travelDtl.EMPLOYEE_ID;
                             if (num > 0) {
                                 $scope.counter = num;
                                 for (var j = 0; j < num; j++) {
@@ -76,6 +92,10 @@
                                         allowance: parseFloat(expenseDtlList[j].ALLOWANCE),
                                         localConveyence: parseFloat(expenseDtlList[j].LOCAL_CONVEYENCE),
                                         miscExpense: parseFloat(expenseDtlList[j].MISC_EXPENSES),
+                                        fareFlag: (expenseDtlList[j].FARE_FLAG==='Y')?true:false,
+                                        allowanceFlag: (expenseDtlList[j].ALLOWANCE_FLAG==='Y')?true:false,
+                                        localConveyenceFlag: (expenseDtlList[j].LOCAL_CONVEYENCE_FLAG==='Y')?true:false,
+                                        miscExpenseFlag: (expenseDtlList[j].MISC_EXPENSES_FLAG==='Y')?true:false,
                                         remarks: expenseDtlList[j].REMARKS,
                                         checkbox: "checkboxt" + j,
                                         checked: false
@@ -108,6 +128,10 @@
                         allowance: 0,
                         localConveyence:0,
                         miscExpense: 0,
+                        fareFlag:false,
+                        allowanceFlag:false,
+                        localConveyenceFlag:false,
+                        miscExpenseFlag:false,
                         total:0,
                         remarks: "",
                         checkbox: "checkboxt" + $scope.counter,
@@ -177,7 +201,7 @@
 //                            var totalValue = parseFloat(angular.element(document.getElementById(totalId)).val());
 //                            item.total=totalValue;
 //                        });
-                        console.log($scope.expenseDtlFormList);
+                        console.log(document.urlExpenseRequest);
                         window.app.pullDataById(document.urlExpenseRequest, {
                             data: {
                                 expenseDtlList: $scope.expenseDtlFormList,
@@ -186,7 +210,12 @@
                                 returnedDate: $scope.travelDetail.returnedDate,
                                 requestedType: requestedType,
                                 sumAllTotal:sumAllTotal,
-                                expenseDtlEmpty: parseInt($scope.expenseDtlEmpty)
+                                expenseDtlEmpty: parseInt($scope.expenseDtlEmpty),
+                                approverRole:$scope.travelDetail.approverRole,
+                                destination:$scope.travelDetail.destination,
+                                purpose:$scope.travelDetail.purpose,
+                                advanceAmount:$scope.travelDetail.advanceAmount,
+                                employeeId:$scope.travelDetail.employeeId
                             },
                         }).then(function (success) {
                             $scope.$apply(function () {

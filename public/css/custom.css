@@ -412,7 +412,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .row.e-setup
 {
-    font-size:11px;
+    font-size:12px;
 
 }
 .rightalign{
@@ -518,7 +518,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .tabbable-custom ul li a
 {
-
+     padding:10px !important;
     font-size: 13px !important;   
 }
 .input-group-addon
@@ -629,6 +629,7 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
 }
 .select2-container--bootstrap .select2-selection--single{
     padding-top: 2px !important;
+    padding-left:5px;
 
 }
 .ticon
@@ -651,12 +652,15 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     padding-top: 9px !important;   
 
 }
-.customtbl tr td
-{
-    padding-top:5px !important;
-    padding-bottom: 5px !important;
-
+.customtbl tr td,.customtbl tr th
+{ padding:5px !important;
+  
 }
+.customtbl thead
+{
+    background-color:rgba(0, 0, 0, 0.02);
+}
+
 .rankwidth{
     width:13%;
 }
@@ -785,10 +789,13 @@ form.k-filter-menu .k-widget, form.k-filter-menu .k-textbox
     width:142px;
 }
 .profilepic-label{
-    float: left;
+   float: left;
+    font-size: 12px;
+    font-weight: 600;
     margin-left: 13px;
-    text-align: center !important;
-    padding-left:6px;
+    padding-left: 6px;
+    padding-top: 8px;
+   
 }
 .customtbl td
 {
@@ -1309,7 +1316,7 @@ ul#roleList li {
 }*/
 .indicator ul 
 {
-    float:right;
+    float:right;padding-left:0px;
 }
 .indicator ul li
 {
@@ -1480,10 +1487,10 @@ ul#personalInfo li{
 .dtlTravel ul{
     padding: 0px !important;
 }
-.font-common{
+/*.font-common{
     font-family: Impact, Charcoal, sans-serif;
     font-size:12px;
-}
+}*/
 
 .detailOfRequest ul{
     padding: 0px !important;
@@ -1828,6 +1835,62 @@ white-space: normal !important;
 
 }
 
+.btn-color-green{
+    background-color:#2f9e1e;
+    color:#fff;
+    text-transform: capitalize !important;
+}
+.btn-color-green:hover
+{
+    background-color:#306844;
+     color:#fff;
+     
+}
+.btn-color-green a
+{
+    color:#fff;
+}
+
+.btn.btn-sm:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all) {
+    font-size: 11px !important;
+    margin-right: 5px;
+    padding:3px 15px !important;
+}
+/*.btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all)
+{
+ padding:3px 15px !important;   
+}*/
+.portlet > .portlet-title > .actions > .btn, .portlet > .portlet-title > .actions > .btn-group > .btn, .portlet > .portlet-title > .actions > .btn-group > .btn.btn-sm, .portlet > .portlet-title > .actions > .btn.btn-sm {
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 4px 10px !important;
+}
+.topmargin
+{
+    margin-top:24px;
+    margin-bottom:15px;
+}
+.hrm-dashboard-employee-list {
+    border: 1px solid #dddddd;
+}
+.ui-menu li{
+    font-size:12px;
+    
+}
+.ui-menu
+{
+  max-height:300px;
+  height:300px;
+  overflow-y:auto;
+ overflow-x: hidden;
+ z-index:1000;
+}
+.current-details h5{
+    background-color: #ddd;
+    padding: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    }
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1890,7 +1953,12 @@ white-space: normal !important;
         float:none !important;
 
     }
+        .printbutton
+{
+    width:100% !important;
+}
 
+ 
 }
 
 /* Landscape phones and portrait tablets */
@@ -1957,7 +2025,28 @@ white-space: normal !important;
     {
         margin-top:25px;
     }
+    .printbutton
+{
+    width:100% !important;
 }
+label[for="nepaliFromDate"],label[for="nepaliToDate"]   
+{
+    display:none !important;
+}
+.topmargin {
+    margin-top: 0;
+}
+  .select2-container--bootstrap
+{
+    margin-bottom:15px !important;
+}
+.input-group.date {
+    margin-bottom: 15px;
+    width: 100%;
+}
+}
+
+ 
 
 /* Portrait phones and smaller */
 @media (max-width: 480px) {
@@ -2051,9 +2140,34 @@ white-space: normal !important;
     {
         padding-left:0px;
     }
+    .responsive-box {
+    display: table;
+    width: 100%;
+}
+.printbutton
+{
+    width:100% !important;
+}
+label[for="nepaliFromDate"],label[for="nepaliToDate"]   
+{
+    display:none !important;
 }
 
 
+.topmargin 
+{
+    margin-top: 0;
+}
+  .select2-container--bootstrap
+{
+    margin-bottom:15px !important;
+}
+.input-group.date {
+    margin-bottom: 15px;
+    width: 100%;
+}
+}
+ 
 .portlet.portlet-fullscreen{
     z-index: 1000 !important;
 }
@@ -2109,13 +2223,12 @@ div#ndp-nepali-box{
 .datepicker{
     z-index: 1001 !important;
 }
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-    display: none !important;
-}
-
 #tabContent h7{
     font-weight: 600;
     font-size:11px !important;
+}
+#tabContent label{
+    /*width:100%;*/
 }
 #assignBtnWrap{
     position: absolute;
@@ -2124,4 +2237,32 @@ div#ndp-nepali-box{
 }
 .position-relative{
     position: relative;
+}
+.appHeading{
+    border-bottom: 1px solid #ddd; 
+    padding-bottom: 1%; 
+    color: black; 
+    font-weight: 400;
+    margin-top:0px;
+}
+.questionWrap{
+    width: 100%;
+    float: left;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+#tabContent table{
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+.appQuestion{
+    padding: 0px 5px !important;
+}
+.questionWrapRow{
+    padding: 0px 14px !important;
+}
+#printable h5{
+    margin-top:0px !important;
+}
+#printableInnerArea{
+    font-family:"Open Sans",sans-serif !important;
+    font-size:11px !important;
 }

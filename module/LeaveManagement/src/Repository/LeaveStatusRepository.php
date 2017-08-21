@@ -86,6 +86,7 @@ class LeaveStatusRepository implements RepositoryInterface {
 
         $sql = "SELECT INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
                 LA.NO_OF_DAYS,
+                L.PAID AS PAID,
                 INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))     AS START_DATE,
                 INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))       AS END_DATE,
                 INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY'))   AS APPLIED_DATE,
@@ -198,11 +199,13 @@ class LeaveStatusRepository implements RepositoryInterface {
         $sql = "SELECT 
                 INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
                 L.LEAVE_CODE,LA.NO_OF_DAYS,
+                L.PAID,
                 INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
                 INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE,
                 INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
                 LA.STATUS AS STATUS,
                 LA.ID AS ID,
+                L.PAID AS PAID,
                 LA.EMPLOYEE_ID AS EMPLOYEE_ID,
                 INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
                 INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT,
@@ -216,8 +219,23 @@ class LeaveStatusRepository implements RepositoryInterface {
                 INITCAP(E2.FIRST_NAME) AS FN2,
                 INITCAP(E2.MIDDLE_NAME) AS MN2,
                 INITCAP(E2.LAST_NAME) AS LN2,
-                RA.RECOMMEND_BY AS RECOMMENDER,
-                RA.APPROVED_BY AS APPROVER,
+                (CASE
+                    WHEN L.PAID      ='N'
+                    AND LA.NO_OF_DAYS>3
+                    THEN RA.APPROVED_BY
+                    ELSE RA.RECOMMEND_BY
+                  END) AS RECOMMENDER,
+                  (CASE
+                    WHEN L.PAID      ='N'
+                    AND LA.NO_OF_DAYS>3
+                    THEN
+                      (SELECT EMPLOYEE_ID
+                      FROM HRIS_EMPLOYEES
+                      WHERE IS_CEO    ='Y'
+                      AND STATUS      ='E'
+                      AND RETIRED_FLAG='N')
+                    ELSE RA.APPROVED_BY
+                  END) AS APPROVER,
                 INITCAP(RECM.FIRST_NAME) AS RECM_FN,
                 INITCAP(RECM.MIDDLE_NAME) AS RECM_MN,
                 INITCAP(RECM.LAST_NAME) AS RECM_LN,
@@ -274,9 +292,28 @@ class LeaveStatusRepository implements RepositoryInterface {
         }
         if ($recomApproveId != null) {
             if ($leaveRequestStatusId == -1) {
-                $sql .= " AND ((RA.RECOMMEND_BY=" . $recomApproveId . " AND  LA.STATUS='RQ')"
+                $sql .= " AND ((('$recomApproveId' =
+                            CASE
+                              WHEN L.PAID      ='N'
+                              AND LA.NO_OF_DAYS>3
+                              THEN RA.APPROVED_BY
+                              ELSE RA.RECOMMEND_BY
+                            END)
+                          AND LA.STATUS        ='RQ' )"
                         . "OR (LA.RECOMMENDED_BY=" . $recomApproveId . " AND (LA.STATUS='RC' OR LA.STATUS='R' OR LA.STATUS='AP')) "
-                        . "OR (RA.APPROVED_BY=" . $recomApproveId . " AND  LA.STATUS='RC' ) "
+                        . "OR (('$recomApproveId'=
+                            CASE
+                              WHEN L.PAID      ='N'
+                              AND LA.NO_OF_DAYS>3
+                              THEN
+                                (SELECT EMPLOYEE_ID
+                                FROM HRIS_EMPLOYEES
+                                WHERE IS_CEO    ='Y'
+                                AND STATUS      ='E'
+                                AND RETIRED_FLAG='N'
+                                )
+                              ELSE RA.APPROVED_BY
+                            END) AND LA.STATUS       ='RC')"
                         . "OR (LA.APPROVED_BY=" . $recomApproveId . " AND (LA.STATUS='AP' OR (LA.STATUS='R' AND LA.APPROVED_DT IS NOT NULL))) )";
             } else if ($leaveRequestStatusId == 'RQ') {
                 $sql .= " AND (RA.RECOMMEND_BY=" . $recomApproveId . " AND LA.STATUS='RQ')";
@@ -333,6 +370,7 @@ class LeaveStatusRepository implements RepositoryInterface {
         $sql .= " ORDER BY LA.REQUESTED_DT DESC";
 
         $statement = $this->adapter->query($sql);
+//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

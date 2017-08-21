@@ -11,13 +11,12 @@ class EmailHelper {
     public static function getSmtpTransport(): Smtp {
         $transport = new Smtp();
         $options = new SmtpOptions([
-            'host' => 'duster.websitewelcome.com',
-            'port' => 587,
+            'host' => 'mail.laxmibank.com',
+            'port' => 25,
             'connection_class' => 'login',
             'connection_config' => [
-                'username' => 'ukesh.gaiju@itnepal.com',
-                'password' => 'ukesh@123',
-                'ssl' => 'tls',
+                'username' => 'hr@laxmibank.com',
+                'password' => 'amIT@174',
             ],
         ]);
         $transport->setOptions($options);

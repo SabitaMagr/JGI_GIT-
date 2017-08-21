@@ -16,7 +16,6 @@ use SelfService\Controller\PaySlip;
 use SelfService\Controller\PerformanceAppraisal;
 use SelfService\Controller\Profile;
 use SelfService\Controller\Service;
-use SelfService\Controller\SubordinatesReview;
 use SelfService\Controller\TrainingList;
 use SelfService\Controller\TrainingRequest;
 use SelfService\Controller\TravelNotification;
@@ -294,20 +293,7 @@ return [
                     ]
                 ],
             ],
-            'subordinatesReview' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/selfservice/subordinatesReview[/:action[/:appraisalId]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => SubordinatesReview::class,
-                    ]
-                ],
-            ],
-            'birthday' => [
+           'birthday' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/selfservice/birthday[/:action[/:id]]',
@@ -884,8 +870,7 @@ return [
             TravelNotification::class => ControllerFactory::class,
             TrainingRequest::class => ControllerFactory::class,
             OvertimeRequest::class => ControllerFactory::class,
-            SubordinatesReview::class => ControllerFactory::class,
-            Controller\Birthday::class => ControllerFactory::class,
+            Controller\Birthday::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

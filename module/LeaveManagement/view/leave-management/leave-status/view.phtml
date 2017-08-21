@@ -285,6 +285,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </label>
                             <div>
                                 <select disabled="disabled" class="form-control" name="leaveSubstitute">
+                                    <option style="cursor: pointer;" value="">---</option>
                                     <?php
                                     foreach ($employeeList as $key => $value) {
                                         $selected = ($key == $subEmployeeId) ? "selected" : "";

@@ -1,13 +1,4 @@
-ALTER TABLE HRIS_EMPLOYEES
-ADD IS_CEO CHAR (1 BYTE) CHECK (IS_CEO IN ('Y','N'));
-
-ALTER TABLE HRIS_EMPLOYEES
-ADD IS_HR CHAR (1 BYTE) CHECK (IS_HR IN ('Y','N'));
-
-
-ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD ASSIGN_ON_EMPLOYEE_SETUP CHAR(1 BYTE) DEFAULT 'Y'NOT NULL CHECK (ASSIGN_ON_EMPLOYEE_SETUP IN ('Y','N'));
-ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD IS_PRODATA_BASIS CHAR(1 BYTE) DEFAULT 'Y'NOT NULL CHECK (IS_PRODATA_BASIS IN ('Y','N'));
-
+ALTER TABLE HRIS_EMPLOYEE_TRAVEL_REQUEST ADD ADVANCE_AMOUNT FLOAT;
 
 INSERT
 INTO HRIS_MENUS
@@ -30,32 +21,27 @@ INTO HRIS_MENUS
   )
   VALUES
   (
-    'EMP',
-    325,
-    'Edit My Profile',
-    53,
+  NULL,
+    329,
+    'Expence Detail',
+    105,
     NULL,
-    'employee',
+    'travelStatus',
     'E',
-    to_date('13-JUL-17','DD-MON-RR'),
+      TRUNC(SYSDATE),
     NULL,
-    'fa fa-wrench',
-    'edit',
-    44,
+    'fa fa-pencil',
+    'expenseDetail',
+    2,
     NULL,
     NULL,
     'N'
-  );
-  
-
-  
-  
-INSERT INTO HRIS_ROLE_PERMISSIONS
-  (MENU_ID,ROLE_ID,STATUS
-  )
-SELECT (325),ROLE_ID, ('E') FROM HRIS_ROLES;
-
-INSERT
+    );
+    
+    
+    
+    
+    INSERT
 INTO HRIS_MENUS
   (
     MENU_CODE,
@@ -76,18 +62,18 @@ INTO HRIS_MENUS
   )
   VALUES
   (
+  NULL,
+    330,
+    'Check Settlement',
+    105,
     NULL,
-    328,
-    'Attendance Report',
-    5,
-    NULL,
-    'managerReport',
+    'travelStatus',
     'E',
-    TRUNC(SYSDATE),
+      TRUNC(SYSDATE),
     NULL,
     'fa fa-pencil',
-    'index',
-    19,
+    'checkSettlement',
+    3,
     NULL,
     NULL,
     'Y'

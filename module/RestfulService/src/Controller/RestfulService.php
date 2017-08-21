@@ -3,12 +3,17 @@
 namespace RestfulService\Controller;
 
 use Advance\Repository\AdvanceStatusRepository;
+use Application\Helper\AppraisalHelper;
 use Application\Helper\ConstraintHelper;
 use Application\Helper\DeleteHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\LoanAdvanceHelper;
 use Application\Repository\MonthRepository;
+use Appraisal\Model\AppraisalStatus;
+use Appraisal\Repository\AppraisalAssignRepository;
+use Appraisal\Repository\AppraisalReportRepository;
+use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Repository\HeadingRepository;
 use Appraisal\Repository\QuestionRepository;
 use Asset\Repository\IssueRepository;
@@ -40,6 +45,10 @@ use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
+use SelfService\Model\AppraisalCompetencies;
+use SelfService\Model\AppraisalKPI;
+use SelfService\Repository\AppraisalCompetenciesRepo;
+use SelfService\Repository\AppraisalKPIRepository;
 use SelfService\Repository\AttendanceRequestRepository;
 use SelfService\Repository\LeaveRequestRepository;
 use SelfService\Repository\OvertimeDetailRepository;
@@ -49,6 +58,7 @@ use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 use Setup\Model\EmployeeExperience;
 use Setup\Model\EmployeeQualification;
 use Setup\Model\EmployeeTraining;
+use Setup\Model\HrEmployees;
 use Setup\Model\RecommendApprove;
 use Setup\Repository\AcademicCourseRepository;
 use Setup\Repository\AcademicDegreeRepository;
@@ -73,6 +83,7 @@ use System\Repository\UserSetupRepository;
 use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
 use Training\Repository\TrainingStatusRepository;
+use Travel\Repository\RecommenderApproverRepository;
 use Travel\Repository\TravelStatusRepository;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
@@ -81,17 +92,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;
-use Application\Repository\ForgotPasswordRepository;
-use ServiceQuestion\Repository\EmpServiceQuestionRepo;
-use SelfService\Repository\AppraisalKPIRepository;
-use SelfService\Model\AppraisalKPI;
-use SelfService\Model\AppraisalCompetencies;
-use SelfService\Repository\AppraisalCompetenciesRepo;
-use Appraisal\Repository\AppraisalAssignRepository;
-use Application\Helper\AppraisalHelper;
-use Appraisal\Repository\AppraisalStatusRepository;
-use Appraisal\Model\AppraisalStatus;
-use Appraisal\Repository\AppraisalReportRepository;
+use function Zend\Filter\File\move_uploaded_file;
 
 class RestfulService extends AbstractRestfulController {
 
@@ -1645,15 +1646,15 @@ class RestfulService extends AbstractRestfulController {
                 return "Cancelled";
             }
         };
-
         foreach ($result as $row) {
             $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRepository = new EmployeeRepository($this->adapter);
             $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
 
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DT'];
-
+            
             $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
             $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
 
@@ -1667,9 +1668,16 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
+            $empRepository = new EmployeeRepository($this->adapter);
+            $CEOFlag = ($row['PAID']=='N' && $row['NO_OF_DAYS']>3)?true:false;
+            if($CEOFlag){
+                $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS=>'E', HrEmployees::IS_CEO=>'Y', HrEmployees::RETIRED_FLAG=>'N']);
+                $empRecommendApprove['RECOMMEND_BY']=$empRecommendApprove['APPROVED_BY'];
+                $empRecommendApprove['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+            }
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $role['YOUR_ROLE'] = 'Recommender\Approver';
-                $role['ROLE'] = 4;
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
             }
             $new_row = array_merge($row, ['STATUS' => $status]);
             $final_record = array_merge($new_row, $role);
@@ -1816,6 +1824,8 @@ class RestfulService extends AbstractRestfulController {
                 return "Approved";
             } else if ($status == "C") {
                 return "Cancelled";
+            }else if ($status == "SC") {
+                return "Settlement Checked";
             }
         };
         $getRequestType = function($requestType) {
@@ -1835,7 +1845,7 @@ class RestfulService extends AbstractRestfulController {
             $status = $getValue($row['STATUS']);
             $statusId = $row['STATUS'];
             $approvedDT = $row['APPROVED_DATE'];
-
+            
             $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
             $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
 
@@ -1849,15 +1859,20 @@ class RestfulService extends AbstractRestfulController {
                 'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
                 'ROLE' => $roleID
             ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $role['YOUR_ROLE'] = 'Recommender\Approver';
-                $role['ROLE'] = 4;
+            
+            $empRepository = new EmployeeRepository($this->adapter);
+            $approverFlag =($row['APPROVER_ROLE']=='DCEO')? [HrEmployees::IS_DCEO=>'Y']:[HrEmployees::IS_CEO=>'Y'];
+            $whereCondition = array_merge([HrEmployees::STATUS=>'E', HrEmployees::RETIRED_FLAG=>'N'],$approverFlag);
+            $approverDetail = $empRepository->fetchByCondition($whereCondition);
+            if ($empRecommendApprove['APPROVED_BY'] == $approverDetail['EMPLOYEE_ID']) {
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
             }
+            $row['CHECK_SETTLEMENT']=($row['REQUESTED_TYPE']=='ep' && $row['STATUS']=='AP')?1:0;
             $new_row = array_merge($row, ['STATUS' => $status, 'REQUESTED_TYPE' => $getRequestType($row['REQUESTED_TYPE'])]);
             $final_record = array_merge($new_row, $role);
             array_push($recordList, $final_record);
         }
-
         return [
             "success" => "true",
             "data" => $recordList,
@@ -2514,9 +2529,6 @@ class RestfulService extends AbstractRestfulController {
         } else {
             $approverIdNew = $approverId;
         }
-
-
-
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
         $recommendApprove = new RecommendApprove();
         $employeePreDtl = $recommApproverRepo->fetchById($employeeId);
@@ -3374,10 +3386,6 @@ class RestfulService extends AbstractRestfulController {
                     case 'appraisee':
                         HeadNotification::pushNotification(NotificationEvents::KEY_ACHIEVEMENT, $appraisalStatus, $this->adapter, $this, null, ['ID' => $assignedAppraisalDetail['REVIEWER_ID'], 'USER_TYPE' => "REVIEWER"]);
                         HeadNotification::pushNotification(NotificationEvents::KEY_ACHIEVEMENT, $appraisalStatus, $this->adapter, $this, null, ['ID' => $assignedAppraisalDetail['APPRAISER_ID'], 'USER_TYPE' => "APPRAISER"]);
-                        $adminList = $employeeRepository->fetchByAdminFlagList();
-                        foreach ($adminList as $adminRow) {
-                            HeadNotification::pushNotification(NotificationEvents::KEY_ACHIEVEMENT, $appraisalStatus, $this->adapter, $this, null, ['ID' => $adminRow['EMPLOYEE_ID'], 'USER_TYPE' => "HR"]);
-                        }
                         break;
                 }
             }
@@ -3497,26 +3505,14 @@ class RestfulService extends AbstractRestfulController {
                         if ($assignedAppraisalDetail['ALT_REVIEWER_ID'] != null && $assignedAppraisalDetail['ALT_REVIEWER_ID'] != "") {
                             HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this, null, ['ID' => $assignedAppraisalDetail['ALT_REVIEWER_ID'], 'USER_TYPE' => "REVIEWER"]);
                         }
-                        $adminList = $employeeRepository->fetchByAdminFlagList();
-                        foreach ($adminList as $adminRow) {
-                            HeadNotification::pushNotification(NotificationEvents::KPI_SETTING, $appraisalStatus, $this->adapter, $this, null, ['ID' => $adminRow['EMPLOYEE_ID'], 'USER_TYPE' => "HR"]);
-                        }
                         break;
                     case 'appraiser':
                         HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this, ['ID' => $this->loggedIdEmployeeId], ['ID' => $assignedAppraisalDetail['REVIEWER_ID'], 'USER_TYPE' => "REVIEWER"]);
                         HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this, ['ID' => $this->loggedIdEmployeeId], ['ID' => $employeeId, 'USER_TYPE' => "APPRAISEE"]);
-                        $adminList1 = $employeeRepository->fetchByAdminFlagList();
-                        foreach ($adminList1 as $adminRow1) {
-                            HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this, ['ID' => $this->loggedIdEmployeeId], ['ID' => $adminRow1['EMPLOYEE_ID'], 'USER_TYPE' => "HR"]);
-                        }
                         break;
                     case 'reviewer':
                         HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this, ['ID' => $this->loggedIdEmployeeId], ['ID' => $assignedAppraisalDetail['APPRAISER_ID'], 'USER_TYPE' => "APPRAISER"]);
                         HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this, ['ID' => $this->loggedIdEmployeeId], ['ID' => $employeeId, 'USER_TYPE' => "APPRAISEE"]);
-                        $adminList1 = $employeeRepository->fetchByAdminFlagList();
-                        foreach ($adminList1 as $adminRow1) {
-                            HeadNotification::pushNotification(NotificationEvents::KPI_APPROVED, $appraisalStatus, $this->adapter, $this, ['ID' => $this->loggedIdEmployeeId], ['ID' => $adminRow1['EMPLOYEE_ID'], 'USER_TYPE' => "HR"]);
-                        }
                         break;
                 }
             }

@@ -9,6 +9,7 @@ class LeaveRequestNotificationModel extends NotificationModel {
     public $toDate;
     public $noOfDays;
     public $leaveType;
+    public $remarks;
     
     public $leaveRecommendStatus;
     public $leaveApprovedStatus;

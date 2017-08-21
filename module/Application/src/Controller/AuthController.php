@@ -118,6 +118,7 @@ class AuthController extends AbstractActionController {
 
 
                     $attendanceType = ($inTime) ? "OUT" : "IN";
+                    $allowRegisterAttendance = ($todayAttendance['TRAVEL_ID']==null && $todayAttendance['LEAVE_ID']==null && $todayAttendance['TRAINING_ID']==null && $todayAttendance['HOLIDAY_ID']==null)?true:false;
                     $redirect = 'dashboard';
                     //check if it has rememberMe :
                     if (1 == $request->getPost('rememberme')) {
@@ -131,13 +132,13 @@ class AuthController extends AbstractActionController {
 //                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
                     $monthRepo = new MonthRepository($this->adapter);
                     $fiscalYear = $monthRepo->getCurrentFiscalYear();
-
                     $this->getAuthService()->getStorage()->write([
                         "user_name" => $request->getPost('username'),
                         "user_id" => $resultRow->USER_ID,
                         "employee_id" => $resultRow->EMPLOYEE_ID,
                         "role_id" => $resultRow->ROLE_ID,
                         'register_attendance' => $attendanceType,
+                        'allow_register_attendance'=>$allowRegisterAttendance,
 //                        "role_id" => 8,
 //                        "employee_detail" => $employeeDetail,
                         "fiscal_year" => $fiscalYear

@@ -186,6 +186,12 @@ class EmployeeRepository implements RepositoryInterface {
 
         $select->from(['E' => HrEmployees::TABLE_NAME]);
         $select->join(['B1' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B1." . Branch::BRANCH_ID, ['BRANCH' => 'BRANCH_NAME'], 'left')
+                ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME' => new Expression('INITCAP(G.GENDER_NAME)')], 'left')
+                ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
+                ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME' => new Expression('INITCAP(RG.RELIGION_NAME)')], 'left')
+                ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(CN.COUNTRY_NAME)')], 'left')
+                ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME' => new Expression('INITCAP(VM.VDC_MUNICIPALITY_NAME)')], 'left')
+                ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
                 ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
                 ->join(['F' => EmployeeFile::TABLE_NAME], "F." . EmployeeFile::FILE_CODE . "=C." . Company::LOGO, ['COMPANY_FILE_PATH' => "FILE_PATH", 'COMPANY_FILE_CODE' => "FILE_CODE", 'COMPANY_FILE_NAME' => "FILE_NAME"], 'left')
                 ->join(['B2' => Branch::TABLE_NAME], "E." . HrEmployees::APP_BRANCH_ID . "=B2." . Branch::BRANCH_ID, ['APP_BRANCH' => 'BRANCH_NAME'], 'left')
@@ -500,6 +506,22 @@ class EmployeeRepository implements RepositoryInterface {
         } else {
             return null;
         }
+    }
+
+    public function fetchByCondition($where) {
+        $rowset = $this->gateway->select(function (Select $select) use ($where) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME, HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
+                        HrEmployees::BIRTH_DATE,
+                        HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+                        HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                        HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+                        HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+                        HrEmployees::ID_PASSPORT_EXPIRY,
+                        HrEmployees::JOIN_DATE
+                    ]), false);
+            $select->where($where);
+        });
+        return $rowset->current();
     }
 
     public function fetchByHRFlagList() {
