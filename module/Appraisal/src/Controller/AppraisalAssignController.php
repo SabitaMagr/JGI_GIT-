@@ -168,11 +168,19 @@ class AppraisalAssignController extends AbstractActionController {
 
             if ($assignList['IS_EXECUTIVE'] == 'Y') {
                 $employeeRow['EXECUTIVE'] = "Yes";
+//                $employeeRow['SUBORDINATES'] = [
+//                    $assignList['SUBORDINATE_1'],
+//                    $assignList['SUBORDINATE_2'],
+//                    $assignList['SUBORDINATE_3'],
+//                    $assignList['SUBORDINATE_4'],
+//                    $assignList['SUBORDINATE_5']
+//                ];
             } else if ($assignList['IS_EXECUTIVE'] == 'N') {
                 $employeeRow['EXECUTIVE'] = "No";
             } else {
                 $employeeRow['EXECUTIVE'] = "";
             }
+                $employeeRow['SUBORDINATES'] = [];
 
             array_push($employeeList, $employeeRow);
         }
@@ -221,6 +229,25 @@ class AppraisalAssignController extends AbstractActionController {
         $superReviewerId = (int) $data['superReviewerId'];
         $stageId = (int) $data['stageId'];
         $executiveEmployee = $data['executive'];
+        $subordinate = $data['subordinate'];
+
+        $subordinate1 = null;
+        $subordinate2 = null;
+        $subordinate3 = null;
+        $subordinate4 = null;
+        $subordinate5 = null;
+
+
+        if ($executiveEmployee == 'Y' && $subordinate) {
+            $i = 1;
+            foreach ($subordinate as $sub) {
+                $tempString = 'subordinate' . $i;
+                $$tempString = $sub;
+                $i++;
+            }
+        }
+
+
         $appraisalRepo = new SetupRepository($this->adapter);
         $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
 
@@ -287,6 +314,11 @@ class AppraisalAssignController extends AbstractActionController {
             $appraisalAssign->currentStageId = ($stageId == null) ? $appraisalDtl['CURRENT_STAGE_ID'] : $stageId;
             $appraisalAssign->status = 'E';
             $appraisalAssign->isExecutive = $executiveEmployee;
+            $appraisalAssign->subordinate1 = $subordinate1;
+            $appraisalAssign->subordinate2 = $subordinate2;
+            $appraisalAssign->subordinate3 = $subordinate3;
+            $appraisalAssign->subordinate4 = $subordinate4;
+            $appraisalAssign->subordinate5 = $subordinate5;
             $this->repository->add($appraisalAssign);
         } else if ($employeePreDtl != null) {
             $id = $employeePreDtl['EMPLOYEE_ID'];
@@ -301,6 +333,11 @@ class AppraisalAssignController extends AbstractActionController {
             $appraisalAssign->currentStageId = ($stageId == null) ? null : $stageId;
             $appraisalAssign->status = 'E';
             $appraisalAssign->isExecutive = $executiveEmployee;
+            $appraisalAssign->subordinate1 = $subordinate1;
+            $appraisalAssign->subordinate2 = $subordinate2;
+            $appraisalAssign->subordinate3 = $subordinate3;
+            $appraisalAssign->subordinate4 = $subordinate4;
+            $appraisalAssign->subordinate5 = $subordinate5;
             $this->repository->edit($appraisalAssign, [$employeeId, $appraisalId]);
         }
         $appraisalAssign->appraisalId = $appraisalId;

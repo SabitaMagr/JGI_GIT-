@@ -434,17 +434,46 @@
         action: 'getAdminDashboardUrl',
     }).then(function (success) {
         var dashboardData = success.data;
+        
+        if (dashboardData['PRESENT_DAY']!= null) {
         $('#employeePresentDays').text(dashboardData['PRESENT_DAY']);  //present 
+        }
+        
+        if (dashboardData['LEAVE']!= null) {
         $('#employeeLeaveDays').text(dashboardData['LEAVE']);  //on leave
+        }
+        
+        if (dashboardData['TRAINING']!= null) {
         $('#employeeTrainingDays').text(dashboardData['TRAINING']);  //on training
+        }
+        
+        if (dashboardData['TOUR']!= null) {
         $('#employeeTravelDays').text(dashboardData['TOUR']);  // on tour
+        }
+        
+        if (dashboardData['WOH']!= null) {
         $('#employeeWOHDays').text(dashboardData['WOH']);  // on woh
+        }
+        
+        if (dashboardData['LATE_IN']!= null) {
         $('#employeeLateInDays').text(dashboardData['LATE_IN']);  //  late in
+        }
+        
+        if (dashboardData['EARLY_OUT']!= null) {
         $('#employeeEarlyOutDays').text(dashboardData['EARLY_OUT']);  //  early out
+        }
+        
+        if (dashboardData['MISSED_PUNCH']!= null) {
         $('#employeeMissPunch').text(dashboardData['MISSED_PUNCH']);  //  miss punch
-
-
+        }
+        
+        if (dashboardData['FULL_NAME']!= null) {
         $('#employeeFullName').text(dashboardData['FULL_NAME']);   //full name
+        }
+        
+        
+
+
         if (dashboardData['EMAIL_OFFICIAL'] != null) {
             $('#employeeOfficialEmail').text(dashboardData['EMAIL_OFFICIAL']);  //  email
         } else {
@@ -463,21 +492,21 @@
         var year = ' ';
         var month = ' ';
         var days = ' ';
-        if (dashboardData['SERVICE_YEARS'] != 0) {
+        if (dashboardData['SERVICE_YEARS'] != 0 && dashboardData['SERVICE_YEARS'] != null) {
             if (dashboardData['SERVICE_YEARS'] == 1) {
                 year = dashboardData['SERVICE_YEARS'] + ' Year ';
             } else {
                 year = dashboardData['SERVICE_YEARS'] + ' Years ';
             }
         }
-        if (dashboardData['SERVICE_MONTHS'] != 0) {
+        if (dashboardData['SERVICE_MONTHS'] != 0 && dashboardData['SERVICE_MONTHS'] != null) {
             if (dashboardData['SERVICE_MONTHS'] == 1) {
                 month = dashboardData['SERVICE_MONTHS'] + ' Month ';
             } else {
                 month = dashboardData['SERVICE_MONTHS'] + ' Months ';
             }
         }
-        if (dashboardData['SERVICE_DAYS'] != 0) {
+        if (dashboardData['SERVICE_DAYS'] != 0 && dashboardData['SERVICE_DAYS'] != null) {
             if (dashboardData['SERVICE_DAYS'] == 0) {
                 days = dashboardData['SERVICE_DAYS'] + ' Day';
             } else {

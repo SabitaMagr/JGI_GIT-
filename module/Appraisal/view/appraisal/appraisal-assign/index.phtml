@@ -110,7 +110,10 @@ $this->headScript()
                             Current Stage
                         </th>
                         <th>
-                            Executive
+                            Supervisor
+                        </th>
+                        <th>
+                            Subordinates
                         </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -150,6 +153,9 @@ $this->headScript()
                         </td>
                         <td>                       
                             <span ng-bind="employee.EXECUTIVE"></span>
+                        </td>
+                        <td>                       
+                            <span ng-bind="employee.SUBORDINATES"></span>
                         </td>
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -256,13 +262,13 @@ $this->headScript()
                     </div>  
                 </div>
 
-                <label for="isExecutive" style="width:100%; margin-top:2%;">Executive Employee</label>
-                <div class="row">
+                <label for="isExecutive" style="width:100%; margin-top:2%;">Supervisor Level</label>
+                <div class="row" >
                     <div class="col-md-9 parentDiv" style="padding-right: 0px;">    
 
                         <div class="md-radio-inline">
                             <div class="md-radio">
-                                <input  type="radio" value="Y" name="executive" id="executiveYes" class="md-radiobtn radioButton">
+                                <input  type="radio" value="Y" name="executive" id="executiveYes" class="md-radiobtn radioButton" ng-click="checkSupervisor()">
                                 <label for="executiveYes">
                                     <span></span>
                                     <span class="check"></span>
@@ -270,7 +276,7 @@ $this->headScript()
                                 </label>
                             </div>
                             <div class="md-radio">
-                                <input checked="checked" type="radio" value="N" name="executive" id="executiveNo" class="md-radiobtn radioButton">
+                                <input checked="checked" type="radio" value="N" name="executive" id="executiveNo" class="md-radiobtn radioButton" ng-click="checkSupervisor()">
                                 <label for="executiveNo">
                                     <span></span>
                                     <span class="check"></span>
@@ -283,10 +289,23 @@ $this->headScript()
                     <div class="col-md-3 rlPadding reviewerWrap" style="padding:0px 0px !important;">
                     </div>  
                 </div>
-
-
-
             </div>
+            
+            <div class="col-sm-3"  ng-show="SupervisorDiv">
+                <label for="isExecutive" style="width:100%; margin-top:2%;">Suborrdinte Employees</label>
+                
+                <div class="row">
+                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                        <select name="subordinate1" required="required" id="subordinate1" class="form-control" ng-options="subordinate.name for subordinate in subordinateOptions track by subordinate.id" ng-model="subordinate1">
+                        </select>   
+                    </div>
+                </div>
+                
+                
+                
+            </div>
+            
+            
             <div class="col-sm-2 " id="assignBtnWrap" ng-show="showHideAssignBtn">
                 <label height="45"></label>
                 <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search mt-ladda-btn ladda-button mt-progress-demo">
