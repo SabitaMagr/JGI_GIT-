@@ -19,11 +19,13 @@ use Appraisal\Model\Type;
 use Appraisal\Model\Stage;
 
 class AppraisalReportRepository implements RepositoryInterface {
+
     private $tableGateway;
     private $adapter;
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway(AppraisalAnswer::TABLE_NAME,$adapter);
+        $this->tableGateway = new TableGateway(AppraisalAnswer::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model) {
@@ -45,18 +47,19 @@ class AppraisalReportRepository implements RepositoryInterface {
     public function fetchById($id) {
         
     }
-    public function fetchFilterdData($fromDate,$toDate,$employeeId,$companyId,$branchId,$departmentId,$designationId,$positionId,$serviceTypeId,$serviceEventTypeId,$appraisalId,$appraisalStageId,$reportType=null,$userId=null){
-        if($reportType!=null && $reportType=="appraisalEvaluation"){
+
+    public function fetchFilterdData($fromDate, $toDate, $employeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $appraisalId, $appraisalStageId, $reportType = null, $userId = null) {
+        if ($reportType != null && $reportType == "appraisalEvaluation") {
             $userFlag = "AND AQ.APPRAISER_FLAG='Y'";
             $userQuestionNum = " OR USER_QUESTION_NUM>0";
-        }else if($reportType!=null && $reportType=="appraisalReview"){
+        } else if ($reportType != null && $reportType == "appraisalReview") {
             $userFlag = "AND AQ.REVIEWER_FLAG='Y'";
             $userQuestionNum = " OR USER_QUESTION_NUM>0";
-        }else{
+        } else {
             $userFlag = "";
-            $userQuestionNum="";
+            $userQuestionNum = "";
         }
-        
+
         $sql = "SELECT *
 FROM
   (SELECT A.APPRAISAL_ID                         AS APPRAISAL_ID,
@@ -116,7 +119,7 @@ FROM
     (SELECT COUNT(*) FROM HRIS_APPRAISAL_STAGE_QUESTIONS SQ
 LEFT JOIN HRIS_APPRAISAL_QUESTION AQ
 ON SQ.QUESTION_ID = AQ.QUESTION_ID
-WHERE SQ.STAGE_ID=AA.CURRENT_STAGE_ID AND AQ.STATUS='E' AND SQ.STATUS='E' ".$userFlag.") AS USER_QUESTION_NUM,
+WHERE SQ.STAGE_ID=AA.CURRENT_STAGE_ID AND AQ.STATUS='E' AND SQ.STATUS='E' " . $userFlag . ") AS USER_QUESTION_NUM,
     INITCAP(TO_CHAR(AKPI.APPROVED_DATE,'DD-MON-YYYY')) AS KPI_APPROVED_DATE
   FROM HRIS_APPRAISAL_SETUP A
   INNER JOIN HRIS_APPRAISAL_ASSIGN AA
@@ -143,53 +146,53 @@ WHERE SQ.STAGE_ID=AA.CURRENT_STAGE_ID AND AQ.STATUS='E' AND SQ.STATUS='E' ".$use
       AND KPI.APPRAISAL_ID  = APS.APPRAISAL_ID
       ) OR AKPI.SNO IS NULL)
   ";
-        if($reportType!=null && $reportType=="appraisalEvaluation"){
-            $sql .=" AND AA.APPRAISER_ID  =".$userId." OR AA.ALT_APPRAISER_ID =".$userId;
+        if ($reportType != null && $reportType == "appraisalEvaluation") {
+            $sql .= " AND ( AA.APPRAISER_ID  =" . $userId . " OR AA.ALT_APPRAISER_ID =" . $userId . " ) ";
         }
-        if($reportType!=null && $reportType=="appraisalReview"){
-            $sql .=" AND AA.REVIEWER_ID  =".$userId." OR AA.ALT_REVIEWER_ID =".$userId;
+        if ($reportType != null && $reportType == "appraisalReview") {
+            $sql .= " AND ( AA.REVIEWER_ID  =" . $userId . " OR AA.ALT_REVIEWER_ID =" . $userId . " ) ";
         }
-        if($reportType!=null && $reportType=="appraisalFinalReview"){
-            $sql .=" AND AA.SUPER_REVIEWER_ID  =".$userId;
+        if ($reportType != null && $reportType == "appraisalFinalReview") {
+            $sql .= " AND AA.SUPER_REVIEWER_ID  =" . $userId;
         }
-        if($employeeId!=null && $employeeId!=-1){
-            $sql .= " AND E.EMPLOYEE_ID=".$employeeId;
+        if ($employeeId != null && $employeeId != -1) {
+            $sql .= " AND E.EMPLOYEE_ID=" . $employeeId;
         }
-        if($companyId!=null && $companyId!=-1){
-            $sql .= " AND E.COMPANY_ID=".$companyId;
+        if ($companyId != null && $companyId != -1) {
+            $sql .= " AND E.COMPANY_ID=" . $companyId;
         }
-        if($branchId!=null && $branchId!=-1){
-            $sql .= " AND E.BRANCH_ID=".$branchId;
+        if ($branchId != null && $branchId != -1) {
+            $sql .= " AND E.BRANCH_ID=" . $branchId;
         }
-        if($departmentId!=null && $departmentId!=-1){
-            $sql .= " AND E.DEPARTMENT_ID=".$departmentId;
+        if ($departmentId != null && $departmentId != -1) {
+            $sql .= " AND E.DEPARTMENT_ID=" . $departmentId;
         }
-        if($designationId!=null && $designationId!=-1){
-            $sql .= " AND E.DESIGNATION_ID=".$designationId;
+        if ($designationId != null && $designationId != -1) {
+            $sql .= " AND E.DESIGNATION_ID=" . $designationId;
         }
-        if($positionId!=null && $positionId!=-1){
-            $sql .= " AND E.POSITION_ID=".$positionId;
+        if ($positionId != null && $positionId != -1) {
+            $sql .= " AND E.POSITION_ID=" . $positionId;
         }
-        if($serviceTypeId!=null && $serviceTypeId!=-1){
-            $sql .= " AND E.SERVICE_TYPE_ID=".$serviceTypeId;
+        if ($serviceTypeId != null && $serviceTypeId != -1) {
+            $sql .= " AND E.SERVICE_TYPE_ID=" . $serviceTypeId;
         }
-        if($serviceEventTypeId!=null && $serviceEventTypeId!=-1){
-            $sql .= " AND E.SERVICE_EVENT_TYPE_ID=".$serviceEventTypeId;
+        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
+            $sql .= " AND E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId;
         }
-        if($appraisalId!=null && $appraisalId!=-1){
-            $sql .= " AND A.APPRAISAL_ID=".$appraisalId;
+        if ($appraisalId != null && $appraisalId != -1) {
+            $sql .= " AND A.APPRAISAL_ID=" . $appraisalId;
         }
-        if($appraisalStageId!=null && $appraisalStageId!=-1){
-            $sql .= " AND S.STAGE_ID=".$appraisalStageId;
+        if ($appraisalStageId != null && $appraisalStageId != -1) {
+            $sql .= " AND S.STAGE_ID=" . $appraisalStageId;
         }
-        if($fromDate!=null && $fromDate!=""){
+        if ($fromDate != null && $fromDate != "") {
             $sql .= " AND A.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
         }
-        if($toDate!=null && $toDate!=""){
+        if ($toDate != null && $toDate != "") {
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
         $sql .= " ORDER BY A.START_DATE DESC,E.FIRST_NAME)";
-        $sql .="
+        $sql .= "
 WHERE ( (COMPETENCIES_SETTING = (
   CASE
     WHEN ANSWER_NUM=0
@@ -202,21 +205,23 @@ OR (KPI_SETTING = (
     THEN ('Y')
   END)
 AND KPI_ANS_NUM>0)
-OR ANSWER_NUM  >0 ".$userQuestionNum.")
+OR ANSWER_NUM  >0 " . $userQuestionNum . ")
 ";
         $statement = $this->adapter->query($sql);
 //        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }
-    public function checkAppraiserQuestionOnStage($stageId){
+
+    public function checkAppraiserQuestionOnStage($stageId) {
         $sql = "SELECT COUNT(*) as NUM FROM HRIS_APPRAISAL_STAGE_QUESTIONS SQ
 LEFT JOIN HRIS_APPRAISAL_QUESTION AQ
 ON SQ.QUESTION_ID = AQ.QUESTION_ID
-WHERE SQ.STAGE_ID=".$stageId." AND AQ.STATUS='E' AND SQ.STATUS='E' AND AQ.APPRAISER_FLAG='Y'";
+WHERE SQ.STAGE_ID=" . $stageId . " AND AQ.STATUS='E' AND SQ.STATUS='E' AND AQ.APPRAISER_FLAG='Y'";
         $statement = $this->adapter->query($sql);
 //        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result->current();
     }
+
 }
