@@ -25,8 +25,11 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "REQUESTED_DATE", title: "Applied Date"},
+                {field: "REQUESTED_DATE_NEP", title: "Applied Date Nep"},
                 {field: "FROM_DATE", title: "From Date"},
+                {field: "FROM_DATE_NEP", title: "From Date Nep"},
                 {field: "TO_DATE", title: "To Date"},
+                {field: "TO_DATE_NEP", title: "To Date Nep"},
                 {field: "DURATION", title: "Duration"},
                 {field: "STATUS", title: "Status"},
                 {title: "Action"}

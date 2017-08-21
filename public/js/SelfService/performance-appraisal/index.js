@@ -23,7 +23,9 @@
                 {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal Type",width:120},
                 {field: "STAGE_EDESC", title: "Current Status",width:100},
                 {field: "START_DATE", title: "Start Date",width:80},
+                {field: "START_DATE_NEP", title: "Start Date Nep",width:80},
                 {field: "END_DATE", title: "End Date",width:80},
+                {field: "END_DATE_NEP", title: "End Date Nep",width:80},
                 {title: "Action",width:90}
             ],
         });

@@ -25,7 +25,9 @@
             columns: [
                 {field: "LOAN_NAME", title: "Loan Name"},
                 {field: "REQUESTED_DATE", title: "Applied Date"},
+                {field: "REQUESTED_DATE_NEP", title: "Applied Date Nep"},
                 {field: "LOAN_DATE", title: "Loan Date"},
+                {field: "LOAN_DATE_NEP", title: "Loan Date Nep"},
                 {field: "REQUESTED_AMOUNT", title: "Request Amount"},
                 {field: "STATUS", title: "Status"},
                 {title: "Action"}

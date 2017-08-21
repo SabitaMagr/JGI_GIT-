@@ -25,8 +25,11 @@
             columns: [
                 {field: "TITLE", title: "Training Name"},
                 {field: "REQUESTED_DATE", title: "Applied Date"},
+                {field: "REQUESTED_DATE_NEP", title: "Applied Date Nep"},
                 {field: "START_DATE", title: "Start Date"},
+                {field: "START_DATE_NEP", title: "Start Date Nep"},
                 {field: "END_DATE", title: "End Date"},
+                {field: "END_DATE_NEP", title: "End Date Nep"},
                 {field: "DURATION", title: "Duration"},
                 {field: "TRAINING_TYPE", title: "Training Type"},
                 {field: "STATUS", title: "Status"},

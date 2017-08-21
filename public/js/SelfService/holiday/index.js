@@ -25,7 +25,9 @@
             columns: [
                 {field: "HOLIDAY_ENAME", title: "Holiday Name"},
                 {field: "START_DATE", title: "Start Date"},
+                {field: "START_DATE", title: "Start Date Nep"},
                 {field: "END_DATE", title: "End Date"},
+                {field: "END_DATE", title: "End Date Nep"},
                 {field: "HALF_DAY", title: "Half Day"},
             ]
         });
