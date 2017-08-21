@@ -25,7 +25,9 @@ console.log(document.attendanceApprove);
             columns: [
                 {field: "FULL_NAME", title: "Employee", width: 200},
                 {field: "REQUESTED_DT", title: "Requested Date", width: 160},
+                {field: "REQUESTED_DT_NEP", title: "Requested Date Nep", width: 160},
                 {field: "ATTENDANCE_DT", title: "Attendance Date", width: 180},
+                {field: "ATTENDANCE_DT_NEP", title: "Attendance Date Nep", width: 180},
                 {field: "IN_TIME", title: "Check In", width: 120},
                 {field: "OUT_TIME", title: "Check Out", width: 140},
                 {field: "YOUR_ROLE", title: "Your Role", width: 140},

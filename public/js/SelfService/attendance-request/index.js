@@ -67,7 +67,9 @@ angular.module('hris', [])
                     rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "REQUESTED_DT", title: "Applied Date", width: 120},
-                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 140},
+                        {field: "REQUESTED_DT_NEP", title: "Applied Date Nep", width: 120},
+                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 80},
+                        {field: "ATTENDANCE_DT_NEP", title: "Attendance Date Nep", width: 80},
                         {field: "IN_TIME", title: "Check In", width: 100},
                         {field: "OUT_TIME", title: "Check Out", width: 100},
                         {field: "A_STATUS", title: "Status", width: 100},

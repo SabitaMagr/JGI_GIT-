@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace Overtime\Repository;
 
@@ -78,7 +78,6 @@ class OvertimeAutomationRepository {
                       V_COMPULSORY_OVERTIME_ID NUMBER;
                       V_EARLY_OVERTIME_HR      NUMBER:={$earlyOvertimeHr};
                       V_LATE_OVERTIME_HR       NUMBER:={$lateOvertimeHr};
-                      V_START_DATE             DATE :=TO_DATE('{$startDate}','DD-MON-YYYY');
                       V_END_DATE               DATE :=TO_DATE('{$endDate}','DD-MON-YYYY');
                       V_EMPLOYEE_ID            NUMBER :={$employeeId};
                       V_STATUS                 CHAR(1 BYTE):='E';
