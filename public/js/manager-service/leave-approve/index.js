@@ -1,10 +1,10 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        
+
         console.log(document.leaveApprove);
 
-        $("#leaveApproveTable").kendoGrid({
+        var leaveGrid = $("#leaveApproveTable").kendoGrid({
             excel: {
                 fileName: "LeaveRequestList.xlsx",
                 filterable: true,
@@ -25,6 +25,11 @@
             dataBound: gridDataBound,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
+                {
+                    title: 'Select All',
+                    headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                    width: 80
+                },
                 {field: "FULL_NAME", title: "Employee", width: 200},
                 {field: "LEAVE_ENAME", title: "Leave", width: 120},
                 {field: "APPLIED_DATE", title: "Requested Date", width: 140},
@@ -35,10 +40,82 @@
                 {title: "Action", width: 70}
             ]
         });
-        
-        app.searchTable('leaveApproveTable',['FULL_NAME','LEAVE_ENAME','APPLIED_DATE','START_DATE','END_DATE','NO_OF_DAYS','YOUR_ROLE']);
-        
-         app.pdfExport(
+
+        var checkedIds = {};
+
+//        console.log(leaveGrid.table);
+        leaveGrid.on("click", ".k-checkbox", selectRow);
+//          leaveGrid.table.on("click", ".k-checkbox" , selectRow);
+
+//on click of the checkbox:
+        function selectRow() {
+            var checked = this.checked,
+                    row = $(this).closest("tr"),
+                    grid = $("#leaveApproveTable").data("kendoGrid"),
+                    dataItem = grid.dataItem(row);
+            checkedIds[dataItem.ID] = {
+                'checked': checked,
+                data: {
+                    'id': dataItem.ID,
+                    'role': dataItem.ROLE
+                }
+
+            }
+
+            if (checked) {
+                //-select the row
+                row.addClass("k-state-selected");
+            } else {
+                //-remove selection
+                row.removeClass("k-state-selected");
+            }
+        }
+
+
+
+        $('#header-chb').change(function (ev) {
+            var checked = ev.target.checked;
+            $('.row-checkbox').each(function (idx, item) {
+//                console.log($item);
+                if (checked) {
+                    if (!($(item).closest('tr').is('.k-state-selected'))) {
+                        $(item).click();
+                    }
+                } else {
+                    if ($(item).closest('tr').is('.k-state-selected')) {
+                        $(item).click();
+                    }
+                }
+            });
+        });
+
+        $(".btnApproveReject").bind("click", function () {
+            var btnId = $(this).attr('id');
+            var selectedValues = [];
+            for (var i in checkedIds) {
+                if (checkedIds[i].checked) {
+                    selectedValues.push(checkedIds[i].data);
+                }
+            }
+
+//            console.log(selectedValues);
+            app.pullDataById(
+                    document.approveRejectUrl,
+                    {data: selectedValues, btnAction: btnId}
+            ).then(function (success) {
+                console.log(success);
+            });
+
+        });
+
+
+
+
+
+
+        app.searchTable('leaveApproveTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'START_DATE', 'END_DATE', 'NO_OF_DAYS', 'YOUR_ROLE']);
+
+        app.pdfExport(
                 'leaveApproveTable',
                 {
                     'FULL_NAME': 'Name',
@@ -54,11 +131,11 @@
                     'RECOMMENDED_DATE': 'Recommended Date',
                     'APPROVED_REMARKS': 'Approved Remarks',
                     'APPROVED_DATE': 'Approved Date'
-                    
+
                 });
-                
-       
-        
+
+
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -85,7 +162,6 @@
                         {value: "Recommended Date"},
                         {value: "Remarks By Approver"},
                         {value: "Approved Date"},
-                        
                     ]
                 }];
             var dataSource = $("#leaveApproveTable").data("kendoGrid").dataSource;
@@ -110,7 +186,7 @@
                         {value: dataItem.END_DATE},
                         {value: dataItem.YOUR_ROLE},
                         {value: dataItem.NO_OF_DAYS},
-                        {value:  dataItem.STATUS},
+                        {value: dataItem.STATUS},
                         {value: dataItem.REMARKS},
                         {value: dataItem.RECOMMENDED_REMARKS},
                         {value: dataItem.RECOMMENDED_DT},
