@@ -1,4 +1,5 @@
 <?php
+
 namespace Notification\Model;
 
 use Zend\Mvc\Controller\Plugin\Url;
@@ -51,7 +52,7 @@ class NotificationModel {
                     if (isset($routeJson['route'])) {
                         $routeName = $routeJson['route'];
                         unset($routeJson['route']);
-                        $processedVariable = $url->fromRoute($routeName, $routeJson);
+                        $processedVariable = 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . $url->fromRoute($routeName, $routeJson);
                     } else {
                         $processedVariable = "";
                     }
@@ -78,7 +79,7 @@ class NotificationModel {
 //            if (is_string($processedVariable)) {
 //                return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedVariable . "'", $message);
 //            } else {
-                return str_replace($this->wrapWithLargeBracket($variable), $processedVariable, $message);
+            return str_replace($this->wrapWithLargeBracket($variable), $processedVariable, $message);
 //            }
         } else {
             return $message;
