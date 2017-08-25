@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Model\AttendanceDetail;
@@ -42,72 +43,7 @@ class TrainingApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        //print_r($this->employeeId); die();
-        $list = $this->trainingApproveRepository->getAllRequest($this->employeeId);
-
-        $trainingApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-
-        $getValueComType = function($trainingTypeId) {
-            if ($trainingTypeId == 'CC') {
-                return 'Company Contribution';
-            } else if ($trainingTypeId == 'CP') {
-                return 'Company Personal';
-            }
-        };
-
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            if ($row['TRAINING_ID'] != 0) {
-                $row['START_DATE'] = $row['T_START_DATE'];
-                $row['END_DATE'] = $row['T_END_DATE'];
-                $row['DURATION'] = $row['T_DURATION'];
-                $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
-                $row['TITLE'] = $row['TRAINING_NAME'];
-            }
-
-            $new_row = array_merge($row, [
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
-            ]);
-
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $new_row['YOUR_ROLE'] = 'Recommender\Approver';
-                $new_row['ROLE'] = 4;
-            }
-            array_push($trainingApprove, $new_row);
-        }
+       $trainingApprove=$this->getAllList();
         return Helper::addFlashMessagesToArray($this, ['trainingApprove' => $trainingApprove, 'id' => $this->employeeId]);
     }
 
@@ -281,6 +217,151 @@ class TrainingApproveController extends AbstractActionController {
             $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
         }
         return ['trainingKVList' => $trainingList, 'trainingList' => $allTrainings];
+    }
+
+    public function batchApproveRejectAction() {
+        $request = $this->getRequest();
+        try {
+            if (!$request->ispost()) {
+                throw new Exception('the request is not post');
+            }
+            $action;
+            $postData = $request->getPost()['data'];
+            $postBtnAction = $request->getPost()['btnAction'];
+            if ($postBtnAction == 'btnApprove') {
+                $action = 'Approve';
+            } elseif ($postBtnAction == 'btnReject') {
+                $action = 'Reject';
+            } else {
+                throw new Exception('no action defined');
+            }
+
+            if ($postData == null) {
+                throw new Exception('no selected rows');
+            } else {
+                $this->adapter->getDriver()->getConnection()->beginTransaction();
+                try {
+
+                    foreach ($postData as $data) {
+                        $id = $data['id'];
+                        $role = $data['role'];
+                        $trainingRequestModel = new TrainingRequest();
+//                        $detail = $this->trainingApproveRepository->fetchById($id);
+
+                        if ($role == 2) {
+                            $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            $trainingRequestModel->recommendedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $trainingRequestModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $trainingRequestModel->status = "RC";
+                            }
+                            $this->trainingApproveRepository->edit($trainingRequestModel, $id);
+                            $trainingRequestModel->requestId = $id;
+                            try {
+                                HeadNotification::pushNotification(($trainingRequestModel->status == 'RC') ? NotificationEvents::TRAINING_RECOMMEND_ACCEPTED : NotificationEvents::TRAINING_RECOMMEND_REJECTED, $trainingRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $trainingRequestModel->approvedDate = Helper::getcurrentExpressionDate();
+                            $trainingRequestModel->approvedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $trainingRequestModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $trainingRequestModel->status = "AP";
+                            }
+                            if ($role == 4) {
+                                $trainingRequestModel->recommendedBy = $this->employeeId;
+                                $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            }
+                            $this->trainingApproveRepository->edit($trainingRequestModel, $id);
+                            $trainingRequestModel->requestId = $id;
+                            try {
+                                HeadNotification::pushNotification(($trainingRequestModel->status == 'AP') ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED, $trainingRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                            }
+                        }
+                    }
+                    $this->adapter->getDriver()->getConnection()->commit();
+                } catch (Exception $ex) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
+                }
+            }
+            $listData = $this->getAllList();
+            return new CustomViewModel(['success' => true, 'data' => $listData]);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getAllList() {
+        $list = $this->trainingApproveRepository->getAllRequest($this->employeeId);
+
+        $trainingApprove = [];
+        $getValue = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($this->employeeId == $approver) {
+                return 'APPROVER';
+            }
+        };
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+
+        $getValueComType = function($trainingTypeId) {
+            if ($trainingTypeId == 'CC') {
+                return 'Company Contribution';
+            } else if ($trainingTypeId == 'CP') {
+                return 'Company Personal';
+            }
+        };
+
+        $getRole = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 2;
+            } else if ($this->employeeId == $approver) {
+                return 3;
+            }
+        };
+        foreach ($list as $row) {
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+
+            if ($row['TRAINING_ID'] != 0) {
+                $row['START_DATE'] = $row['T_START_DATE'];
+                $row['END_DATE'] = $row['T_END_DATE'];
+                $row['DURATION'] = $row['T_DURATION'];
+                $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
+                $row['TITLE'] = $row['TRAINING_NAME'];
+            }
+
+            $new_row = array_merge($row, [
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
+                'STATUS' => $getStatusValue($row['STATUS']),
+                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
+            ]);
+
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $new_row['YOUR_ROLE'] = 'Recommender\Approver';
+                $new_row['ROLE'] = 4;
+            }
+            array_push($trainingApprove, $new_row);
+        }
+
+        return $trainingApprove;
     }
 
 }

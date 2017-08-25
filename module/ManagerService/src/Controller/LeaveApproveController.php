@@ -237,67 +237,70 @@ class LeaveApproveController extends AbstractActionController {
                 throw new Exception('no selected rows');
             } else {
 //                print_r($action);
-                foreach ($postData as $data) {
-                    $leaveApply = new LeaveApply();
-                    $id = $data['id'];
-                    $role = $data['role'];
+                $this->adapter->getDriver()->getConnection()->beginTransaction();
 
-                    $detail = $this->repository->fetchById($id);
-                    $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+                try {
+                    foreach ($postData as $data) {
+                        $leaveApply = new LeaveApply();
+                        $id = $data['id'];
+                        $role = $data['role'];
 
-                    if ($role == 2) {
-                        $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
-                        if ($action == "Reject") {
-                            $leaveApply->status = "R";
-                            $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
-                        } else if ($action == "Approve") {
-                            $leaveApply->status = "RC";
-                            $this->flashmessenger()->addMessage("Leave Request Approved!!!");
-                        }
-                        $leaveApply->recommendedBy = $this->employeeId;
-//                        $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
-                        $this->repository->edit($leaveApply, $id);
+                        $detail = $this->repository->fetchById($id);
+                        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
 
-                        $leaveApply->id = $id;
-                        $leaveApply->employeeId = $requestedEmployeeID;
-                        $leaveApply->approvedBy = $detail['APPROVER'];
-//                        try {
-                        if ($leaveApply->status == 'RC') {
-                            HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
-                        } else {
-                            HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
-                        }
-//                        } catch (Exception $e) {
-//                            $this->flashmessenger()->addMessage($e->getMessage());
-//                        }
-                    } else if ($role == 3 || $role == 4) {
-                        $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
-                        if ($action == "Reject") {
-                            $leaveApply->status = "R";
-//                            $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
-                        } else if ($action == "Approve") {
-                            $leaveApply->status = "AP";
-//                            $this->flashmessenger()->addMessage("Leave Request Approved");
-                        }
-                        unset($leaveApply->halfDay);
-                        $leaveApply->approvedBy = $this->employeeId;
-                        // $leaveApply->approvedRemarks = $getData->approvedRemarks;
-
-                        if ($role == 4) {
-                            $leaveApply->recommendedBy = $this->employeeId;
+                        if ($role == 2) {
                             $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
+                            if ($action == "Reject") {
+                                $leaveApply->status = "R";
+                            } else if ($action == "Approve") {
+                                $leaveApply->status = "RC";
+                            }
+                            $leaveApply->recommendedBy = $this->employeeId;
+//                        $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
+                            $this->repository->edit($leaveApply, $id);
+
+
+                            $leaveApply->id = $id;
+                            $leaveApply->employeeId = $requestedEmployeeID;
+                            $leaveApply->approvedBy = $detail['APPROVER'];
+
+                            try {
+                                if ($leaveApply->status == 'RC') {
+                                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
+                                } else {
+                                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
+                                }
+                            } catch (Exception $e) {
+                                
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
+                            if ($action == "Reject") {
+                                $leaveApply->status = "R";
+                            } else if ($action == "Approve") {
+                                $leaveApply->status = "AP";
+                            }
+                            unset($leaveApply->halfDay);
+                            $leaveApply->approvedBy = $this->employeeId;
+                            // $leaveApply->approvedRemarks = $getData->approvedRemarks;
+
+                            if ($role == 4) {
+                                $leaveApply->recommendedBy = $this->employeeId;
+                                $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
+                            }
+                            $this->repository->edit($leaveApply, $id);
+                            $leaveApply->id = $id;
+                            $leaveApply->employeeId = $requestedEmployeeID;
+                            try {
+                                HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                
+                            }
                         }
-                        $this->repository->edit($leaveApply, $id);
-
-                        $leaveApply->id = $id;
-                        $leaveApply->employeeId = $requestedEmployeeID;
-
-//                        try {
-                        HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
-//                        } catch (Exception $e) {
-//                            $this->flashmessenger()->addMessage($e->getMessage());
-//                        }
                     }
+                    $this->adapter->getDriver()->getConnection()->commit();
+                } catch (Exception $ex) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
                 }
             }
             $listData = $this->getAllList();

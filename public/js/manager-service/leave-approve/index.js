@@ -113,11 +113,13 @@
             ).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 console.log(success);
-                if (success.false == true) {
+                if (success.success == true) {
                     var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
                     var grid = $('#leaveApproveTable').data("kendoGrid");
                     dataSource.read();
-                    grid.setDataSource(dataSource)
+                    grid.setDataSource(dataSource);
+                    checkedIds = {};
+                    $('#acceptRejectDiv').hide();
                 }
 
             }, function (failure) {

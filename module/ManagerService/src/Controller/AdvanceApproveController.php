@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -40,65 +41,7 @@ class AdvanceApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        //print_r($this->employeeId); die();
-        $list = $this->advanceApproveRepository->getAllRequest($this->employeeId);
-
-        $advanceApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'ADVANCE_DATE' => $row['ADVANCE_DATE'],
-                'REQUESTED_AMOUNT' => $row['REQUESTED_AMOUNT'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REASON' => $row['REASON'],
-                'TERMS' => $row['TERMS'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'ADVANCE_NAME' => $row['ADVANCE_NAME'],
-                'ADVANCE_REQUEST_ID' => $row['ADVANCE_REQUEST_ID'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-
-            array_push($advanceApprove, $dataArray);
-        }
+        $advanceApprove = $this->getAllList();
         //print_r($advanceApprove); die();
         return Helper::addFlashMessagesToArray($this, ['advanceApprove' => $advanceApprove, 'id' => $this->employeeId]);
     }
@@ -230,6 +173,147 @@ class AdvanceApproveController extends AbstractActionController {
                     'recomApproveId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
+    }
+
+    public function batchApproveRejectAction() {
+        $request = $this->getRequest();
+        try {
+            if (!$request->ispost()) {
+                throw new Exception('the request is not post');
+            }
+            $action;
+            $postData = $request->getPost()['data'];
+            $postBtnAction = $request->getPost()['btnAction'];
+            if ($postBtnAction == 'btnApprove') {
+                $action = 'Approve';
+            } elseif ($postBtnAction == 'btnReject') {
+                $action = 'Reject';
+            } else {
+                throw new Exception('no action defined');
+            }
+
+            if ($postData == null) {
+                throw new Exception('no selected rows');
+            } else {
+                $this->adapter->getDriver()->getConnection()->beginTransaction();
+                try {
+
+                    foreach ($postData as $data) {
+                        $advanceRequestModel = new AdvanceRequest();
+                        $id = $data['id'];
+                        $role = $data['role'];
+
+                        if ($role == 2) {
+                            $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            $advanceRequestModel->recommendedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $advanceRequestModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $advanceRequestModel->status = "RC";
+                            }
+                            $this->advanceApproveRepository->edit($advanceRequestModel, $id);
+
+                            try {
+                                $advanceRequestModel->advanceRequestId = $id;
+                                HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                $this->flashmessenger()->addMessage($e->getMessage());
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
+                            $advanceRequestModel->approvedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $advanceRequestModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $advanceRequestModel->status = "AP";
+                            }
+                            if ($role == 4) {
+                                $advanceRequestModel->recommendedBy = $this->employeeId;
+                                $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            }
+                            $this->advanceApproveRepository->edit($advanceRequestModel, $id);
+
+                            try {
+                                $advanceRequestModel->advanceRequestId = $id;
+                                HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                $this->flashmessenger()->addMessage($e->getMessage());
+                            }
+                        }
+                    }
+                    $this->adapter->getDriver()->getConnection()->commit();
+                } catch (Exception $ex) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
+                }
+            }
+            $listData = $this->getAllList();
+            return new CustomViewModel(['success' => true, 'data' => $listData]);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getAllList() {
+        //print_r($this->employeeId); die();
+        $list = $this->advanceApproveRepository->getAllRequest($this->employeeId);
+
+        $advanceApprove = [];
+        $getValue = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($this->employeeId == $approver) {
+                return 'APPROVER';
+            }
+        };
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        $getRole = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 2;
+            } else if ($this->employeeId == $approver) {
+                return 3;
+            }
+        };
+        foreach ($list as $row) {
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+
+            $dataArray = [
+                'FULL_NAME' => $row['FULL_NAME'],
+                'FIRST_NAME' => $row['FIRST_NAME'],
+                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
+                'LAST_NAME' => $row['LAST_NAME'],
+                'ADVANCE_DATE' => $row['ADVANCE_DATE'],
+                'REQUESTED_AMOUNT' => $row['REQUESTED_AMOUNT'],
+                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
+                'REASON' => $row['REASON'],
+                'TERMS' => $row['TERMS'],
+                'STATUS' => $getStatusValue($row['STATUS']),
+                'ADVANCE_NAME' => $row['ADVANCE_NAME'],
+                'ADVANCE_REQUEST_ID' => $row['ADVANCE_REQUEST_ID'],
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
+            ];
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
+            }
+
+            array_push($advanceApprove, $dataArray);
+        }
+        return $advanceApprove;
     }
 
 }
