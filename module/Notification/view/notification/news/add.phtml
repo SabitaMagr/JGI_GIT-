@@ -1,7 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
- 
+
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
@@ -144,7 +144,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-3">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
-                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($companyId); ?>
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
                         </div>
