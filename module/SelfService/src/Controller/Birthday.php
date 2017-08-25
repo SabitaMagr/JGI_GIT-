@@ -28,30 +28,30 @@ class Birthday extends AbstractActionController {
     public function indexAction() {
         $birthdays = $this->repository->getBirthdays();
         
-        $testArr = array(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-        1000370 => array(
-        'EMPLOYEE_ID' => 1000370,
-        'FULL_NAME' => 'Somkala Pachhai',
-        'DESIGNATION_TITLE' => 'Php Developer',
-        'FILE_PATH' => '1499430267.jpg',
-        'BIRTH_DATE' => '12-NOV-94',
-        'EMP_BIRTH_DATE' => '12th November',
-        'BIRTHDAYFOR' => 'TODAY'
-        ),
-             102 => array(
-        'EMPLOYEE_ID' => 102,
-        'FULL_NAME' => 'Abbey  Mathew',
-        'DESIGNATION_TITLE' => 'DotNet Developer',
-        'FILE_PATH' => '',
-        'BIRTH_DATE' => '27-NOV-86',
-        'EMP_BIRTH_DATE' => '27th November',
-        'BIRTHDAYFOR' => 'TODAY'
-        )
-
-        );
-
-        $birthdays['TODAY'] = $testArr;
-
+//        $testArr = array(                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+//        1000370 => array(
+//        'EMPLOYEE_ID' => 1000370,
+//        'FULL_NAME' => 'Somkala Pachhai',
+//        'DESIGNATION_TITLE' => 'Php Developer',
+//        'FILE_PATH' => '1499430267.jpg',
+//        'BIRTH_DATE' => '12-NOV-94',
+//        'EMP_BIRTH_DATE' => '12th November',
+//        'BIRTHDAYFOR' => 'TODAY'
+//        ),
+//             102 => array(
+//        'EMPLOYEE_ID' => 102,
+//        'FULL_NAME' => 'Abbey  Mathew',
+//        'DESIGNATION_TITLE' => 'DotNet Developer',
+//        'FILE_PATH' => '',
+//        'BIRTH_DATE' => '27-NOV-86',
+//        'EMP_BIRTH_DATE' => '27th November',
+//        'BIRTHDAYFOR' => 'TODAY'
+//        )
+//
+//        );
+//
+//        $birthdays['TODAY'] = $testArr;
+//
 
        
 //        $birthdays = ['test' => 'Happy Birthday'];
@@ -98,11 +98,24 @@ class Birthday extends AbstractActionController {
                
         }
         
+        $messagePosted=$this->repository->checkMessagePosted($this->employeeId,$id);
+//        print_r($messagePosted['C']);
+//        die();
+                
+        
+        
         
         $showMessageField=true;
         if($empDetails['EMPLOYEE_ID']==$this->employeeId){
         $showMessageField=false;
         }
+        if($messagePosted['C']>0){
+        $showMessageField=false;
+        }
+        
+       
+        
+   
         
 
         
@@ -110,7 +123,8 @@ class Birthday extends AbstractActionController {
                     'brithdayEmpDtl' => $empDetails,
                     'birthdayMessage'=>$birthdayMessage,
                     'showMessageField'=>$showMessageField,
-                    'messageSent'
+                    'checkMessagePosted'=>$checkMessagePosted,
+                    
                               
         ]);
     }

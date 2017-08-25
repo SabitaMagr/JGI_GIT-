@@ -7,13 +7,13 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
 class BirthdayRepository {
-    
+
     private $tableGateway;
     private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway(BirthdayModel::TABLE_NAME,$adapter);
+        $this->tableGateway = new TableGateway(BirthdayModel::TABLE_NAME, $adapter);
     }
 
     public function getBirthdays() {
@@ -53,7 +53,7 @@ class BirthdayRepository {
                 ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-         $birthdayResult = array();
+        $birthdayResult = array();
         foreach ($result as $rs) {
             if ('TODAY' == strtoupper($rs['BIRTHDAYFOR'])) {
                 $birthdayResult['TODAY'][$rs['EMPLOYEE_ID']] = $rs;
@@ -65,38 +65,36 @@ class BirthdayRepository {
 
         return $birthdayResult;
     }
-    
-    public function add($model){
-          $this->tableGateway->insert($model->getArrayCopyForDB());
+
+    public function add($model) {
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
-    
-    public function getBirthdayMessage($BirthdayEmployee=null){
-        $sql ="SELECT E.FULL_NAME AS FROM_EMPLOYEE_NAME,EF.FILE_PATH,BM.* FROM HRIS_BIRTHDAY_MESSAGES BM"
+
+    public function getBirthdayMessage($BirthdayEmployee = null) {
+        $sql = "SELECT E.FULL_NAME AS FROM_EMPLOYEE_NAME,EF.FILE_PATH,BM.* FROM HRIS_BIRTHDAY_MESSAGES BM"
                 . " LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=BM.FROM_EMPLOYEE)"
                 . "LEFT JOIN HRIS_EMPLOYEE_FILE EF ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)";
-                
-                   
-        
-        
-        if($BirthdayEmployee){
-            
-            $sql.="WHERE BM.TO_EMPLOYEE=$BirthdayEmployee";
-            
 
-            
+        if ($BirthdayEmployee) {
+            $sql .= "WHERE BM.TO_EMPLOYEE=$BirthdayEmployee";
         }
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        
-        $list=[];
-        
-        foreach ($result as $data){
+
+        $list = [];
+
+        foreach ($result as $data) {
             array_push($list, $data);
         }
         return $list;
     }
 
-       
+    public function checkMessagePosted($fromEmployee, $toEmployee) {
+        $sql = "SELECT count(*) as c FROM HRIS_BIRTHDAY_MESSAGES WHERE FROM_EMPLOYEE=$fromEmployee "
+                . "AND TO_EMPLOYEE=$toEmployee AND CREATED_DT=TRUNC(SYSDATE)";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
     }
 
-
+}
