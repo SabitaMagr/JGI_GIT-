@@ -15,8 +15,9 @@ $this->headScript()
 ?>
 
 <script>
+    document.approveRejectUrl = '<?php echo $this->url('dayoffWorkApprove', ['action' => 'batchApproveReject']); ?>';
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.dayoffWorkRequest =<?php echo json_encode($dayoffWorkRequest); ?>
+    document.dayoffWorkRequest =<?php echo json_encode($dayoffWorkRequest); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\dayoffWorkApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -60,6 +61,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
+        
+        <div style="display: none;" class="row" id="acceptRejectDiv" >
+            <div class="col-sm-2">
+                <button id="btnApprove" class="btn btn-success btnApproveReject">Approve</button>
+            </div>
+            <div class="col-sm-2 ">
+                <button id="btnReject" class="btn btn-success btnApproveReject">Reject</button>
+            </div>
+        </div>
 
     <div id="dayoffWorkApproveTable">
     </div>
@@ -69,6 +79,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
+        <td>
+        <input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>    
+        </td>
         <td>
         #: (FULL_NAME == null) ? ' ' : FULL_NAME #
         </td>

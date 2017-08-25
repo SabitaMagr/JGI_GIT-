@@ -864,11 +864,11 @@ return [
         ],
         'birthday' => [
             [
-                'label' => 'Birthday',
+                'label' => 'Birthdays',
                 'route' => 'birthday',
             ],
             [
-                'label' => 'Birthday',
+                'label' => 'Birthdays',
                 'route' => 'birthday',
                 'pages' => [
                     [

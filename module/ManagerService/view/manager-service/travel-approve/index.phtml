@@ -15,6 +15,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
+    
+<script>
+    document.approveRejectUrl = '<?php echo $this->url('travelApprove', ['action' => 'batchApproveReject']); ?>';
+</script>
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
@@ -59,6 +63,15 @@ $this->headScript()
                 </div>
             </div>
         </div>
+        
+        <div style="display: none;" class="row" id="acceptRejectDiv" >
+            <div class="col-sm-2">
+                <button id="btnApprove" class="btn btn-success btnApproveReject">Approve</button>
+            </div>
+            <div class="col-sm-2 ">
+                <button id="btnReject" class="btn btn-success btnApproveReject">Reject</button>
+            </div>
+        </div>
 
     <div id="travelApproveTable">
     </div>
@@ -67,6 +80,9 @@ $this->headScript()
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
+        <td>
+        <input type='checkbox' id='#:TRAVEL_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:TRAVEL_ID#'></label>    
+        </td>
         <td>
         #: (FULL_NAME == null) ? ' ' : FULL_NAME #
         </td>

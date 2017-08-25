@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -41,68 +42,7 @@ class OvertimeApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->overtimeApproveRepository->getAllRequest($this->employeeId);
-
-        $overtimeRequest = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'OVERTIME_DATE' => $row['OVERTIME_DATE'],
-                'DESCRIPTION' => $row['DESCRIPTION'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REMARKS' => $row['REMARKS'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'OVERTIME_ID' => $row['OVERTIME_ID'],
-                'TOTAL_HOUR' => $row['TOTAL_HOUR'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-            $overtimeDetailResult = $this->overtimeDetailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
-            $overtimeDetails = [];
-            foreach ($overtimeDetailResult as $overtimeDetailRow) {
-                array_push($overtimeDetails, $overtimeDetailRow);
-            }
-            $dataArray['DETAILS'] = $overtimeDetails;
-            array_push($overtimeRequest, $dataArray);
-        }
+        $overtimeRequest = $this->getAllList();
         return Helper::addFlashMessagesToArray($this, ['overtimeRequest' => $overtimeRequest, 'id' => $this->employeeId]);
     }
 
@@ -228,6 +168,148 @@ class OvertimeApproveController extends AbstractActionController {
                     'recomApproveId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
+    }
+
+    public function batchApproveRejectAction() {
+        $request = $this->getRequest();
+        try {
+            if (!$request->ispost()) {
+                throw new Exception('the request is not post');
+            }
+            $action;
+            $postData = $request->getPost()['data'];
+            $postBtnAction = $request->getPost()['btnAction'];
+            if ($postBtnAction == 'btnApprove') {
+                $action = 'Approve';
+            } elseif ($postBtnAction == 'btnReject') {
+                $action = 'Reject';
+            } else {
+                throw new Exception('no action defined');
+            }
+
+            if ($postData == null) {
+                throw new Exception('no selected rows');
+            } else {
+                $this->adapter->getDriver()->getConnection()->beginTransaction();
+                try {
+
+                    foreach ($postData as $data) {
+                        $overtimeModel = new Overtime();
+                        $id = $data['id'];
+                        $role = $data['role'];
+
+                        if ($role == 2) {
+                            $overtimeModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            $overtimeModel->recommendedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $overtimeModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $overtimeModel->status = "RC";
+                            }
+                            $this->overtimeApproveRepository->edit($overtimeModel, $id);
+                            try {
+                                $overtimeModel->overtimeId = $id;
+                                HeadNotification::pushNotification(($overtimeModel->status == 'RC') ? NotificationEvents::OVERTIME_RECOMMEND_ACCEPTED : NotificationEvents::OVERTIME_RECOMMEND_REJECTED, $overtimeModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                $this->flashmessenger()->addMessage($e->getMessage());
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $overtimeModel->approvedDate = Helper::getcurrentExpressionDate();
+                            $overtimeModel->approvedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $overtimeModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $overtimeModel->status = "AP";
+                            }
+                            if ($role == 4) {
+                                $overtimeModel->recommendedBy = $this->employeeId;
+                                $overtimeModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            }
+                            $this->overtimeApproveRepository->edit($overtimeModel, $id);
+                            try {
+                                $overtimeModel->overtimeId = $id;
+                                HeadNotification::pushNotification(($overtimeModel->status == 'AP') ? NotificationEvents::OVERTIME_APPROVE_ACCEPTED : NotificationEvents::OVERTIME_APPROVE_REJECTED, $overtimeModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                $this->flashmessenger()->addMessage($e->getMessage());
+                            }
+                        }
+                    }
+                    $this->adapter->getDriver()->getConnection()->commit();
+                } catch (Exception $ex) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
+                }
+            }
+            $listData = $this->getAllList();
+            return new CustomViewModel(['success' => true, 'data' => $listData]);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getAllList() {
+        $list = $this->overtimeApproveRepository->getAllRequest($this->employeeId);
+
+        $overtimeRequest = [];
+        $getValue = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($this->employeeId == $approver) {
+                return 'APPROVER';
+            }
+        };
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        $getRole = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 2;
+            } else if ($this->employeeId == $approver) {
+                return 3;
+            }
+        };
+        foreach ($list as $row) {
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+
+            $dataArray = [
+                'FULL_NAME' => $row['FULL_NAME'],
+                'FIRST_NAME' => $row['FIRST_NAME'],
+                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
+                'LAST_NAME' => $row['LAST_NAME'],
+                'OVERTIME_DATE' => $row['OVERTIME_DATE'],
+                'DESCRIPTION' => $row['DESCRIPTION'],
+                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
+                'REMARKS' => $row['REMARKS'],
+                'STATUS' => $getStatusValue($row['STATUS']),
+                'OVERTIME_ID' => $row['OVERTIME_ID'],
+                'TOTAL_HOUR' => $row['TOTAL_HOUR'],
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
+            ];
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
+            }
+            $overtimeDetailResult = $this->overtimeDetailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
+            $overtimeDetails = [];
+            foreach ($overtimeDetailResult as $overtimeDetailRow) {
+                array_push($overtimeDetails, $overtimeDetailRow);
+            }
+            $dataArray['DETAILS'] = $overtimeDetails;
+            array_push($overtimeRequest, $dataArray);
+        }
+        return $overtimeRequest;
     }
 
 }

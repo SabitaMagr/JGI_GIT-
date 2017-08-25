@@ -62,7 +62,12 @@ class NotificationController extends AbstractActionController {
         $response = [];
         if ($request->isPost()) {
             $postedData = $request->getPost();
-            $this->editNotificationStatus($postedData['messageId']);
+            if (isset($postedData['messageId'])) {
+                $this->editNotificationStatus($postedData['messageId']);
+            } else {
+                $this->editNotificationStatusForEmployee($this->employeeId);
+            }
+
             $response = ["success" => true];
         } else {
             $response = ["success" => false];
@@ -74,6 +79,12 @@ class NotificationController extends AbstractActionController {
         $notiObj = new Notification();
         $notiObj->status = 'S';
         $this->notiRepo->edit($notiObj, $id);
+    }
+
+    private function editNotificationStatusForEmployee($id) {
+        $notiObj = new Notification();
+        $notiObj->status = 'S';
+        $this->notiRepo->editByEmployeeId($notiObj, $id);
     }
 
 }

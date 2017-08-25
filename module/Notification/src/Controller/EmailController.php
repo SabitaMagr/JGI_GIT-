@@ -116,7 +116,7 @@ class EmailController extends AbstractActionController {
 
         $overtimeNotiModel = new OvertimeReqNotificationModel();
         $overtimeNotiModelOA = $overtimeNotiModel->getObjectAttrs();
-        
+
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -198,15 +198,19 @@ class EmailController extends AbstractActionController {
             $template->description = preg_replace('#([a-z0-9\\-]) {2,}([a-z0-9\\-])#i', '\\1 \\2', $postedData['description']);
 
             $cc = [];
-            foreach ($postedData['ccEmail'] as $key => $ccEmail) {
-                if (isset($ccEmail) && strlen($ccEmail) > 0) {
-                    array_push($cc, ['email' => $ccEmail, 'name' => $postedData['ccName'][$key]]);
+            if (isset($postedData['ccEmail'])) {
+                foreach ($postedData['ccEmail'] as $key => $ccEmail) {
+                    if (isset($ccEmail) && strlen($ccEmail) > 0) {
+                        array_push($cc, ['email' => $ccEmail, 'name' => $postedData['ccName'][$key]]);
+                    }
                 }
             }
             $bcc = [];
-            foreach ($postedData['bccEmail'] as $key => $bccEmail) {
-                if (isset($bccEmail) && strlen($bccEmail) > 0) {
-                    array_push($bcc, ['email' => $bccEmail, 'name' => $postedData['bccName'][$key]]);
+            if (isset($postedData['bccEmail'])) {
+                foreach ($postedData['bccEmail'] as $key => $bccEmail) {
+                    if (isset($bccEmail) && strlen($bccEmail) > 0) {
+                        array_push($bcc, ['email' => $bccEmail, 'name' => $postedData['bccName'][$key]]);
+                    }
                 }
             }
 

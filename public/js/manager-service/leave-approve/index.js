@@ -3,7 +3,6 @@
     $(document).ready(function () {
 
         console.log(document.leaveApprove);
-
         var leaveGrid = $("#leaveApproveTable").kendoGrid({
             excel: {
                 fileName: "LeaveRequestList.xlsx",
@@ -40,14 +39,14 @@
                 {title: "Action", width: 70}
             ]
         });
-
         var checkedIds = {};
-
 //        console.log(leaveGrid.table);
         leaveGrid.on("click", ".k-checkbox", selectRow);
 //          leaveGrid.table.on("click", ".k-checkbox" , selectRow);
 
 //on click of the checkbox:
+
+
         function selectRow() {
             var checked = this.checked,
                     row = $(this).closest("tr"),
@@ -61,13 +60,22 @@
                 }
 
             }
-
             if (checked) {
                 //-select the row
                 row.addClass("k-state-selected");
             } else {
                 //-remove selection
                 row.removeClass("k-state-selected");
+            }
+
+            var checkedNo = $('.k-state-selected').length;
+            if (checkedNo > 0) {
+                $('#acceptRejectDiv').show();
+                if ($('#header-chb').prop('checked') == 1 && checkedNo == 1) {
+                    $('#acceptRejectDiv').hide();
+                }
+            } else {
+                $('#acceptRejectDiv').hide();
             }
         }
 
@@ -88,7 +96,6 @@
                 }
             });
         });
-
         $(".btnApproveReject").bind("click", function () {
             var btnId = $(this).attr('id');
             var selectedValues = [];
@@ -99,22 +106,28 @@
             }
 
 //            console.log(selectedValues);
+            App.blockUI({target: "#hris-page-content"});
             app.pullDataById(
                     document.approveRejectUrl,
                     {data: selectedValues, btnAction: btnId}
             ).then(function (success) {
+                App.unblockUI("#hris-page-content");
                 console.log(success);
+                if (success.success == true) {
+                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
+                    var grid = $('#leaveApproveTable').data("kendoGrid");
+                    dataSource.read();
+                    grid.setDataSource(dataSource);
+                    checkedIds = {};
+                    $('#acceptRejectDiv').hide();
+                }
+
+            }, function (failure) {
+                App.unblockUI("#hris-page-content");
+                console.log(failure);
             });
-
         });
-
-
-
-
-
-
         app.searchTable('leaveApproveTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'START_DATE', 'END_DATE', 'NO_OF_DAYS', 'YOUR_ROLE']);
-
         app.pdfExport(
                 'leaveApproveTable',
                 {
@@ -133,9 +146,6 @@
                     'APPROVED_DATE': 'Approved Date'
 
                 });
-
-
-
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -169,14 +179,11 @@
                 data: dataSource.data(),
                 filter: dataSource.filter()
             });
-
             filteredDataSource.read();
             var data = filteredDataSource.view();
-
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
                 var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
-
                 rows.push({
                     cells: [
                         {value: dataItem.FULL_NAME},
@@ -198,7 +205,6 @@
             excelExport(rows);
             e.preventDefault();
         });
-
         function excelExport(rows) {
             var workbook = new kendo.ooxml.Workbook({
                 sheets: [

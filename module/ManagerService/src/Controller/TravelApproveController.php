@@ -2,12 +2,10 @@
 
 namespace ManagerService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\NumberHelper;
-use AttendanceManagement\Model\AttendanceDetail;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
-use DateTime;
 use Exception;
 use ManagerService\Repository\TravelApproveRepository;
 use Notification\Controller\HeadNotification;
@@ -45,73 +43,7 @@ class TravelApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->travelApproveRepository->getAllRequest($this->employeeId);
-
-        $travelApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        $getRequestedType = function($requestedType) {
-            if ($requestedType == 'ad') {
-                return 'Advance';
-            } else if ($requestedType == 'ep') {
-                return 'Expense';
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'FROM_DATE' => $row['FROM_DATE'],
-                'TO_DATE' => $row['TO_DATE'],
-                'DESTINATION' => $row['DESTINATION'],
-                'PURPOSE' => $row['PURPOSE'],
-                'REQUESTED_TYPE' => $getRequestedType($row['REQUESTED_TYPE']),
-                'REQUESTED_AMOUNT' => $row['REQUESTED_AMOUNT'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REMARKS' => $row['REMARKS'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'TRAVEL_ID' => $row['TRAVEL_ID'],
-                'TRAVEL_CODE' => $row['TRAVEL_CODE'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-            array_push($travelApprove, $dataArray);
-        }
+        $travelApprove = $this->getAllList();
         return Helper::addFlashMessagesToArray($this, ['travelApprove' => $travelApprove, 'id' => $this->employeeId]);
     }
 
@@ -187,7 +119,7 @@ class TravelApproveController extends AbstractActionController {
                 $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
                 $this->travelApproveRepository->edit($travelRequestModel, $id);
                 $travelRequestModel->travelId = $id;
-                
+
                 // to update back date changes
 //                $sDate = $detail['FROM_DATE'];
 //                $eDate = $detail['TO_DATE'];
@@ -197,7 +129,6 @@ class TravelApproveController extends AbstractActionController {
 //                $attendanceDetailModel = new AttendanceDetail();
 //                $attendanceDetailModel->travelId = $detail['TRAVEL_ID'];
 //                $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-
                 //                start of transaction
 //                $connection = $this->adapter->getDriver()->getConnection();
 //                $connection->beginTransaction();
@@ -403,6 +334,157 @@ class TravelApproveController extends AbstractActionController {
                     'recomApproveId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
+    }
+
+    public function batchApproveRejectAction() {
+        $request = $this->getRequest();
+        try {
+            if (!$request->ispost()) {
+                throw new Exception('the request is not post');
+            }
+            $action;
+            $postData = $request->getPost()['data'];
+            $postBtnAction = $request->getPost()['btnAction'];
+            if ($postBtnAction == 'btnApprove') {
+                $action = 'Approve';
+            } elseif ($postBtnAction == 'btnReject') {
+                $action = 'Reject';
+            } else {
+                throw new Exception('no action defined');
+            }
+
+            if ($postData == null) {
+                throw new Exception('no selected rows');
+            } else {
+                $this->adapter->getDriver()->getConnection()->beginTransaction();
+                try {
+
+                    foreach ($postData as $data) {
+                        $travelRequestModel = new TravelRequest();
+                        $id = $data['id'];
+                        $role = $data['role'];
+                        $detail = $this->travelApproveRepository->fetchById($id);
+
+                        if ($role == 2) {
+                            $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            $travelRequestModel->recommendedBy = (int) $this->employeeId;
+                            if ($action == "Reject") {
+                                $travelRequestModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $travelRequestModel->status = "RC";
+                            }
+                            $this->travelApproveRepository->edit($travelRequestModel, $id);
+                            $travelRequestModel->travelId = $id;
+                            try {
+                                HeadNotification::pushNotification(($travelRequestModel->status == 'RC') ? NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED : NotificationEvents::TRAVEL_RECOMMEND_REJECTED, $travelRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $travelRequestModel->approvedDate = Helper::getcurrentExpressionDate();
+                            $travelRequestModel->approvedBy = (int) $this->employeeId;
+                            if ($action == "Reject") {
+                                $travelRequestModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $travelRequestModel->status = "AP";
+                            }
+                            if ($role == 4) {
+                                $travelRequestModel->recommendedBy = $this->employeeId;
+                                $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            }
+
+                            $this->travelApproveRepository->edit($travelRequestModel, $id);
+                            $travelRequestModel->travelId = $id;
+
+
+                            try {
+                                HeadNotification::pushNotification(($travelRequestModel->status == 'AP') ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED, $travelRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                
+                            }
+                        }
+                    }
+                    $this->adapter->getDriver()->getConnection()->commit();
+                } catch (Exception $ex) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
+                }
+            }
+            $listData = $this->getAllList();
+            return new CustomViewModel(['success' => true, 'data' => $listData]);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getAllList() {
+        $list = $this->travelApproveRepository->getAllRequest($this->employeeId);
+
+        $travelApprove = [];
+        $getValue = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($this->employeeId == $approver) {
+                return 'APPROVER';
+            }
+        };
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        $getRole = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 2;
+            } else if ($this->employeeId == $approver) {
+                return 3;
+            }
+        };
+        $getRequestedType = function($requestedType) {
+            if ($requestedType == 'ad') {
+                return 'Advance';
+            } else if ($requestedType == 'ep') {
+                return 'Expense';
+            }
+        };
+        foreach ($list as $row) {
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+
+            $dataArray = [
+                'FULL_NAME' => $row['FULL_NAME'],
+                'FIRST_NAME' => $row['FIRST_NAME'],
+                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
+                'LAST_NAME' => $row['LAST_NAME'],
+                'FROM_DATE' => $row['FROM_DATE'],
+                'TO_DATE' => $row['TO_DATE'],
+                'DESTINATION' => $row['DESTINATION'],
+                'PURPOSE' => $row['PURPOSE'],
+                'REQUESTED_TYPE' => $getRequestedType($row['REQUESTED_TYPE']),
+                'REQUESTED_AMOUNT' => $row['REQUESTED_AMOUNT'],
+                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
+                'REMARKS' => $row['REMARKS'],
+                'STATUS' => $getStatusValue($row['STATUS']),
+                'TRAVEL_ID' => $row['TRAVEL_ID'],
+                'TRAVEL_CODE' => $row['TRAVEL_CODE'],
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
+            ];
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
+            }
+            array_push($travelApprove, $dataArray);
+        }
+        return $travelApprove;
     }
 
 }

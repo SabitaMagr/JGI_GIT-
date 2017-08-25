@@ -420,7 +420,8 @@ class TravelRequest extends AbstractActionController {
                     'todayDate' => date('d-M-Y'),
                     'detail' => $detail,
                     'empDtl' => $empDtl,
-                    'totalExpense' => $totalExpense
+                    'totalExpense' => $totalExpense,
+                    'id' => $id
         ]);
     }
 

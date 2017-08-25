@@ -2,6 +2,7 @@
     'use strict';
     $(document).ready(function () {
         var $markAsViewed = $('.markAsViewed');
+        var $markAllAsSeen = $('#markAllAsSeen');
 
         $markAsViewed.on('click', function (e) {
             e.preventDefault();
@@ -19,6 +20,20 @@
             });
 
         });
+        $markAllAsSeen.on('click', function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            app.pullDataById(document.markAsViewed, {
+            }).then(function (success) {
+                if (success.success) {
+                    location.reload();
+                }
+            }, function (failure) {
+            });
+
+        });
+
+
 
     });
 

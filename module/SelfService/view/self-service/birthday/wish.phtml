@@ -5,6 +5,9 @@
 $this->headLink()
         ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
 ?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\birthday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <div class="row">
     <div class="col-sm-12 text-center">
         <h2>
