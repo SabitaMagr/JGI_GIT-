@@ -1347,10 +1347,10 @@ class HeadNotification {
                 self::advanceRecommend($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::ADVANCE_APPROVE_ACCEPTED:
-                self::advanceApprove($model, $adapter, $url);
+                self::advanceApprove($model, $adapter, $url,self::ACCEPTED);
                 break;
             case NotificationEvents::ADVANCE_APPROVE_REJECTED:
-                self::advanceApprove($model, $adapter, $url);
+                self::advanceApprove($model, $adapter, $url,self::REJECTED);
                 break;
             case NotificationEvents::ADVANCE_CANCELLED:
 //                ${"fn" . NotificationEvents::ADVANCE_CANCELLED}($model, $adapter, $url);

@@ -2,10 +2,9 @@
 
 namespace ManagerService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use AttendanceManagement\Model\AttendanceDetail;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Exception;
 use ManagerService\Repository\AttendanceApproveRepository;
 use Notification\Controller\HeadNotification;
@@ -46,54 +45,7 @@ class AttendanceApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->repository->getAllRequest($this->employeeId);
-        $attendanceApprove = [];
-
-        $getValue = function($recommender, $approver) {
-            if ($recommender = $approver) {
-                return 'RECOMMENDER/APPROVER';
-            } else {
-                if ($this->employeeId == $recommender) {
-                    return 'RECOMMENDER';
-                } else if ($this->employeeId == $approver) {
-                    return 'APPROVER';
-                }
-            }
-        };
-
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } elseif ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-
-        foreach ($list as $row) {
-
-            $new_row = array_merge($row, [
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
-                'STATUS' => $getStatusValue($row['STATUS'])
-            ]);
-
-
-            array_push($attendanceApprove, $new_row);
-        }
+        $attendanceApprove = $this->getAllList();
         return Helper::addFlashMessagesToArray($this, ['attendanceApprove' => $attendanceApprove]);
     }
 
@@ -233,6 +185,137 @@ class AttendanceApproveController extends AbstractActionController {
                     'approverId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
+    }
+
+    public function batchApproveRejectAction() {
+        $request = $this->getRequest();
+        try {
+            if (!$request->ispost()) {
+                throw new Exception('the request is not post');
+            }
+            $action;
+            $postData = $request->getPost()['data'];
+            $postBtnAction = $request->getPost()['btnAction'];
+            if ($postBtnAction == 'btnApprove') {
+                $action = 'Approve';
+            } elseif ($postBtnAction == 'btnReject') {
+                $action = 'Reject';
+            } else {
+                throw new Exception('no action defined');
+            }
+
+            if ($postData == null) {
+                throw new Exception('no selected rows');
+            } else {
+                $this->adapter->getDriver()->getConnection()->beginTransaction();
+                try {
+                    //start of loop
+                    $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
+                    foreach ($postData as $data) {
+                        $id = $data['id'];
+                        $role = $data['role'];
+
+                        $detail = $attendanceRequestRepository->fetchById($id);
+                        $model = new AttendanceRequestModel();
+
+                        if ($role == 2) {
+                            $model->recommendedDate = Helper::getcurrentExpressionDate();
+                            $model->recommendedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $model->status = "R";
+                            } else if ($action == "Approve") {
+                                $model->status = "RC";
+                            }
+                            $this->repository->edit($model, $id);
+                            $model->id = $id;
+                            try {
+                                HeadNotification::pushNotification(($model->status == 'RC') ? NotificationEvents::ATTENDANCE_RECOMMEND_ACCEPTED : NotificationEvents::ATTENDANCE_RECOMMEND_REJECTED, $model, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $model->approvedDt = Helper::getcurrentExpressionDate();
+                            $model->approvedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $model->status = "R";
+                            } else if ($action == "Approve") {
+                                $model->status = "AP";
+                            }
+                            if ($role == 4) {
+                                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                                $model->recommendedBy = $this->employeeId;
+                            }
+                            $this->repository->edit($model, $id);
+                            $this->repository->backdateAttendance(Helper::getExpressionDate($detail['ATTENDANCE_DT']), $detail['EMPLOYEE_ID'], Helper::getExpressionTime($detail['IN_TIME']), Helper::getExpressionTime($detail['OUT_TIME']));
+
+                            $model->id = $id;
+                            try {
+                                HeadNotification::pushNotification(($model->status == 'AP') ? NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED : NotificationEvents::ATTENDANCE_APPROVE_REJECTED, $model, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                
+                            }
+                        }
+                    }
+                    //end of loop
+                    $this->adapter->getDriver()->getConnection()->commit();
+                } catch (Exception $ex) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
+                }
+            }
+
+            $listData = $this->getAllList();
+            return new CustomViewModel(['success' => true, 'data' => $listData]);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getAllList() {
+        $list = $this->repository->getAllRequest($this->employeeId);
+        $attendanceApprove = [];
+        $getValue = function($recommender, $approver) {
+            if ($recommender = $approver) {
+                return 'RECOMMENDER/APPROVER';
+            } else {
+                if ($this->employeeId == $recommender) {
+                    return 'RECOMMENDER';
+                } else if ($this->employeeId == $approver) {
+                    return 'APPROVER';
+                }
+            }
+        };
+
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } elseif ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+
+        $getRole = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 2;
+            } else if ($this->employeeId == $approver) {
+                return 3;
+            }
+        };
+
+        foreach ($list as $row) {
+            $new_row = array_merge($row, [
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
+                'STATUS' => $getStatusValue($row['STATUS'])
+            ]);
+            array_push($attendanceApprove, $new_row);
+        }
+        return $attendanceApprove;
     }
 
 }

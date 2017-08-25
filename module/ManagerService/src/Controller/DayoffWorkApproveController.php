@@ -2,16 +2,15 @@
 
 namespace ManagerService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use ManagerService\Repository\DayoffWorkApproveRepository;
-use ManagerService\Repository\HolidayWorkApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
-use Setup\Model\Position;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -40,62 +39,7 @@ class DayoffWorkApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->dayoffWorkApproveRepository->getAllRequest($this->employeeId);
-
-        $dayoffWorkRequest = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'FROM_DATE' => $row['FROM_DATE'],
-                'TO_DATE' => $row['TO_DATE'],
-                'DURATION' => $row['DURATION'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REMARKS' => $row['REMARKS'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'ID' => $row['ID'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-            array_push($dayoffWorkRequest, $dataArray);
-        }
+        $dayoffWorkRequest = $this->getAllList();
         return Helper::addFlashMessagesToArray($this, ['dayoffWorkRequest' => $dayoffWorkRequest, 'id' => $this->employeeId]);
     }
 
@@ -220,6 +164,146 @@ class DayoffWorkApproveController extends AbstractActionController {
 
     private function wodApproveAction($detail) {
         $this->dayoffWorkApproveRepository->wodReward($detail['ID']);
+    }
+
+    public function batchApproveRejectAction() {
+        $request = $this->getRequest();
+        try {
+            if (!$request->ispost()) {
+                throw new Exception('the request is not post');
+            }
+            $action;
+            $postData = $request->getPost()['data'];
+            $postBtnAction = $request->getPost()['btnAction'];
+            if ($postBtnAction == 'btnApprove') {
+                $action = 'Approve';
+            } elseif ($postBtnAction == 'btnReject') {
+                $action = 'Reject';
+            } else {
+                throw new Exception('no action defined');
+            }
+
+            if ($postData == null) {
+                throw new Exception('no selected rows');
+            } else {
+                $this->adapter->getDriver()->getConnection()->beginTransaction();
+                try {
+
+                    foreach ($postData as $data) {
+                        $workOnDayoffModel = new WorkOnDayoff();
+                        $id = $data['id'];
+                        $role = $data['role'];
+                        $detail = $this->dayoffWorkApproveRepository->fetchById($id);
+
+                        if ($role == 2) {
+                            $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            $workOnDayoffModel->recommendedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $workOnDayoffModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $workOnDayoffModel->status = "RC";
+                            }
+                            $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
+                            try {
+                                $workOnDayoffModel->id = $id;
+                                HeadNotification::pushNotification(($workOnDayoffModel->status == 'RC') ? NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED : NotificationEvents::WORKONDAYOFF_RECOMMEND_REJECTED, $workOnDayoffModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                throw new Exception($e->getMessage());
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $workOnDayoffModel->approvedDate = Helper::getcurrentExpressionDate();
+                            $workOnDayoffModel->approvedBy = $this->employeeId;
+                            if ($action == "Reject") {
+                                $workOnDayoffModel->status = "R";
+                            } else if ($action == "Approve") {
+                                $this->wodApproveAction($detail);
+                                $workOnDayoffModel->status = "AP";
+                            }
+                            if ($role == 4) {
+                                $workOnDayoffModel->recommendedBy = $this->employeeId;
+                                $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
+                            }
+
+                            $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
+
+                            try {
+                                $workOnDayoffModel->id = $id;
+                                HeadNotification::pushNotification(($workOnDayoffModel->status == 'AP') ? NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED : NotificationEvents::WORKONDAYOFF_APPROVE_REJECTED, $workOnDayoffModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                $this->flashmessenger()->addMessage($e->getMessage());
+                            }
+                        }
+                    }
+                    $this->adapter->getDriver()->getConnection()->commit();
+                } catch (Exception $ex) {
+                    $this->adapter->getDriver()->getConnection()->rollback();
+                }
+            }
+            $listData = $this->getAllList();
+            return new CustomViewModel(['success' => true, 'data' => $listData]);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getAllList() {
+        $list = $this->dayoffWorkApproveRepository->getAllRequest($this->employeeId);
+
+        $dayoffWorkRequest = [];
+        $getValue = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($this->employeeId == $approver) {
+                return 'APPROVER';
+            }
+        };
+        $getStatusValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        $getRole = function($recommender, $approver) {
+            if ($this->employeeId == $recommender) {
+                return 2;
+            } else if ($this->employeeId == $approver) {
+                return 3;
+            }
+        };
+        foreach ($list as $row) {
+            $requestedEmployeeID = $row['EMPLOYEE_ID'];
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+
+            $dataArray = [
+                'FULL_NAME' => $row['FULL_NAME'],
+                'FIRST_NAME' => $row['FIRST_NAME'],
+                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
+                'LAST_NAME' => $row['LAST_NAME'],
+                'FROM_DATE' => $row['FROM_DATE'],
+                'TO_DATE' => $row['TO_DATE'],
+                'DURATION' => $row['DURATION'],
+                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
+                'REMARKS' => $row['REMARKS'],
+                'STATUS' => $getStatusValue($row['STATUS']),
+                'ID' => $row['ID'],
+                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
+            ];
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
+                $dataArray['ROLE'] = 4;
+            }
+            array_push($dayoffWorkRequest, $dataArray);
+        }
+        return $dayoffWorkRequest;
     }
 
 }

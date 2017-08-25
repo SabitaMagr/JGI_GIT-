@@ -131,7 +131,7 @@ class DayoffWorkApproveRepository implements RepositoryInterface {
     public function wodReward($wodId) {
         EntityHelper::rawQueryResult($this->adapter, "
                     BEGIN
-                      HRIS_WOD_REWQRD({$wodId});
+                      HRIS_WOD_REWARD({$wodId});
                     END;");
     }
 

@@ -35,6 +35,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
+    
+<script>
+    document.approveRejectUrl = '<?php echo $this->url('loanApprove', ['action' => 'batchApproveReject']); ?>';
+</script>
 
 <div class="margin-top-20">
     
@@ -60,6 +64,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
+        
+        <div style="display: none;" class="row" id="acceptRejectDiv" >
+            <div class="col-sm-2">
+                <button id="btnApprove" class="btn btn-success btnApproveReject">Approve</button>
+            </div>
+            <div class="col-sm-2 ">
+                <button id="btnReject" class="btn btn-success btnApproveReject">Reject</button>
+            </div>
+        </div>
 
     <div id="loanApproveTable">
     </div>
@@ -70,6 +83,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
+        <td>
+        <input type='checkbox' id='#:LOAN_REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:LOAN_REQUEST_ID#'></label>    
+        </td>
         <td>
         #: (FULL_NAME == null) ? ' ' : FULL_NAME #
         </td>
