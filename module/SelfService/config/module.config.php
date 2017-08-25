@@ -862,6 +862,28 @@ return [
                 ],
             ],
         ],
+        'birthday' => [
+            [
+                'label' => 'Birthdays',
+                'route' => 'birthday',
+            ],
+            [
+                'label' => 'Birthdays',
+                'route' => 'birthday',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'birthday',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Wish',
+                        'route' => 'birthday',
+                        'action' => 'wish',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [

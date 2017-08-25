@@ -3,8 +3,10 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
-
 ?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\birthday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <div class="row">
     <div class="col-sm-12 text-center">
         <h2>
@@ -14,24 +16,24 @@ $this->headLink()
 </div>
 
 <?php
-if($showMessageField==true){
-?>
-<form method="POST" action="<?php echo $this->url("birthday", ["action" => "wish","id"=>$brithdayEmpDtl['EMPLOYEE_ID']]) ?>">
-    <div class="row">
-        <div class=" col-sm-offset-4 col-sm-4">
-            <label><h4> Please type a wish message for <?php echo $brithdayEmpDtl['FULL_NAME']; ?></h4></label>
-            <textarea required="required" name="birthdayMessage" cols="50" rows="10"></textarea>
+if ($showMessageField == true) {
+    ?>
+    <form method="POST" action="<?php echo $this->url("birthday", ["action" => "wish", "id" => $brithdayEmpDtl['EMPLOYEE_ID']]) ?>">
+        <div class="row">
+            <div class=" col-sm-offset-4 col-sm-4">
+                <label><h4> Please type a wish message for <?php echo $brithdayEmpDtl['FULL_NAME']; ?></h4></label>
+                <textarea required="required" name="birthdayMessage" cols="50" rows="10"></textarea>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-sm-offset-7 col-sm-4">
-            <input type="submit" value="SUBMIT">
-        </div>
-    </div>    
-</form>
+        <div class="row">
+            <div class="col-sm-offset-7 col-sm-4">
+                <input type="submit" value="SUBMIT">
+            </div>
+        </div>    
+    </form>
 
-<?php
+    <?php
 }
 ?>
 
@@ -41,19 +43,21 @@ if($showMessageField==true){
 <h3>Birthday Wish to <?php echo $brithdayEmpDtl['FULL_NAME']; ?> </h3>
 <table class="table">
     <tr>
-    <th>SN.</th>
-    <th>Wishes_From</th>
-    <th>Wish_Messages</th>
+        <th>SN.</th>
+        <th>Wishes_From</th>
+        <th>Wish_Messages</th>
     </tr>
-    <?php  $i=1; foreach ($birthdayMessage as $data) {?>
-    <tr>
-        <td><?=$i?></td>
-        <td><div class="person-pic"><img height="100" width="100" src="<?php print $data['FILE_PATH'] ? $this->basePath('uploads/' . $data['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>">
-        </div><?=$data['FROM_EMPLOYEE_NAME']?></td>
-        <td><?=$data['MESSAGE']?></td>
-      
-        
-    </tr>
-    
-    <?php $i++;}?>
+    <?php $i = 1;
+    foreach ($birthdayMessage as $data) { ?>
+        <tr>
+            <td><?= $i ?></td>
+            <td><div class="person-pic"><img height="100" width="100" src="<?php print $data['FILE_PATH'] ? $this->basePath('uploads/' . $data['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>">
+                </div><?= $data['FROM_EMPLOYEE_NAME'] ?></td>
+            <td><?= $data['MESSAGE'] ?></td>
+
+
+        </tr>
+
+        <?php $i++;
+    } ?>
 </table>
