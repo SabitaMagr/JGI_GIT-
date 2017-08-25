@@ -1,10 +1,9 @@
 <?php
-//echo '<pre>';
-//print_r($employeeList);
-//die();
+$this->headScript()
+        ->appendFile($this->basePath('js/setup/recommend-approve/edit.js'));
+?>
 
-
-
+<?php
 $form->setAttribute('role', 'form');
 $form->setAttribute('class', 'recommendApprove-form');
 
@@ -17,13 +16,11 @@ $recommendBy->setValueOptions($employeeList);
 $approvedBy->setValueOptions($employeeList);
 
 $employeeId->setAttribute('disabled', 'disabled');
-//echo $employeeId->getValue();
-//die();
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('recommendapprove', ['action' => 'edit','id'=>$id]));
+$form->setAttribute('action', $this->url('recommendapprove', ['action' => 'edit', 'id' => $id]));
 
 if ($this->messages) {
     print '<ul class="help-block bg-danger" style="background:#f3e250;">';
@@ -53,33 +50,33 @@ $form->prepare();
                     print $this->form()->openTag($form);
                     ?>
                     <input name="employeeId" type="hidden"  value="<?php echo $id ?>"/>
-                    
+
                     <div class="row">
-                        
-                    <div class='col-sm-4'>
-                    <div class="form-group">
-                        <?php print $this->formLabel($employeeId); ?>
-                        <?php print $this->formElement($employeeId); ?>
-                        <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
-                    </div>
-                    </div>
-                        
-                    <div class='col-sm-4'>
-                    <div class="form-group">
-                        <?php print $this->formLabel($recommendBy); ?>
-                        <?php print $this->formElement($recommendBy); ?>
-                        <?php print $this->formElementErrors()->render($recommendBy, ['class' => 'help-block']); ?>
-                    </div>
-                    </div>
-                        
-                    <div class='col-sm-4'>
-                    <div class="form-group">
-                        <?php print $this->formLabel($approvedBy); ?>
-                        <?php print $this->formElement($approvedBy); ?>
-                        <?php print $this->formElementErrors()->render($approvedBy, ['class' => 'help-block']); ?>
-                    </div>
-                    </div>
-                        
+
+                        <div class='col-sm-4'>
+                            <div class="form-group">
+                                <?php print $this->formLabel($employeeId); ?>
+                                <?php print $this->formElement($employeeId); ?>
+                                <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class='col-sm-4'>
+                            <div class="form-group">
+                                <?php print $this->formLabel($recommendBy); ?>
+                                <?php print $this->formElement($recommendBy); ?>
+                                <?php print $this->formElementErrors()->render($recommendBy, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class='col-sm-4'>
+                            <div class="form-group">
+                                <?php print $this->formLabel($approvedBy); ?>
+                                <?php print $this->formElement($approvedBy); ?>
+                                <?php print $this->formElementErrors()->render($approvedBy, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
                     </div>
 
                     <?php

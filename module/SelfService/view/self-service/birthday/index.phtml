@@ -5,6 +5,8 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jquery_lazyload-master/jquery.lazyload.min.js'))
         ->appendFile($this->basePath('js/SelfService/birthday/index.js'));
+
+
 ?>
 
 
@@ -13,6 +15,7 @@ $this->headScript()
 
         <div class="row">
             <h1>Birthday Today</h1>
+            
 
             <?php
             if (isset($employeesBirthday['TODAY'])) {
@@ -32,8 +35,16 @@ $this->headScript()
                         </div>
                         <div class="col-xs-2 col-md-3 col-sm-3">
                             <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
-                            <a class="btn btn-default" href="<?php echo $this->url("birthday", ["action" => "wish","id"=>$todayBirthday['EMPLOYEE_ID']]) ?>">Wish</a>
-                            <!--button-->
+                            
+                            <?php
+                            $btnName='Wish';
+                            if($currentEmployeeId==$todayBirthday['EMPLOYEE_ID']) { 
+                              $btnName='view';  
+                            }
+?>
+                            <a class="btn btn-default" href="<?php echo $this->url("birthday", ["action" => "wish","id"=>$todayBirthday['EMPLOYEE_ID']]) ?>"><?=$btnName?></a>
+                 
+                            
                         </div>
                     </div>
                     <?php

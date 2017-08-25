@@ -254,6 +254,27 @@ class JobHistoryRepository implements RepositoryInterface {
             AND ROWNUM        =1"));
     }
 
+    function fetchBeforeStartDate($date, $employeeId) {
+        $result = EntityHelper::rawQueryResult($this->adapter, "
+            SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+              INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+              H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+              H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+              H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+              H.TO_COMPANY_ID                                    AS TO_COMPANY_ID,
+              H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+              H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+              H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+              H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+              H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+            FROM HRIS_JOB_HISTORY H
+            WHERE H.START_DATE>{$date}
+            AND H.EMPLOYEE_ID = {$employeeId} 
+            AND ROWNUM        =1");
+
+        return $result->current();
+    }
+
     function displayAutoNotification() {
         EntityHelper::rawQueryResult($this->adapter, "");
     }

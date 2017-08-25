@@ -280,4 +280,24 @@ class JobHistoryController extends AbstractActionController {
         }
     }
 
+    public function getPreviousHistoryAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception("The request should be of type post");
+            }
+
+            $data = $request->getPost();
+
+            $startDate = $data['startDate'];
+            $employeeId = $data['employeeId'];
+
+            $result = $this->repository->fetchBeforeStartDate(Helper::getExpressionDate($startDate)->getExpression(), $employeeId);
+
+            return new CustomViewModel(['success' => true, 'data' => $result, 'error' => '']);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
 }
