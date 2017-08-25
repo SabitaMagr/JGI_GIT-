@@ -69,6 +69,32 @@ class BirthdayRepository {
     public function add($model){
           $this->tableGateway->insert($model->getArrayCopyForDB());
     }
+    
+    public function getBirthdayMessage($BirthdayEmployee=null){
+        $sql ="SELECT E.FULL_NAME AS FROM_EMPLOYEE_NAME,EF.FILE_PATH,BM.* FROM HRIS_BIRTHDAY_MESSAGES BM"
+                . " LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=BM.FROM_EMPLOYEE)"
+                . "LEFT JOIN HRIS_EMPLOYEE_FILE EF ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)";
+                
+                   
+        
+        
+        if($BirthdayEmployee){
+            
+            $sql.="WHERE BM.TO_EMPLOYEE=$BirthdayEmployee";
+            
+
+            
+        }
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        
+        $list=[];
+        
+        foreach ($result as $data){
+            array_push($list, $data);
+        }
+        return $list;
+    }
 
        
     }

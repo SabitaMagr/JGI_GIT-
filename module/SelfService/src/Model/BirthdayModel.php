@@ -6,30 +6,36 @@ use Application\Model\Model;
 
 class BirthdayModel extends Model {
 
-    const TABLE_NAME = "BIRTHDAY_MESSAGES";
+    const TABLE_NAME = "HRIS_BIRTHDAY_MESSAGES";
     const BIRTHDAY_ID = "BIRTHDAY_ID";
+    const BIRTHDAY_DATE = "BIRTHDAY_DATE";
     const FROM_EMPLOYEE = "FROM_EMPLOYEE";
-    const BIRTHDAY_EMPLOYEE = "BIRTHDAY_EMPLOYEE";
-    const BIRTHDAY_MESSAGE = "BIRTHDAY_MESSAGE";
-    const CREATED_DATE = "CREATED_DATE";
-    const MODIFIED_DATE = "MODIFIED_DATE";
+    const TO_EMPLOYEE = "TO_EMPLOYEE";
+    const MESSAGE = "MESSAGE";
+    const CREATED_DT = "CREATED_DT";
     const STATUS = "STATUS";
+    const MODIFIED_DT = "MODIFIED_DT";
+    
 
     public $birthdayId;
+    public $birthdayDate;
     public $fromEmployee;
-    public $birthdayEmployee;
-    public $birthdayMessage;
-    public $createdDate;
-    public $modifiedDate;
+    public $toEmployee;
+    public $message;
+    public $createdDt;
     public $status;
+    public $modifiedDt;
+    
     public $mappings = [
         'birthdayId' => self::BIRTHDAY_ID,
+        'birthdayDate' => self::BIRTHDAY_DATE,
         'fromEmployee' => self::FROM_EMPLOYEE,
-        'birthdayEmployee' => self::BIRTHDAY_EMPLOYEE,
-        'birthdayMessage' => self::BIRTHDAY_MESSAGE,
-        'createdDate' => self::CREATED_DATE,
-        'modifiedDate' => self::MODIFIED_DATE,
-        'status' => self::STATUS
+        'toEmployee' => self::TO_EMPLOYEE,
+        'message' => self::MESSAGE,
+        'createdDt' => self::CREATED_DT,
+        'status' => self::STATUS,
+        'modifiedDt' => self::MODIFIED_DT,
+        
     ];
 
 }

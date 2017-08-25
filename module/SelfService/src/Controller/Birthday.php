@@ -53,25 +53,31 @@ class Birthday extends AbstractActionController {
         $birthdays['TODAY'] = $testArr;
 
 
-//        echo '<pre>';
-//        print_r($birthdays);
-//        die();
+       
 //        $birthdays = ['test' => 'Happy Birthday'];
         return Helper::addFlashMessagesToArray($this, [
-                    'employeesBirthday' => $birthdays
+                    'employeesBirthday' => $birthdays,
+                    'currentEmployeeId' => $this->employeeId
         ]); //return the values
     }
     
     
-    
+
+
+
+
+
     public function wishAction(){
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('birthday');
         }
         
-        
+         $empRepo= new EmployeeRepository($this->adapter);
+        $empDetails=$empRepo->fetchById($id);
         $request = $this->getRequest();
+        
+        $birthdayMessage=$this->repository->getBirthdayMessage($id);
         
         if($request->isPost()){
             $birthdayModel= new BirthdayModel();
@@ -79,26 +85,34 @@ class Birthday extends AbstractActionController {
             $message=$data['birthdayMessage'];
             
           $birthdayModel->birthdayId=((int) Helper::getMaxId($this->adapter, BirthdayModel::TABLE_NAME, BirthdayModel::BIRTHDAY_ID)) + 1;
+          $birthdayModel->birthdayDate=$empDetails['BIRTH_DATE'];
           $birthdayModel->fromEmployee=$this->employeeId;
-          $birthdayModel->birthdayEmployee=$id;
-          $birthdayModel->birthdayMessage=$message;
-          $birthdayModel->createdDate=Helper::getcurrentExpressionDate();
+          $birthdayModel->toEmployee=$id;
+          $birthdayModel->message=$message;
+          $birthdayModel->createdDt=Helper::getcurrentExpressionDate();
           $birthdayModel->status='E';
           
           $this->repository->add($birthdayModel);
           $this->flashmessenger()->addMessage("Birthday message created sucessfully");
           return $this->redirect()->toRoute("birthday");
-          
-            
+               
         }
         
-        $empRepo= new EmployeeRepository($this->adapter);
-        $empDetails=$empRepo->fetchById($id);
         
+        $showMessageField=true;
+        if($empDetails['EMPLOYEE_ID']==$this->employeeId){
+        $showMessageField=false;
+        }
+        
+
         
         return Helper::addFlashMessagesToArray($this, [
-                    'brithdayEmpDtl' => $empDetails
-        ]); //return the values
+                    'brithdayEmpDtl' => $empDetails,
+                    'birthdayMessage'=>$birthdayMessage,
+                    'showMessageField'=>$showMessageField,
+                    'messageSent'
+                              
+        ]);
     }
 
 }
