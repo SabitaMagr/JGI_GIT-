@@ -35,6 +35,10 @@ class NotificationRepo implements RepositoryInterface {
         return $this->tableGateway->update($model->getArrayCopyForDB(), [Notification::MESSAGE_ID => $id]);
     }
 
+    public function editByEmployeeId(Model $model, $id) {
+        return $this->tableGateway->update($model->getArrayCopyForDB(), [Notification::MESSAGE_TO => $id]);
+    }
+
     public function fetchAll() {
         
     }
