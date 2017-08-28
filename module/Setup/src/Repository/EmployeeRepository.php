@@ -216,21 +216,13 @@ class EmployeeRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-//        $this->gateway->update(['STATUS'=>'D','MODIFIED_DT'=>Helper::getcurrentExpressionDate()],['EMPLOYEE_ID' => $id]);
         $this->gateway->update(['STATUS' => 'D'], ['EMPLOYEE_ID' => $id]);
     }
 
     public function edit(Model $model, $id) {
         $tempArray = $model->getArrayCopyForDB();
-
-        if (array_key_exists('CREATED_DT', $tempArray)) {
-            unset($tempArray['CREATED_DT']);
-        }
-        if (array_key_exists('EMPLOYEE_ID', $tempArray)) {
-            unset($tempArray['EMPLOYEE_ID']);
-        }
-        if (array_key_exists('STATUS', $tempArray)) {
-            unset($tempArray['STATUS']);
+        if (!array_key_exists('MIDDLE_NAME', $tempArray)) {
+            $tempArray['MIDDLE_NAME'] = '';
         }
         $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
     }

@@ -24,6 +24,8 @@ $this->headScript()
     document.ids =<?php echo json_encode(["serviceEventTypeId1" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.getEmployeeLatestServiceWS = '<?php echo $this->url("jobHistory", ["action" => "getEmployeeLatestService"]); ?>';
+    document.editLink = '<?= $this->url("jobHistory", ["action" => "edit"]) ?>';
+    document.deleteLink = '<?= $this->url("jobHistory", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\jobHistory')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -143,48 +145,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div class="margin-top-20"> 
         <div id="jobHistoryTable" >           
         </div>
-
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>
-            #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-            </td>
-            <td>
-            #: (START_DATE == null) ? '-' : START_DATE #
-            </td>
-            <td>
-            #: (SERVICE_EVENT_TYPE_NAME == null) ? '-' : SERVICE_EVENT_TYPE_NAME #
-            </td>
-            <td>
-            #: (TO_SERVICE_NAME == null) ? ' ' : TO_SERVICE_NAME #
-            </td>
-            <td>
-            #: (TO_BRANCH_NAME == null) ? ' ' : TO_BRANCH_NAME #
-            </td>
-            <td>
-            #: (TO_DEPARTMENT_NAME == null) ? ' ' : TO_DEPARTMENT_NAME #
-            </td>
-            <td>
-            #: (TO_DESIGNATION_TITLE == null) ? ' ' : TO_DESIGNATION_TITLE #
-            </td>
-            <td>
-            #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
-            </td>
-            <td>
-            <a class="btn-edit"
-            href="<?= $this->url("jobHistory", ["action" => "add"]) ?>/#: JOB_HISTORY_ID #" style="height:17px;">
-            <i class="fa fa-plus-square"></i>
-            </a>
-            <a class="btn-edit"
-            href="<?= $this->url("jobHistory", ["action" => "edit"]) ?>/#: JOB_HISTORY_ID #" style="height:17px;">
-            <i class="fa fa-edit"></i>
-            </a>
-            <a class="btn-delete confirmation"
-            href="<?= $this->url("jobHistory", ["action" => "delete"]) ?>/#: JOB_HISTORY_ID #" id="bs_#:JOB_HISTORY_ID #" style="height:17px;">
-            <i class="fa fa-trash-o"></i></a>
-            </a>
-            </td>
-            </tr>
-        </script>
     </div>
 </div>

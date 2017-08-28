@@ -2,8 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate1', 'nepaliEndDate1', 'endDate1',null,true);
-        
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate1', 'nepaliEndDate1', 'endDate1', null, true);
+
         $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
                 $.each(document.ids, function (key, value) {
@@ -11,7 +11,7 @@
                 });
             }
         });
-        
+
     });
 })(window.jQuery, window.app);
 
@@ -71,23 +71,24 @@ angular.module('hris', [])
                         {field: "HOLIDAY_ENAME", title: "Holiday", width: 150},
                         {field: "START_DATE", title: "From Date", width: 130},
                         {field: "END_DATE", title: "To Date", width: 130},
-                        {field: "HALFDAY", title: "Half Day", width: 100},
+                        {field: "HALFDAY", title: "Interval", width: 100},
                         {title: "Action", width: 100}
                     ]
                 });
-                
-                app.searchTable('holidayTable',['HOLIDAY_ENAME','START_DATE','END_DATE','HALFDAY']);
-                
+
+                app.searchTable('holidayTable', ['HOLIDAY_ENAME', 'START_DATE', 'END_DATE', 'HALFDAY']);
+
                 app.pdfExport(
-                'holidayTable',
-                {
-                    'HOLIDAY_ENAME': ' Holiday',
-                    'START_DATE': 'StartDate',
-                    'END_DATE': 'EndDate',
-                    'REMARKS': 'Remarks'
-                }
+                        'holidayTable',
+                        {
+                            'HOLIDAY_ENAME': ' Holiday',
+                            'START_DATE': 'StartDate',
+                            'END_DATE': 'EndDate',
+                            'HALFDAY': 'Interval',
+                            'REMARKS': 'Remarks'
+                        }
                 );
-        
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -106,7 +107,7 @@ angular.module('hris', [])
                                 {value: "Holiday Name"},
                                 {value: "From Date"},
                                 {value: "To Date"},
-                                {value: "Half Day"},
+                                {value: "Interval"},
                                 {value: "Remarks"}
                             ]
                         }];
