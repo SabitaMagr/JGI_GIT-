@@ -256,7 +256,8 @@ class JobHistoryRepository implements RepositoryInterface {
 
     function fetchBeforeStartDate($date, $employeeId) {
         $result = EntityHelper::rawQueryResult($this->adapter, "
-            SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+            SELECT * FROM
+            (SELECT INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
               INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
               H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
               H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
@@ -266,13 +267,50 @@ class JobHistoryRepository implements RepositoryInterface {
               H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
               H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
               H.TO_POSITION_ID                                   AS TO_POSITION_ID,
-              H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID
+              H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID,
+              H.TO_SALARY                                        AS TO_SALARY
             FROM HRIS_JOB_HISTORY H
-            WHERE H.START_DATE>{$date}
-            AND H.EMPLOYEE_ID = {$employeeId} 
-            AND ROWNUM        =1");
+            WHERE H.START_DATE<{$date}
+            AND H.EMPLOYEE_ID = {$employeeId}
+            ORDER BY H.START_DATE DESC)
+            WHERE ROWNUM        =1");
 
         return $result->current();
+    }
+
+    function fetchByEmployeeId($employeeId) {
+        $result = EntityHelper::rawQueryResult($this->adapter, "
+            SELECT INITCAP(TO_CHAR(H.START_DATE, 'YYYY-MM-DD')) AS START_DATE,
+              INITCAP(TO_CHAR(H.END_DATE, 'YYYY-MM-DD'))        AS END_DATE,
+              H.EMPLOYEE_ID                                      AS EMPLOYEE_ID,
+              H.JOB_HISTORY_ID                                   AS JOB_HISTORY_ID,
+              H.SERVICE_EVENT_TYPE_ID                            AS SERVICE_EVENT_TYPE_ID,
+              SE.SERVICE_EVENT_TYPE_NAME                        AS SERVICE_EVENT_TYPE_NAME,
+              H.TO_COMPANY_ID                                    AS TO_COMPANY_ID,
+              C.COMPANY_NAME                                     AS COMPANY_NAME,
+              H.TO_BRANCH_ID                                     AS TO_BRANCH_ID,
+              B.BRANCH_NAME                                      AS BRANCH_NAME,
+              H.TO_DEPARTMENT_ID                                 AS TO_DEPARTMENT_ID,
+              DEP.DEPARTMENT_NAME                                AS DEPARTMENT_NAME,
+              H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
+              DES.DESIGNATION_TITLE                              AS DESIGNATION_TITLE,
+              H.TO_POSITION_ID                                   AS TO_POSITION_ID,
+              P.POSITION_NAME                                    AS POSITION_NAME,
+              H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID,
+              ST.SERVICE_TYPE_NAME                               AS SERVICE_TYPE_NAME,
+              H.TO_SALARY                                        AS TO_SALARY
+            FROM HRIS_JOB_HISTORY H 
+            JOIN HRIS_SERVICE_EVENT_TYPES SE ON (H.SERVICE_EVENT_TYPE_ID = SE.SERVICE_EVENT_TYPE_ID)
+            JOIN HRIS_COMPANY C ON (H.TO_COMPANY_ID = C.COMPANY_ID)
+            JOIN HRIS_BRANCHES B ON (H.TO_BRANCH_ID = B.BRANCH_ID)
+            JOIN HRIS_DEPARTMENTS DEP ON (H.TO_DEPARTMENT_ID = DEP.DEPARTMENT_ID)
+            JOIN HRIS_DESIGNATIONS DES ON (H.TO_DESIGNATION_ID = DES.DESIGNATION_ID)
+            JOIN HRIS_POSITIONS P ON (H.TO_POSITION_ID = P.POSITION_ID)
+            JOIN HRIS_SERVICE_TYPES ST ON (H.TO_SERVICE_TYPE_ID = ST.SERVICE_TYPE_ID)
+            WHERE H.EMPLOYEE_ID = {$employeeId}
+            ORDER BY H.START_DATE DESC");
+
+        return Helper::extractDbData($result);
     }
 
     function displayAutoNotification() {

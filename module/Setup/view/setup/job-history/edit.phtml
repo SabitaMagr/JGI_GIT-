@@ -1,12 +1,13 @@
 <?php
-$this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/albe-timeline/style-albe-timeline.css'));
 
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/setup/job-history/add.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/albe-timeline/jquery-albe-timeline.js'));
+$this->headScript()->appendFile($this->basePath('js/setup/job-history/edit.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'jobHistory-form');
@@ -77,7 +78,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <script>
-    document.wsPullEmployeeDetailWithOptions = '<?php echo $this->url('jobHistory', ['action' => 'pullEmployeeDetailWithOptions']); ?>';
+    document.wsGetHistoryList = '<?php echo $this->url('jobHistory', ['action' => 'getHistoryList']); ?>';
 </script>
 
 <div class="row margin-top-20">
@@ -182,6 +183,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             </div>
         </div>
+        <div id="myTimeline"></div>
     </div>
 </div>
 <?php
