@@ -3594,8 +3594,9 @@ class RestfulService extends AbstractRestfulController {
 
     public function updateCurUserPwd($postData) {
         $newPassword = $postData['newPassword'];
+        $encryptedPwd = Helper::encryptPassword($newPassword);
         $userrepo = new UserSetupRepository($this->adapter);
-        $updateResult = $userrepo->updateByEmpId($this->loggedIdEmployeeId, $newPassword);
+        $updateResult = $userrepo->updateByEmpId($this->loggedIdEmployeeId, $encryptedPwd);
         return [
             'success' => "true",
 //            "data" => $updateResult

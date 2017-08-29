@@ -84,7 +84,24 @@ class UserSetupRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $result = $this->tableGateway->select([UserSetup::USER_ID => $id]);
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("STATUS AS STATUS"),
+            new Expression("USER_ID AS USER_ID"),
+            new Expression("USER_NAME AS USER_NAME"),
+            new Expression("FN_DECRYPT_PASSWORD(PASSWORD) AS PASSWORD"),
+            new Expression("EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("ROLE_ID AS ROLE_ID"),
+                ], true);
+
+        $select->from(UserSetup::TABLE_NAME);
+        $select->where([
+            UserSetup::USER_ID=>$id
+        ]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
         return $result->current();
     }
 
@@ -125,8 +142,29 @@ class UserSetupRepository implements RepositoryInterface {
     }
 
     public function getUserByEmployeeId($employeeId) {
-        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID => $employeeId]);
+         $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("STATUS AS STATUS"),
+            new Expression("USER_ID AS USER_ID"),
+            new Expression("USER_NAME AS USER_NAME"),
+            new Expression("FN_DECRYPT_PASSWORD(PASSWORD) AS PASSWORD"),
+            new Expression("EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("ROLE_ID AS ROLE_ID"),
+                ], true);
+
+        $select->from(UserSetup::TABLE_NAME);
+        $select->where([
+            UserSetup::EMPLOYEE_ID => $employeeId
+        ]);
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
         return $result->current();
+        
+        
+//        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID => $employeeId]);
+//        return $result->current();
     }
 
 }
