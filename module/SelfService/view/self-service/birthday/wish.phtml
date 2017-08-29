@@ -1,5 +1,6 @@
-
-
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\birthday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
@@ -14,7 +15,6 @@ $this->headLink()
         </h2> 
     </div>
 </div>
-
 <?php
 if ($showMessageField == true) {
     ?>
@@ -47,8 +47,10 @@ if ($showMessageField == true) {
         <th>Wishes_From</th>
         <th>Wish_Messages</th>
     </tr>
-    <?php $i = 1;
-    foreach ($birthdayMessage as $data) { ?>
+    <?php
+    $i = 1;
+    foreach ($birthdayMessage as $data) {
+        ?>
         <tr>
             <td><?= $i ?></td>
             <td><div class="person-pic"><img height="100" width="100" src="<?php print $data['FILE_PATH'] ? $this->basePath('uploads/' . $data['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>">
@@ -58,6 +60,8 @@ if ($showMessageField == true) {
 
         </tr>
 
-        <?php $i++;
-    } ?>
+        <?php
+        $i++;
+    }
+    ?>
 </table>

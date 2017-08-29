@@ -63,6 +63,8 @@ class UserSetupController extends AbstractActionController {
                 $userSetup->status = 'E';
 
 //                $userSetup->password= md5($userSetup->password);
+                 $userSetup->password = Helper::encryptPassword($userSetup->password);
+                
 
                 $this->repository->add($userSetup);
 
@@ -83,7 +85,7 @@ class UserSetupController extends AbstractActionController {
         $request = $this->getRequest();
 
         $userSetup = new UserSetup();
-        $detail = $this->repository->fetchById($id)->getArrayCopy();
+        $detail = $this->repository->fetchById($id);
         //print_r($detail['PASSWORD']); die();
         if (!$request->isPost()) {
             $userSetup->exchangeArrayFromDB($detail);
@@ -99,7 +101,7 @@ class UserSetupController extends AbstractActionController {
                 unset($userSetup->userId);
                 unset($userSetup->status);
 
-//                $userSetup->password = md5($userSetup->password);
+                $userSetup->password = Helper::encryptPassword($userSetup->password);
 
                 $this->repository->edit($userSetup, $id);
                 $this->flashmessenger()->addMessage("User Successfully Updated!!!");

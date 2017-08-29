@@ -125,7 +125,8 @@ class ForgotPasswordController extends AbstractActionController {
         if ($request->isPost()) {
             $postData = $request->getPost()->getArrayCopy();
             $userRepo = new UserSetupRepository($this->adapter);
-            $userRepo->updateByEmpId($employeeId, $postData['password']);
+            $encryptedPwd = Helper::encryptPassword($postData['password']);
+            $userRepo->updateByEmpId($employeeId, $encryptedPwd);
             $this->flashmessenger()->addMessage("Your Password Successfully Reset!!!");
             $this->redirect()->toRoute("login");
         }

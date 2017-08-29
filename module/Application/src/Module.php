@@ -183,7 +183,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 },
                 'AuthService' => function ($container) {
                     $dbAdapter = $container->get(DbAdapter::class);
-                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HRIS_USERS', 'USER_NAME', 'PASSWORD');
+//                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HRIS_USERS', 'USER_NAME', 'PASSWORD');
+                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HRIS_USERS', 'USER_NAME', 'FN_DECRYPT_PASSWORD(PASSWORD)');
                     $authService = new AuthenticationService();
                     $authService->setAdapter($dbTableAuthAdapter);
                     $authService->setStorage($container->get(HrisAuthStorage::class));

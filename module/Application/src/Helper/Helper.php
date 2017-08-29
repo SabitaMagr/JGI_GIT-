@@ -343,5 +343,10 @@ class Helper {
         $interval = $fromDate->diff($toDate);
         return $interval->format('%a');
     }
+    
+    public static function encryptPassword($password){
+        return new Expression("FN_ENCRYPT_PASSWORD('$password')");
+    }
+    
 
 }

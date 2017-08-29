@@ -6,7 +6,6 @@ $this->headScript()
         ->appendFile($this->basePath('jquery_lazyload-master/jquery.lazyload.min.js'))
         ->appendFile($this->basePath('js/SelfService/birthday/index.js'));
 ?>
-
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\birthday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -32,7 +31,6 @@ $this->headScript()
                         </div>
                         <div class="col-xs-2 col-md-3 col-sm-3">
                             <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
-
                             <?php
                             $btnName = 'Wish';
                             if ($currentEmployeeId == $todayBirthday['EMPLOYEE_ID']) {
@@ -40,8 +38,6 @@ $this->headScript()
                             }
                             ?>
                             <a class="btn btn-default" href="<?php echo $this->url("birthday", ["action" => "wish", "id" => $todayBirthday['EMPLOYEE_ID']]) ?>"><?= $btnName ?></a>
-
-
                         </div>
                     </div>
                     <?php
@@ -49,8 +45,6 @@ $this->headScript()
             }
             ?>
         </div>
-
-
         <div class="row ">
             <h1>Birthday Upcoming</h1>
             <?php
@@ -78,9 +72,6 @@ $this->headScript()
             }
             ?>
         </div>
-
-
-
     </div>
-
 </div>
+
