@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/14/16
- * Time: 3:40 PM
- */
-
 namespace AttendanceManagement\Model;
 
 use Application\Model\Model;
@@ -29,6 +22,7 @@ class AttendanceDetail extends Model {
     const SHIFT_ID = "SHIFT_ID";
     const DAYOFF_FLAG = "DAYOFF_FLAG";
     const LATE_STATUS = "LATE_STATUS";
+    const HALFDAY_FLAG = "HALFDAY_FLAG";
 
     public $id;
     public $employeeId;
@@ -45,6 +39,7 @@ class AttendanceDetail extends Model {
     public $shiftId;
     public $dayoffFlag;
     public $lateStatus;
+    public $halfdayFlag;
     public $mappings = [
         'id' => self::ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -60,7 +55,8 @@ class AttendanceDetail extends Model {
         'travelId' => self::TRAVEL_ID,
         'shiftId' => self::SHIFT_ID,
         'dayoffFlag' => self::DAYOFF_FLAG,
-        'lateStatus' =>self::LATE_STATUS
+        'lateStatus' => self::LATE_STATUS,
+        'halfdayFlag' => self::HALFDAY_FLAG,
     ];
 
 }

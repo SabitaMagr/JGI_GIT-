@@ -2,27 +2,19 @@
 
 namespace WorkOnDayoff\Controller;
 
-use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
-use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
+use Application\Helper\Helper;
+use Exception;
 use ManagerService\Repository\DayoffWorkApproveRepository;
-use SelfService\Repository\WorkOnDayoffRepository;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Form\WorkOnDayoffForm;
-use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Model\WorkOnDayoff;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceType;
-use Zend\Form\Element\Select;
-use Setup\Model\ServiceEventType;
-use Zend\Authentication\AuthenticationService;
 use Setup\Repository\RecommendApproveRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
-use LeaveManagement\Repository\LeaveAssignRepository;
+use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class WorkOnDayoffStatus extends AbstractActionController {
 
@@ -117,9 +109,13 @@ class WorkOnDayoffStatus extends AbstractActionController {
                 $workOnDayoffModel->status = "R";
                 $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
             } else if ($action == "Approve") {
-                $this->wodApproveAction($detail);
+                try {
+                    $this->wodApproveAction($detail);
+                    $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage("Work on Day-off Request Approved but reward is not provided as employee position is not set.");
+                }
                 $workOnDayoffModel->status = "AP";
-                $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
             }
             $workOnDayoffModel->approvedBy = $this->employeeId;
             $workOnDayoffModel->approvedRemarks = $reason;

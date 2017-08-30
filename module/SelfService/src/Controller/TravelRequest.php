@@ -462,7 +462,9 @@ class TravelRequest extends AbstractActionController {
         $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-        $model->exchangeArrayFromDB($detail);
+        if ($detail) {
+            $model->exchangeArrayFromDB($detail);
+        }
         $this->form->bind($model);
 
         $employeeName = $fullName($detail['EMPLOYEE_ID']);

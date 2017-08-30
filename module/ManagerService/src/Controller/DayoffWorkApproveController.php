@@ -104,9 +104,13 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Day-off Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $this->wodApproveAction($detail);
+                    try {
+                        $this->wodApproveAction($detail);
+                        $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage("Work on Day-off Request Approved but reward is not provided as employee position is not set.");
+                    }
                     $workOnDayoffModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Work on Day-off Request Approved");
                 }
                 if ($role == 4) {
                     $workOnDayoffModel->recommendedBy = $this->employeeId;
