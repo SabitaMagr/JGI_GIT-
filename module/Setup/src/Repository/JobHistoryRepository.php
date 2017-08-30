@@ -24,11 +24,13 @@ class JobHistoryRepository implements RepositoryInterface {
 
     public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
+        $this->updateEmployeeProfile($model);
     }
 
     public function edit(Model $model, $id) {
         $array = $model->getArrayCopyForDB();
         $this->tableGateway->update($array, [JobHistory::JOB_HISTORY_ID => $id]);
+        $this->updateEmployeeProfile($model);
     }
 
     public function delete($id) {
@@ -311,6 +313,13 @@ class JobHistoryRepository implements RepositoryInterface {
             ORDER BY H.START_DATE DESC");
 
         return Helper::extractDbData($result);
+    }
+
+    function updateEmployeeProfile(JobHistory $j) {
+        EntityHelper::rawQueryResult($this->adapter, "
+            BEGIN
+              HRIS_UPDATE_EMPLOYEE_SERVICE({$j->toCompanyId},{$j->toBranchId},{$j->toDepartmentId}, {$j->toDesignationId},{$j->toPositionId} ,{$j->toServiceTypeId} ,{$j->serviceEventTypeId} ,{$j->employeeId},{$j->startDate->getExpression()},{$j->toSalary});
+            END;");
     }
 
     function displayAutoNotification() {
