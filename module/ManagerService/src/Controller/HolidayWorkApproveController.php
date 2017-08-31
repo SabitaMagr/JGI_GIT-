@@ -164,9 +164,13 @@ class HolidayWorkApproveController extends AbstractActionController {
                     $workOnHolidayModel->status = "R";
                     $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
                 } else if ($action == "Approve") {
-                    $this->wohAppAction($detail);
+                    try {
+                        $this->wohAppAction($detail);
+                        $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage("Work on Holiday Request Approved but reward not given as position is not defined.");
+                    }
                     $workOnHolidayModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
                 }
                 if ($role == 4) {
                     $workOnHolidayModel->recommendedBy = $this->employeeId;

@@ -98,6 +98,7 @@ class RegisterAttendanceController extends AbstractActionController {
                     if (!isset($postData['checkInRemarks'])) {
                         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
                         $inTime = $todayAttendance['IN_TIME'];
+                        $halfDayFlag = $todayAttendance['HALFDAY_FLAG'];
                         $attendanceType = ($inTime) ? "OUT" : "IN";
                         $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
                         if (!$shiftDetails) {
@@ -105,12 +106,11 @@ class RegisterAttendanceController extends AbstractActionController {
                         }
                         $currentTimeDatabase = $shiftDetails['CURRENT_TIME'];
                         $checkInTimeDatabase = $shiftDetails['CHECKIN_TIME'];
-                        $checkOutTimeDatabase = $shiftDetails['CHECKOUT_TIME'];
+                        $checkOutTimeDatabase = ($halfDayFlag == 'Y') ? $shiftDetails['HALF_DAY_CHECKOUT_TIME'] : $shiftDetails['CHECKOUT_TIME'];
 
                         $currentDateTime = new DateTime($currentTimeDatabase);
                         $checkInDateTime = new DateTime($checkInTimeDatabase);
                         $checkOutDateTime = new DateTime($checkOutTimeDatabase);
-
                         if ($inTime) {
                             $diff = date_diff($checkOutDateTime, $currentDateTime);
                         } else {
@@ -152,7 +152,7 @@ class RegisterAttendanceController extends AbstractActionController {
         $userId = $this->params()->fromRoute('userId');
         $type = $this->params()->fromRoute('type');
         $userRepository = new UserSetupRepository($this->adapter);
-        $userDetail = $userRepository->fetchById($userId)->getArrayCopy();
+        $userDetail = $userRepository->fetchById($userId);
         $employeeId = $userDetail['EMPLOYEE_ID'];
 
         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);

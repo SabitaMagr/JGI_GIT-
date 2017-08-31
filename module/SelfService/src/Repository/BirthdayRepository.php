@@ -70,14 +70,22 @@ class BirthdayRepository {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function getBirthdayMessage($BirthdayEmployee = null) {
-        $sql = "SELECT E.FULL_NAME AS FROM_EMPLOYEE_NAME,EF.FILE_PATH,BM.* FROM HRIS_BIRTHDAY_MESSAGES BM"
-                . " LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=BM.FROM_EMPLOYEE)"
-                . "LEFT JOIN HRIS_EMPLOYEE_FILE EF ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)";
+    public function getBirthdayMessage($employeeId) {
+        $sql = "
+                SELECT E.FULL_NAME AS FROM_EMPLOYEE_NAME,
+                  EF.FILE_PATH,
+                  BM.BIRTHDAY_ID,
+                  TO_CHAR(BM.BIRTHDAY_DATE,'DD-MON-YYYY') AS BIRTHDAY_DATE,
+                  BM.MESSAGE,
+                  TO_CHAR(BM.CREATED_DT,'HH:MI AM DD-MON-YYYY') AS WISH_DATE
+                FROM HRIS_BIRTHDAY_MESSAGES BM
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON (E.EMPLOYEE_ID=BM.FROM_EMPLOYEE)
+                LEFT JOIN HRIS_EMPLOYEE_FILE EF
+                ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
+                WHERE BM.TO_EMPLOYEE={$employeeId}
+                ORDER BY BM.CREATED_DT DESC";
 
-        if ($BirthdayEmployee) {
-            $sql .= "WHERE BM.TO_EMPLOYEE=$BirthdayEmployee";
-        }
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
 
@@ -89,9 +97,29 @@ class BirthdayRepository {
         return $list;
     }
 
+    public function getBirthdayEmpDet($employeeId) {
+        $sql = "
+                SELECT E.EMPLOYEE_ID,
+                  E.FULL_NAME,
+                  DES.DESIGNATION_TITLE,
+                  E.BIRTH_DATE,
+                  EF.FILE_PATH
+                FROM HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_EMPLOYEE_FILE EF
+                ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
+                LEFT JOIN HRIS_DESIGNATIONS DES
+                ON (E.DESIGNATION_ID = DES.DESIGNATION_ID)
+                WHERE E.EMPLOYEE_ID     ={$employeeId}";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return $result->current();
+    }
+
     public function checkMessagePosted($fromEmployee, $toEmployee) {
         $sql = "SELECT count(*) as c FROM HRIS_BIRTHDAY_MESSAGES WHERE FROM_EMPLOYEE=$fromEmployee "
-                . "AND TO_EMPLOYEE=$toEmployee AND CREATED_DT=TRUNC(SYSDATE)";
+                . "AND TO_EMPLOYEE=$toEmployee";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();

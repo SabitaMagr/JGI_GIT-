@@ -4,9 +4,8 @@ namespace WorkOnHoliday\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use HolidayManagement\Model\Holiday;
-use LeaveManagement\Repository\LeaveAssignRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Repository\HolidayWorkApproveRepository;
 use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
@@ -44,7 +43,7 @@ class WorkOnHolidayStatus extends AbstractActionController {
     public function indexAction() {
         $holidayFormElement = new Select();
         $holidayFormElement->setName("holiday");
-        $holidays = \Application\Helper\EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC", null, false, true);
+        $holidays = EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC", null, false, true);
         $holidays1 = [-1 => "All"] + $holidays;
         $holidayFormElement->setValueOptions($holidays1);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
@@ -120,9 +119,13 @@ class WorkOnHolidayStatus extends AbstractActionController {
                 $workOnHolidayModel->status = "R";
                 $this->flashmessenger()->addMessage("Work on Holiday Request Rejected!!!");
             } else if ($action == "Approve") {
-                $this->wohAppAction($detail);
+                try {
+                    $this->wohAppAction($detail);
+                    $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage("Work on Holiday Request Approved but reward not given as position is not defined.");
+                }
                 $workOnHolidayModel->status = "AP";
-                $this->flashmessenger()->addMessage("Work on Holiday Request Approved");
             }
             $workOnHolidayModel->approvedBy = $this->employeeId;
             $workOnHolidayModel->approvedRemarks = $reason;
@@ -161,7 +164,7 @@ class WorkOnHolidayStatus extends AbstractActionController {
         return ['holidayKVList' => $holidayList, 'holidayList' => $holidayObjList];
     }
 
-    private function wohAppAction( $detail) {
+    private function wohAppAction($detail) {
         $this->holidayWorkApproveRepository->wohReward($detail['ID']);
     }
 

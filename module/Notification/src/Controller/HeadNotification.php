@@ -32,6 +32,7 @@ use Notification\Model\WorkOnHolidayNotificationModel;
 use Notification\Repository\NotificationRepo;
 use SelfService\Model\AdvanceRequest;
 use SelfService\Model\AttendanceRequestModel;
+use SelfService\Model\BirthdayModel;
 use SelfService\Model\LoanRequest;
 use SelfService\Model\Overtime;
 use SelfService\Model\TrainingRequest;
@@ -1297,6 +1298,16 @@ class HeadNotification {
         self::sendEmail($notification, 39, $adapter, $url);
     }
 
+    private static function birthdayWished(BirthdayModel $wish, AdapterInterface $adapter) {
+        $notification = self::initializeNotificationModel($wish->fromEmployee, $wish->toEmployee, \Notification\Model\BirthdayNotificationModel::class, $adapter);
+        $notification->route = json_encode(["route" => "birthday", "action" => "wish", "id" => $wish->toEmployee]);
+
+        $title = "Birthday Wish";
+        $desc = "{$notification->fromName} wished on your timeline.";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+    }
+
     public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, AbstractController $context = null, $senderDetail = null, $receiverDetail = null) {
         $url = null;
         if ($context != null) {
@@ -1347,10 +1358,10 @@ class HeadNotification {
                 self::advanceRecommend($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::ADVANCE_APPROVE_ACCEPTED:
-                self::advanceApprove($model, $adapter, $url,self::ACCEPTED);
+                self::advanceApprove($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::ADVANCE_APPROVE_REJECTED:
-                self::advanceApprove($model, $adapter, $url,self::REJECTED);
+                self::advanceApprove($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::ADVANCE_CANCELLED:
 //                ${"fn" . NotificationEvents::ADVANCE_CANCELLED}($model, $adapter, $url);
@@ -1510,6 +1521,9 @@ class HeadNotification {
                 break;
             case NotificationEvents::OVERTIME_APPROVE_REJECTED:
                 self::overtimeApprove($model, $adapter, $url, self::REJECTED);
+                break;
+            case NotificationEvents::BIRTHDAY_WISHED:
+                self::birthdayWished($model, $adapter);
                 break;
         }
     }

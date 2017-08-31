@@ -63,12 +63,12 @@ angular.module('hris', [])
                     scrollable: true,
                     sortable: true,
                     filterable: true,
+                    groupable: true,
                     pageable: {
                         input: true,
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FULL_NAME", title: "Employee Name", width: 200},
                         {field: "START_DATE", title: "Start Date", width: 120},
@@ -78,7 +78,15 @@ angular.module('hris', [])
                         {field: "TO_DEPARTMENT_NAME", title: "Department", width: 150},
                         {field: "TO_DESIGNATION_TITLE", title: "Designation", width: 150},
                         {field: "TO_POSITION_NAME", title: "Position", width: 150},
-                        {title: "Action", width: 140}
+                        {field: "JOB_HISTORY_ID", title: "Action", width: 140, template: `
+                        <a class="btn-edit"
+                        href="` + document.editLink + `/#: JOB_HISTORY_ID #" style="height:17px;">
+                        <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn-delete confirmation"
+                        href="` + document.deleteLink + `/#: JOB_HISTORY_ID #" id="bs_#:JOB_HISTORY_ID #" style="height:17px;">
+                        <i class="fa fa-trash-o"></i></a>
+                        </a>`}
                     ]
                 });
 

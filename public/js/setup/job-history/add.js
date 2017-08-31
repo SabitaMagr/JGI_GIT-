@@ -31,11 +31,14 @@
                 if (typeof data === "undefined" || data == null) {
                     return;
                 }
-                console.log(data);
-                $serviceEventTypeId.select2({value: data.SERVICE_EVENT_TYPE_ID});
-                $toCompanyId.select2({value: data.TO_COMPANY_ID});
-                $toBranchId.select2({value: data.TO_BRANCH_ID});
-                $toDepartmentId.select2({value: data.TO_DEPARTMENT_ID});
+                $serviceEventTypeId.val(data['SERVICE_EVENT_TYPE_ID']).trigger('change.select2');
+                $toCompanyId.val(data.TO_COMPANY_ID).trigger('change.select2');
+                $toBranchId.val(data.TO_BRANCH_ID).trigger('change.select2');
+                $toDepartmentId.val(data.TO_DEPARTMENT_ID).trigger('change.select2');
+                $toDesignationId.val(data.TO_DESIGNATION_ID).trigger('change.select2');
+                $toPositionId.val(data.TO_POSITION_ID).trigger('change.select2');
+                $toServiceTypeId.val(data.TO_SERVICE_TYPE_ID).trigger('change.select2');
+                $toSalary.val(data.TO_SALARY);
 
 
             }, function (error) {
@@ -48,7 +51,7 @@
             var value = $this.val();
             app.floatingProfile.setDataFromRemote(value);
             getPreviousHistory($startDate.val(), value);
-
+            showHistory(value);
         });
         $startDate.on('change', function () {
             var $this = $(this);
@@ -56,7 +59,40 @@
             getPreviousHistory(value, $employeeId.val());
         });
 
+        var showHistory = function (employeeId) {
+            app.pullDataById(document.wsGetHistoryList, {employeeId}).then(function (response) {
+                console.log(response);
+                if (response.success) {
+                    var data = [];
+                    var services = response.data;
 
+                    $.each(services, function (key, item) {
+                        data.push({
+                            time: item['START_DATE'],
+                            header: item['SERVICE_EVENT_TYPE_NAME'],
+                            body: [{
+                                    tag: 'div',
+                                    content: `
+                                            <table class="table">
+                                            <tr><td>Company</td><td>${item['COMPANY_NAME']}</td></tr>
+                                            <tr><td>Branch</td><td>${item['BRANCH_NAME']}</td></tr>
+                                            <tr><td>Department</td><td>${item['DEPARTMENT_NAME']}</td></tr>
+                                            <tr><td>Designation</td><td>${item['DESIGNATION_TITLE']}</td></tr>
+                                            <tr><td>Position</td><td>${item['POSITION_NAME']}</td></tr>
+                                            <tr><td>Service Type</td><td>${item['SERVICE_TYPE_NAME']}</td></tr>
+                                            <tr><td>Service Type</td><td>${item['TO_SALARY']}</td></tr>
+                                            </table>`
+                                }],
+                        });
+                    });
+                    $('#myTimeline').albeTimeline(data);
+
+                }
+            }, function () {
+
+            });
+        };
+        showHistory($employeeId.val());
     });
 })(window.jQuery, window.app);
 
