@@ -9,69 +9,81 @@ $this->headScript()
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\birthday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row">
-    <div class="col-sm-6 col-sm-offset-3">
-        <div class="row">
-            <h1>Birthday Today</h1>
-            <?php
-            if (isset($employeesBirthday['TODAY'])) {
-                foreach ($employeesBirthday['TODAY'] as $todayBirthday) :
-                    ?>
-                    <div class="person-list clearfix">
-                        <div class="col-xs-4 col-md-3 col-sm-3">
-                            <div class="person-pic">
-                                <img class="lazy"  data-original="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
-                            </div>
-                        </div>
-                        <div class="col-xs-6 col-md-6 col-sm-6">
-                            <div class="person-details">
-                                <h4><?php print $todayBirthday['FULL_NAME']; ?></h4>
-                                <span><?php print $todayBirthday['DESIGNATION_TITLE']; ?></span>
-                            </div>
-                        </div>
-                        <div class="col-xs-2 col-md-3 col-sm-3">
-                            <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
-                            <?php
-                            $btnName = 'Wish';
-                            if ($currentEmployeeId == $todayBirthday['EMPLOYEE_ID']) {
-                                $btnName = 'view';
-                            }
-                            ?>
-                            <a class="btn btn-default" href="<?php echo $this->url("birthday", ["action" => "wish", "id" => $todayBirthday['EMPLOYEE_ID']]) ?>"><?= $btnName ?></a>
-                        </div>
-                    </div>
-                    <?php
-                endforeach;
-            }
-            ?>
+
+<div class="portlet light portlet-fit bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class=" icon-layers font-green"></i>
+            <span class="caption-subject font-green bold uppercase">Today</span>
         </div>
-        <div class="row ">
-            <h1>Birthday Upcoming</h1>
-            <?php
-            if (isset($employeesBirthday['UPCOMING'])) {
-                foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) :
-                    ?>
-                    <div class="person-list clearfix">
-                        <div class="col-xs-4 col-md-3 col-sm-3">
-                            <div class="person-pic">
-                                <img class="lazy"  data-original="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>" alt="person picture">
+    </div>
+    <div class="portlet-body">
+        <div class="mt-element-card mt-element-overlay">
+            <div class="row">
+                <?php
+                if (isset($employeesBirthday['TODAY'])) {
+                    foreach ($employeesBirthday['TODAY'] as $todayBirthday) :
+                        ?>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <div class="mt-card-item">
+                                <div class="mt-card-avatar mt-overlay-1">
+                                    <img src="<?php print $todayBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $todayBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>">
+                                    <div class="mt-overlay">
+                                        <ul class="mt-info">
+                                            <li>
+                                                <a class="btn default btn-outline" href="<?php echo $this->url("birthday", ["action" => "wish", "id" => $todayBirthday['EMPLOYEE_ID']]) ?>">
+                                                    Make a wish
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-card-content">
+                                    <h3 class="mt-card-name"><?php print $todayBirthday['FULL_NAME']; ?></h3>
+                                    <p class="mt-card-desc font-grey-mint"><?php print $todayBirthday['DESIGNATION_TITLE']; ?></p>
+
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-6 col-md-6 col-sm-6">
-                            <div class="person-details">
-                                <h4><?php print $upcomingBirthday['FULL_NAME']; ?></h4>
-                                <span><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></span>
-                            </div>
-                        </div>
-                        <div class="col-xs-2 col-md-3 col-sm-3">
-                            <span class="birth-date"><?php print $upcomingBirthday['EMP_BIRTH_DATE']; ?></span>
-                        </div>
-                    </div>
-                    <?php
-                endforeach;
-            }
-            ?>
+                        <?php
+                    endforeach;
+                }
+                ?>
+            </div>
         </div>
     </div>
 </div>
 
+<div class="portlet light portlet-fit bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class=" icon-layers font-green"></i>
+            <span class="caption-subject font-green bold uppercase">Upcoming</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="mt-element-card mt-element-overlay">
+            <div class="row">
+                <?php
+                if (isset($employeesBirthday['UPCOMING'])) {
+                    foreach ($employeesBirthday['UPCOMING'] as $upcomingBirthday) :
+                        ?>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                            <div class="mt-card-item">
+                                <div class="mt-card-avatar mt-overlay-1">
+                                    <img src="<?php print $upcomingBirthday['FILE_PATH'] ? $this->basePath('uploads/' . $upcomingBirthday['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>">
+                                </div>
+                                <div class="mt-card-content">
+                                    <h3 class="mt-card-name"><?php print $upcomingBirthday['FULL_NAME']; ?></h3>
+                                    <p class="mt-card-desc font-grey-mint"><?php print $upcomingBirthday['DESIGNATION_TITLE']; ?></p>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    endforeach;
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>

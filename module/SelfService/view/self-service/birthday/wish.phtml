@@ -1,6 +1,3 @@
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\birthday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('css/dashboard.employee.css'));
@@ -8,60 +5,87 @@ $this->headLink()
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\birthday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div class="row">
-    <div class="col-sm-12 text-center">
-        <h2>
-            Happy BirthDay <b><?php echo $brithdayEmpDtl['FULL_NAME']; ?></b>
-        </h2> 
+<div class="portlet light portlet-fit bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class=" icon-layers font-green"></i>
+            <span class="caption-subject font-green bold uppercase">Birthday Employee</span>
+        </div>
     </div>
-</div>
-<?php
-if ($showMessageField == true) {
-    ?>
-    <form method="POST" action="<?php echo $this->url("birthday", ["action" => "wish", "id" => $brithdayEmpDtl['EMPLOYEE_ID']]) ?>">
-        <div class="row">
-            <div class=" col-sm-offset-4 col-sm-4">
-                <label><h4> Please type a wish message for <?php echo $brithdayEmpDtl['FULL_NAME']; ?></h4></label>
-                <textarea required="required" name="birthdayMessage" cols="50" rows="10"></textarea>
+    <div class="portlet-body portlet-body-birhday">
+        <div class="mt-element-card mt-element-overlay">
+            <div class="row">
+                <div class=" col-sm-3 col-sm-offset-4">
+                    <div class="mt-card-item margin-top-10 margin-bottom-10">
+                        <div class="mt-card-avatar mt-overlay-1">
+                            <img src="<?php print $brithdayEmpDtl['FILE_PATH'] ? $this->basePath('uploads/' . $brithdayEmpDtl['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>">
+                        </div>
+                        <div class="mt-card-content font-green">
+                            <h3 class="mt-card-name"><?php echo $brithdayEmpDtl['FULL_NAME']; ?></h3>
+                            <p class="mt-card-desc"><?php print $brithdayEmpDtl['DESIGNATION_TITLE']; ?></p>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-sm-offset-7 col-sm-4">
-                <input type="submit" value="SUBMIT">
-            </div>
-        </div>    
-    </form>
-
-    <?php
-}
-?>
-
-</br>
-</br>
-
-<h3>Birthday Wish to <?php echo $brithdayEmpDtl['FULL_NAME']; ?> </h3>
-<table class="table">
-    <tr>
-        <th>SN.</th>
-        <th>Wishes_From</th>
-        <th>Wish_Messages</th>
-    </tr>
-    <?php
-    $i = 1;
-    foreach ($birthdayMessage as $data) {
-        ?>
-        <tr>
-            <td><?= $i ?></td>
-            <td><div class="person-pic"><img height="100" width="100" src="<?php print $data['FILE_PATH'] ? $this->basePath('uploads/' . $data['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>">
-                </div><?= $data['FROM_EMPLOYEE_NAME'] ?></td>
-            <td><?= $data['MESSAGE'] ?></td>
+    </div>
+</div>
 
 
-        </tr>
 
-        <?php
-        $i++;
-    }
-    ?>
-</table>
+
+
+<div class="portlet light portlet-fit bordered">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-microphone font-green"></i>
+            <span class="caption-subject bold font-green uppercase">Wishes</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="timeline">
+            <?php if ($showMessageField): ?>
+                <div class="timeline-item">
+                    <div class="timeline-badge">
+                        <img class="timeline-badge-userpic" src="<?php print $wishEmpDetail['FILE_PATH'] ? $this->basePath('uploads/' . $wishEmpDetail['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>"> </div>
+                    <div class="timeline-body">
+                        <div class="timeline-body-arrow"> </div>
+                        <div class="timeline-body-head">
+                            <div class="timeline-body-head-caption">
+                                <a href="javascript:;" class="timeline-body-title font-blue-madison"><?= $wishEmpDetail['FULL_NAME'] ?></a>
+                            </div>
+                        </div>
+                        <div class="timeline-body-content">
+                            <form method="POST" action="<?php echo $this->url("birthday", ["action" => "wish", "id" => $brithdayEmpDtl['EMPLOYEE_ID']]) ?>">
+                                <textarea style="width: 80%;" required="required" name="birthdayMessage" rows="3"></textarea>
+                                <button type="submit" class="btn btn-info pull-right">Post</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            <?php endif; ?>
+            <?php foreach ($birthdayMessage as $data): ?>
+                <div class="timeline-item">
+                    <div class="timeline-badge">
+                        <img class="timeline-badge-userpic" src="<?php print $data['FILE_PATH'] ? $this->basePath('uploads/' . $data['FILE_PATH']) : $this->basePath('img/nobody_m.original.jpg'); ?>"> </div>
+                    <div class="timeline-body">
+                        <div class="timeline-body-arrow"> </div>
+                        <div class="timeline-body-head">
+                            <div class="timeline-body-head-caption">
+                                <a href="javascript:;" class="timeline-body-title font-blue-madison"><?= $data['FROM_EMPLOYEE_NAME'] ?></a>
+                                <span class="timeline-body-time font-grey-cascade">Wished at <?php print $data['WISH_DATE']; ?></span>
+                            </div>
+                        </div>
+                        <div class="timeline-body-content">
+                            <span class="font-grey-cascade">
+                                <?= $data['MESSAGE'] ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>

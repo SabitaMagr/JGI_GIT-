@@ -101,4 +101,6 @@ class NotificationEvents {
     const OVERTIME_APPROVE_REJECTED = 73;
     const OVERTIME_CANCELLED = 74;
     
+    const BIRTHDAY_WISHED= 78;
+    
 }

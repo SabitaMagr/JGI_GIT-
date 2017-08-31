@@ -1824,7 +1824,7 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     padding: 3px !important;
 }
 .jstree-anchor {
-white-space: normal !important;
+    white-space: normal !important;
 
 }
 
@@ -2124,4 +2124,8 @@ div#ndp-nepali-box{
 }
 .position-relative{
     position: relative;
+}
+
+.portlet-body-birhday{
+    background-image: url("../img/birthday_background_2.jpg");
 }
