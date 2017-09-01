@@ -21,29 +21,63 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "TITLE", title: "Training Name"},
-                {field: "REQUESTED_DATE", title: "Applied Date"},
-                {field: "START_DATE", title: "Start Date"},
-                {field: "END_DATE", title: "End Date"},
+                {title: "Applied Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                        title: "Nepali",
+                        template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}
+                    ]},
+                {title: "Start Date",
+                    columns: [{
+                            field: "START_DATE",
+                            title: "English",
+                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                        {field: "START_DATE_N",
+                        title: "Nepali",
+                        template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}
+                    ]},
+                {title: "End Date",
+                    columns: [{
+                            field: "END_DATE",
+                            title: "English",
+                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                        {field: "END_DATE_N",
+                        title: "Nepali",
+                        template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}
+                    ]},
                 {field: "DURATION", title: "Duration"},
                 {field: "TRAINING_TYPE", title: "Training Type"},
                 {field: "STATUS", title: "Status"},
-                {title: "Action"}
+                {field: ["REQUEST_ID", "ALLOW_TO_EDIT"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: REQUEST_ID #" style="height:17px;" title="view detail">
+                            <i class="fa fa-search-plus"></i>
+                            </a>
+                            #if(ALLOW_TO_EDIT == 1){#       
+                            <a class="confirmation btn-delete" href="` + document.deleteLink + `/#: REQUEST_ID #" id="bs_#:REQUEST_ID #" style="height:17px;">
+                            <i class="fa fa-trash-o"></i>
+                            </a> #}#
+                            </span>`}
             ]
         });
         
-        app.searchTable('trainingRequestTable',['TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','STATUS']);
+        app.searchTable('trainingRequestTable',['TITLE','REQUESTED_DATE', 'REQUESTED_DATE_N','START_DATE', 'START_DATE_N','END_DATE', 'END_DATE_N','DURATION','TRAINING_TYPE','STATUS']);
         
         app.pdfExport(
                         'trainingRequestTable',
                         {
                             'TRAINING_CODE': 'Training',
                             'TITLE': 'Title',
-                            'REQUESTED_DATE': 'Request Date',
-                            'START_DATE': 'Start Date',
-                            'END_DATE': 'End Date',
+                            'REQUESTED_DATE': 'Requested Date(AD',
+                            'REQUESTED_DATE_N': 'Requested Date(BS)',
+                            'START_DATE': 'Start Date(AD)',
+                            'START_DATE_N': 'Start Date(BS)',
+                            'END_DATE': 'End Date(AD)',
+                            'END_DATE_N': 'End Date(BS)',
                             'DURATION': 'Duration',
                             'TRAINING_TYPE': 'Type',
                             'STATUS': 'Status',
@@ -72,9 +106,12 @@
             var rows = [{
                     cells: [
                         {value: "Training Name"},
-                        {value: "Applied Date"},
-                        {value: "Start Date"},
-                        {value: "End Date"},
+                        {value: "Applied Date(AD"},
+                        {value: "Applied Date(BS)"},
+                        {value: "Start Date(AD)"},
+                        {value: "Start Date(BS)"},
+                        {value: "End Date(AD)"},
+                        {value: "End Date(BS)"},
                         {value: "Duration"},
                         {value: "Training Type"},
                         {value: "Status"},
@@ -103,8 +140,11 @@
                     cells: [
                         {value: dataItem.TITLE},
                         {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.START_DATE},
+                        {value: dataItem.START_DATE_N},
                         {value: dataItem.END_DATE},
+                        {value: dataItem.END_DATE_N},
                         {value: dataItem.DURATION},
                         {value: dataItem.TRAINING_TYPE},
                         {value: dataItem.STATUS},
@@ -128,6 +168,9 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

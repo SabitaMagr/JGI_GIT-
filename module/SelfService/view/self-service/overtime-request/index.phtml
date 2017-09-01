@@ -14,7 +14,9 @@ $this->headScript()
 ?>
 
 <script>
-    document.overtimeRequestList =<?php echo json_encode($list); ?>
+    document.overtimeRequestList =<?php echo json_encode($list) ?>;
+    document.viewLink ='<?= $this->url("overtimeRequest", ["action" => "view"]) ?>';
+    document.deleteLink ='<?= $this->url("overtimeRequest", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\overtimeRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -93,12 +95,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("overtimeRequest", ["action" => "view"]) ?>/#: OVERTIME_ID #" style="height:17px;" title="view detail">
+        href="/#: OVERTIME_ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i></a>
         </a>
         #if(ALLOW_TO_EDIT == 1){#       
         <a class="confirmation btn-delete"
-        href="<?= $this->url("overtimeRequest", ["action" => "delete"]) ?>/#: OVERTIME_ID #" id="bs_#:OVERTIME_ID #" style="height:17px;">
+        href="/#: OVERTIME_ID #" id="bs_#:OVERTIME_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>
         #}#

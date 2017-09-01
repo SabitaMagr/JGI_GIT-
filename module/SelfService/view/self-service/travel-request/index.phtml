@@ -17,7 +17,11 @@ $this->headScript()
 <script>
     document.urlCss = '<?= $this->basePath('css/custom.css') ?>';
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.travelRequestList =<?php echo json_encode($list); ?>
+    document.travelRequestList =<?php echo json_encode($list); ?>;
+    document.viewLink = '<?= $this->url("travelRequest", ["action" => "view"]) ?>';
+    document.deleteLink = '<?= $this->url("travelRequest", ["action" => "delete"]) ?>';
+    document.viewExpenseLink = '<?= $this->url("travelRequest", ["action" => "viewExpense"]) ?>';
+    document.expenseRequestLink = '<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -70,7 +74,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </div>
 	</div>
   
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         #: (FROM_DATE == null) ? '-' : FROM_DATE #
@@ -125,5 +129,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #}#
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

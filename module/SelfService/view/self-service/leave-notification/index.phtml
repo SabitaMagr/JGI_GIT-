@@ -14,7 +14,8 @@ $this->headScript()
 ?>
 
 <script>
-    document.list =<?php echo json_encode($list); ?>
+    document.list =<?php echo json_encode($list) ?>;
+    document.viewLink ='<?= $this->url("leaveNotification", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveNotification')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -65,7 +66,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 	</div>
     
    
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         #: (FULL_NAME == null) ? ' ' : FULL_NAME #
@@ -95,8 +96,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <a class="btn-edit"
         href="<?= $this->url("leaveNotification", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i>
-        </a>
+        </a> 
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

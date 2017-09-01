@@ -74,9 +74,16 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "ATTENDANCE_DT", title: "Attendance Date"},
+                        {title: "Attendance Date",
+                            columns: [{
+                                    field: "ATTENDANCE_DT",
+                                    title: "English",
+                                    template: "<span>#: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #</span>"},
+                                {field: "ATTENDANCE_DT_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N #</span>"}]},
                         {field: "IN_TIME", title: "Check In"},
                         {field: "OUT_TIME", title: "Check Out"},
                         {field: "TOTAL_HOUR", title: "Total Hour"},
@@ -86,11 +93,12 @@ angular.module('hris', [])
                     ]
                 });
 
-                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
+                app.searchTable('attendanceTable', ['ATTENDANCE_DT', 'ATTENDANCE_DT_N', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
                 app.pdfExport(
                         'attendanceTable',
                         {
-                            'ATTENDANCE_DT': ' Attendance Date',
+                            'ATTENDANCE_DT': ' Attendance Date(AD)',
+                            'ATTENDANCE_DT_N': ' Attendance Date(BS)',
                             'IN_TIME': 'In Time',
                             'OUT_TIME': 'Out Time',
                             'TOTAL_HOUR': 'Total Hour',

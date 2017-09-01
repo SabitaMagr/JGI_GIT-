@@ -15,6 +15,7 @@ $this->headScript()
 
 <script>
     document.list =<?php echo json_encode($list); ?>;
+    document.editLink = '<?= $this->url("trainingList", ['action' => 'view']) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\trainingList')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -88,8 +89,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td>
         <a class="btn-edit"
         href="<?= $this->url("trainingList", ['action' => 'view']); ?>/#:EMPLOYEE_ID #/#:TRAINING_ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i>
-        </a>
+            <i class="fa fa-search-plus"></i>
+            </a>
         </td>
         </tr>
     </script>
