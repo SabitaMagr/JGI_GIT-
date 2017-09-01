@@ -14,7 +14,9 @@ $this->headScript()
 ?>
 
 <script>
-    document.trainingRequestList =<?php echo json_encode($list); ?>
+    document.trainingRequestList =<?php echo json_encode($list) ?>;
+    document.viewLink ='<?= $this->url("trainingRequest", ["action" => "view"]) ?>';
+    document.deleteLink ='<?= $this->url("trainingRequest", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\trainingRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -68,7 +70,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     
     
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         #: (TITLE == null) ? '-' : TITLE #
@@ -104,5 +106,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         #}#
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

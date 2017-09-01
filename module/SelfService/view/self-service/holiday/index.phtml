@@ -34,9 +34,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -58,29 +58,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
 
-    <div id="holidayTable">
+        <div id="holidayTable">
+        </div>
     </div>
-	</div>
-    
- 
-
-
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
-        </td>
-        <td>
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
-        #: (HALF_DAY == null) ? '-' : HALF_DAY #
-        </td>
-        </td>
-        </tr>
-    </script>
-
 </div>

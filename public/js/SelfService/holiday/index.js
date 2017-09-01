@@ -21,27 +21,42 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "HOLIDAY_ENAME", title: "Holiday Name"},
-                {field: "START_DATE", title: "Start Date"},
-                {field: "END_DATE", title: "End Date"},
-                {field: "HALF_DAY", title: "Half Day"},
+                {field: "HOLIDAY_ENAME", title: "Holiday Name", template: "<span>#: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #</span>"},
+                {title: "Start Date",
+                    columns: [{
+                            field: "START_DATE",
+                            title: "English",
+                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"
+                        }, {field: "START_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"
+                        }]},
+                {title: "End Date",
+                    columns: [{
+                            field: "END_DATE",
+                            title: "English",
+                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                            {field: "END_DATE_N",
+                             title: "Nepali",
+                             template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"
+                         }]},
+                {field: "HALF_DAY", title: "Interval", template: "<span>#: (HALF_DAY == null) ? '-' : HALF_DAY #</span>"}
+                ,
             ]
         });
-        
-        app.searchTable('holidayTable',['HOLIDAY_ENAME','START_DATE','END_DATE','HALF_DAY']);
-        
+        app.searchTable('holidayTable', ['HOLIDAY_ENAME', 'START_DATE', 'START_DATE_N', 'END_DATE', 'END_DATE_N', 'HALF_DAY']);
         app.pdfExport(
                 'holidayTable',
                 {
                     'HOLIDAY_ENAME': 'Holiday',
-                    'START_DATE': 'Start Date,',
-                    'END_DATE':'End Date',
-                    'HALF_DAY':'HALF_DAY'
-                
+                    'START_DATE': 'Start Date(AD),',
+                    'START_DATE_N': 'Start Date(BS),',
+                    'END_DATE': 'End Date(AD)',
+                    'END_DATE_N': 'End Date(BS)',
+                    'HALF_DAY': 'HALF_DAY'
+
                 });
-        
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -56,5 +71,7 @@
             var grid = $("#holidayTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-    });
-})(window.jQuery, window.app);
+    }
+    );
+}
+)(window.jQuery, window.app);

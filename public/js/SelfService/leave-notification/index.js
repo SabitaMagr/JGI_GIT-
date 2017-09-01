@@ -21,30 +21,60 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "FULL_NAME", title: "Employee", width: 150},
-                {field: "LEAVE_ENAME", title: "Leave", width: 120},
-                {field: "APPLIED_DATE", title: "Requested Date", width: 140},
-                {field: "FROM_DATE", title: "From Date", width: 100},
-                {field: "TO_DATE", title: "To Date", width: 90},
-                {field: "NO_OF_DAYS", title: "Duration", width: 100},
-                {field: "STATUS", title: "Status",width:80},
-                {field: "APPROVED_FLAG", title: "Approved Flag",width:120},
-                {title: "Action",width:80}
+                {field: "FULL_NAME", title: "Employee"},
+                {field: "LEAVE_ENAME", title: "Leave"},
+                {title: "Applied Date",
+                    columns: [{
+                            field: "REQUESTED_DT",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
+                        {field: "REQUESTED_DT_N",
+                        title: "Nepali",
+                        template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}
+                    ]},
+                {title: "From Date",
+                    columns: [{
+                            field: "FROM_DATE",
+                            title: "English",
+                            template: "<span>#: (FROM_DATE == null) ? '-' : FROM_DATE #</span>"},
+                        {field: "FROM_DATE_N",
+                        title: "Nepali",
+                        template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N #</span>"}
+                    ]},
+                 {title: "To Date",
+                    columns: [{
+                            field: "TO_DATE",
+                            title: "English",
+                            template: "<span>#: (TO_DATE == null) ? '-' : TO_DATE #</span>"},
+                        {field: "TO_DATE_N",
+                        title: "Nepali",
+                        template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}
+                    ]},
+                {field: "NO_OF_DAYS", title: "Duration"},
+                {field: "STATUS", title: "Status"},
+                {field: "APPROVED_FLAG", title: "Approved Flag"},
+                 {field: ["ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
+                            <i class="fa fa-search-plus"></i>
+                            </a>
+                            </span>`}
             ]
         });
         
-        app.searchTable('leaveNotificationTable',['FULL_NAME','LEAVE_ENAME','APPLIED_DATE','FROM_DATE','TO_DATE','NO_OF_DAYS','STATUS','APPROVED_FLAG']);
+        app.searchTable('leaveNotificationTable',['FULL_NAME','LEAVE_ENAME','REQUESTED_DT','REQUESTED_DT_N','FROM_DATE','FROM_DATE_N','TO_DATE','TO_DATE_N','NO_OF_DAYS','STATUS','APPROVED_FLAG']);
         
         app.pdfExport(
                         'leaveNotificationTable',
                         {
                             'FULL_NAME': 'Name',
                             'LEAVE_ENAME': 'Leave',
-                            'REQUESTED_DT': 'Request Date',
-                            'FROM_DATE': 'From Date',
-                            'TO_DATE': 'To Date',
+                            'REQUESTED_DT': 'Requested Date(AD)',
+                            'REQUESTED_DT_N': 'Requested Date(BS)',
+                            'FROM_DATE': 'From Date(AD)',
+                            'FROM_DATE_N': 'From Date(BS)',
+                            'TO_DATE': 'To Date(AD)',
+                            'TO_DATE_N': 'To Date(BS)',
                             'NO_OF_DAYS': 'No Days',
                             'STATUS': 'Status',
                             'REMARKS': 'Remarks',
@@ -76,9 +106,12 @@
                     cells: [
                         {value: "Employee Name"},
                         {value: "Leave Name"},
-                        {value: "Applied Date"},
-                        {value: "Start Date"},
-                        {value: "End Date"},
+                        {value: "Applied Date(AD)"},
+                        {value: "Applied Date(BS)"},
+                        {value: "Start Date(AD)"},
+                        {value: "Start Date(BS)"},
+                        {value: "End Date(AD)"},
+                        {value: "End Date(BS)"},
                         {value: "Duration"},
                         {value: "Status"},
                         {value: "Remarks"},
@@ -109,8 +142,11 @@
                         {value: dataItem.FULL_NAME},
                         {value: dataItem.LEAVE_ENAME},
                         {value: dataItem.REQUESTED_DT},
+                        {value: dataItem.REQUESTED_DT_N},
                         {value: dataItem.FROM_DATE},
+                        {value: dataItem.FROM_DATE_N},
                         {value: dataItem.TO_DATE},
+                        {value: dataItem.TO_DATE_N},
                         {value: dataItem.NO_OF_DAYS},
                         {value: dataItem.STATUS},
                         {value: dataItem.REMARKS},
@@ -135,6 +171,9 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

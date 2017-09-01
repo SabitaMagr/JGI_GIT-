@@ -21,33 +21,56 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-                {field: "TRAINING_NAME", title: "Training",width:90},
-                {field: "START_DATE", title: "Start Date",width:80},
-                {field: "END_DATE", title: "End Date",width:80},
-                {field: "DURATION", title: "Duration(in hour)",width:100},
-                {field: "INSTITUTE_NAME", title: "Institute Name",width:100},
-                {field: "LOCATION", title: "Location",width:100},
-                {title:"Action",width:60}
+                {field: "TRAINING_NAME", title: "Training"},
+                {title: "Start Date",
+                    columns: [{
+                            field: "START_DATE",
+                            title: "English",
+                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                        {field: "START_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                {title: "End Date",
+                    columns: [{
+                            field: "END_DATE",
+                            title: "English",
+                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                        {field: "END_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+                {field: "DURATION", title: "Duration(in hour)"},
+                {field: "INSTITUTE_NAME", title: "Institute Name",
+                    template: "<span>#: (INSTITUTE_NAME == null) ? '-' : INSTITUTE_NAME #</span>"
+                },
+                {field: "LOCATION", title: "Location"},
+                {field: ["EMPLOYEE_ID", "TRAINING_ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.editLink + `/#:EMPLOYEE_ID #/#:TRAINING_ID #" style="height:17px;" title="view detail">'
+<i class="fa fa-search-plus"></i>
+</a>
+
+</span>`
+                }
             ]
         });
-        
-        app.searchTable('trainingTable',['TRAINING_CODE','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','LOCATION']);
-        
+
+        app.searchTable('trainingTable', ['TRAINING_CODE', 'START_DATE','START_DATE_N', 'END_DATE', 'END_DATE_N', 'DURATION', 'INSTITUTE_NAME', 'LOCATION']);
+
         app.pdfExport(
                 'trainingTable',
                 {
                     'TRAINING_NAME': 'Training',
-                    'START_DATE': 'Start Date',
-                    'END_DATE':'End Date',
-                    'DURATION':'Duration',
-                    'INSTITUTE_NAME':'Institute',
-                    'LOCATION':'Location'
-                
+                    'START_DATE': 'Start Date(AD)',
+                    'START_DATE_N': 'Start Date(BS)',
+                    'END_DATE': 'End Date(AD)',
+                    'END_DATE_N': 'End Date(BS)',
+                    'DURATION': 'Duration',
+                    'INSTITUTE_NAME': 'Institute',
+                    'LOCATION': 'Location'
+
                 });
-        
-        
+
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -62,8 +85,10 @@
             var rows = [{
                     cells: [
                         {value: "Training Name"},
-                        {value: "Start Date"},
-                        {value: "End Date"},
+                        {value: "Start Date(AD)"},
+                        {value: "Start Date(BS)"},
+                        {value: "End Date(AD)"},
+                        {value: "End Date(BS)"},
                         {value: "Duration(in hour)"},
                         {value: "Training Type"},
                         {value: "Instructor Name"},
@@ -89,7 +114,9 @@
                     cells: [
                         {value: dataItem.TRAINING_NAME},
                         {value: dataItem.START_DATE},
+                        {value: dataItem.START_DATE_N},
                         {value: dataItem.END_DATE},
+                        {value: dataItem.END_DATE_N},
                         {value: dataItem.DURATION},
                         {value: dataItem.TRAINING_TYPE},
                         {value: dataItem.INSTRUCTOR_NAME},
@@ -110,6 +137,9 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

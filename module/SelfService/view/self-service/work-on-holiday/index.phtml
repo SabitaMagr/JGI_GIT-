@@ -15,7 +15,9 @@ $this->headScript()
 
 <script>
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.workOnHolidayRequestList =<?php echo json_encode($list); ?>
+    document.workOnHolidayRequestList =<?php echo json_encode($list); ?>;
+    document.viewLink = '<?= $this->url("workOnHoliday", ["action" => "view"]) ?>';
+    document.deleteLink = '<?= $this->url("workOnHoliday", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnHoliday')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -67,7 +69,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 	</div>
     
        
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
@@ -89,16 +91,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("workOnHoliday", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
+       /#: ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i></a>
         </a>
         #if(ALLOW_TO_EDIT == 1){#       
         <a class="confirmation btn-delete"
-        href="<?= $this->url("workOnHoliday", ["action" => "delete"]) ?>/#: ID #" id="bs_#:ID #" style="height:17px;">
+        /#: ID #" id="bs_#:ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>
         #}#
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

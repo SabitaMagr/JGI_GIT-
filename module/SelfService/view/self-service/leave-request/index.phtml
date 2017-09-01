@@ -21,8 +21,10 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["leaveId"=>-1,"leaveRequestStatusId"=>-1,"fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
+    document.ids =<?php echo json_encode(["leaveId" => -1, "leaveRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.viewLink = '<?= $this->url("leaverequest", ["action" => "view"]) ?>';
+    document.deleteLink = '<?= $this->url("leaverequest", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -43,136 +45,101 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 <div ng-app="hris" ng-controller="leaveRequestListController">
     <div id="hris-page-content">
-    
-    <div class="portlet light bg-inverse">
-        
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="icon-paper-plane font-green-haze"></i>
-                <span class="caption-subject bold font-green-haze uppercase"> Filter</span>
-            </div>
-            <div class="tools">
-                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
-                <a href="" class="fullscreen" data-original-title="" title=""> </a>
-            </div>
-            <div class="actions">
-                <a href="<?= $this->url('leaverequest', ['action' => 'add']) ?>" class="btn default btn-sm" id="sample_editable_1_new">
-                    <i class="fa fa-plus-square icon-black"></i> Apply For Leave </a>
-                <div class="btn-group">
-                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-copy"></i> Tools
-                        <i class="fa fa-angle-down "></i>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-pencil" ></i> Export to Excel </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            
-        </div>
-        
-        
-    <div class="portlet-body">
-    <div class="row">
-        <div class="col-sm-2">
-            <?php print $this->formLabel($leaves); ?>
-            <?php print $this->formElement($leaves); ?>
-        </div>
-        <div class="col-sm-2">
-            <?php print $this->formLabel($leaveStatus); ?>
-            <?php print $this->formElement($leaveStatus); ?>
-        </div>  
-        <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
-        <div class="col-sm-6">
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label for="fromDate">From Date</label>
-                        <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
-                    </div>
 
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label for="nepaliFromDate">&nbsp;</label>
-                        <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
-                    </div>
+        <div class="portlet light bg-inverse">
 
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="icon-paper-plane font-green-haze"></i>
+                    <span class="caption-subject bold font-green-haze uppercase"> Filter</span>
                 </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label for="toDate">To Date</label>
-                        <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+                    <a href="" class="fullscreen" data-original-title="" title=""> </a>
+                </div>
+                <div class="actions">
+                    <a href="<?= $this->url('leaverequest', ['action' => 'add']) ?>" class="btn default btn-sm" id="sample_editable_1_new">
+                        <i class="fa fa-plus-square icon-black"></i> Apply For Leave </a>
+                    <div class="btn-group">
+                        <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-copy"></i> Tools
+                            <i class="fa fa-angle-down "></i>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li>
+                                <a href="javascript:;" id="export">
+                                    <i class="fa fa-pencil" ></i> Export to Excel </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <label for="nepaliToDate">&nbsp;</label>
-                        <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+
+            </div>
+
+
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <?php print $this->formLabel($leaves); ?>
+                        <?php print $this->formElement($leaves); ?>
+                    </div>
+                    <div class="col-sm-2">
+                        <?php print $this->formLabel($leaveStatus); ?>
+                        <?php print $this->formElement($leaveStatus); ?>
+                    </div>  
+                    <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="fromDate">From Date</label>
+                                    <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="nepaliFromDate">&nbsp;</label>
+                                    <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="toDate">To Date</label>
+                                    <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="nepaliToDate">&nbsp;</label>
+                                    <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4 col-sm-offset-8">
+                        <button id="reset" class="btn default btn-sm pull-right">
+                            Reset
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                        <label height="45"></label>
+                        <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
+                            Search
+                            <i class="fa fa-search"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
+
+        <div class="margin-top-20">
+
+            <div id="leaveRequestTable">
+            </div>
+        </div> 
     </div>
-        <div class="row">
-        <div class="col-sm-4 col-sm-offset-8">
-            <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-refresh"></i>
-                    </button>
-            <label height="45"></label>
-            <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
-                Search
-                <i class="fa fa-search"></i>
-            </button>
-        </div>
-        </div>
-    </div>
-    </div>
-        
-        
-    <div class="margin-top-20">
-
-        <div id="leaveRequestTable">
-        </div>
-    </div> 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
-        </td>
-        <td>
-        #: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #
-        </td>
-        <td>
-        #: (FROM_DATE == null) ? '-' : FROM_DATE #
-        </td>
-        <td>
-        #: (TO_DATE == null) ? '-' : TO_DATE #
-        </td>
-        <td>
-        #: (NO_OF_DAYS == null) ? '-' : NO_OF_DAYS #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>        
-        <a class="btn-edit"
-        href="<?= $this->url("leaverequest", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        #if(ALLOW_TO_EDIT == 1){#       
-        <a class="confirmation btn-delete"
-        href="<?= $this->url("leaverequest", ["action" => "delete"]) ?>/#: ID #" id="bs_#:ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        #}#
-        </td>
-        </tr>
-    </script>
-
-</div>
 </div>
