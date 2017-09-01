@@ -93,6 +93,7 @@ class UserSetupRepository implements RepositoryInterface {
             new Expression("FN_DECRYPT_PASSWORD(PASSWORD) AS PASSWORD"),
             new Expression("EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("ROLE_ID AS ROLE_ID"),
+            new Expression("IS_LOCKED AS IS_LOCKED"),
                 ], true);
 
         $select->from(UserSetup::TABLE_NAME);

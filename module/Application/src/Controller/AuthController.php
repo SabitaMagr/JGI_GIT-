@@ -2,20 +2,15 @@
 
 namespace Application\Controller;
 
-use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
 use Application\Model\User;
 use Application\Model\UserLog;
+use Application\Repository\LoginRepository;
 use Application\Repository\MonthRepository;
 use Application\Repository\UserLogRepository;
-use AttendanceManagement\Model\Attendance;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
-use AttendanceManagement\Repository\AttendanceRepository;
-use DateTime;
-use Exception;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Expression;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -106,8 +101,18 @@ class AuthController extends AbstractActionController {
                     $this->flashmessenger()->addMessage($message);
                 }
                 if ($result->isValid()) {
+                    if (isset($_COOKIE[$request->getPost('username')])) {
+                        setcookie($request->getPost('username'), '', 1, "/");
+                    }
                     //after authentication success get the user specific details
                     $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
+
+                    if ($resultRow->IS_LOCKED == 'Y') {
+                        $this->flashmessenger()->clearCurrentMessages();
+                        $this->flashmessenger()->addMessage('The account ' . $resultRow->USER_NAME . ' has been locked Please contact the Admin');
+                        $this->getAuthService()->clearIdentity();
+                        return $this->redirect()->toRoute($redirect);
+                    }
 
                     $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
 
@@ -146,6 +151,47 @@ class AuthController extends AbstractActionController {
 
                     // to add user log details in HRIS_USER_LOG
                     $this->setUserLog($this->adapter, $request->getServer('REMOTE_ADDR'), $resultRow->USER_ID);
+                } else {
+                    $loginRepo = new LoginRepository($this->adapter);
+                    $userValid = $loginRepo->fetchByUserName($request->getPost('username'));
+                    
+
+                    if (!$userValid) {
+                        $this->flashmessenger()->clearCurrentMessages();
+                        $this->flashmessenger()->addMessage('UserName ' . $request->getPost('username') . ' is not a valid username');
+                        $this->getAuthService()->clearIdentity();
+                        return $this->redirect()->toRoute($redirect);
+                    }
+                    
+                    if($userValid['IS_LOCKED']=='Y'){
+                        $this->flashmessenger()->clearCurrentMessages();
+                        $this->flashmessenger()->addMessage('UserName ' . $request->getPost('username') . ' is has been locked please contact admin');
+                        $this->getAuthService()->clearIdentity();
+                        return $this->redirect()->toRoute($redirect);
+                    }
+                    
+
+
+                    $cookie_name = $request->getPost('username');
+                    if (!isset($_COOKIE[$cookie_name])) {
+                        $cookie_value = 2;
+                        setcookie($cookie_name, $cookie_value, time() + 3600, "/");
+                    } else {
+                        if ($_COOKIE[$cookie_name] < 5) {
+                            $newCookieValue = $_COOKIE[$cookie_name] + 1;
+                            $atteptLeft = 6 - $newCookieValue;
+                            setcookie($cookie_name, $newCookieValue, time() + 3600, "/");
+                            $this->flashmessenger()->clearCurrentMessages();
+                            $this->flashmessenger()->addMessage('incorrect username and password for ' . $cookie_name . ' after ' . $atteptLeft . ' unsucessfull attempt account will be locked');
+                            $this->getAuthService()->clearIdentity();
+                        } else {
+                            $loginRepo->updateByUserName($request->getPost('username'));
+                            setcookie($cookie_name, '', 1, "/");
+                            $this->flashmessenger()->clearCurrentMessages();
+                            $this->flashmessenger()->addMessage('the account ' . $cookie_name . ' has been locked Please contact the Admin');
+                            $this->getAuthService()->clearIdentity();
+                        }
+                    }
                 }
             }
         }
