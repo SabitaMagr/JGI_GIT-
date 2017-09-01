@@ -59,6 +59,14 @@ class UserSetupForm{
      * @Annotation\Attributes({ "id":"form-repassword", "class":"form-repassword form-control" })
      */
     public $repassword;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Locked Status","value_options":{"N":"No","Y":"Yes"}})
+     * @Annotation\Attributes({ "id":"isLocked","class":"form-control"})
+     */
+    public $isLocked;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

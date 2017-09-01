@@ -14,6 +14,7 @@ $roleId = $form->get('roleId');
 $roleId->setValueOptions($roleList);
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employeeList);
+$isLocked = $form->get('isLocked');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -99,6 +100,12 @@ echo json_encode($menu); ?>;
                     </div>
                     
                     <div class="col-sm-4">
+                    <div class="form-group">
+                        <?php print $this->formLabel($isLocked); ?>
+                    <span class="required" aria-required="true">*</span>
+                    <?php print $this->formElement($isLocked); ?>
+                    <?php print $this->formElementErrors()->render($isLocked, ['class' => 'help-block error']); ?>
+                    </div>
                     </div>
                 </div>
                 
