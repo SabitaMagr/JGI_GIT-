@@ -18,9 +18,9 @@ $this->headScript()
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.viewLink='<?= $this->url("employee", ["action" => "view"]) ?>';
-    document.editLink='<?= $this->url("employee", ["action" => "edit"]) ?>';
-    document.deleteLink='<?= $this->url("employee", ["action" => "delete"]) ?>';
+    document.viewLink = '<?= $this->url("employee", ["action" => "view"]) ?>';
+    document.editLink = '<?= $this->url("employee", ["action" => "edit"]) ?>';
+    document.deleteLink = '<?= $this->url("employee", ["action" => "delete"]) ?>';
 </script>
 
 <div class="page-bar">
@@ -53,7 +53,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('employee', ['action' => 'add']) ?>" class="btn default btn-sm">
+                <a href="<?= $this->url('employee', ['action' => 'edit', 'tab' => 1]) ?>" class="btn default btn-sm">
                     <i class="fa fa-plus-square icon-black"></i> New </a>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
@@ -125,48 +125,4 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <div id="employeeTable">
     </div>
-
-
-
-
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        
-        <td>
-        #: (FULL_NAME == null) ? '-' : FULL_NAME #
-        </td>
-        <td>
-        #: (MOBILE_NO == null) ? '-' : MOBILE_NO #
-        </td>
-        <td>
-        #: (BIRTH_DATE == null) ? '-' : BIRTH_DATE #
-        </td>
-        <td>                 
-        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>
-        #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #
-        </td>
-        <td>
-        #: (DEPARTMENT_NAME == null) ? '-' : DEPARTMENT_NAME #
-        </td>
-        <td>
-        #: (DESIGNATION_TITLE == null) ? '-' : DESIGNATION_TITLE #
-        </td>
-        <td>
-         
-        <a class="btn-edit" title="Edit"
-        href="<?= $this->url("employee", ["action" => "edit"]) ?>/#:EMPLOYEE_ID#/1" style="height:17px;">
-        <i class="fa fa-edit"></i></a>
-        <a class="confirmation btn-delete" title="Delete"
-        href="<?= $this->url("employee", ["action" => "delete"]) ?>/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </td>
-
-        </tr>
-    </script>
-
-
-
-
 </div>

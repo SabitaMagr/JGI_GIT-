@@ -60,7 +60,7 @@ class Birthday extends AbstractActionController {
 
             $this->repository->add($birthdayModel);
             try {
-                HeadNotification::pushNotification(NotificationEvents::BIRTHDAY_WISHED, $birthdayModel, $this->adapter);
+                HeadNotification::pushNotification(NotificationEvents::BIRTHDAY_WISHED, $birthdayModel, $this->adapter, $this);
             } catch (Exception $e) {
                 
             }

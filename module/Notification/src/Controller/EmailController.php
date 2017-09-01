@@ -6,11 +6,11 @@ use Application\Helper\Helper;
 use Notification\Model\AdvanceRequestNotificationModel;
 use Notification\Model\AppraisalNotificationModel;
 use Notification\Model\AttendanceRequestNotificationModel;
+use Notification\Model\BirthdayNotificationModel;
 use Notification\Model\EmailTemplate;
 use Notification\Model\LeaveRequestNotificationModel;
 use Notification\Model\LeaveSubNotificationModel;
 use Notification\Model\LoanRequestNotificationModel;
-use Notification\Model\NotificationEvents;
 use Notification\Model\OvertimeReqNotificationModel;
 use Notification\Model\SalaryReviewNotificationModel;
 use Notification\Model\TrainingReqNotificationModel;
@@ -66,10 +66,11 @@ class EmailController extends AbstractActionController {
         34 => "Appraisal_Reviewed",
         35 => "Appraisee_Feedback",
         36 => "Attendance_Recommend",
-        37 => "Overtime Request",
-        38 => "Overtime Recommend",
-        39 => "Overtime Approve",
-        40 => "Monthly_Appraisal_Assigned"
+        37 => "Overtime_Request",
+        38 => "Overtime_Recommend",
+        39 => "Overtime_Approve",
+        40 => "Monthly_Appraisal_Assigned",
+        41 => "Birthday_Wish",
     ];
 
     private function getVariables() {
@@ -117,6 +118,9 @@ class EmailController extends AbstractActionController {
         $overtimeNotiModel = new OvertimeReqNotificationModel();
         $overtimeNotiModelOA = $overtimeNotiModel->getObjectAttrs();
 
+        $birthdayWish = new BirthdayNotificationModel();
+        $birthdayWishOA = $birthdayWish->getObjectAttrs();
+
         return [
             1 => $type1ObjVars,
             2 => $type1ObjVars,
@@ -157,7 +161,8 @@ class EmailController extends AbstractActionController {
             37 => $overtimeNotiModelOA,
             38 => $overtimeNotiModelOA,
             39 => $overtimeNotiModelOA,
-            40 => $type13ObjVars
+            40 => $type13ObjVars,
+            41 => $birthdayWishOA
         ];
     }
 

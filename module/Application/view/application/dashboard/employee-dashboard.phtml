@@ -34,8 +34,8 @@ $this->headScript()
     document.todoDeleteUrl = '<?php echo $this->url('task', ['action' => 'delete']); ?>';
     document.todoTaskList = <?php echo json_encode($todoList); ?>;
     document.todoTaskUpdateStatus = '<?php echo $this->url('task', ['action' => 'updateStatus']); ?>';
-    document.getEmpDashboardUrl='<?php echo $this->url('dashboard', ['action' => 'fetchEmployeeDashBoardDetails']); ?>'
-    
+    document.getEmpDashboardUrl = '<?php echo $this->url('dashboard', ['action' => 'fetchEmployeeDashBoardDetails']); ?>'
+
 </script>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -72,9 +72,9 @@ $missPunchUrl = $this->url('myattendance', ['action' => 'index', 'id' => 8]);
                     <img id="employeeImage" src="<?php print $this->basePath("img/nobody_m.original.jpg"); ?>">
                 </div>
                 <div class="col-sm-3 col-md-3 employee-details">
-                  
+
                     <h4 class="font-weight-bold" id="employeeFullName"></h4>
-                        <span id="employeeOfficialEmail"></span><br>
+                    <span id="employeeOfficialEmail"></span><br>
                     <span id="employeeDesignationTitle"></span><br>
                     <span id="employeeServiceDate"></span><br>
                 </div>
@@ -355,7 +355,10 @@ $missPunchUrl = $this->url('myattendance', ['action' => 'index', 'id' => 8]);
                                                         </div>
                                                     </div>
                                                     <div class="col-xs-2 col-md-3 col-sm-3">
-                                                        <span class="birth-date"><?php print $todayBirthday['EMP_BIRTH_DATE']; ?></span>
+                                                        <span class="birth-date">
+                                                            <?php print $todayBirthday['EMP_BIRTH_DATE']; ?>
+                                                            <a href="<?php print $this->url('birthday', ['action' => 'wish', 'id' => $todayBirthday['EMPLOYEE_ID']]); ?>" class="btn btn-link pull-right">wish</a>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             <?php endforeach; ?>

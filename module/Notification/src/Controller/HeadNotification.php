@@ -98,7 +98,6 @@ class HeadNotification {
     }
 
     private static function sendEmail(NotificationModel $model, int $type, AdapterInterface $adapter, Url $url) {
-        return;
         $isValidEmail = function ($email) {
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         };
@@ -1298,14 +1297,15 @@ class HeadNotification {
         self::sendEmail($notification, 39, $adapter, $url);
     }
 
-    private static function birthdayWished(BirthdayModel $wish, AdapterInterface $adapter) {
+    private static function birthdayWished(BirthdayModel $wish, AdapterInterface $adapter, Url $url) {
         $notification = self::initializeNotificationModel($wish->fromEmployee, $wish->toEmployee, \Notification\Model\BirthdayNotificationModel::class, $adapter);
         $notification->route = json_encode(["route" => "birthday", "action" => "wish", "id" => $wish->toEmployee]);
-
+        $notification->message = $wish->message;
         $title = "Birthday Wish";
         $desc = "{$notification->fromName} wished on your timeline.";
 
         self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 41, $adapter, $url);
     }
 
     public static function pushNotification(int $eventType, Model $model, AdapterInterface $adapter, AbstractController $context = null, $senderDetail = null, $receiverDetail = null) {
@@ -1523,7 +1523,7 @@ class HeadNotification {
                 self::overtimeApprove($model, $adapter, $url, self::REJECTED);
                 break;
             case NotificationEvents::BIRTHDAY_WISHED:
-                self::birthdayWished($model, $adapter);
+                self::birthdayWished($model, $adapter, $url);
                 break;
         }
     }

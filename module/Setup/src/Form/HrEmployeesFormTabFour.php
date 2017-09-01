@@ -43,16 +43,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Type Name"})
      * @Annotation\Attributes({ "id":"serviceTypeId","class":"form-control"})
      */
-    public $appServiceTypeId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Service Event Type Name"})
-     * @Annotation\Attributes({ "id":"serviceEventTypeId","class":"form-control","value":"2","disabled":"disabled"})
-     */
-    public $appServiceEventTypeId;
+    public $serviceTypeId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -61,7 +52,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Position Name"})
      * @Annotation\Attributes({ "id":"positionId","class":"form-control"})
      */
-    public $appPositionId;
+    public $positionId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -70,7 +61,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation Name"})
      * @Annotation\Attributes({ "id":"designationId","class":"form-control"})
      */
-    public $appDesignationId;
+    public $designationId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -79,7 +70,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Department Name"})
      * @Annotation\Attributes({ "id":"departmentId","class":"form-control"})
      */
-    public $appDepartmentId;
+    public $departmentId;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -88,9 +79,9 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch Name"})
      * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
      */
-    public $appBranchId;
-    
-      /**
+    public $branchId;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -106,36 +97,22 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Type"})
      * @Annotation\Attributes({ "id":"employeeType","class":"form-control"})
      */
-    
     public $employeeType;
-    public $branchId;
-    public $departmentId;
-    public $designationId;
-    public $positionId;
-    public $serviceTypeId;
-    public $serviceEventTypeId;
     public $modifiedBy;
     public $modifiedDt;
     public $mappings = [
         'joinDate' => 'JOIN_DATE',
         'salary' => 'SALARY',
         'salaryPf' => 'SALARY_PF',
-        'appServiceTypeId' => 'APP_SERVICE_TYPE_ID',
-        'appServiceEventTypeId' => 'APP_SERVICE_EVENT_TYPE_ID',
-        'appPositionId' => 'APP_POSITION_ID',
-        'appDesignationId' => 'APP_DESIGNATION_ID',
-        'appDepartmentId' => 'APP_DEPARTMENT_ID',
-        'appBranchId' => 'APP_BRANCH_ID',
         'branchId' => 'BRANCH_ID',
         'departmentId' => 'DEPARTMENT_ID',
         'designationId' => 'DESIGNATION_ID',
         'positionId' => 'POSITION_ID',
         'serviceTypeId' => 'SERVICE_TYPE_ID',
-        'serviceEventTypeId' => 'SERVICE_EVENT_TYPE_ID',
         'employeeType' => 'EMPLOYEE_TYPE',
         'modifiedBy' => 'MODIFIED_BY',
         'modifiedDt' => 'MODIFIED_DT',
-        'isHR'=>'IS_HR'
+        'isHR' => 'IS_HR'
     ];
 
 }

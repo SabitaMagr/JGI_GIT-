@@ -126,10 +126,6 @@ $empId = isset($id) ? $id : -1;
 ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuSelfService", "subMenu" => ["id" => "subMenuMyProfile"]];
-echo json_encode($menu);
-?>;
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
     document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';

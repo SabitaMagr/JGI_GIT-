@@ -22,11 +22,10 @@ $this->headScript()
 $formOne->setAttribute('role', 'form');
 $formOne->setAttribute('id', 'form1');
 
-//$employeeCode = $formOne->get('employeeCode');
-$companyId = $formOne->get('companyId');
 /**
  * Personal Information
  */
+$companyId = $formOne->get('companyId');
 $employeeCode = $formOne->get("employeeCode");
 $firstName = $formOne->get("firstName");
 $middleName = $formOne->get("middleName");
@@ -136,24 +135,21 @@ $joinDate = $formFour->get('joinDate');
 $salary = $formFour->get('salary');
 $salaryPf = $formFour->get('salaryPf');
 
-$serviceEventTypeId = $formFour->get('appServiceEventTypeId');
-$serviceEventTypeId->setValueOptions($serviceEventTypes);
 
-$serviceTypeId = $formFour->get('appServiceTypeId');
+$serviceTypeId = $formFour->get('serviceTypeId');
 $serviceTypeId->setValueOptions($serviceTypes);
 
-$positionId = $formFour->get('appPositionId');
+$positionId = $formFour->get('positionId');
 $positionId->setValueOptions($positions);
 
-$designationId = $formFour->get('appDesignationId');
+$designationId = $formFour->get('designationId');
 $designationId->setValueOptions($designations);
 
-$departmentId = $formFour->get('appDepartmentId');
+$departmentId = $formFour->get('departmentId');
 $departmentId->setValueOptions($departments);
 
 
-
-$branchId = $formFour->get('appBranchId');
+$branchId = $formFour->get('branchId');
 $branchId->setValueOptions($branches);
 
 
@@ -165,15 +161,6 @@ $employeeTypeValue = [
 $employeeType->setValueOptions($employeeTypeValue);
 $isHR = $formFour->get('isHR');
 
-if ($jobHistoryListNum > 0) {
-    $departmentId->setAttributes(["disabled" => "disabled"]);
-    $branchId->setAttributes(["disabled" => "disabled"]);
-    $designationId->setAttributes(["disabled" => "disabled"]);
-    $positionId->setAttributes(["disabled" => "disabled"]);
-    $serviceTypeId->setAttributes(["disabled" => "disabled"]);
-    $employeeType->setAttributes(["disabled" => "disabled"]);
-    $joinDate->setAttributes(["disabled" => "disabled"]);
-}
 
 
 $formSix->setAttribute('id', 'form6');
@@ -247,7 +234,6 @@ if ($this->messages) {
 }
 ?>
 <script>
-
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
@@ -260,8 +246,7 @@ if ($this->messages) {
     document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
     document.employeeId =<?= $id ?>;
     document.address =<?php echo json_encode($address); ?>;
-    document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';
-    document.setAppointmentFlag =<?php echo $jobHistoryListNum > 0 ? 'true' : 'false' ?>;</script>
+    document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -1379,21 +1364,6 @@ if ($this->messages) {
 
                             <div class="col-xs-12 col-sm-6 col-md-6">
                                 <div class="row bottomgap">
-                                    <div class="form-group   <?= empty($serviceEventTypeId->getMessages()) ? "" : "error" ?>">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                            <?php print $this->formLabel($serviceEventTypeId); ?></div>
-                                        <div class="col-xs-6 col-sm-6 cgap-4">
-                                            <?php print $this->formElement($serviceEventTypeId); ?></div>
-                                        <?php print $this->formElementErrors()->render($serviceEventTypeId, ['class' => 'help-block error']); ?>
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-
-                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
                                     <div class="form-group<?= empty($branchId->getMessages()) ? "" : "error" ?>">
                                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
                                             <?php print $this->formLabel($branchId); ?></div>
@@ -1500,27 +1470,6 @@ if ($this->messages) {
                                                     <option  value="<?php echo $shiftKey; ?>" <?php echo $shiftSelected; ?>><?php echo $shiftValue; ?></option>
                                                 <?php } ?>
                                             </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-6">
-                                <div class="row bottomgap">
-                                    <div class="form-group">
-                                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                            <label> To Date </label>
-                                        </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 cgap-4">
-                                            <div class="row">
-                                                <div class="col-md-6 nopaddinggap">
-                                                    <div class="input-group date">
-                                                        <input type="text" name="toDate" id="toDate" class="form-control" value="<?php echo $toDate; ?>" />
-                                                    </div>  
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <input type="text"   id="nepaliToDate" class="form-control " value="">
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
