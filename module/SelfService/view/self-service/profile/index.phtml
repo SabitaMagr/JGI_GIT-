@@ -1,10 +1,13 @@
 <?php
-$formOne->setAttribute('role', 'form');
-$formOne->setAttribute('id', 'form1');
-$companyId = $formOne->get('companyId');
+$this->headScript()->appendFile($this->basePath('js/setup/employee/view.js'))
+        ->appendFile($this->basePath('assets/global/plugins/jsPDF-master/dist/jspdf.debug.js'));
+?>
+
+<?php
 /**
  * Personal Information
  */
+$companyId = $formOne->get('companyId');
 $employeeCode = $formOne->get("employeeCode");
 $firstName = $formOne->get("firstName");
 $middleName = $formOne->get("middleName");
@@ -48,7 +51,6 @@ $addrTempVdcMunicipalityId = $formOne->get('addrTempVdcMunicipalityId');
 $addrTempDistrictId = $formOne->get('addrTempDistrictId');
 $addrTempZoneId = $formOne->get('addrTempZoneId');
 
-$formTwo->setAttribute('id', 'form2');
 $famFatherName = $formTwo->get('famFatherName');
 $famFatherOccupation = $formTwo->get('famFatherOccupation');
 $famMotherName = $formTwo->get('famMotherName');
@@ -61,7 +63,6 @@ $famSpouseOccupation = $formTwo->get('famSpouseOccupation');
 $famSpouseBirthDate = $formTwo->get('famSpouseBirthDate');
 $famSpouseWeddingAnniversary = $formTwo->get('famSpouseWeddingAnniversary');
 
-$formThree->setAttribute('id', 'form3');
 $idCardNo = $formThree->get('idCardNo');
 $idLbrf = $formThree->get('idLbrf');
 $idBarCode = $formThree->get('idBarCode');
@@ -79,18 +80,23 @@ $idCitizenshipIssuePlace = $formThree->get('idCitizenshipIssuePlace');
 $idPassportNo = $formThree->get('idPassportNo');
 $idPassportExpiry = $formThree->get('idPassportExpiry');
 
-$formFour->setAttribute('id', 'form4');
 $joinDate = $formFour->get('joinDate');
 $salary = $formFour->get('salary');
 $salaryPf = $formFour->get('salaryPf');
-$serviceEventTypeId = $formFour->get('appServiceEventTypeId');
-$serviceTypeId = $formFour->get('appServiceTypeId');
-$positionId = $formFour->get('appPositionId');
-$designationId = $formFour->get('appDesignationId');
-$departmentId = $formFour->get('appDepartmentId');
-$branchId = $formFour->get('appBranchId');
+$serviceTypeId = $formFour->get('serviceTypeId');
+$positionId = $formFour->get('positionId');
+$designationId = $formFour->get('designationId');
+$departmentId = $formFour->get('departmentId');
+$branchId = $formFour->get('branchId');
 
-$formSix->setAttribute('id', 'form6');
+$employeeType = $formFour->get('employeeType');
+$employeeTypeValue = [
+    'R' => 'Regular',
+    'C' => 'Contract'
+];
+$employeeType->setValueOptions($employeeTypeValue);
+
+
 $academicDegreeId = $formSix->get('academicDegreeId');
 $academicUniversityId = $formSix->get('academicUniversityId');
 $academicProgramId = $formSix->get('academicProgramId');
@@ -99,7 +105,6 @@ $rankType = $formSix->get('rankType');
 $rankValue = $formSix->get('rankValue');
 $passedYr = $formSix->get('passedYr');
 
-$formSeven->setAttribute('id', 'form7');
 
 $expOrgName = $formSeven->get('organizationName');
 $orgType = [
@@ -107,15 +112,12 @@ $orgType = [
     'Non-Financial' => 'Non-Financial'
 ];
 $expOrgType = $formSeven->get('organizationType');
-//print_r($expOrgType); die();
 
 $expOrgType->setValueOptions($orgType);
 $expPosition = $formSeven->get('position');
 $expFromDate = $formSeven->get('fromDate');
 $expToDate = $formSeven->get('toDate');
 
-
-$formEight->setAttribute('id', 'form8');
 
 $traName = $formEight->get('trainingName');
 $traDescription = $formEight->get('description');
@@ -125,38 +127,26 @@ $traToDate = $formEight->get('toDate');
 $empId = isset($id) ? $id : -1;
 ?>
 
-<script>
-    document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
-    document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
-    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';
-    document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>';
-    document.employeeId =<?= $id ?>;</script>
-
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\Profile')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-</div>
 <?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
 }
 ?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
-<div id="quaConId">
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\profile')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+</div>
+<div id="quaConId">   
     <div class="row esetup" style="margin-top:10px;">
         <div class="col-md-12" style="">
             <a class="btn btn-success pull-right" href="<?= $this->url("profile", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
                 <i class="fa fa-edit"></i>
             </a>
         </div>   
-    </div>
+    </div>    
     <div id="rootwizard" class="tabbable-custom">
         <div class="personal-info">     
             <p><i class="fa fa-user ticon" aria-hidden="true"></i>
@@ -166,6 +156,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-xs-12 col-sm-3 col-md-3 col-box">
                     <div class="profile-img-box">
                         <img alt="profile image"  class="profilepic" src="<?= $this->basePath("uploads/" . $filePath) ?>" />
+                        <span class="profilepic-label"><?php echo $employeeData['FULL_NAME']; ?> </span>
                     </div>
                 </div>
 
@@ -216,6 +207,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>  
 
+                    <!--EmployeeCode-->
                     <div class="row bottomgap">
                         <div class="form-group <?= empty($employeeCode->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
@@ -229,7 +221,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
                 <div class="col-xs-12 col-sm-3 col-md-3 col-box">
-
                     <div class="row bottomgap">
                         <div class="form-group <?= empty($middleName->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
@@ -238,6 +229,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $employeeData[\Setup\Model\HrEmployees::MIDDLE_NAME]; ?></div>
                         </div>
                     </div>
+
                     <div class="row bottomgap">
                         <div class="form-group  <?= empty($nameNepali->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
@@ -326,6 +318,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
 
+
+
+
+
+
                     <div class="row bottomgap">
                         <div class="form-group <?= empty($extensionNo->getMessages()) ? "" : "error" ?>">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
@@ -334,6 +331,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $employeeData[\Setup\Model\HrEmployees::EXTENSION_NO]; ?></div>
                         </div>
                     </div>
+
+
+
+
+
+
+
 
                     <div class="row bottomgap">
                         <div class="form-group  <?= empty($socialNetwork->getMessages()) ? "" : "error" ?>">
@@ -952,21 +956,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                 </div>
-
-                <div class="col-xs-12 col-sm-4 col-md-4">
-                    <div class="row bottomgap">
-                        <div class="form-group   <?= empty($serviceEventTypeId->getMessages()) ? "" : "error" ?>">
-                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                <?php print $this->formLabel($serviceEventTypeId); ?></div>
-                            <div class="col-xs-6 col-sm-6 cgap-4">
-                                <?php print $employeeData[Setup\Model\ServiceEventType::SERVICE_EVENT_TYPE_NAME]; ?></div>
-                        </div>
-                    </div>
-
-
-                </div>
-
-
                 <div class="col-xs-12 col-sm-4 col-md-4">
                     <div class="row bottomgap">
 
@@ -1014,6 +1003,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
                 </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="row bottomgap">
+                        <div class="form-group<?= empty($employeeType->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
+                                <?php print $this->formLabel($employeeType); ?></div>
+                            <div class="col-xs-6 col-sm-6 cgap-4">
+                                <?php print ($employeeTypeValue[$employeeData[\Setup\Model\HrEmployees::EMPLOYEE_TYPE]]); ?></div>
+                        </div>
+                    </div>
+
+
+                </div>
             </div>
 
         </div>
@@ -1035,9 +1037,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <td class="passedyr"><?php print $this->formLabel($passedYr); ?></td>
                             </tr>
                             <?php
-                            //print(count($empQualificationList)); die();
                             foreach ($empQualificationList as $empQualificationRow) {
-                                // print_r($empQualificationRow); die();
                                 ?>
                                 <tr>
                                     <td>
@@ -1075,7 +1075,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </table>
                     </div>
                 </div>
-                <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
         </div>
 
@@ -1118,7 +1117,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </table>
                     </div>
                 </div>
-                <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
         </div>
         <div class="status-info"> 
@@ -1156,9 +1154,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </table>
                     </div>
                 </div>
-                <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <div class="status-info"> 
@@ -1176,6 +1174,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td><label>Department </label></td>
                                         <td><label>Designation </label></td>
                                         <td><label>Position </label></td>
+                                        <td><label>Action</label></td>
                                     </tr>
                                     <?php
                                     foreach ($jobHistoryList as $jobHistory) {
@@ -1216,12 +1215,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 print ($jobHistory['TO_POSITION_NAME'] == null) ? ' ' : $jobHistory['TO_POSITION_NAME']
                                                 ?>
                                             </td>
+                                            <td>
+                                                <a class="btn-edit"
+                                                   href="<?= $this->url("jobHistory", ["action" => "edit", "id" => $jobHistory['JOB_HISTORY_ID']]) ?>" style="height:27px;">
+                                                    <i class="fa fa-search-plus"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                     <?php } ?>
                                 </table>
                             </div>
                         </div>
-                        <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
                     </div>
                 </div>
             </div>
@@ -1255,7 +1259,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </table>
                             </div>
                         </div>
-                        <!--<button id="qualificationSubmitBtn" ng-click="addQualification()">Submit</button>-->
                     </div>
                 </div>
             </div>
@@ -1288,25 +1291,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 <?php print $asset['ASSET_EDESC']; ?>
                                             </td>
                                             <td>
-                                                <?php
-                                                if ($asset['RETURNABLE'] == 'Y') {
-                                                    print 'Yes';
-                                                } else {
-                                                    print 'NO';
-                                                }
-                                                ?>
+                                                <?php print ($asset['RETURNABLE'] == 'Y') ? 'Yes' : 'No'; ?>
                                             </td>
                                             <td>
                                                 <?php print $asset['RETURN_DATE']; ?>
                                             </td>
                                             <td>
-                                                <?php
-                                                if (empty($asset['RETURNED_DATE']) && $asset['RETURNABLE'] == 'Y') {
-                                                    print 'Not returned';
-                                                } else {
-                                                    print $asset['RETURNED_DATE'];
-                                                }
-                                                ?>
+                                                <?php print (empty($asset['RETURNED_DATE']) && $asset['RETURNABLE'] == 'Y') ? 'Not returned' : $asset['RETURNED_DATE']; ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -1318,13 +1309,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
-
-        <div class="row esetup" style="margin-top:10px;">
-            <div class="col-md-12" style="text-align:center;">
-                <a class="btn btn-success"> Print</a>
-            </div>
-        </div>
-
     </div>
 </div>
 

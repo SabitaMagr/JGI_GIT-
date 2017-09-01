@@ -23,13 +23,20 @@ class JobHistoryRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        $this->tableGateway->insert($model->getArrayCopyForDB());
+        $history = $model->getArrayCopyForDB();
+        if (!isset($history['TO_SALARY'])) {
+            $history['TO_SALARY'] = 0;
+        }
+        $this->tableGateway->insert($history);
         $this->updateEmployeeProfile($model);
     }
 
     public function edit(Model $model, $id) {
-        $array = $model->getArrayCopyForDB();
-        $this->tableGateway->update($array, [JobHistory::JOB_HISTORY_ID => $id]);
+        $history = $model->getArrayCopyForDB();
+        if (!isset($history['TO_SALARY'])) {
+            $history['TO_SALARY'] = 0;
+        }
+        $this->tableGateway->update($history, [JobHistory::JOB_HISTORY_ID => $id]);
         $this->updateEmployeeProfile($model);
     }
 
@@ -316,9 +323,10 @@ class JobHistoryRepository implements RepositoryInterface {
     }
 
     function updateEmployeeProfile(JobHistory $j) {
+        $salary = isset($j->toSalary) ? $j->toSalary : 0;
         EntityHelper::rawQueryResult($this->adapter, "
             BEGIN
-              HRIS_UPDATE_EMPLOYEE_SERVICE({$j->toCompanyId},{$j->toBranchId},{$j->toDepartmentId}, {$j->toDesignationId},{$j->toPositionId} ,{$j->toServiceTypeId} ,{$j->serviceEventTypeId} ,{$j->employeeId},{$j->startDate->getExpression()},{$j->toSalary});
+              HRIS_UPDATE_EMPLOYEE_SERVICE({$j->toCompanyId},{$j->toBranchId},{$j->toDepartmentId}, {$j->toDesignationId},{$j->toPositionId} ,{$j->toServiceTypeId} ,{$j->serviceEventTypeId} ,{$j->employeeId},{$j->startDate->getExpression()},{$salary});
             END;");
     }
 

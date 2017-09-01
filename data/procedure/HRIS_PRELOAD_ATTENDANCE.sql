@@ -199,7 +199,7 @@ BEGIN
             V_MAX_ID,
             V_SHIFT_ID,
             'Y',
-            'DO'
+            'AB'
           );
         COMMIT;
         CONTINUE;

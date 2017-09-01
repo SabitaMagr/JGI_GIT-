@@ -8,6 +8,7 @@ use Application\Model\User;
 use Application\Model\UserLog;
 use Application\Repository\UserLogRepository;
 use AttendanceManagement\Model\Attendance;
+use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
 use DateTime;
@@ -161,6 +162,9 @@ class RegisterAttendanceController extends AbstractActionController {
         $shiftDetails = $attendanceDetailRepo->fetchEmployeeShfitDetails($employeeId);
         if (!$shiftDetails) {
             $shiftDetails = $attendanceDetailRepo->fetchEmployeeDefaultShift($employeeId);
+        }
+        if ($todayAttendance[AttendanceDetail::HALFDAY_FLAG] == 'Y') {
+            $shiftDetails['CHECKOUT_TIME'] = $shiftDetails['HALF_DAY_CHECKOUT_TIME'];
         }
 
         return Helper::addFlashMessagesToArray($this, [
