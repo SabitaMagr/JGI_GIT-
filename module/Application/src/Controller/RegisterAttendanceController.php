@@ -12,7 +12,10 @@ use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
 use DateTime;
 use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Model\AttendanceRequestModel;
+use SelfService\Repository\AttendanceRequestRepository;
 use System\Repository\UserSetupRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -122,10 +125,11 @@ class RegisterAttendanceController extends AbstractActionController {
                             return $this->redirect()->toRoute('registerAttendance', ['action' => 'checkin', 'userId' => $resultRow->USER_ID, 'type' => $attendanceType]);
                         }
                     }
-//                    else {
-//                        $this->attendanceRequest($postData,$employeeId);
-//                        die();
-//                    }
+                    else {
+                        $this->attendanceRequest($postData,$employeeId);
+                        $this->getAuthService()->clearIdentity();
+                        return $this->redirect()->toRoute('login');
+                    }
                     $result = $attendanceDetailRepo->getDtlWidEmpIdDate($employeeId, date(Helper::PHP_DATE_FORMAT));
                     if (!isset($result)) {
                         throw new Exception("Today's Attendance of employee with employeeId :$employeeId is not found.");
@@ -253,35 +257,38 @@ class RegisterAttendanceController extends AbstractActionController {
 //        echo '<pre>';
 //        print_r($postData);
 
-        $model = new AttendanceRequestModel();
-        $model->employeeId = $employeeId;
-        $model->attendanceDt = new Expression('TRUNC(SYSDATE)');
-//        $model->requestedDt = new Expression('TRUNC(SYSDATE)');
-        $model->id = ((int) Helper::getMaxId($this->adapter, $model::TABLE_NAME, "ID")) + 1;
-
+        $attendanceModel = new AttendanceRequestModel();
+        $attendanceModel->employeeId = $employeeId;
+        $attendanceModel->attendanceDt = new Expression('TRUNC(SYSDATE)');
+        $attendanceModel->id = ((int) Helper::getMaxId($this->adapter, $attendanceModel::TABLE_NAME, "ID")) + 1;
+//
+        $currTime = $postData['time'];
         if ($postData['type'] == 'IN') {
-            $model->inTime = Helper::getExpressionTime('TRUNC(SYSDATE)');
-            $model->outTime = NULL;
+            $attendanceModel->inTime = new Expression("TO_DATE('".$currTime."', 'HH:MI AM')");
+            $attendanceModel->outTime = NULL;
+            $attendanceModel->inRemarks=$postData['checkInRemarks'];
         } else {
-            $model->inTime = NULL;
-            $model->outTime = Helper::getExpressionTime('TRUNC(SYSDATE)');
+            $attendanceModel->inTime = NULL;
+            $attendanceModel->outTime = new Expression("TO_DATE('".$currTime."', 'HH:MI AM')");
+            $attendanceModel->outRemarks=$postData['checkInRemarks'];
         }
-        $model->status = "RQ";
-//        print_r($model);
+        $attendanceModel->status = "RQ";
         
-        $attendanceRepo = new AttendanceRepository($this->adapter);
-        $attendanceRepo->add($model);
-        $this->flashmessenger()->addMessage("Attendance Request send sucessfully !!!");
-        return $this->redirect()->toRoute('login');
+//        echo '<pre>';
+//        print_r($attendanceModel);
+//        die();
+        
+        $attendanceRepo = new AttendanceRequestRepository($this->adapter);
+        $attendanceRepo->add($attendanceModel);
 
 //        $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
-//        try {
-//            HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $model, $this->adapter, $this);
-//        } catch (Exception $e) {
-//            $this->flashmessenger()->addMessage($e->getMessage());
-//        }
+        try {
+            HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $attendanceModel, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+        
 
-//        die();
     }
 
 }

@@ -68,6 +68,7 @@ if ($type == 'IN') {
             <input type="hidden" name="username" value="<?= $username; ?>"/>
             <input type="hidden" name="password" value="<?= $password ?>"/>
             <input type="hidden" name="type" value="<?= $type ?>"/>
+            <input type="hidden" name="time" value="<?=$shiftDetails['CURRENT_TIME']; ?>"/>
             <input type="hidden" name="checkIn" value="1"/>
             <input class="btn btn-primary" type="submit" value="submit">
             <a href="<?php echo $this->url('logout'); ?>" class="btn btn-danger pull-right"> Cancel </a>
