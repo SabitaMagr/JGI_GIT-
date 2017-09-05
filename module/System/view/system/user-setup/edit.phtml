@@ -81,7 +81,6 @@ echo json_encode($menu); ?>;
                     </div>
                 </div>
                 
-                
                 <div class=" row">
                     <div class="col-sm-4">
                 <div class="form-group">
@@ -89,11 +88,12 @@ echo json_encode($menu); ?>;
                     <span class="required" aria-required="true">*</span>
                     <input name="password" required="required" id="form-password" class="form-password form-control" type="password" value="<?php echo $passwordDtl; ?>">
                 </div>
+                        <?php print $this->formElementErrors()->render($password, ['class' => 'help-block error']); ?>
                     </div>
                     
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="form-password">Re-Enter Password</label>
+                <div class="form-group" id="rePasswordDiv">
+                    <label for="form-repassword">Re-Enter Password</label>
                     <span class="required" aria-required="true">*</span>
                     <input name="repassword" required="required" id="form-repassword" class="form-repassword form-control" type="password" value="<?php echo $passwordDtl; ?>">
                 </div>

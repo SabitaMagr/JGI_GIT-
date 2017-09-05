@@ -47,6 +47,7 @@ class UserSetupForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Password"})
+     * @Annotation\Validator({"name":"Regex", "options":{"pattern":"/^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/","messages":{"regexNotMatch":"the password should be at least 8 character long and should contain Numeric, Alphabet, Capital Letter, Symbol Combinations"}}})
      * @Annotation\Attributes({ "id":"form-password", "class":"form-password form-control" })
      */
     public $password;
