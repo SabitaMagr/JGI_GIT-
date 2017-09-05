@@ -281,12 +281,12 @@ class RegisterAttendanceController extends AbstractActionController {
         $attendanceRepo = new AttendanceRequestRepository($this->adapter);
         $attendanceRepo->add($attendanceModel);
 
-//        $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
         try {
             HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $attendanceModel, $this->adapter, $this);
         } catch (Exception $e) {
             $this->flashmessenger()->addMessage($e->getMessage());
         }
+        $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
         
 
     }
