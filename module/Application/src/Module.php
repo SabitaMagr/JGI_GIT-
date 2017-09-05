@@ -69,6 +69,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             Controller\ApiController::class . "-index",
             Controller\ApiController::class . "-employee",
             Controller\ApiController::class . "-setup",
+            AuthController::class . '-changePwd',
         ];
         $app = $event->getApplication();
         $auth = $app->getServiceManager()->get('AuthService');
