@@ -15,7 +15,8 @@ $this->headScript()
 ?>
 
 <script>
-    document.shiftsAdjust =<?php echo json_encode($shiftsAdjust); ?>;
+    document.shiftsAdjust =<?php echo json_encode($shiftsAdjust) ?>;
+    document.addLink ='<?= $this->url("shiftAdjustment", ["action" => "add"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\shiftAdjustment')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
@@ -67,7 +68,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div id="shiftAdjustmentTable">
         </div>
     </div>
-
+<!--
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -84,11 +85,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit" 
-        href="<?= $this->url("shiftAdjustment", ["action" => "add"]); ?>/#:ADJUSTMENT_ID #" style="height:17px;">
+        href="`+ document.addLink +`/#:ADJUSTMENT_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>
 

@@ -21,21 +21,46 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    width: 80
+                    template: "<input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>  "
                 },
                 {field: "FULL_NAME", title: "Employee", width: 150},
                 {field: "HOLIDAY_ENAME", title: "Holiday", width: 120},
-                {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
-                {field: "FROM_DATE", title: "From Date", width: 100},
-                {field: "TO_DATE", title: "To Date", width: 100},
+                     {title: "Requested Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                {title: "From Date",
+                    columns: [{
+                            field: "FROM_DATE",
+                            title: "English",
+                            template: "<span>#: (FROM_DATE == null) ? '-' : FROM_DATE #</span>"},
+                        {field: "FROM_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N #</span>"}]},
+                {title: "To Date",
+                    columns: [{
+                            field: "TO_DATE",
+                            title: "English",
+                            template: "<span>#: (TO_DATE == null) ? '-' : TO_DATE #</span>"},
+                        {field: "TO_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}]},
                 {field: "DURATION", title: "Duration", width: 120},
                 {field: "YOUR_ROLE", title: "Your Role", width: 120},
-                {title: "Action", width: 70}
+                {field: ["ID"], title: "Action", template: `<span>  <a class="btn-edit"
+        href=" `+ document.viewLink +`/#:ID #/#:ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i></a>
+        </a>
+        </span>`}
             ]
         });
         
@@ -125,16 +150,19 @@
         
         
 
-        app.searchTable('holidayWorkApproveTable', ['FULL_NAME', 'HOLIDAY_ENAME', 'REQUESTED_DATE', 'FROM_DATE', 'TO_DATE', 'DURATION', 'YOUR_ROLE']);
+        app.searchTable('holidayWorkApproveTable', ['FULL_NAME', 'HOLIDAY_ENAME', 'REQUESTED_DATE','REQUESTED_DATE_N', 'FROM_DATE','FROM_DATE_N', 'TO_DATE','TO_DATE_N', 'DURATION', 'YOUR_ROLE']);
 
         app.pdfExport(
                 'holidayWorkApproveTable',
                 {
                     'FULL_NAME': 'Name',
                     'HOLIDAY_ENAME': 'Holiday',
-                    'REQUESTED_DATE': 'Request Date',
-                    'FROM_DATE': 'From Date',
-                    'TO_DATE': 'To Date',
+                    'REQUESTED_DATE': 'Request Date(AD)',
+                    'REQUESTED_DATE_N': 'Request Date(BS',
+                    'FROM_DATE': 'From Date(AD)',
+                    'FROM_DATE_N': 'From Date(BS)',
+                    'TO_DATE': 'To Date(AD)',
+                    'TO_DATE_N': 'To Date(BS)',
                     'DURATION': 'Duration',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
@@ -162,9 +190,12 @@
                     cells: [
                         {value: "Employee Name"},
                         {value: "Holiday Name"},
-                        {value: "Requested Date"},
-                        {value: "From Date"},
-                        {value: "To Date"},
+                        {value: "Requested Date(AD)"},
+                        {value: "Requested Date(BS)"},
+                        {value: "From Date(AD)"},
+                        {value: "From Date(BS)"},
+                        {value: "To Date(AD)"},
+                        {value: "To Date(BS)"},
                         {value: "Duration"},
                         {value: "Your Role"},
                         {value: "Status"},
@@ -192,8 +223,11 @@
                         {value: dataItem.FULL_NAME},
                         {value: dataItem.HOLIDAY_ENAME},
                         {value: dataItem.REQUESTED_DATE},
+                         {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.FROM_DATE},
+                        {value: dataItem.FROM_DATE_N},
                         {value: dataItem.TO_DATE},
+                        {value: dataItem.TO_DATE_N},
                         {value: dataItem.DURATION},
                         {value: dataItem.YOUR_ROLE},
                         {value: dataItem.STATUS},
@@ -214,6 +248,9 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

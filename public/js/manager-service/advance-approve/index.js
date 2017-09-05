@@ -21,21 +21,37 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
+           columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    width: 80
+                    template:"<input type='checkbox' id='#:ADVANCE_REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ADVANCE_REQUEST_ID#'></label>"
                 },
-                {field: "FULL_NAME", title: "Employee", width: 150},
-                {field: "ADVANCE_NAME", title: "Advance", width: 120},
-                {field: "REQUESTED_DATE", title: "Requested Date", width: 120},
-                {field: "ADVANCE_DATE", title: "Advance Date", width: 110},
-                {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 120},
-                {field: "TERMS", title: "Terms", width: 110},
-                {field: "YOUR_ROLE", title: "Your Role", width: 100},
-                {title: "Action", width: 70}
+                {field: "FULL_NAME", title: "Employee"},
+                {field: "ADVANCE_NAME", title: "Advance"},
+                 {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                 {title: "Advance Date",
+                            columns: [{
+                                    field: "ADVANCE_DATE",
+                                    title: "English",
+                                    template: "<span>#: (ADVANCE_DATE == null) ? '-' : ADVANCE_DATE #</span>"},
+                                {field: "ADVANCE_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (ADVANCE_DATE_N == null) ? '-' : ADVANCE_DATE_N #</span>"}]},
+                {field: "REQUESTED_AMOUNT", title: "Requested Amt."},
+                {field: "TERMS", title: "Terms"},
+                {field: "YOUR_ROLE", title: "Your Role"},
+                {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ADVANCE_REQUEST_ID #" style="height:17px;" title="view detail">
+                            <i class="fa fa-search-plus"></i>
+                            </a></span>`}
             ]
         });
 
@@ -125,15 +141,17 @@
 
 
 
-        app.searchTable('advanceApproveTable', ['FULL_NAME', 'ADVANCE_NAME', 'REQUESTED_DATE', 'ADVANCE_DATE', 'REQUESTED_AMOUNT', 'TERMS', 'YOUR_ROLE']);
+        app.searchTable('advanceApproveTable', ['FULL_NAME', 'ADVANCE_NAME', 'REQUESTED_DATE', 'REQUESTED_DATE_N', 'ADVANCE_DATE', 'ADVANCE_DATE_N', 'REQUESTED_AMOUNT', 'TERMS', 'YOUR_ROLE']);
 
         app.pdfExport(
                 'advanceApproveTable',
                 {
                     'FULL_NAME': 'Name',
                     'ADVANCE_NAME': 'Advance',
-                    'REQUESTED_DATE': 'Request Date',
-                    'ADVANCE_DATE': 'Advance Date',
+                    'REQUESTED_DATE': 'Request Date(AD)',
+                    'REQUESTED_DATE_N': 'Request Date(BS)',
+                    'ADVANCE_DATE': 'Advance Date(AD)',
+                    'ADVANCE_DATE_N': 'Advance Date(BS)',
                     'REQUESTED_AMOUNT': 'Request Amt',
                     'TERMS': 'Terms',
                     'YOUR_ROLE': 'Role',
@@ -161,8 +179,10 @@
                     cells: [
                         {value: "Employee Name"},
                         {value: "Advance Name"},
-                        {value: "Requested Date"},
-                        {value: "Advance Date"},
+                        {value: "Requested Date(AD)"},
+                        {value: "Requested Date(BS)"},
+                        {value: "Advance Date(AD)"},
+                        {value: "Advance Date(BS)"},
                         {value: "Requested Amount"},
                         {value: "Terms"},
                         {value: "Your Role"},
@@ -191,7 +211,9 @@
                         {value: dataItem.FULL_NAME},
                         {value: dataItem.ADVANCE_NAME},
                         {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.ADVANCE_DATE},
+                        {value: dataItem.ADVANCE_DATE_N},
                         {value: dataItem.REQUESTED_AMOUNT},
                         {value: dataItem.TERMS},
                         {value: dataItem.YOUR_ROLE},
@@ -213,6 +235,8 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

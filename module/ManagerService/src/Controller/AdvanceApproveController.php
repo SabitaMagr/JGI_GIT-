@@ -304,6 +304,8 @@ class AdvanceApproveController extends AbstractActionController {
                 'ADVANCE_NAME' => $row['ADVANCE_NAME'],
                 'ADVANCE_REQUEST_ID' => $row['ADVANCE_REQUEST_ID'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'REQUESTED_DATE_N' => $row['REQUESTED_DATE_N'],
+                'ADVANCE_DATE_N' => $row['ADVANCE_DATE_N'],
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {

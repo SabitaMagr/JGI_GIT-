@@ -70,26 +70,48 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 200},
-                        {field: "REQUESTED_DT", title: "Requested Date", width: 200},
-                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 160},
-                        {field: "IN_TIME", title: "Check In", width: 120},
-                        {field: "OUT_TIME", title: "Check Out", width: 120},
-                        {field: "STATUS", title: "Status", width: 100},
-                        {title: "Action", width: 100}
+                        {field: "FULL_NAME", title: "Employee",template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
+//                        {field: "REQUESTED_DT", title: "Requested Date", width: 200},
+                        {title: "Requested Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "AD",
+                            template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
+                        {field: "REQUESTED_DT_N",
+                            title: "BS",
+                            template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
+                 {title: "Attendance Date",
+                            columns: [
+                                {field: "ATTENDANCE_DT",
+                                    title: "AD",
+                                    template: "<span>#: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT # </span>"},
+                                {field: "ATTENDANCE_DT_N",
+                                    title: "BS",
+                                    template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N # </span>"}
+                            ]},
+//                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 160},
+                        {field: "IN_TIME", title: "Check In" ,template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
+                        {field: "OUT_TIME", title: "Check Out" ,template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
+                        {field: "STATUS", title: "Status" ,template: "<span>#: (STATUS == null) ? '-' : STATUS #</span>"},
+                        {field: ["ID"], title: "Action", template: `<span> <a class="btn-edit" 
+        href="`+ document.viewLink +`/#: ID #" style="height:17px;">
+        <i class="fa fa-search-plus"></i>
+        </a></span>`}
                     ]
                 });
                 
-                app.searchTable('attendanceRequestStatusTable',['FULL_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
+                app.searchTable('attendanceRequestStatusTable',['FULL_NAME','REQUESTED_DT','ATTENDANCE_DT', 'REQUESTED_DT_N','ATTENDANCE_DT_N','IN_TIME','OUT_TIME','STATUS']);
                 
                 app.pdfExport(
                 'attendanceRequestStatusTable',
                 {
                     'FULL_NAME': ' Name',
-                    'REQUESTED_DT': 'Request Date',
-                    'ATTENDANCE_DT': 'Attendance Date',
+                    'REQUESTED_DT': 'Request Date(AD)',
+                    'REQUESTED_DT_N': 'Request Date(BS)',
+                    'ATTENDANCE_DT': 'Attendance Date(AD)',
+                    'ATTENDANCE_DT_N': 'Attendance Date(BS)',
                     'IN_TIME': 'In Time',
                     'OUT_TIME': 'Out Time',
                     'TOTAL_HOUR':'Total Hour',
@@ -116,8 +138,10 @@ angular.module('hris', [])
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
-                                {value: "Requested Date"},
-                                {value: "Attendance Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "Attendance Date(AD)"},
+                                {value: "Attendance Date(BS)"},
                                 {value: "Check In Time"},
                                 {value: "Check Out Time"},
                                 {value: "Total Hour"},
@@ -144,7 +168,9 @@ angular.module('hris', [])
                             cells: [
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.REQUESTED_DT},
+                                {value: dataItem.REQUESTED_DT_N},
                                 {value: dataItem.ATTENDANCE_DT},
+                                {value: dataItem.ATTENDANCE_DT_N},
                                 {value: dataItem.IN_TIME},
                                 {value: dataItem.OUT_TIME},
                                 {value: dataItem.TOTAL_HOUR},
@@ -166,6 +192,8 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

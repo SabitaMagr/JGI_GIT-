@@ -14,41 +14,66 @@
                 input: true,
                 numeric: false
             },
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
 //                {field: "TRAINING_CODE", title: "Training Code",width:100},
-                {field: "TRAINING_NAME", title: "Training",width:130},
-                {field: "COMPANY_NAME", title: "Company",width:110},
-                {field: "START_DATE", title: "Start Date",width:110},
-                {field: "END_DATE", title: "End Date",width:110},
-                {field: "DURATION", title: "Duration(in hour)",width:120},
-                {field: "INSTITUTE_NAME", title: "Institute",width:130},
-                {title: "Action",width:110}
+                {field: "TRAINING_NAME", title: "Training"},
+                {field: "COMPANY_NAME", title: "Company"},
+                {title: "Start Date",
+                columns: [
+                    {field: "START_DATE",
+                        title: "AD",
+                        template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                    {field: "START_DATE_N",
+                        title: "BS",
+                        template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"} ]},
+            {title: "End Date",
+                columns: [
+                    {field: "END_DATE",
+                        title: "AD",
+                        template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                    {field: "END_DATE_N",
+                        title: "BS",
+                        template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"} ]},
+                {field: "DURATION", title: "Duration(in hour)"},
+                {field: "INSTITUTE_NAME", title: "Institute"},
+                {field: ["TRAINING_ID"], title: "Action", template: `<span>  <a class="btn-edit"
+        href="` + document.editLink + `/#:TRAINING_ID#" style="height:17px;">
+        <i class="fa fa-edit"></i>
+        </a>
+        <a class="btn-delete confirmation"
+        href="` + document.deleteLink + `/#:TRAINING_ID#" id="bs_#:TRAINING_ID #" style="height:17px;"> 
+        <i class="fa fa-trash-o"></i></a>
+        </span>`}
             ]
         });
-        
-        app.searchTable('trainingTable',['TRAINING_NAME','COMPANY_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME']);
-        
+
+        app.searchTable('trainingTable', ['TRAINING_NAME', 'COMPANY_NAME', 'START_DATE', 'END_DATE', 'START_DATE_N', 'END_DATE_N', 'DURATION', 'INSTITUTE_NAME']);
+
         app.pdfExport(
                 'trainingTable',
                 {
                     'TRAINING_NAME': 'Training',
                     'COMPANY_NAME': 'Company',
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date',
+                    'START_DATE': 'Start Date(AD)',
+                    'START_DATE_N': 'Start Date(BS)',
+                    'END_DATE': 'End Date(AD)',
+                    'END_DATE_N': 'End Date(BS)',
                     'DURATION': 'Duration',
                     'INSTITUTE_NAME': 'Institute'
                 }
         );
-        
+
         $("#export").click(function (e) {
             var rows = [{
                     cells: [
                         {value: "Training Name"},
                         {value: "Company"},
                         {value: "Training Type"},
-                        {value: "Start Date"},
-                        {value: "End Date"},
+                        {value: "Start Date(AD)"},
+                        {value: "Start Date(BS)"},
+                        {value: "End Date(AD)"},
+                        {value: "End Date(BS)"},
                         {value: "Duration(in hour)"},
                         {value: "Institute Name"},
                         {value: "Instructor Name"},
@@ -63,7 +88,7 @@
 
             filteredDataSource.read();
             var data = filteredDataSource.view();
-            
+
             for (var i = 0; i < data.length; i++) {
                 var dataItem = data[i];
                 rows.push({
@@ -73,7 +98,9 @@
                         {value: dataItem.COMPANY_NAME},
                         {value: dataItem.TRAINING_TYPE},
                         {value: dataItem.START_DATE},
+                        {value: dataItem.START_DATE_N},
                         {value: dataItem.END_DATE},
+                        {value: dataItem.END_DATE_N},
                         {value: dataItem.DURATION},
                         {value: dataItem.INSTITUTE_NAME},
                         {value: dataItem.INSTRUCTOR_NAME},
@@ -84,12 +111,14 @@
             excelExport(rows);
             e.preventDefault();
         });
-        
+
         function excelExport(rows) {
             var workbook = new kendo.ooxml.Workbook({
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
@@ -107,7 +136,7 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "TrainingList.xlsx"});
         }
-        
+
         window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

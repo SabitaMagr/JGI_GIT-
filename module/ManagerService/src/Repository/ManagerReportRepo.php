@@ -117,6 +117,7 @@ class ManagerReportRepo implements RepositoryInterface {
                   E.FULL_NAME                                      AS FULL_NAME,
                   A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,
                   INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT,
+                  BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_N,
                   INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM'))          AS IN_TIME,
                   INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM'))         AS OUT_TIME,
                   A.IN_REMARKS                                     AS IN_REMARKS,

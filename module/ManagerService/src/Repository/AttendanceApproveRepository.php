@@ -33,7 +33,9 @@ class AttendanceApproveRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([
             new Expression("INITCAP(TO_CHAR(AR.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT"),
+            new Expression("BS_DATE(TO_CHAR(AR.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_N"),
             new Expression("INITCAP(TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT"),
+            new Expression("BS_DATE(TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_N"),
             new Expression("INITCAP(TO_CHAR(AR.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
             new Expression("AR.STATUS AS STATUS"),
             new Expression("AR.APPROVED_BY AS APPROVED_BY"),

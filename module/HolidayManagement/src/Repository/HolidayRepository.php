@@ -92,7 +92,9 @@ class HolidayRepository implements RepositoryInterface {
     public function filterRecords($fromDate, $toDate) {
         $sql = "
 SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
-  INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))        AS END_DATE,
+ BS_DATE(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
+  INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE,
+  BS_DATE(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE_N,
   A.HOLIDAY_ID,
   A.HOLIDAY_CODE,
   INITCAP(A.HOLIDAY_ENAME) AS HOLIDAY_ENAME,

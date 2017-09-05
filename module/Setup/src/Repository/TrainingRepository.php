@@ -44,6 +44,8 @@ class TrainingRepository implements RepositoryInterface
     {
         $sql =  new Sql($this->adapter);
         $select = $sql->select();
+         $customCols = ["BS_DATE(TO_CHAR(T.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N",
+                        "BS_DATE(TO_CHAR(T.END_DATE, 'DD-MON-YYYY')) AS END_DATE_N"];
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(
                 Training::class,
                 [
@@ -52,7 +54,7 @@ class TrainingRepository implements RepositoryInterface
                 [
                     Training::START_DATE,
                     Training::END_DATE
-                ], NULL, NULL, NULL,'T')
+                ], NULL, NULL, NULL,'T',FALSE,FALSE,NULL,$customCols)
                 , false);
         
         

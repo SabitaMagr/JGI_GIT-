@@ -21,20 +21,44 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    width: 80
+                    template: "<input type='checkbox' id='#:OVERTIME_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:OVERTIME_ID#'></label> "
                 },
-                {field: "FULL_NAME", title: "Employee", width: 150},
-                {field: "REQUESTED_DATE", title: "Requested Date", width: 120},
-                {field: "OVERTIME_DATE", title: "Overtime Date", width: 100},
-                {field: "DETAILS", title: "Time (From-To)", width: 150},
-                {field: "TOTAL_HOUR", title: "Total Hour", width: 100},
-                {field: "YOUR_ROLE", title: "Your Role", width: 120},
-                {title: "Action", width: 70}
+                {field: "FULL_NAME", title: "Employee"},
+                {title: "Requested Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                {title: "Overtime Date",
+                    columns: [{
+                            field: "OVERTIME_DATE",
+                            title: "English",
+                            template: "<span>#: (OVERTIME_DATE == null) ? '-' : OVERTIME_DATE #</span>"},
+                        {field: "OVERTIME_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (OVERTIME_DATE_N == null) ? '-' : OVERTIME_DATE_N #</span>"}]},
+                {field: "DETAILS", title: "Time (From-To)", template: `<ul id="branchList">  
+        #  ln=DETAILS.length #
+        #for(var i=0; i<ln; i++) { #
+        <li>
+        #=i+1 #) #=DETAILS[i].START_TIME # - #=DETAILS[i].END_TIME #
+        </li>
+        #}#
+        </ul>`},
+                {field: "TOTAL_HOUR", title: "Total Hour"},
+                {field: "YOUR_ROLE", title: "Your Role"},
+                {field: ["OVERTIME_ID"], title: "Action", template: `<span><a class="btn-edit"
+        href=" ` + document.viewLink + ` /#:OVERTIME_ID #/#:ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i></a>
+       </span>`}
             ]
         });
 
@@ -124,14 +148,16 @@
 
 
 
-        app.searchTable('overtimeApproveTable', ['FULL_NAME', 'REQUESTED_DATE', 'OVERTIME_DATE', 'TOTAL_HOUR', 'YOUR_ROLE']);
+        app.searchTable('overtimeApproveTable', ['FULL_NAME', 'REQUESTED_DATE', 'OVERTIME_DATE', 'REQUESTED_DATE_N', 'OVERTIME_DATE_N', 'TOTAL_HOUR', 'YOUR_ROLE']);
 
         app.pdfExport(
                 'overtimeApproveTable',
                 {
                     'FULL_NAME': 'Name',
-                    'REQUESTED_DATE': 'Request Date',
-                    'OVERTIME_DATE': 'Overtime Date',
+                    'REQUESTED_DATE': 'Request Date(AD)',
+                    'REQUESTED_DATE_N': 'Request Date(BS)',
+                    'OVERTIME_DATE': 'Overtime Date(AD)',
+                    'OVERTIME_DATE_N': 'Overtime Date(BS)',
                     'TOTAL_HOUR': 'Total Hour',
                     'DESCRIPTION': 'Description',
                     'YOUR_ROLE': 'Role',
@@ -162,8 +188,10 @@
             var rows = [{
                     cells: [
                         {value: "Employee Name"},
-                        {value: "Requested Date"},
-                        {value: "Overtime Date"},
+                        {value: "Requested Date(AD)"},
+                        {value: "Requested Date(BS)"},
+                        {value: "Overtime Date(AD)"},
+                        {value: "Overtime Date(BS)"},
                         {value: "Time (From-To)"},
                         {value: "Total Hour"},
                         {value: "Description"},
@@ -196,7 +224,9 @@
                     cells: [
                         {value: dataItem.FULL_NAME},
                         {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.OVERTIME_DATE},
+                        {value: dataItem.OVERTIME_DATE_N},
                         {value: details1},
                         {value: dataItem.TOTAL_HOUR},
                         {value: dataItem.DESCRIPTION},
@@ -219,6 +249,8 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
