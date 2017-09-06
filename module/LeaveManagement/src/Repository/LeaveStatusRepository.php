@@ -188,6 +188,8 @@ class LeaveStatusRepository implements RepositoryInterface {
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $leaveId = $data['leaveId'];
         $leaveRequestStatusId = $data['leaveRequestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
+        
 
         if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -295,6 +297,11 @@ class LeaveStatusRepository implements RepositoryInterface {
         if ($leaveId != -1) {
             $sql .= " AND LA.LEAVE_ID ='" . $leaveId . "'";
         }
+        
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
+        }
 
         if ($fromDate != null) {
             $sql .= " AND LA.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
@@ -329,6 +336,7 @@ class LeaveStatusRepository implements RepositoryInterface {
         if ($serviceEventTypeId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
+        
 
         $sql .= " ORDER BY LA.REQUESTED_DT DESC";
 

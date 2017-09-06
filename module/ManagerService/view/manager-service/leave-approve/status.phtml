@@ -105,16 +105,19 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </select>
                 </div>
                 <div class="col-sm-2">
+                    <select class="form-control" name="employeeType" id="employeeTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
                 </div>
                 <div class="col-sm-2 ">
                     <?php print $this->formElement($leaves); ?>
                 </div>
-                <div class="col-sm-2 ">
-                    <?php print $this->formElement($leaveStatus); ?>
-                </div>
+                
             </div>
+            
             <div class="row margin-top-10">
                 <div class="col-sm-2">
                     <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control" placeholder="From Date"/>
@@ -129,8 +132,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-2">
                     <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                 </div>
+                
+               <div class="col-sm-2 ">
+                    <?php print $this->formElement($leaveStatus); ?>
+                </div>
+                
+            </div>
+            
+            <div class="row margin-top-10">
                 <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
-                <div class="col-sm-4">
+                <div class=" col-sm-offset-8 col-sm-4">
                     <button id="reset" class="btn default btn-sm pull-right">
                         Reset
                         <i class="fa fa-refresh"></i>
