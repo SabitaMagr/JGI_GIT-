@@ -16,6 +16,7 @@ $this->headScript()
 
 <script>
     document.leaveApprove =<?php echo json_encode($leaveApprove); ?>;
+    document.viewLink ='<?= $this->url("leaveapprove", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -84,7 +85,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         <input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>
@@ -112,10 +113,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("leaveapprove", ["action" => "view"]); ?>/#:ID #/#:ROLE #" style="height:17px;" title="view">
+        href="/#:ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </a>
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

@@ -184,6 +184,16 @@ return [
                     ],
                 ],
             ],
+            'updatePwd' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/auth[/:action[/:un]]',
+                    'defaults' => [
+                        'controller' => Controller\AuthController::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [

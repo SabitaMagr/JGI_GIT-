@@ -16,7 +16,8 @@ $this->headScript()
 
 <script>
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.loanApprove =<?php echo json_encode($loanApprove); ?>
+    document.loanApprove =<?php echo json_encode($loanApprove) ?>;
+    document.viewLink ='<?= $this->url("loanApprove", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\loanApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -81,7 +82,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
  
 
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         <input type='checkbox' id='#:LOAN_REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:LOAN_REQUEST_ID#'></label>    
@@ -106,10 +107,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("loanApprove", ["action" => "view"]); ?>/#:LOAN_REQUEST_ID #/#:ROLE #" style="height:17px;" title="view">
+        href="/#:LOAN_REQUEST_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </a>
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

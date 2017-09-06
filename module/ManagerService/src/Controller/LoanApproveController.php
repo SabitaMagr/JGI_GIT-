@@ -300,6 +300,8 @@ class LoanApproveController extends AbstractActionController {
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'LOAN_REQUEST_ID' => $row['LOAN_REQUEST_ID'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'REQUESTED_DATE_N' => $row['REQUESTED_DATE_N'],
+                'LOAN_DATE_N' => $row['LOAN_DATE_N'],
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {

@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -74,39 +74,58 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FULL_NAME", title: "Employee", width: 200},
                         {field: "LOAN_NAME", title: "Loan", width: 120},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                        {field: "LOAN_DATE", title: "Loan Date", width: 100},
+                        {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                        {title: "Loan Date",
+                            columns: [{
+                                    field: "LOAN_DATE",
+                                    title: "English",
+                                    template: "<span>#: (LOAN_DATE == null) ? '-' : LOAN_DATE #</span>"},
+                                {field: "LOAN_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (LOAN_DATE_N == null) ? '-' : LOAN_DATE_N #</span>"}]},
                         {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 150},
                         {field: "YOUR_ROLE", title: "Your Role", width: 150},
                         {field: "STATUS", title: "Status", width: 90},
-                        {title: "Action", width: 80}
+                        {field: ["LOAN_REQUEST_ID"], title: "Action", template: `<span>  <a class="btn  btn-icon-only btn-success"
+        href="` + document.viewLink + `/#: LOAN_REQUEST_ID #/#: ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i></a>
+        </span>`}
                     ]
                 });
-                
-                app.searchTable('loanRequestStatusTable',['FULL_NAME','LOAN_NAME','REQUESTED_DATE','LOAN_DATE','REQUESTED_AMOUNT','YOUR_ROLE','STATUS']);
-                
+
+                app.searchTable('loanRequestStatusTable', ['FULL_NAME', 'LOAN_NAME', 'REQUESTED_DATE', 'LOAN_DATE', 'REQUESTED_DATE_N', 'LOAN_DATE_N', 'REQUESTED_AMOUNT', 'YOUR_ROLE', 'STATUS']);
+
                 app.pdfExport(
-                'loanRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'LOAN_NAME': 'Loan',
-                    'REQUESTED_DATE': 'Request Date',
-                    'LOAN_DATE': 'Loan Date',
-                    'REQUESTED_AMOUNT': 'Reqest Amt',
-                    'YOUR_ROLE': 'Role',
-                    'STATUS': 'Status',
-                    'REASON': 'Reason',
-                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                    
-                });
-                
+                        'loanRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'LOAN_NAME': 'Loan',
+                            'REQUESTED_DATE': 'Request Date(AD)',
+                            'REQUESTED_DATE_N': 'Request Date(BS)',
+                            'LOAN_DATE': 'Loan Date(AD)',
+                            'LOAN_DATE_N': 'Loan Date(BS)',
+                            'REQUESTED_AMOUNT': 'Reqest Amt',
+                            'YOUR_ROLE': 'Role',
+                            'STATUS': 'Status',
+                            'REASON': 'Reason',
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+
+                        });
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -123,8 +142,10 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Loan Name"},
-                                {value: "Requested Date"},
-                                {value: "Loan Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "Loan Date(AD)"},
+                                {value: "Loan Date(BS)"},
                                 {value: "Your Role"},
                                 {value: "Requested Amount"},
                                 {value: "Status"},
@@ -152,7 +173,9 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.LOAN_NAME},
                                 {value: dataItem.REQUESTED_DATE},
+                                {value: dataItem.REQUESTED_DATE_N},
                                 {value: dataItem.LOAN_DATE},
+                                {value: dataItem.LOAN_DATE_N},
                                 {value: dataItem.YOUR_ROLE},
                                 {value: dataItem.REQUESTED_AMOUNT},
                                 {value: dataItem.STATUS},
@@ -173,6 +196,8 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

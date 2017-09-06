@@ -17,7 +17,8 @@ $this->headScript()
 <script>
      document.approveRejectUrl = '<?php echo $this->url('overtimeApprove', ['action' => 'batchApproveReject']); ?>';
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.overtimeRequest =<?php echo json_encode($overtimeRequest); ?>
+    document.overtimeRequest =<?php echo json_encode($overtimeRequest) ?>;
+    document.viewLink = '<?= $this->url("overtimeApprove", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\overtimeApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -74,7 +75,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div id="overtimeApproveTable">
     </div>
 	</div>
-
+<!--
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
@@ -108,10 +109,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("overtimeApprove", ["action" => "view"]); ?>/#:OVERTIME_ID #/#:ROLE #" style="height:17px;" title="view">
+        href=" `+ document.viewLink +` /#:OVERTIME_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
-        </a>
+        
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

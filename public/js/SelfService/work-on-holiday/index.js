@@ -1,7 +1,6 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        console.log(document.workOnHolidayRequestList);
         $("#workOnHolidayTbl").kendoGrid({
             excel: {
                 fileName: "WorkOnHolidayRequestList.xlsx",
@@ -21,40 +20,75 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "HOLIDAY_ENAME", title: "Holiday Name"},
-                {field: "REQUESTED_DATE", title: "Applied Date"},
-                {field: "FROM_DATE", title: "From Date"},
-                {field: "TO_DATE", title: "To Date"},
+                {title: "Applied Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "English",
+                            template: "<span> #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                        title: "Nepali",
+                        template: "<span> #: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"
+                    }]},
+            {title: "From Date",
+                columns: [{
+                        field: "FROM_DATE",
+                        title: "English",
+                        template: "<span> #: (FROM_DATE == null) ? '-' : FROM_DATE #</span>"},
+                    {field: "FROM_DATE_N",
+                    title: "Nepali",
+                    template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N #</span>"}   
+                ]},
+            {title: "To Date",
+                columns: [{
+                        field: "TO_DATE",
+                        title: "English",
+                        template: "<span>#: (TO_DATE == null) ? '-' : TO_DATE #</span>"},
+                    {field: "TO_DATE_N",
+                    title: "Nepali",
+                    template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}
+                ]},
                 {field: "DURATION", title: "Duration"},
                 {field: "STATUS", title: "Status"},
-                {title: "Action"}
+                {field: ["ID", "ALLOW_TO_EDIT"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
+                            <i class="fa fa-search-plus"></i>
+                            </a>
+                            #if(ALLOW_TO_EDIT == 1){#       
+                            <a class="confirmation btn-delete" href="` + document.deleteLink + `/#: ID #" id="bs_#:ID #" style="height:17px;">
+                            <i class="fa fa-trash-o"></i>
+                            </a> #}#
+                            </span>`
+                }
             ]
         });
-        
-        app.searchTable('workOnHolidayTbl',['HOLIDAY_ENAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','STATUS']);
-        
+
+        app.searchTable('workOnHolidayTbl', ['HOLIDAY_ENAME', 'REQUESTED_DATE', 'REQUESTED_DATE_N', 'FROM_DATE', 'FROM_DATE_N', 'TO_DATE', 'TO_DATE_N', 'DURATION', 'STATUS']);
+
         app.pdfExport(
-                        'workOnHolidayTbl',
-                        {
-                            'HOLIDAY_ENAME': 'Holiday',
-                            'REQUESTED_DATE': 'Request Date',
-                            'FROM_DATE': 'From Date',
-                            'TO_DATE': 'To Date',
-                            'DURATION': 'Duration',
-                            'STATUS': 'Status',
-                            'REMARKS': 'Remarks',
-                            'RECOMMENDER_NAME': 'Recommender',
-                            'APPROVER_NAME': 'Approver',
-                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                            'RECOMMENDED_DATE': 'Recommended Dt',
-                            'APPROVED_REMARKS': 'Approved Remarks',
-                            'APPROVED_DATE': 'Approved Dt'
-                        }
-                );
-        
-        
+                'workOnHolidayTbl',
+                {
+                    'HOLIDAY_ENAME': 'Holiday',
+                    'REQUESTED_DATE': 'Requested Date(AD)',
+                    'REQUESTED_DATE_N': 'Requested Date(BS)',
+                    'FROM_DATE': 'From Date(AD)',
+                    'FROM_DATE_N': 'From Date(BS)',
+                    'TO_DATE': 'To Date(AD)',
+                    'TO_DATE_N': 'To Date(BS)',
+                    'DURATION': 'Duration',
+                    'STATUS': 'Status',
+                    'REMARKS': 'Remarks',
+                    'RECOMMENDER_NAME': 'Recommender',
+                    'APPROVER_NAME': 'Approver',
+                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Dt',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Dt'
+                }
+        );
+
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -69,9 +103,12 @@
             var rows = [{
                     cells: [
                         {value: "Holiday Name"},
-                        {value: "Applied Date"},
-                        {value: "From Date"},
-                        {value: "To Date"},
+                        {value: "Applied Date(AD)"},
+                        {value: "Applied Date(BS)"},
+                        {value: "From Date(AD)"},
+                        {value: "From Date(BS)"},
+                        {value: "To Date(AD)"},
+                        {value: "To Date(BS)"},
                         {value: "Duration"},
                         {value: "Status"},
                         {value: "Remarks"},
@@ -98,8 +135,11 @@
                     cells: [
                         {value: dataItem.HOLIDAY_ENAME},
                         {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.FROM_DATE},
+                        {value: dataItem.FROM_DATE_N},
                         {value: dataItem.TO_DATE},
+                        {value: dataItem.TO_DATE_N},
                         {value: dataItem.DURATION},
                         {value: dataItem.STATUS},
                         {value: dataItem.REMARKS},
@@ -121,6 +161,9 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

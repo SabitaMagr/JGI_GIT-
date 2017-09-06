@@ -55,7 +55,9 @@ class LoanStatusRepository implements RepositoryInterface{
         
         $sql = "SELECT INITCAP(L.LOAN_NAME) AS LOAN_NAME,LR.REQUESTED_AMOUNT,
                 INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE,
+                BS_DATE(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE_N,
                 INITCAP(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                BS_DATE(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
                 LR.STATUS AS STATUS,
                 LR.EMPLOYEE_ID AS EMPLOYEE_ID,
                 LR.LOAN_REQUEST_ID AS LOAN_REQUEST_ID,

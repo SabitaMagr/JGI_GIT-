@@ -20,40 +20,65 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "ADVANCE_NAME", title: "Advance Name"},
-                {field: "REQUESTED_DATE", title: "Applied Date"},
-                {field: "ADVANCE_DATE", title: "Advance Date"},
+                {title: "Applied Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                {title: "Advance Date",
+                    columns: [{
+                            field: "ADVANCE_DATE",
+                            title: "English",
+                            template: "<span>#: (ADVANCE_DATE == null) ? '-' : ADVANCE_DATE #</span>"},
+                        {field: "ADVANCE_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (ADVANCE_DATE_N == null) ? '-' : ADVANCE_DATE_N #</span>"}]},
                 {field: "REQUESTED_AMOUNT", title: "Request Amount"},
                 {field: "TERMS", title: "Terms(in month)"},
                 {field: "STATUS", title: "Status"},
-                {title: "Action"}
+                {field: ["ADVANCE_REQUEST_ID", "ALLOW_TO_EDIT"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ADVANCE_REQUEST_ID #" style="height:17px;" title="view detail">
+                            <i class="fa fa-search-plus"></i>
+                            </a>
+                            #if(ALLOW_TO_EDIT == 1){#       
+                            <a class="confirmation btn-delete" href="` + document.deleteLink + `/#: ADVANCE_REQUEST_ID #" id="bs_#:ADVANCE_REQUEST_ID #" style="height:17px;">
+                            <i class="fa fa-trash-o"></i>
+                            </a> #}#
+                            </span>`
+                }
             ]
-        });
-        
-        app.searchTable('advanceTable',['ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','STATUS']);
-        
+        }
+        );
+
+        app.searchTable('advanceTable', ['ADVANCE_NAME', 'REQUESTED_DATE', 'REQUESTED_DATE_N', 'ADVANCE_DATE', 'ADVANCE_DATE_N', 'REQUESTED_AMOUNT', 'TERMS', 'STATUS']);
+
         app.pdfExport(
-                        'advanceTable',
-                        {
-                            'ADVANCE_NAME': 'Advance',
-                            'REQUESTED_DATE': 'Request Dt',
-                            'ADVANCE_DATE': 'Advance Dt',
-                            'REQUESTED_AMOUNT': 'Request Amt',
-                            'TERMS': 'Terms',
-                            'STATUS': 'Status',
-                            'REASON': 'Reason',
-                            'RECOMMENDER_NAME': 'Recommender',
-                            'APPROVER_NAME': 'Approver',
-                            'RECOMMENDED_REMARKS': 'Reccommended Remarks',
-                            'RECOMMENDED_DATE': 'Recommended Dt',
-                            'APPROVED_REMARKS': 'Approved Remarks',
-                            'APPROVED_DATE': 'Approved Dt'
-                        }
-                );
-        
-        
+                'advanceTable',
+                {
+                    'ADVANCE_NAME': 'Advance',
+                    'REQUESTED_DATE': 'Request Dt(AD)',
+                    'REQUESTED_DATE_N': 'Request Dt(BS)',
+                    'ADVANCE_DATE': 'Advance Dt(AD)',
+                    'ADVANCE_DATE_N': 'Advance Dt(BS)',
+                    'REQUESTED_AMOUNT': 'Request Amt',
+                    'TERMS': 'Terms',
+                    'STATUS': 'Status',
+                    'REASON': 'Reason',
+                    'RECOMMENDER_NAME': 'Recommender',
+                    'APPROVER_NAME': 'Approver',
+                    'RECOMMENDED_REMARKS': 'Reccommended Remarks',
+                    'RECOMMENDED_DATE': 'Recommended Dt',
+                    'APPROVED_REMARKS': 'Approved Remarks',
+                    'APPROVED_DATE': 'Approved Dt'
+                }
+        );
+
+
         function gridDataBound(e) {
             var grid = e.sender;
             if (grid.dataSource.total() == 0) {
@@ -68,8 +93,10 @@
             var rows = [{
                     cells: [
                         {value: "Advance Name"},
-                        {value: "Applied Date"},
-                        {value: "Advance Date"},
+                        {value: "Applied Date(AD)"},
+                        {value: "Applied Date(BS)"},
+                        {value: "Advance Date(AD)"},
+                        {value: "Advance Date(BS)"},
                         {value: "Requested Amount"},
                         {value: "Terms(in month)"},
                         {value: "Status"},
@@ -97,7 +124,9 @@
                     cells: [
                         {value: dataItem.ADVANCE_NAME},
                         {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.ADVANCE_DATE},
+                        {value: dataItem.ADVANCE_DATE_N},
                         {value: dataItem.REQUESTED_AMOUNT},
                         {value: dataItem.TERMS},
                         {value: dataItem.STATUS},
@@ -120,6 +149,8 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

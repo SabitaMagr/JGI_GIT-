@@ -91,7 +91,7 @@ class EntityHelper {
         return Helper::extractDbData($zendResult, true);
     }
 
-    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false, $inStringForm = false, array $minuteToHourColumnList = null) {
+    public static function getColumnNameArrayWithOracleFns(string $requestedName, array $initCapColumnList = null, array $dateColumnList = null, array $timeColumnList = null, array $timeIntervalColumnList = null, array $otherColumnList = null, string $shortForm = null, $selectedOnly = false, $inStringForm = false, array $minuteToHourColumnList = null, array $customCols = null) {
         $refl = new ReflectionClass($requestedName);
         $table = $refl->newInstanceArgs();
 
@@ -138,7 +138,9 @@ class EntityHelper {
                 array_push($objCols, Helper::columnExpression($tempCol, $shortForm));
             }
         }
-
+        if ($customCols != null && sizeof($customCols) > 0) {
+            $objCols = array_merge($objCols, $customCols);
+        }
         return $objCols;
     }
 

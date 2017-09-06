@@ -22,7 +22,8 @@ $this->headScript()
 
 <script>
     document.ids=<?php echo json_encode(["startDate1"=>"","nepaliStartDate1"=>"","endDate1"=>"","nepaliEndDate1"=>""]) ?>;
-    document.url = "<?= $this->url('restful', ['action', 'index']); ?>";
+    document.url = "<?= $this->url('restful', ['action', 'index']) ?>";
+    document.editLink ='<?= $this->url("holidaysetup", ["action" => "edit"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -127,7 +128,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
@@ -143,9 +144,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("holidaysetup", ["action" => "edit"]) ?>/#:HOLIDAY_ID#" style="height:17px;"> 
+        href="`+ document.editLink +`/#:HOLIDAY_ID#" style="height:17px;"> 
         <i class="fa fa-edit"></i>
         </a>
         </tr>
-    </script>
+    </script>-->
 </div>

@@ -104,10 +104,7 @@ class EmployeeController extends AbstractActionController {
 
     public function editAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
-        $tab = (int) $this->params()->fromRoute('tab', 0);
-        if (0 === $tab) {
-            return $this->redirect()->toRoute('employee', ['action' => 'index']);
-        }
+        $tab = (int) $this->params()->fromRoute('tab', 1);
 
         if (10 === $tab) {
             $this->flashmessenger()->addMessage("Employee Successfully Submitted!!!");

@@ -14,7 +14,8 @@ $this->headScript()
 ?>
 
 <script>
-    document.list =<?php echo json_encode($list); ?>
+    document.list =<?php echo json_encode($list) ?>;
+    document.viewLnk ='<?= $this->url("travelNotification", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelNotification')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -65,7 +66,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 	</div>
     
    
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         #: (FULL_NAME == null) ? ' ' : FULL_NAME #
@@ -90,10 +91,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("travelNotification", ["action" => "view"]) ?>/#: TRAVEL_ID #" style="height:17px;" title="view detail">
+        href="/#: TRAVEL_ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i>
         </a>
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

@@ -90,6 +90,14 @@ class AuthController extends AbstractActionController {
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
+                // check user passwordDays
+                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'));
+                if ($needPwdChange) {
+                    return $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $request->getPost('username')]);
+                }
+
+
+
                 //check authentication...
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
@@ -214,6 +222,64 @@ class AuthController extends AbstractActionController {
 
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toRoute('login');
+    }
+
+    public function checkPasswordExpire($userName) {
+        $maxPasswordDays = 45;
+        $loginRepo = new LoginRepository($this->adapter);
+        $result = $loginRepo->checkPasswordExpire($userName);
+        $createdDays = $result['CREATED_DAYS'];
+        $modifiedDays = $result['MODIFIED_DAYS'];
+        $isLocked = $result['IS_LOCKED'];
+
+//        echo '<pre>';
+//        print_r($result);
+//        die();
+        if ($modifiedDays == null) {
+            $passwordDays = $createdDays;
+        } else {
+            $passwordDays = $modifiedDays;
+        }
+
+        if ($isLocked == 'Y') {
+            return false;
+        }
+
+        if ($passwordDays > $maxPasswordDays) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function changePwdAction() {
+        $userName = $this->params()->fromRoute('un');
+        $message = [];
+
+        $request = $this->getRequest();
+        $loginRepo = new LoginRepository($this->adapter);
+        if ($request->isPost()) {
+            $postData = $request->getPost();
+            $userName = $postData['username'];
+            $oldPassword = $postData['oldpassword'];
+            $newPassword = $postData['password'];
+            $userOldPassword = $loginRepo->getPwdByUserName($userName);
+
+            if ($oldPassword != $userOldPassword) {
+                array_push($message, 'old password is not correct');
+            }elseif ($oldPassword == $userOldPassword && $userOldPassword==$newPassword) {
+                array_push($message, 'new password cannot be same as old password');
+            } else {
+                $loginRepo->updatePwdByUserName($userName, $newPassword);
+                $this->flashmessenger()->addMessage('please login with updated password');
+                return $this->redirect()->toRoute('login');
+            }
+        }
+
+        return new ViewModel([
+            'userName' => $userName,
+            'messages' => $message
+        ]);
     }
 
 }

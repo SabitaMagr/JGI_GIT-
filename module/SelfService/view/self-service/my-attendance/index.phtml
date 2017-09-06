@@ -149,31 +149,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             <div id="attendanceTable">
             </div>
-            <script id="rowTemplate" type="text/x-kendo-tmpl">
-                <tr>
-                <td>
-                #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
-                </td>
-                <td>    
-                #: (IN_TIME == null) ? '-' : IN_TIME #
-                </td>
-                <td>
-                #: (OUT_TIME == null) ? '-' : OUT_TIME #
-                </td>
-                <td>
-                #: (TOTAL_HOUR == null) ? '-' : TOTAL_HOUR #
-                </td>
-                <td>
-                #: (STATUS == null) ? '-' : STATUS #
-                </td>
-                <td>
-                #: (IN_REMARKS == null) ? '-' : IN_REMARKS #
-                </td>
-                <td>
-                #: (OUT_REMARKS == null) ? '-' : OUT_REMARKS #
-                </td>
-                </tr>
-            </script>
+            
         </div>
     </div>
 </div>

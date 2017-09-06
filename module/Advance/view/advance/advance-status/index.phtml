@@ -23,7 +23,8 @@ $this->headScript()
 <script>
     document.ids=<?php echo json_encode(["advanceId"=>-1,"advanceRequestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate"=>"","toDate1"=>"","nepaliToDate"=>""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.viewlink ='<?= $this->url("advanceStatus", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -154,7 +155,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td> 
         #: (FULL_NAME == null) ? ' ' : FULL_NAME #
@@ -182,12 +183,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("advanceStatus", ["action" => "view"]) ?>/#: ADVANCE_REQUEST_ID #" style="height:17px;" title="view">
+        href="`+ document.viewLink +`/#: ADVANCE_REQUEST_ID #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a>
         </td>
         </tr>
-    </script>
+    </script>-->
 
 </div>    
 

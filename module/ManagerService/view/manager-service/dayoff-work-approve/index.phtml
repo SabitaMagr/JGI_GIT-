@@ -17,7 +17,8 @@ $this->headScript()
 <script>
     document.approveRejectUrl = '<?php echo $this->url('dayoffWorkApprove', ['action' => 'batchApproveReject']); ?>';
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.dayoffWorkRequest =<?php echo json_encode($dayoffWorkRequest); ?>;
+    document.dayoffWorkRequest =<?php echo json_encode($dayoffWorkRequest) ?>;
+    document.viewLink ='<?= $this->url("dayoffWorkApprove", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\dayoffWorkApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -77,7 +78,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     
 
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         <input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>    
@@ -107,5 +108,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </a>
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

@@ -81,8 +81,10 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([
             new Expression("INITCAP(TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY')) AS ADVANCE_DATE"),
+            new Expression("BS_DATE(TO_CHAR(AR.ADVANCE_DATE, 'DD-MON-YYYY')) AS ADVANCE_DATE_N"),
             new Expression("AR.STATUS AS STATUS"),
             new Expression("INITCAP(TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("BS_DATE(TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N"),
             new Expression("INITCAP(TO_CHAR(AR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("INITCAP(TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("AR.ADVANCE_REQUEST_ID AS ADVANCE_REQUEST_ID"),

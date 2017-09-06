@@ -72,30 +72,61 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 150},
-                        {field: "LEAVE_ENAME", title: "Leave", width: 120},
-                        {field: "APPLIED_DATE", title: "Requested Date", width: 130},
-                        {field: "START_DATE", title: "From Date", width: 100},
-                        {field: "END_DATE", title: "To Date", width: 90},
-                        {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
-                        {field: "APPRVOER_NAME", title: "Approver", width: 120},
-                        {field: "NO_OF_DAYS", title: "Duration", width: 90},
-                        {field: "STATUS", title: "Status", width: 80},
-                        {title: "Action", width: 70}
+                        {field: "FULL_NAME", title: "Employee"},
+                        {field: "LEAVE_ENAME", title: "Leave"},
+//                        {field: "APPLIED_DATE", title: "Requested Date", width: 130},
+                        {title: "Requested Date",
+                    columns: [{
+                            field: "APPLIED_DATE",
+                            title: "AD",
+                            template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"},
+                        {field: "APPLIED_DATE_N",
+                            title: "BS",
+                            template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"}]},
+                {title: "From Date",
+                    columns: [{
+                            field: "START_DATE",
+                            title: "AD",
+                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                        {field: "START_DATE_N",
+                            title: "BS",
+                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                {title: "To Date",
+                    columns: [{
+                            field: "END_DATE",
+                            title: "AD",
+                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                        {field: "END_DATE_N",
+                            title: "BS",
+                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+//                        {field: "START_DATE", title: "From Date", width: 100},
+//                        {field: "END_DATE", title: "To Date", width: 90},
+                        {field: "RECOMMENDER_NAME", title: "Recommender"},
+                        {field: "APPRVOER_NAME", title: "Approver", template: "<span> #: (APPROVER_NAME == null) ? '-' : APPROVER_NAME #</span>"},
+                        {field: "NO_OF_DAYS", title: "Duration"},
+                        {field: "STATUS", title: "Status"},
+                        {field: ["ID"], title: "Action", template: `<span><a class="btn-edit"
+        href="`+ document.viewLink +`/#: ID #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i>
+        </a></span>`}
                     ]
                 });
 
-                app.searchTable('leaveRequestStatusTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'START_DATE', 'END_DATE', 'RECOMMENDER_NAME', 'APPRVOER_NAME', 'NO_OF_DAYS', 'STATUS']);
+                app.searchTable('leaveRequestStatusTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'START_DATE', 'END_DATE', 'APPLIED_DATE_N', 'START_DATE_N', 'END_DATE_N', 'RECOMMENDER_NAME', 'APPRVOER_NAME', 'NO_OF_DAYS', 'STATUS']);
 
                 app.pdfExport(
                         'leaveRequestStatusTable',
                         {
                             'FULL_NAME': 'Name',
                             'LEAVE_ENAME': 'Leave',
-                            'APPLIED_DATE': 'AppliedDate',
-                            'END_DATE': 'EndDate',
+                            'APPLIED_DATE': 'AppliedDate(AD)',
+                            'APPLIED_DATE_N': 'AppliedDate(BS)',
+                            'START_DATE': 'StartDate(AD)',
+                            'START_DATE_N': 'StartDate(BS)',
+                            'END_DATE': 'EndDate(AD)',
+                            'END_DATE_N': 'EndDate(BS)',
                             'RECOMMENDER_NAME': 'Recommender',
                             'APPROVER_NAME': 'Approver',
                             'NO_OF_DAYS': 'NoOfDays',
@@ -125,9 +156,12 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Leave Name"},
-                                {value: "Requested Date"},
-                                {value: "From Date"},
-                                {value: "To Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "From Date(AD)"},
+                                {value: "From Date(BS)"},
+                                {value: "To Date(AD)"},
+                                {value: "To Date(BS)"},
                                 {value: "Recommender"},
                                 {value: "Approver"},
                                 {value: "Duration"},
@@ -157,8 +191,11 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.LEAVE_ENAME},
                                 {value: dataItem.APPLIED_DATE},
+                                {value: dataItem.APPLIED_DATE_N},
                                 {value: dataItem.START_DATE},
+                                {value: dataItem.START_DATE_N},
                                 {value: dataItem.END_DATE},
+                                {value: dataItem.END_DATE_N},
                                 {value: dataItem.RECOMMENDER_NAME},
                                 {value: dataItem.APPROVER_NAME},
                                 {value: dataItem.NO_OF_DAYS},
@@ -180,6 +217,9 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

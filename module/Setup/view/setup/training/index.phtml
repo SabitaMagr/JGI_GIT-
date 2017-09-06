@@ -15,7 +15,9 @@ $this->headScript()
 ?>
 <?php if ($this->messages) { ?>
     <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
+        document.messages =<?php echo json_encode($this->messages) ?>;
+        document.editLink ='<?= $this->url("training", ["action" => "edit"]); ?>';
+        document.deleteLink ='<?= $this->url("training", ["action" => "delete"]) ?>';
     </script>
 <?php } ?>
 
@@ -62,7 +64,7 @@ echo json_encode($menu);
     <div id="trainingTable">
     </div>
 	</div>
-    
+<!--    
        
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
@@ -86,14 +88,14 @@ echo json_encode($menu);
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("training", ["action" => "edit"]); ?>/#:TRAINING_ID#" style="height:17px;">
+        href="`+ document.editLink +`/#:TRAINING_ID#" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a>
         <a class="btn-delete confirmation"
-        href="<?= $this->url("training", ["action" => "delete"]); ?>/#:TRAINING_ID#" id="bs_#:TRAINING_ID #" style="height:17px;"> 
+        href="/#:TRAINING_ID#" id="bs_#:TRAINING_ID #" style="height:17px;"> 
         <i class="fa fa-trash-o"></i></a>
         </a>
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

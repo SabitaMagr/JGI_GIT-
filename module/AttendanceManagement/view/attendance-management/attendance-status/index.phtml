@@ -24,7 +24,8 @@ $this->headScript()
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.ids=<?php echo json_encode(["attendanceRequestStatusId"=>-1,"fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
-    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.viewLink ='<?= $this->url("attendancestatus", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -174,7 +175,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit" 
-        href="<?= $this->url("attendancestatus", ["action" => "view"]) ?>/#: ID #" style="height:17px;">
+        href="`+ document.viewLink +`/#: ID #" style="height:17px;">
         <i class="fa fa-search-plus"></i>
         </a>
         </td>
