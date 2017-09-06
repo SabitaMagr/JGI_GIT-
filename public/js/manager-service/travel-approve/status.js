@@ -23,6 +23,7 @@ angular.module('hris', [])
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
                 var travelRequestStatusId = angular.element(document.getElementById('travelRequestStatusId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullTravelRequestStatusList',
@@ -38,7 +39,8 @@ angular.module('hris', [])
                         'fromDate': fromDate,
                         'toDate': toDate,
                         'recomApproveId': recomApproveId,
-                        'travelRequestStatusId':travelRequestStatusId
+                        'travelRequestStatusId':travelRequestStatusId,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

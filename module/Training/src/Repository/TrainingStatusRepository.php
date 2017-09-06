@@ -47,6 +47,7 @@ class TrainingStatusRepository implements RepositoryInterface{
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $requestStatusId = $data['requestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
         
         if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -150,6 +151,10 @@ class TrainingStatusRepository implements RepositoryInterface{
         
         if($toDate!=null){   
             $sql .= "AND ((TR.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')) OR (T.END_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')))";
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
         }
 
         if ($employeeId != -1) {

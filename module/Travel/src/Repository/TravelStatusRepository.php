@@ -45,6 +45,7 @@ class TravelStatusRepository implements RepositoryInterface{
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $travelRequestStatusId = $data['travelRequestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
         
         if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -145,6 +146,10 @@ class TravelStatusRepository implements RepositoryInterface{
         
         if($toDate!=null){   
             $sql .= "AND TR.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
         }
 
         if ($employeeId != -1) {

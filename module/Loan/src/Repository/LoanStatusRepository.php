@@ -46,6 +46,7 @@ class LoanStatusRepository implements RepositoryInterface{
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $loanId = $data['loanId'];
         $loanRequestStatusId = $data['loanRequestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
         
         if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -140,6 +141,10 @@ class LoanStatusRepository implements RepositoryInterface{
         
         if($toDate!=null){   
             $sql .= "AND LR.LOAN_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
         }
 
         if ($employeeId != -1) {

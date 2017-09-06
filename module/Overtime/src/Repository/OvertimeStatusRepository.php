@@ -47,6 +47,7 @@ class OvertimeStatusRepository implements RepositoryInterface {
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $requestStatusId = $data['requestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
 
         if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -139,6 +140,10 @@ class OvertimeStatusRepository implements RepositoryInterface {
 
         if ($toDate != null) {
             $sql .= "AND OT.OVERTIME_DATE<=TO_DATE('" . $toDate . "','DD-MON-YYYY')";
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
         }
 
         if ($employeeId != -1) {

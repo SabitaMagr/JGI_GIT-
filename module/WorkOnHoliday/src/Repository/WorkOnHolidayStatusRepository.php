@@ -49,6 +49,7 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface {
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $holidayId = $data['holidayId'];
         $requestStatusId = $data['requestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
 
         if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -144,6 +145,10 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface {
 
         if ($toDate != null) {
             $sql .= " AND WH.TO_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
         }
 
         if ($employeeId != -1) {
