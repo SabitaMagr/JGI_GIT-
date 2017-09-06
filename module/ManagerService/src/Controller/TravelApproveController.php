@@ -476,6 +476,9 @@ class TravelApproveController extends AbstractActionController {
                 'TRAVEL_ID' => $row['TRAVEL_ID'],
                 'TRAVEL_CODE' => $row['TRAVEL_CODE'],
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
+                'TO_DATE_N' => $row['TO_DATE_N'],
+                'FROM_DATE_N' => $row['FROM_DATE_N'],
+                'REQUESTED_DATE_N' => $row['REQUESTED_DATE_N'],
                 'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
             ];
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {

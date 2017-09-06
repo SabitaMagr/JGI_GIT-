@@ -1,4 +1,5 @@
 <?php
+
 namespace WorkOnDayoff\Repository;
 
 use Zend\Db\TableGateway\TableGateway;
@@ -7,8 +8,10 @@ use Zend\Db\Sql\Select;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\HrEmployees;
 
-class WorkOnDayoffStatusRepository implements RepositoryInterface{
+class WorkOnDayoffStatusRepository implements RepositoryInterface {
+
     private $adapter;
+
     public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
@@ -32,8 +35,8 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
     public function fetchById($id) {
         
     }
-    
-    public function getFilteredRecord($data,$recomApproveId=null){
+
+    public function getFilteredRecord($data, $recomApproveId = null) {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
@@ -45,16 +48,19 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $requestStatusId = $data['requestStatusId'];
-        
-        if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
+
+        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
-        }else{
+        } else {
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
-        
+
         $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
+                BS_DATE(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE_N,
                 INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
+                BS_DATE(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE_N,
                 INITCAP(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                BS_DATE(TO_CHAR(WD.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
                 WD.STATUS AS STATUS,
                 WD.REMARKS AS REMARKS,
                 WD.DURATION AS DURATION,
@@ -91,7 +97,7 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
                 LEFT OUTER JOIN HRIS_EMPLOYEES APRV ON
                 APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE 
-                E.STATUS='E'".$retiredFlag."              
+                E.STATUS='E'" . $retiredFlag . "              
                 AND
                 (E1.STATUS = CASE WHEN E1.STATUS IS NOT NULL
                          THEN ('E')     
@@ -105,38 +111,37 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
                 (APRV.STATUS = CASE WHEN APRV.STATUS IS NOT NULL
                          THEN ('E')       
                     END OR  APRV.STATUS is null)";
-        if($recomApproveId==null){
+        if ($recomApproveId == null) {
             if ($requestStatusId != -1) {
                 $sql .= " AND WD.STATUS ='" . $requestStatusId . "'";
             }
         }
-        if($recomApproveId!=null){
-            if($requestStatusId==-1){
-                $sql .=" AND ((RA.RECOMMEND_BY=".$recomApproveId." AND  WD.STATUS='RQ') "
-                        . "OR (WD.RECOMMENDED_BY=".$recomApproveId." AND (WD.STATUS='RC' OR WD.STATUS='R' OR WD.STATUS='AP')) "
-                        . "OR (RA.APPROVED_BY=".$recomApproveId." AND  WD.STATUS='RC' ) "
-                        . "OR (WD.APPROVED_BY=".$recomApproveId." AND (WD.STATUS='AP' OR (WD.STATUS='R' AND WD.APPROVED_DATE IS NOT NULL))) )";
-            }else if($requestStatusId=='RQ'){
-                $sql .=" AND (RA.RECOMMEND_BY=".$recomApproveId." AND WD.STATUS='RQ')";
-            }
-            else if($requestStatusId=='RC'){
+        if ($recomApproveId != null) {
+            if ($requestStatusId == -1) {
+                $sql .= " AND ((RA.RECOMMEND_BY=" . $recomApproveId . " AND  WD.STATUS='RQ') "
+                        . "OR (WD.RECOMMENDED_BY=" . $recomApproveId . " AND (WD.STATUS='RC' OR WD.STATUS='R' OR WD.STATUS='AP')) "
+                        . "OR (RA.APPROVED_BY=" . $recomApproveId . " AND  WD.STATUS='RC' ) "
+                        . "OR (WD.APPROVED_BY=" . $recomApproveId . " AND (WD.STATUS='AP' OR (WD.STATUS='R' AND WD.APPROVED_DATE IS NOT NULL))) )";
+            } else if ($requestStatusId == 'RQ') {
+                $sql .= " AND (RA.RECOMMEND_BY=" . $recomApproveId . " AND WD.STATUS='RQ')";
+            } else if ($requestStatusId == 'RC') {
                 $sql .= " AND WD.STATUS='RC' AND
-                    (WD.RECOMMENDED_BY=".$recomApproveId." OR RA.APPROVED_BY=".$recomApproveId.")";
-            }else if($requestStatusId=='AP'){
+                    (WD.RECOMMENDED_BY=" . $recomApproveId . " OR RA.APPROVED_BY=" . $recomApproveId . ")";
+            } else if ($requestStatusId == 'AP') {
                 $sql .= " AND WD.STATUS='AP' AND
-                    (WD.RECOMMENDED_BY=".$recomApproveId." OR WD.APPROVED_BY=".$recomApproveId.")";
-            }else if($requestStatusId=='R'){
-                $sql .=" AND WD.STATUS='".$requestStatusId."' AND
-                    ((WD.RECOMMENDED_BY=".$recomApproveId.") OR (WD.APPROVED_BY=".$recomApproveId." AND WD.APPROVED_DATE IS NOT NULL) )";
+                    (WD.RECOMMENDED_BY=" . $recomApproveId . " OR WD.APPROVED_BY=" . $recomApproveId . ")";
+            } else if ($requestStatusId == 'R') {
+                $sql .= " AND WD.STATUS='" . $requestStatusId . "' AND
+                    ((WD.RECOMMENDED_BY=" . $recomApproveId . ") OR (WD.APPROVED_BY=" . $recomApproveId . " AND WD.APPROVED_DATE IS NOT NULL) )";
             }
         }
-     
-        if($fromDate!=null){
-            $sql .= " AND WD.FROM_DATE>=TO_DATE('".$fromDate."','DD-MM-YYYY')";
+
+        if ($fromDate != null) {
+            $sql .= " AND WD.FROM_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
         }
-        
-        if($toDate!=null){   
-            $sql .= "AND WD.TO_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+
+        if ($toDate != null) {
+            $sql .= "AND WD.TO_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
 
         if ($employeeId != -1) {
@@ -163,11 +168,12 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface{
         if ($serviceEventTypeId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
-        
-        $sql .=" ORDER BY WD.REQUESTED_DATE DESC";
+
+        $sql .= " ORDER BY WD.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
     }
+
 }

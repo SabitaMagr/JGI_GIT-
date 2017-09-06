@@ -83,9 +83,9 @@ angular.module('hris', [])
                                     title: "Nepali",
                                     template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N #</span>"}]},
 
-                        {field: "IN_TIME", title: "Check In"},
-                        {field: "OUT_TIME", title: "Check Out"},
-                        {field: "A_STATUS", title: "Status"},
+                        {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
+                        {field: "OUT_TIME", title: "Check Out" , template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
+                        {field: "A_STATUS", title: "Status" , template: "<span>#: (A_STATUS == null) ? '-' : A_STATUS #</span>"},
                         {field: ["ID", "ALLOW_TO_EDIT"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
                             <i class="fa fa-search-plus"></i>
                             </a>

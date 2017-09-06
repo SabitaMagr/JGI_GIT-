@@ -359,7 +359,10 @@ class LeaveApproveController extends AbstractActionController {
                 'ID' => $row['ID'],
                 'STATUS' => $getStatusValue($row['STATUS']),
                 'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
+                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
+                'APPLIED_DATE_N' => $row['APPLIED_DATE_N'],
+                'START_DATE_N' => $row['START_DATE_N'],
+                'END_DATE_N' => $row['END_DATE_N']
             ];
             if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
                 $dataArray['YOUR_ROLE'] = 'Recommender\Approver';

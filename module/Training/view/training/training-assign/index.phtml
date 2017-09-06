@@ -16,7 +16,9 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
 <script>
     document.ids=<?php echo json_encode(["trainingId"=>-1]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.viewLink ='<?= $this->url("trainingAssign", ["action" => "view"]) ?>';
+    document.deleteLink ='<?= $this->url("trainingAssign", ["action" => "delete"]) ?>';
 </script>
 
 <div class="page-bar">
@@ -124,7 +126,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
        
         <div id="trainingAssignListTable"></div>
     </div>  
-
+<!--
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -150,17 +152,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td> 
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("trainingAssign", ["action" => "view"]) ?>/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="view detail">
+        href="`+ document.viewLink  +`/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="view detail">
         <i class="fa fa-search-plus"></i></a>
         </a>
         #if(ALLOW_TO_EDIT == 1){#       
         <a class="confirmation btn-delete"
-        href="<?= $this->url("trainingAssign", ["action" => "delete"]) ?>/#: EMPLOYEE_ID #/#: TRAINING_ID #" id="bs_#:SN #" style="height:17px;">
+        href="`+ document.deleteLink +`/#: EMPLOYEE_ID #/#: TRAINING_ID #" id="bs_#:SN #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>
         #}#
 
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

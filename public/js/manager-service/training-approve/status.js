@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -28,7 +28,7 @@ angular.module('hris', [])
                     action: 'pullTrainingRequestStatusList',
                     data: {
                         'employeeId': employeeId,
-                        'companyId':companyId,
+                        'companyId': companyId,
                         'branchId': branchId,
                         'departmentId': departmentId,
                         'designationId': designationId,
@@ -72,44 +72,69 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 200},
-                        {field: "TITLE", title: "Training", width: 120},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 130},
-                        {field: "START_DATE", title: "Start Date", width: 100},
-                        {field: "END_DATE", title: "End Date", width: 100},
-                        {field: "DURATION", title: "Duration", width: 100},
-                        {field: "TRAINING_TYPE", title: "Training Type", width: 100},
-                        {field: "YOUR_ROLE", title: "Your Role", width: 130},
-                        {field: "STATUS", title: "Status", width: 90},
-                        {title: "Action", width: 80}
-                    ]
+                        {field: "FULL_NAME", title: "Employee"},
+                        {field: "TITLE", title: "Training"},
+                         {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                          {title: "Start Date",
+                            columns: [{
+                                    field: "START_DATE",
+                                    title: "English",
+                                    template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                                {field: "START_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                        {title: "End Date",
+                            columns: [{
+                                    field: "END_DATE",
+                                    title: "English",
+                                    template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                                {field: "END_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+                        {field: "DURATION", title: "Duration"},
+                        {field: "TRAINING_TYPE", title: "Training Type"},
+                        {field: "YOUR_ROLE", title: "Your Role"},
+                        {field: "STATUS", title: "Status"},
+                        {field: ["REQUEST_ID"], title: "Action", template: `<span> <a class="btn  btn-icon-only btn-success" href="` + document.viewLink + `/#: REQUEST_ID #/#: ROLE #" style="height:17px;" title="view">
+                                 <i class="fa fa-search-plus"></i></a>
+                  </span>`}]
                 });
-                
-                app.searchTable('trainingRequestStatusTable',['FULL_NAME','TITLE','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','YOUR_ROLE','STATUS']);
-                
+
+                app.searchTable('trainingRequestStatusTable', ['FULL_NAME', 'TITLE', 'REQUESTED_DATE', 'START_DATE', 'END_DATE', 'REQUESTED_DATE_N', 'START_DATE_N', 'END_DATE_N', 'DURATION', 'TRAINING_TYPE', 'YOUR_ROLE', 'STATUS']);
+
                 app.pdfExport(
-                'trainingRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'TRAINING_NAME': 'Training',
-                    'REQUESTED_DATE': 'Request Date',
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date',
-                    'DURATION': 'Duration',
-                    'TRAINING_TYPE': 'Type',
-                    'YOUR_ROLE': 'Role',
-                    'STATUS': 'Status',
-                    'DESCRIPTION': 'Description',
-                    'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                    
-                });
-                
+                        'trainingRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'TRAINING_NAME': 'Training',
+                            'REQUESTED_DATE': 'Request Date(AD)',
+                            'REQUESTED_DATE_N': 'Request Date(BS)',
+                            'START_DATE': 'Start Date(AD)',
+                            'START_DATE_N': 'Start Date(BS)',
+                            'END_DATE': 'End Date(AD)',
+                            'END_DATE_N': 'End Date(BS)',
+                            'DURATION': 'Duration',
+                            'TRAINING_TYPE': 'Type',
+                            'YOUR_ROLE': 'Role',
+                            'STATUS': 'Status',
+                            'DESCRIPTION': 'Description',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+
+                        });
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -126,9 +151,12 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Training Name"},
-                                {value: "Requested Date"},
-                                {value: "Start Date"},
-                                {value: "End Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "Start Date(AD)"},
+                                {value: "Start Date(BS)"},
+                                {value: "End Date(AD)"},
+                                {value: "End Date(BS)"},
                                 {value: "Your Role"},
                                 {value: "Duration"},
                                 {value: "Training Type"},
@@ -158,8 +186,11 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.REQUESTED_DATE},
+                                {value: dataItem.REQUESTED_DATE_N},
                                 {value: dataItem.START_DATE},
+                                {value: dataItem.START_DATE_N},
                                 {value: dataItem.END_DATE},
+                                {value: dataItem.END_DATE_N},
                                 {value: dataItem.YOUR_ROLE},
                                 {value: dataItem.DURATION},
                                 {value: dataItem.TRAINING_TYPE},
@@ -182,6 +213,9 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

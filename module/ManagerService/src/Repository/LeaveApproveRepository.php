@@ -39,8 +39,11 @@ class LeaveApproveRepository implements RepositoryInterface {
         $sql = "SELECT 
                 INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,LA.NO_OF_DAYS,
                 INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+                BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
                 INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE,
+                BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE_N,
                 INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
+                BS_DATE(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE_N,
                 LA.STATUS AS STATUS,
                 LA.EMPLOYEE_ID,
                 LA.ID AS ID,

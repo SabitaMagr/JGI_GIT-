@@ -40,6 +40,8 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
+        $customCols = ["BS_DATE(TO_CHAR(SA.ADJUSTMENT_START_DATE, 'DD-MON-YYYY')) AS ADJUSTMENT_START_DATE_N",
+            "BS_DATE(TO_CHAR(SA.ADJUSTMENT_END_DATE, 'DD-MON-YYYY')) AS ADJUSTMENT_END_DATE_N"];
         $select->from(['SA' => ShiftAdjustmentModel::TABLE_NAME]);
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ShiftAdjustmentModel::class, NULL, [
                     ShiftAdjustmentModel::ADJUSTMENT_START_DATE,
@@ -47,7 +49,7 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                         ], [
                     ShiftAdjustmentModel::START_TIME,
                     ShiftAdjustmentModel::END_TIME
-                        ], NULL, NULL, 'SA', FALSE, FALSE, NULL), false);
+                        ], NULL, NULL, 'SA', FALSE, FALSE, NULL,$customCols), false);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;

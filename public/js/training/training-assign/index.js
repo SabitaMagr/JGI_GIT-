@@ -225,35 +225,65 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee Name", width: 130},
-                        {field: "TRAINING_NAME", title: "Training Name", width: 120},
-                        {field: "START_DATE", title: "Start Date", width: 80},
-                        {field: "END_DATE", title: "End Date", width: 80},
-                        {field: "DURATION", title: "Duration(in hour)", width: 100},
-                        {field: "INSTITUTE_NAME", title: "Institute Name", width: 100},
-                        {field: "TRAINING_TYPE", title: "Training Type", width: 100},
-                        {title: "Action", width: 100}
+                        {field: "FULL_NAME", title: "Employee Name"},
+                        {field: "TRAINING_NAME", title: "Training Name"},
+//                        {field: "START_DATE", title: "Start Date", width: 80},
+                        {title: "Start Date",
+                            columns: [{
+                                    field: "START_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                                {field: "START_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                        {title: "End Date",
+                            columns: [{
+                                    field: "END_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                                {field: "END_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+
+//                        {field: "END_DATE", title: "End Date"},
+                        {field: "DURATION", title: "Duration(in hour)"},
+                        {field: "INSTITUTE_NAME", title: "Institute Name", template: "<span>#: (INSTITUTE_NAME == null) ? '-' : INSTITUTE_NAME #</span>"},
+                        {field: "TRAINING_TYPE", title: "Training Type"},
+                        {field: ["TRAINING_ID", "ALLOW_TO_EDIT"], title: "Action", template: `<span><a class="btn-edit"
+        href="` + document.viewLink + `/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="view detail">
+        <i class="fa fa-search-plus"></i></a>
+        </a>
+        #if(ALLOW_TO_EDIT == 1){#       
+        <a class="confirmation btn-delete"
+        href="` + document.deleteLink + `/#: EMPLOYEE_ID #/#: TRAINING_ID #" id="bs_#:SN #" style="height:17px;">
+        <i class="fa fa-trash-o"></i></a>
+        </a>
+        #}#
+
+</span>`}
                     ]
                 });
-                
-                app.searchTable('trainingAssignListTable',['FULL_NAME','TRAINING_NAME','START_DATE','END_DATE','DURATION','INSTITUTE_NAME','TRAINING_TYPE']);
-                
+
+                app.searchTable('trainingAssignListTable', ['FULL_NAME', 'TRAINING_NAME', 'START_DATE', 'END_DATE', 'START_DATE_N', 'END_DATE_N', 'DURATION', 'INSTITUTE_NAME', 'TRAINING_TYPE']);
+
                 app.pdfExport(
-                'trainingAssignListTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'TRAINING_NAME': 'Training',
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date',
-                    'DURATION': 'Duration',
-                    'LOCATION': 'Location',
-                    'INSTITUTE_NAME': 'Institute',
-                    'TRAINING_TYPE': 'Training Type',
-                    'REMARKS': 'Remarks',
-                });
-                
+                        'trainingAssignListTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'TRAINING_NAME': 'Training',
+                            'START_DATE': 'Start Date(AD)',
+                            'START_DATE_N': 'Start Date(BS)',
+                            'END_DATE': 'End Date(AD)',
+                            'END_DATE_N': 'End Date(BS)',
+                            'DURATION': 'Duration',
+                            'LOCATION': 'Location',
+                            'INSTITUTE_NAME': 'Institute',
+                            'TRAINING_TYPE': 'Training Type',
+                            'REMARKS': 'Remarks',
+                        });
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -269,8 +299,10 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Training Name"},
-                                {value: "Start Date"},
-                                {value: "End Date"},
+                                {value: "Start Date(AD)"},
+                                {value: "Start Date(BS)"},
+                                {value: "End Date(AD)"},
+                                {value: "End Date(BS)"},
                                 {value: "Duration"},
                                 {value: "Institute Name"},
                                 {value: "Location Detail"},
@@ -295,7 +327,9 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.START_DATE},
+                                {value: dataItem.START_DATE_N},
                                 {value: dataItem.END_DATE},
+                                {value: dataItem.END_DATE_N},
                                 {value: dataItem.DURATION},
                                 {value: dataItem.INSTITUTE_NAME},
                                 {value: dataItem.LOCATION},
@@ -314,6 +348,8 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

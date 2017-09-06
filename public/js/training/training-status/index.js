@@ -70,32 +70,62 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 150},
-                        {field: "TRAINING_NAME", title: "Training", width: 110},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 110},
-                        {field: "START_DATE", title: "Start Date", width: 110},
-                        {field: "END_DATE", title: "End Date", width: 110},
-                        {field: "DURATION", title: "Duration", width: 100},
-                        {field: "TRAINING_TYPE", title: "Type", width: 110},
-                        {field: "RECOMMENDER_NAME", title: "Recommender", width: 120},
-                        {field: "APPROVER_NAME", title: "Approver", width: 120},                        
-                        {field: "STATUS", title: "Status", width: 100},
-                        {title: "Action", width: 80}
+                        {field: "FULL_NAME", title: "Employee"},
+                        {field: "TRAINING_NAME", title: "Training", template: "<span> #: (TITLE == null) ? '-' : TITLE #</span>"},
+//                        {field: "REQUESTED_DATE", title: "Requested Date", width: 110},
+                         {title: "Requested Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "AD",
+                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                            title: "BS",
+                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+//                        {field: "START_DATE", title: "Start Date", width: 110},
+                         {title: "Start Date",
+                    columns: [{
+                            field: "START_DATE",
+                            title: "AD",
+                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                        {field: "START_DATE_N",
+                            title: "BS",
+                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                 {title: "End Date",
+                    columns: [{
+                            field: "END_DATE",
+                            title: "AD",
+                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                        {field: "END_DATE_N",
+                            title: "BS",
+                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+//                        {field: "END_DATE", title: "End Date", width: 110},
+                        {field: "DURATION", title: "Duration"},
+                        {field: "TRAINING_TYPE", title: "Type"},
+                        {field: "RECOMMENDER_NAME", title: "Recommender"},
+                        {field: "APPROVER_NAME", title: "Approver"},                        
+                        {field: "STATUS", title: "Status"},
+                        {field: ["REQUEST_ID"], title: "Action", template: `<span><a class="btn-edit"
+    href="`+ document.viewLink +`/#: REQUEST_ID #" style="height:17px;" title="view">
+    <i class="fa fa-search-plus"></i>
+    </a></span>`}
                     ]
                 });
                 
-                app.searchTable('trainingRequestStatusTable',['FULL_NAME','TRAINING_NAME','REQUESTED_DATE','START_DATE','END_DATE','DURATION','TRAINING_TYPE','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
+                app.searchTable('trainingRequestStatusTable',['FULL_NAME','TRAINING_NAME','REQUESTED_DATE','START_DATE','END_DATE','REQUESTED_DATE_N','START_DATE_N','END_DATE_N','DURATION','TRAINING_TYPE','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
                 
                  app.pdfExport(
                 'trainingRequestStatusTable',
                 {
                     'FULL_NAME': 'Name',
                     'TRAINING_NAME': 'Training',
-                    'REQUESTED_DATE': 'Request Date',
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date',
+                    'REQUESTED_DATE': 'Request Date(AD)',
+                    'REQUESTED_DATE_N': 'Request Date(BS)',
+                    'START_DATE': 'Start Date(AD)',
+                    'START_DATE_N': 'Start Date(BS)',
+                    'END_DATE': 'End Date(AD)',
+                    'END_DATE_N': 'End Date(BS)',
                     'DURATION': 'Duration',
                     'TRAINING_TYPE': 'Training Type',
                     'RECOMMENDER_NAME': 'Recommender',
@@ -126,9 +156,12 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Training Name"},
-                                {value: "Requested Date"},
-                                {value: "Start Date"},
-                                {value: "End Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "Start Date(AD)"},
+                                {value: "Start Date(BS)"},
+                                {value: "End Date(AD)"},
+                                {value: "End Date(BS)"},
                                 {value: "Duration"},
                                 {value: "Training Type"},
                                 {value: "Recommender"},
@@ -160,8 +193,11 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.TRAINING_NAME},
                                 {value: dataItem.REQUESTED_DATE},
+                                {value: dataItem.REQUESTED_DATE_N},
                                 {value: dataItem.START_DATE},
+                                {value: dataItem.START_DATE_N},
                                 {value: dataItem.END_DATE},
+                                {value: dataItem.END_DATE_N},
                                 {value: dataItem.DURATION},
                                 {value: dataItem.TRAINING_TYPE},
                                 {value: dataItem.RECOMMENDER_NAME},
@@ -185,6 +221,9 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

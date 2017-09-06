@@ -20,7 +20,9 @@ $this->headScript()
 <script>
     document.ids =<?php echo json_encode(["travelRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.expenseDetailLink ='<?= $this->url("travelApprove", ["action" => "expenseDetail"]) ?>';
+    document.viewLink ='<?= $this->url("travelApprove", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -139,7 +141,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div id="travelRequestStatusTable">
         </div>
     </div>
-
+<!--
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -169,16 +171,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td>
         # if(REQUESTED_TYPE=='Expense'){#
         <a class="btn-edit"
-        href="<?= $this->url("travelApprove", ["action" => "expenseDetail"]); ?>/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+        href="` + document.expenseDetailLink +`/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a>
         # } else { #
         <a class="btn-edit"
-        href="<?= $this->url("travelApprove", ["action" => "view"]); ?>/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+        href="` + document.viewLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a>
         # } #
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>

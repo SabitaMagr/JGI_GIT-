@@ -21,21 +21,52 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    width: 80
+                    template: "<input type='checkbox' id='#:TRAVEL_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:TRAVEL_ID#'></label>"
                 },
-                {field: "FULL_NAME", title: "Employee", width: 140},
-                {field: "FROM_DATE", title: "From Date", width: 120},
-                {field: "TO_DATE", title: "To Date", width: 100},
-                {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
-                {field: "DESTINATION", title: "Destination", width: 110},
-                {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 140},
-                {field: "REQUESTED_TYPE", title: "Request For", width: 120},
-                {title: "Action", width: 80}
+                {field: "FULL_NAME", title: "Employee"},
+               {title: "From Date",
+                            columns: [{
+                                    field: "FROM_DATE",
+                                    title: "English",
+                                    template: "<span>#: (FROM_DATE == null) ? '-' : FROM_DATE #</span>"},
+                                {field: "FROM_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N #</span>"}]}, 
+                {title: "To Date",
+                            columns: [{
+                                    field: "TO_DATE",
+                                    title: "English",
+                                    template: "<span>#: (TO_DATE == null) ? '-' : TO_DATE #</span>"},
+                                {field: "TO_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}]}, 
+                {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                {field: "DESTINATION", title: "Destination"},
+                {field: "REQUESTED_AMOUNT", title: "Requested Amt."},
+                {field: "REQUESTED_TYPE", title: "Request For"},
+                {field: ["TRAVEL_ID","REQUESTED_TYPE"], title: "Action", template: `<span>
+                # if(REQUESTED_TYPE=='Expense'){#<a class="btn-edit"
+        href="` + document.expenseDetailLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i>
+        </a>
+        # } else { #
+        <a class="btn-edit"
+        href="` + document.viewLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i>
+        </a>
+        # } #</span>`}
             ]
         });
         
@@ -127,15 +158,18 @@
         
         
         
-        app.searchTable('travelApproveTable',['FULL_NAME','FROM_DATE','TO_DATE','REQUESTED_DATE','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE']);
+        app.searchTable('travelApproveTable',['FULL_NAME','FROM_DATE','FROM_DATE_N','TO_DATE','TO_DATE_N','REQUESTED_DATE','REQUESTED_DATE_N','DESTINATION','REQUESTED_AMOUNT','REQUESTED_TYPE']);
         
         app.pdfExport(
                 'travelApproveTable',
                 {
                     'FULL_NAME': 'Name',
-                    'FROM_DATE': 'From Date',
-                    'TO_DATE': 'To Date',
-                    'REQUESTED_DATE': 'Request Date',
+                    'FROM_DATE': 'From Date(AD)',
+                    'FROM_DATE_N': 'From Date(BS)',
+                    'TO_DATE': 'To Date(AD)',
+                    'TO_DATE_N': 'To Date(BS)',
+                    'REQUESTED_DATE': 'Request Date(AD)',
+                    'REQUESTED_DATE_N': 'Request Date(BS)',
                     'DESTINATION': 'Destination',
                     'PURPOSE': 'Purpose',
                     'REQUESTED_AMOUNT': 'Request Amt',
@@ -165,9 +199,12 @@
             var rows = [{
                     cells: [
                         {value: "Employee Name"},
-                        {value: "From Date"},
-                        {value: "To Date"},
-                        {value: "Requested Date"},
+                        {value: "From Date(AD)"},
+                        {value: "From Date(BS)"},
+                        {value: "To Date(AD)"},
+                        {value: "To Date(BS)"},
+                        {value: "Requested Date(AD)"},
+                        {value: "Requested Date(BS)"},
                         {value: "Destination"},
                         {value: "Purpose"},
                         {value: "Requested Amount"},
@@ -197,8 +234,11 @@
                     cells: [
                         {value: dataItem.FULL_NAME},
                         {value: dataItem.FROM_DATE},
+                        {value: dataItem.FROM_DATE_N},
                         {value: dataItem.TO_DATE},
+                        {value: dataItem.TO_DATE_N},
                         {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.DESTINATION},
                         {value: dataItem.PURPOSE},
                         {value: dataItem.REQUESTED_AMOUNT},
@@ -222,6 +262,9 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

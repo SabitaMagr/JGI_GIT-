@@ -54,8 +54,11 @@ class TravelStatusRepository implements RepositoryInterface{
         
         $sql = "SELECT TR.REQUESTED_AMOUNT,
                 INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
+                BS_DATE(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE_N,
                 INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
+                BS_DATE(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE_N,
                 INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
                 TR.STATUS AS STATUS,
                 TR.TRAVEL_ID AS TRAVEL_ID,
                 TR.TRAVEL_CODE AS TRAVEL_CODE,
