@@ -65,25 +65,46 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
 //                        {field: "HOLIDAY_CODE", title: "Holiday Code", width: 130},
-                        {field: "HOLIDAY_ENAME", title: "Holiday", width: 150},
-                        {field: "START_DATE", title: "From Date", width: 130},
-                        {field: "END_DATE", title: "To Date", width: 130},
-                        {field: "HALFDAY", title: "Interval", width: 100},
-                        {title: "Action", width: 100}
+                        {field: "HOLIDAY_ENAME", title: "Holiday"},
+//                        {field: "START_DATE", title: "From Date", width: 130},
+                        {title: "From Date",
+                columns: [
+                    {field: "START_DATE",
+                        title: "AD",
+                        template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                    {field: "START_DATE_N",
+                        title: "BS",
+                        template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"} ]},
+              {title: "To Date",
+                columns: [
+                    {field: "END_DATE",
+                        title: "AD",
+                        template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                    {field: "END_DATE_N",
+                        title: "BS",
+                        template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"} ]},
+                        {field: "HALFDAY", title: "Interval"},
+                        {field: ["HOLIDAY_ID"], title: "Action", template: `<span><a class="btn-edit"
+                           href="`+ document.editLink +`/#:HOLIDAY_ID#" style="height:17px;"> 
+        <i class="fa fa-edit"></i>
+        </a>
+        </span>`}
                     ]
                 });
 
-                app.searchTable('holidayTable', ['HOLIDAY_ENAME', 'START_DATE', 'END_DATE', 'HALFDAY']);
+                app.searchTable('holidayTable', ['HOLIDAY_ENAME', 'START_DATE', 'END_DATE', 'START_DATE_N', 'END_DATE_N', 'HALFDAY']);
 
                 app.pdfExport(
                         'holidayTable',
                         {
                             'HOLIDAY_ENAME': ' Holiday',
-                            'START_DATE': 'StartDate',
-                            'END_DATE': 'EndDate',
+                            'START_DATE': 'StartDate(AD)',
+                            'START_DATE_N': 'StartDate(BS)',
+                            'END_DATE': 'EndDate(AD)',
+                            'END_DATE_N': 'EndDate(BS)',
                             'HALFDAY': 'Interval',
                             'REMARKS': 'Remarks'
                         }
@@ -105,8 +126,10 @@ angular.module('hris', [])
                             cells: [
 //                                {value: "Holiday Code"},
                                 {value: "Holiday Name"},
-                                {value: "From Date"},
-                                {value: "To Date"},
+                                {value: "From Date(AD)"},
+                                {value: "From Date(BS)"},
+                                {value: "To Date(AD)"},
+                                {value: "To Date(BS)"},
                                 {value: "Interval"},
                                 {value: "Remarks"}
                             ]
@@ -127,7 +150,9 @@ angular.module('hris', [])
 //                                {value: dataItem.HOLIDAY_CODE},
                                 {value: dataItem.HOLIDAY_ENAME},
                                 {value: dataItem.START_DATE},
+                                {value: dataItem.START_DATE_N},
                                 {value: dataItem.END_DATE},
+                                {value: dataItem.END_DATE_N},
                                 {value: dataItem.HALFDAY},
                                 {value: dataItem.REMARKS}
                             ]
@@ -143,6 +168,8 @@ angular.module('hris', [])
                             {
                                 columns: [
 //                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

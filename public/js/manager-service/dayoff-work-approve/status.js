@@ -74,28 +74,54 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 200},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                        {field: "FROM_DATE", title: "From Date", width: 100},
-                        {field: "TO_DATE", title: "To Date", width: 100},
-                        {field: "DURATION", title: "Duration", width: 150},
-                        {field: "YOUR_ROLE", title: "Your Role", width: 150},
-                        {field: "STATUS", title: "Status", width: 90},
-                        {title: "Action", width: 80}
-                    ]
+                        {field: "FULL_NAME", title: "Employee"},
+                         {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                          {title: "From Date",
+                            columns: [{
+                                    field: "FROM_DATE",
+                                    title: "English",
+                                    template: "<span>#: (FROM_DATE == null) ? '-' : FROM_DATE #</span>"},
+                                {field: "FROM_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N #</span>"}]},
+                        {title: "To Date",
+                            columns: [{
+                                    field: "TO_DATE",
+                                    title: "English",
+                                    template: "<span>#: (TO_DATE == null) ? '-' : TO_DATE #</span>"},
+                                {field: "TO_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}]},
+                        {field: "DURATION", title: "Duration"},
+                        {field: "YOUR_ROLE", title: "Your Role"},
+                        {field: "STATUS", title: "Status"},
+                        {field: ["ID"], title: "Action", template: `<span>  <a class="btn  btn-icon-only btn-success"
+        href=" ` + document.viewLink + ` /#: ID #/#: ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i></a>
+                    </span>`}]
                 });
                 
-                app.searchTable('dayoffWorkRequestStatusTable',['FULL_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE','DURATION','YOUR_ROLE','STATUS']);
+                app.searchTable('dayoffWorkRequestStatusTable',['FULL_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE','REQUESTED_DATE_N','FROM_DATE_N','TO_DATE_N','DURATION','YOUR_ROLE','STATUS']);
                 
                 app.pdfExport(
                 'dayoffWorkRequestStatusTable',
                 {
                     'FULL_NAME': 'Name',
-                    'REQUESTED_DATE': 'Request Date',
-                    'FROM_DATE': 'From Date',
-                    'TO_DATE': 'To Date',
+                    'REQUESTED_DATE': 'Request Date(AD)',
+                    'REQUESTED_DATE_N': 'Request Date(BS)',
+                    'FROM_DATE': 'From Date(AD)',
+                    'FROM_DATE_N': 'From Date(BS)',
+                    'TO_DATE': 'To Date(AD)',
+                    'TO_DATE_N': 'To Date(BS)',
                     'DURATION': 'Duration',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
@@ -122,9 +148,12 @@ angular.module('hris', [])
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
-                                {value: "Requested Date"},
-                                {value: "From Date"},
-                                {value: "To Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "From Date(AD)"},
+                                {value: "From Date(BS)"},
+                                {value: "To Date(AD)"},
+                                {value: "To Date(BS)"},
                                 {value: "Duration"},
                                 {value: "Your Role"},
                                 {value: "Status"},
@@ -151,8 +180,11 @@ angular.module('hris', [])
                             cells: [
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.REQUESTED_DATE},
+                                {value: dataItem.REQUESTED_DATE_N},
                                 {value: dataItem.FROM_DATE},
+                                {value: dataItem.FROM_DATE_N},
                                 {value: dataItem.TO_DATE},
+                                {value: dataItem.TO_DATE_N},
                                 {value: dataItem.DURATION},
                                 {value: dataItem.YOUR_ROLE},
                                 {value: dataItem.STATUS},
@@ -173,6 +205,9 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

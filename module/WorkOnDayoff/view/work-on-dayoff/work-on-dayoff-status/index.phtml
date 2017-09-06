@@ -25,7 +25,8 @@ $this->headScript()
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.ids=<?php echo json_encode(["requestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate"=>"","toDate1"=>"","nepaliToDate"=>""]) ?>;
-    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.viewLink ='<?= $this->url("workOnDayoffStatus", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnDayoffStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -150,7 +151,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div id="WorkOnDayoffRequestStatusTable">
         </div>
     </div>
-
+<!--
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td> 
@@ -179,12 +180,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         <td>
         <a class="btn-edit"
-        href="<?= $this->url("workOnDayoffStatus", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view">
+        href="`+ document.viewLink +`/#: ID #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a>
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>    
 
 

@@ -21,20 +21,36 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
+//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
                     width: 80
                 },
-                {field: "FULL_NAME", title: "Employee", width: 150},
-                {field: "LOAN_NAME", title: "Loan", width: 120},
-                {field: "REQUESTED_DATE", title: "Requested Date", width: 140},
-                {field: "LOAN_DATE", title: "Loan Date", width: 100},
-                {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 120},
-                {field: "YOUR_ROLE", title: "Your Role", width: 120},
-                {title: "Action", width: 70}
+                {field: "FULL_NAME", title: "Employee"},
+                {field: "LOAN_NAME", title: "Loan"},
+                {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                        {title: "Loan Date",
+                            columns: [{
+                                    field: "LOAN_DATE",
+                                    title: "English",
+                                    template: "<span>#: (LOAN_DATE == null) ? '-' : LOAN_DATE #</span>"},
+                                {field: "LOAN_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (LOAN_DATE_N == null) ? '-' : LOAN_DATE_N #</span>"}]},
+                {field: "REQUESTED_AMOUNT", title: "Requested Amount"},
+                {field: "YOUR_ROLE", title: "Your Role"},
+                {field: ["LOAN_REQUEST_ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: LOAN_REQUEST_ID #" style="height:17px;" title="view detail">
+                            <i class="fa fa-search-plus"></i>
+                            </a></span>`}
             ]
         });
 
@@ -125,15 +141,17 @@
 
 
 
-        app.searchTable('loanApproveTable', ['FULL_NAME', 'LOAN_NAME', 'REQUESTED_DATE', 'LOAN_DATE', 'REQUESTED_AMOUNT', 'YOUR_ROLE']);
+        app.searchTable('loanApproveTable', ['FULL_NAME', 'LOAN_NAME', 'REQUESTED_DATE', 'REQUESTED_DATE_N', 'LOAN_DATE', 'LOAN_DATE_N', 'REQUESTED_AMOUNT', 'YOUR_ROLE']);
 
         app.pdfExport(
                 'loanApproveTable',
                 {
                     'FULL_NAME': 'Name',
                     'LOAN_NAME': 'Loan',
-                    'REQUESTED_DATE': 'Request Date',
-                    'LOAN_DATE': 'Loan Date',
+                    'REQUESTED_DATE': 'Requested Date(AD)',
+                    'REQUESTED_DATE_N': 'Requested Date(BS)',
+                    'LOAN_DATE': 'Loan Date(AD)',
+                    'LOAN_DATE_N': 'Loan Date(BS)',
                     'REQUESTED_AMOUNT': 'Request Amt',
                     'YOUR_ROLE': 'Role',
                     'STATUS': 'Status',
@@ -160,8 +178,10 @@
                     cells: [
                         {value: "Employee Name"},
                         {value: "Loan Name"},
-                        {value: "Requested Date"},
-                        {value: "Loan Date"},
+                        {value: "Requested Date(AD)"},
+                        {value: "Requested Date(BS)"},
+                        {value: "Loan Date(AD)"},
+                        {value: "Loan Date(BS)"},
                         {value: "Requested Amount"},
                         {value: "Your Role"},
                         {value: "Status"},
@@ -189,7 +209,9 @@
                         {value: dataItem.FULL_NAME},
                         {value: dataItem.LOAN_NAME},
                         {value: dataItem.REQUESTED_DATE},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.LOAN_DATE},
+                        {value: dataItem.LOAN_DATE_N},
                         {value: dataItem.REQUESTED_AMOUNT},
                         {value: dataItem.YOUR_ROLE},
                         {value: dataItem.STATUS},
@@ -210,6 +232,8 @@
                 sheets: [
                     {
                         columns: [
+                            {autoWidth: true},
+                            {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},
                             {autoWidth: true},

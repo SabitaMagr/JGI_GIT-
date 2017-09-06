@@ -3,7 +3,6 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
-
     });
 })(window.jQuery, window.app);
 angular.module('hris', [])
@@ -22,7 +21,6 @@ angular.module('hris', [])
             var $toDate = angular.element(document.getElementById('toDate'));
             var $status = angular.element(document.getElementById('statusId'));
             var $missPunchOnly = $("#missPunchOnly");
-
             var firstTime = true;
             var displayKendoFirstTime = true;
             $scope.view = function () {
@@ -51,7 +49,6 @@ angular.module('hris', [])
                             options['toDate'] = $toDate.val();
                             options['status'] = $status.val();
                             options['missPunchOnly'] = $missPunchOnly.is(":checked") ? 1 : 0;
-
                             return options;
                         }
                     },
@@ -67,7 +64,6 @@ angular.module('hris', [])
                 var grid = $('#attendanceByHrTable').data("kendoGrid");
                 dataSource.read();
                 grid.setDataSource(dataSource);
-
             };
             function initializekendoGrid() {
                 $("#attendanceByHrTable").kendoGrid({
@@ -89,21 +85,30 @@ angular.module('hris', [])
                     },
                     dataBound: gridDataBound,
                     columns: [
-                        {field: "EMPLOYEE_NAME", title: "Employee", width: 160},
-                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
-                        {field: "IN_TIME", title: "Check In", width: 110},
-                        {field: "OUT_TIME", title: "Check Out", width: 120},
-                        {field: "STATUS", title: "Status", width: 150},
+                        {field: "EMPLOYEE_NAME", title: "Employee", template: "<span>#: (EMPLOYEE_NAME == null) ? '-' : EMPLOYEE_NAME # </span>"},
+//                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
+                        {title: "Attendance Date",
+                            columns: [
+                                {field: "ATTENDANCE_DT",
+                                    title: "AD",
+                                    template: "<span>#: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT # </span>"},
+                                {field: "ATTENDANCE_DT_N",
+                                    title: "BS",
+                                    template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N # </span>"}
+                            ]},
+                        {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME # </span>"},
+                        {field: "OUT_TIME", title: "Check Out" ,template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME # </span>"},
+                        {field: "STATUS", title: "Status" ,template: "<span>#: (STATUS == null) ? '-' : STATUS # </span>"},
                     ],
                     detailInit: detailInit,
                 });
-
-                app.searchTable('attendanceByHrTable', ['EMPLOYEE_NAME', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'STATUS']);
+                app.searchTable('attendanceByHrTable', ['EMPLOYEE_NAME', 'ATTENDANCE_DT', 'ATTENDANCE_DT_N', 'IN_TIME', 'OUT_TIME', 'STATUS']);
                 app.pdfExport(
                         'attendanceByHrTable',
                         {
                             'EMPLOYEE_NAME': ' Name',
-                            'ATTENDANCE_DT': 'Attendance Date',
+                            'ATTENDANCE_DT': 'Attendance Date(AD)',
+                            'ATTENDANCE_DT_N': 'Attendance Date(BS)',
                             'IN_TIME': 'In Time',
                             'OUT_TIME': 'Out Time',
                             'IN_REMARKS': 'In Remarks',
@@ -122,7 +127,6 @@ angular.module('hris', [])
                 });
                 if (firstTime) {
                     App.blockUI({target: "#hris-page-content"});
-
                 } else {
                     App.blockUI({target: "#attendanceByHrTable"});
                 }
@@ -254,9 +258,7 @@ angular.module('hris', [])
                     var pageSize = 1000;
                     var total = 0;
                     var totalPages = 0;
-
                     var data = [];
-
                     var fetch = function (page, pageSize) {
                         window.app.pullDataById(document.pullAttendanceWS, {
                             take: 50,
@@ -289,16 +291,15 @@ angular.module('hris', [])
                         }, function (error) {
 
                         });
-
                     };
-
                     fetch(page, pageSize);
                 };
                 fetchAll(function (data) {
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
-                                {value: "Attendance Date"},
+                                {value: "Attendance Date(AD)"},
+                                {value: "Attendance Date(BS)"},
                                 {value: "Check In Time"},
                                 {value: "Check Out Time"},
                                 {value: "Late In Reason"},
@@ -313,6 +314,7 @@ angular.module('hris', [])
                             cells: [
                                 {value: dataItem.EMPLOYEE_NAME},
                                 {value: dataItem.ATTENDANCE_DT},
+                                {value: dataItem.ATTENDANCE_DT_N},
                                 {value: dataItem.IN_TIME},
                                 {value: dataItem.OUT_TIME},
                                 {value: dataItem.IN_REMARKS},
@@ -326,12 +328,12 @@ angular.module('hris', [])
                     e.preventDefault();
                 });
             });
-
             function excelExport(rows) {
                 var workbook = new kendo.ooxml.Workbook({
                     sheets: [
                         {
                             columns: [
+                                {autoWidth: true},
                                 {autoWidth: true},
                                 {autoWidth: true},
                                 {autoWidth: true},
@@ -350,20 +352,16 @@ angular.module('hris', [])
             }
 
             window.app.UIConfirmations();
-
 //            start to get the current Date in  DD-MON-YYY format
             var m_names = new Array("Jan", "Feb", "Mar",
                     "Apr", "May", "Jun", "Jul", "Aug", "Sep",
                     "Oct", "Nov", "Dec");
-
             var d = new Date();
-
             //to get today Date
             var curr_date = d.getDate();
             var curr_month = d.getMonth();
             var curr_year = d.getFullYear();
             var todayDate = curr_date + "-" + m_names[curr_month] + "-" + curr_year;
-
             //to get yesterday Date
             var yes_date = new Date(d);
             yes_date.setDate(d.getDate() - 1);
@@ -371,7 +369,6 @@ angular.module('hris', [])
             var yesterday_month = yes_date.getMonth();
             var yesterday_year = yes_date.getFullYear();
             var yesterdayDate = yesterday_date + "-" + m_names[yesterday_month] + "-" + yesterday_year;
-
             //End to get Current Date and YesterDay Date
 
             var idFromParameter = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);

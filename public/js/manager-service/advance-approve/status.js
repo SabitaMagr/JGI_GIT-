@@ -76,29 +76,48 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 150},
-                        {field: "ADVANCE_NAME", title: "Advance", width: 120},
-                        {field: "REQUESTED_DATE", title: "Requested Date", width: 125},
-                        {field: "ADVANCE_DATE", title: "Advance Date", width: 115},
-                        {field: "REQUESTED_AMOUNT", title: "Requested Amt.", width: 120},
-                        {field: "TERMS", title: "Terms", width: 70},
-                        {field: "YOUR_ROLE", title: "Your Role", width: 100},
-                        {field: "STATUS", title: "Status", width: 80},
-                        {title: "Action", width: 80}
+                        {field: "FULL_NAME", title: "Employee"},
+                        {field: "ADVANCE_NAME", title: "Advance"},
+                        {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                        {title: "Advance Date",
+                            columns: [{
+                                    field: "ADVANCE_DATE",
+                                    title: "English",
+                                    template: "<span>#: (ADVANCE_DATE == null) ? '-' : ADVANCE_DATE #</span>"},
+                                {field: "ADVANCE_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (ADVANCE_DATE_N == null) ? '-' : ADVANCE_DATE_N #</span>"}]},
+                        {field: "REQUESTED_AMOUNT", title: "Requested Amt."},
+                        {field: "TERMS", title: "Terms"},
+                        {field: "YOUR_ROLE", title: "Your Role"},
+                        {field: "STATUS", title: "Status"},
+                         {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: `<span>  <a class="btn  btn-icon-only btn-success"
+        href="` + document.viewLink + `/#: ADVANCE_REQUEST_ID #/#: ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i></a>
+        </span>`}
                     ]
                 });
                 
-                app.searchTable('advanceRequestStatusTable',['FULL_NAME','ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_AMOUNT','TERMS','YOUR_ROLE','STATUS']);
+                app.searchTable('advanceRequestStatusTable',['FULL_NAME','ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_DATE_N','ADVANCE_DATE_N','REQUESTED_AMOUNT','TERMS','YOUR_ROLE','STATUS']);
                 
                 app.pdfExport(
                 'advanceRequestStatusTable',
                 {
                     'FULL_NAME': 'Name',
                     'ADVANE_NAME': 'Advance',
-                    'REQUESTED_DATE': 'Request Date',
-                    'ADVANCE_DATE': 'Advance Date',
+                    'REQUESTED_DATE': 'Request Date(AD)',
+                    'REQUESTED_DATE_N': 'Request Date(BS)',
+                    'ADVANCE_DATE': 'Advance Date(AD)',
+                    'ADVANCE_DATE_N': 'Advance Date(BS)',
                     'REQUESTED_AMOUNT': 'Request Amt',
                     'TERMS': 'Terms',
                     'YOUR_ROLE': 'Role',
@@ -125,8 +144,10 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Advance Name"},
-                                {value: "Requested Date"},
-                                {value: "Advance Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "Advance Date(AD)"},
+                                {value: "Advance Date(BS)"},
                                 {value: "Your Role"},
                                 {value: "Requested Amount"},
                                 {value: "Terms"},
@@ -155,7 +176,9 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.ADVANCE_NAME},
                                 {value: dataItem.REQUESTED_DATE},
+                                {value: dataItem.REQUESTED_DATE_N},
                                 {value: dataItem.ADVANCE_DATE},
+                                {value: dataItem.ADVANCE_DATE_N},
                                 {value: dataItem.YOUR_ROLE},
                                 {value: dataItem.REQUESTED_AMOUNT},
                                 {value: dataItem.TERMS},
@@ -177,6 +200,8 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

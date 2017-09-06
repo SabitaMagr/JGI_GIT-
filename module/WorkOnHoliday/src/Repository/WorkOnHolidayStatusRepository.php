@@ -59,8 +59,11 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface {
 
         $sql = "SELECT INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,WH.DURATION,
                 INITCAP(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
+                BS_DATE(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE_N,
                 INITCAP(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
+                BS_DATE(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE_N,
                 INITCAP(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                BS_DATE(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
                 WH.STATUS AS STATUS,
                 WH.EMPLOYEE_ID AS EMPLOYEE_ID,
                 WH.ID AS ID,
@@ -206,6 +209,7 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface {
                     AND EH.EMPLOYEE_ID = {$employeeId}
                     AND H.START_DATE >= A.MIN_ATTENDANCE_DT ORDER BY H.START_DATE");
     }
+
 //    public function getAttendedHolidayList($employeeId) {
 //        return EntityHelper::rawQueryResult($this->adapter, "
 //                    SELECT H.HOLIDAY_ID,
@@ -228,5 +232,4 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface {
 //                    AND EH.EMPLOYEE_ID = {$employeeId}
 //                    AND H.START_DATE BETWEEN A.MIN_ATTENDANCE_DT AND A.MAX_ATTENDANCE_DT");
 //    }
-
 }

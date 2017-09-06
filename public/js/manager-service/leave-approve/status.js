@@ -76,30 +76,60 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee", width: 150},
-                        {field: "LEAVE_ENAME", title: "Leave", width: 120},
-                        {field: "APPLIED_DATE", title: "Requested Date", width: 150},
-                        {field: "START_DATE", title: "From Date", width: 100},
-                        {field: "END_DATE", title: "To Date", width: 100},
-                        {field: "NO_OF_DAYS", title: "Duration", width: 100},
-                        {field: "YOUR_ROLE", title: "Your Role", width: 120},
-                        {field: "STATUS", title: "Status", width: 90},
-                        {title: "Action", width: 80}
+                        {field: "FULL_NAME", title: "Employee"},
+                        {field: "LEAVE_ENAME", title: "Leave"},
+                        {title: "Requested Date",
+                    columns: [{
+                            field: "APPLIED_DATE",
+                            title: "English",
+                            template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"},
+                        {field: "APPLIED_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"}]},
+                {title: "From Date",
+                    columns: [{
+                            field: "START_DATE",
+                            title: "English",
+                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                        {field: "START_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                {title: "To Date",
+                    columns: [{
+                            field: "END_DATE",
+                            title: "English",
+                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                        {field: "END_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+//                        {field: "APPLIED_DATE", title: "Requested Date", width: 150},
+//                        {field: "START_DATE", title: "From Date", width: 100},
+//                        {field: "END_DATE", title: "To Date", width: 100},
+                        {field: "NO_OF_DAYS", title: "Duration"},
+                        {field: "YOUR_ROLE", title: "Your Role"},
+                        {field: "STATUS", title: "Status"},
+                         {field: ["ID"], title: "Action", template: `<span>                                  <a class="btn  btn-icon-only btn-success"
+        href="`+ document.viewLink +`/#: ID #/#: ROLE #" style="height:17px;" title="view">
+        <i class="fa fa-search-plus"></i></a>
+        </span>`}
                     ]
                 });
                 
-                app.searchTable('leaveRequestStatusTable',['FULL_NAME','LEAVE_ENAME','APPLIED_DATE','START_DATE','END_DATE','NO_OF_DAYS','YOUR_ROLE','STATUS']);
+                app.searchTable('leaveRequestStatusTable',['FULL_NAME','LEAVE_ENAME','APPLIED_DATE', 'APPLIED_DATE_N','START_DATE','END_DATE','START_DATE_N','END_DATE_N','NO_OF_DAYS','YOUR_ROLE','STATUS']);
                 
                 app.pdfExport(
                 'leaveRequestStatusTable',
                 {
                     'FULL_NAME': 'Name',
                     'LEAVE_ENAME': 'Leave',
-                    'APPLIED_DATE': 'Applied Date',
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date',
+                    'APPLIED_DATE': 'Applied Date(AD)',
+                    'APPLIED_DATE_N': 'Applied Date(BS)',
+                    'START_DATE': 'Start Date(AD)',
+                    'START_DATE_N': 'Start Date(BS)',
+                    'END_DATE': 'End Date(AD)',
+                    'END_DATE_N': 'End Date(BS)',
                     'YOUR_ROLE': 'Role',
                     'NO_OF_DAYS': 'No Of Days',
                     'STATUS': 'Status',
@@ -127,9 +157,12 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Leave Name"},
-                                {value: "Requested Date"},
-                                {value: "From Date"},
-                                {value: "To Date"},
+                                {value: "Requested Date(AD)"},
+                                {value: "Requested Date(BS)"},
+                                {value: "From Date(AD)"},
+                                {value: "From Date(BS)"},
+                                {value: "To Date(AD)"},
+                                {value: "To Date(BS)"},
                                 {value: "Your Role"},
                                 {value: "Duration"},
                                 {value: "Status"},
@@ -157,8 +190,11 @@ angular.module('hris', [])
                                 {value: dataItem.FULL_NAME},
                                 {value: dataItem.LEAVE_ENAME},
                                 {value: dataItem.APPLIED_DATE},
+                                {value: dataItem.APPLIED_DATE_N},
                                 {value: dataItem.START_DATE},
+                                {value: dataItem.START_DATE_N},
                                 {value: dataItem.END_DATE},
+                                {value: dataItem.END_DATE_N},
                                 {value: dataItem.YOUR_ROLE},
                                 {value: dataItem.NO_OF_DAYS},
                                 {value: dataItem.STATUS},
@@ -179,6 +215,9 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

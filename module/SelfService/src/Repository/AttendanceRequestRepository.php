@@ -126,7 +126,9 @@ class AttendanceRequestRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([
             new Expression("INITCAP(TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT"),
+            new Expression("BS_DATE(TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_N"),
             new Expression("INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT"),
+            new Expression("BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_N"),
             new Expression("INITCAP(TO_CHAR(A.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
             new Expression("INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM')) AS IN_TIME"),
             new Expression("INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM')) AS OUT_TIME"),

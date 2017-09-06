@@ -68,27 +68,62 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-                    rowTemplate: kendo.template($("#rowTemplate").html()),
+//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "LEAVE_ENAME", title: "Leave Name"},
-                        {field: "REQUESTED_DT", title: "Applied Date"},
-                        {field: "FROM_DATE", title: "From Date"},
-                        {field: "TO_DATE", title: "To Date"},
+                        {title: "Applied Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
+
+                        {title: "From Date",
+                            columns: [{
+                                    field: "FROM_DATE",
+                                    title: "English",
+                                    template: "<span>#: (FROM_DATE == null) ? '-' : FROM_DATE #</span>"},
+                                {field: "FROM_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N #</span>"}]},
+                        {title: "To Date",
+                            columns: [{
+                                    field: "TO_DATE",
+                                    title: "English",
+                                    template: "<span>#: (TO_DATE == null) ? '-' : TO_DATE #</span>"},
+                                {field: "TO_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}]},
+                        
                         {field: "NO_OF_DAYS", title: "Duration"},
                         {field: "STATUS", title: "Status"},
-                        {title: "Action"}
+                        {field: ["ID", "ALLOW_TO_EDIT"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
+                            <i class="fa fa-search-plus"></i>
+                            </a>
+                            #if(ALLOW_TO_EDIT == 1){#       
+                            <a class="confirmation btn-delete" href="` + document.deleteLink + `/#: ID #" id="bs_#:ID #" style="height:17px;">
+                            <i class="fa fa-trash-o"></i>
+                            </a> #}#
+                            </span>`
+                        }
                     ]
-                });
+                }
+                );
 
-                app.searchTable('leaveRequestTable', ['LEAVE_ENAME', 'REQUESTED_DT', 'FROM_DATE', 'TO_DATE', 'NO_OF_DAYS', 'STATUS']);
+                app.searchTable('leaveRequestTable', ['LEAVE_ENAME', 'REQUESTED_DT', 'REQUESTED_DT_N', 'FROM_DATE', 'FROM_DATE_N', 'TO_DATE', 'TO_DATE_N', 'NO_OF_DAYS', 'STATUS']);
 
                 app.pdfExport(
                         'leaveRequestTable',
                         {
                             'LEAVE_ENAME': 'Leave',
-                            'REQUESTED_DT': 'Request Date',
-                            'FROM_DATE': 'Start Date',
-                            'TO_DATE': 'End Date',
+                            'REQUESTED_DT': 'Requested Date(AD)',
+                            'REQUESTED_DT_N': 'Requested Date(BS)',
+                            'FROM_DATE': 'Start Date(AD)',
+                            'FROM_DATE_N': 'Start Date(BS)',
+                            'TO_DATE': 'End Date(AD)',
+                            'TO_DATE_N': 'End Date(BS)',
                             'NO_OF_DAYS': 'No Of Days',
                             'STATUS': 'Status',
                         }
@@ -110,9 +145,12 @@ angular.module('hris', [])
                             cells: [
                                 {value: "Leave Code"},
                                 {value: "Leave Name"},
-                                {value: "Applied Date"},
-                                {value: "Start Date"},
-                                {value: "End Date"},
+                                {value: "Applied Date(AD)"},
+                                {value: "Applied Date(BS)"},
+                                {value: "Start Date(AD)"},
+                                {value: "Start Date(BS)"},
+                                {value: "End Date(AD)"},
+                                {value: "End Date(BS)"},
                                 {value: "Duration"},
                                 {value: "Status"},
                                 {value: "Remarks"},
@@ -140,8 +178,11 @@ angular.module('hris', [])
                                 {value: dataItem.LEAVE_CODE},
                                 {value: dataItem.LEAVE_ENAME},
                                 {value: dataItem.REQUESTED_DT},
+                                {value: dataItem.REQUESTED_DT_N},
                                 {value: dataItem.FROM_DATE},
+                                {value: dataItem.FROM_DATE_N},
                                 {value: dataItem.TO_DATE},
+                                {value: dataItem.TO_DATE_N},
                                 {value: dataItem.NO_OF_DAYS},
                                 {value: dataItem.STATUS},
                                 {value: dataItem.REMARKS},
@@ -163,6 +204,9 @@ angular.module('hris', [])
                         sheets: [
                             {
                                 columns: [
+                                    {autoWidth: true},
+                                    {autoWidth: true},
+                                    {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true},

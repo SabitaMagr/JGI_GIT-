@@ -40,8 +40,10 @@ class LoanRequestRepository implements RepositoryInterface{
         $select = $sql->select();
         $select->columns([
             new Expression("INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE"),
+//            new Expression("BS_DATE(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE_N"),
             new Expression("LR.STATUS AS STATUS"),
             new Expression("INITCAP(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+//            new Expression("BS_DATE(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N"),
             new Expression("INITCAP(TO_CHAR(LR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("INITCAP(TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("LR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
@@ -74,8 +76,10 @@ class LoanRequestRepository implements RepositoryInterface{
         $select = $sql->select();
         $select->columns([
             new Expression("INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE"),
+            new Expression("BS_DATE(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE_N"),
             new Expression("LR.STATUS AS STATUS"),
             new Expression("INITCAP(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("BS_DATE(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N"),
             new Expression("INITCAP(TO_CHAR(LR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("INITCAP(TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("LR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),

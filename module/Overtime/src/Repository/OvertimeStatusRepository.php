@@ -57,7 +57,9 @@ class OvertimeStatusRepository implements RepositoryInterface {
 
         $sql = "SELECT 
                 INITCAP(TO_CHAR(OT.OVERTIME_DATE, 'DD-MON-YYYY')) AS OVERTIME_DATE,
+                BS_DATE(TO_CHAR(OT.OVERTIME_DATE, 'DD-MON-YYYY')) AS OVERTIME_DATE_N,
                 INITCAP(TO_CHAR(OT.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                BS_DATE(TO_CHAR(OT.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
                 OT.STATUS AS STATUS,
                 OT.REMARKS AS REMARKS,
                 OT.DESCRIPTION AS DESCRIPTION,

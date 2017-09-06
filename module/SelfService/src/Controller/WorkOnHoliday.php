@@ -130,6 +130,9 @@ class WorkOnHoliday extends AbstractActionController {
             }
             array_push($list, $new_row);
         }
+//        print "<pre>";
+//        print_r($list);
+//        exit;
         return Helper::addFlashMessagesToArray($this, ['list' => $list]);
     }
 

@@ -36,7 +36,9 @@ $this->headScript()
 
 <script>
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.travelApprove =<?php echo json_encode($travelApprove); ?>
+    document.travelApprove =<?php echo json_encode($travelApprove) ?>;
+    document.viewLink ='<?= $this->url("travelApprove", ["action" => "view"]) ?>';
+    document.expenseDetailLink ='<?= $this->url("travelApprove", ["action" => "expenseDetail"]) ?>';
 </script>
 
 <div class="margin-top-20">
@@ -78,7 +80,7 @@ $this->headScript()
 	</div>
 
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
+<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
         <input type='checkbox' id='#:TRAVEL_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:TRAVEL_ID#'></label>    
@@ -107,16 +109,16 @@ $this->headScript()
         <td>
         # if(REQUESTED_TYPE=='Expense'){#
         <a class="btn-edit"
-        href="<?= $this->url("travelApprove", ["action" => "expenseDetail"]); ?>/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+        href="` + document.expenseDetailLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a>
         # } else { #
         <a class="btn-edit"
-        href="<?= $this->url("travelApprove", ["action" => "view"]); ?>/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+        href="` + document.viewLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a>
         # } #
         </td>
         </tr>
-    </script>
+    </script>-->
 </div>
