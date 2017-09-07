@@ -4,17 +4,17 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
-        
-          $("#reset").on("click", function () {
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+
+        $("#reset").on("click", function () {
             if (typeof document.ids !== "undefined") {
                 $.each(document.ids, function (key, value) {
                     $("#" + key).val(value).change();
                 });
             }
         });
-        
-        
+
+
     });
 })(window.jQuery, window.app);
 
@@ -80,28 +80,28 @@ angular.module('hris', [])
                         {title: "Action", width: 100}
                     ]
                 });
-                
-                app.searchTable('serviceHistoryTable',['START_DATE','END_DATE','SERVICE_EVENT_TYPE_NAME','FROM_SERVICE_TYPE_NAME','FROM_BRANCH_NAME','FROM_DEPARTMENT_NAME','FROM_DESIGNATION_TITLE','FROM_POSITION_NAME']);
-                
+
+                app.searchTable('serviceHistoryTable', ['START_DATE', 'END_DATE', 'SERVICE_EVENT_TYPE_NAME', 'FROM_SERVICE_TYPE_NAME', 'FROM_BRANCH_NAME', 'FROM_DEPARTMENT_NAME', 'FROM_DESIGNATION_TITLE', 'FROM_POSITION_NAME']);
+
                 app.pdfExport(
-                'serviceHistoryTable',
-                {
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date',
-                    'SERVICE_EVENT_TYPE_NAME': 'Type',
-                    'FROM_SERVICE_TYPE_NAME': 'From service',
-                    'TO_SERVICE_TYPE_NAME': 'To Service',
-                    'FROM_BRANCH_NAME': 'From Branch',
-                    'TO_BRANCH_NAME': 'To Branch',
-                    'FROM_DEPARTMENT_NAME': 'From Department',
-                    'TO_DEPARTMENT_NAME': 'To department',
-                    'FROM_DESIGNATION_TITLE': 'From Designation',
-                    'TO_DESIGNATION_TITLE': 'To Designation',
-                    'FROM_POSITION_NAME': 'From Position',
-                    'TO_POSITION_NAME': 'To Position'
-                });
-                
-                
+                        'serviceHistoryTable',
+                        {
+                            'START_DATE': 'Start Date',
+                            'END_DATE': 'End Date',
+                            'SERVICE_EVENT_TYPE_NAME': 'Type',
+                            'FROM_SERVICE_TYPE_NAME': 'From service',
+                            'TO_SERVICE_TYPE_NAME': 'To Service',
+                            'FROM_BRANCH_NAME': 'From Branch',
+                            'TO_BRANCH_NAME': 'To Branch',
+                            'FROM_DEPARTMENT_NAME': 'From Department',
+                            'TO_DEPARTMENT_NAME': 'To department',
+                            'FROM_DESIGNATION_TITLE': 'From Designation',
+                            'TO_DESIGNATION_TITLE': 'To Designation',
+                            'FROM_POSITION_NAME': 'From Position',
+                            'TO_POSITION_NAME': 'To Position'
+                        });
+
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

@@ -850,8 +850,6 @@ window.app = (function ($, toastr, App) {
 
 
     var pdfExport = function (kendoId, col, fn) {
-
-
         var pageSizeValue;
         if (kendoId == 'employeeTable') {
             pageSizeValue = '4A0';
@@ -1017,6 +1015,7 @@ window.app = (function ($, toastr, App) {
             scrollable: true,
             sortable: true,
             filterable: true,
+            groupable: true,
             dataBound: function (e) {
                 var grid = e.sender;
                 if (grid.dataSource.total() === 0) {

@@ -340,7 +340,64 @@ EOT;
         return Helper::extractDbData($result);
     }
 
-    public function reportWithOT() {
+    public function reportWithOT($data) {
+        $companyCondition = "";
+        $branchCondition = "";
+        $departmentCondition = "";
+        $designationCondition = "";
+        $positionCondition = "";
+        $serviceTypeCondition = "";
+        $serviceEventTypeConditon = "";
+        $employeeCondition = "";
+        $employeeTypeCondition = "";
+        $fromCondition = "";
+        $toCondition = "";
+
+        $otFromCondition = "";
+        $otToCondition = "";
+
+        if (isset($data['companyId']) && $data['companyId'] != null && $data['companyId'] != -1) {
+            $companyCondition = "AND E.COMPANY_ID = {$data['companyId']}";
+        }
+        if (isset($data['branchId']) && $data['branchId'] != null && $data['branchId'] != -1) {
+            $branchCondition = "AND E.BRANCH_ID = {$data['branchId']}";
+        }
+        if (isset($data['departmentId']) && $data['departmentId'] != null && $data['departmentId'] != -1) {
+            $departmentCondition = "AND E.DEPARTMENT_ID = {$data['departmentId']}";
+        }
+        if (isset($data['designationId']) && $data['designationId'] != null && $data['designationId'] != -1) {
+            $designationCondition = "AND E.DESIGNATION_ID = {$data['designationId']}";
+        }
+        if (isset($data['positionId']) && $data['positionId'] != null && $data['positionId'] != -1) {
+            $positionCondition = "AND E.POSITION_ID = {$data['positionId']}";
+        }
+        if (isset($data['serviceTypeId']) && $data['serviceTypeId'] != null && $data['serviceTypeId'] != -1) {
+            $serviceTypeCondition = "AND E.SERVICE_TYPE_ID = {$data['serviceTypeId']}";
+        }
+        if (isset($data['serviceEventTypeId']) && $data['serviceEventTypeId'] != null && $data['serviceEventTypeId'] != -1) {
+            $serviceEventTypeConditon = "AND E.SERVICE_EVENT_TYPE_ID = {$data['serviceEventTypeId']}";
+        }
+        if (isset($data['employeeId']) && $data['employeeId'] != null && $data['employeeId'] != -1) {
+            $employeeCondition = "AND E.EMPLOYEE_ID = {$data['employeeId']}";
+        }
+        if (isset($data['employeeTypeId']) && $data['employeeTypeId'] != null && $data['employeeTypeId'] != -1) {
+            $employeeTypeCondition = "AND E.EMPLOYEE_TYPE = '{$data['employeeTypeId']}'";
+        }
+
+        if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
+            $fromDate = Helper::getExpressionDate($data['fromDate']);
+            $fromCondition = "AND A.ATTENDANCE_DT >= {$fromDate->getExpression()}";
+            $otFromCondition = "AND OVERTIME_DATE >= {$fromDate->getExpression()} ";
+        }
+        if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
+            $toDate = Helper::getExpressionDate($data['toDate']);
+            $toCondition = "AND A.ATTENDANCE_DT <= {$toDate->getExpression()}";
+            $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
+        }
+
+        $condition = $companyCondition . $branchCondition . $departmentCondition . $designationCondition . $positionCondition . $serviceTypeCondition . $serviceEventTypeConditon . $employeeCondition . $employeeTypeCondition;
+
+
         $sql = <<<EOT
             SELECT 
               C.COMPANY_NAME,
@@ -430,26 +487,32 @@ EOT;
               FROM HRIS_ATTENDANCE_DETAIL A
               LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
               ON (A.LEAVE_ID= L.LEAVE_ID)
-              WHERE (A.ATTENDANCE_DT BETWEEN '16-JUL-17' AND '16-AUG-17')
+              WHERE 1=1
+              {$fromCondition}
+              {$toCondition}
               GROUP BY A.EMPLOYEE_ID
               ) A
-            JOIN HRIS_EMPLOYEES E
+            LEFT JOIN HRIS_EMPLOYEES E
             ON(A.EMPLOYEE_ID = E.EMPLOYEE_ID)
-            JOIN HRIS_COMPANY C
+            LEFT JOIN HRIS_COMPANY C
             ON(E.COMPANY_ID= C.COMPANY_ID)
-            JOIN HRIS_DEPARTMENTS D
+            LEFT JOIN HRIS_DEPARTMENTS D
             ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
             LEFT JOIN
               (SELECT EMPLOYEE_ID,
                 SUM(TOTAL_HOUR) AS TOTAL_MIN
               FROM HRIS_OVERTIME
-              WHERE (OVERTIME_DATE BETWEEN '16-JUL-17' AND '16-AUG-17')
+              WHERE 1=1
+              {$otFromCondition}
+              {$otToCondition}
               AND STATUS= 'AP'
               GROUP BY EMPLOYEE_ID
               ) OT
             ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
+              WHERE 1=1 
+              {$condition}
             ORDER BY C.COMPANY_NAME,
-              D.DEPARTMENT_NAME
+              D.DEPARTMENT_NAME,E.FULL_NAME
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

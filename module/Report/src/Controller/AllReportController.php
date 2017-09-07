@@ -74,10 +74,10 @@ class AllReportController extends AbstractActionController {
             try {
                 $data = $request->getPost();
 //                $employeeId = $data['employeeId'];
-                print "<pre>";
-                print_r($data);
-                exit;
-                $reportData = $this->reportRepo->reportWithOT();
+//                print "<pre>";
+//                print_r($data);
+//                exit;
+                $reportData = $this->reportRepo->reportWithOT($data);
                 return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } catch (Exception $e) {
                 return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
