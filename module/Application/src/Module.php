@@ -4,6 +4,7 @@ namespace Application;
 
 use Application\Controller\AuthController;
 use Application\Controller\ForgotPasswordController;
+use Application\Controller\RegisterAttendanceController;
 use Application\Factory\HrLogger;
 use Application\Helper\Helper;
 use Application\Helper\SessionHelper;
@@ -24,14 +25,15 @@ use Zend\Db\Adapter\Adapter as DbAdapter;
 use Zend\Db\Adapter\AdapterInterface as DbAdapterInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
-use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
-use Application\Controller\RegisterAttendanceController;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
 
     const VERSION = '3.0.1dev';
+
+    protected $storage;
+    protected $authservice;
 
     public function getConfig() {
         return include __DIR__ . '/../config/module.config.php';
@@ -146,7 +148,15 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             }
         }
 
-
+        /*
+         * 
+         */
+        $this->getSessionStorage($app)
+                ->setRememberMe(1, 300);
+        $this->getAuthService($app)->setStorage($this->getSessionStorage($app));
+        /*
+         * 
+         */
 
         //print "Called before any controller action called. Do any operation.";
     }
@@ -217,6 +227,20 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             'attendance daily-attendance' => 'Daily Attendance',
             'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>' => 'Employee Daily Attendance'
         ];
+    }
+
+    public function getSessionStorage($app) {
+        if (!$this->storage) {
+            $this->storage = $app->getServiceManager()->get(HrisAuthStorage::class);
+        }
+        return $this->storage;
+    }
+
+    public function getAuthService($app) {
+        if (!$this->authservice) {
+            $this->authservice = $app->getServiceManager()->get('AuthService');
+        }
+        return $this->authservice;
     }
 
 }

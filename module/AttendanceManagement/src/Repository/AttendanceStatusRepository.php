@@ -144,6 +144,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $attendanceRequestStatusId = $data['attendanceRequestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
         
         
         if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
@@ -260,6 +261,11 @@ class AttendanceStatusRepository implements RepositoryInterface {
          if ($employeeId != -1) {
             $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
         }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
+        }
+        
         if ($companyId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
         }

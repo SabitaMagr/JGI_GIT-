@@ -23,6 +23,7 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var approverId = angular.element(document.getElementById('approverId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAttendanceRequestStatusList',
@@ -38,7 +39,8 @@ angular.module('hris', [])
                         'attendanceRequestStatusId': attendanceRequestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'approverId': approverId
+                        'approverId': approverId,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

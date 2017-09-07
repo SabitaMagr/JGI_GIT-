@@ -45,6 +45,7 @@ class AdvanceStatusRepository implements RepositoryInterface{
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $advanceId = $data['advanceId'];
         $advanceRequestStatusId = $data['advanceRequestStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
         
         if($serviceEventTypeId==5 || $serviceEventTypeId==8 || $serviceEventTypeId==14){
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
@@ -142,6 +143,10 @@ class AdvanceStatusRepository implements RepositoryInterface{
         
         if($toDate!=null){   
             $sql .= " AND AR.ADVANCE_DATE<=TO_DATE('".$toDate."','DD-MM-YYYY')";
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
         }
 
         if ($employeeId != -1) {

@@ -23,6 +23,7 @@ angular.module('hris', [])
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullTrainingRequestStatusList',
@@ -38,7 +39,8 @@ angular.module('hris', [])
                         'requestStatusId': requestStatusId,
                         'fromDate': fromDate,
                         'toDate': toDate,
-                        'recomApproveId': recomApproveId
+                        'recomApproveId': recomApproveId,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
