@@ -1004,8 +1004,8 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, excelExportFileName) {
-        $table.kendoGrid({
+    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail) {
+        var kendoConfig = {
             excel: {
                 fileName: excelExportFileName,
                 filterable: true,
@@ -1030,7 +1030,11 @@ window.app = (function ($, toastr, App) {
                 numeric: false
             },
             columns: columns
-        });
+        };
+        if (typeof detail !== 'undefined') {
+            kendoConfig['detailInit'] = detail;
+        }
+        $table.kendoGrid(kendoConfig);
     }
     var renderKendoGrid = function ($table, data) {
         var dataSource = new kendo.data.DataSource({data: data, pageSize: 20});
