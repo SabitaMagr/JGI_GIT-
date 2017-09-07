@@ -15,65 +15,65 @@ class ReportRepository {
 
     public function employeeWiseDailyReport($employeeId) {
         $sql = <<<EOT
-SELECT R.*,
-  M.MONTH_EDESC,
-  TRUNC(R.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1 AS DAY_COUNT
-FROM
-  (SELECT AD.ATTENDANCE_DT                AS ATTENDANCE_DT,
-    TO_CHAR(AD.ATTENDANCE_DT,'MONDDYYYY') AS FORMATTED_ATTENDANCE_DT,
-    (SELECT M.MONTH_ID
-    FROM HRIS_MONTH_CODE M
-    WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-    ) AS MONTH_ID,
-    (
-  CASE 
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    AND AD.LEAVE_ID IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS ON_LEAVE,
-    (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID    IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_PRESENT,
-    (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID   IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_ABSENT,
-    (
-  CASE
-    WHEN AD.LEAVE_ID   IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL 
-      AND  AD.DAYOFF_FLAG='Y'
-    THEN 1
-    ELSE 0
-  END) AS IS_DAYOFF
-  FROM HRIS_ATTENDANCE_DETAIL AD
-  WHERE AD.EMPLOYEE_ID = $employeeId
-  ) R
-JOIN HRIS_MONTH_CODE M
-ON (M.MONTH_ID = R.MONTH_ID)
+            SELECT R.*,
+              M.MONTH_EDESC,
+              TRUNC(R.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1 AS DAY_COUNT
+            FROM
+              (SELECT AD.ATTENDANCE_DT                AS ATTENDANCE_DT,
+                TO_CHAR(AD.ATTENDANCE_DT,'MONDDYYYY') AS FORMATTED_ATTENDANCE_DT,
+                (SELECT M.MONTH_ID
+                FROM HRIS_MONTH_CODE M
+                WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                ) AS MONTH_ID,
+                (
+              CASE 
+                WHEN AD.DAYOFF_FLAG ='N'
+                AND AD.HOLIDAY_ID  IS NULL
+                AND AD.TRAINING_ID IS NULL
+                AND AD.TRAVEL_ID   IS NULL
+                AND AD.IN_TIME     IS NULL
+                AND AD.LEAVE_ID IS NOT NULL
+                THEN 1
+                ELSE 0
+              END) AS ON_LEAVE,
+                (
+              CASE
+                WHEN AD.DAYOFF_FLAG ='N'
+                AND AD.LEAVE_ID    IS NULL
+                AND AD.HOLIDAY_ID  IS NULL
+                AND AD.TRAINING_ID IS NULL
+                AND AD.TRAVEL_ID   IS NULL
+                AND AD.IN_TIME     IS NOT NULL
+                THEN 1
+                ELSE 0
+              END) AS IS_PRESENT,
+                (
+              CASE
+                WHEN AD.DAYOFF_FLAG ='N'
+                AND AD.LEAVE_ID   IS NULL
+                AND AD.HOLIDAY_ID  IS NULL
+                AND AD.TRAINING_ID IS NULL
+                AND AD.TRAVEL_ID   IS NULL
+                AND AD.IN_TIME     IS NULL
+                THEN 1
+                ELSE 0
+              END) AS IS_ABSENT,
+                (
+              CASE
+                WHEN AD.LEAVE_ID   IS NULL
+                AND AD.HOLIDAY_ID  IS NULL
+                AND AD.TRAINING_ID IS NULL
+                AND AD.TRAVEL_ID   IS NULL
+                AND AD.IN_TIME     IS NULL 
+                  AND  AD.DAYOFF_FLAG='Y'
+                THEN 1
+                ELSE 0
+              END) AS IS_DAYOFF
+              FROM HRIS_ATTENDANCE_DETAIL AD
+              WHERE AD.EMPLOYEE_ID = $employeeId
+              ) R
+            JOIN HRIS_MONTH_CODE M
+            ON (M.MONTH_ID = R.MONTH_ID)
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -151,69 +151,69 @@ EOT;
 
     public function departmentWiseEmployeeMonthReport($departmentId) {
         $sql = <<<EOT
-SELECT J.*,
-  JE.FIRST_NAME AS FIRST_NAME,
-    JE.MIDDLE_NAME AS MIDDLE_NAME,
-    JE.LAST_NAME AS LAST_NAME,
-    CONCAT(CONCAT(CONCAT(JE.FIRST_NAME,' '),CONCAT(JE.MIDDLE_NAME, '')),JE.LAST_NAME) AS FULL_NAME,
-  JM.MONTH_EDESC
-FROM
-  (SELECT I.EMPLOYEE_ID,
-    I.MONTH_ID ,
-    SUM(I.ON_LEAVE)    AS ON_LEAVE,
-    SUM (I.IS_PRESENT) AS IS_PRESENT,
-    SUM(I.IS_ABSENT)   AS IS_ABSENT
-  FROM
-    (SELECT E.EMPLOYEE_ID AS EMPLOYEE_ID,
-      (SELECT M.MONTH_ID
-      FROM HRIS_MONTH_CODE M
-      WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-      ) AS MONTH_ID,
-      (
-  CASE 
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    AND AD.LEAVE_ID IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS ON_LEAVE,
-      (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID    IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_PRESENT,
-     (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID   IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_ABSENT
-    FROM HRIS_ATTENDANCE_DETAIL AD
-    JOIN HRIS_EMPLOYEES E
-    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
-    WHERE E.DEPARTMENT_ID=$departmentId
-    ) I
-  GROUP BY I.EMPLOYEE_ID,
-    I.MONTH_ID
-  ) J
-JOIN HRIS_EMPLOYEES JE
-ON (J.EMPLOYEE_ID = JE.EMPLOYEE_ID)
-JOIN HRIS_MONTH_CODE JM
-ON (J.MONTH_ID = JM.MONTH_ID)
+                SELECT J.*,
+                  JE.FIRST_NAME AS FIRST_NAME,
+                    JE.MIDDLE_NAME AS MIDDLE_NAME,
+                    JE.LAST_NAME AS LAST_NAME,
+                    CONCAT(CONCAT(CONCAT(JE.FIRST_NAME,' '),CONCAT(JE.MIDDLE_NAME, '')),JE.LAST_NAME) AS FULL_NAME,
+                  JM.MONTH_EDESC
+                FROM
+                  (SELECT I.EMPLOYEE_ID,
+                    I.MONTH_ID ,
+                    SUM(I.ON_LEAVE)    AS ON_LEAVE,
+                    SUM (I.IS_PRESENT) AS IS_PRESENT,
+                    SUM(I.IS_ABSENT)   AS IS_ABSENT
+                  FROM
+                    (SELECT E.EMPLOYEE_ID AS EMPLOYEE_ID,
+                      (SELECT M.MONTH_ID
+                      FROM HRIS_MONTH_CODE M
+                      WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                      ) AS MONTH_ID,
+                      (
+                  CASE 
+                    WHEN AD.DAYOFF_FLAG ='N'
+                    AND AD.HOLIDAY_ID  IS NULL
+                    AND AD.TRAINING_ID IS NULL
+                    AND AD.TRAVEL_ID   IS NULL
+                    AND AD.IN_TIME     IS NULL
+                    AND AD.LEAVE_ID IS NOT NULL
+                    THEN 1
+                    ELSE 0
+                  END) AS ON_LEAVE,
+                      (
+                  CASE
+                    WHEN AD.DAYOFF_FLAG ='N'
+                    AND AD.LEAVE_ID    IS NULL
+                    AND AD.HOLIDAY_ID  IS NULL
+                    AND AD.TRAINING_ID IS NULL
+                    AND AD.TRAVEL_ID   IS NULL
+                    AND AD.IN_TIME     IS NOT NULL
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_PRESENT,
+                     (
+                  CASE
+                    WHEN AD.DAYOFF_FLAG ='N'
+                    AND AD.LEAVE_ID   IS NULL
+                    AND AD.HOLIDAY_ID  IS NULL
+                    AND AD.TRAINING_ID IS NULL
+                    AND AD.TRAVEL_ID   IS NULL
+                    AND AD.IN_TIME     IS NULL
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_ABSENT
+                    FROM HRIS_ATTENDANCE_DETAIL AD
+                    JOIN HRIS_EMPLOYEES E
+                    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
+                    WHERE E.DEPARTMENT_ID=$departmentId
+                    ) I
+                  GROUP BY I.EMPLOYEE_ID,
+                    I.MONTH_ID
+                  ) J
+                JOIN HRIS_EMPLOYEES JE
+                ON (J.EMPLOYEE_ID = JE.EMPLOYEE_ID)
+                JOIN HRIS_MONTH_CODE JM
+                ON (J.MONTH_ID = JM.MONTH_ID)
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -222,67 +222,67 @@ EOT;
 
     public function departmentMonthReport() {
         $sql = <<<EOT
-SELECT J.*,
-  JD.DEPARTMENT_NAME AS DEPARTMENT_NAME,
-  JM.MONTH_EDESC
-FROM
-  (SELECT I.DEPARTMENT_ID ,
-    I.MONTH_ID ,
-    SUM(I.ON_LEAVE)    AS ON_LEAVE,
-    SUM (I.IS_PRESENT) AS IS_PRESENT,
-    SUM(I.IS_ABSENT)   AS IS_ABSENT
-  FROM
-    (SELECT D.DEPARTMENT_ID AS DEPARTMENT_ID,
-      (SELECT M.MONTH_ID
-      FROM HRIS_MONTH_CODE M
-      WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-      ) AS MONTH_ID,
-      (
-  CASE 
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    AND AD.LEAVE_ID IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS ON_LEAVE,
-      (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID    IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NOT NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_PRESENT,
-     (
-  CASE
-    WHEN AD.DAYOFF_FLAG ='N'
-    AND AD.LEAVE_ID   IS NULL
-    AND AD.HOLIDAY_ID  IS NULL
-    AND AD.TRAINING_ID IS NULL
-    AND AD.TRAVEL_ID   IS NULL
-    AND AD.IN_TIME     IS NULL
-    THEN 1
-    ELSE 0
-  END) AS IS_ABSENT
-    FROM HRIS_ATTENDANCE_DETAIL AD
-    JOIN HRIS_EMPLOYEES E
-    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
-    JOIN HRIS_DEPARTMENTS D
-    ON(E.DEPARTMENT_ID=D.DEPARTMENT_ID)
-    ) I
-  GROUP BY I.DEPARTMENT_ID,
-    I.MONTH_ID
-  ) J
-JOIN HRIS_DEPARTMENTS JD
-ON (J.DEPARTMENT_ID = JD.DEPARTMENT_ID)
-JOIN HRIS_MONTH_CODE JM
-ON (J.MONTH_ID = JM.MONTH_ID)            
+            SELECT J.*,
+              JD.DEPARTMENT_NAME AS DEPARTMENT_NAME,
+              JM.MONTH_EDESC
+            FROM
+              (SELECT I.DEPARTMENT_ID ,
+                I.MONTH_ID ,
+                SUM(I.ON_LEAVE)    AS ON_LEAVE,
+                SUM (I.IS_PRESENT) AS IS_PRESENT,
+                SUM(I.IS_ABSENT)   AS IS_ABSENT
+              FROM
+                (SELECT D.DEPARTMENT_ID AS DEPARTMENT_ID,
+                  (SELECT M.MONTH_ID
+                  FROM HRIS_MONTH_CODE M
+                  WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                  ) AS MONTH_ID,
+                  (
+              CASE 
+                WHEN AD.DAYOFF_FLAG ='N'
+                AND AD.HOLIDAY_ID  IS NULL
+                AND AD.TRAINING_ID IS NULL
+                AND AD.TRAVEL_ID   IS NULL
+                AND AD.IN_TIME     IS NULL
+                AND AD.LEAVE_ID IS NOT NULL
+                THEN 1
+                ELSE 0
+              END) AS ON_LEAVE,
+                  (
+              CASE
+                WHEN AD.DAYOFF_FLAG ='N'
+                AND AD.LEAVE_ID    IS NULL
+                AND AD.HOLIDAY_ID  IS NULL
+                AND AD.TRAINING_ID IS NULL
+                AND AD.TRAVEL_ID   IS NULL
+                AND AD.IN_TIME     IS NOT NULL
+                THEN 1
+                ELSE 0
+              END) AS IS_PRESENT,
+                 (
+              CASE
+                WHEN AD.DAYOFF_FLAG ='N'
+                AND AD.LEAVE_ID   IS NULL
+                AND AD.HOLIDAY_ID  IS NULL
+                AND AD.TRAINING_ID IS NULL
+                AND AD.TRAVEL_ID   IS NULL
+                AND AD.IN_TIME     IS NULL
+                THEN 1
+                ELSE 0
+              END) AS IS_ABSENT
+                FROM HRIS_ATTENDANCE_DETAIL AD
+                JOIN HRIS_EMPLOYEES E
+                ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
+                JOIN HRIS_DEPARTMENTS D
+                ON(E.DEPARTMENT_ID=D.DEPARTMENT_ID)
+                ) I
+              GROUP BY I.DEPARTMENT_ID,
+                I.MONTH_ID
+              ) J
+            JOIN HRIS_DEPARTMENTS JD
+            ON (J.DEPARTMENT_ID = JD.DEPARTMENT_ID)
+            JOIN HRIS_MONTH_CODE JM
+            ON (J.MONTH_ID = JM.MONTH_ID)            
 EOT;
 
         $statement = $this->adapter->query($sql);
@@ -292,17 +292,17 @@ EOT;
 
     public function getCompanyBranchDepartment() {
         $sql = <<<EOT
-SELECT C.COMPANY_ID,
-  C.COMPANY_NAME,
-  B.BRANCH_ID,
-  B.BRANCH_NAME,
-  D.DEPARTMENT_ID,
-  D.DEPARTMENT_NAME
-FROM HRIS_COMPANY C
-LEFT JOIN HRIS_BRANCHES B
-ON (C.COMPANY_ID =B.COMPANY_ID)
-LEFT  JOIN HRIS_DEPARTMENTS D
-ON (D.BRANCH_ID=B.BRANCH_ID)
+            SELECT C.COMPANY_ID,
+              C.COMPANY_NAME,
+              B.BRANCH_ID,
+              B.BRANCH_NAME,
+              D.DEPARTMENT_ID,
+              D.DEPARTMENT_NAME
+            FROM HRIS_COMPANY C
+            LEFT JOIN HRIS_BRANCHES B
+            ON (C.COMPANY_ID =B.COMPANY_ID)
+            LEFT  JOIN HRIS_DEPARTMENTS D
+            ON (D.BRANCH_ID=B.BRANCH_ID)
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -311,13 +311,12 @@ EOT;
 
     public function getMonthList() {
         $sql = <<<EOT
-                SELECT AM.MONTH_ID,M.MONTH_EDESC FROM
-(SELECT  UNIQUE (SELECT M.MONTH_ID
-    FROM HRIS_MONTH_CODE M
-    WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-    ) AS MONTH_ID
-FROM HRIS_ATTENDANCE_DETAIL AD) AM JOIN HRIS_MONTH_CODE M ON (M.MONTH_ID=AM.MONTH_ID) 
-
+            SELECT AM.MONTH_ID,M.MONTH_EDESC FROM
+            (SELECT  UNIQUE (SELECT M.MONTH_ID
+                FROM HRIS_MONTH_CODE M
+                WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                ) AS MONTH_ID
+            FROM HRIS_ATTENDANCE_DETAIL AD) AM JOIN HRIS_MONTH_CODE M ON (M.MONTH_ID=AM.MONTH_ID) 
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -326,15 +325,131 @@ EOT;
 
     public function getEmployeeList() {
         $sql = <<<EOT
-SELECT E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID,
-  E.FIRST_NAME                                                                   AS FIRST_NAME,
-  E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
-  E.LAST_NAME                                                                    AS LAST_NAME,
-  CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
-  E.COMPANY_ID                                                                   AS COMPANY_ID,
-  E.BRANCH_ID                                                                    AS BRANCH_ID,
-  E.DEPARTMENT_ID                                                                AS DEPARTMENT_ID
-FROM HRIS_EMPLOYEES E
+            SELECT E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID,
+              E.FIRST_NAME                                                                   AS FIRST_NAME,
+              E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
+              E.LAST_NAME                                                                    AS LAST_NAME,
+              CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
+              E.COMPANY_ID                                                                   AS COMPANY_ID,
+              E.BRANCH_ID                                                                    AS BRANCH_ID,
+              E.DEPARTMENT_ID                                                                AS DEPARTMENT_ID
+            FROM HRIS_EMPLOYEES E
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function reportWithOT() {
+        $sql = <<<EOT
+            SELECT 
+              C.COMPANY_NAME,
+              D.DEPARTMENT_NAME,
+              A.EMPLOYEE_ID,
+              E.FULL_NAME,
+              A.DAYOFF,
+              A.PRESENT,
+              A.HOLIDAY,
+              A.LEAVE,
+              A.PAID_LEAVE,
+              A.UNPAID_LEAVE,
+              A.ABSENT,
+              NVL(ROUND(OT.TOTAL_MIN/60,2),0) AS OVERTIME_HOUR,
+              A.TRAVEL,
+              A.TRAINING,
+              A.WORK_ON_HOLIDAY,
+              A.WORK_ON_DAYOFF
+            FROM
+              (SELECT A.EMPLOYEE_ID,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN( 'DO','WD')
+                  THEN 1
+                  ELSE 0
+                END) AS DAYOFF,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP')
+                  THEN 1
+                  ELSE 0
+                END) AS PRESENT,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('HD','WH')
+                  THEN 1
+                  ELSE 0
+                END) AS HOLIDAY,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('LV','LP')
+                  THEN 1
+                  ELSE 0
+                END) AS LEAVE,
+                SUM(
+                CASE
+                  WHEN L.PAID = 'Y'
+                  THEN 1
+                  ELSE 0
+                END) AS PAID_LEAVE,
+                SUM(
+                CASE
+                  WHEN L.PAID = 'N'
+                  THEN 1
+                  ELSE 0
+                END) AS UNPAID_LEAVE,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS = 'AB'
+                  THEN 1
+                  ELSE 0
+                END) AS ABSENT,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS= 'TV'
+                  THEN 1
+                  ELSE 0
+                END) AS TRAVEL,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS ='TN'
+                  THEN 1
+                  ELSE 0
+                END) AS TRAINING,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS = 'WH'
+                  THEN 1
+                  ELSE 0
+                END) WORK_ON_HOLIDAY,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS ='WD'
+                  THEN 1
+                  ELSE 0
+                END) WORK_ON_DAYOFF
+              FROM HRIS_ATTENDANCE_DETAIL A
+              LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+              ON (A.LEAVE_ID= L.LEAVE_ID)
+              WHERE (A.ATTENDANCE_DT BETWEEN '16-JUL-17' AND '16-AUG-17')
+              GROUP BY A.EMPLOYEE_ID
+              ) A
+            JOIN HRIS_EMPLOYEES E
+            ON(A.EMPLOYEE_ID = E.EMPLOYEE_ID)
+            JOIN HRIS_COMPANY C
+            ON(E.COMPANY_ID= C.COMPANY_ID)
+            JOIN HRIS_DEPARTMENTS D
+            ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
+            LEFT JOIN
+              (SELECT EMPLOYEE_ID,
+                SUM(TOTAL_HOUR) AS TOTAL_MIN
+              FROM HRIS_OVERTIME
+              WHERE (OVERTIME_DATE BETWEEN '16-JUL-17' AND '16-AUG-17')
+              AND STATUS= 'AP'
+              GROUP BY EMPLOYEE_ID
+              ) OT
+            ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
+            ORDER BY C.COMPANY_NAME,
+              D.DEPARTMENT_NAME
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

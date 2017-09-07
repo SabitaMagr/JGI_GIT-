@@ -27,32 +27,37 @@ return[
     ],
     'navigation' => [
         'allreport' => [
-                [
+            [
                 'label' => 'Asset Type',
                 'route' => 'allreport',
             ], [
                 'label' => 'Report',
                 'route' => 'allreport',
                 'pages' => [
-                        [
+                    [
                         'label' => 'Departments|Months',
                         'route' => 'allreport',
                         'action' => 'departmentAll',
                     ],
-                        [
+                    [
                         'label' => 'Department|Months',
                         'route' => 'allreport',
                         'action' => 'departmentWise',
                     ],
-                        [
+                    [
                         'label' => 'Department|Month',
                         'route' => 'allreport',
                         'action' => 'departmentWiseDaily',
                     ],
-                        [
+                    [
                         'label' => 'Employee|Months',
                         'route' => 'allreport',
                         'action' => 'employeeWise',
+                    ],
+                    [
+                        'label' => 'With Overtime',
+                        'route' => 'allreport',
+                        'action' => 'withOvertime',
                     ],
                 ],
             ],

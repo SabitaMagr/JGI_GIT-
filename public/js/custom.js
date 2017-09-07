@@ -1006,6 +1006,39 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
+    var initializeKendoGrid = function ($table, columns, excelExportFileName) {
+        $table.kendoGrid({
+            excel: {
+                fileName: excelExportFileName,
+                filterable: true,
+                allPages: true
+            },
+            height: 500,
+            scrollable: true,
+            sortable: true,
+            filterable: true,
+            dataBound: function (e) {
+                var grid = e.sender;
+                if (grid.dataSource.total() === 0) {
+                    var colCount = grid.columns.length;
+                    $(e.sender.wrapper)
+                            .find('tbody')
+                            .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+                }
+            },
+            pageable: {
+                input: true,
+                numeric: false
+            },
+            columns: columns
+        });
+    }
+    var renderKendoGrid = function ($table, data) {
+        var dataSource = new kendo.data.DataSource({data: data, pageSize: 20});
+        var grid = $table.data("kendoGrid");
+        dataSource.read();
+        grid.setDataSource(dataSource);
+    }
 
     return {
         format: format,
@@ -1036,7 +1069,9 @@ window.app = (function ($, toastr, App) {
         populateSelect: populateSelect,
         floatToRound: floatToRound,
         lockField: lockField,
-        minToHour: minToHour
+        minToHour: minToHour,
+        initializeKendoGrid: initializeKendoGrid,
+        renderKendoGrid: renderKendoGrid
 
     };
 })(window.jQuery, window.toastr, window.App);

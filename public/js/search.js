@@ -14,7 +14,8 @@
             designationListener: null,
             serviceTypeListener: null,
             serviceEventTypeListener: null,
-            employeeListener: null
+            employeeListener: null,
+            ids: []
             , setCompany: function (company) {
                 this.company = company;
             }, getCompany: function () {
@@ -90,6 +91,21 @@
                 if (this.employeeListener !== null) {
                     this.employeeListener();
                 }
+            },
+            setIds: function (ids) {
+                this.ids = ids;
+            },
+            getIds: function () {
+                return this.ids;
+            },
+            getSearchValues: function () {
+                var values = {};
+                $.each(this.ids, function (key, value) {
+                    if (typeof value !== "undefined") {
+                        values[value] = $('#' + value).val();
+                    }
+                });
+                return values;
             }
         };
 
@@ -97,7 +113,7 @@
          * Search javascript code starts here
          */
         var changeSearchOption = function (companyId, branchId, departmentId, designationId, positionId, serviceTypeId, serviceEventTypeId, employeeId, genderId, employeeTypeId) {
-
+            document.searchManager.setIds(JSON.parse(JSON.stringify(arguments)));
 
             var $company = $('#' + companyId);
             var $branch = $('#' + branchId);

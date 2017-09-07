@@ -68,6 +68,27 @@ class AllReportController extends AbstractActionController {
         ]);
     }
 
+    public function withOvertimeAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+//                $employeeId = $data['employeeId'];
+                print "<pre>";
+                print_r($data);
+                exit;
+                $reportData = $this->reportRepo->reportWithOT();
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
+    }
+
     public function employeeWiseDailyReportAction() {
         try {
             $request = $this->getRequest();
@@ -124,9 +145,6 @@ class AllReportController extends AbstractActionController {
                 if (!isset($departmentId)) {
                     throw new Exception("parameter departmentId is required");
                 }
-//                print "<pre>";
-//                print $departmentId;
-//                exit;
                 $reportData = $this->reportRepo->departmentWiseEmployeeMonthReport($departmentId);
                 return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
