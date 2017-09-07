@@ -241,7 +241,7 @@ class EmployeeRepository implements RepositoryInterface {
         return $statement->execute();
     }
 
-    public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null, $companyId = null, $employeeTypeKey = null) {
+    public function filterRecords($emplyoeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null, $companyId = null, $employeeTypeKey = null,$employeeTypeId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -286,6 +286,12 @@ class EmployeeRepository implements RepositoryInterface {
             $select->where(["E.RETIRED_FLAG='Y'"]);
         } else {
             $select->where(["E.RETIRED_FLAG='N'"]);
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $select->where([
+                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
+            ]);
         }
 
         if ($emplyoeeId != -1) {
@@ -335,7 +341,6 @@ class EmployeeRepository implements RepositoryInterface {
         }
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-
         $result = $statement->execute();
         if ($getResult != null) {
             return $result;

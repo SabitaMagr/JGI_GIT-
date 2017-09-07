@@ -112,7 +112,7 @@ class TrainingAssignRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId,$companyId=null) {
+    public function filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId,$companyId=null,$employeeTypeId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -143,6 +143,12 @@ class TrainingAssignRepository implements RepositoryInterface {
             $select->where(["E.RETIRED_FLAG='Y'"]);
         } else {
             $select->where(["E.RETIRED_FLAG='N'"]);
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $select->where([
+                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
+            ]);
         }
 
         if ($employeeId != -1) {

@@ -66,7 +66,7 @@ class JobHistoryRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId = null, $companyId = null, $branchId = null, $departmentId = null, $designationId = null, $positionId = null, $serviceTypeId = null) {
+    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId = null, $companyId = null, $branchId = null, $departmentId = null, $designationId = null, $positionId = null, $serviceTypeId = null,$employeeTypeId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -92,6 +92,12 @@ class JobHistoryRepository implements RepositoryInterface {
         if ($toDate != null) {
             $select->where([
                 "H.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')"
+            ]);
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $select->where([
+                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
             ]);
         }
 

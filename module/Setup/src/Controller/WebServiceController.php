@@ -61,7 +61,7 @@ class WebServiceController extends AbstractActionController {
                 case "pullEmployeeLeave":
                     $leaveAssign = new LeaveAssignRepository($this->adapter);
                     $ids = $postedData->id;
-                    $temp = $leaveAssign->filter($ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId'], $ids['serviceTypeId'], $ids['employeeId'], $ids['companyId'], $ids['positionId']);
+                    $temp = $leaveAssign->filter($ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId'], $ids['serviceTypeId'], $ids['employeeId'], $ids['companyId'], $ids['positionId'],$ids['employeeTypeId']);
 
                     $tempArray = [];
                     foreach ($temp as $item) {

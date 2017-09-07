@@ -16,6 +16,7 @@
         var $position = $('#positionId');
         var $serviceType = $('#serviceTypeId');
         var $employee = $('#employeeId');
+        var $employeeType = $('#employeeTypeId');
 
         /* setup functions */
         var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
@@ -77,6 +78,10 @@
         populateList($position, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', 'All Position');
         populateList($serviceType, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'All Service Type');
         populateList($employee, document.searchValues['employee'], 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
+        
+        if ($employeeType.length != 0) {
+                populateList($employeeType, document.searchValues['employeeType'], 'EMPLOYEE_TYPE_KEY', 'EMPLOYEE_TYPE_VALUE', 'All Employee Type');
+            }
         /* initialize dropdowns */
 
         /* setup change events */
@@ -108,6 +113,12 @@
         onChangeEvent($serviceType, function ($this) {
             populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val()}), 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
         });
+        
+         if ($employeeType.length != 0) {
+                onChangeEvent($employeeType, function ($this) {
+                     populateList($employee, search(document.searchValues['employee'], {'COMPANY_ID': $company.val(), 'BRANCH_ID': $branch.val(), 'DEPARTMENT_ID': $department.val(), 'DESIGNATION_ID': $designation.val(), 'POSITION_ID': $position.val(), 'SERVICE_TYPE_ID': $serviceType.val(),'EMPLOYEE_TYPE': $employeeType.val()}), 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
+                });
+            }
     }
     
     changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId");

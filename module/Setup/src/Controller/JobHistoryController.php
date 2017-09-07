@@ -270,8 +270,9 @@ class JobHistoryController extends AbstractActionController {
             $positionId = $data['positionId'];
             $serviceTypeId = $data['serviceTypeId'];
             $serviceEventTypeId = $data['serviceEventTypeId'];
+            $employeeTypeId = $data['employeeTypeId'];
 
-            $result = $this->repository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId);
+            $result = $this->repository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$employeeTypeId);
 
             $jobHistoryRecord = Helper::extractDbData($result);
 
