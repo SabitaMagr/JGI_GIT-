@@ -146,6 +146,7 @@ class IssueRepository implements RepositoryInterface {
         $assetTypeId=$data['assetTypeId'];
         $assetId=$data['assetId'];
         $assetStatusId=$data['assetStatusId'];
+        $employeeTypeId = $data['employeeTypeId'];
         
         
         $sql="SELECT AI.ISSUE_ID       AS ISSUE_ID,
@@ -203,6 +204,11 @@ class IssueRepository implements RepositoryInterface {
             }else if($assetStatusId=='RED'){
             $sql .= "AND AI.RETURNED='Y' ";
             }
+        }
+        
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
         }
         if ($employeeId != -1) {
             $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";

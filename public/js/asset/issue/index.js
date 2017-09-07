@@ -120,6 +120,7 @@ angular.module('hris', [])
                 var assetTypeId = angular.element(document.getElementById('assetTypeId')).val();
                 var assetId = angular.element(document.getElementById('asset')).val();
                 var assetStatusId = angular.element(document.getElementById('assetStatusId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
 
 
 
@@ -135,7 +136,8 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId,
                         'assetTypeId': assetTypeId,
                         'assetId': assetId,
-                        'assetStatusId': assetStatusId
+                        'assetStatusId': assetStatusId,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     console.log(success);

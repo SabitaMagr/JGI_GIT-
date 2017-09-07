@@ -25,7 +25,7 @@ class HolidayAssignRepository {
         $this->adapter = $adapter;
     }
 
-    public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId = null) {
+    public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId = null,$employeeTypeId=null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -65,6 +65,12 @@ class HolidayAssignRepository {
             $select->where(["E.RETIRED_FLAG='Y'"]);
         } else {
             $select->where(["E.RETIRED_FLAG='N'"]);
+        }
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $select->where([
+                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
+            ]);
         }
 
         if ($employeeId != -1) {

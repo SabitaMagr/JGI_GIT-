@@ -48,7 +48,7 @@ class ShiftAssignRepository implements RepositoryInterface {
         
     }
 
-    public function filter($branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $companyId, $serviceEventTypeId, $employeeId) {
+    public function filter($branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $companyId, $serviceEventTypeId, $employeeId,$employeeTypeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -85,6 +85,11 @@ class ShiftAssignRepository implements RepositoryInterface {
         }
         if ($employeeId != -1) {
             $select->where(['E.' . HrEmployees::EMPLOYEE_ID . "=$employeeId"]);
+        }
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $select->where([
+                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
+            ]);
         }
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);

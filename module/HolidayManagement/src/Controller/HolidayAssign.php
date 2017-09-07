@@ -50,8 +50,9 @@ class HolidayAssign extends AbstractActionController {
                 $serviceEventTypeId = $postedData['serviceEventTypeId'];
                 $companyId = $postedData['companyId'];
                 $genderId = $postedData['genderId'];
+                $employeeTypeId = $postedData['employeeTypeId'];
 
-                $raw = $this->repository->filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId);
+                $raw = $this->repository->filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId,$employeeTypeId);
                 $reportData = Helper::extractDbData($raw);
                 return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {

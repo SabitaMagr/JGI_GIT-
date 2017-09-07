@@ -69,7 +69,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filterRecord($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $widOvertime = false, $missPunchOnly = false, $min, $max) {
+    public function filterRecord($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $widOvertime = false, $missPunchOnly = false, $min=null, $max=null) {
         $fromDateCondition = "";
         $toDateCondition = "";
         $employeeCondition = '';
@@ -83,6 +83,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $employeeTypeCondition = '';
         $statusCondition = '';
         $missPunchOnlyCondition = '';
+        $rowNums = '';
         if ($fromDate != null) {
             $fromDateCondition = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
         }
@@ -152,6 +153,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
 
         if ($missPunchOnly) {
             $missPunchOnlyCondition = "AND (A.LATE_STATUS = 'X' OR A.LATE_STATUS = 'Y' ) ";
+        }
+        if($min!=null && $max!=null){
+            $rowNums="WHERE (Q.R BETWEEN {$min} AND {$max})";
         }
 
         $sql = "
@@ -257,7 +261,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 {$statusCondition}
                 {$missPunchOnlyCondition}
                 ORDER BY A.ATTENDANCE_DT DESC ,A.IN_TIME ASC) Q
-                WHERE (Q.R BETWEEN {$min} AND {$max})
+                {$rowNums}
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }

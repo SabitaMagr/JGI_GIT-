@@ -24,6 +24,7 @@ angular.module('hris', [])
                 var leaveRequestStatusId = angular.element(document.getElementById('leaveRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullLeaveRequestStatusList',
@@ -39,7 +40,8 @@ angular.module('hris', [])
                         'leaveId': leaveId,
                         'leaveRequestStatusId': leaveRequestStatusId,
                         'fromDate': fromDate,
-                        'toDate': toDate
+                        'toDate': toDate,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

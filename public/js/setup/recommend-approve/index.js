@@ -19,6 +19,7 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var recommenderId = angular.element(document.getElementById('recommenderId')).val();
                 var approverId = angular.element(document.getElementById('approverId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
 
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
@@ -33,7 +34,8 @@ angular.module('hris', [])
                         'companyId': companyId,
                         'serviceEventTypeId': serviceEventTypeId,
                         'recommenderId': recommenderId,
-                        'approverId': approverId
+                        'approverId': approverId,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

@@ -22,6 +22,7 @@ angular.module('hris', [])
                 var travelRequestStatusId = angular.element(document.getElementById('travelRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullTravelRequestStatusList',
@@ -36,7 +37,8 @@ angular.module('hris', [])
                         'serviceEventTypeId': serviceEventTypeId,
                         'travelRequestStatusId': travelRequestStatusId,
                         'fromDate': fromDate,
-                        'toDate': toDate
+                        'toDate': toDate,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

@@ -40,6 +40,7 @@ angular.module('hris', [])
             var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
             var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
             var employeeId = angular.element(document.getElementById('employeeId')).val();
+            var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
             App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.url, {
                 action: 'pullEmployeeForShiftAssign',
@@ -51,7 +52,8 @@ angular.module('hris', [])
                     positionId: positionId,
                     serviceTypeId: serviceTypeId,
                     serviceEventTypeId: serviceEventTypeId,
-                    employeeId:employeeId
+                    employeeId:employeeId,
+                    employeeTypeId: employeeTypeId
                 }
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
