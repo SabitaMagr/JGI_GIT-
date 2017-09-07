@@ -48,7 +48,7 @@ class LeaveAssignRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($branchId, $departmentId, $genderId, $designationId, $serviceTypeId, $employeeId, $companyId, $positionId) {
+    public function filter($branchId, $departmentId, $genderId, $designationId, $serviceTypeId, $employeeId, $companyId, $positionId,$employeeTypeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -59,6 +59,13 @@ class LeaveAssignRepository implements RepositoryInterface {
                 ->join(['B' => 'HRIS_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME" => new Expression("INITCAP(B.BRANCH_NAME)")], "left");
         $select->where(["E.STATUS='E'"]);
         $select->where(["E.RETIRED_FLAG='N'"]);
+        
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $select->where([
+                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
+            ]);
+        }
+        
         if ($employeeId != -1) {
             $select->where(["E.EMPLOYEE_ID=$employeeId"]);
         }

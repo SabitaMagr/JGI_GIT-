@@ -44,6 +44,7 @@ angular.module('hris', [])
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
 
                 trainingId = (typeof trainingId === 'undefined' || trainingId === null || trainingId === '') ? -1 : trainingId;
 
@@ -62,6 +63,7 @@ angular.module('hris', [])
                         serviceTypeId: serviceTypeId,
                         trainingId: trainingId,
                         companyId: companyId,
+                        employeeTypeId: employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -176,6 +178,7 @@ angular.module('hris', [])
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var trainingId = angular.element(document.getElementById('trainingId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content1"});
                 window.app.pullDataById(document.url, {
                     action: 'pullTrainingAssignList',
@@ -188,7 +191,8 @@ angular.module('hris', [])
                         serviceTypeId: serviceTypeId,
                         trainingId: trainingId,
                         companyId: companyId,
-                        serviceEventTypeId: serviceEventTypeId
+                        serviceEventTypeId: serviceEventTypeId,
+                        employeeTypeId: employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content1");

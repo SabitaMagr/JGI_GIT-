@@ -22,6 +22,7 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId1')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.getEmployeeLatestServiceWS, {
                     'fromDate': fromDate,
@@ -34,6 +35,7 @@ angular.module('hris', [])
                     'designationId': designationId,
                     'positionId': positionId,
                     'serviceTypeId': serviceTypeId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success);

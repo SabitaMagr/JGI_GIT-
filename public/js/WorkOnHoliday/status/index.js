@@ -23,6 +23,7 @@ angular.module('hris', [])
                 var requestStatusId = angular.element(document.getElementById('requestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullHoliayWorkRequestStatusList',
@@ -38,7 +39,8 @@ angular.module('hris', [])
                         'holidayId': holidayId,
                         'requestStatusId': requestStatusId,
                         'fromDate': fromDate,
-                        'toDate': toDate
+                        'toDate': toDate,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

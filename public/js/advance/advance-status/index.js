@@ -23,6 +23,7 @@ angular.module('hris', [])
                 var advanceRequestStatusId = angular.element(document.getElementById('advanceRequestStatusId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate1')).val();
                 var toDate = angular.element(document.getElementById('toDate1')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
                     action: 'pullAdvanceRequestStatusList',
@@ -38,7 +39,8 @@ angular.module('hris', [])
                         'advanceId': advanceId,
                         'advanceRequestStatusId': advanceRequestStatusId,
                         'fromDate': fromDate,
-                        'toDate': toDate
+                        'toDate': toDate,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

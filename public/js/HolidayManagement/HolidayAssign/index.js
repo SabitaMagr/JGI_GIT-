@@ -16,6 +16,7 @@ angular.module('hris', [])
             var $serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId'));
             var $employeeId = angular.element(document.getElementById('employeeId'));
             var $genderId = angular.element(document.getElementById('genderId'));
+            var $employeeTypeId = angular.element(document.getElementById('employeeTypeId'));
 
 
             $scope.holidayList = document.holidayList;
@@ -83,7 +84,8 @@ angular.module('hris', [])
                     serviceTypeId: $serviceTypeId.val(),
                     serviceEventTypeId: $serviceEventTypeId.val(),
                     employeeId: $employeeId.val(),
-                    genderId: $genderId.val()
+                    genderId: $genderId.val(),
+                    employeeTypeId: $employeeTypeId.val()
                 }).then(function (response) {
                     $scope.$apply(function () {
                         $scope.employeeList = [];

@@ -94,12 +94,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <select class="form-control" name="position" id="positionId">
                     </select>
                 </div>
+            </div>
+            <div class="row margin-top-10">
                 <div class="col-sm-2">
                     <select class="form-control" name="serviceType" id="serviceTypeId">
                     </select>
                 </div>
-            </div>
-            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <select class="form-control" name="employeeType" id="employeeTypeId">
+                    </select>
+                </div>
                 <div class="col-sm-2">
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
@@ -107,6 +111,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-2">
                     <?php echo $this->formElement($serviceEventType); ?>
                 </div>
+            </div>
+            <div class="row margin-top-10">
                 <div class="col-sm-2">
                     <div class="form-group">
                         <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control" placeholder="From Date"/>

@@ -28,6 +28,7 @@ angular.module('hris', [])
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
 
                 //console.log(employeeId+","+branchId+","+departmentId+","+designationId+","+positionId+","+serviceTypeId);
                 App.blockUI({target: "#hris-page-content"});
@@ -41,7 +42,8 @@ angular.module('hris', [])
                         'designationId': designationId,
                         'positionId': positionId,
                         'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId
+                        'serviceEventTypeId': serviceEventTypeId,
+                        'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");

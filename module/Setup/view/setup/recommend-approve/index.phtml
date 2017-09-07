@@ -105,18 +105,22 @@ $this->headScript()
                     </select>
                 </div>
                 <div class="col-sm-2">
+                    <select class="form-control" name="employeeType" id="employeeTypeId">
+                    </select>
+                </div>
+                <div class="col-sm-2">
                     <select class="form-control" name="employee" id="employeeId">
                     </select>
                 </div>
                 <div class="col-sm-2">
                     <?php print $this->formElement($recommenderFormElement); ?>
                 </div>
-                <div class="col-sm-2">
-                    <?php print $this->formElement($approverFormElement); ?>
-                </div> 
             </div>
                 <div class="row margin-top-20">
-                <div class="col-sm-4 col-sm-offset-8">
+                    <div class="col-sm-2">
+                    <?php print $this->formElement($approverFormElement); ?>
+                </div>   
+                <div class="col-sm-4 col-sm-offset-6">
                     <button id="reset" class="btn default btn-sm pull-right">
                         Reset
                         <i class="fa fa-refresh"></i>

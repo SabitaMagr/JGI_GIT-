@@ -74,6 +74,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 console.log(serviceTypeId);
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
@@ -87,7 +88,8 @@ angular.module('hris', ['ui.bootstrap'])
                         serviceTypeId: serviceTypeId,
                         employeeId:employeeId,
                         companyId:companyId,
-                        positionId:positionId
+                        positionId:positionId,
+                        employeeTypeId: employeeTypeId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
