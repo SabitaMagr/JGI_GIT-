@@ -477,3 +477,40 @@ ALTER TABLE HRIS_ATTENDANCE_DETAIL ADD HALFDAY_FLAG CHAR(1 BYTE) DEFAULT 'N' NOT
 
 ALTER TABLE HRIS_USERS
 ADD IS_LOCKED CHAR(1 BYTE) DEFAULT ('N') NOT NULL CHECK(IS_LOCKED IN ('Y','N'));
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    'OT',
+    331,
+    'With Overtime',
+    148,
+    NULL,
+    'allreport',
+    'E',
+    to_date('06-SEP-17','DD-MON-RR'),
+    NULL,
+    'fa fa-square-o',
+    'withOvertime',
+    5,167,
+    NULL,
+    'Y'
+  );

@@ -5,35 +5,39 @@ create or replace PROCEDURE HRIS_BACKDATE_ATTENDANCE(
     P_OUT_TIME TIMESTAMP)
 AS
 BEGIN
-  INSERT
-  INTO HRIS_ATTENDANCE
-    (
-      ATTENDANCE_DT,
-      EMPLOYEE_ID,
-      ATTENDANCE_TIME,
-      ATTENDANCE_FROM
-    )
-    VALUES
-    (
-      P_ATTENDANCE_DT,
-      P_EMPLOYEE_ID,
-      P_IN_TIME,
-      'SYSTEM'
-    );
-  INSERT
-  INTO HRIS_ATTENDANCE
-    (
-      ATTENDANCE_DT,
-      EMPLOYEE_ID,
-      ATTENDANCE_TIME,
-      ATTENDANCE_FROM
-    )
-    VALUES
-    (
-      P_ATTENDANCE_DT,
-      P_EMPLOYEE_ID,
-      P_OUT_TIME,
-      'SYSTEM'
-    );
+  IF P_IN_TIME IS NOT NULL THEN
+    INSERT
+    INTO HRIS_ATTENDANCE
+      (
+        ATTENDANCE_DT,
+        EMPLOYEE_ID,
+        ATTENDANCE_TIME,
+        ATTENDANCE_FROM
+      )
+      VALUES
+      (
+        P_ATTENDANCE_DT,
+        P_EMPLOYEE_ID,
+        P_IN_TIME,
+        'SYSTEM'
+      );
+  END IF;
+  IF P_OUT_TIME IS NOT NULL THEN
+    INSERT
+    INTO HRIS_ATTENDANCE
+      (
+        ATTENDANCE_DT,
+        EMPLOYEE_ID,
+        ATTENDANCE_TIME,
+        ATTENDANCE_FROM
+      )
+      VALUES
+      (
+        P_ATTENDANCE_DT,
+        P_EMPLOYEE_ID,
+        P_OUT_TIME,
+        'SYSTEM'
+      );
+  END IF;
   HRIS_REATTENDANCE(P_ATTENDANCE_DT,P_EMPLOYEE_ID);
 END;

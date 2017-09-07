@@ -105,6 +105,20 @@ return [
                         'action' => 'index',
                     ]
                 ],
+            ],
+            'penalty' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/penalty[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\Penalty::class,
+                        'action' => 'index',
+                    ]
+                ],
             ]
         ],
     ],
@@ -271,6 +285,23 @@ return [
                 ],
             ],
         ],
+        'penalty' => [
+            [
+                'label' => 'Penalty',
+                'route' => 'penalty',
+            ],
+            [
+                'label' => 'Penalty',
+                'route' => 'penalty',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'penalty',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -281,6 +312,7 @@ return [
             Controller\DailyAttendance::class => ControllerFactory::class,
             Controller\CalculateOvertime::class => ControllerFactory::class,
             Controller\ShiftAdjustment::class => ControllerFactory::class,
+            Controller\Penalty::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

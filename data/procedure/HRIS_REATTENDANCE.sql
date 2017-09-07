@@ -184,7 +184,7 @@ BEGIN
         AND LATE_STATUS              IN ('E','L','Y') ;
         IF V_LATE_STATUS             IN ('E','L','Y') THEN
           V_LATE_COUNT       := V_LATE_COUNT+1;
-          IF V_LATE_COUNT    != 0 AND MOD(V_LATE_COUNT,3)=0 THEN
+          IF V_LATE_COUNT    != 0 AND MOD(V_LATE_COUNT,4)=0 THEN
             V_OVERALL_STATUS := 'LA';
           END IF;
         END IF;
