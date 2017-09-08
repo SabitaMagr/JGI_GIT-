@@ -72,8 +72,14 @@
 
 
         $search.on('click', function () {
+            var monthValue = $monthId.val();
+            if (monthValue === null) {
+                app.showMessage("Please select month first.");
+                $monthId.focus();
+                return;
+            }
             var data = document.searchManager.getSearchValues();
-            data['monthId'] = $monthId.val();
+            data['monthId'] = monthValue;
             app.pullDataById(document.penalty, data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($penalty, response.data);
