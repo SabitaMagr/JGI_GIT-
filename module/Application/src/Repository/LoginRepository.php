@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace Application\Repository;
 
 use Application\Model\Model;
@@ -45,14 +39,12 @@ class LoginRepository implements RepositoryInterface {
         
     }
 
-
     public function checkPasswordExpire($userName) {
         $where = "and USER_NAME='$userName'";
         $sql = "select EMPLOYEE_ID,USER_NAME,ROLE_ID,STATUS,CREATED_DT,MODIFIED_DT,IS_LOCKED,TRUNC(SYSDATE) AS CURRENTDATE,TRUNC(SYSDATE)-CREATED_DT AS CREATED_DAYS,TRUNC(SYSDATE)-MODIFIED_DT AS MODIFIED_DAYS from hris_users where status='E' " . $where;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
         return $result;
-//        $
     }
 
     public function getPwdByUserName($userName) {
@@ -65,12 +57,11 @@ class LoginRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result->current()['PASSWORD'];
     }
-    
-    public function updatePwdByUserName($un,$pwd){
-//        $set=["PASSWORD"=>"FN_ENCRYPT_PASSWORD('".$pwd."')"];
-        $set=["PASSWORD"=>new Expression("FN_ENCRYPT_PASSWORD('$pwd')"),'MODIFIED_DT'=>new Expression('TRUNC(SYSDATE)')];
-        $where=['USER_NAME'=>$un];
-        $result=$this->tableGateway->update($set, $where);
+
+    public function updatePwdByUserName($un, $pwd) {
+        $set = ["PASSWORD" => new Expression("FN_ENCRYPT_PASSWORD('$pwd')"), 'MODIFIED_DT' => new Expression('TRUNC(SYSDATE)')];
+        $where = ['USER_NAME' => $un];
+        $this->tableGateway->update($set, $where);
     }
 
 }
