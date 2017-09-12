@@ -1,7 +1,6 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        console.log(document.trainingApprove);
         var trainingGrid = $("#trainingApproveTable").kendoGrid({
             excel: {
                 fileName: "TrainingRequestList.xlsx",
@@ -21,12 +20,12 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    template: " <input type='checkbox' id='#:REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:REQUEST_ID#'></label>"
+                    template: " <input type='checkbox' id='#:REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:REQUEST_ID#'></label>",
+                    width: 40
                 },
                 {field: "FULL_NAME", title: "Employee"},
                 {field: "TITLE", title: "Training"},
@@ -58,10 +57,10 @@
                 {field: "TRAINING_TYPE", title: "Training Type"},
                 {field: "YOUR_ROLE", title: "Your Role"},
                 {field: ["REQUEST_ID"], title: "Action", template: `<span> <a class="btn-edit"
-        href=" `+ document.viewLink +` /#:REQUEST_ID #/#:ROLE #" style="height:17px;" title="view">
+        href=" ` + document.viewLink + ` /#:REQUEST_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </span>`}
-  
+
             ]
         });
 
@@ -152,7 +151,7 @@
 
 
 
-        app.searchTable('trainingApproveTable', ['FULL_NAME', 'TITLE', 'REQUESTED_DATE', 'START_DATE', 'END_DATE','REQUESTED_DATE_N', 'START_DATE_N', 'END_DATE_N', 'DURATION', 'TRAINING_TYPE', 'YOUR_ROLE']);
+        app.searchTable('trainingApproveTable', ['FULL_NAME', 'TITLE', 'REQUESTED_DATE', 'START_DATE', 'END_DATE', 'REQUESTED_DATE_N', 'START_DATE_N', 'END_DATE_N', 'DURATION', 'TRAINING_TYPE', 'YOUR_ROLE']);
 
         app.pdfExport(
                 'trainingApproveTable',

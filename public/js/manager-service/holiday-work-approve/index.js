@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         console.log(document.holidayWorkApprove);
-        var wohGrid =$("#holidayWorkApproveTable").kendoGrid({
+        var wohGrid = $("#holidayWorkApproveTable").kendoGrid({
             excel: {
                 fileName: "HolidayWorkRequestList.xlsx",
                 filterable: true,
@@ -21,16 +21,16 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    template: "<input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>  "
+                    template: "<input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
+                    width: 40
                 },
                 {field: "FULL_NAME", title: "Employee", width: 150},
                 {field: "HOLIDAY_ENAME", title: "Holiday", width: 120},
-                     {title: "Requested Date",
+                {title: "Requested Date",
                     columns: [{
                             field: "REQUESTED_DATE",
                             title: "English",
@@ -57,15 +57,15 @@
                 {field: "DURATION", title: "Duration", width: 120},
                 {field: "YOUR_ROLE", title: "Your Role", width: 120},
                 {field: ["ID"], title: "Action", template: `<span>  <a class="btn-edit"
-        href=" `+ document.viewLink +`/#:ID #/#:ROLE #" style="height:17px;" title="view">
+        href=" ` + document.viewLink + `/#:ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </a>
         </span>`}
             ]
         });
-        
-        
-         var checkedIds = {};
+
+
+        var checkedIds = {};
 
         wohGrid.on("click", ".k-checkbox", selectRow);
 
@@ -114,9 +114,9 @@
                 }
             });
         });
-        
-        
-         $(".btnApproveReject").bind("click", function () {
+
+
+        $(".btnApproveReject").bind("click", function () {
             var btnId = $(this).attr('id');
             var selectedValues = [];
             for (var i in checkedIds) {
@@ -147,10 +147,10 @@
                 console.log(failure);
             });
         });
-        
-        
 
-        app.searchTable('holidayWorkApproveTable', ['FULL_NAME', 'HOLIDAY_ENAME', 'REQUESTED_DATE','REQUESTED_DATE_N', 'FROM_DATE','FROM_DATE_N', 'TO_DATE','TO_DATE_N', 'DURATION', 'YOUR_ROLE']);
+
+
+        app.searchTable('holidayWorkApproveTable', ['FULL_NAME', 'HOLIDAY_ENAME', 'REQUESTED_DATE', 'REQUESTED_DATE_N', 'FROM_DATE', 'FROM_DATE_N', 'TO_DATE', 'TO_DATE_N', 'DURATION', 'YOUR_ROLE']);
 
         app.pdfExport(
                 'holidayWorkApproveTable',
@@ -223,7 +223,7 @@
                         {value: dataItem.FULL_NAME},
                         {value: dataItem.HOLIDAY_ENAME},
                         {value: dataItem.REQUESTED_DATE},
-                         {value: dataItem.REQUESTED_DATE_N},
+                        {value: dataItem.REQUESTED_DATE_N},
                         {value: dataItem.FROM_DATE},
                         {value: dataItem.FROM_DATE_N},
                         {value: dataItem.TO_DATE},

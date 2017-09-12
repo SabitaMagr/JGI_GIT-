@@ -21,34 +21,34 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                    template: "<input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
                     width: 40
                 },
-                {field: "FULL_NAME", title: "Employee" ,template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
+                {field: "FULL_NAME", title: "Employee", template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
                 {title: "Requested Date",
-                            columns: [{
-                                    field: "REQUESTED_DT",
-                                    title: "English",
-                                    template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
-                                {field: "REQUESTED_DT_N",
-                                    title: "Nepali",
-                                    template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
-                        {title: "Attendance Date",
-                            columns: [{
-                                    field: "ATTENDANCE_DT",
-                                    title: "English",
-                                    template: "<span>#: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #</span>"},
-                                {field: "ATTENDANCE_DT_N",
-                                    title: "Nepali",
-                                    template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N #</span>"}]},
-                {field: "IN_TIME", title: "Check In" ,template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
-                {field: "OUT_TIME", title: "Check Out" ,template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
-                {field: "YOUR_ROLE", title: "Your Role" ,template: "<span>#: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #</span>"},
-                 {field: ["ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
+                    columns: [{
+                            field: "REQUESTED_DT",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
+                        {field: "REQUESTED_DT_N",
+                            title: "Nepali",
+                            template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
+                {title: "Attendance Date",
+                    columns: [{
+                            field: "ATTENDANCE_DT",
+                            title: "English",
+                            template: "<span>#: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #</span>"},
+                        {field: "ATTENDANCE_DT_N",
+                            title: "Nepali",
+                            template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N #</span>"}]},
+                {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
+                {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
+                {field: "YOUR_ROLE", title: "Your Role", template: "<span>#: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #</span>"},
+                {field: ["ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
                             <i class="fa fa-search-plus"></i>
                             </a>
                             </span>`}

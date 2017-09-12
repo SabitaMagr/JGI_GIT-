@@ -21,31 +21,31 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                    template: "<input type='checkbox' id='#:LOAN_REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:LOAN_REQUEST_ID#'></label>",
                     width: 80
                 },
                 {field: "FULL_NAME", title: "Employee"},
                 {field: "LOAN_NAME", title: "Loan"},
                 {title: "Requested Date",
-                            columns: [{
-                                    field: "REQUESTED_DATE",
-                                    title: "English",
-                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
-                                {field: "REQUESTED_DATE_N",
-                                    title: "Nepali",
-                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
-                        {title: "Loan Date",
-                            columns: [{
-                                    field: "LOAN_DATE",
-                                    title: "English",
-                                    template: "<span>#: (LOAN_DATE == null) ? '-' : LOAN_DATE #</span>"},
-                                {field: "LOAN_DATE_N",
-                                    title: "Nepali",
-                                    template: "<span>#: (LOAN_DATE_N == null) ? '-' : LOAN_DATE_N #</span>"}]},
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                {title: "Loan Date",
+                    columns: [{
+                            field: "LOAN_DATE",
+                            title: "English",
+                            template: "<span>#: (LOAN_DATE == null) ? '-' : LOAN_DATE #</span>"},
+                        {field: "LOAN_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (LOAN_DATE_N == null) ? '-' : LOAN_DATE_N #</span>"}]},
                 {field: "REQUESTED_AMOUNT", title: "Requested Amount"},
                 {field: "YOUR_ROLE", title: "Your Role"},
                 {field: ["LOAN_REQUEST_ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: LOAN_REQUEST_ID #" style="height:17px;" title="view detail">

@@ -95,9 +95,6 @@ class AuthController extends AbstractActionController {
 //                if ($needPwdChange) {
 //                    return $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $request->getPost('username')]);
 //                }
-
-
-
                 //check authentication...
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
@@ -181,9 +178,6 @@ class AuthController extends AbstractActionController {
         $modifiedDays = $result['MODIFIED_DAYS'];
         $isLocked = $result['IS_LOCKED'];
 
-//        echo '<pre>';
-//        print_r($result);
-//        die();
         if ($modifiedDays == null) {
             $passwordDays = $createdDays;
         } else {
@@ -216,7 +210,7 @@ class AuthController extends AbstractActionController {
 
             if ($oldPassword != $userOldPassword) {
                 array_push($message, 'old password is not correct');
-            }elseif ($oldPassword == $userOldPassword && $userOldPassword==$newPassword) {
+            } elseif ($oldPassword == $userOldPassword && $userOldPassword == $newPassword) {
                 array_push($message, 'new password cannot be same as old password');
             } else {
                 $loginRepo->updatePwdByUserName($userName, $newPassword);

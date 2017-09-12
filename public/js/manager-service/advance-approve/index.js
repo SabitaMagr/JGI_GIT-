@@ -21,7 +21,6 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-//            rowTemplate: kendo.template($("#rowTemplate").html()),
            columns: [
                 {
                     title: 'Select All',

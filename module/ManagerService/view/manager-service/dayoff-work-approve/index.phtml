@@ -62,17 +62,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
-
-        <div style="display: none;" class="row" id="acceptRejectDiv" >
-            <div class="col-sm-2">
-                <button id="btnApprove" class="btn btn-success btnApproveReject">Approve</button>
-            </div>
-            <div class="col-sm-2 ">
-                <button id="btnReject" class="btn btn-success btnApproveReject">Reject</button>
-            </div>
-        </div>
-
         <div id="dayoffWorkApproveTable">
+        </div>
+        <div style="display: none;" class="row margin-top-20" id="acceptRejectDiv" >
+            <div class="col-sm-2 ">
+                <button id="btnReject" class="btn btn-danger btnApproveReject">Reject</button>
+            </div>
+            <div class="col-sm-2 col-sm-offset-8">
+                <button id="btnApprove" class="btn btn-info btnApproveReject pull-right">Approve</button>
+            </div>
         </div>
     </div>
 </div>

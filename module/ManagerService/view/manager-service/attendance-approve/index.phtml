@@ -16,7 +16,7 @@ $this->headScript()
 
 <script>
     document.attendanceApprove =<?php echo json_encode($attendanceApprove); ?>;
-    document.viewLink ='<?= $this->url("attedanceapprove", ["action" => "view"]); ?>';
+    document.viewLink = '<?= $this->url("attedanceapprove", ["action" => "view"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attedanceapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -35,15 +35,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-    
-    <script>
-        document.approveRejectUrl = '<?php echo $this->url('attedanceapprove', ['action' => 'batchApproveReject']); ?>';
-    </script>
+
+<script>
+    document.approveRejectUrl = '<?php echo $this->url('attedanceapprove', ['action' => 'batchApproveReject']); ?>';
+</script>
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -64,49 +64,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
         </div>
-        
-        <div style="display: none;" class="row" id="acceptRejectDiv" >
-            <div class="col-sm-2">
-                <button id="btnApprove" class="btn btn-success btnApproveReject">Approve</button>
-            </div>
+
+        <div id="attendanceApproveTable">
+        </div>
+        <div style="display: none;" class="row margin-top-20" id="acceptRejectDiv" >
             <div class="col-sm-2 ">
-                <button id="btnReject" class="btn btn-success btnApproveReject">Reject</button>
+                <button id="btnReject" class="btn btn-danger btnApproveReject">Reject</button>
+            </div>
+            <div class="col-sm-2 col-sm-offset-8">
+                <button id="btnApprove" class="btn btn-info btnApproveReject pull-right">Approve</button>
             </div>
         </div>
-
-    <div id="attendanceApproveTable">
     </div>
-	</div>
-
-<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        <input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>
-        </td>
-        <td>
-        #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-        </td>
-        <td>
-        #: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #
-        </td>
-        <td>
-        #: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #
-        </td>
-        <td>
-        #: (IN_TIME == null) ? '-' : IN_TIME #
-        </td>
-        <td>
-        #: (OUT_TIME == null) ? '-' : OUT_TIME #
-        </td>
-        <td>
-        #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("attedanceapprove", ["action" => "view"]); ?>/#:ID #/#:ROLE #" style="height:17px;" title="view">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        </td>
-        </tr>
-    </script>-->
 </div>

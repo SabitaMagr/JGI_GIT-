@@ -151,9 +151,9 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         /*
          * 
          */
-        $this->getSessionStorage($app)
-                ->setRememberMe(1, 300);
-        $this->getAuthService($app)->setStorage($this->getSessionStorage($app));
+//        $this->getSessionStorage($app)
+//                ->setRememberMe(1, 300);
+//        $this->getAuthService($app)->setStorage($this->getSessionStorage($app));
         /*
          * 
          */
