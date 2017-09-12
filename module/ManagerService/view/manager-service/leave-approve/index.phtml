@@ -16,7 +16,7 @@ $this->headScript()
 
 <script>
     document.leaveApprove =<?php echo json_encode($leaveApprove); ?>;
-    document.viewLink ='<?= $this->url("leaveapprove", ["action" => "view"]) ?>';
+    document.viewLink = '<?= $this->url("leaveapprove", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -82,41 +82,4 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
     </div>
-
-
-
-<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        <input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>
-        </td>
-        <td>
-        #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-        </td>
-        <td>
-        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
-        </td>
-        <td>
-        #: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #
-        </td>
-        <td>
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
-        #: (NO_OF_DAYS == null) ? '-' : NO_OF_DAYS #
-        </td>
-        <td>
-        #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="/#:ID #/#:ROLE #" style="height:17px;" title="view">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        </td>
-        </tr>
-    </script>-->
 </div>

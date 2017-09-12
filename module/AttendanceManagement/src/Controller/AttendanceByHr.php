@@ -5,6 +5,8 @@ namespace AttendanceManagement\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
+use Application\Model\Months;
 use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
@@ -175,6 +177,23 @@ class AttendanceByHr extends AbstractActionController {
             $result['results'] = Helper::extractDbData($results);
 
             return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function bulkAttendanceWSAction() {
+        try {
+            $request = $this->getRequest();
+            $postedData = $request->getPost();
+
+            $action = $postedData['action'];
+            $data = $postedData['data'];
+
+            foreach ($data as $item) {
+                $this->repository->manualAttendance($item['id'], $action);
+            }
+            return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

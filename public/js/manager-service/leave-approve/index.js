@@ -1,8 +1,6 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-
-        console.log(document.leaveApprove);
         var leaveGrid = $("#leaveApproveTable").kendoGrid({
             excel: {
                 fileName: "LeaveRequestList.xlsx",
@@ -22,11 +20,11 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-//            rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                    template: "<input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
                     width: 80
                 },
                 {field: "FULL_NAME", title: "Employee"},
@@ -36,30 +34,30 @@
                             field: "APPLIED_DATE",
                             title: "English",
                             template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"
-                    }  ,   
-                    {field: "APPLIED_DATE_N",
+                        },
+                        {field: "APPLIED_DATE_N",
                             title: "Nepali",
                             template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"
-                    } ]},
-            {title: "From Date",
+                        }]},
+                {title: "From Date",
                     columns: [{
                             field: "START_DATE",
                             title: "English",
                             template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"
-                    }  ,   
-                    {field: "START_DATE_N",
+                        },
+                        {field: "START_DATE_N",
                             title: "Nepali",
                             template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"
-                    } ]},
-            {title: "To Date",
-                columns: [{
-                        field: "END_DATE",
-                        title: "English",
-                        template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                    { field: "END_DATE_N",
-                        title: "English",
-                        template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"
-                }]},
+                        }]},
+                {title: "To Date",
+                    columns: [{
+                            field: "END_DATE",
+                            title: "English",
+                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                        {field: "END_DATE_N",
+                            title: "English",
+                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"
+                        }]},
                 {field: "NO_OF_DAYS", title: "Duration"},
                 {field: "YOUR_ROLE", title: "Your Role"},
                 {field: ["ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
@@ -69,12 +67,7 @@
             ]
         });
         var checkedIds = {};
-//        console.log(leaveGrid.table);
         leaveGrid.on("click", ".k-checkbox", selectRow);
-//          leaveGrid.table.on("click", ".k-checkbox" , selectRow);
-
-//on click of the checkbox:
-
 
         function selectRow() {
             var checked = this.checked,
@@ -113,7 +106,6 @@
         $('#header-chb').change(function (ev) {
             var checked = ev.target.checked;
             $('.row-checkbox').each(function (idx, item) {
-//                console.log($item);
                 if (checked) {
                     if (!($(item).closest('tr').is('.k-state-selected'))) {
                         $(item).click();
@@ -156,7 +148,7 @@
                 console.log(failure);
             });
         });
-        app.searchTable('leaveApproveTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'APPLIED_DATE_N', 'START_DATE', 'START_DATE_N', 'END_DATE','END_DATE_N', 'NO_OF_DAYS', 'YOUR_ROLE']);
+        app.searchTable('leaveApproveTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'APPLIED_DATE_N', 'START_DATE', 'START_DATE_N', 'END_DATE', 'END_DATE_N', 'NO_OF_DAYS', 'YOUR_ROLE']);
         app.pdfExport(
                 'leaveApproveTable',
                 {

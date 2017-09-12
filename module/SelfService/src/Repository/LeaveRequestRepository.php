@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/30/16
- * Time: 12:20 PM
- */
-
 namespace SelfService\Repository;
 
 use Application\Helper\EntityHelper;

@@ -22,12 +22,10 @@ angular.module('hris', [])
             var $status = angular.element(document.getElementById('statusId'));
             var $missPunchOnly = $("#missPunchOnly");
             var firstTime = true;
-            var displayKendoFirstTime = true;
+            var $grid = null;
+            var checkedIds = {};
+
             $scope.view = function () {
-                if (displayKendoFirstTime) {
-                    initializekendoGrid();
-                    displayKendoFirstTime = false;
-                }
                 var dataSource = new kendo.data.DataSource({
                     transport: {
                         type: "json",
@@ -66,7 +64,7 @@ angular.module('hris', [])
                 grid.setDataSource(dataSource);
             };
             function initializekendoGrid() {
-                $("#attendanceByHrTable").kendoGrid({
+                $grid = $("#attendanceByHrTable").kendoGrid({
                     excel: {
                         fileName: "AttendanceList.xlsx",
                         filterable: true,
@@ -85,6 +83,12 @@ angular.module('hris', [])
                     },
                     dataBound: gridDataBound,
                     columns: [
+                        {
+                            title: 'Select All',
+                            headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                            template: "<input type='checkbox' id='#:ID#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
+                            width: 80
+                        },
                         {field: "EMPLOYEE_NAME", title: "Employee", template: "<span>#: (EMPLOYEE_NAME == null) ? '-' : EMPLOYEE_NAME # </span>"},
 //                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
                         {title: "Attendance Date",
@@ -97,8 +101,8 @@ angular.module('hris', [])
                                     template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N # </span>"}
                             ]},
                         {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME # </span>"},
-                        {field: "OUT_TIME", title: "Check Out" ,template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME # </span>"},
-                        {field: "STATUS", title: "Status" ,template: "<span>#: (STATUS == null) ? '-' : STATUS # </span>"},
+                        {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME # </span>"},
+                        {field: "STATUS", title: "Status", template: "<span>#: (STATUS == null) ? '-' : STATUS # </span>"},
                     ],
                     detailInit: detailInit,
                 });
@@ -252,6 +256,78 @@ angular.module('hris', [])
                 }
             }
 
+            initializekendoGrid();
+
+            function selectRow() {
+                var checked = this.checked,
+                        row = $(this).closest("tr"),
+                        grid = $grid.data("kendoGrid"),
+                        dataItem = grid.dataItem(row);
+                checkedIds[dataItem.ID] = {
+                    'checked': checked,
+                    data: {
+                        'id': dataItem.ID,
+                    }
+
+                }
+                if (checked) {
+                    //-select the row
+                    row.addClass("k-state-selected");
+                } else {
+                    //-remove selection
+                    row.removeClass("k-state-selected");
+                }
+
+                var checkedNo = $('.k-state-selected').length;
+                if (checkedNo > 0) {
+                    $('#acceptRejectDiv').show();
+                    if ($('#header-chb').prop('checked') == 1 && checkedNo == 1) {
+                        $('#acceptRejectDiv').hide();
+                    }
+                } else {
+                    $('#acceptRejectDiv').hide();
+                }
+            }
+            $grid.on("click", ".k-checkbox", selectRow);
+
+            $('#header-chb').change(function (ev) {
+                var checked = ev.target.checked;
+                $('.row-checkbox').each(function (idx, item) {
+                    if (checked) {
+                        if (!($(item).closest('tr').is('.k-state-selected'))) {
+                            $(item).click();
+                        }
+                    } else {
+                        if ($(item).closest('tr').is('.k-state-selected')) {
+                            $(item).click();
+                        }
+                    }
+                });
+            });
+            $(".btnApproveReject").bind("click", function () {
+                var btnId = $(this).attr('id');
+                var selectedValues = [];
+                for (var i in checkedIds) {
+                    if (checkedIds[i].checked) {
+                        selectedValues.push(checkedIds[i].data);
+                    }
+                }
+
+                App.blockUI({target: "#hris-page-content"});
+                app.pullDataById(
+                        document.bulkAttendanceWS,
+                        {data: selectedValues, action: btnId}
+                ).then(function (response) {
+                    App.unblockUI("#hris-page-content");
+                    if (response.success) {
+                        $scope.$apply(function () {
+                            $scope.view();
+                        });
+                    }
+                }, function (failure) {
+                    App.unblockUI("#hris-page-content");
+                });
+            });
             $("#export").click(function (e) {
                 var fetchAll = function (fn) {
                     var page = 1;

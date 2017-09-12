@@ -69,7 +69,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filterRecord($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $widOvertime = false, $missPunchOnly = false, $min=null, $max=null) {
+    public function filterRecord($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $widOvertime = false, $missPunchOnly = false, $min = null, $max = null) {
         $fromDateCondition = "";
         $toDateCondition = "";
         $employeeCondition = '';
@@ -154,8 +154,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($missPunchOnly) {
             $missPunchOnlyCondition = "AND (A.LATE_STATUS = 'X' OR A.LATE_STATUS = 'Y' ) ";
         }
-        if($min!=null && $max!=null){
-            $rowNums="WHERE (Q.R BETWEEN {$min} AND {$max})";
+        if ($min != null && $max != null) {
+            $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
         }
 
         $sql = "
@@ -703,6 +703,15 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
+    }
+
+    public function manualAttendance($id, $action) {
+        $sql = "
+                BEGIN
+                  HRIS_MANUAL_ATTENDANCE({$id},'{$action}');
+                END;";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
     }
 
 }

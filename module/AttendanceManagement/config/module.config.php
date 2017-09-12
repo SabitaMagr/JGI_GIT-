@@ -64,20 +64,6 @@ return [
                     ]
                 ],
             ],
-            'dailyAttendance' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/attendance/dailyAttendance[/:action[/:id]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\DailyAttendance::class,
-                        'action' => 'index',
-                    ]
-                ],
-            ],
             'calculateOvertime' => [
                 'type' => Segment::class,
                 'options' => [
@@ -173,6 +159,11 @@ return [
                         'label' => 'Edit',
                         'route' => 'attendancebyhr',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Manual',
+                        'route' => 'attendancebyhr',
+                        'action' => 'manual',
                     ],
                 ],
             ],
@@ -309,7 +300,6 @@ return [
             Controller\AttendanceByHr::class => ControllerFactory::class,
             Controller\ShiftSetup::class => ControllerFactory::class,
             Controller\AttendanceStatus::class => ControllerFactory::class,
-            Controller\DailyAttendance::class => ControllerFactory::class,
             Controller\CalculateOvertime::class => ControllerFactory::class,
             Controller\ShiftAdjustment::class => ControllerFactory::class,
             Controller\Penalty::class => ControllerFactory::class,

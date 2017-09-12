@@ -91,10 +91,10 @@ class AuthController extends AbstractActionController {
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 // check user passwordDays
-                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'));
-                if ($needPwdChange) {
-                    return $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $request->getPost('username')]);
-                }
+//                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'));
+//                if ($needPwdChange) {
+//                    return $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $request->getPost('username')]);
+//                }
 
 
 
