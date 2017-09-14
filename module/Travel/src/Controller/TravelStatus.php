@@ -163,7 +163,7 @@ class TravelStatus extends AbstractActionController
               'SUB_APPROVED_DATE'=>$detail['SUB_APPROVED_DATE']
             ];
         }
-        $duration = ($detail['TO_DATE']-$detail['FROM_DATE'])+1;
+        $duration = Helper::dateDiff($detail['FROM_DATE'], $detail['TO_DATE'])+1;
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
