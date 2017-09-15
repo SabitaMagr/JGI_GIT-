@@ -9,7 +9,6 @@ use Application\Repository\MonthRepository;
 use Application\Repository\TaskRepository;
 use Exception;
 use Interop\Container\ContainerInterface;
-use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -208,8 +207,6 @@ class DashboardController extends AbstractActionController {
 //                        ];
 //                    }
 //                }
-
-
                 //return new CustomViewModel(['success' => true, 'data' => $calendarJsonFeedArray, 'error' => '']);
                 return new CustomViewModel($calendarJsonFeedArray);
             } else {
