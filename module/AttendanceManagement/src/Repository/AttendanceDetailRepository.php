@@ -705,10 +705,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function manualAttendance($id, $action) {
+    public function manualAttendance($employeeId, $attendanceDt, $action) {
         $sql = "
                 BEGIN
-                  HRIS_MANUAL_ATTENDANCE({$id},'{$action}');
+                  HRIS_MANUAL_ATTENDANCE({$employeeId},{$attendanceDt},'{$action}');
                 END;";
         $statement = $this->adapter->query($sql);
         $statement->execute();

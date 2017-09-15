@@ -43,7 +43,7 @@ class UserSetupRepository implements RepositoryInterface {
             new Expression("US.STATUS AS STATUS"),
             new Expression("US.USER_ID AS USER_ID"),
             new Expression("US.USER_NAME AS USER_NAME"),
-            new Expression("US.PASSWORD AS PASSWORD"),
+            new Expression("FN_DECRYPT_PASSWORD(US.PASSWORD) AS PASSWORD"),
             new Expression("US.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("US.ROLE_ID AS ROLE_ID"),
                 ], true);
@@ -97,7 +97,7 @@ class UserSetupRepository implements RepositoryInterface {
 
         $select->from(UserSetup::TABLE_NAME);
         $select->where([
-            UserSetup::USER_ID=>$id
+            UserSetup::USER_ID => $id
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -142,7 +142,7 @@ class UserSetupRepository implements RepositoryInterface {
     }
 
     public function getUserByEmployeeId($employeeId) {
-         $sql = new Sql($this->adapter);
+        $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
             new Expression("STATUS AS STATUS"),
@@ -161,8 +161,8 @@ class UserSetupRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
-        
-        
+
+
 //        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID => $employeeId]);
 //        return $result->current();
     }

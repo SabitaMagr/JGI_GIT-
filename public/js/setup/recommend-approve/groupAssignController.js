@@ -42,6 +42,7 @@ angular.module('hris', ['ui.bootstrap'])
                 var designationId = angular.element(document.getElementById('designationId')).val();
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
+                var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 App.blockUI({target: "#hris-page-content"});
                 window.app.pullDataById(document.url, {
@@ -54,6 +55,7 @@ angular.module('hris', ['ui.bootstrap'])
                         designationId: designationId,
                         positionId: positionId,
                         serviceTypeId: serviceTypeId,
+                        employeeTypeId: employeeTypeId,
                         employeeId: employeeId
                     }
                 }).then(function (success) {
@@ -76,7 +78,7 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.recommenderSelected = $scope.recommenderOptions[0]
             $scope.approverOptions = document.employeeList;
             $scope.approverSelected = $scope.approverOptions[0];
-             console.log(document.employeeList);
+            console.log(document.employeeList);
             // MODEL CODE
             $ctrl = this;
             $ctrl.animationsEnabled = false;
@@ -108,8 +110,8 @@ angular.module('hris', ['ui.bootstrap'])
                                     branchId: branchId,
                                     departmentId: departmentId,
                                     designationId: designationId,
-                                    companyId:companyId,
-                                    employeeId:employeeId
+                                    companyId: companyId,
+                                    employeeId: employeeId
                                 }
                             }).then(function (success) {
                                 console.log("Employee list for success", success.data);

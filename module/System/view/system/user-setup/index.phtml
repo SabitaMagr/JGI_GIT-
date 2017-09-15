@@ -21,18 +21,16 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];
-echo json_encode($menu); ?>;
-    document.users=<?= json_encode($users); ?>;
+    document.users =<?= json_encode($users); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -48,6 +46,8 @@ echo json_encode($menu); ?>;
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
+                            <a href="javascript:;" id="exportWithPassword">
+                                <i class="fa fa-file-excel-o" ></i> Export to Excel(Password) </a>
                             <a href="javascript:;" id="export">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
@@ -56,12 +56,12 @@ echo json_encode($menu); ?>;
             </div>
         </div>
 
-    <div id="userTable">
+        <div id="userTable">
+        </div>
     </div>
-	</div>
-    
 
-    
+
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>
@@ -78,7 +78,7 @@ echo json_encode($menu); ?>;
         href="<?= $this->url("usersetup", ["action" => "edit"]); ?>/#:USER_ID #" style="height:17px;">
         <i class="fa fa-edit"></i>
         </a> 
-         <a class="btn-delete confirmation"
+        <a class="btn-delete confirmation"
         href="<?= $this->url("usersetup", ["action" => "delete"]); ?>/#:USER_ID #" id="bs_#:USER_ID #" style="height:17px;">
         <i class="fa fa-trash-o"></i></a>
         </a>

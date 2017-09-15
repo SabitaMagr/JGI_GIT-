@@ -23,7 +23,7 @@ angular.module('hris', [])
             var $missPunchOnly = $("#missPunchOnly");
             var firstTime = true;
             var $grid = null;
-            var checkedIds = {};
+            var checkedIds = [];
 
             $scope.view = function () {
                 var dataSource = new kendo.data.DataSource({
@@ -263,13 +263,23 @@ angular.module('hris', [])
                         row = $(this).closest("tr"),
                         grid = $grid.data("kendoGrid"),
                         dataItem = grid.dataItem(row);
-                checkedIds[dataItem.ID] = {
-                    'checked': checked,
-                    data: {
-                        'id': dataItem.ID,
-                    }
 
+                var index = null;
+                for (var i = 0; i < checkedIds.length; i++) {
+                    if (checkedIds[i].EMPLOYEE_ID == dataItem.EMPLOYEE_ID && checkedIds[i].ATTENDANCE_DT == dataItem.ATTENDANCE_DT) {
+                        index = i;
+                        break;
+                    }
                 }
+
+                if (index === null) {
+                    checkedIds.push({EMPLOYEE_ID: dataItem.EMPLOYEE_ID, ATTENDANCE_DT: dataItem.ATTENDANCE_DT});
+                } else {
+                    if (!checked) {
+                        checkedIds.splice(index, 1);
+                    }
+                }
+
                 if (checked) {
                     //-select the row
                     row.addClass("k-state-selected");
@@ -306,17 +316,11 @@ angular.module('hris', [])
             });
             $(".btnApproveReject").bind("click", function () {
                 var btnId = $(this).attr('id');
-                var selectedValues = [];
-                for (var i in checkedIds) {
-                    if (checkedIds[i].checked) {
-                        selectedValues.push(checkedIds[i].data);
-                    }
-                }
 
                 App.blockUI({target: "#hris-page-content"});
                 app.pullDataById(
                         document.bulkAttendanceWS,
-                        {data: selectedValues, action: btnId}
+                        {data: checkedIds, action: btnId}
                 ).then(function (response) {
                     App.unblockUI("#hris-page-content");
                     if (response.success) {

@@ -189,9 +189,8 @@ class AttendanceByHr extends AbstractActionController {
 
             $action = $postedData['action'];
             $data = $postedData['data'];
-
             foreach ($data as $item) {
-                $this->repository->manualAttendance($item['id'], $action);
+                $this->repository->manualAttendance($item['EMPLOYEE_ID'], Helper::getExpressionDate($item['ATTENDANCE_DT'])->getExpression(), $action);
             }
             return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
