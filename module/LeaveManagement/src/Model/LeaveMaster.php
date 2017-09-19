@@ -31,6 +31,7 @@ class LeaveMaster extends Model {
     const IS_SUBSTITUTE_MANDATORY = "IS_SUBSTITUTE_MANDATORY";
     const ASSIGN_ON_EMPLOYEE_SETUP = "ASSIGN_ON_EMPLOYEE_SETUP";
     const IS_PRODATA_BASIS = "IS_PRODATA_BASIS";
+    const ENABLE_SUBSTITUTE = "ENABLE_SUBSTITUTE";
 
     public $leaveId;
     public $leaveCode;
@@ -56,6 +57,7 @@ class LeaveMaster extends Model {
     public $isSubstituteMandatory;
     public $assignOnEmployeeSetup;
     public $isProdataBasis;
+    public $enableSubstitute;
     public $mappings = [
         'leaveId' => self::LEAVE_ID,
         'leaveCode' => self::LEAVE_CODE,
@@ -81,6 +83,7 @@ class LeaveMaster extends Model {
         'isSubstituteMandatory' => self::IS_SUBSTITUTE_MANDATORY,
         'assignOnEmployeeSetup' => self::ASSIGN_ON_EMPLOYEE_SETUP,
         'isProdataBasis' => self::IS_PRODATA_BASIS,
+        'enableSubstitute' => self::ENABLE_SUBSTITUTE,
     ];
 
 }

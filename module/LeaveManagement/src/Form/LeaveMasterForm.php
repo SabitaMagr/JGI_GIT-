@@ -160,4 +160,13 @@ class LeaveMasterForm {
      */
     public $isProdataBasis;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Enable Substitute"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"enableSubstitute","value":"N"})
+     */
+    public $enableSubstitute;
+
 }

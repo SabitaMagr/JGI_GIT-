@@ -72,7 +72,7 @@ class LeaveRequestRepository implements RepositoryInterface {
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("INITCAP(L.LEAVE_ENAME)"), 'ALLOW_HALFDAY', 'ALLOW_GRACE_LEAVE', 'IS_SUBSTITUTE_MANDATORY']);
+                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("INITCAP(L.LEAVE_ENAME)"), 'ALLOW_HALFDAY', 'ALLOW_GRACE_LEAVE', 'IS_SUBSTITUTE_MANDATORY', 'ENABLE_SUBSTITUTE']);
 
         $select->where([
             "L.STATUS='E'",
