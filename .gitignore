@@ -17,3 +17,4 @@ composer.lock
 #composer.phar
 #config/development.config.php
 #phpunit.xml
+web.config
