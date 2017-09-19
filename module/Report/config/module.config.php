@@ -59,6 +59,16 @@ return[
                         'route' => 'allreport',
                         'action' => 'withOvertime',
                     ],
+                    [
+                        'label' => 'Leave Report',
+                        'route' => 'allreport',
+                        'action' => 'leaveReport',
+                    ],
+                    [
+                        'label' => 'Hire & Fire',
+                        'route' => 'allreport',
+                        'action' => 'HireAndFireReport',
+                    ],
                 ],
             ],
         ],

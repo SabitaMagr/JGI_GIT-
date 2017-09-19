@@ -2,8 +2,12 @@
 
 namespace Report\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use LeaveManagement\Model\LeaveMaster;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
 
 class ReportRepository {
 
@@ -516,6 +520,36 @@ EOT;
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+    
+    public function fetchAllLeave() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME], NULL, NULL, NULL,NULL, 'L', false,false,null,["REPLACE(l.leave_ename, ' ', '') AS LEAVE_TRIM_ENAME"]), false);
+        $select->from(['L' => LeaveMaster::TABLE_NAME]);
+        $select->where(["L.STATUS='E'"]);
+        $select->order(LeaveMaster::LEAVE_ID . " ASC");
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+//        return $result;
+    }
+    
+    
+    public function filterLeaveReport($data,$leaveData){
+        
+        $sql=" SELECT *
+              FROM (SELECT E.FULL_NAME,LA.EMPLOYEE_ID,LA.LEAVE_ID, sum(LA.NO_OF_DAYS) TOTAL 
+              FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
+              JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=LA.EMPLOYEE_ID)
+              WHERE LA.STATUS='AP' 
+              GROUP BY E.FULL_NAME,LA.EMPLOYEE_ID,LA.LEAVE_ID)
+              PIVOT ( SUM(TOTAL) FOR LEAVE_ID IN ($leaveData))";
+        
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+//        return $result;
         return Helper::extractDbData($result);
     }
 

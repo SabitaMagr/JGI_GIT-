@@ -200,4 +200,64 @@ class AllReportController extends AbstractActionController {
         return $comBraDepList;
     }
 
+    public function leaveReportAction() {
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+        ]);
+    }
+
+    public function HireAndFireReportAction() {
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+        ]);
+    }
+
+    public function getLeaveReportWSAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $allLeave = $this->reportRepo->fetchAllLeave();
+                $leaveCount = count($allLeave);
+                if ($leaveCount <= 0) {
+                    throw new Exception('NO Leave found');
+                }
+//                $columHeader = [];
+                $leaveData = '';
+                $i = 1;
+                foreach ($allLeave as $leave) {
+//                    array_push($columHeader, $leave['LEAVE_ENAME']);
+//                    $columHeader[$leave['LEAVE_ID']]=$leave['LEAVE_ENAME'];
+                    $leaveData .= $leave['LEAVE_ID'];
+                    if ($i < $leaveCount) {
+                        $leaveData .= ',';
+                    }
+                    $i++;
+                }
+                $leavereport = $this->reportRepo->filterLeaveReport($postedData, $leaveData);
+//                $columnData = $leavereport;
+                $columnData = [];
+                foreach ($leavereport as $report) {
+                    $tempData = [
+                        'EMPLOYEE_ID' => $report['EMPLOYEE_ID'],
+                        'FULL_NAME' => $report['FULL_NAME']
+                    ];
+                    foreach ($allLeave as $leave) {
+                        $tempData[$leave['LEAVE_TRIM_ENAME']] = $report[$leave['LEAVE_ID']];
+                    }
+                    array_push($columnData, $tempData);
+                }
+                $returnData = [
+                    'columns' => $allLeave,
+                    'data' => $columnData
+                ];
+                return new CustomViewModel(['success' => true, 'data' => $returnData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
 }
