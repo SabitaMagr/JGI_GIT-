@@ -11,7 +11,7 @@
         var $nepaliFromDate = $('#nepaliFromDate');
         var $toDate = $('#toDate');
         var $nepaliToDate = $('#nepaliToDate');
-        var $bulkEdit = $('#bulkEdit');
+        var $bulkAdd = $('#bulkAdd');
 
 
         var grid = app.initializeKendoGrid($shiftAssignTable, [
@@ -20,17 +20,47 @@
             {field: "DEPARTMENT_NAME", title: "Department", width: 150},
             {field: "POSITION_NAME", title: "Position", width: 150},
             {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
+            {field: "SERVICE_TYPE_NAME", title: "Service Type", width: 150},
+            {field: "EMPLOYEE_TYPE", title: "Employee Type", width: 150},
             {field: "FULL_NAME", title: "Name", width: 150},
-            {field: "SHIFT_ENAME", title: "Shift", width: 150},
-            {title: "From", columns: [
-                    {field: "FROM_DATE_AD", title: "AD", width: 75},
-                    {field: "FROM_DATE_BS", title: "BS", width: 75},
-                ]},
-            {title: "To", columns: [
-                    {field: "TO_DATE_AD", title: "AD", width: 75},
-                    {field: "TO_DATE_BS", title: "BS", width: 75},
-                ]},
-        ], 'Employee_Shifts.xlsx', null, {id: 'ID', atLast: true, fn: function (selected) {
+        ], 'Employees.xlsx', function (e) {
+            app.pullDataById(document.employeeShiftsWS, {employeeId: e.data.EMPLOYEE_ID}).then(function (response) {
+                if (!response.success) {
+                    app.showMessage(response.error, 'error');
+                    return;
+                }
+                $("<div/>").appendTo(e.detailCell).kendoGrid({
+                    dataSource: {
+                        data: response.data,
+                        pageSize: 20
+                    },
+                    scrollable: false,
+                    sortable: false,
+                    pageable: false,
+                    columns: [
+                        {field: "SHIFT_ENAME", title: "Shift"},
+                        {title: "From Date", columns: [
+                                {field: "FROM_DATE_AD", title: "AD"},
+                                {field: "FROM_DATE_BS", title: "BS"},
+                            ]},
+                        {title: "To Date", columns: [
+                                {field: "TO_DATE_AD", title: "AD"},
+                                {field: "TO_DATE_BS", title: "BS"},
+                            ]}
+                    ],
+                    dataBound: function (e) {
+                        var grid = e.sender;
+                        if (grid.dataSource.total() === 0) {
+                            var colCount = grid.columns.length;
+                            $(e.sender.wrapper)
+                                    .find('tbody')
+                                    .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+                        }
+                    },
+                });
+            }, function (error) {
+            });
+        }, {id: 'EMPLOYEE_ID', atLast: false, fn: function (selected) {
                 if (selected) {
                     $bulkActionDiv.show();
                 } else {
@@ -38,23 +68,7 @@
                 }
             }});
 
-        app.searchTable('shiftAssignTable', ['COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'POSITION_NAME', 'DESIGNATION_TITLE', 'FULL_NAME', 'SHIFT_ENAME', 'FROM_DATE_AD', 'FROM_DATE_BS', 'TO_DATE_AD', 'TO_DATE_BS'], true);
-        app.pdfExport(
-                'shiftAssignTable',
-                {
-                    'COMPANY_NAME': 'Company',
-                    'BRANCH_NAME': 'Branch',
-                    'DEPARTMENT_NAME': 'Department',
-                    'POSITION_NAME': 'Position',
-                    'DESIGNATION_TITLE': 'Designation',
-                    'FULL_NAME': 'Name',
-                    'SHIFT_ENAME': 'Shift',
-                    'FROM_DATE_AD': 'From(AD)',
-                    'FROM_DATE_BS': 'From(BS)',
-                    'TO_DATE_AD': 'To(AD)',
-                    'TO_DATE_BS': 'To(BS)',
-                }
-        );
+        app.searchTable('shiftAssignTable', ['COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'POSITION_NAME', 'DESIGNATION_TITLE', 'FULL_NAME', 'SERVICE_TYPE_NAME', 'EMPLOYEE_TYPE'], true);
 
         $search.on('click', function () {
             grid.clearSelected();
@@ -65,7 +79,7 @@
             $nepaliToDate.val('');
             $bulkActionDiv.hide();
             var search = document.searchManager.getSearchValues();
-            app.pullDataById(document.listWS, search).then(function (response) {
+            app.pullDataById(document.employeeListWS, search).then(function (response) {
                 app.renderKendoGrid($shiftAssignTable, response.data);
             }, function (error) {
                 app.showMessage(error, 'error');
@@ -74,7 +88,7 @@
 
         app.populateSelect($shiftId, document.shiftList, 'SHIFT_ID', 'SHIFT_ENAME', 'Select Shift', -1);
 
-        $bulkEdit.on('click', function () {
+        $bulkAdd.on('click', function () {
             var shiftId = $shiftId.val();
             if (shiftId == -1) {
                 app.showMessage("Select Shift First.", "error");
@@ -92,16 +106,16 @@
             var employeeShiftIds = [];
 
             for (var i in employeeShift) {
-                employeeShiftIds.push(employeeShift[i]['ID']);
+                employeeShiftIds.push(employeeShift[i]['EMPLOYEE_ID']);
             }
-            app.pullDataById(document.editWs, {
+            app.pullDataById(document.addWs, {
                 shiftId: shiftId,
                 fromDate: fromDate,
                 toDate: toDate,
-                employeeShiftIds: employeeShiftIds
+                employeeIds: employeeShiftIds
             }).then(function (response) {
                 if (response.success) {
-                    app.showMessage("Employee shift edited successfully.", 'success');
+                    app.showMessage("Employee shift added successfully.", 'success');
                     $search.trigger('click');
                 }
             }, function (error) {

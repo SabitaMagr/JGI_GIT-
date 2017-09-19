@@ -138,10 +138,6 @@ class RestfulService extends AbstractRestfulController {
                 }
 
                 switch ($postedData->action) {
-                    case "pullEmployeeForShiftAssign":
-                        $responseData = $this->pullEmployeeForShiftAssign($postedData->id);
-                        break;
-
                     case "pullEmployeeForRecomApproverAssign":
                         $responseData = $this->pullEmployeeForRecomApproverAssign($postedData->data);
                         break;
@@ -154,10 +150,6 @@ class RestfulService extends AbstractRestfulController {
                     case "cancelEmployeeTraining":
                         $responseData = $this->cancelEmployeeTraining($postedData->data);
                         break;
-                    case "assignEmployeeShift":
-                        $responseData = $this->assignEmployeeShift($postedData->data);
-                        break;
-
                     case "pullEmployeeMonthlyValue":
                         $responseData = $this->pullEmployeeMonthlyValue($postedData->id);
                         break;
@@ -432,42 +424,6 @@ class RestfulService extends AbstractRestfulController {
             ];
         }
         return new JsonModel(['data' => $responseData]);
-    }
-
-    private function assignEmployeeShift($data) {
-        $shiftAssign = new ShiftAssign();
-
-        $shiftAssign->employeeId = $data['employeeId'];
-        $shiftAssign->shiftId = $data['shiftId'];
-
-        $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
-        if (!empty($data['oldShiftId'])) {
-            $shiftAssignClone = clone $shiftAssign;
-
-            unset($shiftAssignClone->employeeId);
-            unset($shiftAssignClone->shiftId);
-            unset($shiftAssignClone->createdDt);
-
-            $shiftAssignClone->status = 'D';
-            $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
-            $shiftAssignClone->modifiedBy = $this->loggedIdEmployeeId;
-            $shiftAssignRepo->edit($shiftAssignClone, [$data['employeeId'], $data['oldShiftId']]);
-
-            $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
-            $shiftAssign->createdBy = $this->loggedIdEmployeeId;
-            $shiftAssign->status = 'E';
-            $shiftAssignRepo->add($shiftAssign);
-        } else {
-            $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
-            $shiftAssign->createdBy = $this->loggedIdEmployeeId;
-            $shiftAssign->status = 'E';
-            $shiftAssignRepo->add($shiftAssign);
-        }
-
-        return [
-            "success" => true,
-            "data" => $data
-        ];
     }
 
     private function pullEmployeeMonthlyValue(array $data) {
@@ -991,7 +947,7 @@ class RestfulService extends AbstractRestfulController {
         $employeeTypeId = $data['employeeTypeId'];
 
         $repository = new LeaveBalanceRepository($this->adapter);
-        $employeeList = $repository->getAllEmployee($emplyoeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId,$employeeTypeId);
+        $employeeList = $repository->getAllEmployee($emplyoeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId);
 
         $mainArray = [];
         foreach ($employeeList as $row) {
@@ -2254,28 +2210,6 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
-    private function pullEmployeeForShiftAssign(array $ids) {
-        $shiftAssignRepo = new ShiftAssignRepository($this->adapter);
-        $result = $shiftAssignRepo->filter($ids['branchId'], $ids['departmentId'], $ids['designationId'], $ids['positionId'], $ids['serviceTypeId'], $ids['companyId'], $ids['serviceEventTypeId'], $ids['employeeId'],$ids['employeeTypeId']);
-
-        $tempArray = [];
-        foreach ($result as $item) {
-            $tmp = $shiftAssignRepo->filterByEmployeeId($item['EMPLOYEE_ID']);
-            if ($tmp != null) {
-                $item[ShiftAssign::SHIFT_ID] = $tmp[ShiftAssign::SHIFT_ID];
-                $item[ShiftSetup::SHIFT_ENAME] = $tmp[ShiftSetup::SHIFT_ENAME];
-            } else {
-                $item[ShiftAssign::SHIFT_ID] = "";
-                $item[ShiftSetup::SHIFT_ENAME] = "";
-            }
-            array_push($tempArray, $item);
-        }
-        return [
-            "success" => true,
-            "data" => $tempArray
-        ];
-    }
-
     public function pullEmployeeForRecomApproverAssign($data) {
         $companyId = $data['companyId'];
         $positionId = $data['positionId'];
@@ -2292,7 +2226,7 @@ class RestfulService extends AbstractRestfulController {
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
 
         $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId,$employeeTypeId);
+        $employeeResult = $employeeRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, 1, $companyId, $employeeTypeId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
@@ -2357,7 +2291,7 @@ class RestfulService extends AbstractRestfulController {
         $employeeTypeId = $data['employeeTypeId'];
 
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
-        $result = $trainingAssignRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId, $companyId,$employeeTypeId);
+        $result = $trainingAssignRepo->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId, $companyId, $employeeTypeId);
         $list = [];
         $getValue = function($trainingTypeId) {
             if ($trainingTypeId == 'CP') {
@@ -2398,8 +2332,8 @@ class RestfulService extends AbstractRestfulController {
         $employeeRepository = new EmployeeRepository($this->adapter);
         $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
         $employeeTypeId = $data['employeeTypeId'];
-        
-        $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1, $companyId,$employeeTypeId);
+
+        $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1, $companyId, $employeeTypeId);
 
         $employeeList = [];
         foreach ($employeeResult as $employeeRow) {
