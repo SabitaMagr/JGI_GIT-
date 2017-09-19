@@ -79,6 +79,7 @@ class NotificationRepo implements RepositoryInterface {
                 ->join(['E' => HrEmployees::TABLE_NAME], "N." . Notification::MESSAGE_FROM . "= " . "E." . HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], Select::JOIN_LEFT)
                 ->join(['F' => EmployeeFile::TABLE_NAME], "E." . HrEmployees::PROFILE_PICTURE_ID . " = " . "F." . EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], Select::JOIN_LEFT);
         $select->where($where);
+        $select->order(["N." . Notification::MESSAGE_DATETIME => Select::ORDER_DESCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;

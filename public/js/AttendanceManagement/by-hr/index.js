@@ -90,7 +90,6 @@ angular.module('hris', [])
                             width: 80
                         },
                         {field: "EMPLOYEE_NAME", title: "Employee", template: "<span>#: (EMPLOYEE_NAME == null) ? '-' : EMPLOYEE_NAME # </span>"},
-//                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 120},
                         {title: "Attendance Date",
                             columns: [
                                 {field: "ATTENDANCE_DT",

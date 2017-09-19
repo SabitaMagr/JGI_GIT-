@@ -17,17 +17,14 @@
         var substituteEmp = {
             list: [],
             disable: function (employeeIds) {
-                console.log('empIds', employeeIds);
                 if (this.list.length > 0) {
                     $.each(this.list, function (key, value) {
                         $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled', false);
-                        console.log('false', $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled'));
                     });
                     this.list = [];
                 }
                 $.each(employeeIds, function (key, value) {
                     $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled', true);
-                    console.log('true', $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled'));
                 });
                 this.list = employeeIds;
             }};
@@ -133,9 +130,19 @@
                 $('#halfDay').prop('disabled', true);
             }
         };
+        var toggleSubstituteEmployee = function ($flag) {
+            if ($flag) {
+                $('#substituteEmployeeCol').show();
+                $('#leaveSubstitute').prop('disabled', false);
+            } else {
+                $('#substituteEmployeeCol').hide();
+                $('#leaveSubstitute').prop('disabled', true);
+            }
+        };
 
         toggleHalfDay(false);
         toggleGracePeriod(false);
+        toggleSubstituteEmployee(false)
         toggleSubstituteEmployeeReq(false);
 
 
@@ -167,6 +174,7 @@
 
                 toggleGracePeriod(leaveDetail.ALLOW_GRACE_LEAVE === "Y");
                 toggleHalfDay(leaveDetail.ALLOW_HALFDAY === "Y");
+                toggleSubstituteEmployee(leaveDetail.ENABLE_SUBSTITUTE === "Y");
                 toggleSubstituteEmployeeReq(leaveDetail.IS_SUBSTITUTE_MANDATORY === 'Y');
             }, function (failure) {
                 App.unblockUI("#hris-page-content");

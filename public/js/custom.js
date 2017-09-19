@@ -1004,7 +1004,28 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail) {
+    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail, bulkOptions) {
+        if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
+            var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
+            var column = {
+                title: 'Select All',
+                headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                template: template,
+                width: 80,
+                sortable: false,
+                filterable: false
+            };
+            if (bulkOptions.id !== 'undefined' && bulkOptions.id !== null) {
+                column.field = bulkOptions.id;
+                column.template = "<input id='#:" + bulkOptions.id + "#' type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
+            }
+            if (bulkOptions.atLast !== 'undefined' && bulkOptions.atLast !== null && bulkOptions.atLast === true) {
+                columns.push(column);
+            } else {
+                columns.splice(0, 0, column);
+            }
+
+        }
         var kendoConfig = {
             excel: {
                 fileName: excelExportFileName,
@@ -1031,10 +1052,65 @@ window.app = (function ($, toastr, App) {
             },
             columns: columns
         };
-        if (typeof detail !== 'undefined') {
+        if (typeof detail !== 'undefined' && detail !== null) {
             kendoConfig['detailInit'] = detail;
         }
         $table.kendoGrid(kendoConfig);
+
+        var tableId = $table.attr('id');
+        var selectedRows = {};
+        $table.on("click", ".k-checkbox", function () {
+            var checked = this.checked,
+                    row = $(this).closest("tr"),
+                    grid = $table.data("kendoGrid"),
+                    dataItem = grid.dataItem(row);
+
+            if (checked) {
+                row.addClass("k-state-selected");
+                selectedRows[dataItem.uid] = dataItem;
+            } else {
+                row.removeClass("k-state-selected");
+                delete selectedRows[dataItem.uid];
+            }
+
+            if (typeof bulkOptions !== 'undefined' && bulkOptions !== null && typeof bulkOptions.fn !== 'undefined' && bulkOptions.fn !== null) {
+                var checkedNo = $('.k-state-selected').length;
+                if (checkedNo > 0) {
+                    bulkOptions.fn(true);
+                } else {
+                    bulkOptions.fn(false);
+                }
+            }
+        });
+        $('#' + tableId + ' ' + '#header-chb').change(function (ev) {
+            var checked = ev.target.checked;
+            $('#' + tableId + ' ' + '.row-checkbox').each(function (idx, item) {
+                if (checked) {
+                    if (!($(item).closest('tr').is('.k-state-selected'))) {
+                        $(item).click();
+                    }
+                } else {
+                    if ($(item).closest('tr').is('.k-state-selected')) {
+                        $(item).click();
+                    }
+                }
+            });
+        });
+
+        return {
+            getSelected: function () {
+                var cleanData = [];
+                for (var key in  selectedRows) {
+                    var cleanItem = selectedRows[key];
+                    delete cleanItem.uid;
+                    cleanData.push(cleanItem);
+                }
+                return JSON.parse(JSON.stringify(cleanData));
+            }, clearSelected: function () {
+                selectedRows = {};
+            }
+
+        }
     }
     var renderKendoGrid = function ($table, data) {
         var dataSource = new kendo.data.DataSource({data: data, pageSize: 20});
