@@ -1541,16 +1541,12 @@ class HeadNotification {
     }
 
     public static function mailHeader(AbstractController $context) {
-        $headerImg = "<div style='background-color:#F48B2F; width:100%;text-align:center;'><img src='http://laxmi.laxmibank.com/assets/upload/images/config/logo2.gif' align='middle' style='text-align:center'></div>";
+        $headerImg = "";
         return $headerImg;
     }
 
     public static function mailFooter(AbstractController $context) {
-        $footer = "<div style='background-color:#F48B2F;font-size:11px; height:80px; text-align:center;padding:10px;'>
-       <label style='margin-bottom:20px'>Disclaimer: This is an automatically generated email. </label><br/>
-<label style='margin-bottom:20px'>\r\nConfidentiality Clause: This electronic mail is confidential, privileged and only for the use of the recipient to whom it is addressed.</label><br/>
-<label style='margin-bottom:20px'>\r\nIf you are not the intended recipient, you are hereby notified that any retention, dissemination, distribution or copying of this message is strictly prohibited. If you 
-have received this message in error please notify us immediately at hr@laxmibank.com and delete the message immediately. Thank you.</label><br/></div>";
+        $footer = "";
         return $footer;
     }
 
