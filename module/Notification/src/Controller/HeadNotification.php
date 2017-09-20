@@ -59,6 +59,8 @@ use Setup\Repository\TrainingRepository;
 use Training\Model\TrainingAssign;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mail\Message;
+use Zend\Mime\Message as MimeMessage;
+use Zend\Mime\Part as MimePart;
 use Zend\Mvc\Controller\AbstractController;
 use Zend\Mvc\Controller\Plugin\Url;
 
@@ -113,9 +115,9 @@ class HeadNotification {
         }
         $mail = new Message();
         $mail->setSubject($template['SUBJECT']);
-        $htmlDescription = self::mailHeader($context);
+        $htmlDescription = self::mailHeader();
         $htmlDescription .= $model->processString($template['DESCRIPTION'], $url);
-        $htmlDescription .= self::mailFooter($context);
+        $htmlDescription .= self::mailFooter();
 
         $htmlPart = new MimePart($htmlDescription);
         $htmlPart->type = "text/html";
@@ -1540,12 +1542,12 @@ class HeadNotification {
         }
     }
 
-    public static function mailHeader(AbstractController $context) {
+    public static function mailHeader() {
         $headerImg = "";
         return $headerImg;
     }
 
-    public static function mailFooter(AbstractController $context) {
+    public static function mailFooter() {
         $footer = "";
         return $footer;
     }
@@ -1717,7 +1719,7 @@ class HeadNotification {
         $desc = "Travel Request of $notification->fromName from $notification->fromDate to $notification->toDate";
 
         self::addNotifications($notification, $title, $desc, $adapter);
-        self::sendEmail($notification, 9, $adapter, $context);
+        self::sendEmail($notification, 9, $adapter, $url);
     }
 
     private static function travelRecommendLaxmi(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
