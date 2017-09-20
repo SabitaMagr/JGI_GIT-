@@ -17,6 +17,7 @@ use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Repository\LeaveApplyRepository;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use ManagerService\Model\SalaryDetail;
+use ManagerService\Repository\LeaveApproveRepository;
 use ManagerService\Repository\SalaryDetailRepo;
 use Notification\Model\AppraisalNotificationModel;
 use Notification\Model\LeaveRequestNotificationModel;
@@ -49,6 +50,7 @@ use SelfService\Repository\TravelRequestRepository;
 use SelfService\Repository\TravelSubstituteRepository;
 use SelfService\Repository\WorkOnDayoffRepository;
 use SelfService\Repository\WorkOnHolidayRepository;
+use Setup\Model\HrEmployees;
 use Setup\Model\RecommendApprove;
 use Setup\Model\Training;
 use Setup\Repository\EmployeeRepository;
@@ -75,6 +77,8 @@ class HeadNotification {
     const REVIEWER_EVALUATION = "REVIEWER_EVALUATION";
     const SUPER_REVIEWER_EVALUATION = "SUPER_REVIEWER_EVALUATION";
     const HR_FEEDBACK = "HR_FEEDBACK";
+    const TRAVEL_EXPENSE_REQUEST = "ep";    //value from travel request form
+    const TRAVEL_ADVANCE_REQUEST = "ad";
 
     public static function getNotifications(AdapterInterface $adapter, int $empId) {
         $notiRepo = new NotificationRepo($adapter);
@@ -109,9 +113,17 @@ class HeadNotification {
         }
         $mail = new Message();
         $mail->setSubject($template['SUBJECT']);
-        $htmlDescription = $model->processString($template['DESCRIPTION'], $url);
-        $html2txt = new Html2Text($htmlDescription);
-        $mail->setBody(trim($html2txt->getText()));
+        $htmlDescription = self::mailHeader($context);
+        $htmlDescription .= $model->processString($template['DESCRIPTION'], $url);
+        $htmlDescription .= self::mailFooter($context);
+
+        $htmlPart = new MimePart($htmlDescription);
+        $htmlPart->type = "text/html";
+
+        $body = new MimeMessage();
+        $body->setParts(array($htmlPart));
+
+        $mail->setBody($body);
 
         if (!isset($model->fromEmail) || $model->fromEmail == null || $model->fromEmail == '' || !$isValidEmail($model->fromEmail)) {
             throw new Exception("Sender email is not set or valid.");
@@ -1528,6 +1540,20 @@ class HeadNotification {
         }
     }
 
+    public static function mailHeader(AbstractController $context) {
+        $headerImg = "<div style='background-color:#F48B2F; width:100%;text-align:center;'><img src='http://laxmi.laxmibank.com/assets/upload/images/config/logo2.gif' align='middle' style='text-align:center'></div>";
+        return $headerImg;
+    }
+
+    public static function mailFooter(AbstractController $context) {
+        $footer = "<div style='background-color:#F48B2F;font-size:11px; height:80px; text-align:center;padding:10px;'>
+       <label style='margin-bottom:20px'>Disclaimer: This is an automatically generated email. </label><br/>
+<label style='margin-bottom:20px'>\r\nConfidentiality Clause: This electronic mail is confidential, privileged and only for the use of the recipient to whom it is addressed.</label><br/>
+<label style='margin-bottom:20px'>\r\nIf you are not the intended recipient, you are hereby notified that any retention, dissemination, distribution or copying of this message is strictly prohibited. If you 
+have received this message in error please notify us immediately at hr@laxmibank.com and delete the message immediately. Thank you.</label><br/></div>";
+        return $footer;
+    }
+
     private static function initializeNotificationModel($fromId, $toId, $class, AdapterInterface $adapter) {
         $employeeRepo = new EmployeeRepository($adapter);
         $fromEmployee = $employeeRepo->fetchById($fromId);
@@ -1580,6 +1606,192 @@ class HeadNotification {
         }
 
         return $recommdAppModel;
+    }
+
+    public static function findRecAppForTrvl($employeeId, $adapter, $approverRole) {
+        $recommdAppRepo = new RecommendApproveRepository($adapter);
+        $empRepository = new EmployeeRepository($adapter);
+
+        $recommdAppModel = $recommdAppRepo->getDetailByEmployeeID($employeeId);
+        $approverFlag = ($approverRole == 'DCEO') ? [HrEmployees::IS_DCEO => 'Y'] : [HrEmployees::IS_CEO => 'Y'];
+        $whereCondition = array_merge([HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], $approverFlag);
+        $approverDetail = $empRepository->fetchByCondition($whereCondition);
+
+        $recommdAppModel[RecommendApprove::RECOMMEND_BY] = $recommdAppModel[RecommendApprove::APPROVED_BY];
+        $recommdAppModel[RecommendApprove::APPROVED_BY] = $approverDetail['EMPLOYEE_ID'];
+
+        if ($recommdAppModel == null) {
+            throw new Exception("recommender and approver not set for employee with id =>" . $employeeId);
+        }
+
+        return $recommdAppModel;
+    }
+
+    private static function leaveAppliedLaxmi(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, $type) {
+        self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
+        $recommdAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
+
+        $leaveApproveRepository = new LeaveApproveRepository($adapter);
+        $empRepository = new EmployeeRepository($adapter);
+        $detail = $leaveApproveRepository->fetchById($leaveApply->id);
+        $CEOFlag = ($detail['PAID'] == 'N' && $detail['NO_OF_DAYS'] > 3) ? true : false;
+        if ($CEOFlag) {
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS => 'E', HrEmployees::IS_CEO => 'Y', HrEmployees::RETIRED_FLAG => 'N']);
+            $recommdAppModel['RECOMMEND_BY'] = $recommdAppModel['APPROVED_BY'];
+            $recommdAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+        }
+
+        $idAndRole = self::findRoleType($recommdAppModel, $type);
+        $leaveReqNotiMod = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $idAndRole['id'], LeaveRequestNotificationModel::class, $adapter);
+
+        $leaveName = self::getName($leaveApply->leaveId, new LeaveMasterRepository($adapter), 'LEAVE_ENAME');
+
+        $leaveReqNotiMod->fromDate = $leaveApply->startDate;
+        $leaveReqNotiMod->toDate = $leaveApply->endDate;
+        $leaveReqNotiMod->leaveName = $leaveName;
+        $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
+        $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
+
+        $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => $idAndRole['role']]);
+
+        $notificationTitle = "Leave Request";
+        $notificationDesc = "Leave Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
+
+        self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
+        self::sendEmail($leaveReqNotiMod, 1, $adapter, $url);
+    }
+
+    public static function leaveApproveLaxmi(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
+        self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
+        $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
+        $leaveApproveRepository = new LeaveApproveRepository($adapter);
+        $empRepository = new EmployeeRepository($adapter);
+        $detail = $leaveApproveRepository->fetchById($leaveApply->id);
+        $CEOFlag = ($detail['PAID'] == 'N' && $detail['NO_OF_DAYS'] > 3) ? true : false;
+        if ($CEOFlag) {
+            $CEODtl = $empRepository->fetchByCondition([HrEmployees::STATUS => 'E', HrEmployees::IS_CEO => 'Y', HrEmployees::RETIRED_FLAG => 'N']);
+            $recommendAppModel['RECOMMEND_BY'] = $recommendAppModel['APPROVED_BY'];
+            $recommendAppModel['APPROVED_BY'] = $CEODtl['EMPLOYEE_ID'];
+        }
+        $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::APPROVED_BY], $leaveApply->employeeId, LeaveRequestNotificationModel::class, $adapter);
+
+
+        $leaveReqNotiMod->fromDate = $leaveApply->startDate;
+        $leaveReqNotiMod->toDate = $leaveApply->endDate;
+        $leaveReqNotiMod->leaveName = self::getName($leaveApply->leaveId, new LeaveMasterRepository($adapter), 'LEAVE_ENAME');
+        $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
+        $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
+        $leaveReqNotiMod->leaveApprovedStatus = $status;
+
+        $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
+
+        $notificationTitle = "Leave Approval";
+        $notificationDesc = "Approval of Leave Request by $leaveReqNotiMod->fromName from "
+                . "$leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveApprovedStatus";
+        self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
+        self::sendEmail($leaveReqNotiMod, 3, $adapter, $url);
+    }
+
+    private static function travelAppliedLaxmi(TravelRequest $request, AdapterInterface $adapter, Url $url, $type) {
+        self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter, $request->approverRole);
+        $roleAndId = self::findRoleType($recommdAppModel, $type);
+        $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\TravelReqNotificationModel::class, $adapter);
+
+
+        $notification->destination = $request->destination;
+        $notification->fromDate = $request->fromDate;
+        $notification->toDate = $request->toDate;
+        $notification->purpose = $request->purpose;
+        $notification->requestedAmount = $request->requestedAmount;
+        $notification->requestedType = $request->requestedType;
+
+        switch ($request->requestedType) {
+            case self::TRAVEL_ADVANCE_REQUEST:
+                $notification->route = json_encode(["route" => "travelApprove", "action" => "view", "id" => $request->travelId, "role" => $roleAndId['role']]);
+                break;
+            case self::TRAVEL_EXPENSE_REQUEST :
+                $notification->route = json_encode(["route" => "travelApprove", "action" => "expenseDetail", "id" => $request->travelId, "role" => $roleAndId['role']]);
+                break;
+            default:
+                $notification->route = json_encode(["route" => "travelApprove", "action" => "view", "id" => $request->travelId, "role" => $roleAndId['role']]);
+                break;
+        }
+        $title = "Travel Request";
+        $desc = "Travel Request of $notification->fromName from $notification->fromDate to $notification->toDate";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 9, $adapter, $context);
+    }
+
+    private static function travelRecommendLaxmi(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+        self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter, $request->approverRole);
+        $notification = self::initializeNotificationModel(
+                        $recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
+
+        $notification->destination = $request->destination;
+        $notification->fromDate = $request->fromDate;
+        $notification->toDate = $request->toDate;
+        $notification->purpose = $request->purpose;
+        $notification->requestedAmount = $request->requestedAmount;
+        $notification->requestedType = $request->requestedType;
+
+        $notification->status = $status;
+
+        switch ($request->requestedType) {
+            case self::TRAVEL_ADVANCE_REQUEST:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+            case self::TRAVEL_EXPENSE_REQUEST :
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "viewExpense", "id" => $request->travelId]);
+                break;
+            default:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+        }
+        $title = "Travel Recommendation";
+        $desc = "Recommendation of Travel Request by"
+                . " $notification->fromName from $notification->fromDate"
+                . " to $notification->toDate is $notification->status";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 10, $adapter, $url);
+    }
+
+    private static function travelApproveLaxmi(TravelRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+        self::initFullModel(new TravelRequestRepository($adapter), $request, $request->travelId);
+        $recommdAppModel = self::findRecAppForTrvl($request->employeeId, $adapter, $request->approverRole);
+        $notification = self::initializeNotificationModel(
+                        $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\TravelReqNotificationModel::class, $adapter);
+
+        $notification->destination = $request->destination;
+        $notification->fromDate = $request->fromDate;
+        $notification->toDate = $request->toDate;
+        $notification->purpose = $request->purpose;
+        $notification->requestedAmount = $request->requestedAmount;
+        $notification->requestedType = $request->requestedType;
+
+        $notification->status = $status;
+
+        switch ($request->requestedType) {
+            case self::TRAVEL_ADVANCE_REQUEST:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+            case self::TRAVEL_EXPENSE_REQUEST :
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "viewExpense", "id" => $request->travelId]);
+                break;
+            default:
+                $notification->route = json_encode(["route" => "travelRequest", "action" => "view", "id" => $request->travelId]);
+                break;
+        }
+        $title = "Travel Approval";
+        $desc = "Approval of Travel Request by"
+                . " $notification->fromName from $notification->fromDate"
+                . " to $notification->toDate is $notification->status";
+
+        self::addNotifications($notification, $title, $desc, $adapter);
+        self::sendEmail($notification, 11, $adapter, $url);
     }
 
 }
