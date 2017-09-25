@@ -20,3 +20,79 @@ ALTER TABLE HRIS_FLAT_VALUE_DETAIL DROP COLUMN MONTH_ID;
 ALTER TABLE HRIS_JOB_HISTORY ADD FROM_SALARY NUMBER(11,2);
 
 ALTER TABLE HRIS_JOB_HISTORY ADD TO_SALARY NUMBER(11,2);
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+  NULL,
+    (select max(menu_id+1) from HRIS_MENUS),
+    'Leave Report',
+    148,
+    NULL,
+    'allreport',
+    'E',
+      TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'leaveReport',
+    6,
+    NULL,
+    NULL,
+    'Y'
+    );
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+  NULL,
+    (select max(menu_id+1) from HRIS_MENUS),
+    'Hire&Exit Report',
+    148,
+    NULL,
+    'allreport',
+    'E',
+      TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'HireAndFireReport',
+    7,
+    NULL,
+    NULL,
+    'Y'
+    );

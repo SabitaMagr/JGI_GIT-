@@ -4,6 +4,8 @@ namespace Report\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
+use Application\Model\Months;
 use LeaveManagement\Model\LeaveMaster;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
@@ -522,11 +524,11 @@ EOT;
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
-    
+
     public function fetchAllLeave() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME], NULL, NULL, NULL,NULL, 'L', false,false,null,["REPLACE(l.leave_ename, ' ', '') AS LEAVE_TRIM_ENAME"]), false);
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME], NULL, NULL, NULL, NULL, 'L', false, false, null, ["REPLACE(l.leave_ename, ' ', '') AS LEAVE_TRIM_ENAME"]), false);
         $select->from(['L' => LeaveMaster::TABLE_NAME]);
         $select->where(["L.STATUS='E'"]);
         $select->order(LeaveMaster::LEAVE_ID . " ASC");
@@ -535,21 +537,356 @@ EOT;
         return Helper::extractDbData($result);
 //        return $result;
     }
-    
-    
-    public function filterLeaveReport($data,$leaveData){
-        
-        $sql=" SELECT *
-              FROM (SELECT E.FULL_NAME,LA.EMPLOYEE_ID,LA.LEAVE_ID, sum(LA.NO_OF_DAYS) TOTAL 
-              FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
-              JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=LA.EMPLOYEE_ID)
-              WHERE LA.STATUS='AP' 
-              GROUP BY E.FULL_NAME,LA.EMPLOYEE_ID,LA.LEAVE_ID)
-              PIVOT ( SUM(TOTAL) FOR LEAVE_ID IN ($leaveData))";
-        
+
+    private function leaveIn($allLeave) {
+        $leaveCount = count($allLeave);
+
+        $leaveIn = "";
+        $i = 1;
+        foreach ($allLeave as $leave) {
+            $leaveIn .= $leave['LEAVE_ID'];
+            if ($i < $leaveCount) {
+                $leaveIn .= ',';
+            }
+            $i++;
+        }
+        return $leaveIn;
+    }
+
+    private function convertLeaveIdToName($allLeave, $leaveData, $name) {
+        $columnData = [];
+        foreach ($leaveData as $report) {
+            $tempData = [
+//                'EMPLOYEE_ID' => $report['EMPLOYEE_ID'],
+                'NAME' => $report[$name]
+            ];
+            foreach ($allLeave as $leave) {
+                $tempData[$leave['LEAVE_TRIM_ENAME']] = $report[$leave['LEAVE_ID']];
+            }
+            array_push($columnData, $tempData);
+        }
+//            print_r($columnData);
+//            die();
+        return $columnData;
+    }
+
+    public function filterLeaveReportEmployee($data) {
+
+        $allLeave = $this->fetchAllLeave();
+        $leaveIn = $this->leaveIn($allLeave);
+
+        $companyCondition = "";
+        $branchCondition = "";
+        $departmentCondition = "";
+        $designationCondition = "";
+        $positionCondition = "";
+        $serviceTypeCondition = "";
+        $serviceEventTypeConditon = "";
+        $employeeCondition = "";
+        $employeeTypeCondition = "";
+
+        $fromCondition = "";
+        $toCondition = "";
+
+        if (isset($data['companyId']) && $data['companyId'] != null && $data['companyId'] != -1) {
+            $companyCondition = "AND E.COMPANY_ID = {$data['companyId']}";
+        }
+        if (isset($data['branchId']) && $data['branchId'] != null && $data['branchId'] != -1) {
+            $branchCondition = "AND E.BRANCH_ID = {$data['branchId']}";
+        }
+        if (isset($data['departmentId']) && $data['departmentId'] != null && $data['departmentId'] != -1) {
+            $departmentCondition = "AND E.DEPARTMENT_ID = {$data['departmentId']}";
+        }
+        if (isset($data['designationId']) && $data['designationId'] != null && $data['designationId'] != -1) {
+            $designationCondition = "AND E.DESIGNATION_ID = {$data['designationId']}";
+        }
+        if (isset($data['positionId']) && $data['positionId'] != null && $data['positionId'] != -1) {
+            $positionCondition = "AND E.POSITION_ID = {$data['positionId']}";
+        }
+        if (isset($data['serviceTypeId']) && $data['serviceTypeId'] != null && $data['serviceTypeId'] != -1) {
+            $serviceTypeCondition = "AND E.SERVICE_TYPE_ID = {$data['serviceTypeId']}";
+        }
+        if (isset($data['serviceEventTypeId']) && $data['serviceEventTypeId'] != null && $data['serviceEventTypeId'] != -1) {
+            $serviceEventTypeConditon = "AND E.SERVICE_EVENT_TYPE_ID = {$data['serviceEventTypeId']}";
+        }
+        if (isset($data['employeeId']) && $data['employeeId'] != null && $data['employeeId'] != -1) {
+            $employeeCondition = "AND E.EMPLOYEE_ID = {$data['employeeId']}";
+        }
+        if (isset($data['employeeTypeId']) && $data['employeeTypeId'] != null && $data['employeeTypeId'] != -1) {
+            $employeeTypeCondition = "AND E.EMPLOYEE_TYPE = '{$data['employeeTypeId']}'";
+        }
+        $condition = $companyCondition . $branchCondition . $departmentCondition . $designationCondition . $positionCondition . $serviceTypeCondition . $serviceEventTypeConditon . $employeeCondition . $employeeTypeCondition;
+
+        if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
+            $fromDate = Helper::getExpressionDate($data['fromDate']);
+            $fromCondition = "AND AD.ATTENDANCE_DT >= {$fromDate->getExpression()}";
+        }
+        if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
+            $toDate = Helper::getExpressionDate($data['toDate']);
+            $toCondition = "AND AD.ATTENDANCE_DT <= {$toDate->getExpression()}";
+        }
+        $dateCondition = $fromCondition . $toCondition;
+        $sql = <<<EOT
+                
+                            SELECT
+                e.full_name,
+                leave.*
+            FROM
+                hris_employees e
+                LEFT JOIN (
+                    select * from (SELECT
+                        ad.employee_id,
+                        ad.leave_id,
+                        COUNT(ad.leave_id) AS leave_days
+                    FROM
+                        hris_attendance_detail ad
+                    WHERE
+                            ad.leave_id IS NOT NULL
+                            {$dateCondition}
+                    GROUP BY
+                        ad.employee_id,
+                        ad.leave_id)PIVOT ( SUM ( leave_days )
+                        FOR leave_id
+                        IN ( {$leaveIn})
+                    )
+                ) leave ON (
+                    e.employee_id = leave.employee_id
+                )
+            WHERE
+                1 = 1
+              {$condition}
+EOT;
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-//        return $result;
+        $extractedResult = Helper::extractDbData($result);
+        return $this->convertLeaveIdToName($allLeave, $extractedResult, 'FULL_NAME');
+    }
+
+    public function filterLeaveReportBranch($data) {
+
+        $allLeave = $this->fetchAllLeave();
+        $leaveIn = $this->leaveIn($allLeave);
+        $fromCondition = "";
+        $toCondition = "";
+
+
+        if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
+            $fromDate = Helper::getExpressionDate($data['fromDate']);
+            $fromCondition = "AND AD.ATTENDANCE_DT >= {$fromDate->getExpression()}";
+        }
+        if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
+            $toDate = Helper::getExpressionDate($data['toDate']);
+            $toCondition = "AND AD.ATTENDANCE_DT <= {$toDate->getExpression()}";
+        }
+        $dateCondition = $fromCondition . $toCondition;
+        $sql = <<<EOT
+                
+                SELECT BB.BRANCH_NAME,AA.* FROM (SELECT
+                          *
+                        FROM
+                          (
+                            SELECT
+                              AD.LEAVE_ID,
+                              B.BRANCH_ID,
+                              COUNT(AD.LEAVE_ID) AS LEAVE_DAYS
+                            FROM
+                              HRIS_ATTENDANCE_DETAIL AD
+                            JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+                            JOIN HRIS_BRANCHES B ON (B.BRANCH_ID=E.BRANCH_ID)
+                            WHERE
+                              AD.LEAVE_ID IS NOT NULL
+                            {$dateCondition}
+                               GROUP BY
+                              B.BRANCH_ID,
+                              AD.LEAVE_ID
+                          )
+                          PIVOT ( SUM ( LEAVE_DAYS )
+                                                FOR leave_id
+                                                IN ({$leaveIn}))) AA
+                                                RIGHT JOIN HRIS_BRANCHES BB ON (AA.BRANCH_ID=BB.BRANCH_ID AND BB.STATUS='E')
+    
+                
+                          
+EOT;
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        $extractedResult = Helper::extractDbData($result);
+        return $this->convertLeaveIdToName($allLeave, $extractedResult, 'BRANCH_NAME');
+    }
+
+    public function filterLeaveReportDepartmnet($data) {
+        $allLeave = $this->fetchAllLeave();
+        $leaveIn = $this->leaveIn($allLeave);
+        $fromCondition = "";
+        $toCondition = "";
+
+
+        if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
+            $fromDate = Helper::getExpressionDate($data['fromDate']);
+            $fromCondition = "AND AD.ATTENDANCE_DT >= {$fromDate->getExpression()}";
+        }
+        if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
+            $toDate = Helper::getExpressionDate($data['toDate']);
+            $toCondition = "AND AD.ATTENDANCE_DT <= {$toDate->getExpression()}";
+        }
+        $dateCondition = $fromCondition . $toCondition;
+        $sql = <<<EOT
+                                SELECT
+                  AA.*,BB.DEPARTMENT_NAME
+                FROM (SELECT
+                  *
+                FROM
+                  (
+                    SELECT
+                      AD.LEAVE_ID,
+                      D.DEPARTMENT_ID,
+                      COUNT(AD.LEAVE_ID) AS LEAVE_DAYS
+                    FROM
+                      HRIS_ATTENDANCE_DETAIL AD
+                    JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+                    JOIN HRIS_DEPARTMENTS D ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+                    WHERE
+                      AD.LEAVE_ID IS NOT NULL
+                        {$dateCondition}
+                       GROUP BY
+                      D.DEPARTMENT_ID,
+                      AD.LEAVE_ID
+                  )
+                  PIVOT ( SUM ( LEAVE_DAYS )
+                        FOR leave_id
+                        IN ({$leaveIn}))) AA
+                        RIGHT JOIN HRIS_DEPARTMENTS BB ON (AA.DEPARTMENT_ID=BB.DEPARTMENT_ID AND BB.STATUS='E')
+    
+                
+                          
+EOT;
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        $extractedResult = Helper::extractDbData($result);
+        return $this->convertLeaveIdToName($allLeave, $extractedResult, 'DEPARTMENT_NAME');
+    }
+
+    public function filterLeaveReportDesignation($data) {
+        $allLeave = $this->fetchAllLeave();
+        $leaveIn = $this->leaveIn($allLeave);
+        $fromCondition = "";
+        $toCondition = "";
+
+
+        if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
+            $fromDate = Helper::getExpressionDate($data['fromDate']);
+            $fromCondition = "AND AD.ATTENDANCE_DT >= {$fromDate->getExpression()}";
+        }
+        if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
+            $toDate = Helper::getExpressionDate($data['toDate']);
+            $toCondition = "AND AD.ATTENDANCE_DT <= {$toDate->getExpression()}";
+        }
+        $dateCondition = $fromCondition . $toCondition;
+        $sql = <<<EOT
+                
+                SELECT
+  AA.*,BB.DESIGNATION_TITLE
+FROM (SELECT
+  *
+FROM
+  (
+    SELECT
+      AD.LEAVE_ID,
+      D.DESIGNATION_ID,
+      COUNT(AD.LEAVE_ID) AS LEAVE_DAYS
+    FROM
+      HRIS_ATTENDANCE_DETAIL AD
+    JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+    JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=E.DESIGNATION_ID)
+    WHERE
+      AD.LEAVE_ID IS NOT NULL
+                {$dateCondition}
+       GROUP BY
+      D.DESIGNATION_ID,
+      AD.LEAVE_ID
+  )
+  PIVOT ( SUM ( LEAVE_DAYS )
+                        FOR leave_id
+                        IN ({$leaveIn}))) AA
+                        RIGHT JOIN HRIS_DESIGNATIONS BB ON (AA.DESIGNATION_ID=BB.DESIGNATION_ID AND BB.STATUS='E')
+    
+        
+        
+EOT;
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        $extractedResult = Helper::extractDbData($result);
+        return $this->convertLeaveIdToName($allLeave, $extractedResult, 'DESIGNATION_TITLE');
+    }
+
+    public function filterLeaveReportPosition($data) {
+        $allLeave = $this->fetchAllLeave();
+        $leaveIn = $this->leaveIn($allLeave);
+        $fromCondition = "";
+        $toCondition = "";
+
+
+        if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
+            $fromDate = Helper::getExpressionDate($data['fromDate']);
+            $fromCondition = "AND AD.ATTENDANCE_DT >= {$fromDate->getExpression()}";
+        }
+        if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
+            $toDate = Helper::getExpressionDate($data['toDate']);
+            $toCondition = "AND AD.ATTENDANCE_DT <= {$toDate->getExpression()}";
+        }
+        $dateCondition = $fromCondition . $toCondition;
+        $sql = <<<EOT
+                
+                SELECT
+  AA.*,BB.POSITION_NAME
+FROM (SELECT
+  *
+FROM
+  (
+    SELECT
+      AD.LEAVE_ID,
+      P.POSITION_ID,
+      COUNT(AD.LEAVE_ID) AS LEAVE_DAYS
+    FROM
+      HRIS_ATTENDANCE_DETAIL AD
+    JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+    JOIN HRIS_POSITIONS P ON (P.POSITION_ID=E.POSITION_ID)
+    WHERE
+      AD.LEAVE_ID IS NOT NULL
+        {$dateCondition}
+       GROUP BY
+      P.POSITION_ID,
+      AD.LEAVE_ID
+  )
+  PIVOT ( SUM ( LEAVE_DAYS )
+                        FOR leave_id
+                        IN ({$leaveIn}))) AA
+                        RIGHT JOIN HRIS_POSITIONS BB ON (AA.POSITION_ID=BB.POSITION_ID AND BB.STATUS='E')
+        
+        
+EOT;
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        $extractedResult = Helper::extractDbData($result);
+        return $this->convertLeaveIdToName($allLeave, $extractedResult, 'POSITION_NAME');
+    }
+
+    public function FetchNepaliMonth() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Months::class, NULL, [Months::FROM_DATE, Months::TO_DATE], NULL, NULL, NULL, 'M', true), false);
+        $select->from(['M' => Months::TABLE_NAME])
+                ->join(['FY' => FiscalYear::TABLE_NAME], 'FY.' . FiscalYear::FISCAL_YEAR_ID . '=M.' . Months::FISCAL_YEAR_ID, ["MONTH_NAME" => new Expression('CONCAT(FY.FISCAL_YEAR_NAME,M.MONTH_EDESC)')], "left");
+        $select->where(["M.STATUS='E'", "FY.STATUS='E'"]);
+        $select->order("M." . Months::FROM_DATE);
+        $statement = $sql->prepareStatementForSqlObject($select);
+
+        $result = $statement->execute();
         return Helper::extractDbData($result);
     }
 

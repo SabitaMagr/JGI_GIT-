@@ -9,6 +9,7 @@ use Exception;
 use Report\Repository\ReportRepository;
 use Setup\Model\Department;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class AllReportController extends AbstractActionController {
@@ -22,8 +23,7 @@ class AllReportController extends AbstractActionController {
     }
 
     public function indexAction() {
-//        echo 'this is index action controller';
-//        die();
+        
     }
 
     public function departmentAllAction() {
@@ -201,63 +201,72 @@ class AllReportController extends AbstractActionController {
     }
 
     public function leaveReportAction() {
+
+        $customFormElement = new Select();
+        $customFormElement->setName("status");
+        $custom = array(
+            "EMP" => "Employee Wise",
+            "BRA" => "Branch Wise",
+            "DEP" => "Department Wise",
+            "DES" => "Designation Wise",
+            "POS" => "Position Wise",
+        );
+        $customFormElement->setValueOptions($custom);
+        $customFormElement->setAttributes(["id" => "customWise", "class" => "form-control"]);
+        $customFormElement->setLabel("Custom");
+
+        $allLeave = $this->reportRepo->fetchAllLeave();
         return Helper::addFlashMessagesToArray($this, [
+                    'customWise' => $customFormElement,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'allLeave' => $allLeave
         ]);
     }
 
     public function HireAndFireReportAction() {
+        $nepaliMonth=$this->reportRepo->FetchNepaliMonth();
         return Helper::addFlashMessagesToArray($this, [
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'nepaliMonth'=>$nepaliMonth
         ]);
     }
 
     public function getLeaveReportWSAction() {
         try {
             $request = $this->getRequest();
-            if ($request->isPost()) {
-                $postedData = $request->getPost();
-                $allLeave = $this->reportRepo->fetchAllLeave();
-                $leaveCount = count($allLeave);
-                if ($leaveCount <= 0) {
-                    throw new Exception('NO Leave found');
-                }
-//                $columHeader = [];
-                $leaveData = '';
-                $i = 1;
-                foreach ($allLeave as $leave) {
-//                    array_push($columHeader, $leave['LEAVE_ENAME']);
-//                    $columHeader[$leave['LEAVE_ID']]=$leave['LEAVE_ENAME'];
-                    $leaveData .= $leave['LEAVE_ID'];
-                    if ($i < $leaveCount) {
-                        $leaveData .= ',';
-                    }
-                    $i++;
-                }
-                $leavereport = $this->reportRepo->filterLeaveReport($postedData, $leaveData);
-//                $columnData = $leavereport;
-                $columnData = [];
-                foreach ($leavereport as $report) {
-                    $tempData = [
-                        'EMPLOYEE_ID' => $report['EMPLOYEE_ID'],
-                        'FULL_NAME' => $report['FULL_NAME']
-                    ];
-                    foreach ($allLeave as $leave) {
-                        $tempData[$leave['LEAVE_TRIM_ENAME']] = $report[$leave['LEAVE_ID']];
-                    }
-                    array_push($columnData, $tempData);
-                }
-                $returnData = [
-                    'columns' => $allLeave,
-                    'data' => $columnData
-                ];
-                return new CustomViewModel(['success' => true, 'data' => $returnData, 'error' => '']);
-            } else {
-                throw new Exception("The request should be of type post");
+            if (!$request->isPost()) {
+                throw new Exception("must be a post request.");
             }
+            $data = $request->getPost();
+
+            $customWise = $data['customWise'];
+
+
+            switch ($customWise) {
+                case 'EMP':
+                    $reportData = $this->reportRepo->filterLeaveReportEmployee($data);
+                    break;
+                case 'BRA':
+                    $reportData = $this->reportRepo->filterLeaveReportBranch($data);
+                    break;
+                case 'DEP':
+                    $reportData = $this->reportRepo->filterLeaveReportDepartmnet($data);
+                    break;
+                case 'DES':
+                    $reportData = $this->reportRepo->filterLeaveReportDesignation($data);
+                    break;
+                case 'POS':
+                    $reportData = $this->reportRepo->filterLeaveReportPosition($data);
+                    break;
+            }
+            
+            return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
+    }
+    
+    public function getHireFireReport(){
+        
     }
 
 }

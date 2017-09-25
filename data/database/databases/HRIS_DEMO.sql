@@ -21,3 +21,79 @@ MODIFY PASSWORD VARCHAR2(64);
 
 ALTER TABLE HRIS_USERS
 ADD IS_LOCKED CHAR(1 BYTE) DEFAULT ('N') NOT NULL CHECK(IS_LOCKED IN ('Y','N'));
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+  NULL,
+    (select max(menu_id+1) from HRIS_MENUS),
+    'Leave Report',
+    148,
+    NULL,
+    'allreport',
+    'E',
+      TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'leaveReport',
+    6,
+    NULL,
+    NULL,
+    'Y'
+    );
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+  NULL,
+    (select max(menu_id+1) from HRIS_MENUS),
+    'Hire&Exit Report',
+    148,
+    NULL,
+    'allreport',
+    'E',
+      TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'HireAndFireReport',
+    7,
+    NULL,
+    NULL,
+    'Y'
+    );
