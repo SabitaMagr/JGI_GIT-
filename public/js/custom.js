@@ -921,6 +921,47 @@ window.app = (function ($, toastr, App) {
         });
 
     };
+    var excelExport = function ($table, col, fileName) {
+        var header = [];
+        var cellWidths = [];
+        $.each(col, function (key, value) {
+            header.push({value: value});
+            cellWidths.push({autoWidth: true});
+        });
+        var rows = [{
+                cells: header
+            }];
+
+        var dataSource = $table.data("kendoGrid").dataSource;
+        var filteredDataSource = new kendo.data.DataSource({
+            data: dataSource.data(),
+            filter: dataSource.filter()
+        });
+
+        filteredDataSource.read();
+        var data = filteredDataSource.view();
+
+        for (var i = 0; i < data.length; i++) {
+            var dataItem = data[i];
+            var row = [];
+            $.each(col, function (key, value) {
+                row.push({value: dataItem[key]});
+            });
+            rows.push({
+                cells: row
+            });
+        }
+        var workbook = new kendo.ooxml.Workbook({
+            sheets: [
+                {
+                    columns: cellWidths,
+                    title: fileName,
+                    rows: rows
+                }
+            ]
+        });
+        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "Subordinate List.xlsx"});
+    };
 
     (function () {
         $('.hris-export-to-excel').on("click", function () {
@@ -1145,6 +1186,7 @@ window.app = (function ($, toastr, App) {
         daysBetween: daysBetween,
         searchTable: searchTable,
         pdfExport: pdfExport,
+        excelExport: excelExport,
         populateSelect: populateSelect,
         floatToRound: floatToRound,
         lockField: lockField,
