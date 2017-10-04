@@ -166,6 +166,16 @@ return [
                     ]
                 ],
             ],
+            'employeeManager' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/employeeManager[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => Controller\EmployeeManagerController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -541,6 +551,23 @@ return [
                 ]
             ]
         ],
+        'employeeManager' => [
+            [
+                'label' => 'Employee Manager',
+                'route' => 'employeeManager',
+            ],
+            [
+                'label' => 'Employee Manager',
+                'route' => 'employeeManager',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'employeeManager',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -557,7 +584,8 @@ return [
             Controller\AppraisalEvaluation::class => ControllerFactory::class,
             Controller\AppraisalReview::class => ControllerFactory::class,
             Controller\AppraisalFinalReview::class => ControllerFactory::class,
-            Controller\ManagerReportController::class => ControllerFactory::class
+            Controller\ManagerReportController::class => ControllerFactory::class,
+            Controller\EmployeeManagerController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

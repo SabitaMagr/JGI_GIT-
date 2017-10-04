@@ -272,10 +272,7 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
-  
-
-  
-  
+ 
 INSERT INTO HRIS_ROLE_PERMISSIONS
   (MENU_ID,ROLE_ID,STATUS
   )
@@ -525,3 +522,42 @@ SELECT *
 FROM
   (SELECT * FROM HRIS_PREFERENCES
   ) PIVOT ( MAX(VALUE) FOR KEY IN (10,20,30,40) );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+  NULL,
+    (SELECT MAX(MENU_ID+1) FROM HRIS_MENUS),
+    'EMPLOYEE',
+    5,
+    NULL,
+    'employeeManager',
+    'E',
+      TRUNC(SYSDATE),
+    NULL,
+    'fa fa-pencil',
+    'index',
+    20,
+    NULL,
+    NULL,
+    'Y'
+    );
