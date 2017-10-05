@@ -78,6 +78,9 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->createdDt = Helper::getcurrentExpressionDate();
                 $jobHistory->createdBy = $this->employeeId;
                 $jobHistory->status = 'E';
+                $jobHistory->retiredFlag = $jobHistory->retiredFlag ? 'Y' : 'N';
+                $jobHistory->disabledFlag = $jobHistory->disabledFlag ? 'Y' : 'N';
+                $jobHistory->eventDate = Helper::getExpressionDate($jobHistory->eventDate);
 
                 $this->repository->add($jobHistory);
 
@@ -116,6 +119,9 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->endDate = Helper::getExpressionDate($jobHistory->endDate);
                 $jobHistory->modifiedDt = Helper::getcurrentExpressionDate();
                 $jobHistory->modifiedBy = $this->employeeId;
+                $jobHistory->retiredFlag = $jobHistory->retiredFlag ? 'Y' : 'N';
+                $jobHistory->disabledFlag = $jobHistory->disabledFlag ? 'Y' : 'N';
+                $jobHistory->eventDate = Helper::getExpressionDate($jobHistory->eventDate);
 
                 $this->repository->edit($jobHistory, $id);
                 $this->flashmessenger()->addMessage("Job History Successfully Updated!!!");
@@ -129,7 +135,6 @@ class JobHistoryController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
                     'form' => $this->form,
-//                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ", false, true),
                     'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], null, "FIRST_NAME", "ASC", " ", false, true),
                     'departments' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true, true),
                     'designations' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true, true),
@@ -138,6 +143,8 @@ class JobHistoryController extends AbstractActionController {
                     'positions' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
                     'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
                     'serviceEventTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
+                    'retiredFlagValue' => $jobHistoryDetail['RETIRED_FLAG'],
+                    'disabledFlagValue' => $jobHistoryDetail['DISABLED_FLAG'],
                         ]
         );
     }
@@ -272,7 +279,7 @@ class JobHistoryController extends AbstractActionController {
             $serviceEventTypeId = $data['serviceEventTypeId'];
             $employeeTypeId = $data['employeeTypeId'];
 
-            $result = $this->repository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$employeeTypeId);
+            $result = $this->repository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $employeeTypeId);
 
             $jobHistoryRecord = Helper::extractDbData($result);
 

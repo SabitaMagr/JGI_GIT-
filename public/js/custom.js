@@ -921,6 +921,64 @@ window.app = (function ($, toastr, App) {
         });
 
     };
+    var exportToPDF = function ($table, col, fileName, pageSize, fn) {
+        var colWidths = [];
+        var head = [];
+        $.each(col, function (key, value) {
+            colWidths.push('auto');
+            head.push(value);
+        });
+
+        var data = [];
+        if (Array.isArray($table)) {
+            data = $table;
+        } else {
+            var dataSource = $table.data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+        }
+
+        var body = [];
+        body.push(head);
+        for (var i = 0; i < data.length; i++) {
+            var row = [];
+            $.each(col, function (key, value) {
+                if (typeof (data[i][key]) == 'undefined' || data[i][key] == null) {
+                    row.push('-');
+                } else {
+                    if (typeof fn !== 'undefined') {
+                        row.push(fn(data[i][key], key));
+                    } else {
+                        row.push(data[i][key]);
+                    }
+                }
+            });
+            body.push(row);
+        }
+
+
+
+        var docDefinition = {
+            pageSize: typeof pageSize === "undefined" ? "A3" : pageSize,
+            pageOrientation: 'landscape',
+            content: [
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: colWidths,
+                        body: body
+                    }
+                }
+            ]
+        };
+
+        pdfMake.createPdf(docDefinition).download(fileName);
+    };
+
     var excelExport = function ($table, col, fileName) {
         var header = [];
         var cellWidths = [];
@@ -932,14 +990,18 @@ window.app = (function ($, toastr, App) {
                 cells: header
             }];
 
-        var dataSource = $table.data("kendoGrid").dataSource;
-        var filteredDataSource = new kendo.data.DataSource({
-            data: dataSource.data(),
-            filter: dataSource.filter()
-        });
-
-        filteredDataSource.read();
-        var data = filteredDataSource.view();
+        var data = [];
+        if (Array.isArray($table)) {
+            data = $table;
+        } else {
+            var dataSource = $table.data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+        }
 
         for (var i = 0; i < data.length; i++) {
             var dataItem = data[i];
@@ -1186,6 +1248,7 @@ window.app = (function ($, toastr, App) {
         daysBetween: daysBetween,
         searchTable: searchTable,
         pdfExport: pdfExport,
+        exportToPDF: exportToPDF,
         excelExport: excelExport,
         populateSelect: populateSelect,
         floatToRound: floatToRound,

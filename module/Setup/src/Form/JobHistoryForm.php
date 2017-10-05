@@ -108,6 +108,31 @@ class JobHistoryForm {
     public $toSalary;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Checkbox")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Is Retired"})
+     * @Annotation\Attributes({ "id":"isRetired"})
+     */
+    public $retiredFlag;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Checkbox")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Is Disabled"})
+     * @Annotation\Attributes({ "id":"isDisabled"})
+     */
+    public $disabledFlag;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Event Date"})
+     * @Annotation\Attributes({ "class":"form-control","id":"eventDate"})
+     */
+    public $eventDate;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
