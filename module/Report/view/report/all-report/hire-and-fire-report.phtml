@@ -13,7 +13,7 @@ $this->headScript()
         ->appendFile($this->basePath('js/Report/AllReport/hireReport.js'));
 ?>
 <script>
-    document.ids =<?php echo json_encode(["fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
+    document.ids =<?php echo json_encode(["monthsNepali" => ""]) ?>;
     document.getHireFireReportWS = '<?= $this->url("allreport", ["action" => "getHireFireReport"]) ?>';
 </script>
 
@@ -27,49 +27,28 @@ $this->headScript()
 
     <div class="row margin-top-30">
         <div class="col-sm-4" >
-            
-        <lable>months</lable>
-        <select name="months" multiple id="monthsNepali">
-            <?php
-            foreach($nepaliMonth as $data){?>
-            <option  value="<?php echo $data['FROM_DATE'].','.$data['TO_DATE'] ?>"><?=$data['MONTH_NAME']?></option>
-           <?php }
-            ?>
-        </select>
+
+            <lable>Months</lable>
+            <select name="months" multiple id="monthsNepali">
+                <?php foreach ($nepaliMonth as $data) { ?>
+                    <option data-fromDate='<?=$data['FROM_DATE'];?>' data-toDate='<?=$data['TO_DATE'];?>'  value="<?php echo $data['FROM_DATE'] . ',' . $data['TO_DATE'] ?>"><?= $data['MONTH_NAME'] ?></option>
+                <?php }
+                ?>
+            </select>
         </div>
 
     </div>
-    
+
     <div class="row">
         <div class="col-sm-6">
-        <table id="dateList" class="table">
-            
-        </table>
+            <table id="dateList" class="table table-bordered">
+
+            </table>
         </div>
     </div>
 
     <div class="row margin-top-10">
-        <div class="col-sm-2">
-            <div class="form-group">
-                <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <input type="text" id="nepaliFromDate" name="nepaliFromDate" class="form-control" placeholder="From Date Nepali"/>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <input type="text" id="toDate" name="toDate"  class="form-control" placeholder="To Date"/>
-            </div>
-        </div>
-        <div class="col-sm-2">
-            <div class="form-group">
-                <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
-            </div>
-        </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4 col-sm-offset-8">
             <button id="reset" class="btn default btn-sm pull-right">
                 Reset
                 <i class="fa fa-refresh"></i>
@@ -82,3 +61,69 @@ $this->headScript()
     </div>
 
 </div>
+
+
+<div class ="infomation-data">
+    
+<!--    <div class="databox"> 
+        <div class="month"><h3>Shrawan</h3></div>
+        <h4 class="title">Hire - 2 </h4>  
+        <div class="infobox">        
+            <label class="name fontbold">
+                Name 
+            </label>            
+            <label class="date fontbold">
+                Join Date
+            </label>           
+        </div>
+
+        <div class="infodata">
+            <label class="name">
+                Prabin Maharjan
+            </label>
+
+            <label class="date">
+                2017/12/05
+            </label>
+        </div>
+
+        <div class="infodata">
+
+            <label class="name">
+                Prabin Maharjan
+            </label>
+
+            <label class="date">
+                2017/12/05
+            </label>
+
+        </div>
+
+        <h4 class="title">Exit- 2 </h4>
+        <div class="infobox">
+
+            <label class="name fontbold">
+                Name 
+            </label>
+
+            <label class="date fontbold">
+                Join Date
+            </label>
+
+        </div>
+        <div class="infodata">
+            <label class="name">
+                Prabin Maharjan
+            </label>
+
+            <label class="date">
+                2017/12/05
+            </label>
+        </div>
+    </div>-->
+    
+</div>
+
+
+
+

@@ -2,9 +2,6 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        var $fromDate = $('#fromDate');
-        var $toDate = $('#toDate');
-        var $leaveReportTable = $('#leaveReportTable');
         var $search = $('#search');
 
         var $dateList = $('#dateList');
@@ -13,22 +10,37 @@
 
         var $monthsNepali = $('#monthsNepali');
 
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
 
 
         $search.on('click', function () {
-            console.log(selectedDates);
-            
-            app.pullDataById(document.getHireFireReportWS, data).then(function (response) {
+//            console.log(selectedDates);
+//            console.log(JSON.stringify(selectedDates));
+            app.pullDataById(document.getHireFireReportWS, {'data': JSON.stringify(selectedDates)}).then(function (response) {
                 if (response.success) {
-                    app.renderKendoGrid($leaveReportTable, response.data);
+                    $(".infomation-data").html('');
+//                    console.log(response.data);
+                    $.each(response.data, function (index, value) {
+                        var employeeData = hiredEmployees(value.DATA);
+                        var appendData = '<div class="databox">'
+                                + '<div class="month"><h3>' + value.NAME + '</h3><div>'
+                                + '<h4 class="title">Hire - ' + value.TOTAL + '</h4>'
+                                + '<div class="infobox">'
+                                + '<label class="name fontbold">Name</label>'
+                                + '<label class="date fontbold">Join Date</label>'
+                                + '</div>'+
+                                employeeData
+                                + '</div>';
+                        $(".infomation-data").append(appendData);
+//              console.log(value);
+                    });
+
                 } else {
-                    app.showMessage(response.error, 'error');
+                    console.log(response.error);
                 }
             }, function (error) {
-                app.showMessage(error, 'error');
+                console.log(error);
             });
-            
+
         });
 
         $monthsNepali.on('change', function () {
@@ -38,13 +50,13 @@
                 var $this = $(this);
                 if ($this.length) {
                     var selText = $this.text();
-                    var selVal = $this.val();
-                    var splitSeltedValue = selVal.split(',');
-                    var tempArr = [];
+                    var tempFromDate=$this.attr('data-fromDate');
+                    var tempToDate=$this.attr('data-toDate');
+                    var tempArr = {};
                     tempArr['name'] = selText;
-                    tempArr['fromDate'] = splitSeltedValue[0];
-                    tempArr['toDate'] = splitSeltedValue[1];
-                    tempSelectedDate.push(tempArr);
+                    tempArr['fromDate'] = tempFromDate;
+                    tempArr['toDate'] = tempToDate;
+                    tempSelectedDate.unshift(tempArr);
                 }
             });
             $dateList.empty();
@@ -55,7 +67,7 @@
             }
 
             $.each(tempSelectedDate, function (index, value) {
-                $dateList.append("<tr><th>"+value.name+"</th><th>"+value.fromDate+"</th><th>"+value.toDate+"</th><tr>");
+                $dateList.append("<tr><th>" + value.name + "</th><th>" + value.fromDate + "</th><th>" + value.toDate + "</th><tr>");
             });
 
 
@@ -70,6 +82,22 @@
                 });
             }
         });
+
+        function hiredEmployees(data) {
+            var tempHtml = '';
+            $.each(data, function (index, value) {
+//                console.log(value);
+                tempHtml += '<div class="infodata">'
+                        + '<label class="name">'
+                        + value.FULL_NAME
+                        + '</label>'
+                        + ' <label class="date">'
+                        +  value.JOIN_DATE
+                        + '</label>'
+                        + '</div>';
+            });
+            return tempHtml;
+        }
 
 
     });

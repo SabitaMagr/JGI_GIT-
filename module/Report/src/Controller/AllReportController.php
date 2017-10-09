@@ -224,9 +224,9 @@ class AllReportController extends AbstractActionController {
     }
 
     public function HireAndFireReportAction() {
-        $nepaliMonth=$this->reportRepo->FetchNepaliMonth();
+        $nepaliMonth = $this->reportRepo->FetchNepaliMonth();
         return Helper::addFlashMessagesToArray($this, [
-            'nepaliMonth'=>$nepaliMonth
+                    'nepaliMonth' => $nepaliMonth
         ]);
     }
 
@@ -258,15 +258,23 @@ class AllReportController extends AbstractActionController {
                     $reportData = $this->reportRepo->filterLeaveReportPosition($data);
                     break;
             }
-            
+
             return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
-    public function getHireFireReport(){
-        
+
+    public function getHireFireReportAction() {
+        try {
+            $request = $this->getRequest();
+            $Postdata = $request->getPost();
+            $data = json_decode($Postdata['data']);
+            $HireReport = $this->reportRepo->CalculateHireEmployees($data);
+            return new CustomViewModel(['success' => true, 'data' => $HireReport, 'error' => '']);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

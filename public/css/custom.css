@@ -1828,6 +1828,197 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
 
 }
 
+
+
+
+
+
+.portlet.portlet-fullscreen{
+    z-index: 1000 !important;
+}
+
+
+.div-3-name{
+    width: 40%;
+    float:left;
+}
+
+.div-3-designation{
+    width: 35%;
+    float:left;
+}
+
+.div-3-department{
+    width: 25%;
+    float:left;
+}
+
+.serviceQuestionList{
+    margin-bottom: 3%;
+}
+
+.serviceQuestionList1{
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+div#ndp-nepali-box{
+    z-index: 99999 !important ;
+}
+
+.lobilists .lobilist-placeholder, .lobilists .lobilist-wrapper{
+    width: 100%;
+    margin-right: 0px;
+}
+
+.col-md-6.nopaddinggap{
+    padding-right:0px !important;  
+
+}
+.minpaddingleft
+{
+    padding-left:2px;
+}
+#green{
+    color:green !important;
+}
+#red{
+    color:red !important;
+}
+
+.datepicker{
+    z-index: 1001 !important;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+#tabContent h7{
+    font-weight: 600;
+    font-size:11px !important;
+}
+#assignBtnWrap{
+    position: absolute;
+    bottom: 0;
+    right: 7%;
+}
+.position-relative{
+    position: relative;
+}
+
+.portlet-body-birhday{
+    background-image: url("../img/birthday_background_2.jpg");
+}
+
+
+.infomation-data {
+        white-space: nowrap;
+        border: 1px solid #ddd;
+        width:100%;
+        overflow-x: auto;
+        padding:10px;
+    }
+    .databox {
+        box-shadow: 2px 2px 2px 1px #eee;
+        border:solid #ddd 1px;
+        width:30%;
+        min-height:185px;
+         
+        margin-right:10px;
+        padding:10px;
+        /* for IE6/7, remove if you don't need to support those browsers */
+        *display: inline;
+        zoom: 1;
+            display:inline-grid;
+    }
+    .databox:last-child
+    {
+        margin-right:0px;
+    }
+
+    .databox span {
+        padding: 5px 0px 5px 0px;
+    }
+    .infobox span
+    {
+
+        display: inline-block;
+
+        font-weight:600;
+
+
+    }  
+    .infodata span
+    {
+
+        display: inline-block;
+
+
+
+    }
+    .name
+    {
+        width:65%;  
+    }
+
+
+    h4.title
+    {
+        margin-top:5px;
+        color:#2F9E1E;
+        font-weight:400;
+        background-color: #eee;
+        padding: 5px;
+        font-size:16px;
+    }
+    .databox h4:before{
+        content: "\f007";
+        font-family:fontawesome;
+        color:#2F9E1E;
+        padding-right:5px;
+    }
+
+
+    .changes
+    {
+     display:inline-block;
+    width: 5%;
+    margin-right: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align:center;
+    vertical-align:top;
+        margin-top:7%;
+    }
+    .changes:before
+    {
+        content: "\f178";
+        font-family:fontawesome;
+        font-size: 20px;
+        
+       
+    }
+    .fontbold
+    {
+        font-weight:600;
+    }
+    .hire-change{
+        padding-bottom: 5px;
+    }
+
+.month h3
+{
+margin-top: 0;
+font-size: 17px;
+font-weight: 400;
+}
+
+
+
+
+
+
+
+
 /*Large desktops and laptops*/
 
 @media (min-width: 1200px) {
@@ -1863,6 +2054,14 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
         /*max-width: 20%;*/
         border:solid #ddd 2px;
     }
+        .databox
+    {
+        width:40%;
+    }
+    .changes{
+        width:15%;
+    }
+    
 
 }
 
@@ -1890,6 +2089,14 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
         float:none !important;
 
     }
+        .databox
+    {
+        width:40%;
+    }
+    .changes{
+        width:15%;
+    }
+    
 
 }
 
@@ -1956,6 +2163,13 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     .page-header.navbar .top-menu
     {
         margin-top:25px;
+    }
+      .databox
+    {
+        width:60%;
+    }
+    .changes{
+        width:25%;
     }
 }
 
@@ -2051,81 +2265,11 @@ textarea#form-remarks,#remarks,.form-reason,#purposeTA  {
     {
         padding-left:0px;
     }
-}
-
-
-.portlet.portlet-fullscreen{
-    z-index: 1000 !important;
-}
-
-
-.div-3-name{
-    width: 40%;
-    float:left;
-}
-
-.div-3-designation{
-    width: 35%;
-    float:left;
-}
-
-.div-3-department{
-    width: 25%;
-    float:left;
-}
-
-.serviceQuestionList{
-    margin-bottom: 3%;
-}
-
-.serviceQuestionList1{
-    margin-top: 1%;
-    margin-bottom: 1%;
-}
-div#ndp-nepali-box{
-    z-index: 99999 !important ;
-}
-
-.lobilists .lobilist-placeholder, .lobilists .lobilist-wrapper{
-    width: 100%;
-    margin-right: 0px;
-}
-
-.col-md-6.nopaddinggap{
-    padding-right:0px !important;  
-
-}
-.minpaddingleft
-{
-    padding-left:2px;
-}
-#green{
-    color:green !important;
-}
-#red{
-    color:red !important;
-}
-
-.datepicker{
-    z-index: 1001 !important;
-}
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-    display: none !important;
-}
-
-#tabContent h7{
-    font-weight: 600;
-    font-size:11px !important;
-}
-#assignBtnWrap{
-    position: absolute;
-    bottom: 0;
-    right: 7%;
-}
-.position-relative{
-    position: relative;
-}
-
-.portlet-body-birhday{
-    background-image: url("../img/birthday_background_2.jpg");
+    .databox
+    {
+        width:100%;
+    }
+    .changes{
+        width:25%;
+    }
 }

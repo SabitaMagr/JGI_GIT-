@@ -882,12 +882,41 @@ EOT;
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Months::class, NULL, [Months::FROM_DATE, Months::TO_DATE], NULL, NULL, NULL, 'M', true), false);
         $select->from(['M' => Months::TABLE_NAME])
                 ->join(['FY' => FiscalYear::TABLE_NAME], 'FY.' . FiscalYear::FISCAL_YEAR_ID . '=M.' . Months::FISCAL_YEAR_ID, ["MONTH_NAME" => new Expression('CONCAT(FY.FISCAL_YEAR_NAME,M.MONTH_EDESC)')], "left");
-        $select->where(["M.STATUS='E'", "FY.STATUS='E'"]);
-        $select->order("M." . Months::FROM_DATE);
+        $select->where(["M.STATUS='E'", "FY.STATUS='E'","TRUNC(SYSDATE)>M.FROM_DATE"]);
+        $select->order("M." . Months::FROM_DATE." DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
 
         $result = $statement->execute();
         return Helper::extractDbData($result);
+    }
+
+    private function totalHiredEmployees($fromDate, $toDate) {
+        $sql = "select count(*)as TOTAL from hris_employees 
+            where JOIN_DATE BETWEEN " . $fromDate->getExpression() . " and " . $toDate->getExpression() . " and status='E'";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
+    public function CalculateHireEmployees($data) {
+        $returnArr = [];
+        foreach ($data as $details) {
+            $name = $details->name;
+            $tempData = [
+                'NAME' => $name
+            ];
+            $fromDate = Helper::getExpressionDate($details->fromDate);
+            $toDate = Helper::getExpressionDate($details->toDate);
+            $total = $this->totalHiredEmployees($fromDate, $toDate);
+            $tempData['TOTAL'] = $total['TOTAL'];
+            $sql = "select full_name,JOIN_DATE from hris_employees 
+            where JOIN_DATE BETWEEN " . $fromDate->getExpression() . " and " . $toDate->getExpression() . " and status='E'";
+            $statement = $this->adapter->query($sql);
+            $result = $statement->execute();
+            $tempData['DATA'] = Helper::extractDbData($result);
+            array_push($returnArr, $tempData);
+        }
+        return $returnArr;
     }
 
 }
