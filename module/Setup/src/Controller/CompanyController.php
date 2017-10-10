@@ -10,7 +10,6 @@ use Setup\Model\Company;
 use Setup\Model\EmployeeFile as EmployeeFile2;
 use Setup\Repository\CompanyRepository;
 use Setup\Repository\EmployeeFile;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -29,7 +28,7 @@ class CompanyController extends AbstractActionController {
         $this->adapter = $adapter;
         $this->repository = new CompanyRepository($adapter);
         $this->storageData = $storage->read();
-        $this->employeeId = $storage['employee_id'];
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {

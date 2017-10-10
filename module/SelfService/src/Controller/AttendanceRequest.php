@@ -11,7 +11,7 @@ use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
@@ -23,17 +23,15 @@ class AttendanceRequest extends AbstractActionController {
     private $repository;
     private $form;
     private $employeeId;
-    private $authService;
     private $recommender;
     private $approver;
+    private $storageData;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter,StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new AttendanceRequestRepository($adapter);
-
-        $this->authService = new AuthenticationService();
-        $detail = $this->authService->getIdentity();
-        $this->employeeId = $detail['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
