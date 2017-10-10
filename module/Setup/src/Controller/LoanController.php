@@ -13,6 +13,7 @@ use Setup\Model\ServiceType;
 use Setup\Repository\LoanRepository;
 use Setup\Repository\LoanRestrictionRepository;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
@@ -24,13 +25,15 @@ class LoanController extends AbstractActionController{
     private $repository;
     private $employeeId;
     private $loanRestrictionRepo;
+    private $storageData;
         
-    public function __construct(AdapterInterface $adapter){
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage){
         $this->adapter = $adapter;
         $this->repository = new LoanRepository($adapter);
         $this->loanRestrictionRepo = new LoanRestrictionRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData= $storage->read();
+        $this->employeeId=$storage['employee_id'];
+        
     }
     public function initializeForm(){
         $builder = new AnnotationBuilder();

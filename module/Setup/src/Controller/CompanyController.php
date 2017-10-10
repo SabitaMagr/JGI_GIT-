@@ -11,6 +11,7 @@ use Setup\Model\EmployeeFile as EmployeeFile2;
 use Setup\Repository\CompanyRepository;
 use Setup\Repository\EmployeeFile;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -22,12 +23,13 @@ class CompanyController extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
 
-    function __construct(AdapterInterface $adapter) {
+    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new CompanyRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $storage['employee_id'];
     }
 
     public function initializeForm() {
