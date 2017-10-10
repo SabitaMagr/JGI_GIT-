@@ -9,6 +9,7 @@ use Setup\Model\Company;
 use Setup\Model\Position;
 use Setup\Repository\PositionRepository;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -20,12 +21,14 @@ class PositionController extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new PositionRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData=$storage->read();
+        $this->employeeId=$storage['employee_id'];
+        
     }
 
     public function initializeForm() {

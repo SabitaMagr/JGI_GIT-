@@ -9,6 +9,7 @@ use Setup\Model\Company;
 use Setup\Model\Designation;
 use Setup\Repository\DesignationRepository;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -20,12 +21,14 @@ class DesignationController extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
 
-    function __construct(AdapterInterface $adapter) {
+    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new DesignationRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData= $storage->read();
+        $this->employeeId=$storage['employee_id'];
+        
     }
 
     public function initializeForm() {
