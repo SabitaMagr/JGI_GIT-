@@ -8,6 +8,7 @@ use Setup\Form\ServiceTypeForm;
 use Setup\Model\ServiceType;
 use Setup\Repository\ServiceTypeRepository;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -18,12 +19,14 @@ class ServiceTypeController extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
 
-    function __construct(AdapterInterface $adapter) {
+    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new ServiceTypeRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData= $storage->read();
+        $this->employeeId=$storage['employee_id'];
+        
     }
 
     private function initializeForm() {

@@ -10,6 +10,7 @@ use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Repository\BranchRepository;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -21,13 +22,13 @@ class BranchController extends AbstractActionController {
     private $repository;
     private $adapter;
     private $employeeId;
+    private $storageData;
 
-    function __construct(AdapterInterface $adapter) {
+    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new BranchRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
+        $this->storageData = $storage->read();
+        $this->employeeId = $storage['employee_id'];    }
 
     public function initializeForm() {
         $branchForm = new BranchForm();
