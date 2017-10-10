@@ -53,7 +53,7 @@ class CompanyController extends AbstractActionController {
                 return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return Helper::addFlashMessagesToArray($this, []);
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function addAction() {
