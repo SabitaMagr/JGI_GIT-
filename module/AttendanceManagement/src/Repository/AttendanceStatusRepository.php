@@ -41,16 +41,15 @@ class AttendanceStatusRepository implements RepositoryInterface {
     public function getAllRequest($status = null, $branchId = null, $employeeId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceRequestModel::class,
-	 NULL, [
-            AttendanceRequestModel::REQUESTED_DT,
-            AttendanceRequestModel::APPROVED_DT,
-            AttendanceRequestModel::ATTENDANCE_DT
-                    ], [
-                        AttendanceRequestModel::IN_TIME,
-                        AttendanceRequestModel::OUT_TIME
-                        ], NULL, NULL,'AR'),false);
-        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceRequestModel::class, NULL, [
+                    AttendanceRequestModel::REQUESTED_DT,
+                    AttendanceRequestModel::APPROVED_DT,
+                    AttendanceRequestModel::ATTENDANCE_DT
+                        ], [
+                    AttendanceRequestModel::IN_TIME,
+                    AttendanceRequestModel::OUT_TIME
+                        ], NULL, NULL, 'AR'), false);
+
 //        $select->columns([
 //            new Expression("TO_CHAR(AR.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
 //            new Expression("TO_CHAR(AR.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
@@ -66,8 +65,8 @@ class AttendanceStatusRepository implements RepositoryInterface {
 //                ], true);
 
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)')],"left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' =>new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')],"left");
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME' => new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME' => new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME' => new Expression('INITCAP(E.LAST_NAME)')], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')], "left");
 
         $select->where([
             "E.STATUS='E'",
@@ -94,15 +93,14 @@ class AttendanceStatusRepository implements RepositoryInterface {
     public function fetchById($id) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceRequestModel::class,
-	 NULL, [
-            AttendanceRequestModel::REQUESTED_DT,
-            AttendanceRequestModel::ATTENDANCE_DT
-                    ], [
-                        AttendanceRequestModel::IN_TIME,
-                        AttendanceRequestModel::OUT_TIME
-                        ], NULL, NULL,'A'),false);
-        
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(AttendanceRequestModel::class, NULL, [
+                    AttendanceRequestModel::REQUESTED_DT,
+                    AttendanceRequestModel::ATTENDANCE_DT
+                        ], [
+                    AttendanceRequestModel::IN_TIME,
+                    AttendanceRequestModel::OUT_TIME
+                        ], NULL, NULL, 'A'), false);
+
 //        $select->columns(
 //                [
 //            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
@@ -118,9 +116,9 @@ class AttendanceStatusRepository implements RepositoryInterface {
 //            new Expression("TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT")
 //                ], true);
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME'=>new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME'=>new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME'=>new Expression('INITCAP(E.LAST_NAME)')],"left")
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME' => new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME' => new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME' => new Expression('INITCAP(E.LAST_NAME)')], "left")
 //                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=A.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left");
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' =>new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')],"left");
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')], "left");
 
         $select->where([AttendanceRequestModel::ID => $id]);
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -131,8 +129,8 @@ class AttendanceStatusRepository implements RepositoryInterface {
     public function delete($id) {
         // TODO: Implement delete() method.
     }
-    public function getFilteredRecord($data,$recomApproveId=null){
-        
+
+    public function getFilteredRecord($data, $recomApproveId = null) {
         $fromDate = $data['fromDate'];
         $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
@@ -145,14 +143,13 @@ class AttendanceStatusRepository implements RepositoryInterface {
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $attendanceRequestStatusId = $data['attendanceRequestStatusId'];
         $employeeTypeId = $data['employeeTypeId'];
-        
-        
+
         if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
             $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
         } else {
             $retiredFlag = " AND E.RETIRED_FLAG='N' ";
         }
-        
+
         $sql = "SELECT AR.ID                                           AS ID,
                   AR.EMPLOYEE_ID                                       AS EMPLOYEE_ID,
                   INITCAP(TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY'))    AS ATTENDANCE_DT,
@@ -229,7 +226,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
                     THEN ('E')
                   END
                 OR APRV.STATUS IS NULL)";
-        
+
         if ($recomApproveId != null) {
             if ($attendanceRequestStatusId == -1) {
                 $sql .= " AND ((RA.RECOMMEND_BY=" . $recomApproveId . " AND  AR.STATUS='RQ')"
@@ -248,24 +245,28 @@ class AttendanceStatusRepository implements RepositoryInterface {
                 $sql .= " AND AR.STATUS='" . $attendanceRequestStatusId . "' AND
                     ((AR.RECOMMENDED_BY=" . $recomApproveId . ") OR (AR.APPROVED_BY=" . $recomApproveId . " AND AR.APPROVED_DT IS NOT NULL) )";
             }
+        } else {
+            if ($attendanceRequestStatusId != -1) {
+                $sql .= "AND AR.STATUS = '{$attendanceRequestStatusId}'";
+            }
         }
-        
-        if($fromDate!=null){
-             $sql .= " AND AR.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
+
+        if ($fromDate != null) {
+            $sql .= " AND AR.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
         }
-        
-        if($toDate!=null){
+
+        if ($toDate != null) {
             $sql .= "AND AR.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
-        
-         if ($employeeId != -1) {
+
+        if ($employeeId != -1) {
             $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
         }
-        
+
         if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $sql .= "AND E.EMPLOYEE_TYPE='".$employeeTypeId."' ";
+            $sql .= "AND E.EMPLOYEE_TYPE='" . $employeeTypeId . "' ";
         }
-        
+
         if ($companyId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
         }
@@ -276,7 +277,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
         if ($departmentId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DEPARTMENT_ID . "= $departmentId)";
         }
-         if ($designationId != -1) {
+        if ($designationId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DESIGNATION_ID . "= $designationId)";
         }
         if ($positionId != -1) {
@@ -288,9 +289,10 @@ class AttendanceStatusRepository implements RepositoryInterface {
         if ($serviceEventTypeId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
-        
+
         $statement = $this->adapter->query($sql);
-//        print_r($statement->getSql());die();
+//        print_r($statement->getSql());
+//        die();
         $result = $statement->execute();
         return $result;
     }

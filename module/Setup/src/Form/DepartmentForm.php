@@ -1,6 +1,6 @@
 <?php
-namespace Setup\Form;
 
+namespace Setup\Form;
 
 use Zend\Form\Annotation;
 
@@ -8,10 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Department")
  */
-class DepartmentForm
-
-{
-
+class DepartmentForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -27,11 +24,9 @@ class DepartmentForm
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Department Name"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}}) 
      * @Annotation\Attributes({ "id":"form-departmentName", "class":"form-departmentName form-control" })
      */
-
-
     public $departmentName;
 
     /**
@@ -57,7 +52,7 @@ class DepartmentForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
@@ -66,8 +61,8 @@ class DepartmentForm
      * @Annotation\Attributes({ "id":"form-branchId","class":"form-control"})
      */
     public $branchId;
-    
-     /**
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -75,7 +70,6 @@ class DepartmentForm
      * @Annotation\Attributes({ "id":"form-companyId","class":"form-control"})
      */
     public $companyId;
-
 
 }
 
