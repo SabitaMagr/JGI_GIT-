@@ -110,7 +110,7 @@ class CompanyController extends AbstractActionController {
     }
 
     public function editAction() {
-
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('company');
@@ -148,6 +148,9 @@ class CompanyController extends AbstractActionController {
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Company Successfully Deleted!!!");
