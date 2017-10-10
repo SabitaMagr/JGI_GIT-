@@ -3,6 +3,7 @@
 namespace Setup\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\Helper;
 use Exception;
 use Setup\Form\CompanyForm;
@@ -10,7 +11,6 @@ use Setup\Model\Company;
 use Setup\Model\EmployeeFile as EmployeeFile2;
 use Setup\Repository\CompanyRepository;
 use Setup\Repository\EmployeeFile;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -24,12 +24,14 @@ class CompanyController extends AbstractActionController {
     private $adapter;
     private $employeeId;
     private $storageData;
+    private $acl;
 
     function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new CompanyRepository($adapter);
         $this->storageData = $storage->read();
-        $this->employeeId = $storage['employee_id'];
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function initializeForm() {
@@ -55,6 +57,7 @@ class CompanyController extends AbstractActionController {
     }
 
     public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
         $imageData = null;
