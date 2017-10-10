@@ -2,12 +2,12 @@
 
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use Exception;
 use Setup\Form\ServiceTypeForm;
 use Setup\Model\ServiceType;
 use Setup\Repository\ServiceTypeRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -25,7 +25,7 @@ class ServiceTypeController extends AbstractActionController {
         $this->adapter = $adapter;
         $this->repository = new ServiceTypeRepository($adapter);
         $this->storageData= $storage->read();
-        $this->employeeId=$storage['employee_id'];
+        $this->employeeId=$this->storageData['employee_id'];
         
     }
 
@@ -38,12 +38,17 @@ class ServiceTypeController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $serviceTypeList = $this->repository->fetchActiveRecord();
-        $serviceTypes = [];
-        foreach ($serviceTypeList as $serviceTypeRow) {
-            array_push($serviceTypes, $serviceTypeRow);
+         $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchActiveRecord();
+                $serviceTypeList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $serviceTypeList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['serviceTypes' => $serviceTypes]);
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction() {

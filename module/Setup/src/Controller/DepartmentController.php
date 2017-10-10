@@ -2,14 +2,15 @@
 
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\DepartmentForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Repository\DepartmentRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -27,8 +28,8 @@ class DepartmentController extends AbstractActionController {
     function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->repository = new DepartmentRepository($adapter);
         $this->adapter = $adapter;
-        $this-> storageData= $storage->read();
-        $this->employeeId=$storage['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -40,8 +41,17 @@ class DepartmentController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $departmentList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['departments' => Helper::extractDbData($departmentList)]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $departmentList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $departmentList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction() {

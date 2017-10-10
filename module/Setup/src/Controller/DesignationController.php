@@ -2,13 +2,14 @@
 
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\DesignationForm;
 use Setup\Model\Company;
 use Setup\Model\Designation;
 use Setup\Repository\DesignationRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -26,9 +27,8 @@ class DesignationController extends AbstractActionController {
     function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new DesignationRepository($adapter);
-        $this->storageData= $storage->read();
-        $this->employeeId=$storage['employee_id'];
-        
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -40,15 +40,17 @@ class DesignationController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $designations = $this->repository->fetchAll();
-
-        $designationList = [];
-
-        foreach ($designations as $designationRow) {
-            array_push($designationList, $designationRow);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $designationList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $designationList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-
-        return Helper::addFlashMessagesToArray($this, ["designations" => $designationList]);
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction() {
@@ -71,14 +73,14 @@ class DesignationController extends AbstractActionController {
                 return $this->redirect()->toRoute("designation");
             }
         }
-        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], "DESIGNATION_TITLE", "ASC",null,false,true);
+        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], "DESIGNATION_TITLE", "ASC", null, false, true);
         $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
                     'customRender' => Helper::renderCustomView(),
                     'designationListCompanyWise' => $CompanyWisedesignationList,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,true,true),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, true),
                     'messages' => $this->flashmessenger()->getMessages()
                         ]
                 )
@@ -95,9 +97,9 @@ class DesignationController extends AbstractActionController {
         $request = $this->getRequest();
         $designation = new Designation();
         if (!$request->isPost()) {
-            $fetchData=$this->repository->fetchById($id)->getArrayCopy();
+            $fetchData = $this->repository->fetchById($id)->getArrayCopy();
             $designation->exchangeArrayFromDB($fetchData);
-            $desginationId=$fetchData['DESIGNATION_ID'];
+            $desginationId = $fetchData['DESIGNATION_ID'];
             $this->form->bind($designation);
         } else {
 
@@ -113,7 +115,7 @@ class DesignationController extends AbstractActionController {
                 return $this->redirect()->toRoute("designation");
             }
         }
-        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], Designation::DESIGNATION_TITLE,"ASC",null,false,true);
+        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], Designation::DESIGNATION_TITLE, "ASC", null, false, true);
         $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
@@ -121,7 +123,7 @@ class DesignationController extends AbstractActionController {
                     'customRender' => Helper::renderCustomView(),
                     'fetchedDesignationId' => $desginationId,
                     'designationListCompanyWise' => $CompanyWisedesignationList,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,true,true),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, true),
                     'messages' => $this->flashmessenger()->getMessages(),
                     'id' => $id
                 ])

@@ -7,11 +7,12 @@
  */
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\AcademicDegreeForm;
 use Setup\Model\AcademicDegree;
 use Setup\Repository\AcademicDegreeRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -31,7 +32,7 @@ class AcademicDegreeController extends AbstractActionController {
         $this->adapter = $adapter;
         $this->repository = new AcademicDegreeRepository($adapter);
         $this->storageData=$storage->read();
-        $this->employeeId=$storage['employee_id'];
+        $this->employeeId=$this->storageData['employee_id'];
     }
 
     public function initializeForm()
@@ -45,12 +46,17 @@ class AcademicDegreeController extends AbstractActionController {
 
     public function indexAction()
     {
-        $degreeList = $this->repository->fetchAll();
-        $academicDegrees = [];
-        foreach($degreeList as $degreeRow){
-            array_push($academicDegrees, $degreeRow);
+         $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $degreeList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $degreeList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['academicDegrees' => $academicDegrees]);
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction()

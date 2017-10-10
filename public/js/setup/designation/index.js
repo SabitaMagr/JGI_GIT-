@@ -1,102 +1,39 @@
-(function ($, app) {
+
+(function ($) {
     'use strict';
     $(document).ready(function () {
-        $("#designationTable").kendoGrid({
-            dataSource: {
-                data: document.designations,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-//                {field: "DESIGNATION_CODE", title: "Code",width:120},
-                {field: "DESIGNATION_TITLE", title: "Name",width:200},
-                {field: "COMPANY_NAME", title: "Company",width:120},
-//                {field: "PARENT_DESIGNATION_TITLE", title: "Parent Designation",width:200},
-                {field: "BASIC_SALARY", title: "Basic Salary",width:120},
-                {title: "Action",width:100}
-            ]
-        });
-        
-        app.searchTable('designationTable',['DESIGNATION_TITLE','COMPANY_NAME','BASIC_SALARY']);
-        
-        app.pdfExport(
-                'designationTable',
-                {
-                    'DESIGNATION_TITLE': 'Designation',
-                    'COMPANY_NAME': 'Company',
-                    'BASIC_SALARY': 'Basic Salary'
-                }
-        );
-        
-        
-               $("#export").click(function (e) {
-            var rows = [{
-                    cells: [
-//                        {value: "Designation Code"},
-                        {value: "Designation Name"},                        
-                        {value: "Basic Salary"},
-//                        {value: "Parent Designation Name"},
-                        {value: "Company Name"},
-//                        {value: "Within Branch"},
-//                       {value: "Within Department"}
-                    ]
-                }];
-            var dataSource = $("#designationTable").data("kendoGrid").dataSource;
-            var filteredDataSource = new kendo.data.DataSource({
-                data: dataSource.data(),
-                filter: dataSource.filter()
-            });
+        var $table = $('#designationTable');
+        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:DESIGNATION_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>';
+        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:DESIGNATION_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
+        var action = editAction + deleteAction;
+        app.initializeKendoGrid($table, [
+            {field: "DESIGNATION_TITLE", title: "Name", width: 200},
+            {field: "COMPANY_NAME", title: "Company", width: 120},
+            {field: "BASIC_SALARY", title: "Basic Salary", width: 120},
+        ], "Designation List.xlsx");
 
-            filteredDataSource.read();
-            var data = filteredDataSource.view();
-            
-            for (var i = 0; i < data.length; i++) {
-                var dataItem = data[i];
-//                var withinBranch = dataItem.WITHIN_BRANCH=='Y'?'Yes':'No';
-//                var withinDepartment = dataItem.WITHIN_DEPARTMENT=='Y'?'Yes':'No';
-                rows.push({
-                    cells: [
-//                        {value: dataItem.DESIGNATION_CODE},
-                        {value: dataItem.DESIGNATION_TITLE},
-                        {value: dataItem.BASIC_SALARY},
-//                        {value: dataItem.PARENT_DESIGNATION_TITLE},
-                        {value: dataItem.COMPANY_NAME},
-//                        {value: withinBranch},
-//                        {value: withinDepartment}
-                    ]
-                });
-            }
-            excelExport(rows);
-            e.preventDefault();
+        app.searchTable('designationTable', ['DESIGNATION_TITLE', 'COMPANY_NAME', 'BASIC_SALARY']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, {
+                'DESIGNATION_TITLE': 'Name',
+                'COMPANY_NAME': 'Company',
+                'BASIC_SALARY': 'Basic Salary',
+            }, 'Designation List');
         });
-        
-        function excelExport(rows) {
-            var workbook = new kendo.ooxml.Workbook({
-                sheets: [
-                    {
-                        columns: [
-//                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-//                            {autoWidth: true},
-//                            {autoWidth: true}
-                        ],
-                        title: "Designation",
-                        rows: rows
-                    }
-                ]
-            });
-            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "DesignationList.xlsx"});
-        }
-        window.app.UIConfirmations();
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, {
+                'DESIGNATION_TITLE': 'Name',
+                'COMPANY_NAME': 'Company',
+                'BASIC_SALARY': 'Basic Salary',
+            }, 'Designation List');
+        });
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
     });
-})(window.jQuery, window.app);
+})(window.jQuery);

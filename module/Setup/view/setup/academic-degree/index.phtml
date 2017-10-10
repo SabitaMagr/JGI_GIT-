@@ -1,11 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
-
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
@@ -20,11 +16,8 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuAcademicDegree"]];
-echo json_encode($menu);
-?>;
-    document.academicDegrees =<?php echo json_encode($academicDegrees); ?>;
+document.editLink='<?= $this->url("academicDegree", ["action" => "edit"]) ?>';
+document.deleteLink='<?= $this->url("academicDegree", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\academicDegree')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -50,9 +43,14 @@ echo json_encode($menu);
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i>
+                                Export to Excel </a>
                         </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
                     </ul>
                 </div>
             </div>
@@ -62,26 +60,4 @@ echo json_encode($menu);
     </div>
         
 	<div>
-
-
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (ACADEMIC_DEGREE_NAME == null) ? '-' : ACADEMIC_DEGREE_NAME #
-        </td>
-        <td>
-        #: (WEIGHT == null) ? '-' : WEIGHT #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("academicDegree", ["action" => "edit"]) ?>/#:ACADEMIC_DEGREE_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a> 
-        <a class="btn-delete confirmation"
-        href="<?= $this->url("academicDegree", ["action" => "delete"]); ?>/#:ACADEMIC_DEGREE_ID #" id="bs_#:ACADEMIC_DEGREE_ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        </td>
-        </tr>
-    </script>
 </div>

@@ -2,13 +2,14 @@
 
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\PositionForm;
 use Setup\Model\Company;
 use Setup\Model\Position;
 use Setup\Repository\PositionRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -26,9 +27,8 @@ class PositionController extends AbstractActionController {
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new PositionRepository($adapter);
-        $this->storageData=$storage->read();
-        $this->employeeId=$storage['employee_id'];
-        
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -40,8 +40,17 @@ class PositionController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $positionList = $this->repository->fetchActiveRecord();
-        return Helper::addFlashMessagesToArray($this, ['positions' => $positionList]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchActiveRecord();
+                $positionList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $positionList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction() {

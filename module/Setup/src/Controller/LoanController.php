@@ -32,7 +32,7 @@ class LoanController extends AbstractActionController{
         $this->repository = new LoanRepository($adapter);
         $this->loanRestrictionRepo = new LoanRestrictionRepository($adapter);
         $this->storageData= $storage->read();
-        $this->employeeId=$storage['employee_id'];
+        $this->employeeId=$this->storageData['employee_id'];
         
     }
     public function initializeForm(){

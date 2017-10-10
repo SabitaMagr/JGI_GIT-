@@ -2,14 +2,15 @@
 
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\BranchForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Repository\BranchRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
@@ -28,7 +29,8 @@ class BranchController extends AbstractActionController {
         $this->adapter = $adapter;
         $this->repository = new BranchRepository($adapter);
         $this->storageData = $storage->read();
-        $this->employeeId = $storage['employee_id'];    }
+        $this->employeeId = $this->storageData['employee_id'];
+    }
 
     public function initializeForm() {
         $branchForm = new BranchForm();
@@ -39,8 +41,17 @@ class BranchController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $branchesRaw = $this->repository->fetchAllWithCompany();
-        return Helper::addFlashMessagesToArray($this, ['branches' => Helper::extractDbData($branchesRaw)]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAllWithCompany();
+                $branchList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $branchList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction() {
