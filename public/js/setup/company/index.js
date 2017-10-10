@@ -2,8 +2,8 @@
     'use strict';
     $(document).ready(function () {
         var $table = $('#companyTable');
-        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:COMPANY_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>';
-        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:COMPANY_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:COMPANY_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:COMPANY_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
         var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
             {field: "COMPANY_NAME", title: "Name"},

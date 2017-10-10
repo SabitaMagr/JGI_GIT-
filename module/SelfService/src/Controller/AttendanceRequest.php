@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use Exception;
 use Notification\Controller\HeadNotification;
@@ -11,7 +12,7 @@ use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
@@ -23,17 +24,15 @@ class AttendanceRequest extends AbstractActionController {
     private $repository;
     private $form;
     private $employeeId;
-    private $authService;
     private $recommender;
     private $approver;
+    private $storageData;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new AttendanceRequestRepository($adapter);
-
-        $this->authService = new AuthenticationService();
-        $detail = $this->authService->getIdentity();
-        $this->employeeId = $detail['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -242,6 +241,72 @@ class AttendanceRequest extends AbstractActionController {
             "approver" => $approver,
         ];
         return $responseData;
+    }
+
+    public function pullAttendanceRequestListAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $data = $postedData->data;
+                $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
+                $attendanceList = $attendanceRequestRepository->getFilterRecords($data);
+                $attendanceRequest = [];
+                $getValue = function($status) {
+                    if ($status == "RQ") {
+                        return "Pending";
+                    } else if ($status == 'RC') {
+                        return "Recommended";
+                    } else if ($status == "R") {
+                        return "Rejected";
+                    } else if ($status == "AP") {
+                        return "Approved";
+                    } else if ($status == "C") {
+                        return "Cancelled";
+                    }
+                };
+
+                $getAction = function($status) {
+                    if ($status == "RQ") {
+                        return ["delete" => 'Cancel Request'];
+                    } else {
+                        return ["view" => 'View'];
+                    }
+                };
+
+                $fullName = function($id) {
+                    $empRepository = new EmployeeRepository($this->adapter);
+                    $empDtl = $empRepository->fetchById($id);
+                    return $empDtl['FULL_NAME'];
+                };
+                foreach ($attendanceList as $attendanceRow) {
+                    $status = $getValue($attendanceRow['STATUS']);
+                    $action = $getAction($attendanceRow['STATUS']);
+
+                    $statusId = $attendanceRow['STATUS'];
+                    $approvedDT = $attendanceRow['APPROVED_DT'];
+
+                    $authApprover = ($statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $attendanceRow['APPROVER'] : $attendanceRow['APPROVED_BY'];
+                    $approverName = $fullName($authApprover);
+
+                    $new_row = array_merge($attendanceRow, [
+                        'A_STATUS' => $status,
+                        'ACTION' => key($action),
+                        'ACTION_TEXT' => $action[key($action)],
+                        'APPROVER_NAME' => $approverName
+                    ]);
+                    if ($statusId == 'RQ') {
+                        $new_row['ALLOW_TO_EDIT'] = 1;
+                    } else {
+                        $new_row['ALLOW_TO_EDIT'] = 0;
+                    }
+                    array_push($attendanceRequest, $new_row);
+                }
+                return new CustomViewModel(['success' => true, 'data' => $attendanceRequest, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
     }
 
 }

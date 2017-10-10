@@ -12,6 +12,7 @@ use Application\Repository\UserLogRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Setup\Repository\EmployeeRepository;
 use System\Repository\RolePermissionRepository;
+use System\Repository\RoleSetupRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -134,6 +135,9 @@ class AuthController extends AbstractActionController {
                     $rawMenus = $repository->fetchAllMenuByRoleId($resultRow->ROLE_ID);
                     $menus = Helper::extractDbData($rawMenus);
 
+                    $roleRepo = new RoleSetupRepository($this->adapter);
+                    $acl = $roleRepo->fetchById($resultRow->ROLE_ID);
+
                     $this->getAuthService()->getStorage()->write([
                         "user_name" => $request->getPost('username'),
                         "user_id" => $resultRow->USER_ID,
@@ -144,6 +148,7 @@ class AuthController extends AbstractActionController {
                         "menus" => $menus,
                         'register_attendance' => $attendanceType,
                         'allow_register_attendance' => $allowRegisterAttendance,
+                        'acl' => (array) $acl
                     ]);
 
 
