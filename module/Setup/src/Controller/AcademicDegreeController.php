@@ -8,13 +8,14 @@
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
 use Setup\Form\AcademicDegreeForm;
 use Setup\Model\AcademicDegree;
 use Setup\Repository\AcademicDegreeRepository;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class AcademicDegreeController extends AbstractActionController {
@@ -23,13 +24,14 @@ class AcademicDegreeController extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
     
-    public function __construct(AdapterInterface $adapter)
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage)
     {
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
         $this->repository = new AcademicDegreeRepository($adapter);
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData=$storage->read();
+        $this->employeeId=$storage['employee_id'];
     }
 
     public function initializeForm()
