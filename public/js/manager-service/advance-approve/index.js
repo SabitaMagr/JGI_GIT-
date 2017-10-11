@@ -1,7 +1,6 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        console.log(document.advanceApprove);
         var advanceGrid = $("#advanceApproveTable").kendoGrid({
             excel: {
                 fileName: "AdvanceRequestList.xlsx",
@@ -21,34 +20,34 @@
                 numeric: false
             },
             dataBound: gridDataBound,
-           columns: [
+            columns: [
                 {
                     title: 'Select All',
                     headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    template:"<input type='checkbox' id='#:ADVANCE_REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ADVANCE_REQUEST_ID#'></label>"
+                    template: "<input type='checkbox' id='#:ADVANCE_REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ADVANCE_REQUEST_ID#'></label>"
                 },
                 {field: "FULL_NAME", title: "Employee"},
                 {field: "ADVANCE_NAME", title: "Advance"},
-                 {title: "Requested Date",
-                            columns: [{
-                                    field: "REQUESTED_DATE",
-                                    title: "English",
-                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
-                                {field: "REQUESTED_DATE_N",
-                                    title: "Nepali",
-                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
-                 {title: "Advance Date",
-                            columns: [{
-                                    field: "ADVANCE_DATE",
-                                    title: "English",
-                                    template: "<span>#: (ADVANCE_DATE == null) ? '-' : ADVANCE_DATE #</span>"},
-                                {field: "ADVANCE_DATE_N",
-                                    title: "Nepali",
-                                    template: "<span>#: (ADVANCE_DATE_N == null) ? '-' : ADVANCE_DATE_N #</span>"}]},
+                {title: "Requested Date",
+                    columns: [{
+                            field: "REQUESTED_DATE",
+                            title: "English",
+                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                        {field: "REQUESTED_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                {title: "Advance Date",
+                    columns: [{
+                            field: "ADVANCE_DATE",
+                            title: "English",
+                            template: "<span>#: (ADVANCE_DATE == null) ? '-' : ADVANCE_DATE #</span>"},
+                        {field: "ADVANCE_DATE_N",
+                            title: "Nepali",
+                            template: "<span>#: (ADVANCE_DATE_N == null) ? '-' : ADVANCE_DATE_N #</span>"}]},
                 {field: "REQUESTED_AMOUNT", title: "Requested Amt."},
                 {field: "TERMS", title: "Terms"},
                 {field: "YOUR_ROLE", title: "Your Role"},
-                {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ADVANCE_REQUEST_ID #" style="height:17px;" title="view detail">
+                {field: ["ADVANCE_REQUEST_ID", "ROLE"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ADVANCE_REQUEST_ID #/#: ROLE #" style="height:17px;" title="view detail">
                             <i class="fa fa-search-plus"></i>
                             </a></span>`}
             ]

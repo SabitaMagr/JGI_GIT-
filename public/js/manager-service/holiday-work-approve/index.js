@@ -56,7 +56,7 @@
                             template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}]},
                 {field: "DURATION", title: "Duration", width: 120},
                 {field: "YOUR_ROLE", title: "Your Role", width: 120},
-                {field: ["ID"], title: "Action", template: `<span>  <a class="btn-edit"
+                {field: ["ID","ROLE"], title: "Action", template: `<span>  <a class="btn-edit"
         href=" ` + document.viewLink + `/#:ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </a>

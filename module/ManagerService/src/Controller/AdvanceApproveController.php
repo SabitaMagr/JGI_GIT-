@@ -42,13 +42,11 @@ class AdvanceApproveController extends AbstractActionController {
 
     public function indexAction() {
         $advanceApprove = $this->getAllList();
-        //print_r($advanceApprove); die();
         return Helper::addFlashMessagesToArray($this, ['advanceApprove' => $advanceApprove, 'id' => $this->employeeId]);
     }
 
     public function viewAction() {
         $this->initializeForm();
-        $advanceRequestRepository = new AdvanceRequestRepository($this->adapter);
 
         $id = (int) $this->params()->fromRoute('id');
         $role = $this->params()->fromRoute('role');
@@ -64,19 +62,16 @@ class AdvanceApproveController extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
+        $employeeName = $detail['FULL_NAME'];
+        $recommender = $detail['RECOMMENDER_NAME'];
+        $approver = $detail['APPROVER_NAME'];
 
-        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $recommended_by = $detail['RECOMMENDED_BY_NAME'];
+        $approved_by = $detail['APPROVED_BY_NAME'];
+        $authRecommender = ($recommended_by != null) ? $recommender : $recommended_by;
+        $authApprover = $approved_by != null ? $approver : $approved_by;
+
+        $recommenderId = ($detail['RECOMMENDED_BY'] != null) ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
         if (!$request->isPost()) {
             $advanceRequestModel->exchangeArrayFromDB($detail);
             $this->form->bind($advanceRequestModel);
@@ -254,68 +249,8 @@ class AdvanceApproveController extends AbstractActionController {
     }
 
     public function getAllList() {
-        //print_r($this->employeeId); die();
         $list = $this->advanceApproveRepository->getAllRequest($this->employeeId);
-
-        $advanceApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'ADVANCE_DATE' => $row['ADVANCE_DATE'],
-                'REQUESTED_AMOUNT' => $row['REQUESTED_AMOUNT'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REASON' => $row['REASON'],
-                'TERMS' => $row['TERMS'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'ADVANCE_NAME' => $row['ADVANCE_NAME'],
-                'ADVANCE_REQUEST_ID' => $row['ADVANCE_REQUEST_ID'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'REQUESTED_DATE_N' => $row['REQUESTED_DATE_N'],
-                'ADVANCE_DATE_N' => $row['ADVANCE_DATE_N'],
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-
-            array_push($advanceApprove, $dataArray);
-        }
-        return $advanceApprove;
+        return Helper::extractDbData($list);
     }
 
 }

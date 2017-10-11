@@ -65,13 +65,12 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['WH' => WorkOnHoliday::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=WH.EMPLOYEE_ID", ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=WH.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WH.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left")
-                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=WH.EMPLOYEE_ID", ['RECOMMENDER' => 'RECOMMEND_BY', 'APPROVER' => 'APPROVED_BY'], "left")
-                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECM_FN' => new Expression("INITCAP(RECM.FIRST_NAME)"), 'RECM_MN' => new Expression("INITCAP(RECM.MIDDLE_NAME)"), 'RECM_LN' => new Expression("INITCAP(RECM.LAST_NAME)")], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APRV_FN' => new Expression("INITCAP(APRV.FIRST_NAME)"), 'APRV_MN' => new Expression("INITCAP(APRV.MIDDLE_NAME)"), 'APRV_LN' => new Expression("INITCAP(APRV.LAST_NAME)")], "left");
-
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=WH.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=WH.RECOMMENDED_BY", ['RECOMMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WH.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=WH.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
         $select->where([
             "WH.ID=" . $id
         ]);
@@ -91,7 +90,6 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                     WH.RECOMMENDED_BY,
                     WH.REMARKS,
                     WH.DURATION,
-                    WH.STATUS,
                     WH.HOLIDAY_ID,
                     WH.RECOMMENDED_REMARKS,
                     WH.APPROVED_REMARKS,
@@ -110,7 +108,10 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                     INITCAP(H.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
                     H.HOLIDAY_CODE,
                     RA.RECOMMEND_BY as RECOMMENDER,
-                    RA.APPROVED_BY AS APPROVER
+                    RA.APPROVED_BY AS APPROVER,
+                    LEAVE_STATUS_DESC(WH.STATUS)                     AS STATUS,
+                    REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                    REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                     FROM HRIS_EMPLOYEE_WORK_HOLIDAY WH
                     LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP H ON 
                     H.HOLIDAY_ID=WH.HOLIDAY_ID

@@ -54,7 +54,7 @@
         </ul>`},
                 {field: "TOTAL_HOUR", title: "Total Hour"},
                 {field: "YOUR_ROLE", title: "Your Role"},
-                {field: ["OVERTIME_ID"], title: "Action", template: `<span><a class="btn-edit"
+                {field: ["OVERTIME_ID","ROLE"], title: "Action", template: `<span><a class="btn-edit"
         href=" ` + document.viewLink + ` /#:OVERTIME_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
        </span>`}

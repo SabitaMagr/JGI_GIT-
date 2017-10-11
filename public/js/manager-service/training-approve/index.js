@@ -56,7 +56,7 @@
                 {field: "DURATION", title: "Duration"},
                 {field: "TRAINING_TYPE", title: "Training Type"},
                 {field: "YOUR_ROLE", title: "Your Role"},
-                {field: ["REQUEST_ID"], title: "Action", template: `<span> <a class="btn-edit"
+                {field: ["REQUEST_ID","ROLE"], title: "Action", template: `<span> <a class="btn-edit"
         href=" ` + document.viewLink + ` /#:REQUEST_ID #/#:ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </span>`}

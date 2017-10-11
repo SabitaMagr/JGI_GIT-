@@ -254,63 +254,7 @@ class LoanApproveController extends AbstractActionController {
 
     public function getAllList() {
         $list = $this->loanApproveRepository->getAllRequest($this->employeeId);
-        $loanApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'LOAN_DATE' => $row['LOAN_DATE'],
-                'REQUESTED_AMOUNT' => $row['REQUESTED_AMOUNT'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REASON' => $row['REASON'],
-                'LOAN_NAME' => $row['LOAN_NAME'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'LOAN_REQUEST_ID' => $row['LOAN_REQUEST_ID'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'REQUESTED_DATE_N' => $row['REQUESTED_DATE_N'],
-                'LOAN_DATE_N' => $row['LOAN_DATE_N'],
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-            array_push($loanApprove, $dataArray);
-        }
-        return $loanApprove;
+        return Helper::extractDbData($list);
     }
 
 }

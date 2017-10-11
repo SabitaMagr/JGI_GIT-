@@ -87,7 +87,6 @@ class LoanApproveRepository implements RepositoryInterface{
                     LR.RECOMMENDED_BY,
                     LR.REASON,
                     LR.LOAN_ID,
-                    LR.STATUS,
                     INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE,
                     BS_DATE(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE_N,
                     INITCAP(TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
@@ -102,7 +101,10 @@ class LoanApproveRepository implements RepositoryInterface{
                     INITCAP(L.LOAN_NAME) AS LOAN_NAME,
                     L.LOAN_CODE,
                     RA.RECOMMEND_BY as RECOMMENDER,
-                    RA.APPROVED_BY AS APPROVER
+                    RA.APPROVED_BY AS APPROVER,
+                    LEAVE_STATUS_DESC(LR.STATUS)                     AS STATUS,
+                    REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                    REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                     FROM HRIS_EMPLOYEE_LOAN_REQUEST LR
                     LEFT JOIN HRIS_EMPLOYEES E ON 
                     E.EMPLOYEE_ID=LR.EMPLOYEE_ID

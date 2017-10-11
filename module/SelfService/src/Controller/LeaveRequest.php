@@ -133,7 +133,7 @@ class LeaveRequest extends AbstractActionController {
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
-                if ($leaveSubstitute !== null && $leaveSubstitute!=="") {
+                if ($leaveSubstitute !== null && $leaveSubstitute !== "") {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
 
@@ -193,16 +193,6 @@ class LeaveRequest extends AbstractActionController {
             return $this->redirect()->toRoute("leaveapprove");
         }
 
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
-
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();
 
@@ -212,13 +202,9 @@ class LeaveRequest extends AbstractActionController {
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
 
-        $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DT'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
-        $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID']);

@@ -169,33 +169,15 @@ class AttendanceRequest extends AbstractActionController {
         if ($id === 0) {
             return $this->redirect()->toRoute("attedanceapprove");
         }
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $this->repository->fetchById($id);
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        $employeeName = $detail['FULL_NAME'];
 
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
-        $status = $detail['STATUS'];
-
-        $approvedDT = $detail['APPROVED_DT'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
-        $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-
-//        $approvedDT = $detail['APPROVED_DT'];
-//        $approved_by = $fullName($detail['APPROVED_BY']);
-//        $authApprover = ( $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
