@@ -1,46 +1,34 @@
-(function ($, app) {
+
+(function ($) {
     'use strict';
     $(document).ready(function () {
-        $("#serviceTypeTable").kendoGrid({
-            excel: {
-                fileName: "ServiceTypeList.xlsx",
-                filterable: true,
-                allPages: true
-            },
-            dataSource: {
-                data: document.serviceTypes,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-//                {field: "SERVICE_TYPE_CODE", title: "Service Type Code",width:120},
-                {field: "SERVICE_TYPE_NAME", title: "Service Type",width:400},
-                {title: "Action",width:110}
-            ]
+        var $table = $('#serviceTypeTable');
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:SERVICE_TYPE_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:SERVICE_TYPE_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
+        var action = editAction + deleteAction;
+        app.initializeKendoGrid($table, [
+            {field: "SERVICE_TYPE_NAME", title: "Service Type", width: 400},
+            {field: "SERVICE_TYPE_ID", title: "Action", width: 120, template: action}
+        ], "ServiceType List.xlsx");
+
+        app.searchTable('serviceTypeTable', ['SERVICE_TYPE_NAME']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, {
+                'SERVICE_TYPE_NAME': 'Service Type',
+            }, 'ServiceType List');
         });
-        
-        app.searchTable('serviceTypeTable',['SERVICE_TYPE_NAME']);
-        
-        app.pdfExport(
-                'serviceTypeTable',
-                {
-                    'SERVICE_TYPE_NAME': 'Service Type',
-                }
-        );
-        
-        
-        $("#export").click(function (e) {
-            var grid = $("#serviceTypeTable").data("kendoGrid");
-            grid.saveAsExcel();
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, {
+                'SERVICE_TYPE_NAME': 'Service Type',
+            }, 'ServiceType List');
         });
-        window.app.UIConfirmations();
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
     });
-})(window.jQuery, window.app);
+})(window.jQuery);

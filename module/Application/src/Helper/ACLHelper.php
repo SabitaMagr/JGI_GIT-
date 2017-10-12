@@ -24,7 +24,7 @@ class ACLHelper {
                 $key = RoleSetup::ALLOW_DELETE;
                 break;
         }
-        if ($acl[$key] == "Y") {
+        if ($acl[$key] == "N") {
             $context->layout('error/no_access');
             return false;
         } else {

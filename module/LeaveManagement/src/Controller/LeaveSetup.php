@@ -2,13 +2,16 @@
 
 namespace LeaveManagement\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\LeaveMasterForm;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveMasterRepository;
 use Setup\Model\Company;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -20,42 +23,29 @@ class LeaveSetup extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->repository = new LeaveMasterRepository($adapter);
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function indexAction() {
-        $leaveList = $this->repository->fetchAll();
-        $leaves = [];
-
-        $getValue = function($kv) {
-            if ($kv == 'Y') {
-                return 'Yes';
-            } else if ($kv == 'N') {
-                return 'No';
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $leaveList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $leaveList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
-        };
-
-        foreach ($leaveList as $leaveRow) {
-            array_push($leaves, [
-                'LEAVE_ID' => $leaveRow['LEAVE_ID'],
-                'LEAVE_CODE' => $leaveRow['LEAVE_CODE'],
-                'LEAVE_ENAME' => $leaveRow['LEAVE_ENAME'],
-                'ALLOW_HALFDAY' => $getValue($leaveRow['ALLOW_HALFDAY']),
-                'DEFAULT_DAYS' => $leaveRow['DEFAULT_DAYS'],
-                'CARRY_FORWARD' => $getValue($leaveRow['CARRY_FORWARD']),
-                'CASHABLE' => $getValue($leaveRow['CASHABLE']),
-                'PAID' => $getValue($leaveRow['PAID']),
-                'IS_SUBSTITUTE' => $leaveRow['IS_SUBSTITUTE'],
-                'COMPANY_NAME' => $leaveRow['COMPANY_NAME']
-                    ]
-            );
         }
-        return Helper::addFlashMessagesToArray($this, ['leaves' => $leaves]);
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function initializeForm() {
@@ -65,6 +55,7 @@ class LeaveSetup extends AbstractActionController {
     }
 
     public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -94,6 +85,7 @@ class LeaveSetup extends AbstractActionController {
     }
 
     public function editAction() {
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $this->initializeForm();
         $id = (int) $this->params()->fromRoute("id");
 
@@ -132,6 +124,9 @@ class LeaveSetup extends AbstractActionController {
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('leavesetup');

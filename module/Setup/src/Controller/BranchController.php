@@ -2,14 +2,16 @@
 
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\BranchForm;
 use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Repository\BranchRepository;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
@@ -23,12 +25,15 @@ class BranchController extends AbstractActionController {
     private $adapter;
     private $employeeId;
     private $storageData;
+    private $acl;
 
     function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new BranchRepository($adapter);
         $this->storageData = $storage->read();
-        $this->employeeId = $storage['employee_id'];    }
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
+    }
 
     public function initializeForm() {
         $branchForm = new BranchForm();
@@ -39,11 +44,21 @@ class BranchController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $branchesRaw = $this->repository->fetchAllWithCompany();
-        return Helper::addFlashMessagesToArray($this, ['branches' => Helper::extractDbData($branchesRaw)]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAllWithCompany();
+                $branchList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $branchList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -72,6 +87,7 @@ class BranchController extends AbstractActionController {
     }
 
     public function editAction() {
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         $this->initializeForm();
         $request = $this->getRequest();
@@ -102,6 +118,9 @@ class BranchController extends AbstractActionController {
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {
