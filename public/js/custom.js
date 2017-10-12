@@ -1022,7 +1022,7 @@ window.app = (function ($, toastr, App) {
                 }
             ]
         });
-        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "Subordinate List.xlsx"});
+        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: fileName});
     };
 
     (function () {
