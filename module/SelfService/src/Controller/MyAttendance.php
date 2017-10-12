@@ -2,24 +2,28 @@
 
 namespace SelfService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
+use Exception;
 use SelfService\Repository\AttendanceRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class MyAttendance extends AbstractActionController {
-
+    private $adapter;
     private $repository;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        $this->adapter=$adapter;
         $this->repository = new AttendanceRepository($adapter);
-
-        $authService = new AuthenticationService();
-        $detail = $authService->getIdentity();
-        $this->employeeId = $detail['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function indexAction() {
@@ -51,7 +55,28 @@ class MyAttendance extends AbstractActionController {
                     'fiscalYear' => $fiscal_year
         ]);
     }
-    
-    
+
+    public function pullAttendanceListAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $attendanceRepository = new AttendanceRepository($this->adapter);
+                $filtersDetail = $postedData->data;
+                $employeeId = $filtersDetail['employeeId'];
+                $fromDate = $filtersDetail['fromDate'];
+                $toDate = $filtersDetail['toDate'];
+                $status = $filtersDetail['status'];
+                $missPunchOnly = ((int) $filtersDetail['missPunchOnly'] == 1) ? true : false;
+
+                $result = $attendanceRepository->attendanceReport($fromDate, $toDate, $employeeId, $status, $missPunchOnly);
+                $temArray = Helper::extractDbData($result);
+
+                return new CustomViewModel(['success' => true, 'data' => $temArray, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+    }
 
 }

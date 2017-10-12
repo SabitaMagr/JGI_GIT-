@@ -1,102 +1,62 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        
+
         var $table = $('#holidayTable');
-        var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
-                {field: "HOLIDAY_ENAME", title: "Holiday Name", template: "<span>#: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #</span>"},
-                {title: "Start Date",
-                    columns: [{
-                            field: "START_DATE",
-                            title: "English",
-                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"
-                        }, {field: "START_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"
-                        }]},
-                {title: "End Date",
-                    columns: [{
-                            field: "END_DATE",
-                            title: "English",
-                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                            {field: "END_DATE_N",
-                             title: "Nepali",
-                             template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"
-                         }]},
-                {field: "HALF_DAY", title: "Interval", template: "<span>#: (HALF_DAY == null) ? '-' : HALF_DAY #</span>"}
-                ,
-            ], "Holiday List.xlsx");
+            {field: "HOLIDAY_ENAME", title: "Holiday Name", template: "<span>#: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #</span>"},
+            {title: "Start Date",
+                columns: [{
+                        field: "START_DATE_AD",
+                        title: "AD",
+                        template: "<span>#: (START_DATE_AD == null) ? '-' : START_DATE_AD #</span>"
+                    }, {field: "START_DATE_BS",
+                        title: "BS",
+                        template: "<span>#: (START_DATE_BS == null) ? '-' : START_DATE_BS #</span>"
+                    }]},
+            {title: "End Date",
+                columns: [{
+                        field: "END_DATE_AD",
+                        title: "AD",
+                        template: "<span>#: (END_DATE_AD == null) ? '-' : END_DATE_AD #</span>"},
+                    {field: "END_DATE_BS",
+                        title: "BS",
+                        template: "<span>#: (END_DATE_BS == null) ? '-' : END_DATE_BS #</span>"
+                    }]},
+            {field: "HALF_DAY", title: "Interval", template: "<span>#: (HALF_DAY == null) ? '-' : HALF_DAY #</span>"}
+            ,
+        ], "Holiday List.xlsx");
+        
+        app.searchTable('holidayTable', ["HOLIDAY_ENAME", "START_DATE_AD","START_DATE_BS","END_DATE_AD","END_DATE_BS","HALF_DAY"]);
 
-        $("#holidayTable").kendoGrid({
-            excel: {
-                fileName: "HolidayList.xlsx",
-                filterable: true,
-                allPages: true
-            },
-            dataSource: {
-                data: document.holidays,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            dataBound: gridDataBound,
-            columns: [
-                {field: "HOLIDAY_ENAME", title: "Holiday Name", template: "<span>#: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #</span>"},
-                {title: "Start Date",
-                    columns: [{
-                            field: "START_DATE",
-                            title: "English",
-                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"
-                        }, {field: "START_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"
-                        }]},
-                {title: "End Date",
-                    columns: [{
-                            field: "END_DATE",
-                            title: "English",
-                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                            {field: "END_DATE_N",
-                             title: "Nepali",
-                             template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"
-                         }]},
-                {field: "HALF_DAY", title: "Interval", template: "<span>#: (HALF_DAY == null) ? '-' : HALF_DAY #</span>"}
-                ,
-            ]
-        });
-        app.searchTable('holidayTable', ['HOLIDAY_ENAME', 'START_DATE', 'START_DATE_N', 'END_DATE', 'END_DATE_N', 'HALF_DAY']);
-        app.pdfExport(
-                'holidayTable',
-                {
-                    'HOLIDAY_ENAME': 'Holiday',
-                    'START_DATE': 'Start Date(AD),',
-                    'START_DATE_N': 'Start Date(BS),',
-                    'END_DATE': 'End Date(AD)',
-                    'END_DATE_N': 'End Date(BS)',
-                    'HALF_DAY': 'HALF_DAY'
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
 
-                });
-        function gridDataBound(e) {
-            var grid = e.sender;
-            if (grid.dataSource.total() == 0) {
-                var colCount = grid.columns.length;
-                $(e.sender.wrapper)
-                        .find('tbody')
-                        .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
-            }
-        }
-        ;
-        $("#export").click(function (e) {
-            var grid = $("#holidayTable").data("kendoGrid");
-            grid.saveAsExcel();
         });
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, {
+                'HOLIDAY_ENAME': 'Holiday Name',
+                'START_DATE_AD': 'START_DATE AD',
+                'START_DATE_BS': 'START_DATE BS',
+                'END_DATE_AD': 'END_DATE AD',
+                'END_DATE_BS': 'END_DATE BS',
+                'HALF_DAY': 'Interval'
+            }, 'Holiday List');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, {
+                'HOLIDAY_ENAME': 'Holiday Name',
+                'START_DATE_AD': 'START_DATE AD',
+                'START_DATE_BS': 'START_DATE BS',
+                'END_DATE_AD': 'END_DATE AD',
+                'END_DATE_BS': 'END_DATE BS',
+                'HALF_DAY': 'Interval'
+            }, 'Holiday List');
+        });
+
+
     }
     );
 }

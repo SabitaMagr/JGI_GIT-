@@ -36,7 +36,7 @@
             {field: ["ADVANCE_REQUEST_ID", "ALLOW_TO_EDIT"], title: "Action", template: action}
         ], "Advance Request List.xlsx");
 
-        app.searchTable('advanceTable', ['ADVANCE_NAME', 'REQUESTED_DATE', 'REQUESTED_DATE_N', 'ADVANCE_DATE', 'ADVANCE_DATE_N', 'REQUESTED_AMOUNT', 'TERMS', 'STATUS']);
+        app.searchTable('advanceTable', ['ADVANCE_NAME', 'REQUESTED_DATE_AD', 'REQUESTED_DATE_BS', 'ADVANCE_DATE_AD', 'ADVANCE_DATE_BS', 'REQUESTED_AMOUNT', 'TERMS', 'STATUS']);
 
 
         $('#excelExport').on('click', function () {

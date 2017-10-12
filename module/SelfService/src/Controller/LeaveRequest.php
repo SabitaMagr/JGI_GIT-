@@ -5,6 +5,7 @@ namespace SelfService\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use DateTime;
 use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
@@ -20,6 +21,7 @@ use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
@@ -29,21 +31,20 @@ class LeaveRequest extends AbstractActionController {
 
     private $leaveRequestRepository;
     private $employeeId;
-    private $userId;
     private $authService;
     private $form;
     private $adapter;
     private $recommender;
     private $approver;
+    private $storageData;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->leaveRequestRepository = new LeaveRequestRepository($adapter);
         $this->adapter = $adapter;
 
         $this->authService = new AuthenticationService();
-        $recordDetail = $this->authService->getIdentity();
-        $this->user_id = $recordDetail['user_id'];
-        $this->employeeId = $recordDetail['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -100,7 +101,7 @@ class LeaveRequest extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'leaves' => $leaveFormElement,
                     'leaveStatus' => $leaveStatusFormElement,
-                    'employeeId' => $this->employeeId
+                    'employeeId' => $this->employeeId,
         ]);
     }
 
@@ -133,7 +134,7 @@ class LeaveRequest extends AbstractActionController {
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
-                if ($leaveSubstitute !== null && $leaveSubstitute!=="") {
+                if ($leaveSubstitute !== null && $leaveSubstitute !== "") {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
 
@@ -366,6 +367,87 @@ class LeaveRequest extends AbstractActionController {
             }
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function employeeLeaveRequestListAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $data = $postedData->data;
+
+                $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+                $leaveRequestList = $leaveRequestRepository->getfilterRecords($data);
+                $leaveRequest = [];
+                $getValue = function($status) {
+                    if ($status == "RQ") {
+                        return "Pending";
+                    } else if ($status == 'RC') {
+                        return "Recommended";
+                    } else if ($status == "R") {
+                        return "Rejected";
+                    } else if ($status == "AP") {
+                        return "Approved";
+                    } else if ($status == "C") {
+                        return "Cancelled";
+                    }
+                };
+                $fullName = function($id) {
+                    $empRepository = new EmployeeRepository($this->adapter);
+                    $empDtl = $empRepository->fetchById($id);
+                    return $empDtl['FULL_NAME'];
+                };
+
+                $getAction = function($status) {
+                    if ($status == "RQ") {
+                        return ["delete" => 'Cancel Request'];
+                    } else {
+                        return ["view" => 'View'];
+                    }
+                };
+                foreach ($leaveRequestList as $leaveRequestRow) {
+                    $status = $getValue($leaveRequestRow['STATUS']);
+                    $action = $getAction($leaveRequestRow['STATUS']);
+
+                    $statusId = $leaveRequestRow['STATUS'];
+                    $approvedDT = $leaveRequestRow['APPROVED_DT'];
+
+                    $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $leaveRequestRow['RECOMMENDER'] : $leaveRequestRow['RECOMMENDED_BY'];
+                    $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $leaveRequestRow['APPROVER'] : $leaveRequestRow['APPROVED_BY'];
+
+                    $recommenderName = $fullName($authRecommender);
+                    $approverName = $fullName($authApprover);
+
+                    $new_row = array_merge($leaveRequestRow, [
+                        'STATUS' => $status,
+                        'ACTION' => key($action),
+                        'ACTION_TEXT' => $action[key($action)],
+                        'APPROVER_NAME' => $approverName,
+                        'RECOMMENDER_NAME' => $recommenderName,
+                    ]);
+                    $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $leaveRequestRow['FROM_DATE_AD']);
+                    $toDayDate = new DateTime();
+//            if (($toDayDate < $startDate) && ($statusId == 'RQ' || $statusId == 'RC' || $statusId == 'AP')) {
+//                $new_row['ALLOW_TO_EDIT'] = 1;
+//            } else if (($toDayDate >= $startDate) && $statusId == 'RQ') {
+//                $new_row['ALLOW_TO_EDIT'] = 1;
+//            } else if ($toDayDate >= $startDate) {
+//                $new_row['ALLOW_TO_EDIT'] = 0;
+//            } else {
+//                $new_row['ALLOW_TO_EDIT'] = 0;
+//            }
+                    if ($statusId == 'C' || $statusId == 'R') {
+                        $new_row['ALLOW_TO_EDIT'] = 0;
+                    } else {
+                        $new_row['ALLOW_TO_EDIT'] = 1;
+                    }
+                    array_push($leaveRequest, $new_row);
+                }
+                return new CustomViewModel(['success' => true, 'data' => $leaveRequest, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
     }
 

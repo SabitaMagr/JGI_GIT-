@@ -25,6 +25,8 @@ $this->headScript()
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.viewLink = '<?= $this->url("leaverequest", ["action" => "view"]) ?>';
     document.deleteLink = '<?= $this->url("leaverequest", ["action" => "delete"]) ?>';
+    document.getLeaveRequest = '<?= $this->url("leaverequest", ["action" => "employeeLeaveRequestList"]) ?>';
+    
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaverequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -43,7 +45,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="leaveRequestListController">
     <div id="hris-page-content">
 
         <div class="portlet light bg-inverse">
@@ -67,9 +68,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </a>
                         <ul class="dropdown-menu pull-right">
                             <li>
-                                <a href="javascript:;" id="export">
-                                    <i class="fa fa-pencil" ></i> Export to Excel </a>
-                            </li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
+                        </li>
                         </ul>
                     </div>
                 </div>
@@ -93,7 +102,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="fromDate">From Date</label>
-                                    <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                                    <input type="text" id="fromDate" name="fromDate"  class="form-control"/>
                                 </div>
 
                             </div>
@@ -107,7 +116,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="toDate">To Date</label>
-                                    <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                                    <input type="text"  id="toDate" name="toDate"  class="form-control"/>
                                 </div>
                             </div>
                             <div class="col-sm-3">
@@ -126,7 +135,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <i class="fa fa-refresh"></i>
                         </button>
                         <label height="45"></label>
-                        <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
+                        <button  id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
                             Search
                             <i class="fa fa-search"></i>
                         </button>
@@ -142,4 +151,3 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div> 
     </div>
-</div>
