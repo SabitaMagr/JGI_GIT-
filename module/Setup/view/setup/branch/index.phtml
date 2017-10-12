@@ -18,8 +18,9 @@ $this->headScript()
 <?php } ?>
 
 <script>
-      document.editLink ='<?= $this->url("branch", ["action" => "edit"]) ?>';
-      document.deleteLink ='<?= $this->url("branch", ["action" => "delete"]) ?>';
+    document.editLink = '<?= $this->url("branch", ["action" => "edit"]) ?>';
+    document.deleteLink = '<?= $this->url("branch", ["action" => "delete"]) ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Branch')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -35,8 +36,12 @@ $this->headScript()
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('branch', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
+                <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
+                    <a href="<?= $this->url('branch', ['action' => 'add']) ?>" class="btn default btn-sm">
+                        <i class="fa fa-plus-square icon-black"></i>
+                        New 
+                    </a>
+                <?php endif; ?>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -47,7 +52,7 @@ $this->headScript()
                             <a href="javascript:;" id ="export" class="hris-export-to-excel" hris-export-to-excel-target="branchTable">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
-                         <li >
+                        <li >
                             <a href="javascript:;" id="pdfExport">
                                 <i class="fa fa-file-pdf-o" ></i> 
                                 Export to PDF 

@@ -3,6 +3,7 @@
 namespace Setup\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\Helper;
 use Exception;
 use Setup\Form\ServiceTypeForm;
@@ -20,13 +21,14 @@ class ServiceTypeController extends AbstractActionController {
     private $adapter;
     private $employeeId;
     private $storageData;
+    private $acl;
 
     function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new ServiceTypeRepository($adapter);
-        $this->storageData= $storage->read();
-        $this->employeeId=$this->storageData['employee_id'];
-        
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     private function initializeForm() {
@@ -38,7 +40,7 @@ class ServiceTypeController extends AbstractActionController {
     }
 
     public function indexAction() {
-         $request = $this->getRequest();
+        $request = $this->getRequest();
         if ($request->isPost()) {
             try {
                 $result = $this->repository->fetchActiveRecord();
@@ -48,11 +50,12 @@ class ServiceTypeController extends AbstractActionController {
                 return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return Helper::addFlashMessagesToArray($this, []);
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function addAction() {
 
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -84,6 +87,7 @@ class ServiceTypeController extends AbstractActionController {
 
     public function editAction() {
 
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute();
@@ -110,6 +114,9 @@ class ServiceTypeController extends AbstractActionController {
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {

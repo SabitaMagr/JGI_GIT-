@@ -3,11 +3,12 @@
     'use strict';
     $(document).ready(function () {
         var $table = $('#serviceTypeTable');
-        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:SERVICE_TYPE_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>';
-        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:SERVICE_TYPE_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:SERVICE_TYPE_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:SERVICE_TYPE_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
         var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
             {field: "SERVICE_TYPE_NAME", title: "Service Type", width: 400},
+            {field: "SERVICE_TYPE_ID", title: "Action", width: 120, template: action}
         ], "ServiceType List.xlsx");
 
         app.searchTable('serviceTypeTable', ['SERVICE_TYPE_NAME']);

@@ -2,14 +2,16 @@
 
 namespace AttendanceManagement\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
+use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
 use AttendanceManagement\Form\ShiftForm;
 use AttendanceManagement\Model\ShiftSetup as Shift;
 use AttendanceManagement\Repository\ShiftRepository;
-use Setup\Helper\EntityHelper;
-use Application\Helper\EntityHelper as EntityHelper2;
+use Exception;
 use Setup\Model\Company;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -21,21 +23,29 @@ class ShiftSetup extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->repository = new ShiftRepository($adapter);
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function indexAction() {
-        $shiftList = $this->repository->fetchAll();
-        $shifts = [];
-        foreach ($shiftList as $shiftRow) {
-            array_push($shifts, $shiftRow);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $shiftList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $shiftList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['shifts' => $shifts]);
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function initializeForm() {
@@ -45,6 +55,7 @@ class ShiftSetup extends AbstractActionController {
     }
 
     public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -92,6 +103,7 @@ class ShiftSetup extends AbstractActionController {
     }
 
     public function editAction() {
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $this->initializeForm();
         $id = (int) $this->params()->fromRoute("id");
 
@@ -147,6 +159,9 @@ class ShiftSetup extends AbstractActionController {
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('shiftsetup');

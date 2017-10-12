@@ -3,12 +3,13 @@
     'use strict';
     $(document).ready(function () {
         var $table = $('#academicDegreeTable');
-        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:ACADEMIC_DEGREE_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>';
-        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:ACADEMIC_DEGREE_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:ACADEMIC_DEGREE_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:ACADEMIC_DEGREE_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
         var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
                 {field: "ACADEMIC_DEGREE_NAME", title: "Academic Degree",width:300},
                 {field: "WEIGHT", title: "Weight",width:100},
+                {field: "ACADEMIC_DEGREE_ID", title: "Action", width: 120, template: action}
         ], "AcademicDegree List.xlsx");
 
         app.searchTable('academicDegreeTable', ['ACADEMIC_DEGREE_NAME','WEIGHT']);

@@ -2,8 +2,8 @@
     'use strict';
     $(document).ready(function () {
         var $table = $('#positionTable');
-        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:POSITION_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>';
-        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:POSITION_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:POSITION_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:POSITION_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
         var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
             {field: "LEVEL_NO", title: "Level", width: 100},
@@ -11,6 +11,7 @@
             {field: "WOH_FLAG", title: "Work On Holiday", width: 150},
             {field: "COMPANY_NAME", title: "Company", width: 250},
             {field: "REMARKS", title: "Remarks", hidden: true},
+            {field: "POSITION_ID", title: "Action", width: 120, template: action}
         ], "Company List.xlsx");
 
         app.searchTable('positionTable', ['LEVEL_NO', 'POSITION_NAME', 'COMPANY_NAME']);

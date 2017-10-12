@@ -14,7 +14,9 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <script>
-    document.shifts =<?php echo json_encode($shifts); ?>;
+    document.editLink = '<?= $this->url("shiftsetup", ["action" => "edit"]); ?>';
+    document.deleteLink = '<?= $this->url("shiftsetup", ["action" => "delete"]); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\shiftsetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
@@ -35,17 +37,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('shiftsetup', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
+                <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
+                    <a href="<?= $this->url('shiftsetup', ['action' => 'add']) ?>" class="btn default btn-sm">
+                        <i class="fa fa-plus-square icon-black"></i>
+                        New 
+                    </a>
+                <?php endif; ?>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -53,42 +59,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="javascript:;" id="export">
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-    <div id="shiftTable">
+        <div id="shiftTable">
+        </div>
     </div>
-	</div>
-
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (SHIFT_ENAME == null) ? '-' : SHIFT_ENAME #
-        </td>
-        <td>
-        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>
-        #: (START_TIME == null) ? '-' : START_TIME #
-        </td>
-        <td>
-        #: (END_TIME == null) ? '-' : END_TIME #
-        </td>
-        <td>
-        <a class="btn-edit" 
-        href="<?= $this->url("shiftsetup", ["action" => "edit"]); ?>/#:SHIFT_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a> 
-        <a class="btn-delete confirmation" 
-        href="<?= $this->url("shiftsetup", ["action" => "delete"]); ?>/#:SHIFT_ID #" id="bs_#:SHIFT_ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i>
-        </a>
-        </td>
-        </tr>
-    </script>
 </div>

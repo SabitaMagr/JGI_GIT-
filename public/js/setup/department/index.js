@@ -2,13 +2,14 @@
     'use strict';
     $(document).ready(function () {
         var $table = $('#departmentTable');
-        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:DEPARTMENT_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>';
-        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:DEPARTMENT_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:DEPARTMENT_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:DEPARTMENT_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
         var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
                 {field: "DEPARTMENT_NAME", title: "Name", width: 150},
                 {field: "COMPANY_NAME", title: "Company", width: 150},
                 {field: "BRANCH_NAME", title: "Branch", width: 150},
+                {field: "DEPARTMENT_ID", title: "Action", width: 120, template: action}
         ], "Department List.xlsx");
 
         app.searchTable('departmentTable', ['DEPARTMENT_NAME','COMPANY_NAME','BRANCH_NAME']);

@@ -46,8 +46,6 @@ class HolidaySetup extends AbstractActionController {
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
         $holidayFormElement->setLabel("Holiday");
-
-
         $holidayList = $this->repository->fetchAll();
         $viewModel = new ViewModel(Helper::addFlashMessagesToArray($this, [
                     'holidayList' => $holidayList,
@@ -66,14 +64,10 @@ class HolidaySetup extends AbstractActionController {
             if ($this->form->isValid()) {
                 $holiday = new Holiday();
                 $holiday->exchangeArrayFromForm($this->form->getData());
-
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
                 $holiday->createdBy = $this->employeeId;
                 $holiday->status = 'E';
                 $holiday->fiscalYear = (int) Helper::getMaxId($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID");
-
-
-
                 $holiday->holidayId = ((int) Helper::getMaxId($this->adapter, 'HRIS_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
                 $this->repository->add($holiday);
 
@@ -106,11 +100,7 @@ class HolidaySetup extends AbstractActionController {
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
         $holidayFormElement->setLabel("Holiday");
-
         //print_r($holidayFormElement); die();
-
-
-
         $holidayList = $this->repository->fetchAll();
         $viewModel = new ViewModel(Helper::addFlashMessagesToArray($this, [
                     'holidayList' => $holidays,
@@ -148,7 +138,6 @@ class HolidaySetup extends AbstractActionController {
                 throw new Exception('Request should be post');
             }
             $postedData = $request->getPost();
-
             $inputData = $postedData->id;
             $holidayRepository = new HolidayRepository($this->adapter);
             $resultSet = $holidayRepository->fetchById($inputData);
@@ -212,12 +201,8 @@ class HolidaySetup extends AbstractActionController {
             $postedData = $request->getPost();
             $inputData = $postedData->data;
             $holidayRepository = new HolidayRepository($this->adapter);
-
-
             $data = $inputData['dataArray'];
-
             $holidayModel = new Holiday();
-
             $holidayModel->holidayCode = (isset($data['holidayCode']) ? $data['holidayCode'] : "" );
             $holidayModel->holidayEname = (isset($data['holidayEname']) ? $data['holidayEname'] : "" );
             $holidayModel->holidayLname = (isset($data['holidayLname']) ? $data['holidayLname'] : "" );
@@ -228,7 +213,6 @@ class HolidaySetup extends AbstractActionController {
             $holidayModel->modifiedDt = Helper::getcurrentExpressionDate();
             $holidayModel->modifiedBy = $this->employeeId;
             $holidayModel->assignOnEmployeeSetup = (isset($data['assignOnEmployeeSetup']) ? $data['assignOnEmployeeSetup'] : "" );
-
             $resultSet = $holidayRepository->edit($holidayModel, $inputData['holidayId']);
             return new CustomViewModel([
                 "success" => true,
