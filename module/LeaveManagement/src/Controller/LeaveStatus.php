@@ -11,9 +11,7 @@ use LeaveManagement\Repository\LeaveMasterRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use ManagerService\Repository\LeaveApproveRepository;
 use SelfService\Repository\LeaveRequestRepository;
-use SelfService\Repository\LeaveSubstituteRepository;
 use Setup\Model\HrEmployees;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -94,7 +92,6 @@ class LeaveStatus extends AbstractActionController {
         $leaveDtl = $leaveRepository->fetchById($leaveId);
 
         $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DT'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $recommApprove = $detail['RECOMMENDER_ID'] == $detail['APPROVER_ID'] ? 1 : 0;

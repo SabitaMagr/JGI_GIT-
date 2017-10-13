@@ -28,7 +28,7 @@ class LeaveApproveRepository implements RepositoryInterface {
         // TODO: Implement add() method.
     }
 
-    public function getAllRequest($id = null, $status = null) {
+    public function getAllRequest($id = null) {
         $sql = "SELECT 
                 INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,LA.NO_OF_DAYS,
                 INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
@@ -66,23 +66,10 @@ class LeaveApproveRepository implements RepositoryInterface {
                 E.EMPLOYEE_ID=RA.EMPLOYEE_ID 
                 LEFT JOIN HRIS_LEAVE_SUBSTITUTE LS
                 ON LA.ID = LS.LEAVE_REQUEST_ID
-                 WHERE E.STATUS='E' AND E.RETIRED_FLAG='N' AND";
-        if ($status == null) {
-            $sql .= " ((RA.RECOMMEND_BY=" . $id . " AND LA.STATUS='RQ' AND
-                    (LS.APPROVED_FLAG = CASE WHEN LS.EMPLOYEE_ID IS NOT NULL
-                         THEN ('Y')     
-                    END OR  LS.EMPLOYEE_ID is null)) OR (RA.APPROVED_BY=" . $id . " AND LA.STATUS='RC') )";
-        } else if ($status == 'RC') {
-            $sql .= " LA.STATUS='RC' AND
-                LA.RECOMMENDED_BY=" . $id;
-        } else if ($status == 'AP') {
-            $sql .= " LA.STATUS='AP' AND
-                LA.APPROVED_BY=" . $id;
-        } else if ($status == 'R') {
-            $sql .= " LA.STATUS='" . $status . "' AND
-                ((LA.RECOMMENDED_BY=" . $id . " AND LA.APPROVED_DT IS NULL) OR (LA.APPROVED_BY=" . $id . " AND LA.APPROVED_DT IS NOT NULL) )";
-        }
-        $sql .= "  ORDER BY LA.REQUESTED_DT DESC";
+                WHERE E.STATUS='E' AND E.RETIRED_FLAG='N' 
+                AND LA.STATUS IN ('RQ','RC') 
+                AND {$id} IN (RA.RECOMMEND_BY , RA.APPROVED_BY ) 
+                ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -149,7 +136,8 @@ class LeaveApproveRepository implements RepositoryInterface {
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
                 ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left")
-                ->join(['LS' => "HRIS_LEAVE_SUBSTITUTE"], "LS.LEAVE_REQUEST_ID=LA.ID", ['SUB_EMPLOYEE_ID' => 'EMPLOYEE_ID', 'SUB_APPROVED_DATE' => new Expression("INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY'))"), 'SUB_REMARKS' => "REMARKS", 'SUB_APPROVED_FLAG' => "APPROVED_FLAG"], "left");
+                ->join(['LS' => "HRIS_LEAVE_SUBSTITUTE"], "LS.LEAVE_REQUEST_ID=LA.ID", ['SUB_EMPLOYEE_ID' => 'EMPLOYEE_ID', 'SUB_APPROVED_DATE' => new Expression("INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY'))"), 'SUB_REMARKS' => "REMARKS", 'SUB_APPROVED_FLAG' => "APPROVED_FLAG"], "left")
+                ->join(['L' => "HRIS_LEAVE_MASTER_SETUP"], "L.LEAVE_ID=LA.LEAVE_ID", ['L.PAID'], "left");
 
         $select->where([
             "LA.ID=" . $id
