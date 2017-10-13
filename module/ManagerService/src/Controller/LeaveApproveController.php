@@ -15,7 +15,6 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -293,7 +292,7 @@ class LeaveApproveController extends AbstractActionController {
 
     public function getAllList() {
         $list = $this->repository->getAllRequest($this->employeeId);
-        Helper::extractDbData($list);
+        return Helper::extractDbData($list);
     }
 
 }
