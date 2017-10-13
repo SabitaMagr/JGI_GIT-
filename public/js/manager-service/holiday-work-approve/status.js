@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -30,7 +30,7 @@ angular.module('hris', [])
                     action: 'pullHoliayWorkRequestStatusList',
                     data: {
                         'employeeId': employeeId,
-                        'companyId':companyId,
+                        'companyId': companyId,
                         'branchId': branchId,
                         'departmentId': departmentId,
                         'designationId': designationId,
@@ -80,7 +80,7 @@ angular.module('hris', [])
                     columns: [
                         {field: "FULL_NAME", title: "Employee"},
                         {field: "HOLIDAY_ENAME", title: "Holiday"},
-                         {title: "Requested Date",
+                        {title: "Requested Date",
                             columns: [{
                                     field: "REQUESTED_DATE",
                                     title: "English",
@@ -88,7 +88,7 @@ angular.module('hris', [])
                                 {field: "REQUESTED_DATE_N",
                                     title: "Nepali",
                                     template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
-                          {title: "From Date",
+                        {title: "From Date",
                             columns: [{
                                     field: "FROM_DATE",
                                     title: "English",
@@ -108,36 +108,36 @@ angular.module('hris', [])
                         {field: "YOUR_ROLE", title: "Your Role"},
                         {field: "STATUS", title: "Status"},
                         {field: ["ID"], title: "Action", template: `<span> <a class="btn  btn-icon-only btn-success"
-        href=" ` + document.viewLink  + ` /#: ID #/#: ROLE #" style="height:17px;" title="view">
+        href=" ` + document.viewLink + `/#: ID #/#: ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </span>`}
                     ]
                 });
-                
-                app.searchTable('holidayWorkRequestStatusTable',['FULL_NAME','HOLIDAY_ENAME','REQUESTED_DATE','FROM_DATE','TO_DATE','REQUESTED_DATE_N','FROM_DATE_N','TO_DATE_N','DURATION','YOUR_ROLE','STATUS']);
-                
+
+                app.searchTable('holidayWorkRequestStatusTable', ['FULL_NAME', 'HOLIDAY_ENAME', 'REQUESTED_DATE', 'FROM_DATE', 'TO_DATE', 'REQUESTED_DATE_N', 'FROM_DATE_N', 'TO_DATE_N', 'DURATION', 'YOUR_ROLE', 'STATUS']);
+
                 app.pdfExport(
-                'holidayWorkRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'HOLIDAY_ENAME': 'Holiday',
-                    'REQUESTED_DATE': 'Request Date(AD)',
-                    'REQUESTED_DATE_N': 'Request Date(BS)',
-                    'FROM_DATE': 'From Date(AD)',
-                    'FROM_DATE_N': 'From Date(BS)',
-                    'TO_DATE': 'To Date(AD)',
-                    'TO_DATE_N': 'To Date(BS)',
-                    'DURATION': 'Duration',
-                    'YOUR_ROLE': 'Role',
-                    'STATUS': 'Status',
-                    'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                    
-                });
-                
+                        'holidayWorkRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'HOLIDAY_ENAME': 'Holiday',
+                            'REQUESTED_DATE': 'Request Date(AD)',
+                            'REQUESTED_DATE_N': 'Request Date(BS)',
+                            'FROM_DATE': 'From Date(AD)',
+                            'FROM_DATE_N': 'From Date(BS)',
+                            'TO_DATE': 'To Date(AD)',
+                            'TO_DATE_N': 'To Date(BS)',
+                            'DURATION': 'Duration',
+                            'YOUR_ROLE': 'Role',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+
+                        });
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

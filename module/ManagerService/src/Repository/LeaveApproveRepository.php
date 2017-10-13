@@ -78,7 +78,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                   END
                 OR LS.EMPLOYEE_ID IS NULL)))
                 OR (RA.APPROVED_BY = {$id}
-                AND LA.STATUS      ='RC') ) ORDER BY LA.REQUESTED_DT DESC;";
+                AND LA.STATUS      ='RC')  ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
