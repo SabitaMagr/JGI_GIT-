@@ -65,7 +65,7 @@ class DayoffWorkApproveRepository implements RepositoryInterface {
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=WD.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=WD.RECOMMENDED_BY", ['RECOMMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=WD.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WD.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=WD.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
@@ -80,7 +80,7 @@ class DayoffWorkApproveRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function getAllRequest($id = null, $status = null) {
+    public function getAllRequest($id, $status = null) {
         $sql = "SELECT 
                     WD.ID,
                     WD.EMPLOYEE_ID,
@@ -114,13 +114,9 @@ class DayoffWorkApproveRepository implements RepositoryInterface {
                     LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE  E.STATUS='E'
-                    AND E.RETIRED_FLAG='N' AND ( RA.RECOMMEND_BY = {$id} OR RA.APPROVED_BY = {$id} )";
-        $statusCondition = "";
-        if ($status != null) {
-            $statusCondition = "AND WD.STATUS='{$status}'";
-        }
-        $sql .= $statusCondition;
-        $sql .= " ORDER BY WD.REQUESTED_DATE DESC";
+                    AND E.RETIRED_FLAG='N' 
+                    AND ((RA.RECOMMEND_BY= {$id} AND WD.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND WD.STATUS='RC') )
+                    ORDER BY WD.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

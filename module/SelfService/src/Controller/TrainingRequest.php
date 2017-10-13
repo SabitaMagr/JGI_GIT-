@@ -1,24 +1,22 @@
 <?php
+
 namespace SelfService\Controller;
 
 use Application\Helper\Helper;
 use DateTime;
 use Exception;
-use LeaveManagement\Repository\LeaveAssignRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\TrainingRequestForm;
 use SelfService\Model\TrainingRequest as TrainingRequestModel;
-use Setup\Model\Training;
-use Setup\Repository\TrainingRepository;
 use SelfService\Repository\TrainingRequestRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\TrainingRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Notification\Model\NotificationEvents;
-use Notification\Controller\HeadNotification;
 
 class TrainingRequest extends AbstractActionController {
 
@@ -98,14 +96,14 @@ class TrainingRequest extends AbstractActionController {
                 return ["view" => 'View'];
             }
         };
-        $getValueComType = function($trainingTypeId){
-            if($trainingTypeId=='CC'){
+        $getValueComType = function($trainingTypeId) {
+            if ($trainingTypeId == 'CC') {
                 return 'Company Contribution';
-            }else if($trainingTypeId=='CP'){
+            } else if ($trainingTypeId == 'CP') {
                 return 'Company Personal';
             }
         };
-        
+
         foreach ($result as $row) {
             $status = $getValue($row['STATUS']);
             $action = $getAction($row['STATUS']);
@@ -118,20 +116,20 @@ class TrainingRequest extends AbstractActionController {
             $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
             $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-            if($row['TRAINING_ID']!=0){
-                $row['START_DATE']=$row['T_START_DATE'];
+            if ($row['TRAINING_ID'] != 0) {
+                $row['START_DATE'] = $row['T_START_DATE'];
                 $row['END_DATE'] = $row['T_END_DATE'];
                 $row['DURATION'] = $row['T_DURATION'];
                 $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
                 $row['TITLE'] = $row['TRAINING_NAME'];
             }
-            
+
             $new_row = array_merge($row, [
                 'RECOMMENDER_NAME' => $authRecommender,
                 'APPROVER_NAME' => $authApprover,
                 'STATUS' => $status,
                 'ACTION' => key($action),
-                'TRAINING_TYPE'=> $getValueComType($row['TRAINING_TYPE']),
+                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
                 'ACTION_TEXT' => $action[key($action)]
             ]);
             $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
@@ -159,13 +157,13 @@ class TrainingRequest extends AbstractActionController {
             $postData = $request->getPost();
             $this->form->setData($postData);
             if ($this->form->isValid()) {
-                if($postData['companyList']==1){
-                    $model->trainingId=$postData['trainingId'];
+                if ($postData['companyList'] == 1) {
+                    $model->trainingId = $postData['trainingId'];
                     $model->remarks = $postData['remarks'];
                     $model->description = $postData['description'];
-                }else if($postData['companyList']==0){
+                } else if ($postData['companyList'] == 0) {
                     $model->exchangeArrayFromForm($this->form->getData());
-                    $model->trainingId = 0;
+                    $model->trainingId = null;
                 }
                 $model->requestId = ((int) Helper::getMaxId($this->adapter, TrainingRequestModel::TABLE_NAME, TrainingRequestModel::REQUEST_ID)) + 1;
                 $model->employeeId = $this->employeeId;
@@ -182,8 +180,8 @@ class TrainingRequest extends AbstractActionController {
             }
         }
         $trainingTypes = array(
-           'CP'=>'Company Personal',
-           'CC'=>'Company Contribution'
+            'CP' => 'Company Personal',
+            'CC' => 'Company Contribution'
         );
 
         $trainings = $this->getTrainingList($this->employeeId);
@@ -191,8 +189,8 @@ class TrainingRequest extends AbstractActionController {
                     'form' => $this->form,
                     'employeeId' => $this->employeeId,
                     'trainings' => $trainings["trainingKVList"],
-                    'trainingTypes'=>$trainingTypes,
-                    'trainingList'=>$trainings['trainingList']
+                    'trainingTypes' => $trainingTypes,
+                    'trainingList' => $trainings['trainingList']
         ]);
     }
 
@@ -233,8 +231,8 @@ class TrainingRequest extends AbstractActionController {
         $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
         $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-        if($detail['TRAINING_ID']!=0){
-            $detail['START_DATE']=$detail['T_START_DATE'];
+        if ($detail['TRAINING_ID'] != 0) {
+            $detail['START_DATE'] = $detail['T_START_DATE'];
             $detail['END_DATE'] = $detail['T_END_DATE'];
             $detail['DURATION'] = $detail['T_DURATION'];
             $detail['TRAINING_TYPE'] = $detail['T_TRAINING_TYPE'];
@@ -243,10 +241,10 @@ class TrainingRequest extends AbstractActionController {
 //        print_r($detail); die();
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
-        
+
         $trainingTypes = array(
-           'CP'=>'Company Personal',
-           'CC'=>'Company Contribution'
+            'CP' => 'Company Personal',
+            'CC' => 'Company Contribution'
         );
 
         $employeeName = $fullName($detail['EMPLOYEE_ID']);
@@ -255,12 +253,12 @@ class TrainingRequest extends AbstractActionController {
                     'form' => $this->form,
                     'employeeName' => $employeeName,
                     'status' => $detail['STATUS'],
-                    'trainingIdSelected'=>$detail['TRAINING_ID'],
+                    'trainingIdSelected' => $detail['TRAINING_ID'],
                     'requestedDate' => $detail['REQUESTED_DATE'],
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
                     'trainings' => $trainings["trainingKVList"],
-                    'trainingTypes'=>$trainingTypes,
+                    'trainingTypes' => $trainingTypes,
 //                    'trainingList'=>$trainings['trainingList']
         ]);
     }
@@ -316,6 +314,7 @@ class TrainingRequest extends AbstractActionController {
             $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
             $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
         }
-        return ['trainingKVList' => $trainingList,'trainingList'=>$allTrainings];
+        return ['trainingKVList' => $trainingList, 'trainingList' => $allTrainings];
     }
+
 }

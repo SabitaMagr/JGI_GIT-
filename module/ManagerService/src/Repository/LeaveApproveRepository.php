@@ -29,47 +29,56 @@ class LeaveApproveRepository implements RepositoryInterface {
     }
 
     public function getAllRequest($id) {
-        $sql = "SELECT 
-                INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,LA.NO_OF_DAYS,
-                INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
-                BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
-                INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE,
-                BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS END_DATE_N,
-                INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
-                BS_DATE(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE_N,
-                LA.EMPLOYEE_ID,
-                LA.ID AS ID,
-                INITCAP(E.FIRST_NAME) AS FIRST_NAME,
-                INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
-                INITCAP(E.LAST_NAME) AS LAST_NAME,
-                INITCAP(E.FULL_NAME) AS FULL_NAME,
-                LA.RECOMMENDED_BY,
-                LA.APPROVED_BY,
-                RA.RECOMMEND_BY AS RECOMMENDER,
-                RA.APPROVED_BY AS APPROVER,
-                LS.APPROVED_FLAG AS APPROVED_FLAG,
-                INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY')) AS SUB_APPROVED_DATE,
-                LS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID,
-                LEAVE_STATUS_DESC(LA.STATUS)                     AS STATUS,
-                REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
-                REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+        $sql = "
+                SELECT INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
+                  LA.NO_OF_DAYS,
+                  INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE,
+                  BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE_N,
+                  INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))     AS END_DATE,
+                  BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))     AS END_DATE_N,
+                  INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
+                  BS_DATE(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE_N,
+                  LA.EMPLOYEE_ID,
+                  LA.ID                  AS ID,
+                  INITCAP(E.FIRST_NAME)  AS FIRST_NAME,
+                  INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
+                  INITCAP(E.LAST_NAME)   AS LAST_NAME,
+                  INITCAP(E.FULL_NAME)   AS FULL_NAME,
+                  LA.RECOMMENDED_BY,
+                  LA.APPROVED_BY,
+                  RA.RECOMMEND_BY                                         AS RECOMMENDER,
+                  RA.APPROVED_BY                                          AS APPROVER,
+                  LS.APPROVED_FLAG                                        AS APPROVED_FLAG,
+                  INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY'))       AS SUB_APPROVED_DATE,
+                  LS.EMPLOYEE_ID                                          AS SUB_EMPLOYEE_ID,
+                  LEAVE_STATUS_DESC(LA.STATUS)                            AS STATUS,
+                  REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                  REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
-                LEFT JOIN HRIS_LEAVE_MASTER_SETUP L ON
-                L.LEAVE_ID=LA.LEAVE_ID 
-                LEFT JOIN HRIS_EMPLOYEES E ON
-                E.EMPLOYEE_ID=LA.EMPLOYEE_ID
-                LEFT JOIN HRIS_EMPLOYEES E1 ON
-                E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
-                LEFT JOIN HRIS_EMPLOYEES E2 ON
-                E2.EMPLOYEE_ID=LA.APPROVED_BY 
-                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA ON
-                E.EMPLOYEE_ID=RA.EMPLOYEE_ID 
+                LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+                ON L.LEAVE_ID=LA.LEAVE_ID
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON E.EMPLOYEE_ID=LA.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES E1
+                ON E1.EMPLOYEE_ID=LA.RECOMMENDED_BY
+                LEFT JOIN HRIS_EMPLOYEES E2
+                ON E2.EMPLOYEE_ID=LA.APPROVED_BY
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
+                ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                 LEFT JOIN HRIS_LEAVE_SUBSTITUTE LS
-                ON LA.ID = LS.LEAVE_REQUEST_ID
-                WHERE E.STATUS='E' AND E.RETIRED_FLAG='N' 
-                AND LA.STATUS IN ('RQ','RC') 
-                AND {$id} IN (RA.RECOMMEND_BY , RA.APPROVED_BY ) 
-                ORDER BY LA.REQUESTED_DT DESC";
+                ON LA.ID              = LS.LEAVE_REQUEST_ID
+                WHERE E.STATUS        ='E'
+                AND E.RETIRED_FLAG    ='N'
+                AND ((RA.RECOMMEND_BY = {$id}
+                AND LA.STATUS         ='RQ'
+                AND (LS.APPROVED_FLAG =
+                  CASE
+                    WHEN LS.EMPLOYEE_ID IS NOT NULL
+                    THEN ('Y')
+                  END
+                OR LS.EMPLOYEE_ID IS NULL)))
+                OR (RA.APPROVED_BY = {$id}
+                AND LA.STATUS      ='RC') ) ORDER BY LA.REQUESTED_DT DESC;";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

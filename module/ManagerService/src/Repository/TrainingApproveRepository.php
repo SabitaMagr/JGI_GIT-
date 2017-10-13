@@ -4,25 +4,24 @@ namespace ManagerService\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
 use SelfService\Model\TrainingRequest;
-use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\Training;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
-use Setup\Model\HrEmployees;
+use Zend\Db\TableGateway\TableGateway;
 
 class TrainingApproveRepository implements RepositoryInterface {
 
     private $tableGateway;
     private $adapter;
 
-    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(TrainingRequest::TABLE_NAME, $adapter);
     }
 
-    public function add(\Application\Model\Model $model) {
+    public function add(Model $model) {
         
     }
 
@@ -34,7 +33,7 @@ class TrainingApproveRepository implements RepositoryInterface {
         
     }
 
-    public function edit(\Application\Model\Model $model, $id) {
+    public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [TrainingRequest::REQUEST_ID => $id]);
     }
@@ -71,7 +70,7 @@ class TrainingApproveRepository implements RepositoryInterface {
         $select->from(['TR' => TrainingRequest::TABLE_NAME])
                 ->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TR." . TrainingRequest::TRAINING_ID, [Training::TRAINING_CODE, "TRAINING_NAME" => new Expression("INITCAP(T.TRAINING_NAME)"), "T_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"), "T_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"), "T_DURATION" => Training::DURATION, "T_TRAINING_TYPE" => Training::TRAINING_TYPE], "left")
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=TR.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
@@ -86,7 +85,7 @@ class TrainingApproveRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function getAllRequest($id = null, $status = null) {
+    public function getAllRequest($id) {
         $sql = "
                 SELECT TR.REQUEST_ID,
                   TR.EMPLOYEE_ID,
@@ -163,20 +162,9 @@ class TrainingApproveRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                 ON E.EMPLOYEE_ID  =RA.EMPLOYEE_ID
                 WHERE E.STATUS    ='E'
-                AND E.RETIRED_FLAG='N'";
-        if ($status == null) {
-            $sql .= " AND ((RA.RECOMMEND_BY=" . $id . " AND TR.STATUS='RQ') OR (RA.APPROVED_BY=" . $id . " AND TR.STATUS='RC') )";
-        } else if ($status == 'RC') {
-            $sql .= " AND TR.STATUS='RC' AND
-                RA.RECOMMEND_BY=" . $id;
-        } else if ($status == 'AP') {
-            $sql .= " AND TR.STATUS='AP' AND
-                RA.APPROVED_BY=" . $id;
-        } else if ($status == 'R') {
-            $sql .= " AND TR.STATUS='" . $status . "' AND
-                ((RA.RECOMMEND_BY=" . $id . " AND TR.APPROVED_DATE IS NULL) OR (RA.APPROVED_BY=" . $id . " AND TR.APPROVED_DATE IS NOT NULL) )";
-        }
-        $sql .= " ORDER BY TR.REQUESTED_DATE DESC";
+                AND E.RETIRED_FLAG='N' 
+                AND ((RA.RECOMMEND_BY= {$id} AND TR.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND TR.STATUS='RC') )
+                ORDER BY TR.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

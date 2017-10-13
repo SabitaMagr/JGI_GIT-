@@ -120,20 +120,9 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                     LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE  H.STATUS = 'E' AND  E.STATUS='E'
-                    AND E.RETIRED_FLAG='N'";
-        if ($status == null) {
-            $sql .= " AND ((RA.RECOMMEND_BY=" . $id . " AND WH.STATUS='RQ') OR (RA.APPROVED_BY=" . $id . " AND WH.STATUS='RC') )";
-        } else if ($status == 'RC') {
-            $sql .= " AND WH.STATUS='RC' AND
-                RA.RECOMMEND_BY=" . $id;
-        } else if ($status == 'AP') {
-            $sql .= " AND WH.STATUS='AP' AND
-                RA.APPROVED_BY=" . $id;
-        } else if ($status == 'R') {
-            $sql .= " AND WH.STATUS='" . $status . "' AND
-                ((RA.RECOMMEND_BY=" . $id . " AND WH.APPROVED_DATE IS NULL) OR (RA.APPROVED_BY=" . $id . " AND WH.APPROVED_DATE IS NOT NULL) )";
-        }
-        $sql .= " ORDER BY WH.REQUESTED_DATE DESC";
+                    AND E.RETIRED_FLAG='N' 
+                    AND ((RA.RECOMMEND_BY= {$id} AND WH.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND WH.STATUS='RC') )
+                    ORDER BY WH.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

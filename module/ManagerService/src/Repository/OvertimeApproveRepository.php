@@ -50,7 +50,7 @@ class OvertimeApproveRepository implements RepositoryInterface {
 
         $select->from(['OT' => Overtime::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=OT.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=OT.RECOMMENDED_BY", ['RECOMMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=OT.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=OT.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=OT.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
@@ -101,7 +101,8 @@ class OvertimeApproveRepository implements RepositoryInterface {
                     LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE  E.STATUS='E'
-                    AND E.RETIRED_FLAG='N' AND OT.STATUS IN ('RQ','RC') AND {$id} IN (RA.RECOMMEND_BY , RA.APPROVED_BY) 
+                    AND E.RETIRED_FLAG='N' 
+                    AND ((RA.RECOMMEND_BY= {$id} AND OT.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND OT.STATUS='RC') )
                     ORDER BY OT.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

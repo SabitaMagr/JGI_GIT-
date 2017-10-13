@@ -118,7 +118,8 @@ class AdvanceApproveRepository implements RepositoryInterface {
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE A.STATUS = 'E' AND E.STATUS='E'
                     AND E.RETIRED_FLAG='N' 
-                    AND ( RA.RECOMMEND_BY = {$id} OR RA.APPROVED_BY = {$id} ) AND AR.STATUS IN ('RQ','RC')  ORDER BY AR.REQUESTED_DATE DESC"
+                    AND ((RA.RECOMMEND_BY= {$id} AND AR.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND AR.STATUS='RC') )
+                    ORDER BY AR.REQUESTED_DATE DESC"
         ;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

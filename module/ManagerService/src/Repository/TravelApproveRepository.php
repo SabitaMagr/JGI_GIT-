@@ -96,7 +96,7 @@ class TravelApproveRepository implements RepositoryInterface {
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=TR.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
@@ -112,64 +112,58 @@ class TravelApproveRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function getAllRequest($id = null, $status = null) {
-        $sql = "SELECT 
-                    TR.TRAVEL_ID,
-                    TR.TRAVEL_CODE,
-                    TR.EMPLOYEE_ID,
-                    TR.REQUESTED_AMOUNT,
-                    INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
-                    BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
-                    TR.APPROVED_BY,
-                    TR.RECOMMENDED_BY,
-                    TR.PURPOSE,
-                    TR.STATUS,
-                    TR.REQUESTED_TYPE,
-                    TR.REMARKS,
-                    TR.RECOMMENDED_REMARKS,
-                    TR.APPROVED_REMARKS,
-                    TR.DESTINATION,
-                    INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
-                    BS_DATE(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE_N,
-                    INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
-                    BS_DATE(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE_N,
-                    INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
-                    INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
-                    INITCAP(E.FIRST_NAME) AS FIRST_NAME,
-                    INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
-                    INITCAP(E.LAST_NAME) AS LAST_NAME,
-                    INITCAP(E.FULL_NAME) AS FULL_NAME,
-                    RA.RECOMMEND_BY as RECOMMENDER,
-                    RA.APPROVED_BY AS APPROVER,
-                    TS.APPROVED_FLAG AS APPROVED_FLAG,
-                    INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY')) AS SUB_APPROVED_DATE,
-                    TS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
-                    FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
-                    LEFT JOIN HRIS_EMPLOYEES E ON 
-                    E.EMPLOYEE_ID=TR.EMPLOYEE_ID
-                    LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
-                    ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
-                    LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
-                    ON TS.TRAVEL_ID = TR.TRAVEL_ID
-                    WHERE E.STATUS='E'
-                    AND E.RETIRED_FLAG='N'";
-        if ($status == null) {
-            $sql .= " AND ((RA.RECOMMEND_BY=" . $id . " AND TR.STATUS='RQ'"
-                    . " AND
-                    (TS.APPROVED_FLAG = CASE WHEN TS.EMPLOYEE_ID IS NOT NULL
-                         THEN ('Y')     
-                    END OR  TS.EMPLOYEE_ID is null)) OR (RA.APPROVED_BY=" . $id . " AND TR.STATUS='RC') )";
-        } else if ($status == 'RC') {
-            $sql .= " AND TR.STATUS='RC' AND
-                RA.RECOMMEND_BY=" . $id;
-        } else if ($status == 'AP') {
-            $sql .= " AND TR.STATUS='AP' AND
-                RA.APPROVED_BY=" . $id;
-        } else if ($status == 'R') {
-            $sql .= " AND TR.STATUS='" . $status . "' AND
-                ((RA.RECOMMEND_BY=" . $id . " AND TR.APPROVED_DATE IS NULL) OR (RA.APPROVED_BY=" . $id . " AND TR.APPROVED_DATE IS NOT NULL) )";
-        }
-        $sql .= " ORDER BY TR.REQUESTED_DATE DESC";
+    public function getAllRequest($id) {
+        $sql = "
+                SELECT TR.TRAVEL_ID,
+                  TR.TRAVEL_CODE,
+                  TR.EMPLOYEE_ID,
+                  TR.REQUESTED_AMOUNT,
+                  INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                  BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
+                  TR.APPROVED_BY,
+                  TR.RECOMMENDED_BY,
+                  TR.PURPOSE,
+                  TR.STATUS,
+                  TR.REQUESTED_TYPE,
+                  TR.REMARKS,
+                  TR.RECOMMENDED_REMARKS,
+                  TR.APPROVED_REMARKS,
+                  TR.DESTINATION,
+                  INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY'))        AS FROM_DATE,
+                  BS_DATE(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY'))        AS FROM_DATE_N,
+                  INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY'))          AS TO_DATE,
+                  BS_DATE(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY'))          AS TO_DATE_N,
+                  INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
+                  INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY'))    AS APPROVED_DATE,
+                  INITCAP(E.FIRST_NAME)                                AS FIRST_NAME,
+                  INITCAP(E.MIDDLE_NAME)                               AS MIDDLE_NAME,
+                  INITCAP(E.LAST_NAME)                                 AS LAST_NAME,
+                  INITCAP(E.FULL_NAME)                                 AS FULL_NAME,
+                  RA.RECOMMEND_BY                                      AS RECOMMENDER,
+                  RA.APPROVED_BY                                       AS APPROVER,
+                  TS.APPROVED_FLAG                                     AS APPROVED_FLAG,
+                  INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))    AS SUB_APPROVED_DATE,
+                  TS.EMPLOYEE_ID                                       AS SUB_EMPLOYEE_ID
+                FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON E.EMPLOYEE_ID=TR.EMPLOYEE_ID
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
+                ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
+                LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
+                ON TS.TRAVEL_ID       = TR.TRAVEL_ID
+                WHERE E.STATUS        ='E'
+                AND E.RETIRED_FLAG    ='N'
+                AND ((RA.RECOMMEND_BY = {$id}
+                AND TR.STATUS         ='RQ'
+                AND (TS.APPROVED_FLAG =
+                  CASE
+                    WHEN TS.EMPLOYEE_ID IS NOT NULL
+                    THEN ('Y')
+                  END
+                OR TS.EMPLOYEE_ID IS NULL))
+                OR (RA.APPROVED_BY = {$id}
+                AND TR.STATUS      ='RC') )
+                ORDER BY TR.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

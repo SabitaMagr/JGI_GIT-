@@ -168,7 +168,6 @@ class DayoffWorkApproveController extends AbstractActionController {
             if (!$request->ispost()) {
                 throw new Exception('the request is not post');
             }
-            $action;
             $postData = $request->getPost()['data'];
             $postBtnAction = $request->getPost()['btnAction'];
             if ($postBtnAction == 'btnApprove') {

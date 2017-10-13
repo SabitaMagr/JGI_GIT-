@@ -1,4 +1,5 @@
 <?php
+
 namespace SelfService\Repository;
 
 use Application\Model\Model;
@@ -11,12 +12,14 @@ use Zend\Db\Sql\Sql;
 use Setup\Model\HrEmployees;
 use Setup\Model\Loan;
 
-class LoanRequestRepository implements RepositoryInterface{
+class LoanRequestRepository implements RepositoryInterface {
+
     private $tableGateway;
     private $adapter;
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $this->tableGateway = new TableGateway(LoanRequest::TABLE_NAME,$adapter);
+        $this->tableGateway = new TableGateway(LoanRequest::TABLE_NAME, $adapter);
     }
 
     public function add(Model $model) {
@@ -24,7 +27,7 @@ class LoanRequestRepository implements RepositoryInterface{
     }
 
     public function delete($id) {
-        $this->tableGateway->update([LoanRequest::STATUS=>'C'],[LoanRequest::LOAN_REQUEST_ID=>$id]);
+        $this->tableGateway->update([LoanRequest::STATUS => 'C'], [LoanRequest::LOAN_REQUEST_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
@@ -54,24 +57,25 @@ class LoanRequestRepository implements RepositoryInterface{
             new Expression("LR.APPROVED_BY AS APPROVED_BY"),
             new Expression("LR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("LR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
-            new Expression("LR.LOAN_ID AS LOAN_ID") 
+            new Expression("LR.LOAN_ID AS LOAN_ID")
                 ], true);
 
         $select->from(['LR' => LoanRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=LR.".LoanRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['L' => Loan::TABLE_NAME], "L.".Loan::LOAN_ID."=LR.".LoanRequest::LOAN_ID, [Loan::LOAN_CODE, "LOAN_NAME"=> new Expression("INITCAP(L.LOAN_NAME)")])
-                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=LR.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
-                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=LR.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=LR." . LoanRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['L' => Loan::TABLE_NAME], "L." . Loan::LOAN_ID . "=LR." . LoanRequest::LOAN_ID, [Loan::LOAN_CODE, "LOAN_NAME" => new Expression("INITCAP(L.LOAN_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LR.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LR.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
-            "LR.LOAN_REQUEST_ID=" . $id
+            "LR.LOAN_REQUEST_ID =" . $id
         ]);
         $select->order("LR.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
     }
-    public function getAllByEmployeeId($employeeId){
+
+    public function getAllByEmployeeId($employeeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -87,14 +91,14 @@ class LoanRequestRepository implements RepositoryInterface{
             new Expression("LR.REASON AS REASON"),
             new Expression("LR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("LR.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("LR.LOAN_ID AS LOAN_ID") 
+            new Expression("LR.LOAN_ID AS LOAN_ID")
                 ], true);
 
         $select->from(['LR' => LoanRequest::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E.".HrEmployees::EMPLOYEE_ID."=LR.".LoanRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['L' => Loan::TABLE_NAME], "L.".Loan::LOAN_ID."=LR.".LoanRequest::LOAN_ID, [Loan::LOAN_CODE, "LOAN_NAME"=> new Expression("INITCAP(L.LOAN_NAME)")])
-                ->join(['E1'=>"HRIS_EMPLOYEES"],"E1.EMPLOYEE_ID=LR.RECOMMENDED_BY",['FN1' =>  new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")],"left")
-                ->join(['E2'=>"HRIS_EMPLOYEES"],"E2.EMPLOYEE_ID=LR.APPROVED_BY",['FN2' =>  new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")],"left");
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=LR." . LoanRequest::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
+                ->join(['L' => Loan::TABLE_NAME], "L." . Loan::LOAN_ID . "=LR." . LoanRequest::LOAN_ID, [Loan::LOAN_CODE, "LOAN_NAME" => new Expression("INITCAP(L.LOAN_NAME)")])
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LR.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LR.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId

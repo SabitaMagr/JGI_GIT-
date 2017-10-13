@@ -4,25 +4,23 @@ namespace ManagerService\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
 use SelfService\Model\LoanRequest;
-use Zend\Db\TableGateway\TableGateway;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
-use Setup\Model\HrEmployees;
-use Setup\Model\Loan;
+use Zend\Db\TableGateway\TableGateway;
 
 class LoanApproveRepository implements RepositoryInterface {
 
     private $tableGateway;
     private $adapter;
 
-    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(LoanRequest::TABLE_NAME, $adapter);
     }
 
-    public function add(\Application\Model\Model $model) {
+    public function add(Model $model) {
         
     }
 
@@ -34,7 +32,7 @@ class LoanApproveRepository implements RepositoryInterface {
         
     }
 
-    public function edit(\Application\Model\Model $model, $id) {
+    public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [LoanRequest::LOAN_REQUEST_ID => $id]);
     }
@@ -65,7 +63,7 @@ class LoanApproveRepository implements RepositoryInterface {
 
         $select->from(['LR' => LoanRequest::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LR.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LR.RECOMMENDED_BY", ['RECOMMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=LR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
@@ -81,7 +79,7 @@ class LoanApproveRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function getAllRequest($id = null, $status = null) {
+    public function getAllRequest($id) {
         $sql = "SELECT 
                     LR.LOAN_REQUEST_ID,
                     LR.REQUESTED_AMOUNT,
@@ -117,20 +115,9 @@ class LoanApproveRepository implements RepositoryInterface {
                     LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                     WHERE L.STATUS = 'E' AND E.STATUS='E'
-                    AND E.RETIRED_FLAG='N'";
-        if ($status == null) {
-            $sql .= " AND ((RA.RECOMMEND_BY=" . $id . " AND LR.STATUS='RQ') OR (RA.APPROVED_BY=" . $id . " AND LR.STATUS='RC') )";
-        } else if ($status == 'RC') {
-            $sql .= " AND LR.STATUS='RC' AND
-                RA.RECOMMEND_BY=" . $id;
-        } else if ($status == 'AP') {
-            $sql .= " AND LR.STATUS='AP' AND
-                RA.APPROVED_BY=" . $id;
-        } else if ($status == 'R') {
-            $sql .= " AND LR.STATUS='" . $status . "' AND
-                ((RA.RECOMMEND_BY=" . $id . " AND LR.APPROVED_DATE IS NULL) OR (RA.APPROVED_BY=" . $id . " AND LR.APPROVED_DATE IS NOT NULL) )";
-        }
-        $sql .= " ORDER BY LR.REQUESTED_DATE DESC";
+                    AND E.RETIRED_FLAG='N' 
+                    AND ((RA.RECOMMEND_BY= {$id} AND LR.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND LR.STATUS='RC') )
+                    ORDER BY LR.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
