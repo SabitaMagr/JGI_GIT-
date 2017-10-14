@@ -2,11 +2,9 @@
 
 namespace Payroll\Controller;
 
-use Application\Factory\HrLogger;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\RepositoryInterface;
-use Exception;
 use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Model\PayEmployeeSetup;
@@ -21,7 +19,6 @@ use Payroll\Repository\RulesRepository;
 class PayrollGenerator {
 
     private $adapter;
-    private $logger;
     private $flatValueDetRepo;
     private $monthlyValueDetRepo;
     private $payEmployeeRepo;
@@ -62,7 +59,6 @@ class PayrollGenerator {
 
     public function __construct($adapter, int $monthId) {
         $this->adapter = $adapter;
-        $this->logger = HrLogger::getInstance();
 
         $this->monthId = $monthId;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
@@ -115,7 +111,6 @@ class PayrollGenerator {
             }
             $rule = $this->convertReferencingRuleToValue($rule, $refRules);
 
-            $this->logger->info("payroll", ['employeeId' => $this->employeeId, 'ruleId' => $ruleId]);
             $ruleValue = eval("return " . $rule . " ;");
 
             array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleObj, "ruleDetail" => $ruleDetail]);
