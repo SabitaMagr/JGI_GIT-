@@ -2,7 +2,7 @@
 
 namespace Application\Helper;
 
-use Zend\Mvc\Exception;
+use Exception;
 
 class NumberHelper {
 

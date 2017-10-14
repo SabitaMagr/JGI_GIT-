@@ -84,7 +84,7 @@ class TravelStatus extends AbstractActionController {
 
 
         if (!$request->isPost()) {
-            $travelRequest->exchangeArrayFromDB($detail);
+            $travelRequest->exchangeArrayFromDB((array) $detail);
             $this->form->bind($travelRequest);
         } else {
             $getData = $request->getPost();
@@ -131,12 +131,16 @@ class TravelStatus extends AbstractActionController {
         $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
 
         $numberInWord = new NumberHelper();
-        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+        try {
+            $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+        } catch (Exception $e) {
+            $advanceAmount = "";
+        }
         $subDetail = [];
         if ($detail['SUB_EMPLOYEE_ID'] != null) {
             $subEmpDetail = $empRepository->fetchForProfileById($detail['SUB_EMPLOYEE_ID']);
             $subDetail = [
-                'SUB_EMPLOYEE_NAME' => $fullName($detail['SUB_EMPLOYEE_ID']),
+                'SUB_EMPLOYEE_NAME' => $detail['SUB_EMPLOYEE_ID'],
                 'SUB_DESIGNATION' => $subEmpDetail['DESIGNATION'],
                 'SUB_APPROVED_DATE' => $detail['SUB_APPROVED_DATE']
             ];

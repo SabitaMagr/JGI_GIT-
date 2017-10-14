@@ -47,7 +47,7 @@
                        href="${document.expenseDetailLink}/#: TRAVEL_ID #" style="height:17px;" title="view detail">
                        <i class="fa fa-search-plus"></i>
                     </a> #} else{ # <a class="btn-edit"
-                                       href="${document.viewLink}/2" style="height:17px;" title="view detail">
+                                       href="${document.viewLink}/#: TRAVEL_ID #" style="height:17px;" title="view detail">
                         <i class="fa fa-search-plus"></i>
                     </a>
                     # }# </span>
