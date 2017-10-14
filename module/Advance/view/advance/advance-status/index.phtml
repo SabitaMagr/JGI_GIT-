@@ -24,7 +24,7 @@ $this->headScript()
     document.ids=<?php echo json_encode(["advanceId"=>-1,"advanceRequestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate"=>"","toDate1"=>"","nepaliToDate"=>""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
-    document.viewlink ='<?= $this->url("advanceStatus", ["action" => "view"]) ?>';
+    document.viewLink ='<?= $this->url("advanceStatus", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
