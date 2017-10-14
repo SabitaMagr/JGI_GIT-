@@ -50,6 +50,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         $response = $event->getResponse();
 
         /* Offline pages not needed authentication */
+        $whiteListRoutes = ["api-auth", "api-leave", "api-employee", "api-notification"];
+
         $whiteList = [
             AuthController::class . '-login',
             AuthController::class . '-logout',
@@ -76,8 +78,10 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         $auth = $app->getServiceManager()->get('AuthService');
         $controller = $event->getRouteMatch()->getParam('controller');
         $action = $event->getRouteMatch()->getParam('action');
+        $route = $event->getRouteMatch()->getMatchedRouteName();
+
         $requestedResourse = $controller . "-" . $action;
-        if (!$auth->hasIdentity() && !in_array($requestedResourse, $whiteList)) {
+        if (!$auth->hasIdentity() && !(in_array($requestedResourse, $whiteList) || in_array($route, $whiteListRoutes))) {
             $response = $event->getResponse();
             $response->getHeaders()->addHeaderLine(
                     'Location', $event->getRouter()->assemble(
@@ -88,7 +92,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $response->sendHeaders();
             return $response;
         }
-        $route = $event->getRouteMatch()->getMatchedRouteName();
+
+
         $identity = $auth->getIdentity();
 
         if (is_array($identity)) {
