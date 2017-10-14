@@ -1,10 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
@@ -12,7 +9,6 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/search.js'))
@@ -21,11 +17,11 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["travelRequestStatusId"=>-1,"fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
+    document.ids =<?php echo json_encode(["travelRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
-    document.expenseDetailLink ='<?= $this->url("travelStatus", ["action" => "expenseDetail"]) ?>';
-    document.viewLink ='<?= $this->url("travelStatus", ["action" => "view"]) ?>';
+    document.expenseDetailLink = '<?= $this->url("travelStatus", ["action" => "expenseDetail"]) ?>';
+    document.viewLink = '<?= $this->url("travelStatus", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -44,7 +40,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="travelStatusListController">
+<div >
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -63,8 +59,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li>
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -117,7 +121,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="row margin-top-10">
                 <div class="col-sm-2">
                     <div class="form-group">
-                        <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control" placeholder="From Date"/>
+                        <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
                     </div>
                 </div>
                 <div class="col-sm-2">
@@ -127,7 +131,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
                 <div class="col-sm-2">
                     <div class="form-group">
-                        <input type="text" id="toDate" name="toDate" ng-model="toDate" class="form-control" placeholder="To Date"/>
+                        <input type="text" id="toDate" name="toDate"class="form-control" placeholder="To Date"/>
                     </div>
                 </div>
                 <div class="col-sm-2">
@@ -140,7 +144,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                     <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
+                    <button id="search" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
@@ -148,56 +152,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div>
-
-
-
-
-<div class="margin-top-20">
-    <div id="travelRequestStatusTable">
+    <div class="margin-top-20">
+        <div id="travelRequestStatusTable">
+        </div>
     </div>
-</div>
-
-<!--<script id="rowTemplate" type="text/x-kendo-tmpl">
-    <tr>
-    <td> 
-    #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-    </td>
-    <td>
-    #: (FROM_DATE == null) ? '-' : FROM_DATE #
-    </td>
-    <td>
-    #: (TO_DATE == null) ? '-' : TO_DATE #
-    </td>
-    <td>
-    #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-    </td>        
-    <td>
-    #: (DESTINATION == null) ? '-' : DESTINATION #
-    </td>
-    <td>
-    #: (REQUESTED_AMOUNT == null) ? '-' : REQUESTED_AMOUNT #
-    </td>
-    <td>
-    #: (REQUESTED_TYPE == null) ? '-' : REQUESTED_TYPE #
-    </td>
-    <td>
-    #: (STATUS == null) ? '-' : STATUS #
-    </td>
-    <td>
-    # if(REQUESTED_TYPE=='Expense'){#
-    <a class="btn-edit"
-    href="`+ document.expenseDetailLink +`/#:TRAVEL_ID #" style="height:17px;" title="view">
-    <i class="fa fa-search-plus"></i>
-    </a>
-    # } else { #
-    <a class="btn-edit"
-    href="`+ document.viewLink +`/#:TRAVEL_ID #" style="height:17px;" title="view">
-    <i class="fa fa-search-plus"></i>
-    </a>
-    # } #
-    </td>
-    </tr>
-</script>-->
 
 </div>    
 
