@@ -2,10 +2,7 @@
 //Load JS files here
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
@@ -41,7 +38,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<div id="employeeList" class="" ng-app="hris" ng-controller="employeeListController">
+<div id="employeeList" >
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -62,8 +59,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="javascript:;" id="export">
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> Export to PDF </a>
                         </li>
                     </ul>
                 </div>
@@ -114,7 +115,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                    <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                    <button id="search" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>

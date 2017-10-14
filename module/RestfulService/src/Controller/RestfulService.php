@@ -423,7 +423,7 @@ class RestfulService extends AbstractRestfulController {
                 "line" => $e->getLine()
             ];
         }
-        return new JsonModel(['data' => $responseData]);
+        return new JsonModel($responseData);
     }
 
     private function pullEmployeeMonthlyValue(array $data) {
