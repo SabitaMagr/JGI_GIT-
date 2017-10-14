@@ -208,7 +208,11 @@ class DayoffWorkApproveController extends AbstractActionController {
                         if ($action == "Reject") {
                             $workOnDayoffModel->status = "R";
                         } else if ($action == "Approve") {
-                            $this->wodApproveAction($detail);
+                            try {
+                                $this->wodApproveAction($detail);
+                            } catch (Exception $e) {
+                                
+                            }
                             $workOnDayoffModel->status = "AP";
                         }
                         if ($role == 4) {

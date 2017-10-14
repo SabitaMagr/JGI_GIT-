@@ -294,7 +294,11 @@ class HolidayWorkApproveController extends AbstractActionController {
                         if ($action == "Reject") {
                             $workOnHolidayModel->status = "R";
                         } else if ($action == "Approve") {
-                            $this->wohAppAction($detail);
+                            try {
+                                $this->wohAppAction($detail);
+                            } catch (Exception $e) {
+                                
+                            }
                             $workOnHolidayModel->status = "AP";
                         }
                         if ($role == 4) {
@@ -311,8 +315,7 @@ class HolidayWorkApproveController extends AbstractActionController {
                     }
                 }
             }
-            $listData = $this->getAllList();
-            return new CustomViewModel(['success' => true, 'data' => $listData]);
+            return new CustomViewModel(['success' => true, 'data' => null]);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
         }

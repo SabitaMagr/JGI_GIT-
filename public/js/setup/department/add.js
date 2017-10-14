@@ -21,7 +21,6 @@
         var $companySelect = $('#form-companyId');
         var $branchSelect = $('#form-branchId');
 
-//        console.log(selectedBranchId);
 
         var companySelectChange = function (companyId) {
             $branchSelect.html('');
