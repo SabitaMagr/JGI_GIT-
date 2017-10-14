@@ -71,16 +71,26 @@ BEGIN
         V_WEEKDAY5,
         V_WEEKDAY6,
         V_WEEKDAY7
-      FROM HRIS_EMPLOYEE_SHIFT_ASSIGN ES,
+      FROM
+        (SELECT *
+        FROM
+          (SELECT *
+          FROM HRIS_EMPLOYEE_SHIFT_ASSIGN
+          WHERE EMPLOYEE_ID              = V_EMPLOYEE_ID
+          AND (TRUNC(V_ATTENDANCE_DATE) >= START_DATE
+          AND TRUNC(V_ATTENDANCE_DATE)  <=
+            CASE
+              WHEN END_DATE IS NOT NULL
+              THEN END_DATE
+              ELSE TRUNC(V_ATTENDANCE_DATE)
+            END)
+          ORDER BY START_DATE DESC,
+            END_DATE ASC
+          )
+        WHERE ROWNUM=1
+        ) ES,
         HRIS_SHIFTS HS
-      WHERE 1            = 1
-      AND ES.EMPLOYEE_ID = V_EMPLOYEE_ID
-      AND V_ATTENDANCE_DATE BETWEEN HS.START_DATE AND HS.END_DATE
-      AND HS.CURRENT_SHIFT = 'Y'
-      AND HS.STATUS        = 'E'
-      AND ES.STATUS        = 'E'
-      AND ES.SHIFT_ID      = HS.SHIFT_ID
-      AND ROWNUM           <2;
+      WHERE ES.SHIFT_ID = HS.SHIFT_ID;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
       BEGIN
@@ -103,12 +113,9 @@ BEGIN
         FROM HRIS_SHIFTS
         WHERE V_ATTENDANCE_DATE BETWEEN START_DATE AND END_DATE
         AND DEFAULT_SHIFT = 'Y'
-        AND CURRENT_SHIFT = 'Y'
         AND STATUS        ='E'
-        AND ROWNUM        <2 ;
+        AND ROWNUM        =1 ;
       EXCEPTION
-      WHEN TOO_MANY_ROWS THEN
-        RAISE_APPLICATION_ERROR (-20343, 'Many default and normal shifts');
       WHEN NO_DATA_FOUND THEN
         RAISE_APPLICATION_ERROR(-20344, 'No default and normal shift defined for this time period');
       END;

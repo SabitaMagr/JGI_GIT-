@@ -18,7 +18,6 @@
             pageable: true,
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
-//                {field: "BRANCH_CODE", title: "Code", width: 80},
                 {field: "BRANCH_NAME", title: "Name", width: 150},
                 {field: "STREET_ADDRESS", title: "Address", width: 180},
                 {field: "TELEPHONE", title: "Telephone", width: 120},

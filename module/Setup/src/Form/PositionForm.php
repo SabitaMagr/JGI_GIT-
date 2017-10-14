@@ -15,7 +15,7 @@ class PositionForm {
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Position Name"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5","max":"255"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
      * @Annotation\Attributes({ "id":"form-positionName", "class":"form-positionName form-control" })
      */
     public $positionName;

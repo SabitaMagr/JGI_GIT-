@@ -11,25 +11,12 @@ use Exception;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
-use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/25/16
- * Time: 11:57 AM
- */
 class AttendanceStatus extends AbstractActionController {
 
     private $adapter;
@@ -74,6 +61,7 @@ class AttendanceStatus extends AbstractActionController {
     }
 
     public function viewAction() {
+        $request = $this->getRequest();
         $this->initializeForm();
         $id = (int) $this->params()->fromRoute('id');
 
@@ -81,24 +69,14 @@ class AttendanceStatus extends AbstractActionController {
             return $this->redirect()->toRoute("attendancestatus");
         }
         $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $request = $this->getRequest();
-        $model = new AttendanceRequestModel();
         $detail = $attendanceRequestRepository->fetchById($id);
+
+        $model = new AttendanceRequestModel();
         $employeeId = $detail['EMPLOYEE_ID'];
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        $employeeName = $detail['FULL_NAME'];
 
         $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DT'];
-        $approved_by = $fullName($detail['APPROVED_BY']);
-        $approverName = $fullName($detail['APPROVER']);
-        $authApprover = ( $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+        $authApprover = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
 
         $attendanceDetail = new AttendanceDetail();
         $attendanceRepository = new AttendanceDetailRepository($this->adapter);
@@ -128,8 +106,6 @@ class AttendanceStatus extends AbstractActionController {
                     $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
                     $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
 
-//                $attendanceDetail->id = (int) Helper::getMaxId($this->adapter, AttendanceDetail::TABLE_NAME, AttendanceDetail::ID) + 1;
-//                $attendanceRepository->add($attendanceDetail);
 
                     $attendanceRepository->editWith($attendanceDetail, [
                         AttendanceDetail::EMPLOYEE_ID => $employeeId,

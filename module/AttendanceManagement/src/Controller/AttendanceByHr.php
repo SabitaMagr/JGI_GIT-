@@ -148,14 +148,6 @@ class AttendanceByHr extends AbstractActionController {
             $request = $this->getRequest();
             $data = $request->getPost();
 
-            $take = $data['take'];
-            $skip = $data['skip'];
-            $page = $data['page'];
-            $pageSize = $data['pageSize'];
-
-            $max = $pageSize * $page;
-            $min = $pageSize * ($page - 1);
-
             $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
             $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
@@ -169,18 +161,57 @@ class AttendanceByHr extends AbstractActionController {
             $toDate = $data['toDate'];
             $status = $data['status'];
             $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
-            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly, $min, $max);
-            $total = $this->repository->filterRecordCount($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
+            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
 
             $result = [];
-            $result['total'] = $total['TOTAL'];
-            $result['results'] = Helper::extractDbData($results);
+            $result['success'] = true;
+            $result['data'] = Helper::extractDbData($results);
+            $result['error'] = "";
 
             return new CustomViewModel($result);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+
+//    public function pullAttendanceAction() {
+//        try {
+//            $request = $this->getRequest();
+//            $data = $request->getPost();
+//
+//            $take = $data['take'];
+//            $skip = $data['skip'];
+//            $page = $data['page'];
+//            $pageSize = $data['pageSize'];
+//
+//            $max = $pageSize * $page;
+//            $min = $pageSize * ($page - 1);
+//
+//            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+//            $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+//            $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+//            $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+//            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+//            $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+//            $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+//            $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+//            $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+//            $fromDate = $data['fromDate'];
+//            $toDate = $data['toDate'];
+//            $status = $data['status'];
+//            $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
+//            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly, $min, $max);
+//            $total = $this->repository->filterRecordCount($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
+//
+//            $result = [];
+//            $result['total'] = $total['TOTAL'];
+//            $result['results'] = Helper::extractDbData($results);
+//
+//            return new CustomViewModel($result);
+//        } catch (Exception $e) {
+//            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+//        }
+//    }
 
     public function bulkAttendanceWSAction() {
         try {

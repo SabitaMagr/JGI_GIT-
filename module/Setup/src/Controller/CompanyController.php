@@ -39,8 +39,17 @@ class CompanyController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $companyList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['companyList' => Helper::extractDbData($companyList)]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $companyList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $companyList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction() {

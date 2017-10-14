@@ -2,6 +2,7 @@
 
 namespace Application\Controller;
 
+use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
 use Application\Model\User;
 use Application\Model\UserLog;
@@ -9,6 +10,8 @@ use Application\Repository\LoginRepository;
 use Application\Repository\MonthRepository;
 use Application\Repository\UserLogRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use Setup\Repository\EmployeeRepository;
+use System\Repository\RolePermissionRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -90,62 +93,76 @@ class AuthController extends AbstractActionController {
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                // check user passwordDays
+                /*
+                 * password expiration check | comment this code if this feature is not needed
+                 */
 //                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'));
 //                if ($needPwdChange) {
 //                    return $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $request->getPost('username')]);
 //                }
-                //check authentication...
+                /*
+                 * end of password expiration check
+                 */
+                /*
+                 * user authentication
+                 */
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
-//                        ->setCredential(md5($request->getPost('password')))
                         ->setCredential($request->getPost('password'));
                 $result = $this->getAuthService()->authenticate();
                 foreach ($result->getMessages() as $message) {
-                    //save message temporary into flashmessenger
                     $this->flashmessenger()->addMessage($message);
                 }
+                $redirect = 'login';
                 if ($result->isValid()) {
-                    //after authentication success get the user specific details
                     $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
 
-                    $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-
                     $employeeId = $resultRow->EMPLOYEE_ID;
-
+                    $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                     $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
                     $inTime = $todayAttendance['IN_TIME'];
-
-
                     $attendanceType = ($inTime) ? "OUT" : "IN";
-                    $redirect = 'dashboard';
-                    //check if it has rememberMe :
-                    if (1 == $request->getPost('rememberme')) {
-                        $this->getSessionStorage()
-                                ->setRememberMe(1);
-                        //set storage again
-                        $this->getAuthService()->setStorage($this->getSessionStorage());
-                    }
+                    $allowRegisterAttendance = ($todayAttendance['TRAVEL_ID'] == null && $todayAttendance['LEAVE_ID'] == null && $todayAttendance['TRAINING_ID'] == null && $todayAttendance['HOLIDAY_ID'] == null) ? true : false;
 
-//                    $employeeRepo = new EmployeeRepository($this->adapter);
-//                    $employeeDetail = $employeeRepo->getById($resultRow->EMPLOYEE_ID);
+                    $employeeRepo = new EmployeeRepository($this->adapter);
+                    $employeeDetail = $employeeRepo->employeeDetailSession($resultRow->EMPLOYEE_ID);
+
                     $monthRepo = new MonthRepository($this->adapter);
                     $fiscalYear = $monthRepo->getCurrentFiscalYear();
+
+                    $repository = new RolePermissionRepository($this->adapter);
+                    $rawMenus = $repository->fetchAllMenuByRoleId($resultRow->ROLE_ID);
+                    $menus = Helper::extractDbData($rawMenus);
 
                     $this->getAuthService()->getStorage()->write([
                         "user_name" => $request->getPost('username'),
                         "user_id" => $resultRow->USER_ID,
                         "employee_id" => $resultRow->EMPLOYEE_ID,
                         "role_id" => $resultRow->ROLE_ID,
+                        "employee_detail" => $employeeDetail,
+                        "fiscal_year" => $fiscalYear,
+                        "menus" => $menus,
                         'register_attendance' => $attendanceType,
-//                        "role_id" => 8,
-//                        "employee_detail" => $employeeDetail,
-                        "fiscal_year" => $fiscalYear
+                        'allow_register_attendance' => $allowRegisterAttendance,
                     ]);
 
 
                     // to add user log details in HRIS_USER_LOG
                     $this->setUserLog($this->adapter, $request->getServer('REMOTE_ADDR'), $resultRow->USER_ID);
+
+                    /*
+                     * 
+                     */
+                    if (1 == $request->getPost('rememberme')) {
+                        $this->getSessionStorage()
+                                ->setRememberMe(1);
+                        $this->getAuthService()->setStorage($this->getSessionStorage());
+                    }
+                    /*
+                     * 
+                     */
+
+                    $redirect = 'dashboard';
                 }
             }
         }

@@ -921,6 +921,109 @@ window.app = (function ($, toastr, App) {
         });
 
     };
+    var exportToPDF = function ($table, col, fileName, pageSize, fn) {
+        var colWidths = [];
+        var head = [];
+        $.each(col, function (key, value) {
+            colWidths.push('auto');
+            head.push(value);
+        });
+
+        var data = [];
+        if (Array.isArray($table)) {
+            data = $table;
+        } else {
+            var dataSource = $table.data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+        }
+
+        var body = [];
+        body.push(head);
+        for (var i = 0; i < data.length; i++) {
+            var row = [];
+            $.each(col, function (key, value) {
+                if (typeof (data[i][key]) == 'undefined' || data[i][key] == null) {
+                    row.push('-');
+                } else {
+                    if (typeof fn !== 'undefined') {
+                        row.push(fn(data[i][key], key));
+                    } else {
+                        row.push(data[i][key]);
+                    }
+                }
+            });
+            body.push(row);
+        }
+
+
+
+        var docDefinition = {
+            pageSize: typeof pageSize === "undefined" ? "A3" : pageSize,
+            pageOrientation: 'landscape',
+            content: [
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: colWidths,
+                        body: body
+                    }
+                }
+            ]
+        };
+
+        pdfMake.createPdf(docDefinition).download(fileName);
+    };
+
+    var excelExport = function ($table, col, fileName) {
+        var header = [];
+        var cellWidths = [];
+        $.each(col, function (key, value) {
+            header.push({value: value});
+            cellWidths.push({autoWidth: true});
+        });
+        var rows = [{
+                cells: header
+            }];
+
+        var data = [];
+        if (Array.isArray($table)) {
+            data = $table;
+        } else {
+            var dataSource = $table.data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+        }
+
+        for (var i = 0; i < data.length; i++) {
+            var dataItem = data[i];
+            var row = [];
+            $.each(col, function (key, value) {
+                row.push({value: dataItem[key]});
+            });
+            rows.push({
+                cells: row
+            });
+        }
+        var workbook = new kendo.ooxml.Workbook({
+            sheets: [
+                {
+                    columns: cellWidths,
+                    title: fileName,
+                    rows: rows
+                }
+            ]
+        });
+        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: fileName});
+    };
 
     (function () {
         $('.hris-export-to-excel').on("click", function () {
@@ -1004,7 +1107,28 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail) {
+    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail, bulkOptions) {
+        if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
+            var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
+            var column = {
+                title: 'Select All',
+                headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                template: template,
+                width: 80,
+                sortable: false,
+                filterable: false
+            };
+            if (bulkOptions.id !== 'undefined' && bulkOptions.id !== null) {
+                column.field = bulkOptions.id;
+                column.template = "<input id='#:" + bulkOptions.id + "#' type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
+            }
+            if (bulkOptions.atLast !== 'undefined' && bulkOptions.atLast !== null && bulkOptions.atLast === true) {
+                columns.push(column);
+            } else {
+                columns.splice(0, 0, column);
+            }
+
+        }
         var kendoConfig = {
             excel: {
                 fileName: excelExportFileName,
@@ -1031,10 +1155,65 @@ window.app = (function ($, toastr, App) {
             },
             columns: columns
         };
-        if (typeof detail !== 'undefined') {
+        if (typeof detail !== 'undefined' && detail !== null) {
             kendoConfig['detailInit'] = detail;
         }
         $table.kendoGrid(kendoConfig);
+
+        var tableId = $table.attr('id');
+        var selectedRows = {};
+        $table.on("click", ".k-checkbox", function () {
+            var checked = this.checked,
+                    row = $(this).closest("tr"),
+                    grid = $table.data("kendoGrid"),
+                    dataItem = grid.dataItem(row);
+
+            if (checked) {
+                row.addClass("k-state-selected");
+                selectedRows[dataItem.uid] = dataItem;
+            } else {
+                row.removeClass("k-state-selected");
+                delete selectedRows[dataItem.uid];
+            }
+
+            if (typeof bulkOptions !== 'undefined' && bulkOptions !== null && typeof bulkOptions.fn !== 'undefined' && bulkOptions.fn !== null) {
+                var checkedNo = $('.k-state-selected').length;
+                if (checkedNo > 0) {
+                    bulkOptions.fn(true);
+                } else {
+                    bulkOptions.fn(false);
+                }
+            }
+        });
+        $('#' + tableId + ' ' + '#header-chb').change(function (ev) {
+            var checked = ev.target.checked;
+            $('#' + tableId + ' ' + '.row-checkbox').each(function (idx, item) {
+                if (checked) {
+                    if (!($(item).closest('tr').is('.k-state-selected'))) {
+                        $(item).click();
+                    }
+                } else {
+                    if ($(item).closest('tr').is('.k-state-selected')) {
+                        $(item).click();
+                    }
+                }
+            });
+        });
+
+        return {
+            getSelected: function () {
+                var cleanData = [];
+                for (var key in  selectedRows) {
+                    var cleanItem = selectedRows[key];
+                    delete cleanItem.uid;
+                    cleanData.push(cleanItem);
+                }
+                return JSON.parse(JSON.stringify(cleanData));
+            }, clearSelected: function () {
+                selectedRows = {};
+            }
+
+        }
     }
     var renderKendoGrid = function ($table, data) {
         var dataSource = new kendo.data.DataSource({data: data, pageSize: 20});
@@ -1069,6 +1248,8 @@ window.app = (function ($, toastr, App) {
         daysBetween: daysBetween,
         searchTable: searchTable,
         pdfExport: pdfExport,
+        exportToPDF: exportToPDF,
+        excelExport: excelExport,
         populateSelect: populateSelect,
         floatToRound: floatToRound,
         lockField: lockField,

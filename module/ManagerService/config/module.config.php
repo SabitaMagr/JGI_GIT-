@@ -166,6 +166,16 @@ return [
                     ]
                 ],
             ],
+            'subordinate' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/subordinate[/:action[/:id][/:tab]]',
+                    'defaults' => [
+                        'controller' => Controller\Subordinate::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -541,6 +551,28 @@ return [
                 ]
             ]
         ],
+        'subordinate' => [
+            [
+                'label' => 'Subordinate',
+                'route' => 'subordinate',
+            ],
+            [
+                'label' => 'Subordinate',
+                'route' => 'subordinate',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'subordinate',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'subordinate',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -557,7 +589,8 @@ return [
             Controller\AppraisalEvaluation::class => ControllerFactory::class,
             Controller\AppraisalReview::class => ControllerFactory::class,
             Controller\AppraisalFinalReview::class => ControllerFactory::class,
-            Controller\ManagerReportController::class => ControllerFactory::class
+            Controller\ManagerReportController::class => ControllerFactory::class,
+            Controller\Subordinate::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

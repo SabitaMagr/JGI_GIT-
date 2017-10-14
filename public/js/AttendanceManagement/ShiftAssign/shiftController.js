@@ -1,112 +1,114 @@
-angular.module('hris', [])
-    .controller('shiftAssignController', function ($scope, $http) {
+(function ($, app) {
+    $(document).ready(function () {
         $('select').select2();
-        var $tableContainer = $("#loadingDiv");
-        $scope.employeeShiftList = [];
-        $scope.all = false;
-        $scope.assignShowHide = false;
-        var l;
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
 
-        $scope.checkAll = function (item) {
-            for (var i = 0; i < $scope.employeeShiftList.length; i++) {
-                $scope.employeeShiftList[i].checked = item;
-            }
-            $scope.assignShowHide = item && ($scope.employeeShiftList.length > 0);
-            if($scope.assignShowHide){
-                    l = Ladda.create(document.querySelector('#assignBtn'));
-            }
-        };
+        var $shiftAssignTable = $('#shiftAssignTable');
+        var $search = $('#search');
+        var $bulkActionDiv = $('#bulkActionDiv');
+        var $shiftId = $('#shiftId');
+        var $fromDate = $('#fromDate');
+        var $nepaliFromDate = $('#nepaliFromDate');
+        var $toDate = $('#toDate');
+        var $nepaliToDate = $('#nepaliToDate');
+        var $bulkEdit = $('#bulkEdit');
 
-        $scope.checkUnit = function (item) {
-            for (var i = 0; i < $scope.employeeShiftList.length; i++) {
-                if ($scope.employeeShiftList[i].checked) {
-                    $scope.assignShowHide = true;
-                    l = Ladda.create(document.querySelector('#assignBtn'));
-                    break;
+
+        var grid = app.initializeKendoGrid($shiftAssignTable, [
+            {field: "COMPANY_NAME", title: "Company", width: 150},
+            {field: "BRANCH_NAME", title: "Branch", width: 150},
+            {field: "DEPARTMENT_NAME", title: "Department", width: 150},
+            {field: "POSITION_NAME", title: "Position", width: 150},
+            {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
+            {field: "FULL_NAME", title: "Name", width: 150},
+            {field: "SHIFT_ENAME", title: "Shift", width: 150},
+            {title: "From", columns: [
+                    {field: "FROM_DATE_AD", title: "AD", width: 75},
+                    {field: "FROM_DATE_BS", title: "BS", width: 75},
+                ]},
+            {title: "To", columns: [
+                    {field: "TO_DATE_AD", title: "AD", width: 75},
+                    {field: "TO_DATE_BS", title: "BS", width: 75},
+                ]},
+        ], 'Employee_Shifts.xlsx', null, {id: 'ID', atLast: true, fn: function (selected) {
+                if (selected) {
+                    $bulkActionDiv.show();
+                } else {
+                    $bulkActionDiv.hide();
                 }
-                $scope.assignShowHide = false;
-            }
+            }});
 
-        };
-
-        $scope.view = function () {
-            $scope.all = false;
-            $scope.assignShowHide = false;
-            var companyId = angular.element(document.getElementById('companyId')).val();
-            var branchId = angular.element(document.getElementById('branchId')).val();
-            var departmentId = angular.element(document.getElementById('departmentId')).val();
-            var designationId = angular.element(document.getElementById('designationId')).val();
-            var positionId = angular.element(document.getElementById('positionId')).val();
-            var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
-            var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
-            var employeeId = angular.element(document.getElementById('employeeId')).val();
-            var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
-            App.blockUI({target: "#hris-page-content"});
-            window.app.pullDataById(document.url, {
-                action: 'pullEmployeeForShiftAssign',
-                id: {
-                    companyId: companyId,
-                    branchId: branchId,
-                    departmentId: departmentId,
-                    designationId: designationId,
-                    positionId: positionId,
-                    serviceTypeId: serviceTypeId,
-                    serviceEventTypeId: serviceEventTypeId,
-                    employeeId:employeeId,
-                    employeeTypeId: employeeTypeId
+        app.searchTable('shiftAssignTable', ['COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'POSITION_NAME', 'DESIGNATION_TITLE', 'FULL_NAME', 'SHIFT_ENAME', 'FROM_DATE_AD', 'FROM_DATE_BS', 'TO_DATE_AD', 'TO_DATE_BS'], true);
+        app.pdfExport(
+                'shiftAssignTable',
+                {
+                    'COMPANY_NAME': 'Company',
+                    'BRANCH_NAME': 'Branch',
+                    'DEPARTMENT_NAME': 'Department',
+                    'POSITION_NAME': 'Position',
+                    'DESIGNATION_TITLE': 'Designation',
+                    'FULL_NAME': 'Name',
+                    'SHIFT_ENAME': 'Shift',
+                    'FROM_DATE_AD': 'From(AD)',
+                    'FROM_DATE_BS': 'From(BS)',
+                    'TO_DATE_AD': 'To(AD)',
+                    'TO_DATE_BS': 'To(BS)',
                 }
-            }).then(function (success) {
-                App.unblockUI("#hris-page-content");
-                console.log("shift Assign Filter Success Response", success);
-                $scope.$apply(function () {
-                    $scope.employeeShiftList = success.data;
-                    console.log(success.data);
-                    for (var i = 0; i < $scope.employeeShiftList.length; i++) {
-                        $scope.employeeShiftList[i].checked = false;
-                    }
+        );
 
-                });
-
-            }, function (failure) {
-                App.unblockUI("#hris-page-content");
-                console.log("shift Assign Filter Failure Response", failure);
+        $search.on('click', function () {
+            grid.clearSelected();
+            $shiftId.val(-1).trigger('change.select2');
+            $fromDate.val('');
+            $nepaliFromDate.val('');
+            $toDate.val('');
+            $nepaliToDate.val('');
+            $bulkActionDiv.hide();
+            var search = document.searchManager.getSearchValues();
+            app.pullDataById(document.listWS, search).then(function (response) {
+                app.renderKendoGrid($shiftAssignTable, response.data);
+            }, function (error) {
+                app.showMessage(error, 'error');
             });
-        };
+        });
 
-        $scope.assign = function () {
-            l.start();
-            l.setProgress(0.5);
-            var shiftId = angular.element(document.getElementById('shiftId')).val();
-            var shiftName = document.getElementById('shiftId').options[document.getElementById('shiftId').selectedIndex].text;
-            console.log(shiftName);
-            var promises = [];
-            for (var index in $scope.employeeShiftList) {
-                console.log($scope.employeeShiftList[index]);
-                if ($scope.employeeShiftList[index].checked) {
-                    promises.push(window.app.pullDataById(document.url, {
-                        action: 'assignEmployeeShift',
-                        data: {
-                            employeeId: $scope.employeeShiftList[index].EMPLOYEE_ID,
-                            shiftId: shiftId,
-                            oldShiftId: $scope.employeeShiftList[index].SHIFT_ID
-                        }
-                    }));
-                }
+        app.populateSelect($shiftId, document.shiftList, 'SHIFT_ID', 'SHIFT_ENAME', 'Select Shift', -1);
+
+        $bulkEdit.on('click', function () {
+            var shiftId = $shiftId.val();
+            if (shiftId == -1) {
+                app.showMessage("Select Shift First.", "error");
+                $shiftId.focus();
+                return;
             }
-            Promise.all(promises).then(function (success) {
-                console.log(success);
-                l.stop();
-                $scope.$apply(function () {
-                    for (var index in $scope.employeeShiftList) {
-                        if ($scope.employeeShiftList[index].checked) {
-                            $scope.employeeShiftList[index].SHIFT_ENAME = shiftName;
-                            $scope.employeeShiftList[index].SHIFT_ID = shiftId;
-                        }
-                    }
-                });
-                window.toastr.success("Shift assigned successfully!", "Notification");
-                // window.app.notification("Shift assigned successfully!", {position: "top right", className: "success"});
+            var fromDate = $fromDate.val();
+            if (fromDate == "") {
+                app.showMessage("From Date is required.", "error");
+                $fromDate.focus();
+                return;
+            }
+            var employeeShift = grid.getSelected();
+            var toDate = $toDate.val();
+            var employeeShiftIds = [];
+
+            for (var i in employeeShift) {
+                employeeShiftIds.push(employeeShift[i]['ID']);
+            }
+            app.pullDataById(document.editWs, {
+                shiftId: shiftId,
+                fromDate: fromDate,
+                toDate: toDate,
+                employeeShiftIds: employeeShiftIds
+            }).then(function (response) {
+                if (response.success) {
+                    app.showMessage("Employee shift edited successfully.", 'success');
+                    $search.trigger('click');
+                }
+            }, function (error) {
+
             });
-        };
+        });
+
 
     });
+})(window.jQuery, window.app);

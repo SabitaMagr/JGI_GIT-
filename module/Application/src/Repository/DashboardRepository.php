@@ -211,39 +211,51 @@ class DashboardRepository implements RepositoryInterface {
     }
 
     public function fetchEmployeesBirthday() {
-        $sql = "SELECT * FROM (
-                                SELECT EMP.EMPLOYEE_ID,
-                                  ( CASE
-                                      WHEN EMP.MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
-                                      ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
-                                  END ) FULL_NAME, 
-                                  DSG.DESIGNATION_TITLE,
-                                  EFL.FILE_PATH,
-                                  EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE, 
-                                  'TODAY' BIRTHDAYFOR
-                                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
-                                WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') = TO_CHAR(SYSDATE,'MMDD')
-                                AND EMP.RETIRED_FLAG = 'N'
-                                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
-                                AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
-                                UNION ALL
-                                SELECT EMP.EMPLOYEE_ID,
-                                  ( CASE
-                                      WHEN EMP.MIDDLE_NAME IS NULL THEN EMP.FIRST_NAME || ' ' || EMP.LAST_NAME
-                                      ELSE EMP.FIRST_NAME || ' ' || EMP.MIDDLE_NAME || ' ' || EMP.LAST_NAME
-                                  END ) FULL_NAME, 
-                                  DSG.DESIGNATION_TITLE,
-                                  EFL.FILE_PATH,
-                                  EMP.BIRTH_DATE,
-                                  TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE, 
-                                  'UPCOMING' BIRTHDAYFOR
-                                FROM HRIS_EMPLOYEES EMP, HRIS_DESIGNATIONS DSG, HRIS_EMPLOYEE_FILE EFL
-                                WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') > TO_CHAR(SYSDATE,'MMDD')
-                                AND EMP.RETIRED_FLAG = 'N'
-                                AND EMP.DESIGNATION_ID = DSG.DESIGNATION_ID
-                                AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
-                ) ORDER BY TO_CHAR(BIRTH_DATE,'MMDD')";
+        $sql = "
+                SELECT EMP.*,
+                  DSG.DESIGNATION_TITLE,
+                  EFL.FILE_PATH,
+                  B.BRANCH_NAME,
+                  P.POSITION_NAME
+                FROM
+                  (SELECT EMP.EMPLOYEE_ID,
+                    EMP.FULL_NAME,
+                    EMP.BIRTH_DATE,
+                    TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE,
+                    EMP.PROFILE_PICTURE_ID,
+                    EMP.BRANCH_ID,
+                    EMP.POSITION_ID,
+                    EMP.DESIGNATION_ID,
+                    'TODAY' BIRTHDAYFOR
+                  FROM HRIS_EMPLOYEES EMP
+                  WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') = TO_CHAR(SYSDATE,'MMDD')
+                  AND EMP.RETIRED_FLAG                  = 'N'
+                  AND EMP.STATUS                        = 'E'
+                  UNION ALL
+                  SELECT EMP.EMPLOYEE_ID,
+                    EMP. FULL_NAME,
+                    EMP.BIRTH_DATE,
+                    TO_CHAR(EMP.BIRTH_DATE, 'fmddth Month') EMP_BIRTH_DATE,
+                    EMP.PROFILE_PICTURE_ID,
+                    EMP.BRANCH_ID,
+                    EMP.POSITION_ID,
+                    EMP.DESIGNATION_ID,
+                    'UPCOMING' BIRTHDAYFOR
+                  FROM HRIS_EMPLOYEES EMP
+                  WHERE TO_CHAR(EMP.BIRTH_DATE, 'MMDD') > TO_CHAR(SYSDATE,'MMDD')
+                  AND EMP.RETIRED_FLAG                  = 'N'
+                  AND EMP.STATUS                        = 'E'
+                  ) EMP,
+                  HRIS_DESIGNATIONS DSG,
+                  HRIS_EMPLOYEE_FILE EFL,
+                  HRIS_BRANCHES B,
+                  HRIS_POSITIONS P
+                WHERE EMP.DESIGNATION_ID   = DSG.DESIGNATION_ID
+                AND EMP.PROFILE_PICTURE_ID = EFL.FILE_CODE(+)
+                AND EMP.BRANCH_ID          = B.BRANCH_ID
+                AND EMP.POSITION_ID        =P.POSITION_ID
+                ORDER BY TO_CHAR(EMP.BIRTH_DATE,'MMDD')
+                ";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -605,22 +617,26 @@ class DashboardRepository implements RepositoryInterface {
 
     public function fetchJoinedEmployees() {
         $sql = "
-                    SELECT 
-                      E.FULL_NAME,
-                      EF.FILE_PATH,
-                      D.DESIGNATION_TITLE,
-                      E.JOIN_DATE
-                    FROM HRIS_EMPLOYEES E
-                    LEFT JOIN HRIS_EMPLOYEE_FILE EF
-                    ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
-                    LEFT JOIN HRIS_DESIGNATIONS D
-                    ON (E.DESIGNATION_ID=D.DESIGNATION_ID )
-                   ,
-                   (SELECT *
-                   FROM HRIS_MONTH_CODE
-                   WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
-                   ) M
-                    WHERE E.JOIN_DATE BETWEEN M.FROM_DATE AND M.TO_DATE
+                SELECT E.FULL_NAME,
+                  EF.FILE_PATH,
+                  B.BRANCH_NAME,
+                  P.POSITION_NAME,
+                  D.DESIGNATION_TITLE,
+                  E.JOIN_DATE
+                FROM HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_EMPLOYEE_FILE EF
+                ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
+                LEFT JOIN HRIS_DESIGNATIONS D
+                ON (E.DESIGNATION_ID=D.DESIGNATION_ID )
+                LEFT JOIN HRIS_BRANCHES B
+                ON (E.BRANCH_ID=B.BRANCH_ID)
+                LEFT JOIN HRIS_POSITIONS P
+                ON (E.POSITION_ID=P.POSITION_ID),
+                  (SELECT *
+                  FROM HRIS_MONTH_CODE
+                  WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
+                  ) M
+                WHERE E.JOIN_DATE BETWEEN M.FROM_DATE AND M.TO_DATE
                     ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -629,9 +645,10 @@ class DashboardRepository implements RepositoryInterface {
 
     public function fetchLeftEmployees() {
         $sql = "
-                SELECT 
-                  E.FULL_NAME,
+                SELECT E.FULL_NAME,
                   EF.FILE_PATH,
+                  B.BRANCH_NAME,
+                  P.POSITION_NAME,
                   D.DESIGNATION_TITLE,
                   R.EXIT_DATE,
                   E.JOIN_DATE
@@ -639,7 +656,11 @@ class DashboardRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEE_FILE EF
                 ON (E.PROFILE_PICTURE_ID=EF.FILE_CODE)
                 LEFT JOIN HRIS_DESIGNATIONS D
-                ON (E.DESIGNATION_ID=D.DESIGNATION_ID ),
+                ON (E.DESIGNATION_ID=D.DESIGNATION_ID )
+                LEFT JOIN HRIS_BRANCHES B
+                ON (E.BRANCH_ID=B.BRANCH_ID)
+                LEFT JOIN HRIS_POSITIONS P
+                ON (E.POSITION_ID=P.POSITION_ID),
                   (SELECT JH.EMPLOYEE_ID,
                     JH.START_DATE AS EXIT_DATE
                   FROM HRIS_JOB_HISTORY JH,

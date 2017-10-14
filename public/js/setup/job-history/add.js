@@ -2,7 +2,8 @@
     $(document).ready(function () {
         $('select').select2();
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
-
+        app.datePickerWithNepali('eventDate', 'eventDateNepali');
+        
         var $employeeId = $("#employeeId");
         var $serviceEventTypeId = $("#serviceEventTypeId");
 
@@ -14,6 +15,8 @@
         var $toServiceTypeId = $('#toServiceTypeId');
         var $toSalary = $("#toSalary");
         var $startDate = $('#startDate');
+        var $isRetired = $('#isRetired');
+        var $isDisabled = $('#isDisabled');
 
 
         app.floatingProfile.setDataFromRemote($employeeId.val());
@@ -39,6 +42,8 @@
                 $toPositionId.val(data.TO_POSITION_ID).trigger('change.select2');
                 $toServiceTypeId.val(data.TO_SERVICE_TYPE_ID).trigger('change.select2');
                 $toSalary.val(data.TO_SALARY);
+                $isRetired.prop("checked", data.RETIRED_FLAG === "Y");
+                $isDisabled.prop("checked", data.DISABLED_FLAG === "Y");
 
 
             }, function (error) {

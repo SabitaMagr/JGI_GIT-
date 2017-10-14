@@ -2,59 +2,33 @@
 
 namespace Application\Helper;
 
-use Exception;
-use Setup\Model\Company;
-use Setup\Model\EmployeeFile;
-use Setup\Model\HrEmployees;
 use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterInterface as DbAdapterInterface;
 use Zend\Mvc\MvcEvent;
 
 class SessionHelper {
 
     public static function sessionCheck(MvcEvent $event) {
         $app = $event->getApplication();
-        $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
         $auth = new AuthenticationService();
-        $employeeId = $auth->getStorage()->read()['employee_id'];
-        $registerAttendance = $auth->getStorage()->read()['register_attendance'];
-        if ($employeeId != null) {
-            $tempEmployeeFileData = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::PROFILE_PICTURE_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null);
-            $employeeFileId = (sizeof($tempEmployeeFileData) == 0) ? null : $tempEmployeeFileData[$employeeId];
+        $storage = $auth->getStorage()->read();
+        $config = $app->getServiceManager()->get('config');
 
+        if (isset($storage) && isset($storage['employee_id']) && isset($storage['employee_detail'])) {
+            $employeeId = $storage['employee_id'];
+            $registerAttendance = $storage['register_attendance'];
+            $allowRegisterAttendance = $storage['allow_register_attendance'];
+            $employeeDetail = $storage['employee_detail'];
+            $employeeFilePath = $employeeDetail['EMPLOYEE_FILE_PATH'];
+            $companyFilePath = $employeeDetail['COMPANY_FILE_PATH'];
 
-            $employeeNameList = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, null, [HrEmployees::FIRST_NAME], [HrEmployees::EMPLOYEE_ID => $employeeId], null);
-            if (sizeof($employeeNameList) == 0) {
-                throw new Exception("Employee With EMPLOYEE_ID => {$employeeId} doesn't exist!");
-            }
-            $employeeName = $employeeNameList[0];
-            //start to set company logo details
-            $companyId = EntityHelper::getTableKVList($adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::COMPANY_ID], [HrEmployees::EMPLOYEE_ID => $employeeId], null)[$employeeId];
-            $companyName = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::COMPANY_ID => $companyId], null)[$companyId];
-            $companyAddress = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::ADDRESS], [Company::COMPANY_ID => $companyId], null)[$companyId];
-            $event->getViewModel()->setVariable("companyName", $companyName);
-            $event->getViewModel()->setVariable("registerAttendance", $registerAttendance);
-            $event->getViewModel()->setVariable("companyAddress", $companyAddress);
-            $companyLogoCode = EntityHelper::getTableKVList($adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::LOGO], [Company::COMPANY_ID => $companyId], null)[$companyId];
-            //end to set companu logo details
-            $event->getViewModel()->setVariable("employeeName", $employeeName);
-            if ($employeeFileId != null) {
-                $file = EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $employeeFileId], null);
-                $filePath = ($file != null) ? $file[$employeeFileId] : null;
-                $event->getViewModel()->setVariable("profilePictureUrl", $filePath);
-            } else {
-                $config = $app->getServiceManager()->get('config');
-                $event->getViewModel()->setVariable("profilePictureUrl", $config['default-profile-picture']);
-            }
-
-            if ($companyLogoCode != null) {
-                $companyImageFilePath = EntityHelper::getTableKVList($adapter, EmployeeFile::TABLE_NAME, EmployeeFile::FILE_CODE, [EmployeeFile::FILE_PATH], [EmployeeFile::FILE_CODE => $companyLogoCode], null)[$companyLogoCode];
-                $event->getViewModel()->setVariable("companyLogoUrl", $companyImageFilePath);
-            } else {
-                $config = $app->getServiceManager()->get('config');
-                $event->getViewModel()->setVariable("companyLogoUrl", "NO");
-            }
             $event->getViewModel()->setVariable('selfEmployeeId', $employeeId);
+            $event->getViewModel()->setVariable("employeeName", $employeeDetail['FIRST_NAME']);
+            $event->getViewModel()->setVariable("companyName", $employeeDetail['COMPANY_NAME']);
+            $event->getViewModel()->setVariable("companyAddress", $employeeDetail['COMPANY_ADDRESS']);
+            $event->getViewModel()->setVariable("profilePictureUrl", isset($employeeFilePath) ? $employeeFilePath : $config['default-profile-picture']);
+            $event->getViewModel()->setVariable("companyLogoUrl", isset($companyFilePath) ? $companyFilePath : $config['default-profile-picture']);
+            $event->getViewModel()->setVariable("registerAttendance", $registerAttendance);
+            $event->getViewModel()->setVariable("allowRegisterAttendance", $allowRegisterAttendance);
         }
     }
 

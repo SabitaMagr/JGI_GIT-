@@ -8,9 +8,66 @@
 
 angular.module('hris', [])
         .controller('jobHistoryController', function ($scope, $http) {
-            $scope.jobHistoryList = [];
-            var displayKendoFirstTime = true;
-            var $tableContainer = $("#jobHistoryTable");
+            var $table = $("#jobHistoryTable");
+            var $excelExport = $('#export');
+            var $pdfExport = $('#pdfExport');
+
+            var data = [];
+            var columns = [
+                {field: "FULL_NAME", title: "Employee Name"},
+                {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type"},
+                {title: "Event Date", columns: [
+                        {field: "EVENT_DATE_AD", title: "AD"},
+                        {field: "EVENT_DATE_BS", title: "BS"},
+                    ]},
+                {title: "Effective From", columns: [
+                        {field: "START_DATE_AD", title: "AD"},
+                        {field: "START_DATE_BS", title: "BS"}
+                    ]},
+                {title: "Effective To", columns: [
+                        {field: "END_DATE_AD", title: "AD"},
+                        {field: "END_DATE_BS", title: "BS"},
+                    ]},
+                {field: "TO_BRANCH_NAME", title: "Branch"},
+                {field: "TO_DEPARTMENT_NAME", title: "Department"},
+                {field: "TO_POSITION_NAME", title: "Position"},
+                {field: "TO_DESIGNATION_TITLE", title: "Designation"},
+                {field: "TO_SERVICE_NAME", title: "Service Type"},
+                {field: "JOB_HISTORY_ID", title: "Action", template: `
+                        <a class="btn-edit"
+                        href="` + document.editLink + `/#: JOB_HISTORY_ID #" style="height:17px;">
+                        <i class="fa fa-edit"></i>
+                        </a>
+                        <a class="btn-delete confirmation"
+                        href="` + document.deleteLink + `/#: JOB_HISTORY_ID #" id="bs_#:JOB_HISTORY_ID #" style="height:17px;">
+                        <i class="fa fa-trash-o"></i></a>
+                        </a>`}
+            ];
+            app.initializeKendoGrid($table, columns, "Employee Service History");
+            app.searchTable('jobHistoryTable', ['FULL_NAME', 'START_DATE', 'SERVICE_EVENT_TYPE_NAME', 'TO_SERVICE_NAME', 'TO_BRANCH_NAME', 'TO_DEPARTMENT_NAME', 'TO_DESIGNATION_TITLE', 'TO_POSITION_NAME']);
+
+            var exportKV = {
+                'FULL_NAME': 'Employee Name',
+                'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
+                'EVENT_DATE_AD': 'Event Date(AD)',
+                'EVENT_DATE_BS': 'Event Date(BS)',
+                'START_DATE_AD': 'Effective From(AD)',
+                'START_DATE_BS': 'Effective From(BS)',
+                'END_DATE_AD': 'Effective To(AD)',
+                'END_DATE_BS': 'Effective To(BS)',
+                'TO_BRANCH_NAME': 'Branch',
+                'TO_DEPARTMENT_NAME': 'Department',
+                'TO_POSITION_NAME': 'Position',
+                'TO_DESIGNATION_TITLE': 'Designation',
+                'TO_SERVICE_NAME': 'Service',
+            };
+            $excelExport.on('click', function () {
+                app.excelExport(data, exportKV, "Employee Service History");
+            });
+            $pdfExport.on('click', function () {
+                app.exportToPDF(data, exportKV, "Employee Service History");
+            });
+
             $scope.view = function () {
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var companyId = angular.element(document.getElementById('companyId')).val();
@@ -38,148 +95,11 @@ angular.module('hris', [])
                     'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
-                    console.log(success);
-                    if (displayKendoFirstTime) {
-                        $scope.initializekendoGrid();
-                        displayKendoFirstTime = false;
-                    }
-                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
-                    var grid = $('#jobHistoryTable').data("kendoGrid");
-                    dataSource.read();
-                    grid.setDataSource(dataSource);
+                    data = success.data;
+                    app.renderKendoGrid($table, data);
                     window.app.scrollTo('jobHistoryTable');
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
-                    console.log(failure);
                 });
-            }
-
-            $scope.initializekendoGrid = function () {
-                $("#jobHistoryTable").kendoGrid({
-                    excel: {
-                        fileName: "JobHistoryList.xlsx",
-                        filterable: true,
-                        allPages: true
-                    },
-                    height: 450,
-                    scrollable: true,
-                    sortable: true,
-                    filterable: true,
-                    groupable: true,
-                    pageable: {
-                        input: true,
-                        numeric: false
-                    },
-                    dataBound: gridDataBound,
-                    columns: [
-                        {field: "FULL_NAME", title: "Employee Name", width: 200},
-                        {field: "START_DATE", title: "Start Date", width: 120},
-                        {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 150},
-                        {field: "TO_SERVICE_NAME", title: "Service Type", width: 150},
-                        {field: "TO_BRANCH_NAME", title: "Branch", width: 150},
-                        {field: "TO_DEPARTMENT_NAME", title: "Department", width: 150},
-                        {field: "TO_DESIGNATION_TITLE", title: "Designation", width: 150},
-                        {field: "TO_POSITION_NAME", title: "Position", width: 150},
-                        {field: "JOB_HISTORY_ID", title: "Action", width: 140, template: `
-                        <a class="btn-edit"
-                        href="` + document.editLink + `/#: JOB_HISTORY_ID #" style="height:17px;">
-                        <i class="fa fa-edit"></i>
-                        </a>
-                        <a class="btn-delete confirmation"
-                        href="` + document.deleteLink + `/#: JOB_HISTORY_ID #" id="bs_#:JOB_HISTORY_ID #" style="height:17px;">
-                        <i class="fa fa-trash-o"></i></a>
-                        </a>`}
-                    ]
-                });
-
-                app.searchTable('jobHistoryTable', ['FULL_NAME', 'START_DATE', 'SERVICE_EVENT_TYPE_NAME', 'TO_SERVICE_NAME', 'TO_BRANCH_NAME', 'TO_DEPARTMENT_NAME', 'TO_DESIGNATION_TITLE', 'TO_POSITION_NAME']);
-
-                app.pdfExport(
-                        'jobHistoryTable',
-                        {
-                            'FULL_NAME': 'Name',
-                            'START_DATE': 'Company',
-                            'SERVICE_EVENT_TYPE_NAME': 'Service Event Type',
-                            'TO_SERVICE_NAME': 'Service',
-                            'TO_BRANCH_NAME': 'Branch',
-                            'TO_DEPARTMENT_NAME': 'Department',
-                            'TO_DESIGNATION_TITLE': 'Designation',
-                            'TO_POSITION_NAME': 'Position'
-                        }
-                );
-
-                function gridDataBound(e) {
-                    var grid = e.sender;
-                    if (grid.dataSource.total() == 0) {
-                        var colCount = grid.columns.length;
-                        $(e.sender.wrapper)
-                                .find('tbody')
-                                .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
-                    }
-                }
-                ;
-                $("#export").click(function (e) {
-                    var rows = [{
-                            cells: [
-                                {value: "Employee Name"},
-                                {value: "Start Date"},
-                                {value: "Service Event Type"},
-                                {value: "Service Type"},
-                                {value: "Branch"},
-                                {value: "Department"},
-                                {value: "Designation"},
-                                {value: "Position"}
-                            ]
-                        }];
-                    var dataSource = $("#jobHistoryTable").data("kendoGrid").dataSource;
-                    var filteredDataSource = new kendo.data.DataSource({
-                        data: dataSource.data(),
-                        filter: dataSource.filter()
-                    });
-
-                    filteredDataSource.read();
-                    var data = filteredDataSource.view();
-
-                    for (var i = 0; i < data.length; i++) {
-                        var dataItem = data[i];
-                        rows.push({
-                            cells: [
-                                {value: dataItem.FULL_NAME},
-                                {value: dataItem.START_DATE},
-                                {value: dataItem.SERVICE_EVENT_TYPE_NAME},
-                                {value: dataItem.TO_SERVICE_NAME},
-                                {value: dataItem.TO_BRANCH_NAME},
-                                {value: dataItem.TO_DEPARTMENT_NAME},
-                                {value: dataItem.TO_DESIGNATION_TITLE},
-                                {value: dataItem.TO_POSITION_NAME}
-                            ]
-                        });
-                    }
-                    excelExport(rows);
-                    e.preventDefault();
-                });
-
-                function excelExport(rows) {
-                    var workbook = new kendo.ooxml.Workbook({
-                        sheets: [
-                            {
-                                columns: [
-                                    {autoWidth: true},
-                                    {autoWidth: true},
-                                    {autoWidth: true},
-                                    {autoWidth: true},
-                                    {autoWidth: true},
-                                    {autoWidth: true},
-                                    {autoWidth: true},
-                                    {autoWidth: true}
-                                ],
-                                title: "Service Status History",
-                                rows: rows
-                            }
-                        ]
-                    });
-                    kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "ServiceStatusHistory.xlsx"});
-                }
-                window.app.UIConfirmations();
             }
         });

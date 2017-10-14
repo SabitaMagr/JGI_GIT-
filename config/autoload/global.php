@@ -11,8 +11,11 @@ return [
         )
         )',
         
-    'username' => 'HRIS',
-    'password' => 'NEO_HRIS',
+//    'username' => 'HRIS',
+//    'password' => 'NEO_HRIS',
+          
+    'username' => 'HRIS_TEST',
+    'password' => 'HRIS_TEST',
           
 //        'username' => 'LAXMI_HRIS_APR28',
 //        'password' => 'LAXMI_HRIS_APR28',

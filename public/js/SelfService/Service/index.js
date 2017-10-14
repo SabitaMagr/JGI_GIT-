@@ -72,16 +72,16 @@ angular.module('hris', [])
                         {field: "START_DATE", title: "Start Date", width: 120},
                         {field: "END_DATE", title: "End Date", width: 120},
                         {field: "SERVICE_EVENT_TYPE_NAME", title: "Service Event Type", width: 180},
-                        {field: "FROM_SERVICE_TYPE_NAME", title: "Service Type (From-To)", width: 220},
-                        {field: "FROM_BRANCH_NAME", title: "Branch (From-To)", width: 250},
-                        {field: "FROM_DEPARTMENT_NAME", title: "Department (From-To)", width: 300},
-                        {field: "FROM_DESIGNATION_TITLE", title: "Designation (From-To)", width: 300},
-                        {field: "FROM_POSITION_NAME", title: "Position (From-To)", width: 300},
+                        {field: "TO_SERVICE_TYPE_NAME", title: "Service Type", width: 220},
+                        {field: "TO_BRANCH_NAME", title: "Branch", width: 250},
+                        {field: "TO_DEPARTMENT_NAME", title: "Department", width: 300},
+                        {field: "TO_DESIGNATION_TITLE", title: "Designation", width: 300},
+                        {field: "TO_POSITION_NAME", title: "Position", width: 300},
                         {title: "Action", width: 100}
                     ]
                 });
 
-                app.searchTable('serviceHistoryTable', ['START_DATE', 'END_DATE', 'SERVICE_EVENT_TYPE_NAME', 'FROM_SERVICE_TYPE_NAME', 'FROM_BRANCH_NAME', 'FROM_DEPARTMENT_NAME', 'FROM_DESIGNATION_TITLE', 'FROM_POSITION_NAME']);
+                app.searchTable('serviceHistoryTable', ['START_DATE', 'END_DATE', 'SERVICE_EVENT_TYPE_NAME', 'TO_SERVICE_TYPE_NAME', 'TO_BRANCH_NAME', 'TO_DEPARTMENT_NAME', 'TO_DESIGNATION_TITLE', 'TO_POSITION_NAME']);
 
                 app.pdfExport(
                         'serviceHistoryTable',
@@ -89,15 +89,10 @@ angular.module('hris', [])
                             'START_DATE': 'Start Date',
                             'END_DATE': 'End Date',
                             'SERVICE_EVENT_TYPE_NAME': 'Type',
-                            'FROM_SERVICE_TYPE_NAME': 'From service',
                             'TO_SERVICE_TYPE_NAME': 'To Service',
-                            'FROM_BRANCH_NAME': 'From Branch',
                             'TO_BRANCH_NAME': 'To Branch',
-                            'FROM_DEPARTMENT_NAME': 'From Department',
                             'TO_DEPARTMENT_NAME': 'To department',
-                            'FROM_DESIGNATION_TITLE': 'From Designation',
                             'TO_DESIGNATION_TITLE': 'To Designation',
-                            'FROM_POSITION_NAME': 'From Position',
                             'TO_POSITION_NAME': 'To Position'
                         });
 
@@ -119,11 +114,11 @@ angular.module('hris', [])
                                 {value: "Start Date"},
                                 {value: "End Date"},
                                 {value: "Service Event Type"},
-                                {value: "Service Type (From-To)"},
-                                {value: "Branch (From-To)"},
-                                {value: "Department (From-To)"},
-                                {value: "Designation (From-To)"},
-                                {value: "Position (From-To)"}
+                                {value: "Service Type"},
+                                {value: "Branch"},
+                                {value: "Department"},
+                                {value: "Designation"},
+                                {value: "Position"}
                             ]
                         }];
                     var dataSource = $("#serviceHistoryTable").data("kendoGrid").dataSource;
@@ -142,11 +137,11 @@ angular.module('hris', [])
                                 {value: dataItem.START_DATE},
                                 {value: dataItem.END_DATE},
                                 {value: dataItem.SERVICE_EVENT_TYPE_NAME},
-                                {value: dataItem.FROM_SERVICE_TYPE_NAME + "-" + dataItem.TO_SERVICE_TYPE_NAME},
-                                {value: dataItem.FROM_BRANCH_NAME + "-" + dataItem.TO_BRANCH_NAME},
-                                {value: dataItem.FROM_DEPARTMENT_NAME + "-" + dataItem.TO_DEPARTMENT_NAME},
-                                {value: dataItem.FROM_DESIGNATION_TITLE + "-" + dataItem.TO_DESIGNATION_TITLE},
-                                {value: dataItem.FROM_POSITION_NAME + "-" + dataItem.TO_POSITION_NAME}
+                                {value: dataItem.TO_SERVICE_TYPE_NAME},
+                                {value: dataItem.TO_BRANCH_NAME},
+                                {value: dataItem.TO_DEPARTMENT_NAME},
+                                {value: dataItem.TO_DESIGNATION_TITLE},
+                                {value: dataItem.TO_POSITION_NAME}
                             ]
                         });
                     }

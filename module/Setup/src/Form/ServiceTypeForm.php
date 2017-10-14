@@ -1,17 +1,6 @@
 <?php
+
 namespace Setup\Form;
-
-
-/**
- * Form Setup Service Type
- * Service Type Form.
- * Created By: Somkala Pachhai
- * Edited By:
- * Date: August 10, 2016, Wednesday
- * Last Modified By:
- * Last Modified Date:
- */
-
 
 use Zend\Form\Annotation;
 
@@ -19,20 +8,17 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("ServiceType")
  */
-class ServiceTypeForm
-{
-
+class ServiceTypeForm {
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Service Type Name"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
      * @Annotation\Attributes({ "id":"form-serviceTypeName", "class":"form-serviceTypeName form-control" })
      */
     public $serviceTypeName;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -51,7 +37,6 @@ class ServiceTypeForm
      * @Annotation\Attributes({ "id":"form-status","class":"form-control"})
      */
     public $status;
-
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

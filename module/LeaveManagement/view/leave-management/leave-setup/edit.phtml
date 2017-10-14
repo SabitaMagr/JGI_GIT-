@@ -35,6 +35,7 @@ $isMonthly = $form->get('isMonthly');
 $isSubstituteMandatory = $form->get('isSubstituteMandatory');
 $assignOnEmployeeSetup = $form->get('assignOnEmployeeSetup');
 $isProdataBasis = $form->get('isProdataBasis');
+$enableSubstitute = $form->get('enableSubstitute');
 
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
@@ -208,6 +209,15 @@ print $this->form()->openTag($form);
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($isProdataBasis, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($enableSubstitute); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($enableSubstitute); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($enableSubstitute, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">

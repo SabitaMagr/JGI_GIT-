@@ -16,7 +16,6 @@ use RestfulService\Controller\RestfulService;
 use System\Model\MenuSetup;
 use System\Model\Setting;
 use System\Repository\DashboardDetailRepo;
-use System\Repository\RolePermissionRepository;
 use System\Repository\SettingRepository;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter as DbTableAuthAdapter;
 use Zend\Authentication\AuthenticationService;
@@ -51,6 +50,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         $response = $event->getResponse();
 
         /* Offline pages not needed authentication */
+        $whiteListRoutes = ["api-auth", "api-leave", "api-employee", "api-notification"];
+
         $whiteList = [
             AuthController::class . '-login',
             AuthController::class . '-logout',
@@ -75,11 +76,12 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         ];
         $app = $event->getApplication();
         $auth = $app->getServiceManager()->get('AuthService');
-
         $controller = $event->getRouteMatch()->getParam('controller');
         $action = $event->getRouteMatch()->getParam('action');
+        $route = $event->getRouteMatch()->getMatchedRouteName();
+
         $requestedResourse = $controller . "-" . $action;
-        if (!$auth->hasIdentity() && !in_array($requestedResourse, $whiteList)) {
+        if (!$auth->hasIdentity() && !(in_array($requestedResourse, $whiteList) || in_array($route, $whiteListRoutes))) {
             $response = $event->getResponse();
             $response->getHeaders()->addHeaderLine(
                     'Location', $event->getRouter()->assemble(
@@ -90,7 +92,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $response->sendHeaders();
             return $response;
         }
-        $route = $event->getRouteMatch()->getMatchedRouteName();
+
+
         $identity = $auth->getIdentity();
 
         if (is_array($identity)) {
@@ -101,14 +104,13 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
 
         if ($roleId != null) {
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
-            $repository = new RolePermissionRepository($adapter);
-            $data = $repository->fetchAllMenuByRoleId($roleId);
+            $menus = $identity['menus'];
             $allowFlag = false;
             $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService', 'registerAttendance'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }
-            foreach ($data as $d) {
+            foreach ($menus as $d) {
                 if ($d[MenuSetup::ROUTE] == $route) {
                     $allowFlag = true;
                     break;
@@ -125,27 +127,34 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 $response->sendHeaders();
                 return $response;
             }
+
             SessionHelper::sessionCheck($event);
             $this->initNotification($adapter, $event->getViewModel(), $identity);
 
-            $dashboardDetailRepo = new DashboardDetailRepo($adapter);
-            $rawResult = $dashboardDetailRepo->fetchById($roleId);
-            $result = Helper::extractDbData($rawResult, true);
+            if (!isset($identity['global-search'])) {
+                $dashboardDetailRepo = new DashboardDetailRepo($adapter);
+                $rawResult = $dashboardDetailRepo->fetchById($roleId);
+                $result = Helper::extractDbData($rawResult, true);
 
-            $type = null;
-            foreach ($result as $dashboard) {
-                if ($dashboard['DASHBOARD'] == 'dashboard') {
-                    $type = $dashboard['ROLE_TYPE'];
-                    break;
+                $type = null;
+                foreach ($result as $dashboard) {
+                    if ($dashboard['DASHBOARD'] == 'dashboard') {
+                        $type = $dashboard['ROLE_TYPE'];
+                        break;
+                    }
                 }
-            }
+                $identity['global-search']['display'] = ($type == "A") ? 1 : 0;
 
-
-            $event->getViewModel()->setVariable('displayGlobalSearch', ($type == "A") ? 1 : 0);
-            if ($type == "A") {
-                $employeeRepo = new \Setup\Repository\EmployeeRepository($adapter);
-                $event->getViewModel()->setVariable('employeeList', $employeeRepo->fetchEmployeeFullNameList());
+                if ($type == "A") {
+                    $employeeRepo = new \Setup\Repository\EmployeeRepository($adapter);
+                    $identity['global-search']['data'] = $employeeRepo->fetchEmployeeFullNameList();
+                } else {
+                    $identity['global-search']['data'] = null;
+                }
+                $auth->getStorage()->write($identity);
             }
+            $event->getViewModel()->setVariable('displayGlobalSearch', $identity['global-search']['display']);
+            $event->getViewModel()->setVariable('employeeList', $identity['global-search']['data']);
         }
 
         /*
@@ -194,7 +203,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
                 },
                 'AuthService' => function ($container) {
                     $dbAdapter = $container->get(DbAdapter::class);
-//                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HRIS_USERS', 'USER_NAME', 'PASSWORD');
                     $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'HRIS_USERS', 'USER_NAME', 'FN_DECRYPT_PASSWORD(PASSWORD)');
                     $authService = new AuthenticationService();
                     $authService->setAdapter($dbTableAuthAdapter);

@@ -43,7 +43,7 @@ class TrainingApproveController extends AbstractActionController {
     }
 
     public function indexAction() {
-       $trainingApprove=$this->getAllList();
+        $trainingApprove = $this->getAllList();
         return Helper::addFlashMessagesToArray($this, ['trainingApprove' => $trainingApprove, 'id' => $this->employeeId]);
     }
 
@@ -64,18 +64,10 @@ class TrainingApproveController extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
-        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
+        $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
         if ($detail['TRAINING_ID'] != 0) {
             $detail['START_DATE'] = $detail['T_START_DATE'];
             $detail['END_DATE'] = $detail['T_END_DATE'];
@@ -261,6 +253,7 @@ class TrainingApproveController extends AbstractActionController {
                             try {
                                 HeadNotification::pushNotification(($trainingRequestModel->status == 'RC') ? NotificationEvents::TRAINING_RECOMMEND_ACCEPTED : NotificationEvents::TRAINING_RECOMMEND_REJECTED, $trainingRequestModel, $this->adapter, $this);
                             } catch (Exception $e) {
+                                
                             }
                         } else if ($role == 3 || $role == 4) {
                             $trainingRequestModel->approvedDate = Helper::getcurrentExpressionDate();
@@ -279,6 +272,7 @@ class TrainingApproveController extends AbstractActionController {
                             try {
                                 HeadNotification::pushNotification(($trainingRequestModel->status == 'AP') ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED, $trainingRequestModel, $this->adapter, $this);
                             } catch (Exception $e) {
+                                
                             }
                         }
                     }
@@ -296,72 +290,7 @@ class TrainingApproveController extends AbstractActionController {
 
     public function getAllList() {
         $list = $this->trainingApproveRepository->getAllRequest($this->employeeId);
-
-        $trainingApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-
-        $getValueComType = function($trainingTypeId) {
-            if ($trainingTypeId == 'CC') {
-                return 'Company Contribution';
-            } else if ($trainingTypeId == 'CP') {
-                return 'Company Personal';
-            }
-        };
-
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            if ($row['TRAINING_ID'] != 0) {
-                $row['START_DATE'] = $row['T_START_DATE'];
-                $row['END_DATE'] = $row['T_END_DATE'];
-                $row['DURATION'] = $row['T_DURATION'];
-                $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
-                $row['TITLE'] = $row['TRAINING_NAME'];
-            }
-
-            $new_row = array_merge($row, [
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
-            ]);
-
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $new_row['YOUR_ROLE'] = 'Recommender\Approver';
-                $new_row['ROLE'] = 4;
-            }
-            array_push($trainingApprove, $new_row);
-        }
-
-        return $trainingApprove;
+        return Helper::extractDbData($list);
     }
 
 }
