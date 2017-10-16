@@ -34,7 +34,7 @@
         
         app.initializeKendoGrid($leaveReportTable, cols, "leave_report.xlsx");
         
-        app.searchTable('leaveReportTable',['FULL_NAME']);
+        app.searchTable('leaveReportTable',['NAME']);
         
 
         $search.on('click', function () {
