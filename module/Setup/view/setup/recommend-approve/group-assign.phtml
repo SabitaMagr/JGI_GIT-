@@ -14,6 +14,8 @@ $this->headScript()
 
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.searchLink = '<?php echo $this->url('recommendapprove', ["action" => "pullEmployeeForRecAppAssign"]); ?>';
+    document.assignEmployeeReportingHierarchyLink = '<?php echo $this->url('recommendapprove', ["action" => "assignEmployeeReportingHierarchy"]); ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.employeeList =<?php echo json_encode($employeeList); ?>;
 </script>

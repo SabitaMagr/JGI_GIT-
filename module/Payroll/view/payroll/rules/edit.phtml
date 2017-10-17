@@ -32,6 +32,10 @@ $this->headScript()->appendFile($this->basePath('js/search.js'));
     document.genders =<?= json_encode($genders) ?>;
     document.serviceTypes =<?= json_encode($serviceTypes) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.pushRuleLink = '<?= $this->url("rules", ["action" => "pushRule"]) ?>';
+    document.pullRuleLink = '<?= $this->url("rules", ["action" => "pullRule"]) ?>';
+    document.pushRuleDetailLink = '<?= $this->url("rules", ["action" => "pushRuleDetail"]) ?>';
+    document.pullRuleDetailByPayIdLink = '<?= $this->url("rules", ["action" => "pullRuleDetailByPayId"]) ?>';
 </script>
 
 <?php if ($this->messages) { ?>

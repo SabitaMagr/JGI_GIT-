@@ -56,9 +56,8 @@
         },
         pullRuleDetailByPayId: function (payId) {
             var obj = this;
-            app.pullDataById(document.url, {
-                action: 'pullRuleDetailByPayId',
-                data: {payId: payId}
+            app.pullDataById(document.pullRuleDetailByPayIdLink, {
+                payId: payId
             }).then(function (success) {
                 if (!((typeof success.data === 'undefined') || (success.data == null))) {
                     obj.setRuleDetailFromRemote(success.data)
@@ -133,10 +132,7 @@
     var pushRuleDetail = function () {
         ruleDetail.payId = rulesForm.payId;
         ruleDetail.updateModel(editor.getValue());
-        app.pullDataById(document.url, {
-            action: 'pushRuleDetail',
-            data: JSON.parse(JSON.stringify(ruleDetail))
-        }).then(function (success) {
+        app.pullDataById(document.pushRuleDetailLink, JSON.parse(JSON.stringify(ruleDetail))).then(function (success) {
             eclickFlag = true;
             $('.button-next').click();
             employeeRule.pullEmployees(rulesForm.payId);
@@ -288,10 +284,9 @@
                         $('#remarks').val()
                         );
 
-                app.pullDataById(document.url, {
-                    action: 'pushRule',
-                    data: JSON.parse(JSON.stringify(rulesForm))
-                }).then(function (success) {
+                app.pullDataById(document.pushRuleLink,
+                        JSON.parse(JSON.stringify(rulesForm))
+                        ).then(function (success) {
                     if (typeof success.data !== 'undefined') {
                         rulesForm.payId = success.data.payId;
                     }
@@ -311,9 +306,8 @@
         });
 
         if ((typeof document.ruleId !== 'undefined') && (document.ruleId != 0)) {
-            app.pullDataById(document.url, {
-                action: 'pullRule',
-                data: {ruleId: document.ruleId}
+            app.pullDataById(document.pullRuleLink, {
+                ruleId: document.ruleId
             }).then(function (success) {
                 rulesForm.setRulesFromRemote(success.data.rule);
                 setFormData();

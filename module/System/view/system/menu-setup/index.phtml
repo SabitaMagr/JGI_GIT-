@@ -16,6 +16,11 @@ $this->headScript()
       rel="stylesheet" type="text/css"/>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.menuLink = '<?= $this->url("menusetup", ["action" => "menu"]) ?>';
+    document.menuInsertionLink = '<?= $this->url("menusetup", ["action" => "menuInsertion"]) ?>';
+    document.menuUpdateLink = '<?= $this->url("menusetup", ["action" => "menuUpdate"]) ?>';
+    document.pullMenuDetailLink = '<?= $this->url("menusetup", ["action" => "pullMenuDetail"]) ?>';
+    document.permissionAssignLink = '<?= $this->url("menusetup", ["action" => "permissionAssign"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
