@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/14/16
- * Time: 3:38 PM
- */
-
 namespace SelfService\Repository;
 
 use Application\Helper\EntityHelper;
@@ -203,8 +196,8 @@ class AttendanceRepository implements RepositoryInterface {
         $sql = "
                 SELECT A.ID                                        AS ID,
                   A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,
-                  INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT,
-                  BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_N,
+                  INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_AD,
+                  BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_BS,
                   INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM'))          AS IN_TIME,
                   INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM'))         AS OUT_TIME,
                   A.IN_REMARKS                                     AS IN_REMARKS,

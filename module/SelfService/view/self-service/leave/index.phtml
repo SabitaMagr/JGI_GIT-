@@ -13,9 +13,7 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 
-<script>
-    document.leaves =<?php echo json_encode($leaves); ?>;
-</script>
+
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leave')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -49,9 +47,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
                         <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -60,25 +66,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
     <div id="leaveTable">
     </div>
-	</div>
-    
-  
-
-
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
-        </td>
-        <td>
-        #: (ALL_TOTAL_DAYS == null) ? '-' : ALL_TOTAL_DAYS #
-        </td>
-        <td>
-        #: (LEAVE_TAKEN == null) ? '-' : LEAVE_TAKEN #
-        </td>
-        <td>
-        #: (BALANCE == null) ? '-' : BALANCE #
-        </td>
-        </tr>
-    </script>
+	</div>    
 </div>

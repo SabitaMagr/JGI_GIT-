@@ -14,8 +14,7 @@ $this->headScript()
 ?>
 
 <script>
-    document.list =<?php echo json_encode($list) ?>;
-    document.viewLink ='<?= $this->url("leaveNotification", ["action" => "view"]) ?>';
+    document.viewLink = '<?= $this->url("leaveNotification", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveNotification')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -37,9 +36,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -52,52 +51,25 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
                         <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-    <div id="leaveNotificationTable">
+        <div id="leaveNotificationTable">
+        </div>
     </div>
-	</div>
-    
-   
-<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-        </td>
-        <td>
-        #: (LEAVE_ENAME == null) ? '-' : LEAVE_ENAME #
-        </td>
-        <td>
-        #: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #
-        </td>
-        <td>
-        #: (FROM_DATE == null) ? '-' : FROM_DATE #
-        </td>
-        <td>
-        #: (TO_DATE == null) ? '-' : TO_DATE #
-        </td>
-        <td>
-        #: (NO_OF_DAYS == null) ? '-' : NO_OF_DAYS #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-        #: (SUB_APPROVED_FLAG == null) ? '-' : SUB_APPROVED_FLAG #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("leaveNotification", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i>
-        </a> 
-        </td>
-        </tr>
-    </script>-->
+
 </div>

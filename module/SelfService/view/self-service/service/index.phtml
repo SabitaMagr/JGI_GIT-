@@ -26,7 +26,8 @@ $this->headScript()
 
 <script>
     document.ids=<?php echo json_encode(["fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.viewLink='<?= $this->url("service", ["action" => 'view']) ?>';
+    document.pullSeriveListWS = '<?= $this->url("service", ["action" => "fetchAllemployeeService"]) ?>';
 </script>
 
 <div class="page-bar">
@@ -46,7 +47,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="serviceController">
     <div id="hris-page-content">
     <div class="margin-top-20">
         
@@ -68,8 +68,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li>
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-pencil" ></i> Export to Excel </a>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -86,7 +94,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="fromDate">From Date</label>
-                                        <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                                        <input type="text" id="fromDate" name="fromDate"  class="form-control"/>
                                     </div>
 
                                 </div>
@@ -100,7 +108,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="col-sm-3">
                                     <div class="form-group">
                                         <label for="toDate">To Date</label>
-                                        <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                                        <input type="text"  id="toDate" name="toDate"  class="form-control"/>
                                     </div>
                                 </div>
                                 <div class="col-sm-3">
@@ -119,7 +127,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                            <button ng-click="view()" id="myServiceHistory" class="btn btn-default btn-sm pull-right">
+                            <button  id="myServiceHistory" class="btn btn-default btn-sm pull-right">
                                 VIEW
                         <i class="fa fa-search"></i>
                             </button>
@@ -160,13 +168,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             #: (FROM_POSITION_NAME == null) ? ' ' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #
             </td>
             <td>
-            <a class="btn  btn-icon-only btn-success"
-            href="<?= $this->url("service", ["action" => 'view']) ?>/#: JOB_HISTORY_ID #" style="height:17px;" title="view">
-            <i class="fa fa-search-plus"></i>
-            </a>
+            
             </td>
             </tr>
         </script>
     </div>
-</div>
 </div>

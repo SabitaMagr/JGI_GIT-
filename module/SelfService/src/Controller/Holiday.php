@@ -2,7 +2,9 @@
 
 namespace SelfService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
+use Exception;
 use SelfService\Repository\HolidayRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -25,23 +27,32 @@ class Holiday extends AbstractActionController {
     }
 
     public function indexAction() {
-        $holidayList = $this->holidayRepository->selectAll($this->employee_id);
-        $holidays = [];
-        $getValue = function($halfDay) {
-            if ($halfDay == "F") {
-                return "First Half";
-            } else if ($halfDay == "S") {
-                return "Second Half";
-            } else if ($halfDay == "N") {
-                return "Full Day";
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $holidayList = $this->holidayRepository->selectAll($this->employee_id);
+                $holidays = [];
+                $getValue = function($halfDay) {
+                    if ($halfDay == "F") {
+                        return "First Half";
+                    } else if ($halfDay == "S") {
+                        return "Second Half";
+                    } else if ($halfDay == "N") {
+                        return "Full Day";
+                    }
+                };
+                foreach ($holidayList as $holidayRow) {
+                    $new_row = array_merge($holidayRow, ['HALF_DAY' => $getValue($holidayRow['HALFDAY'])]);
+                    unset($holidayRow['HALFDAY']);
+                    array_push($holidays, $new_row);
+                }
+
+                return new CustomViewModel(['success' => true, 'data' => $holidays, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
-        };
-        foreach ($holidayList as $holidayRow) {
-            $new_row = array_merge($holidayRow, ['HALF_DAY' => $getValue($holidayRow['HALFDAY'])]);
-            unset($holidayRow['HALFDAY']);
-            array_push($holidays, $new_row);
         }
-        return Helper::addFlashMessagesToArray($this, ['holidays' => $holidays]);
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
 }

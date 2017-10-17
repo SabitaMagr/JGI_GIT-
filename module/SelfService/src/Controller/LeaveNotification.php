@@ -2,24 +2,26 @@
 
 namespace SelfService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
+use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
-use SelfService\Model\LeaveSubstitute;
-use Zend\Authentication\AuthenticationService;
-use Setup\Repository\EmployeeRepository;
-use ManagerService\Repository\LeaveApproveRepository;
-use LeaveManagement\Repository\LeaveMasterRepository;
 use LeaveManagement\Form\LeaveApplyForm;
-use Zend\Form\Annotation\AnnotationBuilder;
 use LeaveManagement\Model\LeaveApply;
-use SelfService\Repository\LeaveSubstituteRepository;
-use SelfService\Repository\LeaveRequestRepository;
-use Application\Helper\EntityHelper;
-use Setup\Model\HrEmployees;
+use LeaveManagement\Repository\LeaveMasterRepository;
+use ManagerService\Repository\LeaveApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use SelfService\Model\LeaveSubstitute;
+use SelfService\Repository\LeaveRequestRepository;
+use SelfService\Repository\LeaveSubstituteRepository;
+use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class LeaveNotification extends AbstractActionController {
 
@@ -27,70 +29,78 @@ class LeaveNotification extends AbstractActionController {
     private $repository;
     private $employeeId;
     private $form;
+    private $storageData;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
         $this->repository = new LeaveSubstituteRepository($this->adapter);
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function indexAction() {
-        $result = $this->repository->fetchByEmployeeId($this->employeeId);
-        $list = [];
-        $getValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchByEmployeeId($this->employeeId);
+                $list = [];
+                $getValue = function($status) {
+                    if ($status == "RQ") {
+                        return "Pending";
+                    } else if ($status == 'RC') {
+                        return "Recommended";
+                    } else if ($status == "R") {
+                        return "Rejected";
+                    } else if ($status == "AP") {
+                        return "Approved";
+                    } else if ($status == "C") {
+                        return "Cancelled";
+                    }
+                };
+
+                $getValueApp = function($approvedFlag) {
+                    if ($approvedFlag == "Y") {
+                        return "Yes";
+                    } else if ($approvedFlag == 'N') {
+                        return "No";
+                    }
+                };
+                $fullName = function($id) {
+                    $empRepository = new EmployeeRepository($this->adapter);
+                    $empDtl = $empRepository->fetchById($id);
+                    return $empDtl['FULL_NAME'];
+                };
+
+                foreach ($result as $row) {
+                    $status = $getValue($row['STATUS']);
+
+                    $statusId = $row['STATUS'];
+                    $approvedDT = $row['APPROVED_DT'];
+
+                    $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+                    $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+                    $recommenderName = $fullName($authRecommender);
+                    $approverName = $fullName($authApprover);
+                    $subEmployeeName = $fullName($row['SUB_EMPLOYEE_ID']);
+
+                    $new_row = array_merge($row, [
+                        'STATUS' => $status,
+                        'APPROVER_NAME' => $approverName,
+                        'RECOMMENDER_NAME' => $recommenderName,
+                        'SUB_EMPLOYEE_NAME' => $subEmployeeName,
+                        'SUB_APPROVED_FLAG' => $getValueApp($row['SUB_APPROVED_FLAG'])
+                    ]);
+                    array_push($list, $new_row);
+                }
+
+                return new CustomViewModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
-        };
-
-        $getValueApp = function($approvedFlag) {
-            if ($approvedFlag == "Y") {
-                return "Yes";
-            } else if ($approvedFlag == 'N') {
-                return "No";
-            }
-        };
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        foreach ($result as $row) {
-            $status = $getValue($row['STATUS']);
-
-            $statusId = $row['STATUS'];
-            $approvedDT = $row['APPROVED_DT'];
-
-            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
-            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
-
-            $recommenderName = $fullName($authRecommender);
-            $approverName = $fullName($authApprover);
-            $subEmployeeName = $fullName($row['SUB_EMPLOYEE_ID']);
-
-            $new_row = array_merge($row, [
-                'STATUS' => $status,
-                'APPROVER_NAME' => $approverName,
-                'RECOMMENDER_NAME' => $recommenderName,
-                'SUB_EMPLOYEE_NAME' => $subEmployeeName,
-                'SUB_APPROVED_FLAG' => $getValueApp($row['SUB_APPROVED_FLAG'])
-            ]);
-            array_push($list, $new_row);
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'list' => $list
-        ]);
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function initializeForm() {
@@ -107,10 +117,18 @@ class LeaveNotification extends AbstractActionController {
 
         $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
 
+        $leaveSubstituteDetail = $this->repository->fetchById($id);
 
         if ($id === 0) {
             return $this->redirect()->toRoute("leaveNotification");
         }
+
+        $fullName = function($id) {
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
 
         $leaveApply = new LeaveApply();
         $request = $this->getRequest();

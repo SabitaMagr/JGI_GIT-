@@ -2,7 +2,6 @@
 
 namespace SelfService\Repository;
 
-use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use HolidayManagement\Model\EmployeeHoliday;
@@ -36,14 +35,13 @@ class HolidayRepository implements RepositoryInterface {
     }
 
     function selectAll($employeeId) {
-        $today = Helper::getcurrentExpressionDate();
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
-            new Expression("BS_DATE(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N"),
-            new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("BS_DATE(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE_N"),
+            new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE_AD"),
+            new Expression("BS_DATE(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE_BS"),
+            new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD"),
+            new Expression("BS_DATE(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE_BS"),
             new Expression("H.HOLIDAY_ID AS HOLIDAY_ID"),
             new Expression("H.HOLIDAY_CODE AS HOLIDAY_CODE"),
             new Expression("INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME"),

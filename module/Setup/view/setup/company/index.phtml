@@ -18,6 +18,7 @@ $this->headScript()
 <script>
     document.editLink = '<?= $this->url("company", ["action" => "edit"]); ?>';
     document.deleteLink = '<?= $this->url("company", ["action" => "delete"]); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Company')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -30,8 +31,12 @@ $this->headScript()
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('company', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
+                <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
+                    <a href="<?= $this->url('company', ['action' => 'add']) ?>" class="btn default btn-sm">
+                        <i class="fa fa-plus-square icon-black"></i>
+                        New 
+                    </a>
+                <?php endif; ?>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools

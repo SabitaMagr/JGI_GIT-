@@ -17,8 +17,6 @@ $this->headScript()
 ?>
 
 <script>
-    document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.loanRequestList =<?php echo json_encode($list); ?>;
     document.viewLink = '<?= $this->url("loanRequest", ["action" => "view"]) ?>';
     document.deleteLink = '<?= $this->url("loanRequest", ["action" => "delete"]) ?>';
 </script>
@@ -58,9 +56,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
+                        <li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
                         <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
