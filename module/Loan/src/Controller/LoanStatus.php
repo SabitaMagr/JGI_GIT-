@@ -1,4 +1,5 @@
 <?php
+
 namespace Loan\Controller;
 
 use Application\Helper\EntityHelper;
@@ -23,33 +24,32 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class LoanStatus extends AbstractActionController
-{
+class LoanStatus extends AbstractActionController {
+
     private $adapter;
     private $loanApproveRepository;
     private $loanStatusRepository;
     private $form;
     private $employeeId;
-    
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->loanApproveRepository = new LoanApproveRepository($adapter);
         $this->loanStatusRepository = new LoanStatusRepository($adapter);
         $auth = new AuthenticationService();
-        $this->employeeId =  $auth->getStorage()->read()['employee_id'];       
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
-    
-    public function initializeForm(){
+
+    public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new LoanRequestForm();
         $this->form = $builder->createForm($form);
     }
 
-    
     public function indexAction() {
         $loanFormElement = new Select();
         $loanFormElement->setName("loan");
-        $loans = EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => 'E'], Loan::LOAN_NAME, "ASC",NULL,FALSE,TRUE);
+        $loans = EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => 'E'], Loan::LOAN_NAME, "ASC", NULL, FALSE, TRUE);
         $loans1 = [-1 => "All Loans"] + $loans;
         $loanFormElement->setValueOptions($loans1);
         $loanFormElement->setAttributes(["id" => "loanId", "class" => "form-control"]);
@@ -61,7 +61,7 @@ class LoanStatus extends AbstractActionController
             'RC' => 'Recommended',
             'AP' => 'Approved',
             'R' => 'Rejected',
-            'C'=>'Cancelled'
+            'C' => 'Cancelled'
         ];
         $loanStatusFormElement = new Select();
         $loanStatusFormElement->setName("loanStatus");
@@ -72,13 +72,12 @@ class LoanStatus extends AbstractActionController
         return Helper::addFlashMessagesToArray($this, [
                     'loans' => $loanFormElement,
                     'loanStatus' => $loanStatusFormElement,
-                    'searchValues'=> EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
+
     public function viewAction() {
         $this->initializeForm();
-        $loanRequestRepository = new LoanRequestRepository($this->adapter);
-        $loanApproveRepository = new LoanApproveRepository($this->adapter);
 
         $id = (int) $this->params()->fromRoute('id');
 
@@ -91,26 +90,12 @@ class LoanStatus extends AbstractActionController
         $detail = $this->loanApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
         $employeeId = $detail['EMPLOYEE_ID'];
-        $approvedDT = $detail['APPROVED_DATE'];
 
-        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-        $recommApprove = 0;
-        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
-            $recommApprove=1;
-        }
-        
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-        
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);        
-        $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
+
+        $recommApprove = $detail['RECOMMENDER_ID'] == $detail['APPROVER_ID'] ? 1 : 0;
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
         if (!$request->isPost()) {
             $loanRequest->exchangeArrayFromDB($detail);
@@ -140,14 +125,14 @@ class LoanStatus extends AbstractActionController
                     'employeeId' => $employeeId,
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $fullName($authRecommender),
-                    'approver' => $fullName($authApprover),
-                    'approvedDT'=>$detail['APPROVED_DATE'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
+                    'approvedDT' => $detail['APPROVED_DATE'],
                     'status' => $status,
-                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC",NULL,FALSE,TRUE),
+                    'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC", NULL, FALSE, TRUE),
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove'=>$recommApprove
+                    'recommApprove' => $recommApprove
         ]);
     }
-    
+
 }

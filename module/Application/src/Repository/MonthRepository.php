@@ -67,10 +67,7 @@ class MonthRepository implements RepositoryInterface {
         return $this->gateway->select(function(Select $select) use($id) {
                     $select->where([Months::FISCAL_YEAR_ID => $id]);
                     $select->where([Months::STATUS => 'E']);
-//                    $select->where(function(Where $where) {
-//                        $where->lessThan(Months::TO_DATE, Helper::getcurrentExpressionDate());
-//                    });
-                    $select->order([Months::FROM_DATE => Select::ORDER_DESCENDING]);
+                    $select->order([Months::FROM_DATE => Select::ORDER_ASCENDING]);
                 });
     }
 

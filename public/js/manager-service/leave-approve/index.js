@@ -60,7 +60,7 @@
                         }]},
                 {field: "NO_OF_DAYS", title: "Duration"},
                 {field: "YOUR_ROLE", title: "Your Role"},
-                {field: ["ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
+                {field: ["ID", "ROLE"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #/#: ROLE #" style="height:17px;" title="view detail">
                             <i class="fa fa-search-plus"></i>
                             </a>
                             </span>`}

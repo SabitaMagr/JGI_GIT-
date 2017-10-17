@@ -61,38 +61,20 @@ class AttendanceApproveController extends AbstractActionController {
         }
         $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
 
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $attendanceRequestRepository->fetchById($id);
 
         $employeeId = $detail['EMPLOYEE_ID'];
-        $employeeName = $fullName($employeeId);
+        $employeeName = $detail['FULL_NAME'];
 
-        $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DT'];
 
-
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
-
-        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
+        $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
 
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
@@ -272,50 +254,7 @@ class AttendanceApproveController extends AbstractActionController {
 
     public function getAllList() {
         $list = $this->repository->getAllRequest($this->employeeId);
-        $attendanceApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($recommender = $approver) {
-                return 'RECOMMENDER/APPROVER';
-            } else {
-                if ($this->employeeId == $recommender) {
-                    return 'RECOMMENDER';
-                } else if ($this->employeeId == $approver) {
-                    return 'APPROVER';
-                }
-            }
-        };
-
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } elseif ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-
-        foreach ($list as $row) {
-            $new_row = array_merge($row, [
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
-                'STATUS' => $getStatusValue($row['STATUS'])
-            ]);
-            array_push($attendanceApprove, $new_row);
-        }
-        return $attendanceApprove;
+        return Helper::extractDbData($list);
     }
 
 }

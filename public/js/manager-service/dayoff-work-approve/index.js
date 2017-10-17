@@ -55,7 +55,7 @@
                             template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}]},
                 {field: "DURATION", title: "Duration"},
                 {field: "YOUR_ROLE", title: "Your Role"},
-                {field: ["ID"], title: "Action", template: `<span> <a class="btn-edit" href="` + document.viewLink + `/#:ID #/#:ROLE #" style="height:17px;" title="view"> <i class="fa fa-search-plus"></i>
+                {field: ["ID", "ROLE"], title: "Action", template: `<span> <a class="btn-edit" href="` + document.viewLink + `/#:ID #/#:ROLE #" style="height:17px;" title="view"> <i class="fa fa-search-plus"></i>
         </a>
        </span>`}
             ]
@@ -130,13 +130,8 @@
             ).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 console.log(success);
-                if (success.success == true) {
-                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
-                    var grid = $('#dayoffWorkApproveTable').data("kendoGrid");
-                    dataSource.read();
-                    grid.setDataSource(dataSource);
-                    checkedIds = {};
-                    $('#acceptRejectDiv').hide();
+                if (success.success) {
+                    location.reload();
                 }
 
             }, function (failure) {

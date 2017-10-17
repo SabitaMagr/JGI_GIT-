@@ -39,7 +39,7 @@ angular.module('hris', [])
                         'fromDate': fromDate,
                         'toDate': toDate,
                         'recomApproveId': recomApproveId,
-                        'travelRequestStatusId':travelRequestStatusId,
+                        'travelRequestStatusId': travelRequestStatusId,
                         'employeeTypeId': employeeTypeId
                     }
                 }).then(function (success) {
@@ -107,16 +107,16 @@ angular.module('hris', [])
                         {field: "REQUESTED_TYPE", title: "Request For"},
                         {field: "STATUS", title: "Status"},
                         {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: `<span># if(REQUESTED_TYPE=='Expense'){#
-        <a class="btn-edit"
-        href="` + document.expenseDetailLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
-        <i class="fa fa-search-plus"></i>
-        </a>
-        # } else { #
-        <a class="btn-edit"
-        href="` + document.viewLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
-        <i class="fa fa-search-plus"></i>
-        </a>
-        # } #}
+                    <a class="btn-edit"
+                    href="` + document.expenseDetailLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+                    <i class="fa fa-search-plus"></i>
+                    </a>
+                    # } else { #
+                    <a class="btn-edit"
+                    href="` + document.viewLink + `/#:TRAVEL_ID #/#:ROLE #" style="height:17px;" title="view">
+                    <i class="fa fa-search-plus"></i>
+                    </a>
+                    # } #
                     </span>`}]
                 });
 

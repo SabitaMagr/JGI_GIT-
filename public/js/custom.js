@@ -1022,7 +1022,7 @@ window.app = (function ($, toastr, App) {
                 }
             ]
         });
-        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: fileName+".xlsx"});
+        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: fileName});
     };
 
     (function () {

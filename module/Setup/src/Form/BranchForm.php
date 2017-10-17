@@ -2,15 +2,6 @@
 
 namespace Setup\Form;
 
-/**
- * Form Setup Branch
- * Branch Form.
- * Created By: Ukesh Gaiju
- * Edited By: Somkala Pachhai
- * Date: August 3, 2016, Wednesday 
- * Last Modified By: Somkala Pachhai
- * Last Modified Date: August 10,2016, Wednesday 
- */
 use Zend\Form\Annotation;
 
 /**
@@ -19,14 +10,12 @@ use Zend\Form\Annotation;
  */
 class BranchForm {
 
- 
-
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Branch Name"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5","max":"255"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
      * @Annotation\Attributes({ "id":"form-branchName", "class":"form-branchName form-control" })
      */
     public $branchName;
@@ -49,7 +38,7 @@ class BranchForm {
      * @Annotation\Attributes({ "id":"countryId","class":"form-control"})
      */
     public $countryId;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)

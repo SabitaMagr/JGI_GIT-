@@ -1,6 +1,3 @@
-/**
- * Created by root on 11/3/16.
- */
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -31,7 +28,6 @@
             {field: "FROM_POSITION_NAME", title: "Position (From-To)", width: 300, template: "#: (FROM_POSITION_NAME == null) ? ' ' : FROM_POSITION_NAME # - #: (TO_POSITION_NAME == null) ? ' ' : TO_POSITION_NAME #"},
             {field: ["JOB_HISTORY_ID"], title: "Action", width: 100, template: action}
         ], "Service List.xlsx");
-
 
 
         $('#myServiceHistory').on('click', function () {

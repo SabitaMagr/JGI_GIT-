@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -29,7 +29,7 @@ angular.module('hris', [])
                     action: 'pullAttendanceRequestStatusList',
                     data: {
                         'employeeId': employeeId,
-                        'companyId':companyId,
+                        'companyId': companyId,
                         'branchId': branchId,
                         'departmentId': departmentId,
                         'designationId': designationId,
@@ -75,56 +75,56 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
 //                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee" ,template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
-                         {title: "Requested Date",
-                    columns: [{
-                            field: "REQUESTED_DT",
-                            title: "English",
-                            template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
-                        {field: "REQUESTED_DT_N",
-                            title: "Nepali",
-                            template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
-                  {title: "Attendance Date",
-                    columns: [{
-                            field: "ATTENDANCE_DT",
-                            title: "English",
-                            template: "<span>#: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #</span>"},
-                        {field: "ATTENDANCE_DT_N",
-                            title: "Nepali",
-                            template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N #</span>"}]},
-                        {field: "IN_TIME", title: "Check In" ,template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
-                        {field: "OUT_TIME", title: "Check Out" ,template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
-                        {field: "YOUR_ROLE", title: "Your Role" ,template: "<span>#: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #</span>"},
-                        {field: "STATUS", title: "Status" ,template: "<span>#: (STATUS == null) ? '-' : STATUS #</span>"},
+                        {field: "FULL_NAME", title: "Employee", template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
+                        {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DT",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
+                                {field: "REQUESTED_DT_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
+                        {title: "Attendance Date",
+                            columns: [{
+                                    field: "ATTENDANCE_DT",
+                                    title: "English",
+                                    template: "<span>#: (ATTENDANCE_DT == null) ? '-' : ATTENDANCE_DT #</span>"},
+                                {field: "ATTENDANCE_DT_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N #</span>"}]},
+                        {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
+                        {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
+                        {field: "YOUR_ROLE", title: "Your Role", template: "<span>#: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #</span>"},
+                        {field: "STATUS", title: "Status", template: "<span>#: (STATUS == null) ? '-' : STATUS #</span>"},
                         {field: ["ID"], title: "Action", template: `<span> <a class="btn  btn-icon-only btn-success"
-        href=" `+ document.viewLink +` /#: ID #" style="height:17px;" title="view">
+        href=" ` + document.viewLink + `/#: ID #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </span>`}
                     ]
                 });
-                
-                app.searchTable('attendanceRequestStatusTable',['FULL_NAME','REQUESTED_DT','ATTENDANCE_DT','REQUESTED_DT_N','ATTENDANCE_DT_N','IN_TIME','OUT_TIME','YOUR_ROLE','STATUS']);
-                
+
+                app.searchTable('attendanceRequestStatusTable', ['FULL_NAME', 'REQUESTED_DT', 'ATTENDANCE_DT', 'REQUESTED_DT_N', 'ATTENDANCE_DT_N', 'IN_TIME', 'OUT_TIME', 'YOUR_ROLE', 'STATUS']);
+
                 app.pdfExport(
-                'attendanceRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'REQUESTED_DT': 'Req.Date(AD)',
-                    'REQUESTED_DT_N': 'Req.Date(BS)',
-                    'ATTENDANCE_DT': 'AttenDate(AD)',
-                    'ATTENDANCE_DT_N': 'AttenDate(BS)',
-                    'IN_TIME': 'In Time',
-                    'OUT_TIME': 'Out Time',
-                    'TOTAL_HOUR': 'Total Hrs',
-                    'IN_REMARKS': 'In Remarks',
-                    'OUT_REMARKS': 'Out Remarks',
-                    'STATUS': 'Status',
-                    'APPROVED_DT': 'Approved Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    
-                });
-                
-                
+                        'attendanceRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'REQUESTED_DT': 'Req.Date(AD)',
+                            'REQUESTED_DT_N': 'Req.Date(BS)',
+                            'ATTENDANCE_DT': 'AttenDate(AD)',
+                            'ATTENDANCE_DT_N': 'AttenDate(BS)',
+                            'IN_TIME': 'In Time',
+                            'OUT_TIME': 'Out Time',
+                            'TOTAL_HOUR': 'Total Hrs',
+                            'IN_REMARKS': 'In Remarks',
+                            'OUT_REMARKS': 'Out Remarks',
+                            'STATUS': 'Status',
+                            'APPROVED_DT': 'Approved Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+
+                        });
+
+
 
                 function gridDataBound(e) {
                     var grid = e.sender;

@@ -134,20 +134,14 @@ class LeaveNotification extends AbstractActionController {
         $request = $this->getRequest();
 
         $detail = $leaveApproveRepository->fetchById($id);
-        $recommenderName = $fullName($detail['RECOMMENDER']);
-        $approverName = $fullName($detail['APPROVER']);
 
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
 
-        $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DT'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
-        $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();

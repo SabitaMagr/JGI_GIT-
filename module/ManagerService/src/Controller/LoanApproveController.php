@@ -13,7 +13,6 @@ use SelfService\Form\LoanRequestForm;
 use SelfService\Model\LoanRequest;
 use SelfService\Repository\LoanRequestRepository;
 use Setup\Model\Loan;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -42,13 +41,11 @@ class LoanApproveController extends AbstractActionController {
 
     public function indexAction() {
         $loanApprove = $this->getAllList();
-        //print_r($loanApprove); die();
         return Helper::addFlashMessagesToArray($this, ['loanApprove' => $loanApprove, 'id' => $this->employeeId]);
     }
 
     public function viewAction() {
         $this->initializeForm();
-        $loanRequestRepository = new LoanRequestRepository($this->adapter);
 
         $id = (int) $this->params()->fromRoute('id');
         $role = $this->params()->fromRoute('role');
@@ -64,18 +61,10 @@ class LoanApproveController extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
-        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
+        $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
         if (!$request->isPost()) {
             $loanRequestModel->exchangeArrayFromDB($detail);
             $this->form->bind($loanRequestModel);
@@ -254,63 +243,7 @@ class LoanApproveController extends AbstractActionController {
 
     public function getAllList() {
         $list = $this->loanApproveRepository->getAllRequest($this->employeeId);
-        $loanApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'LOAN_DATE' => $row['LOAN_DATE'],
-                'REQUESTED_AMOUNT' => $row['REQUESTED_AMOUNT'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REASON' => $row['REASON'],
-                'LOAN_NAME' => $row['LOAN_NAME'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'LOAN_REQUEST_ID' => $row['LOAN_REQUEST_ID'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'REQUESTED_DATE_N' => $row['REQUESTED_DATE_N'],
-                'LOAN_DATE_N' => $row['LOAN_DATE_N'],
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-            array_push($loanApprove, $dataArray);
-        }
-        return $loanApprove;
+        return Helper::extractDbData($list);
     }
 
 }

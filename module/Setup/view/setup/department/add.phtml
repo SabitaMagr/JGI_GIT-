@@ -71,7 +71,6 @@ $form->prepare();
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($countryId); ?>
-                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($countryId); ?>
                             <?php print $this->formElementErrors()->render($countryId, ['class' => 'help-block']); ?>
                         </div>

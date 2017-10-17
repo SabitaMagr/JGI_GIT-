@@ -171,7 +171,7 @@ class TrainingRequest extends AbstractActionController {
                     $model->description = $postData['description'];
                 } else if ($postData['companyList'] == 0) {
                     $model->exchangeArrayFromForm($this->form->getData());
-                    $model->trainingId = 0;
+                    $model->trainingId = null;
                 }
                 $model->requestId = ((int) Helper::getMaxId($this->adapter, TrainingRequestModel::TABLE_NAME, TrainingRequestModel::REQUEST_ID)) + 1;
                 $model->employeeId = $this->employeeId;

@@ -48,7 +48,7 @@
                             template: "<span>#: (LOAN_DATE_N == null) ? '-' : LOAN_DATE_N #</span>"}]},
                 {field: "REQUESTED_AMOUNT", title: "Requested Amount"},
                 {field: "YOUR_ROLE", title: "Your Role"},
-                {field: ["LOAN_REQUEST_ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: LOAN_REQUEST_ID #" style="height:17px;" title="view detail">
+                {field: ["LOAN_REQUEST_ID","ROLE"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: LOAN_REQUEST_ID #/#: ROLE #" style="height:17px;" title="view detail">
                             <i class="fa fa-search-plus"></i>
                             </a></span>`}
             ]

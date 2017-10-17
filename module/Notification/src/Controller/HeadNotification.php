@@ -157,7 +157,6 @@ class HeadNotification {
     private static function initFullModel(RepositoryInterface $repository, Model &$model, $id) {
         $dbModel = $repository->fetchById($id);
         $data = null;
-
         if (gettype($dbModel) === "array") {
             $data = $dbModel;
         } else {
@@ -454,7 +453,7 @@ class HeadNotification {
         self::initFullModel(new LoanRequestRepository($adapter), $request, $request->loanRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $request->employeeId);
-        $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\LoanRequestNotificationModel::class, $adapter);
+        $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $recommdAppModel[RecommendApprove::RECOMMEND_BY], \Notification\Model\LoanRequestNotificationModel::class, $adapter);
 
         $notification->approvedAmount = $request->approvedAmount;
         $notification->deductOnSalary = $request->deductOnSalary;
@@ -465,7 +464,6 @@ class HeadNotification {
         $notification->route = json_encode(["route" => "loanApprove", "action" => "view", "id" => $request->loanRequestId, "role" => $roleAndId['role']]);
         $title = "Loan Request";
         $desc = "Loan Request";
-
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 13, $adapter, $url);
     }
