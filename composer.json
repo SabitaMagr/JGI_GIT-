@@ -66,7 +66,8 @@
             "ServiceQuestion\\": "module/ServiceQuestion/src/",
             "Asset\\": "module/Asset/src/",
             "Other\\": "module/Other/src/",
-            "Report\\": "module/Report/src/"
+            "Report\\": "module/Report/src/",
+			"MobileApi\\":"module/MobileApi/src"
         }
     },
     "autoload-dev": {
