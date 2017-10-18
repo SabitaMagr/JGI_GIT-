@@ -25,23 +25,20 @@ angular.module('hris', [])
                 var approverId = angular.element(document.getElementById('approverId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullAttendanceRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'attendanceRequestStatusId': attendanceRequestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'approverId': approverId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullAttendanceRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'attendanceRequestStatusId': attendanceRequestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'approverId': approverId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     if (displayKendoFirstTime) {

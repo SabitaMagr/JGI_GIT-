@@ -26,23 +26,20 @@ angular.module('hris', [])
                 var toDate = angular.element(document.getElementById('toDate1')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullLeaveRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'leaveId': leaveId,
-                        'leaveRequestStatusId': leaveRequestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullLeaveRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'leaveId': leaveId,
+                    'leaveRequestStatusId': leaveRequestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     if (displayKendoFirstTime) {
@@ -80,29 +77,29 @@ angular.module('hris', [])
                         {field: "LEAVE_ENAME", title: "Leave"},
 //                        {field: "APPLIED_DATE", title: "Requested Date", width: 130},
                         {title: "Requested Date",
-                    columns: [{
-                            field: "APPLIED_DATE",
-                            title: "AD",
-                            template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"},
-                        {field: "APPLIED_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"}]},
-                {title: "From Date",
-                    columns: [{
-                            field: "START_DATE",
-                            title: "AD",
-                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
-                        {field: "START_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
-                {title: "To Date",
-                    columns: [{
-                            field: "END_DATE",
-                            title: "AD",
-                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                        {field: "END_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+                            columns: [{
+                                    field: "APPLIED_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"},
+                                {field: "APPLIED_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"}]},
+                        {title: "From Date",
+                            columns: [{
+                                    field: "START_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                                {field: "START_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                        {title: "To Date",
+                            columns: [{
+                                    field: "END_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                                {field: "END_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
 //                        {field: "START_DATE", title: "From Date", width: 100},
 //                        {field: "END_DATE", title: "To Date", width: 90},
                         {field: "RECOMMENDER_NAME", title: "Recommender"},
@@ -110,7 +107,7 @@ angular.module('hris', [])
                         {field: "NO_OF_DAYS", title: "Duration"},
                         {field: "STATUS", title: "Status"},
                         {field: ["ID"], title: "Action", template: `<span><a class="btn-edit"
-        href="`+ document.viewLink +`/#: ID #" style="height:17px;" title="view">
+        href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a></span>`}
                     ]

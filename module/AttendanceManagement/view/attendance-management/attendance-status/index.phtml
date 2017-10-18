@@ -23,6 +23,7 @@ $this->headScript()
     document.ids =<?php echo json_encode(["attendanceRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("attendancestatus", ["action" => "view"]) ?>';
+    document.pullAttendanceRequestStatusListLink = '<?= $this->url("attendancestatus", ["action" => "pullAttendanceRequestStatusList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

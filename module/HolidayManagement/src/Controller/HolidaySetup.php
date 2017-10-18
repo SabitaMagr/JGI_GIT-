@@ -15,6 +15,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class HolidaySetup extends AbstractActionController {
@@ -225,6 +226,26 @@ class HolidaySetup extends AbstractActionController {
                 "data" => null,
                 'error' => $e->getMessage()
             ]);
+        }
+    }
+
+    public function pullHolidayListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
+
+
+            $holidayRepository = new HolidayRepository($this->adapter);
+            $rawList = $holidayRepository->filterRecords($fromDate, $toDate);
+            $list = Helper::extractDbData($rawList);
+
+            return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

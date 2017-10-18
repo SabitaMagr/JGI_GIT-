@@ -2,8 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-//        app.startEndDatePicker('fromDate', 'toDate');
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -25,22 +24,19 @@ angular.module('hris', [])
                 var toDate = angular.element(document.getElementById('toDate')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullAttendanceRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId':companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'attendanceRequestStatusId': attendanceRequestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullAttendanceRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'attendanceRequestStatusId': attendanceRequestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     if (displayKendoFirstTime) {
@@ -74,17 +70,17 @@ angular.module('hris', [])
                     dataBound: gridDataBound,
 //                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-                        {field: "FULL_NAME", title: "Employee",template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
+                        {field: "FULL_NAME", title: "Employee", template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
 //                        {field: "REQUESTED_DT", title: "Requested Date", width: 200},
                         {title: "Requested Date",
-                    columns: [{
-                            field: "REQUESTED_DATE",
-                            title: "AD",
-                            template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
-                        {field: "REQUESTED_DT_N",
-                            title: "BS",
-                            template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
-                 {title: "Attendance Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (REQUESTED_DT == null) ? '-' : REQUESTED_DT #</span>"},
+                                {field: "REQUESTED_DT_N",
+                                    title: "BS",
+                                    template: "<span>#: (REQUESTED_DT_N == null) ? '-' : REQUESTED_DT_N #</span>"}]},
+                        {title: "Attendance Date",
                             columns: [
                                 {field: "ATTENDANCE_DT",
                                     title: "AD",
@@ -94,35 +90,35 @@ angular.module('hris', [])
                                     template: "<span>#: (ATTENDANCE_DT_N == null) ? '-' : ATTENDANCE_DT_N # </span>"}
                             ]},
 //                        {field: "ATTENDANCE_DT", title: "Attendance Date", width: 160},
-                        {field: "IN_TIME", title: "Check In" ,template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
-                        {field: "OUT_TIME", title: "Check Out" ,template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
-                        {field: "STATUS", title: "Status" ,template: "<span>#: (STATUS == null) ? '-' : STATUS #</span>"},
+                        {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME #</span>"},
+                        {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME #</span>"},
+                        {field: "STATUS", title: "Status", template: "<span>#: (STATUS == null) ? '-' : STATUS #</span>"},
                         {field: ["ID"], title: "Action", template: `<span> <a class="btn-edit" 
-        href="`+ document.viewLink +`/#: ID #" style="height:17px;">
+        href="` + document.viewLink + `/#: ID #" style="height:17px;">
         <i class="fa fa-search-plus"></i>
         </a></span>`}
                     ]
                 });
-                
-                app.searchTable('attendanceRequestStatusTable',['FULL_NAME','REQUESTED_DT','ATTENDANCE_DT', 'REQUESTED_DT_N','ATTENDANCE_DT_N','IN_TIME','OUT_TIME','STATUS']);
-                
+
+                app.searchTable('attendanceRequestStatusTable', ['FULL_NAME', 'REQUESTED_DT', 'ATTENDANCE_DT', 'REQUESTED_DT_N', 'ATTENDANCE_DT_N', 'IN_TIME', 'OUT_TIME', 'STATUS']);
+
                 app.pdfExport(
-                'attendanceRequestStatusTable',
-                {
-                    'FULL_NAME': ' Name',
-                    'REQUESTED_DT': 'Request Date(AD)',
-                    'REQUESTED_DT_N': 'Request Date(BS)',
-                    'ATTENDANCE_DT': 'Attendance Date(AD)',
-                    'ATTENDANCE_DT_N': 'Attendance Date(BS)',
-                    'IN_TIME': 'In Time',
-                    'OUT_TIME': 'Out Time',
-                    'TOTAL_HOUR':'Total Hour',
-                    'OUT_REMARKS': 'Out Remarks',
-                    'APPROVER_NAME': 'Approver',
-                    'STATUS': 'Status',
-                    'APPROVED_DT': 'Approved Date',
-                    'APPROVED_REMARKS': 'Approved Remarks'
-                }
+                        'attendanceRequestStatusTable',
+                        {
+                            'FULL_NAME': ' Name',
+                            'REQUESTED_DT': 'Request Date(AD)',
+                            'REQUESTED_DT_N': 'Request Date(BS)',
+                            'ATTENDANCE_DT': 'Attendance Date(AD)',
+                            'ATTENDANCE_DT_N': 'Attendance Date(BS)',
+                            'IN_TIME': 'In Time',
+                            'OUT_TIME': 'Out Time',
+                            'TOTAL_HOUR': 'Total Hour',
+                            'OUT_REMARKS': 'Out Remarks',
+                            'APPROVER_NAME': 'Approver',
+                            'STATUS': 'Status',
+                            'APPROVED_DT': 'Approved Date',
+                            'APPROVED_REMARKS': 'Approved Remarks'
+                        }
                 );
 
 
@@ -135,7 +131,7 @@ angular.module('hris', [])
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
                 }
-                
+
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [

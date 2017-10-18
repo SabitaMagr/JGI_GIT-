@@ -23,6 +23,7 @@ $this->headScript()
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("advanceApprove", ["action" => "view"]) ?>';
+    document.pullAdvanceRequestStatusListLink = '<?= $this->url("advanceApprove", ["action" => "pullAdvanceRequestStatusList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

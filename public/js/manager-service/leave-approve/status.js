@@ -3,7 +3,7 @@
     $(document).ready(function () {
         $("select").select2();
 //        app.startEndDatePicker('fromDate', 'toDate');
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -27,24 +27,21 @@ angular.module('hris', [])
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullLeaveRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId':companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'leaveId': leaveId,
-                        'leaveRequestStatusId': leaveRequestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'recomApproveId': recomApproveId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullLeaveRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'leaveId': leaveId,
+                    'leaveRequestStatusId': leaveRequestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'recomApproveId': recomApproveId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     if (displayKendoFirstTime) {
@@ -81,66 +78,66 @@ angular.module('hris', [])
                         {field: "FULL_NAME", title: "Employee"},
                         {field: "LEAVE_ENAME", title: "Leave"},
                         {title: "Requested Date",
-                    columns: [{
-                            field: "APPLIED_DATE",
-                            title: "English",
-                            template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"},
-                        {field: "APPLIED_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"}]},
-                {title: "From Date",
-                    columns: [{
-                            field: "START_DATE",
-                            title: "English",
-                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
-                        {field: "START_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
-                {title: "To Date",
-                    columns: [{
-                            field: "END_DATE",
-                            title: "English",
-                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                        {field: "END_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+                            columns: [{
+                                    field: "APPLIED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"},
+                                {field: "APPLIED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"}]},
+                        {title: "From Date",
+                            columns: [{
+                                    field: "START_DATE",
+                                    title: "English",
+                                    template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                                {field: "START_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                        {title: "To Date",
+                            columns: [{
+                                    field: "END_DATE",
+                                    title: "English",
+                                    template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                                {field: "END_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
 //                        {field: "APPLIED_DATE", title: "Requested Date", width: 150},
 //                        {field: "START_DATE", title: "From Date", width: 100},
 //                        {field: "END_DATE", title: "To Date", width: 100},
                         {field: "NO_OF_DAYS", title: "Duration"},
                         {field: "YOUR_ROLE", title: "Your Role"},
                         {field: "STATUS", title: "Status"},
-                         {field: ["ID"], title: "Action", template: `<span>                                  <a class="btn  btn-icon-only btn-success"
-        href="`+ document.viewLink +`/#: ID #/#: ROLE #" style="height:17px;" title="view">
+                        {field: ["ID"], title: "Action", template: `<span>                                  <a class="btn  btn-icon-only btn-success"
+        href="` + document.viewLink + `/#: ID #/#: ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </span>`}
                     ]
                 });
-                
-                app.searchTable('leaveRequestStatusTable',['FULL_NAME','LEAVE_ENAME','APPLIED_DATE', 'APPLIED_DATE_N','START_DATE','END_DATE','START_DATE_N','END_DATE_N','NO_OF_DAYS','YOUR_ROLE','STATUS']);
-                
+
+                app.searchTable('leaveRequestStatusTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'APPLIED_DATE_N', 'START_DATE', 'END_DATE', 'START_DATE_N', 'END_DATE_N', 'NO_OF_DAYS', 'YOUR_ROLE', 'STATUS']);
+
                 app.pdfExport(
-                'leaveRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'LEAVE_ENAME': 'Leave',
-                    'APPLIED_DATE': 'Applied Date(AD)',
-                    'APPLIED_DATE_N': 'Applied Date(BS)',
-                    'START_DATE': 'Start Date(AD)',
-                    'START_DATE_N': 'Start Date(BS)',
-                    'END_DATE': 'End Date(AD)',
-                    'END_DATE_N': 'End Date(BS)',
-                    'YOUR_ROLE': 'Role',
-                    'NO_OF_DAYS': 'No Of Days',
-                    'STATUS': 'Status',
-                    'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                    
-                });
-                
+                        'leaveRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'LEAVE_ENAME': 'Leave',
+                            'APPLIED_DATE': 'Applied Date(AD)',
+                            'APPLIED_DATE_N': 'Applied Date(BS)',
+                            'START_DATE': 'Start Date(AD)',
+                            'START_DATE_N': 'Start Date(BS)',
+                            'END_DATE': 'End Date(AD)',
+                            'END_DATE_N': 'End Date(BS)',
+                            'YOUR_ROLE': 'Role',
+                            'NO_OF_DAYS': 'No Of Days',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+
+                        });
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {

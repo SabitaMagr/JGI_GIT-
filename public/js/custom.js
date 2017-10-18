@@ -699,26 +699,6 @@ window.app = (function ($, toastr, App) {
             });
 
             $("#" + confirmationBtnId).on("confirmed.bs.confirmation", function () {
-                //console.log(href);
-
-//                window.app.pullDataById(document.deleteURL, {
-//                    action: 'deleteContent',
-//                    data: {
-//                        'tableName': tableName,
-//                        'columnName': columnName,
-//                        'id': id
-//                    }
-//                }).then(function (success) {
-//                    removeByAttr(listData, columnName, id);
-//
-//                    $("#" + kendoGridId).data('kendoGrid').dataSource.read();
-//                    $("#" + kendoGridId).data('kendoGrid').refresh();
-//                    window.toastr.success(success.msg, "Notifications");  
-//                    window.app.UIConfirmations(tableName, columnName, kendoGridId, listData);
-//                    
-//                }, function (failure) {
-//                    console.log(failure);
-//                });
             }),
                     $("#" + confirmationBtnId).on("canceled.bs.confirmation", function () {
             });

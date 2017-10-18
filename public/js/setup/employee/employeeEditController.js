@@ -15,13 +15,9 @@
                 ];
                 var employeeId = parseInt(angular.element(document.getElementById('employeeId')).val());
                 $scope.qualificationFormList = [];
-                window.app.pullDataById(document.urlQualificationDtl, {
-                    action: 'pullAcademicDetail',
-                    data: {
-                        'employeeId': employeeId
-                    }
+                window.app.pullDataById(document.pullAcademicDetailLink, {
+                    'employeeId': employeeId
                 }).then(function (success) {
-                    console.log("pullAcademicDetail", success);
                     $scope.$apply(function () {
                         var data = success.data;
                         $scope.counter = '';
@@ -93,13 +89,10 @@
                                 console.log(rankValue, passedYr);
                             }
 
-                            window.app.pullDataById(document.urlQualificationDtl, {
-                                action: 'submitQualificationDtl',
-                                data: {
-                                    "qualificationRecord": qualificationRecord,
-                                    'employeeId': employeeId,
-                                    "qualificationRecordNum":qualificationRecord.length
-                                }
+                            window.app.pullDataById(document.submitQualificationDtlLink, {
+                                "qualificationRecord": qualificationRecord,
+                                'employeeId': employeeId,
+                                "qualificationRecordNum": qualificationRecord.length
                             }).then(function (success) {
                                 $scope.$apply(function () {
                                     console.log(success.data);
@@ -115,11 +108,8 @@
                                 if ($scope.qualificationFormList[i - tempC].checked) {
                                     var id = $scope.qualificationFormList[i - tempC].id;
                                     if (id != 0) {
-                                        window.app.pullDataById(document.urlQualificationDtl, {
-                                            action: 'deleteQualificationDtl',
-                                            data: {
-                                                "id": id
-                                            }
+                                        window.app.pullDataById(document.deleteQualificationDtlLink, {
+                                            "id": id
                                         }).then(function (success) {
                                             $scope.$apply(function () {
                                                 console.log(success.data);
@@ -176,16 +166,11 @@
                         });
                     }
                 };
-                console.log("Profile Picture Id ", $scope.profilePictureId);
                 if ($scope.profilePictureId != -1) {
-                    window.app.pullDataById(document.urlQualificationDtl, {
-                        action: 'pullEmployeeFile',
-                        data: {
-                            'employeeFileId': $scope.profilePictureId
-                        }
+                    window.app.pullDataById(document.pullEmployeeFileLink, {
+                        'employeeFileId': $scope.profilePictureId
                     }).then(function (success) {
                         $scope.$apply(function () {
-                            console.log("pullEmployeeFile response ", success.data);
                             if (success.data != null) {
                                 $scope.file.fileCode = success.data['FILE_CODE'];
                                 $scope.file.fileTypeCode = success.data['FILETYPE_CODE'];
@@ -209,18 +194,14 @@
                 };
 
                 $scope.imageUploadResponseSuccess = function () {
-                    window.app.pullDataById(document.urlQualificationDtl, {
-                        action: 'pushEmployeeProfile',
-                        data: {
-                            'fileCode': $scope.file.fileCode,
-                            'fileTypeCode': $scope.file.fileTypeCode,
-                            'filePath': $scope.file.filePath,
-                            'fileName': $scope.file.fileName,
-                            'employeeId': document.employeeId
-                        }
+                    window.app.pullDataById(document.pushEmployeeProfileLink, {
+                        'fileCode': $scope.file.fileCode,
+                        'fileTypeCode': $scope.file.fileTypeCode,
+                        'filePath': $scope.file.filePath,
+                        'fileName': $scope.file.fileName,
+                        'employeeId': document.employeeId
                     }).then(function (success) {
                         $scope.$apply(function () {
-                            console.log("pushEmployeeProfile response", success.data);
                             if (success.data != null) {
                                 $scope.file.editMode = false;
                                 $scope.file.fileCode = success.data.fileCode
@@ -228,7 +209,6 @@
                             window.app.successMessage("Profile Image set successfully");
                         });
                     }, function (failure) {
-                        console.log("pushEmployeeProfile failure", failure);
                     });
 
                 };
@@ -238,18 +218,13 @@
                 };
                 $scope.employeeDocuments = [];
                 $scope.drop = function (fileCode, key) {
-                    window.app.pullDataById(document.urlQualificationDtl, {
-                        action: 'dropEmployeeFile',
-                        data: {
-                            'fileCode': fileCode
-                        }
+                    window.app.pullDataById(document.dropEmployeeFileLink, {
+                        'fileCode': fileCode
                     }).then(function (success) {
-                        console.log("dropEmployeeFile response", success);
                         $scope.$apply(function () {
                             $scope.employeeDocuments.splice(key, 1);
                         });
                     }, function (failure) {
-                        console.log("dropEmployeeFile failure", failure);
                     });
                 };
                 $scope.addDocument = function () {
@@ -301,17 +276,13 @@
                     });
                     modalInstance.result.then(function (selectedItem) {
                         console.log("Angular Modal close response", selectedItem);
-                        window.app.pullDataById(document.urlQualificationDtl, {
-                            action: 'pushEmployeeDocument',
-                            data: {
-                                'fileTypeCode': selectedItem.fileTypeCode,
-                                'filePath': selectedItem.fileName,
-                                'oldFileName': selectedItem.oldFileName,
-                                'employeeId': document.employeeId
-                            }
+                        window.app.pullDataById(document.pushEmployeeDocumentLink, {
+                            'fileTypeCode': selectedItem.fileTypeCode,
+                            'filePath': selectedItem.fileName,
+                            'oldFileName': selectedItem.oldFileName,
+                            'employeeId': document.employeeId
                         }).then(function (success) {
                             $scope.$apply(function () {
-                                console.log("pushEmployeeDocument response", success);
                                 if (success.data != null) {
                                     $scope.employeeDocuments.push({
                                         FILE_CODE: success.data.fileCode,
@@ -319,28 +290,21 @@
                                         FILE_NAME: selectedItem.oldFileName,
                                         FILETYPE_CODE: selectedItem.fileTypeCode
                                     });
-                                    console.log($scope.employeeDocuments);
                                 }
                             });
                         }, function (failure) {
-                            console.log("pushEmployeeDocument failure", failure);
                         });
                     }, function () {
                         console.log("Modal Action Cancelled");
                     });
                 };
-                window.app.pullDataById(document.urlQualificationDtl, {
-                    action: 'pullEmployeeFileByEmpId',
-                    data: {
-                        'employeeId': document.employeeId
-                    }
+                window.app.pullDataById(document.pullEmployeeFileByEmpIdLink, {
+                    'employeeId': document.employeeId
                 }).then(function (success) {
-                    console.log("pullEmployeeFileByEmpId response", success);
                     $scope.$apply(function () {
                         $scope.employeeDocuments = success.data;
                     });
                 }, function (failure) {
-                    console.log("pullEmployeeFileByEmpId failure", failure);
                 });
 
 
@@ -366,11 +330,8 @@
                     app.startEndDatePicker(fromId, toId);
                 }
                 if (employeeId !== 0) {
-                    window.app.pullDataById(document.urlQualificationDtl, {
-                        action: 'pullExperienceDetail',
-                        data: {
-                            'employeeId': employeeId
-                        }
+                    window.app.pullDataById(document.pullExperienceDetailLink, {
+                        'employeeId': employeeId
                     }).then(function (success) {
                         $scope.$apply(function () {
                             var experienceList = success.data;
@@ -440,11 +401,8 @@
                         if ($scope.experienceFormList[i - tempE].checked) {
                             var id = $scope.experienceFormList[i - tempE].id;
                             if (id != 0) {
-                                window.app.pullDataById(document.urlQualificationDtl, {
-                                    action: 'deleteExperienceDtl',
-                                    data: {
-                                        "id": id
-                                    }
+                                window.app.pullDataById(document.deleteExperienceDtlLink, {
+                                    "id": id
                                 }).then(function (success) {
                                     $scope.$apply(function () {
                                         console.log(success.data);
@@ -462,18 +420,15 @@
                     if ($scope.employeeExperienceForm.$valid && $scope.experienceFormList.length > 0) {
                         console.log("hellow");
                         $scope.experienceListEmpty = 1;
-                        if (($scope.experienceFormList.length == 1 && angular.equals($scope.experienceFormTemplate, $scope.experienceFormList[0]))||$scope.experienceFormList.length==0) {
+                        if (($scope.experienceFormList.length == 1 && angular.equals($scope.experienceFormTemplate, $scope.experienceFormList[0])) || $scope.experienceFormList.length == 0) {
                             console.log("app log", "The form is not filled");
                             $scope.experienceListEmpty = 0;
                         }
                         console.log($scope.experienceFormList);
-                        window.app.pullDataById(document.urlQualificationDtl, {
-                            action: 'submitExperienceDtl',
-                            data: {
-                                experienceList: $scope.experienceFormList,
-                                employeeId: parseInt(employeeId),
-                                experienceListEmpty: parseInt($scope.experienceListEmpty)
-                            },
+                        window.app.pullDataById(document.submitExperienceDtlLink, {
+                            experienceList: $scope.experienceFormList,
+                            employeeId: parseInt(employeeId),
+                            experienceListEmpty: parseInt($scope.experienceListEmpty)
                         }).then(function (success) {
                             $scope.$apply(function () {
                                 console.log(success.data);
@@ -501,11 +456,8 @@
                     checked: false
                 };
                 if (employeeId !== 0) {
-                    window.app.pullDataById(document.urlQualificationDtl, {
-                        action: 'pullTrainingDetail',
-                        data: {
-                            'employeeId': employeeId
-                        }
+                    window.app.pullDataById(document.pullTrainingDetailLink, {
+                        'employeeId': employeeId
                     }).then(function (success) {
                         $scope.$apply(function () {
                             var trainingList = success.data;
@@ -557,11 +509,8 @@
                         if ($scope.trainingFormList[i - tempT].checked) {
                             var id = $scope.trainingFormList[i - tempT].id;
                             if (id != 0) {
-                                window.app.pullDataById(document.urlQualificationDtl, {
-                                    action: 'deleteTrainingDtl',
-                                    data: {
-                                        "id": parseInt(id)
-                                    }
+                                window.app.pullDataById(document.deleteTrainingDtlLink, {
+                                    "id": parseInt(id)
                                 }).then(function (success) {
                                     $scope.$apply(function () {
                                         console.log(success.data);
@@ -578,17 +527,14 @@
                 $scope.submitTraining = function () {
                     if ($scope.employeeTrainingForm.$valid && $scope.trainingFormList.length > 0) {
                         $scope.trainingListEmpty = 1;
-                        if (($scope.trainingFormList.length == 1 && angular.equals($scope.trainingFormTemplate, $scope.trainingFormList[0]))||$scope.trainingFormList.length==0) {
+                        if (($scope.trainingFormList.length == 1 && angular.equals($scope.trainingFormTemplate, $scope.trainingFormList[0])) || $scope.trainingFormList.length == 0) {
                             console.log("app log", "The form is not filled");
                             $scope.trainingListEmpty = 0;
                         }
-                        window.app.pullDataById(document.urlQualificationDtl, {
-                            action: 'submitTrainingDtl',
-                            data: {
-                                trainingList: $scope.trainingFormList,
-                                employeeId: parseInt(employeeId),
-                                trainingListEmpty: parseInt($scope.trainingListEmpty)
-                            },
+                        window.app.pullDataById(document.submitTrainingDtlLink, {
+                            trainingList: $scope.trainingFormList,
+                            employeeId: parseInt(employeeId),
+                            trainingListEmpty: parseInt($scope.trainingListEmpty)
                         }).then(function (success) {
                             $scope.$apply(function () {
                                 console.log(success.data);

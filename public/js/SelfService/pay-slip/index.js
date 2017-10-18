@@ -26,11 +26,8 @@ angular.module('hris', [])
             $scope.paySlip = null;
 
             $scope.fetchPayRollGeneratedMonths = function () {
-                window.app.pullDataById(document.restfulUrl, {
-                    action: 'pullPayRollGeneratedMonths',
-                    data: {
-                        employeeId: document.employeeId
-                    }
+                window.app.pullDataById(document.pullPayRollGeneratedMonthsLink, {
+                    employeeId: document.employeeId
                 }).then(function (success) {
                     $scope.$apply(function () {
                         console.log("pullPayRollGeneratedMonths res", success);
@@ -43,18 +40,13 @@ angular.module('hris', [])
             $scope.fetchPayRollGeneratedMonths();
 
             $scope.changeMonths = function (monthId) {
-                window.app.pullDataById(document.restfulUrl, {
-                    action: 'fetchEmployeePaySlip',
-                    data: {
-                        month: monthId
-                    }
+                window.app.pullDataById(document.fetchEmployeePaySlipLink, {
+                    month: monthId
                 }).then(function (success) {
                     $scope.$apply(function () {
-                        console.log("fetchEmployeePaySlip res", success);
                         $scope.paySlip = success.data;
                     });
                 }, function (failure) {
-                    console.log("fetchEmployeePaySlip fail", failure);
                 });
             };
 

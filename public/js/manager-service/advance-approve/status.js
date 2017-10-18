@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -26,24 +26,21 @@ angular.module('hris', [])
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullAdvanceRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId':companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'advanceId': advanceId,
-                        'advanceRequestStatusId': advanceRequestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'recomApproveId': recomApproveId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullAdvanceRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'advanceId': advanceId,
+                    'advanceRequestStatusId': advanceRequestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'recomApproveId': recomApproveId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.recomApproveId);
@@ -100,35 +97,35 @@ angular.module('hris', [])
                         {field: "TERMS", title: "Terms"},
                         {field: "YOUR_ROLE", title: "Your Role"},
                         {field: "STATUS", title: "Status"},
-                         {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: `<span>  <a class="btn  btn-icon-only btn-success"
+                        {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: `<span>  <a class="btn  btn-icon-only btn-success"
         href="` + document.viewLink + `/#: ADVANCE_REQUEST_ID #/#: ROLE #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i></a>
         </span>`}
                     ]
                 });
-                
-                app.searchTable('advanceRequestStatusTable',['FULL_NAME','ADVANCE_NAME','REQUESTED_DATE','ADVANCE_DATE','REQUESTED_DATE_N','ADVANCE_DATE_N','REQUESTED_AMOUNT','TERMS','YOUR_ROLE','STATUS']);
-                
+
+                app.searchTable('advanceRequestStatusTable', ['FULL_NAME', 'ADVANCE_NAME', 'REQUESTED_DATE', 'ADVANCE_DATE', 'REQUESTED_DATE_N', 'ADVANCE_DATE_N', 'REQUESTED_AMOUNT', 'TERMS', 'YOUR_ROLE', 'STATUS']);
+
                 app.pdfExport(
-                'advanceRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'ADVANE_NAME': 'Advance',
-                    'REQUESTED_DATE': 'Request Date(AD)',
-                    'REQUESTED_DATE_N': 'Request Date(BS)',
-                    'ADVANCE_DATE': 'Advance Date(AD)',
-                    'ADVANCE_DATE_N': 'Advance Date(BS)',
-                    'REQUESTED_AMOUNT': 'Request Amt',
-                    'TERMS': 'Terms',
-                    'YOUR_ROLE': 'Role',
-                    'STATUS': 'Status',
-                    'REASON': 'Reason',
-                    'RECOMMENDED_REMARKS': 'Recommender Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approver Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                });
-                
+                        'advanceRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'ADVANE_NAME': 'Advance',
+                            'REQUESTED_DATE': 'Request Date(AD)',
+                            'REQUESTED_DATE_N': 'Request Date(BS)',
+                            'ADVANCE_DATE': 'Advance Date(AD)',
+                            'ADVANCE_DATE_N': 'Advance Date(BS)',
+                            'REQUESTED_AMOUNT': 'Request Amt',
+                            'TERMS': 'Terms',
+                            'YOUR_ROLE': 'Role',
+                            'STATUS': 'Status',
+                            'REASON': 'Reason',
+                            'RECOMMENDED_REMARKS': 'Recommender Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approver Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+                        });
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -137,7 +134,8 @@ angular.module('hris', [])
                                 .find('tbody')
                                 .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
                     }
-                };
+                }
+                ;
 
                 $("#export").click(function (e) {
                     var rows = [{

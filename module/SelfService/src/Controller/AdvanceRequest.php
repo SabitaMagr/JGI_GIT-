@@ -11,12 +11,14 @@ use Notification\Model\NotificationEvents;
 use SelfService\Form\AdvanceRequestForm;
 use SelfService\Model\AdvanceRequest as AdvanceRequestModel;
 use SelfService\Repository\AdvanceRequestRepository;
+use Setup\Repository\AdvanceRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AdvanceRequest extends AbstractActionController {
 
@@ -75,7 +77,7 @@ class AdvanceRequest extends AbstractActionController {
                     $empDtl = $empRepository->fetchById($id);
                     return $empDtl['FULL_NAME'];
                 };
-                
+
                 $recommenderName = $fullName($this->recommender);
                 $approverName = $fullName($this->approver);
 
@@ -291,6 +293,59 @@ class AdvanceRequest extends AbstractActionController {
             return new CustomViewModel(['success' => true, 'data' => $resultData, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullAdvanceListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $employeeId = $data['employeeId'];
+            $advanceList = LoanAdvanceHelper::getAdvanceList($this->adapter, $employeeId);
+
+            return new JsonModel(['success' => true, 'data' => $advanceList, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function pullAdvanceDetailByEmpIdAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $employeeId = $data['employeeId'];
+            $advanceId = $data['advanceId'];
+
+            $advanceRepo = new AdvanceRepository($this->adapter);
+
+            $advanceDetail = $advanceRepo->fetchById($advanceId);
+            $minSalary = $advanceDetail['MIN_SALARY_AMT'];
+            $maxSalary = $advanceDetail['MAX_SALARY_AMT'];
+            $amtToAllow = $advanceDetail['AMOUNT_TO_ALLOW'];
+            $monthToAllow = $advanceDetail['MONTH_TO_ALLOW'];
+
+            $employeeRepo = new EmployeeRepository($this->adapter);
+            $employeeDetail = $employeeRepo->fetchById($employeeId);
+            $salary = $employeeDetail['SALARY'];
+            $permitAmtPercentage = ($salary * $amtToAllow) / 100;
+
+            if ($monthToAllow != null || $permitAmtPercentage != 0) {
+                $data = [
+                    'allowTerms' => (int) $monthToAllow,
+                    'allowAmt' => $permitAmtPercentage,
+                ];
+            } else {
+                $data = "";
+            }
+
+
+            return new JsonModel(['success' => true, 'data' => $data, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

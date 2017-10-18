@@ -31,6 +31,8 @@ $form->prepare();
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.pullAdvanceListLink = '<?php echo $this->url("advanceRequest", ["action" => "pullAdvanceList"]); ?>';
+    document.pullAdvanceDetailByEmpIdLink = '<?php echo $this->url("advanceRequest", ["action" => "pullAdvanceDetailByEmpId"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -116,7 +118,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="form-group">
                                     <?php print $this->formLabel($advanceDate); ?>
                                     <span class="required" aria-required="true">*</span>
-                                        <?php print $this->formElement($advanceDate); ?>
+                                    <?php print $this->formElement($advanceDate); ?>
                                     <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
                                 </div>
                             </div>     

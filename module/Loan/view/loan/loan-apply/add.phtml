@@ -31,6 +31,7 @@ $form->prepare();
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.pullLoanListLink = '<?= $this->url("loanRequest", ["action" => "pullLoanList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\loanApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -110,7 +111,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="form-group">
                                     <?php print $this->formLabel($loanDate); ?>
                                     <span class="required" aria-required="true">*</span>
-                                        <?php print $this->formElement($loanDate); ?>
+                                    <?php print $this->formElement($loanDate); ?>
                                     <?php print $this->formElementErrors()->render($loanDate, ['class' => 'help-block']); ?>
                                 </div>
                             </div>     

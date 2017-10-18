@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -25,23 +25,20 @@ angular.module('hris', [])
                 var toDate = angular.element(document.getElementById('toDate1')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullLoanRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId':companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'loanId': loanId,
-                        'loanRequestStatusId': loanRequestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullLoanRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'loanId': loanId,
+                    'loanRequestStatusId': loanRequestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
@@ -79,58 +76,58 @@ angular.module('hris', [])
                         {field: "FULL_NAME", title: "Employee Name"},
                         {field: "LOAN_NAME", title: "Loan Name"},
 //                        {field: "REQUESTED_DATE", title: "Requested Date", width: 150},
-                          {title: "Requested Date",
-                    columns: [{
-                            field: "REQUESTED_DATE",
-                            title: "AD",
-                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
-                        {field: "REQUESTED_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
-                  {title: "Loan Date",
-                    columns: [{
-                            field: "LOAN_DATE",
-                            title: "AD",
-                            template: "<span>#: (LOAN_DATE == null) ? '-' : LOAN_DATE #</span>"},
-                        {field: "LOAN_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (LOAN_DATE_N == null) ? '-' : LOAN_DATE_N #</span>"}]},
+                        {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                        {title: "Loan Date",
+                            columns: [{
+                                    field: "LOAN_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (LOAN_DATE == null) ? '-' : LOAN_DATE #</span>"},
+                                {field: "LOAN_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (LOAN_DATE_N == null) ? '-' : LOAN_DATE_N #</span>"}]},
 //                        {field: "LOAN_DATE", title: "Loan Date", width: 100},
                         {field: "REQUESTED_AMOUNT", title: "Requested Amt."},
                         {field: "RECOMMENDER_NAME", title: "Recommender"},
-                        {field: "APPROVER_NAME", title: "Approver"},                        
+                        {field: "APPROVER_NAME", title: "Approver"},
                         {field: "STATUS", title: "Status"},
                         {field: [""], title: "Action", template: `<span><a class="btn-edit"
-        href="`+ document.viewLink +`/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
+        href="` + document.viewLink + `/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a></span>`}
                     ]
                 });
-                
-                app.searchTable('loanRequestStatusTable',['FULL_NAME','LOAN_NAME','REQUESTED_DATE','LOAN_DATE', 'REQUESTED_DATE_N','LOAN_DATE_N','REQUESTED_AMOUNT','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
-                
-                 app.pdfExport(
-                'loanRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'LOAN_NAME': 'Loan',
-                    'REQUESTED_DATE': 'Request Date(AD)',
-                    'REQUESTED_DATE_N': 'Request Date(BS)',
-                    'LOAN_DATE': 'Loan Date(AD)',
-                    'LOAN_DATE_N': 'Loan Date(BS)',
-                    'REQUESTED_AMOUNT': 'Request Amt',
-                    'RECOMMENDER_NAME': 'Recommender',
-                    'APPROVER_NAME': 'Approver',
-                    'STATUS': 'status',
-                    'REASON': 'Reason',
-                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                    
-                });
-                
-                
+
+                app.searchTable('loanRequestStatusTable', ['FULL_NAME', 'LOAN_NAME', 'REQUESTED_DATE', 'LOAN_DATE', 'REQUESTED_DATE_N', 'LOAN_DATE_N', 'REQUESTED_AMOUNT', 'RECOMMENDER_NAME', 'APPROVER_NAME', 'STATUS']);
+
+                app.pdfExport(
+                        'loanRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'LOAN_NAME': 'Loan',
+                            'REQUESTED_DATE': 'Request Date(AD)',
+                            'REQUESTED_DATE_N': 'Request Date(BS)',
+                            'LOAN_DATE': 'Loan Date(AD)',
+                            'LOAN_DATE_N': 'Loan Date(BS)',
+                            'REQUESTED_AMOUNT': 'Request Amt',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+                            'STATUS': 'status',
+                            'REASON': 'Reason',
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+
+                        });
+
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -227,7 +224,7 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LoanRequestList.xlsx"});
                 }
-               
+
                 window.app.UIConfirmations();
             };
         });
