@@ -63,8 +63,6 @@ class AttendanceByHr extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         try {
-
-
             if ($request->isPost()) {
                 $this->form->setData($request->getPost());
                 if ($this->form->isValid()) {
@@ -104,7 +102,6 @@ class AttendanceByHr extends AbstractActionController {
                         'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE)
                             ]
             );
-//            return $this->redirect()->toRoute("attendancebyhr");
         }
     }
 
