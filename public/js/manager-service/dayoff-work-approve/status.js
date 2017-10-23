@@ -25,23 +25,20 @@ angular.module('hris', [])
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullDayoffWorkRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'requestStatusId': requestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'recomApproveId': recomApproveId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullDayoffWorkRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'requestStatusId': requestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'recomApproveId': recomApproveId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);

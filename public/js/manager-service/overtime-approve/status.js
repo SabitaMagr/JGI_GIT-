@@ -25,26 +25,22 @@ angular.module('hris', [])
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullOvertimeRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'requestStatusId': requestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'recomApproveId': recomApproveId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullOvertimeRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'requestStatusId': requestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'recomApproveId': recomApproveId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
-                    console.log(success.data);
                     if (displayKendoFirstTime) {
                         $scope.initializekendoGrid();
                         displayKendoFirstTime = false;
@@ -55,7 +51,6 @@ angular.module('hris', [])
                     grid.setDataSource(dataSource);
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
-                    console.log(failure);
                 });
             }
             $scope.initializekendoGrid = function () {
@@ -77,22 +72,22 @@ angular.module('hris', [])
 //                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FULL_NAME", title: "Employee"},
-                         {title: "Requested Date",
-                    columns: [{
-                            field: "REQUESTED_DATE",
-                            title: "English",
-                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
-                        {field: "REQUESTED_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
-                {title: "Overtime Date",
-                    columns: [{
-                            field: "OVERTIME_DATE",
-                            title: "English",
-                            template: "<span>#: (OVERTIME_DATE == null) ? '-' : OVERTIME_DATE #</span>"},
-                        {field: "OVERTIME_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (OVERTIME_DATE_N == null) ? '-' : OVERTIME_DATE_N #</span>"}]},
+                        {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "English",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                        {title: "Overtime Date",
+                            columns: [{
+                                    field: "OVERTIME_DATE",
+                                    title: "English",
+                                    template: "<span>#: (OVERTIME_DATE == null) ? '-' : OVERTIME_DATE #</span>"},
+                                {field: "OVERTIME_DATE_N",
+                                    title: "Nepali",
+                                    template: "<span>#: (OVERTIME_DATE_N == null) ? '-' : OVERTIME_DATE_N #</span>"}]},
                         {field: "DETAILS", title: "Time (From-To)", template: `<ul id="branchList"> #  ln=DETAILS.length # #for(var i=0; i<ln; i++) { #
                         <li>
                            #=i+1 #) #=DETAILS[i].START_TIME # - #=DETAILS[i].END_TIME #

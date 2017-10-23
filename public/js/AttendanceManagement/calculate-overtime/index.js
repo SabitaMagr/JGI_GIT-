@@ -55,23 +55,20 @@ angular.module('hris', [])
                     overtimeOnly = 1;
                 }
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullAttendanceWidOvertimeList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'status': status,
-                        'employeeTypeId': employeeTypeId,
-                        'overtimeOnly': parseInt(overtimeOnly)
-                    }
+                window.app.pullDataById(document.pullAttendanceWidOvertimeListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'status': status,
+                    'employeeTypeId': employeeTypeId,
+                    'overtimeOnly': parseInt(overtimeOnly)
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
@@ -117,31 +114,29 @@ angular.module('hris', [])
                     ],
                     detailInit: detailInit,
                 });
-                
-                app.searchTable('attendanceWidOTTable',['EMPLOYEE_NAME','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS','OVERTIME_IN_HOUR']);
-                
-                app.pdfExport(
-                'attendanceWidOTTable',
-                {
-                    'EMPLOYEE_NAME': ' Name',
-                    'ATTENDANCE_DT': 'Attendance Date',
-                    'IN_TIME': 'In Time',
-                    'OUT_TIME': 'Out Time',
-                    'IN_REMARKS':'In Remarks',
-                    'OUT_REMARKS': 'Out Remarks',
-                    'TOTAL_HOUR': 'Total Hrs',
-                    'OVERTIME_IN_HOUR': 'Overtime Hrs',
-                    'STATUS': 'Status'
-                }
-                );
-        
 
-                
+                app.searchTable('attendanceWidOTTable', ['EMPLOYEE_NAME', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME', 'STATUS', 'OVERTIME_IN_HOUR']);
+
+                app.pdfExport(
+                        'attendanceWidOTTable',
+                        {
+                            'EMPLOYEE_NAME': ' Name',
+                            'ATTENDANCE_DT': 'Attendance Date',
+                            'IN_TIME': 'In Time',
+                            'OUT_TIME': 'Out Time',
+                            'IN_REMARKS': 'In Remarks',
+                            'OUT_REMARKS': 'Out Remarks',
+                            'TOTAL_HOUR': 'Total Hrs',
+                            'OVERTIME_IN_HOUR': 'Overtime Hrs',
+                            'STATUS': 'Status'
+                        }
+                );
+
+
+
             };
             function detailInit(e) {
                 var dataSource = $("#attendanceWidOTTable").data("kendoGrid").dataSource.data();
-                console.log(dataSource);
-                console.log(e.data.ID);
                 var parentId = e.data.ID;
                 var childData = $.grep(dataSource, function (e) {
                     return e.ID === parentId;
@@ -152,12 +147,9 @@ angular.module('hris', [])
                 } else {
                     App.blockUI({target: "#attendanceWidOTTable"});
                 }
-                window.app.pullDataById(document.url, {
-                    action: 'pullInOutTime',
-                    data: {
-                        employeeId: e.data.EMPLOYEE_ID,
-                        attendanceDt: e.data.ATTENDANCE_DT
-                    },
+                window.app.pullDataById(document.pullInOutTimeLink, {
+                    employeeId: e.data.EMPLOYEE_ID,
+                    attendanceDt: e.data.ATTENDANCE_DT
                 }).then(function (success) {
                     if (firstTime) {
                         App.unblockUI("#hris-page-content");

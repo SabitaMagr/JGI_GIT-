@@ -24,6 +24,7 @@ $this->headScript()
     document.picUrl = '<?= $this->basePath('img/nobody_m.original.jpg'); ?>';
     document.pullAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'pullAttendance']); ?>';
     document.bulkAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'bulkAttendanceWS']); ?>';
+    document.pullInOutTimeLink = '<?php echo $this->url('attendancebyhr', ['action' => 'pullInOutTime']); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

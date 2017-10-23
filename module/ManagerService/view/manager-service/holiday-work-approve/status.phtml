@@ -1,12 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
-
-
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
@@ -24,10 +19,11 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["holidayId"=>-1,"requestStatusId"=>-1,"fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
+    document.ids =<?php echo json_encode(["holidayId" => -1, "requestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.searchValues ='<?php echo json_encode($searchValues) ?>';
-    document.viewLink ='<?= $this->url("holidayWorkApprove", ["action" => "view"]) ?>';
+    document.searchValues = '<?php echo json_encode($searchValues) ?>';
+    document.viewLink = '<?= $this->url("holidayWorkApprove", ["action" => "view"]) ?>';
+    document.pullHoliayWorkRequestStatusListLink = '<?= $this->url("holidayWorkApprove", ["action" => "pullHoliayWorkRequestStatusList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidayWorkApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -121,7 +117,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-2 ">
                     <?php print $this->formElement($holidays); ?>
                 </div>
-                
+
             </div>
             <div class="row margin-top-10">
                 <div class="col-sm-2 ">
@@ -141,7 +137,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                 </div>
                 <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
-                
+
             </div>
             <div class="row margin-top-10">
                 <div class=" col-sm-offset-8 col-sm-4">
@@ -157,7 +153,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div>
-    
+
     <div class="margin-top-20">  
 
         <div id="holidayWorkRequestStatusTable">

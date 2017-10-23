@@ -18,6 +18,7 @@ if ($this->messages) {
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.pullServiceQuestionListLink = '<?php echo $this->url('empServiceQuestion', ['action' => 'pullServiceQuestionList']); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\empServiceQuestion')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -26,9 +27,9 @@ if ($this->messages) {
     <div class="col-sm-12">
         <script type="text/ng-template" id="serviceQuestionTree">
             <div class="form-group" ng-style="serviceQuestion.subQuestion === true && {'margin-bottom': '0px'}">
-                <label>{{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span></label>
-                <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value=""/>
-                <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" class="form-control"/>
+            <label>{{serviceQuestion.sn}}. <span ng-bind="serviceQuestion.questionEdesc"></span></label>
+            <input ng-if="serviceQuestion.subQuestion==true" type="hidden" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value=""/>
+            <input ng-if="serviceQuestion.subQuestion==false" type="text" name="serviceQuestionAnswer[{{serviceQuestion.qaId}}]" value="" class="form-control"/>
             </div>
             <div ng-repeat="serviceQuestion in serviceQuestion.subQuestionList" ng-include="'serviceQuestionTree'">
             </div>
@@ -43,7 +44,7 @@ if ($this->messages) {
                 </div>
             </div>
             <div class="portlet-body">
-                <form name="empServiceQuestionForm" action="<?= $this->url('empServiceQuestion',['action'=>"edit",'id'=>$id]) ?>" method="post">
+                <form name="empServiceQuestionForm" action="<?= $this->url('empServiceQuestion', ['action' => "edit", 'id' => $id]) ?>" method="post">
                     <input type="hidden" id="empQaId" value="<?php echo $detail['EMP_QA_ID'] ?>"/>
                     <div class=" row">
                         <div class="col-sm-4">
@@ -51,11 +52,12 @@ if ($this->messages) {
                                 <label for="employeeId">Employee</label>
                                 <span class="required" aria-required="true">*</span>
                                 <select name="employeeId" id="employeeId" class="form-control" disabled="disabled">
-                                    <?php foreach($employees as $key=>$value){ 
-                                        $selected = ($detail['EMPLOYEE_ID']==$key) ? "selected":"";
+                                    <?php
+                                    foreach ($employees as $key => $value) {
+                                        $selected = ($detail['EMPLOYEE_ID'] == $key) ? "selected" : "";
                                         ?>
-                                    <option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
-                                    <?php } ?>
+                                        <option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+<?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -65,11 +67,12 @@ if ($this->messages) {
                                 <label for="serviceEventTypeId">Service Event Type</label>
                                 <span class="required" aria-required="true">*</span>
                                 <select required="required" name="serviceEventTypeId" id="serviceEventTypeId" class="form-control" disabled="disabled">
-                                    <?php foreach($serviceEventTypes as $key=>$value){ 
-                                        $selectedSET = ($detail['SERVICE_EVENT_TYPE_ID']==$key) ? "selected":"";
+                                    <?php
+                                    foreach ($serviceEventTypes as $key => $value) {
+                                        $selectedSET = ($detail['SERVICE_EVENT_TYPE_ID'] == $key) ? "selected" : "";
                                         ?>
-                                    <option value="<?php echo $key; ?>" <?php echo $selectedSET; ?>><?php echo $value; ?></option>
-                                    <?php } ?>
+                                        <option value="<?php echo $key; ?>" <?php echo $selectedSET; ?>><?php echo $value; ?></option>
+<?php } ?>
                                 </select>
                             </div>
                         </div>

@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -24,22 +24,19 @@ angular.module('hris', [])
                 var toDate = angular.element(document.getElementById('toDate1')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullTrainingRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId':companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'requestStatusId': requestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullTrainingRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'requestStatusId': requestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
@@ -77,71 +74,71 @@ angular.module('hris', [])
                         {field: "FULL_NAME", title: "Employee"},
                         {field: "TRAINING_NAME", title: "Training", template: "<span> #: (TITLE == null) ? '-' : TITLE #</span>"},
 //                        {field: "REQUESTED_DATE", title: "Requested Date", width: 110},
-                         {title: "Requested Date",
-                    columns: [{
-                            field: "REQUESTED_DATE",
-                            title: "AD",
-                            template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
-                        {field: "REQUESTED_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                        {title: "Requested Date",
+                            columns: [{
+                                    field: "REQUESTED_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
+                                {field: "REQUESTED_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
 //                        {field: "START_DATE", title: "Start Date", width: 110},
-                         {title: "Start Date",
-                    columns: [{
-                            field: "START_DATE",
-                            title: "AD",
-                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
-                        {field: "START_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
-                 {title: "End Date",
-                    columns: [{
-                            field: "END_DATE",
-                            title: "AD",
-                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                        {field: "END_DATE_N",
-                            title: "BS",
-                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
+                        {title: "Start Date",
+                            columns: [{
+                                    field: "START_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                                {field: "START_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                        {title: "End Date",
+                            columns: [{
+                                    field: "END_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                                {field: "END_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
 //                        {field: "END_DATE", title: "End Date", width: 110},
                         {field: "DURATION", title: "Duration"},
                         {field: "TRAINING_TYPE", title: "Type"},
                         {field: "RECOMMENDER_NAME", title: "Recommender"},
-                        {field: "APPROVER_NAME", title: "Approver"},                        
+                        {field: "APPROVER_NAME", title: "Approver"},
                         {field: "STATUS", title: "Status"},
                         {field: ["REQUEST_ID"], title: "Action", template: `<span><a class="btn-edit"
-    href="`+ document.viewLink +`/#: REQUEST_ID #" style="height:17px;" title="view">
+    href="` + document.viewLink + `/#: REQUEST_ID #" style="height:17px;" title="view">
     <i class="fa fa-search-plus"></i>
     </a></span>`}
                     ]
                 });
-                
-                app.searchTable('trainingRequestStatusTable',['FULL_NAME','TRAINING_NAME','REQUESTED_DATE','START_DATE','END_DATE','REQUESTED_DATE_N','START_DATE_N','END_DATE_N','DURATION','TRAINING_TYPE','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
-                
-                 app.pdfExport(
-                'trainingRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'TRAINING_NAME': 'Training',
-                    'REQUESTED_DATE': 'Request Date(AD)',
-                    'REQUESTED_DATE_N': 'Request Date(BS)',
-                    'START_DATE': 'Start Date(AD)',
-                    'START_DATE_N': 'Start Date(BS)',
-                    'END_DATE': 'End Date(AD)',
-                    'END_DATE_N': 'End Date(BS)',
-                    'DURATION': 'Duration',
-                    'TRAINING_TYPE': 'Training Type',
-                    'RECOMMENDER_NAME': 'Recommender',
-                    'APPROVER_NAME': 'Approver',
-                    'STATUS': 'Status',
-                    'DESCRIPTION': 'Description',
-                    'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'Recommender Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approver Remarks',
-                    'APPROVED_DATE': 'Approved Date',
-                });
-                                
-                
+
+                app.searchTable('trainingRequestStatusTable', ['FULL_NAME', 'TRAINING_NAME', 'REQUESTED_DATE', 'START_DATE', 'END_DATE', 'REQUESTED_DATE_N', 'START_DATE_N', 'END_DATE_N', 'DURATION', 'TRAINING_TYPE', 'RECOMMENDER_NAME', 'APPROVER_NAME', 'STATUS']);
+
+                app.pdfExport(
+                        'trainingRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'TRAINING_NAME': 'Training',
+                            'REQUESTED_DATE': 'Request Date(AD)',
+                            'REQUESTED_DATE_N': 'Request Date(BS)',
+                            'START_DATE': 'Start Date(AD)',
+                            'START_DATE_N': 'Start Date(BS)',
+                            'END_DATE': 'End Date(AD)',
+                            'END_DATE_N': 'End Date(BS)',
+                            'DURATION': 'Duration',
+                            'TRAINING_TYPE': 'Training Type',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+                            'STATUS': 'Status',
+                            'DESCRIPTION': 'Description',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDED_REMARKS': 'Recommender Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approver Remarks',
+                            'APPROVED_DATE': 'Approved Date',
+                        });
+
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -242,7 +239,7 @@ angular.module('hris', [])
                                     {autoWidth: true},
                                     {autoWidth: true},
                                     {autoWidth: true}
-                                    
+
                                 ],
                                 title: "Training Request",
                                 rows: rows
@@ -251,7 +248,7 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "TrainingRequestList.xlsx"});
                 }
-               
+
                 window.app.UIConfirmations();
             };
         });

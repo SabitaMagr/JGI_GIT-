@@ -1,10 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
@@ -21,9 +18,10 @@ $this->headScript()
 
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.ids=<?php echo json_encode(["holidayId"=>-1,"requestStatusId"=>-1,"fromDate1"=>"","nepaliFromDate"=>"","toDate1"=>"","nepaliToDate"=>""]) ?>;
+    document.ids =<?php echo json_encode(["holidayId" => -1, "requestStatusId" => -1, "fromDate1" => "", "nepaliFromDate" => "", "toDate1" => "", "nepaliToDate" => ""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues) ?>;
-    document.viewLink ='<?= $this->url("workOnHolidayStatus", ["action" => "view"]) ?>';
+    document.viewLink = '<?= $this->url("workOnHolidayStatus", ["action" => "view"]) ?>';
+    document.pullHoliayWorkRequestStatusListLink = '<?= $this->url("workOnHolidayStatus", ["action" => "pullHoliayWorkRequestStatusList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnHolidayStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -111,7 +109,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-2">
                     <?php print $this->formElement($holidays); ?>
                 </div>
-                  
+
             </div>
             <div class="row margin-top-10">
                 <div class="col-sm-2">
@@ -137,7 +135,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                     </div>
                 </div>
-                
+
             </div>
             <div class="row margin-top-10">
                 <div class=" col-sm-offset-8 col-sm-4">
@@ -145,7 +143,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                     <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
+                    <button ng-click="view()" id="viewLeaveRequestStatus" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
@@ -156,10 +154,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
 
-<div class="margin-top-20">
-    <div id="workOnHolidayRequestStatusTable">
+    <div class="margin-top-20">
+        <div id="workOnHolidayRequestStatusTable">
+        </div>
     </div>
-</div>
 
 <!--<script id="rowTemplate" type="text/x-kendo-tmpl">
     <tr>

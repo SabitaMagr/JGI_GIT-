@@ -25,23 +25,20 @@ angular.module('hris', [])
                 var recomApproveId = angular.element(document.getElementById('recomApproveId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullTrainingRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'requestStatusId': requestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'recomApproveId': recomApproveId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullTrainingRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'requestStatusId': requestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'recomApproveId': recomApproveId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.recomApproveId);
@@ -78,7 +75,7 @@ angular.module('hris', [])
                     columns: [
                         {field: "FULL_NAME", title: "Employee"},
                         {field: "TITLE", title: "Training"},
-                         {title: "Requested Date",
+                        {title: "Requested Date",
                             columns: [{
                                     field: "REQUESTED_DATE",
                                     title: "English",
@@ -86,7 +83,7 @@ angular.module('hris', [])
                                 {field: "REQUESTED_DATE_N",
                                     title: "Nepali",
                                     template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
-                          {title: "Start Date",
+                        {title: "Start Date",
                             columns: [{
                                     field: "START_DATE",
                                     title: "English",

@@ -5,16 +5,16 @@ namespace AttendanceManagement\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Model\FiscalYear;
-use Application\Model\Months;
 use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use AttendanceManagement\Repository\AttendanceRepository;
 use Exception;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AttendanceByHr extends AbstractActionController {
 
@@ -226,6 +226,28 @@ class AttendanceByHr extends AbstractActionController {
             return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullInOutTimeAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $attendanceDt = $data['attendanceDt'];
+            $employeeId = $data['employeeId'];
+
+            $attendanceRepository = new AttendanceRepository($this->adapter);
+            $result = $attendanceRepository->fetchInOutTimeList($employeeId, $attendanceDt);
+            $list = [];
+            foreach ($result as $row) {
+                array_push($list, $row);
+            }
+
+            return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

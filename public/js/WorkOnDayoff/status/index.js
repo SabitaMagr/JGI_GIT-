@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate1', 'nepaliToDate', 'toDate1', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -24,22 +24,19 @@ angular.module('hris', [])
                 var toDate = angular.element(document.getElementById('toDate1')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullDayoffWorkRequestStatusList',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId': companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'requestStatusId': requestStatusId,
-                        'fromDate': fromDate,
-                        'toDate': toDate,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullDayoffWorkRequestStatusListLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'requestStatusId': requestStatusId,
+                    'fromDate': fromDate,
+                    'toDate': toDate,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log(success.data);
@@ -75,7 +72,7 @@ angular.module('hris', [])
 //                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
                         {field: "FULL_NAME", title: "Employee"},
-                         {title: "Requested Date",
+                        {title: "Requested Date",
                             columns: [
                                 {field: "REQUESTED_DATE",
                                     title: "AD",
@@ -84,7 +81,7 @@ angular.module('hris', [])
                                     title: "BS",
                                     template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N # </span>"}
                             ]},
-                      {title: "From Date",
+                        {title: "From Date",
                             columns: [
                                 {field: "FROM_DATE",
                                     title: "AD",
@@ -93,7 +90,7 @@ angular.module('hris', [])
                                     title: "BS",
                                     template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N # </span>"}
                             ]},
-                         {title: "To Date",
+                        {title: "To Date",
                             columns: [
                                 {field: "TO_DATE",
                                     title: "AD",
@@ -107,42 +104,42 @@ angular.module('hris', [])
 //                        {field: "TO_DATE", title: "To Date", width: 110},
                         {field: "DURATION", title: "Duration"},
                         {field: "RECOMMENDER_NAME", title: "Recommender"},
-                        {field: "APPROVER_NAME", title: "Approver"},                        
+                        {field: "APPROVER_NAME", title: "Approver"},
                         {field: "STATUS", title: "Status"},
                         {field: ["ID"], title: "Action", template: `<span> <a class="btn-edit"
-        href="`+ document.viewLink +`/#: ID #" style="height:17px;" title="view">
+        href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view">
         <i class="fa fa-search-plus"></i>
         </a></span>`}
                     ]
                 });
-                
-                app.searchTable('WorkOnDayoffRequestStatusTable',['FULL_NAME','REQUESTED_DATE','FROM_DATE','TO_DATE', 'REQUESTED_DATE_N','FROM_DATE_N','TO_DATE_N','DURATION','RECOMMENDER_NAME','APPROVER_NAME','STATUS']);
-                
+
+                app.searchTable('WorkOnDayoffRequestStatusTable', ['FULL_NAME', 'REQUESTED_DATE', 'FROM_DATE', 'TO_DATE', 'REQUESTED_DATE_N', 'FROM_DATE_N', 'TO_DATE_N', 'DURATION', 'RECOMMENDER_NAME', 'APPROVER_NAME', 'STATUS']);
+
                 app.pdfExport(
-                'WorkOnDayoffRequestStatusTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'REQUESTED_DATE': 'Request Days(AD)',
-                    'REQUESTED_DATE_N': 'Request Days(BS)',
-                    'FROM_DATE': 'From Date(AD)',
-                    'FROM_DATE_N': 'From Date(BS)',
-                    'TO_DATE': 'To Date(AD)',
-                    'TO_DATE_N': 'To Date(BS)',
-                    'DURATION': 'Duration',
-                    'RECOMMENDER_NAME': 'Recommender',
-                    'APPROVER_NAME': 'Approver',
-                    'STATUS': 'Status',
-                    'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    'APPROVED_DATE': 'Approved Date'
-                });
-                
-                              
-                
-                
-                
+                        'WorkOnDayoffRequestStatusTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'REQUESTED_DATE': 'Request Days(AD)',
+                            'REQUESTED_DATE_N': 'Request Days(BS)',
+                            'FROM_DATE': 'From Date(AD)',
+                            'FROM_DATE_N': 'From Date(BS)',
+                            'TO_DATE': 'To Date(AD)',
+                            'TO_DATE_N': 'To Date(BS)',
+                            'DURATION': 'Duration',
+                            'RECOMMENDER_NAME': 'Recommender',
+                            'APPROVER_NAME': 'Approver',
+                            'STATUS': 'Status',
+                            'REMARKS': 'Remarks',
+                            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+                            'RECOMMENDED_DATE': 'Recommended Date',
+                            'APPROVED_REMARKS': 'Approved Remarks',
+                            'APPROVED_DATE': 'Approved Date'
+                        });
+
+
+
+
+
                 function gridDataBound(e) {
                     var grid = e.sender;
                     if (grid.dataSource.total() == 0) {
@@ -242,7 +239,7 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "WorkOnDayoffRequestList.xlsx"});
                 }
-               
+
                 window.app.UIConfirmations();
             };
         });

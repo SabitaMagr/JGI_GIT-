@@ -20,12 +20,9 @@ angular.module('hris', [])
                 console.log(serviceEventType);
                 var serviceEventTypeId = serviceEventType;
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: "pullServiceQuestionList",
-                    data: {
-                        id: serviceEventTypeId,
-                        empQaId:empQaId
-                    }
+                window.app.pullDataById(document.pullServiceQuestionListLink, {
+                    id: serviceEventTypeId,
+                    empQaId: empQaId
                 }).then(function (response) {
                     App.unblockUI("#hris-page-content");
                     try {
@@ -45,12 +42,12 @@ angular.module('hris', [])
                 });
             }
             $scope.serviceEventTypeChange(serviceEventTypeId);
-            
-            $scope.printDiv = function(divName) {
+
+            $scope.printDiv = function (divName) {
                 var printContents = document.getElementById(divName).innerHTML;
                 var popupWin = window.open('', '_blank', 'width=1000,height=500,toolbar=0,scrollbars=0,status=0');
                 popupWin.document.open();
-                popupWin.document.write('<style>@page{size:portrait;}</style><html><head><link rel="stylesheet" type="text/css" href="'+document.urlCss+'" /></head><body onload="window.print()">' + printContents + '</body></html>');
+                popupWin.document.write('<style>@page{size:portrait;}</style><html><head><link rel="stylesheet" type="text/css" href="' + document.urlCss + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
                 popupWin.document.close();
             }
 

@@ -4,15 +4,16 @@ namespace WorkOnHoliday\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use HolidayManagement\Model\Holiday;
 use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\WorkOnHolidayRepository;
+use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-
-;
+use Zend\View\Model\JsonModel;
 
 class WorkOnHolidayApply extends AbstractActionController {
 
@@ -58,6 +59,21 @@ class WorkOnHolidayApply extends AbstractActionController {
                     'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", false, true),
                     'holidays' => EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], ["STATUS" => 'E'], "HOLIDAY_ENAME", "ASC", null, false, true)
         ]);
+    }
+
+    public function pullHolidaysForEmployeeAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $employeeId = $data['employeeId'];
+            $holidayRepo = new WorkOnHolidayStatusRepository($this->adapter);
+            $holidayResult = Helper::extractDbData($holidayRepo->getAttendedHolidayList($employeeId));
+
+            return new JsonModel(['success' => true, 'data' => $holidayResult, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

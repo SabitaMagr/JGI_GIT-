@@ -1,10 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
@@ -21,33 +18,29 @@ $this->headScript()
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
-
 ?>
 
-<?php
-if ($this->messages) { ?>
+<?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
-<?php } 
+<?php }
 ?>
-    
+
 <script>
-    document.ids=<?php echo json_encode(["assetTypeId"=>-1,"asset"=>-1,"assetStatusId"=>-1]) ?>;
+    document.ids =<?php echo json_encode(["assetTypeId" => -1, "asset" => -1, "assetStatusId" => -1]) ?>;
     document.url = '<?= $this->url("assetIssue", ["action" => "getAssetIssueList"]) ?>';
     document.assetfilterListUrl = '<?= $this->url("assetIssue", ["action" => "getAssetFilterList"]) ?>';
-    document.issue =[];
+    document.issue = [];
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 
-<?php 
-
-
+<?php
 //echo '<pre>';
 //print_r($assets);
 //die();
-    $assetReturnUrl=$this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
-    ?>
+$assetReturnUrl = $this->url('assetIssue', ['action' => 'returnAsset', 'id' => $id]);
+?>
 
 
 
@@ -57,9 +50,9 @@ if ($this->messages) { ?>
 </div>
 
 <div id="leaveStatusList" ng-app="hris" ng-controller="assetListController">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -80,8 +73,8 @@ if ($this->messages) { ?>
                 </div>
             </div>
         </div>
-        
-         <div class="portlet-body">
+
+        <div class="portlet-body">
             <div class="row">
                 <div class="col-sm-2">
                     <select class="form-control" name="company" id="companyId">
@@ -124,41 +117,41 @@ if ($this->messages) { ?>
                 <div class="col-sm-2">
                     <?php print $this->formElement($assetType); ?>
                 </div>
-                
+
             </div>
             <div class="row margin-top-10">
                 <div class="col-sm-2">
                     <?php print $this->formElement($assets); ?>
                 </div> 
-            
+
                 <div class="col-sm-2">
                     <?php print $this->formElement($assetStatus); ?>
                 </div> 
-                
-                
-                
+
+
+
                 <div class=" col-sm-offset-4 col-sm-4">
                     <button id="reset" class="btn default btn-sm pull-right">
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                     <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
+                    <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
             </div>
         </div>
-        
-        
 
-    <div id="assetIssueTable">
 
+
+        <div id="assetIssueTable">
+
+        </div>
     </div>
-	</div>
-    
-    
-  
+
+
+
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
@@ -191,94 +184,94 @@ if ($this->messages) { ?>
         </td>
         </tr>
     </script>
-    
-    
-    
+
+
+
     <div id="myModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+        <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Asset Return</h4>
-      </div>
-      <div class="modal-body">
-          <form action="<?=$assetReturnUrl?>" id="assetReturnForm" method="post">
-              <input  name="redirectPage" type="hidden" value="indexPage">
-              <input id="assetId" name="assetId" type="hidden" >
-              <input id="issueId" name="issueId" type="hidden">
-              <input id="issueBal" name="issueBal" type="hidden">
-          <div class="row">
-              <div class="col-sm-3">
-                  <lable>Employee : </lable>
-              </div>
-              
-              <div class="col-sm-3">
-                  <label class="form-group" id="returnEmployee"></label>
-              </div>
-          </div>
-        
-          <div class="row">
-              <div class="col-sm-3">
-                  <lable>Asset : </lable>
-              </div>
-              
-              <div class="col-sm-3">
-                  <label class="form-group" id="returnAsset"></label>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-sm-3">
-                  <lable>Quantity : </lable>
-              </div>
-              
-              <div class="col-sm-3">
-                  <label class="form-group" id="returnQuantity" ></label>
-              </div>
-          </div>
-        
-          <div class="row">
-              <div class="col-sm-3">
-                  <lable>Return Date : </lable>
-              </div>
-              
-              <div class="col-sm-3">
-                  <label class="form-group" id='rDate'></label>
-              </div>    
-          </div>
-              
-          <div class="row">
-              <div class="col-sm-3 form-group">
-                  <lable>Returned Date : </lable>
-              </div>
-              
-              <div class="col-sm-3">
-                  <input required="required" id="returnedDate" name="returndeDate" class="form-control" type="text">
-              </div>
-              
-              <div class="col-sm-3">
-                  <input type="text"   id="returnedDateNepali" class="form-control " value="">
-              </div>    
-          </div>
-              
-              <div class='row'>
-                  <div class=' col-sm-offset-3 col-sm-4'>
-              <input class="btn btn-default " type="submit">
-                  </div>
-              </div>
-                  
-          </form>
-        
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" id="">Close</button>
-      </div>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Asset Return</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="<?= $assetReturnUrl ?>" id="assetReturnForm" method="post">
+                        <input  name="redirectPage" type="hidden" value="indexPage">
+                        <input id="assetId" name="assetId" type="hidden" >
+                        <input id="issueId" name="issueId" type="hidden">
+                        <input id="issueBal" name="issueBal" type="hidden">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <lable>Employee : </lable>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label class="form-group" id="returnEmployee"></label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <lable>Asset : </lable>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label class="form-group" id="returnAsset"></label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <lable>Quantity : </lable>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label class="form-group" id="returnQuantity" ></label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <lable>Return Date : </lable>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label class="form-group" id='rDate'></label>
+                            </div>    
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3 form-group">
+                                <lable>Returned Date : </lable>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <input required="required" id="returnedDate" name="returndeDate" class="form-control" type="text">
+                            </div>
+
+                            <div class="col-sm-3">
+                                <input type="text"   id="returnedDateNepali" class="form-control " value="">
+                            </div>    
+                        </div>
+
+                        <div class='row'>
+                            <div class=' col-sm-offset-3 col-sm-4'>
+                                <input class="btn btn-default " type="submit">
+                            </div>
+                        </div>
+
+                    </form>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="">Close</button>
+                </div>
+            </div>
+
+        </div>
     </div>
-
-  </div>
-</div>
 
 
 

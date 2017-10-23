@@ -30,6 +30,7 @@ $form->prepare();
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.pullHolidaysForEmployeeLink = '<?php echo $this->url("workOnHolidayApply", ["action" => "pullHolidaysForEmployee"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnHolidayApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

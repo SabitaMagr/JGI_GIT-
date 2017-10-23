@@ -5,6 +5,7 @@ namespace Overtime\Controller;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Repository\AttendanceRepository;
+use Exception;
 use ManagerService\Repository\OvertimeApproveRepository;
 use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Form\OvertimeRequestForm;
@@ -13,12 +14,14 @@ use SelfService\Model\OvertimeDetail;
 use SelfService\Repository\OvertimeDetailRepository;
 use SelfService\Repository\OvertimeRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use System\Repository\PreferenceSetupRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class OvertimeStatus extends AbstractActionController {
 
@@ -231,6 +234,109 @@ class OvertimeStatus extends AbstractActionController {
             }
         }
         $this->redirect()->toRoute('overtimeStatus');
+    }
+
+    public function pullOvertimeRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $overtimeStatusRepo = new OvertimeStatusRepository($this->adapter);
+            $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
+            if (key_exists('recomApproveId', $data)) {
+                $recomApproveId = $data['recomApproveId'];
+            } else {
+                $recomApproveId = null;
+            }
+            $result = $overtimeStatusRepo->getFilteredRecord($data, $recomApproveId);
+
+            $recordList = [];
+            $getRoleDtl = function($recommender, $approver, $recomApproveId) {
+                if ($recomApproveId == $recommender) {
+                    return 'RECOMMENDER';
+                } else if ($recomApproveId == $approver) {
+                    return 'APPROVER';
+                } else {
+                    return null;
+                }
+            };
+            $getRole = function($recommender, $approver, $recomApproveId) {
+                if ($recomApproveId == $recommender) {
+                    return 2;
+                } else if ($recomApproveId == $approver) {
+                    return 3;
+                } else {
+                    return null;
+                }
+            };
+            $fullName = function($id) {
+                $empRepository = new EmployeeRepository($this->adapter);
+                $empDtl = $empRepository->fetchById($id);
+                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+            };
+
+            $getValue = function($status) {
+                if ($status == "RQ") {
+                    return "Pending";
+                } else if ($status == 'RC') {
+                    return "Recommended";
+                } else if ($status == "R") {
+                    return "Rejected";
+                } else if ($status == "AP") {
+                    return "Approved";
+                } else if ($status == "C") {
+                    return "Cancelled";
+                }
+            };
+
+            foreach ($result as $row) {
+                $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+                $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
+
+                $status = $getValue($row['STATUS']);
+                $statusId = $row['STATUS'];
+                $approvedDT = $row['APPROVED_DATE'];
+
+                $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+                $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+                $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
+                $recommenderName = $fullName($authRecommender);
+                $approverName = $fullName($authApprover);
+
+                $role = [
+                    'APPROVER_NAME' => $approverName,
+                    'RECOMMENDER_NAME' => $recommenderName,
+                    'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
+                    'ROLE' => $roleID
+                ];
+                if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                    $role['YOUR_ROLE'] = 'Recommender\Approver';
+                    $role['ROLE'] = 4;
+                }
+                $new_row = array_merge($row, ['STATUS' => $status]);
+                $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
+                $overtimeDetails = [];
+                foreach ($overtimeDetailResult as $overtimeDetailRow) {
+                    array_push($overtimeDetails, $overtimeDetailRow);
+                }
+                $new_row['DETAILS'] = $overtimeDetails;
+                $final_record = array_merge($new_row, $role);
+                array_push($recordList, $final_record);
+            }
+
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+                "num" => count($recordList),
+                "recomApproveId" => $recomApproveId
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

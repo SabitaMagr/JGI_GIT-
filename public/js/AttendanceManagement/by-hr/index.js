@@ -102,12 +102,9 @@ angular.module('hris', [])
                     return e.ID === parentId;
                 });
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullInOutTime',
-                    data: {
-                        employeeId: e.data.EMPLOYEE_ID,
-                        attendanceDt: e.data.ATTENDANCE_DT
-                    },
+                window.app.pullDataById(document.pullInOutTimeLink, {
+                    employeeId: e.data.EMPLOYEE_ID,
+                    attendanceDt: e.data.ATTENDANCE_DT
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     if (success.data.length > 0) {
