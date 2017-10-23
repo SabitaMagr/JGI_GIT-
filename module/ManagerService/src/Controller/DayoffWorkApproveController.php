@@ -253,89 +253,12 @@ class DayoffWorkApproveController extends AbstractActionController {
 
 
             $dayoffWorkStatusRepo = new WorkOnDayoffStatusRepository($this->adapter);
-            if (key_exists('recomApproveId', $data)) {
-                $recomApproveId = $data['recomApproveId'];
-            } else {
-                $recomApproveId = null;
-            }
-            $result = $dayoffWorkStatusRepo->getFilteredRecord($data, $recomApproveId);
-
-            $recordList = [];
-            $getRoleDtl = function($recommender, $approver, $recomApproveId) {
-                if ($recomApproveId == $recommender) {
-                    return 'RECOMMENDER';
-                } else if ($recomApproveId == $approver) {
-                    return 'APPROVER';
-                } else {
-                    return null;
-                }
-            };
-            $getRole = function($recommender, $approver, $recomApproveId) {
-                if ($recomApproveId == $recommender) {
-                    return 2;
-                } else if ($recomApproveId == $approver) {
-                    return 3;
-                } else {
-                    return null;
-                }
-            };
-            $fullName = function($id) {
-                $empRepository = new EmployeeRepository($this->adapter);
-                $empDtl = $empRepository->fetchById($id);
-                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-            };
-
-            $getValue = function($status) {
-                if ($status == "RQ") {
-                    return "Pending";
-                } else if ($status == 'RC') {
-                    return "Recommended";
-                } else if ($status == "R") {
-                    return "Rejected";
-                } else if ($status == "AP") {
-                    return "Approved";
-                } else if ($status == "C") {
-                    return "Cancelled";
-                }
-            };
-
-            foreach ($result as $row) {
-                $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-                $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
-
-                $status = $getValue($row['STATUS']);
-                $statusId = $row['STATUS'];
-                $approvedDT = $row['APPROVED_DATE'];
-
-                $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
-                $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
-
-                $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
-                $recommenderName = $fullName($authRecommender);
-                $approverName = $fullName($authApprover);
-
-                $role = [
-                    'APPROVER_NAME' => $approverName,
-                    'RECOMMENDER_NAME' => $recommenderName,
-                    'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
-                    'ROLE' => $roleID
-                ];
-                if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                    $role['YOUR_ROLE'] = 'Recommender\Approver';
-                    $role['ROLE'] = 4;
-                }
-                $new_row = array_merge($row, ['STATUS' => $status]);
-                $final_record = array_merge($new_row, $role);
-                array_push($recordList, $final_record);
-            }
-
+            $result = $dayoffWorkStatusRepo->getFilteredRecord($data, $data['recomApproveId']);
+            $recordList = Helper::extractDbData($result);
 
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,
-                "num" => count($recordList),
-                "recomApproveId" => $recomApproveId
             ]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
