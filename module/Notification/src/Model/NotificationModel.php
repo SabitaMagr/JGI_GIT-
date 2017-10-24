@@ -52,7 +52,8 @@ class NotificationModel {
                     if (isset($routeJson['route'])) {
                         $routeName = $routeJson['route'];
                         unset($routeJson['route']);
-                        $processedVariable = 'http://' . $_SERVER['SERVER_ADDR'] . ':' . $_SERVER['SERVER_PORT'] . $url->fromRoute($routeName, $routeJson);
+                        $request = $url->getController()->getRequest();
+                        $processedVariable = 'http://' . $request->getServer('SERVER_ADDR') . ':' . $request->getServer('SERVER_PORT') . $url->fromRoute($routeName, $routeJson);
                     } else {
                         $processedVariable = "";
                     }
