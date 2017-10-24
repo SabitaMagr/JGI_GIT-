@@ -1111,7 +1111,7 @@ window.app = (function ($, toastr, App) {
         }
         var kendoConfig = {
             excel: {
-                fileName: excelExportFileName,
+                fileName: excelExportFileName || "Default_generated.xlsx",
                 filterable: true,
                 allPages: true
             },

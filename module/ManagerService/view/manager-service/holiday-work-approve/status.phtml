@@ -10,7 +10,6 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
@@ -48,7 +47,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<div ng-app="hris" ng-controller="holidayWorkStatusListController">
+<div>
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -67,8 +66,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li>
-                            <a href="javascript:;" id="export">
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> Export to PDF </a>
                         </li>
                     </ul>
                 </div>
@@ -124,14 +127,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($status); ?>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control" placeholder="From Date"/>
+                    <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
                 </div>
                 <div class="col-sm-2">
                     <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control" placeholder="From Date Nepali"/>
 
                 </div>
                 <div class="col-sm-2">
-                    <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control" placeholder="To Date"/>
+                    <input type="text"  id="toDate" name="toDate"  class="form-control" placeholder="To Date"/>
                 </div>
                 <div class="col-sm-2">
                     <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
@@ -145,7 +148,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                    <button ng-click="view()" id="viewLoanRequestStatus" class="btn btn-default btn-sm pull-right">
+                    <button  id="search" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
@@ -159,39 +162,4 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div id="holidayWorkRequestStatusTable">
         </div>
     </div>
-    <!--
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>    
-            #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-            </td>
-            <td>
-            #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
-            </td>
-            <td>
-            #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-            </td>        
-            <td>
-            #: (FROM_DATE == null) ? '-' : FROM_DATE #
-            </td>
-            <td>
-            #: (TO_DATE == null) ? '-' : TO_DATE #
-            </td>
-            <td>
-            #: (DURATION == null) ? '-' : DURATION #
-            </td>
-            <td>
-            #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
-            </td>
-            <td>
-            #: (STATUS == null) ? '-' : STATUS #
-            </td>
-            <td>
-            <a class="btn  btn-icon-only btn-success"
-            href=" ` + document.viewLink  + ` /#: ID #/#: ROLE #" style="height:17px;" title="view">
-            <i class="fa fa-search-plus"></i></a>
-            </a>
-            </td>
-            </tr>
-        </script>-->
 </div>
