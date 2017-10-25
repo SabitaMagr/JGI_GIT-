@@ -144,7 +144,7 @@ class AttendanceByHr extends AbstractActionController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-
+            
             $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
             $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
