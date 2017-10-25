@@ -33,7 +33,7 @@ class AttendanceByHr extends AbstractActionController {
         $this->form = $builder->createForm($attendanceByHr);
     }
 
-    public function indexAction() {
+    private function getStatusSelect() {
         $statusFormElement = new Select();
         $statusFormElement->setName("status");
         $status = array(
@@ -46,15 +46,33 @@ class AttendanceByHr extends AbstractActionController {
             "TVL" => "On Travel",
             "WOH" => "Work on Holiday",
             "WOD" => "Work on DAYOFF",
-            "LI" => "Late In",
-            "EO" => "Early Out"
         );
         $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
+        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Status");
+        return $statusFormElement;
+    }
+
+    private function getPresentStatusSelect() {
+        $statusFormElement = new Select();
+        $statusFormElement->setName("presentStatus");
+        $status = array(
+            "LI" => "Late In",
+            "EO" => "Early Out",
+            "MP" => "Missed Punched",
+        );
+        $statusFormElement->setValueOptions($status);
+        $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control", "multiple" => "multiple"]);
+        $statusFormElement->setLabel("Present Status");
+        return $statusFormElement;
+    }
+
+    public function indexAction() {
+
 
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusFormElement,
+                    'status' => $this->getStatusSelect(),
+                    'presentStatus' => $this->getPresentStatusSelect(),
                     'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
@@ -144,7 +162,7 @@ class AttendanceByHr extends AbstractActionController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            
+
             $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
             $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
@@ -157,8 +175,7 @@ class AttendanceByHr extends AbstractActionController {
             $fromDate = $data['fromDate'];
             $toDate = $data['toDate'];
             $status = $data['status'];
-            $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
-            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
+            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, $data['presentStatus']);
 
             $result = [];
             $result['success'] = true;
