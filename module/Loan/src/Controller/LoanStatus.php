@@ -10,8 +10,6 @@ use ManagerService\Repository\LoanApproveRepository;
 use SelfService\Form\LoanRequestForm;
 use SelfService\Model\LoanRequest;
 use Setup\Model\Loan;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;

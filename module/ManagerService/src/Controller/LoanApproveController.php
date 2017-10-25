@@ -14,8 +14,6 @@ use SelfService\Form\LoanRequestForm;
 use SelfService\Model\LoanRequest;
 use SelfService\Repository\LoanRequestRepository;
 use Setup\Model\Loan;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -194,7 +192,6 @@ class LoanApproveController extends AbstractActionController {
                         $loanRequestModel = new LoanRequest();
                         $id = $data['id'];
                         $role = $data['role'];
-//                        $detail = $this->loanApproveRepository->fetchById($id);
 
                         if ($role == 2) {
                             $loanRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
