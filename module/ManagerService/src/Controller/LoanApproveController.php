@@ -6,6 +6,7 @@ use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
+use Loan\Repository\LoanStatusRepository;
 use ManagerService\Repository\LoanApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -18,6 +19,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class LoanApproveController extends AbstractActionController {
 
@@ -190,7 +192,6 @@ class LoanApproveController extends AbstractActionController {
                         $loanRequestModel = new LoanRequest();
                         $id = $data['id'];
                         $role = $data['role'];
-//                        $detail = $this->loanApproveRepository->fetchById($id);
 
                         if ($role == 2) {
                             $loanRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
@@ -244,6 +245,25 @@ class LoanApproveController extends AbstractActionController {
     public function getAllList() {
         $list = $this->loanApproveRepository->getAllRequest($this->employeeId);
         return Helper::extractDbData($list);
+    }
+
+    public function pullLoanRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $loanStatusRepository = new LoanStatusRepository($this->adapter);
+            $result = $loanStatusRepository->getFilteredRecord($data, $data['recomApproveId']);
+
+            $recordList = Helper::extractDbData($result);
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

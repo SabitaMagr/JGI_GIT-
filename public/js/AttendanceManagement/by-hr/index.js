@@ -24,7 +24,7 @@ angular.module('hris', [])
             var $fromDate = angular.element(document.getElementById('fromDate'));
             var $toDate = angular.element(document.getElementById('toDate'));
             var $status = angular.element(document.getElementById('statusId'));
-            var $missPunchOnly = $("#missPunchOnly");
+            var $presentStatusId = $("#presentStatusId");
             var firstTime = true;
 
             var checkedIds = [];
@@ -42,7 +42,7 @@ angular.module('hris', [])
                 data['fromDate'] = $fromDate.val();
                 data['toDate'] = $toDate.val();
                 data['status'] = $status.val();
-                data['missPunchOnly'] = $missPunchOnly.is(":checked") ? 1 : 0;
+                data['presentStatus'] = $presentStatusId.val();
                 window.app.pullDataById(document.pullAttendanceWS, data).then(function (response) {
                     if (response.success) {
                         window.app.renderKendoGrid($grid, response.data);
@@ -102,12 +102,9 @@ angular.module('hris', [])
                     return e.ID === parentId;
                 });
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullInOutTime',
-                    data: {
-                        employeeId: e.data.EMPLOYEE_ID,
-                        attendanceDt: e.data.ATTENDANCE_DT
-                    },
+                window.app.pullDataById(document.pullInOutTimeLink, {
+                    employeeId: e.data.EMPLOYEE_ID,
+                    attendanceDt: e.data.ATTENDANCE_DT
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     if (success.data.length > 0) {
@@ -304,7 +301,7 @@ angular.module('hris', [])
                 var $toDate = angular.element(document.getElementById('toDate'));
                 var map = {1: 'P', 2: 'L', 3: 'T', 4: 'TVL', 5: 'WOH', 6: 'LI', 7: 'EO'};
                 if (idFromParameter == 8) {
-                    $missPunchOnly.prop("checked", true);
+                    $presentStatusId.prop("checked", true);
                     $fromDate.val(yesterdayDate);
                     $toDate.val(yesterdayDate);
                 } else {

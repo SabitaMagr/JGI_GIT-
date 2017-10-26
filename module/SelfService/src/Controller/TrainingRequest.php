@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use DateTime;
 use Exception;
@@ -13,7 +14,7 @@ use SelfService\Repository\TrainingRequestRepository;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -27,11 +28,11 @@ class TrainingRequest extends AbstractActionController {
     private $recommender;
     private $approver;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new TrainingRequestRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -63,89 +64,96 @@ class TrainingRequest extends AbstractActionController {
     }
 
     public function indexAction() {
-        $this->getRecommendApprover();
-        $result = $this->repository->getAllByEmployeeId($this->employeeId);
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $this->getRecommendApprover();
+                $result = $this->repository->getAllByEmployeeId($this->employeeId);
+                $fullName = function($id) {
+                    $empRepository = new EmployeeRepository($this->adapter);
+                    $empDtl = $empRepository->fetchById($id);
+                    return $empDtl['FULL_NAME'];
+                };
 
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
+                $recommenderName = $fullName($this->recommender);
+                $approverName = $fullName($this->approver);
 
-        $list = [];
-        $getValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getAction = function($status) {
-            if ($status == "RQ") {
-                return ["delete" => 'Cancel Request'];
-            } else {
-                return ["view" => 'View'];
-            }
-        };
-        $getValueComType = function($trainingTypeId) {
-            if ($trainingTypeId == 'CC') {
-                return 'Company Contribution';
-            } else if ($trainingTypeId == 'CP') {
-                return 'Company Personal';
-            }
-        };
+                $list = [];
+                $getValue = function($status) {
+                    if ($status == "RQ") {
+                        return "Pending";
+                    } else if ($status == 'RC') {
+                        return "Recommended";
+                    } else if ($status == "R") {
+                        return "Rejected";
+                    } else if ($status == "AP") {
+                        return "Approved";
+                    } else if ($status == "C") {
+                        return "Cancelled";
+                    }
+                };
+                $getAction = function($status) {
+                    if ($status == "RQ") {
+                        return ["delete" => 'Cancel Request'];
+                    } else {
+                        return ["view" => 'View'];
+                    }
+                };
+                $getValueComType = function($trainingTypeId) {
+                    if ($trainingTypeId == 'CC') {
+                        return 'Company Contribution';
+                    } else if ($trainingTypeId == 'CP') {
+                        return 'Company Personal';
+                    }
+                };
 
-        foreach ($result as $row) {
-            $status = $getValue($row['STATUS']);
-            $action = $getAction($row['STATUS']);
-            $statusID = $row['STATUS'];
-            $approvedDT = $row['APPROVED_DATE'];
-            $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
-            $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
-            $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
-            $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
-            $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
-            $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
+                foreach ($result as $row) {
+                    $status = $getValue($row['STATUS']);
+                    $action = $getAction($row['STATUS']);
+                    $statusID = $row['STATUS'];
+                    $approvedDT = $row['APPROVED_DATE'];
+                    $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
+                    $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
+                    $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
+                    $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
+                    $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
+                    $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-            if ($row['TRAINING_ID'] != 0) {
-                $row['START_DATE'] = $row['T_START_DATE'];
-                $row['END_DATE'] = $row['T_END_DATE'];
-                $row['DURATION'] = $row['T_DURATION'];
-                $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
-                $row['TITLE'] = $row['TRAINING_NAME'];
-            }
+                    if ($row['TRAINING_ID'] != 0) {
+                        $row['START_DATE_AD'] = $row['T_START_DATE'];
+                        $row['END_DATE_AD'] = $row['T_END_DATE'];
+                        $row['DURATION'] = $row['T_DURATION'];
+                        $row['TRAINING_TYPE'] = $row['T_TRAINING_TYPE'];
+                        $row['TITLE'] = $row['TRAINING_NAME'];
+                    }
 
-            $new_row = array_merge($row, [
-                'RECOMMENDER_NAME' => $authRecommender,
-                'APPROVER_NAME' => $authApprover,
-                'STATUS' => $status,
-                'ACTION' => key($action),
-                'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
-                'ACTION_TEXT' => $action[key($action)]
-            ]);
-            $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE']);
-            $toDayDate = new DateTime();
-            if (($toDayDate < $startDate) && ($statusID == 'RQ' || $statusID == 'RC' || $statusID == 'AP')) {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else if (($toDayDate >= $startDate) && $statusID == 'RQ') {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            } else if ($toDayDate >= $startDate) {
-                $new_row['ALLOW_TO_EDIT'] = 0;
-            } else {
-                $new_row['ALLOW_TO_EDIT'] = 0;
+                    $new_row = array_merge($row, [
+                        'RECOMMENDER_NAME' => $authRecommender,
+                        'APPROVER_NAME' => $authApprover,
+                        'STATUS' => $status,
+                        'ACTION' => key($action),
+                        'TRAINING_TYPE' => $getValueComType($row['TRAINING_TYPE']),
+                        'ACTION_TEXT' => $action[key($action)]
+                    ]);
+                    $startDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $row['START_DATE_AD']);
+                    $toDayDate = new DateTime();
+                    if (($toDayDate < $startDate) && ($statusID == 'RQ' || $statusID == 'RC' || $statusID == 'AP')) {
+                        $new_row['ALLOW_TO_EDIT'] = 1;
+                    } else if (($toDayDate >= $startDate) && $statusID == 'RQ') {
+                        $new_row['ALLOW_TO_EDIT'] = 1;
+                    } else if ($toDayDate >= $startDate) {
+                        $new_row['ALLOW_TO_EDIT'] = 0;
+                    } else {
+                        $new_row['ALLOW_TO_EDIT'] = 0;
+                    }
+                    array_push($list, $new_row);
+                }
+                return new CustomViewModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
-            array_push($list, $new_row);
         }
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function addAction() {

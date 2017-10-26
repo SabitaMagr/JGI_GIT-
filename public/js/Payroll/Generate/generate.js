@@ -51,11 +51,7 @@
         };
 
         var fetchPayRollGeneratedMonths = function () {
-            app.pullDataById(document.restfulUrl, {
-                action: 'pullPayRollGeneratedMonths',
-                data: {
-                }
-            }).then(function (success) {
+            app.pullDataById(document.pullPayRollGeneratedMonthsLink, {}).then(function (success) {
                 payRollGeneratedMonths = success.data;
             }, function (failure) {
                 console.log("pullPayRollGeneratedMonths fail", failure);

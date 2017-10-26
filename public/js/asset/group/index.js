@@ -1,41 +1,33 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        console.log(document.group);
-        $("#assetGroupTable").kendoGrid({
-            excel: {
-                fileName: "AssetGroupList.xlsx",
-                filterable: true,
-                allPages: true
-            },
-            dataSource: {
-                data: document.group,
-                page: 1,
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: true,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-                {field: "ASSET_GROUP_EDESC", title: "Asset Group",width:400},
-                {title: "Action",width:120}
-            ],
+        var $table = $('#assetGroupTable');
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:ASSET_GROUP_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:ASSET_GROUP_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
+        var action = editAction + deleteAction;
+        app.initializeKendoGrid($table, [
+            {field: "ASSET_GROUP_EDESC", title: "Asset Group", width: 400},
+            {field: "ASSET_GROUP_ID", title: "Action", width: 120, template: action}
+        ], "AssetGroupList.xlsx");
+
+        app.searchTable('assetGroupTable', ['ASSET_GROUP_EDESC']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, {
+                'ASSET_GROUP_EDESC': 'Asset Group'
+            }, 'AssetGroupList');
         });
-        
-        app.searchTable('assetGroupTable',['ASSET_GROUP_EDESC']);
-        
-        app.pdfExport(
-                'assetGroupTable',
-                {
-                    'ASSET_GROUP_EDESC': 'Asset Group'
-                });
-        
-        $("#export").click(function (e) {
-            var grid = $("#assetGroupTable").data("kendoGrid");
-            grid.saveAsExcel();
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, {
+                'ASSET_GROUP_EDESC': 'Asset Group'
+            }, 'AssetGroupList');
         });
-        window.app.UIConfirmations();
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
     });
 })(window.jQuery);

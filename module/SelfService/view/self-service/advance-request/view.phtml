@@ -62,6 +62,7 @@ $form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']))
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.advanceRequestData =<?php echo json_encode($advanceRequestData); ?>;
     document.wsGenerateAdvanceVoucher = '<?= $this->url("advanceRequest", ["action" => "generateAdvanceVoucher"]) ?>';
+    document.pullAdvanceDetailByEmpIdLink = '<?php echo $this->url("advanceRequest", ["action" => "pullAdvanceDetailByEmpId"]); ?>';
 </script>
 
 <div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
@@ -234,31 +235,31 @@ $form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']))
         </div>
     </div>
     <script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-header">
+        <div class="modal-header">
         <h3 class="modal-title" id="modal-title">Advance Voucher</h3>
-    </div>
-    <div class="modal-body" id="modal-body">
-        <div class="form-body">
-            <div class="form-group">
-                <label class="control-label">Form Type</label>
-                <select class="form-control">
-                <option value="01">Red</option>
-                <option value="02">Green</option>
-                </select>
-               <!-- <span class="help-block"> A block of help text. </span>-->
-            </div>
-            <div class="form-group">
-                <label class="control-label">Account Code</label>
-                <select class="form-control">
-                <option value="01">Red</option>
-                <option value="02">Green</option>
-                </select>
-            </div>
         </div>
-    </div>
-    <div class="modal-footer">
+        <div class="modal-body" id="modal-body">
+        <div class="form-body">
+        <div class="form-group">
+        <label class="control-label">Form Type</label>
+        <select class="form-control">
+        <option value="01">Red</option>
+        <option value="02">Green</option>
+        </select>
+        <!-- <span class="help-block"> A block of help text. </span>-->
+        </div>
+        <div class="form-group">
+        <label class="control-label">Account Code</label>
+        <select class="form-control">
+        <option value="01">Red</option>
+        <option value="02">Green</option>
+        </select>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
         <button class="btn btn-primary btn-sm" type="button" ng-click="ok()">OK</button>
         <button class="btn btn-warning btn-sm" type="button" ng-click="cancel()">Cancel</button>
-    </div>
+        </div>
     </script>
 </div>

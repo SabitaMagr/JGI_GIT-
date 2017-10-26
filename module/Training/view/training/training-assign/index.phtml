@@ -14,11 +14,11 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
 <script>
-    document.ids=<?php echo json_encode(["trainingId"=>-1]) ?>;
+    document.ids =<?php echo json_encode(["trainingId" => -1]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
-    document.viewLink ='<?= $this->url("trainingAssign", ["action" => "view"]) ?>';
-    document.deleteLink ='<?= $this->url("trainingAssign", ["action" => "delete"]) ?>';
+    document.viewLink = '<?= $this->url("trainingAssign", ["action" => "view"]) ?>';
+    document.deleteLink = '<?= $this->url("trainingAssign", ["action" => "delete"]) ?>';
 </script>
 
 <div class="page-bar">
@@ -40,7 +40,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="" ng-app="hris" ng-controller="trainingAssignController">
-     <div class="portlet light bg-inverse">
+    <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-paper-plane font-green-haze"></i>
@@ -52,9 +52,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="actions">
                 <a href="<?= $this->url('trainingAssign', ['action' => 'assign']) ?>" id="sample_editable_1_new"
-                           class="btn default btn-sm"> Assign
-                            <i class="fa fa-plus"></i>
-                        </a>
+                   class="btn default btn-sm"> Assign
+                    <i class="fa fa-plus"></i>
+                </a>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -129,46 +129,46 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
     <div class="margin-top-10">
-       
+
         <div id="trainingAssignListTable"></div>
     </div>  
-<!--
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-        </td>
-        <td>
-        #: (TRAINING_NAME == null) ? '-' : TRAINING_NAME #
-        </td>
-        <td>
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>    
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>    
-        #: (DURATION == null) ? '-' : DURATION #
-        </td>
-        <td>
-        #: (INSTITUTE_NAME == null) ? '-' : INSTITUTE_NAME #
-        </td>
-        <td>
-        #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
-        </td> 
-        <td>
-        <a class="btn-edit"
-        href="`+ document.viewLink  +`/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        #if(ALLOW_TO_EDIT == 1){#       
-        <a class="confirmation btn-delete"
-        href="`+ document.deleteLink +`/#: EMPLOYEE_ID #/#: TRAINING_ID #" id="bs_#:SN #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        #}#
-
-        </td>
-        </tr>
-    </script>-->
+    <!--
+        <script id="rowTemplate" type="text/x-kendo-tmpl">
+            <tr>
+            <td>
+            #: (FULL_NAME == null) ? ' ' : FULL_NAME #
+            </td>
+            <td>
+            #: (TRAINING_NAME == null) ? '-' : TRAINING_NAME #
+            </td>
+            <td>
+            #: (START_DATE == null) ? '-' : START_DATE #
+            </td>
+            <td>    
+            #: (END_DATE == null) ? '-' : END_DATE #
+            </td>
+            <td>    
+            #: (DURATION == null) ? '-' : DURATION #
+            </td>
+            <td>
+            #: (INSTITUTE_NAME == null) ? '-' : INSTITUTE_NAME #
+            </td>
+            <td>
+            #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
+            </td> 
+            <td>
+            <a class="btn-edit"
+            href="`+ document.viewLink  +`/#: EMPLOYEE_ID #/#: TRAINING_ID #" style="height:17px;" title="view detail">
+            <i class="fa fa-search-plus"></i></a>
+            </a>
+            #if(ALLOW_TO_EDIT == 1){#       
+            <a class="confirmation btn-delete"
+            href="`+ document.deleteLink +`/#: EMPLOYEE_ID #/#: TRAINING_ID #" id="bs_#:SN #" style="height:17px;">
+            <i class="fa fa-trash-o"></i></a>
+            </a>
+            #}#
+    
+            </td>
+            </tr>
+        </script>-->
 </div>

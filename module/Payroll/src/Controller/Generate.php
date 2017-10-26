@@ -11,9 +11,12 @@ use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Model\Rules;
 use Payroll\Model\SalarySheet;
 use Payroll\Repository\PayrollRepository;
+use Payroll\Repository\SalarySheetRepo;
+use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class Generate extends AbstractActionController {
 
@@ -76,6 +79,32 @@ class Generate extends AbstractActionController {
             return new CustomViewModel(['success' => true, 'data' => $results, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
+        }
+    }
+
+    public function pullPayRollGeneratedMonthsAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $employeeId = null;
+            $joinDate = null;
+            if (isset($data['employeeId'])) {
+                $employeeId = $data['employeeId'];
+            }
+            if ($employeeId != null) {
+                $result = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, null, [HrEmployees::JOIN_DATE], [HrEmployees::EMPLOYEE_ID => $employeeId], null, null);
+                if (sizeof($result) > 0) {
+                    $joinDate = $result[0];
+                }
+            }
+            $salarySheetRepo = new SalarySheetRepo($this->adapter);
+            $generatedSalarySheets = Helper::extractDbData($salarySheetRepo->joinWithMonth(null, $joinDate));
+
+            return new JsonModel(['success' => true, 'data' => $generatedSalarySheets, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

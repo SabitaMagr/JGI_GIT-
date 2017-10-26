@@ -699,26 +699,6 @@ window.app = (function ($, toastr, App) {
             });
 
             $("#" + confirmationBtnId).on("confirmed.bs.confirmation", function () {
-                //console.log(href);
-
-//                window.app.pullDataById(document.deleteURL, {
-//                    action: 'deleteContent',
-//                    data: {
-//                        'tableName': tableName,
-//                        'columnName': columnName,
-//                        'id': id
-//                    }
-//                }).then(function (success) {
-//                    removeByAttr(listData, columnName, id);
-//
-//                    $("#" + kendoGridId).data('kendoGrid').dataSource.read();
-//                    $("#" + kendoGridId).data('kendoGrid').refresh();
-//                    window.toastr.success(success.msg, "Notifications");  
-//                    window.app.UIConfirmations(tableName, columnName, kendoGridId, listData);
-//                    
-//                }, function (failure) {
-//                    console.log(failure);
-//                });
             }),
                     $("#" + confirmationBtnId).on("canceled.bs.confirmation", function () {
             });
@@ -816,6 +796,12 @@ window.app = (function ($, toastr, App) {
     }
 
     var searchTable = function (kendoId, searchFields, Hidden) {
+        var $kendoId = null;
+        if (kendoId instanceof jQuery) {
+            $kendoId = kendoId;
+        } else {
+            $kendoId = $("#" + kendoId);
+        }
         var $searchHtml = $("<div class='row search' id='searchFieldDiv'>"
                 + "<div class='col-sm-12'>"
                 + "<input class='form-group pull-right' placeholder='search here' type='text' id='kendoSearchField' style='width:136px;padding:2px;font-size:12px;'/>"
@@ -823,7 +809,7 @@ window.app = (function ($, toastr, App) {
                 + "</div>");
 
 
-        $searchHtml.insertBefore("#" + kendoId);
+        $searchHtml.insertBefore($kendoId);
 
         if (typeof Hidden !== "undefined") {
             $("#searchFieldDiv").hide();
@@ -839,7 +825,7 @@ window.app = (function ($, toastr, App) {
                 });
             }
 
-            $("#" + kendoId).data("kendoGrid").dataSource.filter({
+            $kendoId.data("kendoGrid").dataSource.filter({
                 logic: "or",
                 filters: filters
             });
@@ -1131,7 +1117,7 @@ window.app = (function ($, toastr, App) {
         }
         var kendoConfig = {
             excel: {
-                fileName: excelExportFileName,
+                fileName: excelExportFileName || "Default_generated.xlsx",
                 filterable: true,
                 allPages: true
             },

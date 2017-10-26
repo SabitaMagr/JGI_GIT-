@@ -11,12 +11,15 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
+use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
+use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class DayoffWorkApproveController extends AbstractActionController {
 
@@ -241,6 +244,25 @@ class DayoffWorkApproveController extends AbstractActionController {
     public function getAllList() {
         $list = $this->dayoffWorkApproveRepository->getAllRequest($this->employeeId);
         return Helper::extractDbData($list);
+    }
+
+    public function pullDayoffWorkRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $dayoffWorkStatusRepo = new WorkOnDayoffStatusRepository($this->adapter);
+            $result = $dayoffWorkStatusRepo->getFilteredRecord($data, $data['recomApproveId']);
+            $recordList = Helper::extractDbData($result);
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

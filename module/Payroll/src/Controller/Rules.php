@@ -11,13 +11,18 @@ use Payroll\Form\Rules as RuleForm;
 use Payroll\Model\FlatValue;
 use Payroll\Model\MonthlyValue;
 use Payroll\Model\PayEmployeeSetup;
+use Payroll\Model\Rules as RulesModel;
+use Payroll\Model\RulesDetail;
 use Payroll\Repository\PayEmployeeRepo;
+use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Setup\Model\Gender;
 use Setup\Model\ServiceType;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class Rules extends AbstractActionController {
@@ -129,6 +134,100 @@ class Rules extends AbstractActionController {
             return new CustomViewModel(['success' => true, 'data' => $employees, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pushRuleAction() {
+        try {
+            $return = [];
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $repository = new RulesRepository($this->adapter);
+            $auth = new AuthenticationService();
+
+            $rulesValue = new RulesModel();
+            $rulesValue->exchangeArrayFromForm((array) $data);
+            if ($rulesValue->payId != NULL) {
+                $payId = $rulesValue->payId;
+                unset($rulesValue->payId);
+                unset($rulesValue->createdDt);
+                unset($rulesValue->createdBy);
+                unset($rulesValue->status);
+                unset($rulesValue->refRuleFlag);
+
+                $rulesValue->modifiedDt = Helper::getcurrentExpressionDate();
+                $rulesValue->modifiedBy = $auth->getStorage()->read()['user_id'];
+                $repository->edit($rulesValue, $payId);
+                $return = ["success" => true, "message" => "Rule successfully edited"];
+            } else {
+                $rulesValue->payId = ((int) Helper::getMaxId($this->adapter, RulesModel::TABLE_NAME, RulesModel::PAY_ID)) + 1;
+                $rulesValue->createdDt = Helper::getcurrentExpressionDate();
+                $rulesValue->status = 'E';
+                $rulesValue->refRuleFlag = 'N';
+
+                $rulesValue->createdBy = $auth->getStorage()->read()['user_id'];
+                $repository->add($rulesValue);
+                $return = ["success" => true, "message" => "Rule successfully added", "data" => ["payId" => $rulesValue->payId]];
+            }
+
+            return new JsonModel($return);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function pullRuleAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $repository = new RulesRepository($this->adapter);
+
+            return new JsonModel(['success' => true, 'data' => ["rule" => $repository->fetchById($data['ruleId'])], 'message' => "Rule successfully added"]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function pushRuleDetailAction() {
+        try {
+            $request = $this->getRequest();
+            $data = (array) $request->getPost();
+
+            $repository = new RulesDetailRepo($this->adapter);
+            $ruleDetail = new RulesDetail();
+
+            $ruleDetail->payId = $data['payId'];
+            $ruleDetail->mnenonicName = $data['mnenonicName'];
+            $ruleDetail->isMonthly = ($data['isMonthly'] == 'true') ? 'Y' : 'N';
+            if ($data['srNo'] == null) {
+                $ruleDetail->srNo = 1;
+                $repository->add($ruleDetail);
+            } else {
+                $payId = $ruleDetail->payId;
+                unset($ruleDetail->payId);
+                $repository->edit($ruleDetail, $payId);
+                $ruleDetail->srNo = $data['srNo'];
+            }
+
+            return new JsonModel(['success' => true, 'data' => $data, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function pullRuleDetailByPayIdAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $repository = new RulesDetailRepo($this->adapter);
+            $payDetail = $repository->fetchById($data["payId"]);
+
+            return new JsonModel(['success' => true, 'data' => $payDetail, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

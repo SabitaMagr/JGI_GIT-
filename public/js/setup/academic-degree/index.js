@@ -1,60 +1,37 @@
+
 (function ($) {
     'use strict';
     $(document).ready(function () {
-
-        $("#academicDegreeTable").kendoGrid({
-            excel: {
-                fileName: "AcademicDegreeList.xlsx",
-                filterable: true,
-                allPages: true
-            },
-            dataSource: {
-                data: document.academicDegrees,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            dataBound: gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-//                {field: "ACADEMIC_DEGREE_CODE", title: "Academic Degree Code",width:120},
+        var $table = $('#academicDegreeTable');
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:ACADEMIC_DEGREE_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:ACADEMIC_DEGREE_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
+        var action = editAction + deleteAction;
+        app.initializeKendoGrid($table, [
                 {field: "ACADEMIC_DEGREE_NAME", title: "Academic Degree",width:300},
                 {field: "WEIGHT", title: "Weight",width:100},
-                {title: "Action",width:110}
-            ]
-        });
-        
-        app.searchTable('academicDegreeTable',['ACADEMIC_DEGREE_NAME','WEIGHT']);
-        
-        app.pdfExport(
-                'academicDegreeTable',
-                {
-                    'ACADEMIC_DEGREE_NAME': 'Academic Degree Name',
-                    'WEIGHT': 'Weight'
-                }
-        );
-        
-        function gridDataBound(e) {
-            var grid = e.sender;
-            if (grid.dataSource.total() == 0) {
-                var colCount = grid.columns.length;
-                $(e.sender.wrapper)
-                        .find('tbody')
-                        .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
-            }
-        }
-        ;
-        $("#export").click(function (e) {
-            var grid = $("#academicDegreeTable").data("kendoGrid");
-            grid.saveAsExcel();
-        });
-        window.app.UIConfirmations();
+                {field: "ACADEMIC_DEGREE_ID", title: "Action", width: 120, template: action}
+        ], "AcademicDegree List.xlsx");
 
+        app.searchTable('academicDegreeTable', ['ACADEMIC_DEGREE_NAME','WEIGHT']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, {
+               'ACADEMIC_DEGREE_NAME': 'Academic Degree Name',
+                    'WEIGHT': 'Weight',
+            }, 'Company List');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, {
+               'ACADEMIC_DEGREE_NAME': 'Academic Degree Name',
+                    'WEIGHT': 'Weight',
+            }, 'AcademicDegree List');
+        });
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
     });
-})(window.jQuery, window.app);
+})(window.jQuery);

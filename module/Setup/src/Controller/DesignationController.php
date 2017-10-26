@@ -2,13 +2,16 @@
 
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\DesignationForm;
 use Setup\Model\Company;
 use Setup\Model\Designation;
 use Setup\Repository\DesignationRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -20,12 +23,15 @@ class DesignationController extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    function __construct(AdapterInterface $adapter) {
+    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new DesignationRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function initializeForm() {
@@ -37,19 +43,22 @@ class DesignationController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $designations = $this->repository->fetchAll();
 
-        $designationList = [];
-
-        foreach ($designations as $designationRow) {
-            array_push($designationList, $designationRow);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $designationList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $designationList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-
-        return Helper::addFlashMessagesToArray($this, ["designations" => $designationList]);
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function addAction() {
-
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -68,14 +77,14 @@ class DesignationController extends AbstractActionController {
                 return $this->redirect()->toRoute("designation");
             }
         }
-        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], "DESIGNATION_TITLE", "ASC",null,false,true);
+        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], "DESIGNATION_TITLE", "ASC", null, false, true);
         $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
                     'customRender' => Helper::renderCustomView(),
                     'designationListCompanyWise' => $CompanyWisedesignationList,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,true,true),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, true),
                     'messages' => $this->flashmessenger()->getMessages()
                         ]
                 )
@@ -83,7 +92,7 @@ class DesignationController extends AbstractActionController {
     }
 
     public function editAction() {
-
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('designation');
@@ -92,9 +101,9 @@ class DesignationController extends AbstractActionController {
         $request = $this->getRequest();
         $designation = new Designation();
         if (!$request->isPost()) {
-            $fetchData=$this->repository->fetchById($id)->getArrayCopy();
+            $fetchData = $this->repository->fetchById($id)->getArrayCopy();
             $designation->exchangeArrayFromDB($fetchData);
-            $desginationId=$fetchData['DESIGNATION_ID'];
+            $desginationId = $fetchData['DESIGNATION_ID'];
             $this->form->bind($designation);
         } else {
 
@@ -110,7 +119,7 @@ class DesignationController extends AbstractActionController {
                 return $this->redirect()->toRoute("designation");
             }
         }
-        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], Designation::DESIGNATION_TITLE,"ASC",null,false,true);
+        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], Designation::DESIGNATION_TITLE, "ASC", null, false, true);
         $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
@@ -118,7 +127,7 @@ class DesignationController extends AbstractActionController {
                     'customRender' => Helper::renderCustomView(),
                     'fetchedDesignationId' => $desginationId,
                     'designationListCompanyWise' => $CompanyWisedesignationList,
-                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC",null,true,true),
+                    'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, true),
                     'messages' => $this->flashmessenger()->getMessages(),
                     'id' => $id
                 ])
@@ -126,6 +135,9 @@ class DesignationController extends AbstractActionController {
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('designation');

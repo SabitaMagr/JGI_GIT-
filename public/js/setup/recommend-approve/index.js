@@ -22,30 +22,27 @@ angular.module('hris', [])
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
 
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullEmployeeForRecomApproverAssign',
-                    data: {
-                        'employeeId': employeeId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'companyId': companyId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'recommenderId': recommenderId,
-                        'approverId': approverId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.searchLink, {
+                    'employeeId': employeeId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'companyId': companyId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'recommenderId': recommenderId,
+                    'approverId': approverId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     var tempData = success.data;
-                    var num =success.data.length;
+                    var num = success.data.length;
                     console.log(num);
-                    var dataArray = tempData.filter(function(obj) {
+                    var dataArray = tempData.filter(function (obj) {
                         var RECOMMENDER_ID = obj.RECOMMENDER_ID;
                         var APPROVER_ID = obj.APPROVER_ID;
-                        return !(RECOMMENDER_ID===null && APPROVER_ID===null);
+                        return !(RECOMMENDER_ID === null && APPROVER_ID === null);
                     });
                     console.log("pullEmployeeList", dataArray);
                     if (displayKendoFirstTime) {
@@ -80,25 +77,25 @@ angular.module('hris', [])
                         {field: "Action", title: "Action", width: 200}
                     ]
                 });
-                
-                app.searchTable('recommendApproveTable',['FULL_NAME','RECOMMENDER_NAME','APPROVER_NAME']);
-                
+
+                app.searchTable('recommendApproveTable', ['FULL_NAME', 'RECOMMENDER_NAME', 'APPROVER_NAME']);
+
                 app.pdfExport(
-                'recommendApproveTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'RECOMMENDER_NAME': 'Recommendor',
-                    'APPROVER_NAME': 'Approver'
-                }
-        );
-                
+                        'recommendApproveTable',
+                        {
+                            'FULL_NAME': 'Name',
+                            'RECOMMENDER_NAME': 'Recommendor',
+                            'APPROVER_NAME': 'Approver'
+                        }
+                );
+
                 $("#export").click(function (e) {
                     var rows = [{
                             cells: [
                                 {value: "Employee Name"},
                                 {value: "Recommender Name"},
                                 {value: "Approver Name"}
-                                
+
                             ]
                         }];
                     var dataSource = $("#recommendApproveTable").data("kendoGrid").dataSource;
@@ -115,8 +112,8 @@ angular.module('hris', [])
                         rows.push({
                             cells: [
                                 {value: dataItem.FULL_NAME},
-                                {value: dataItem.RECOMMENDER_NAME },
-                                {value: dataItem.APPROVER_NAME }
+                                {value: dataItem.RECOMMENDER_NAME},
+                                {value: dataItem.APPROVER_NAME}
                             ]
                         });
                     }

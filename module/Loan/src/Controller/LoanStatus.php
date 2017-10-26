@@ -4,25 +4,18 @@ namespace Loan\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use Loan\Repository\LoanStatusRepository;
 use ManagerService\Repository\LoanApproveRepository;
 use SelfService\Form\LoanRequestForm;
 use SelfService\Model\LoanRequest;
-use SelfService\Repository\LoanRequestRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
 use Setup\Model\Loan;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class LoanStatus extends AbstractActionController {
 
@@ -133,6 +126,24 @@ class LoanStatus extends AbstractActionController {
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove' => $recommApprove
         ]);
+    }
+
+    public function pullLoanRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $loanStatusRepository = new LoanStatusRepository($this->adapter);
+            $result = $loanStatusRepository->getLoanRequestList($data);
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

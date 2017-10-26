@@ -14,13 +14,14 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\TrainingRequestForm;
 use SelfService\Model\TrainingRequest;
-use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
+use Training\Repository\TrainingStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class TrainingApproveController extends AbstractActionController {
 
@@ -291,6 +292,25 @@ class TrainingApproveController extends AbstractActionController {
     public function getAllList() {
         $list = $this->trainingApproveRepository->getAllRequest($this->employeeId);
         return Helper::extractDbData($list);
+    }
+
+    public function pullTrainingRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $trainingStatusRepo = new TrainingStatusRepository($this->adapter);
+            $result = $trainingStatusRepo->getFilteredRecord($data, $data['recomApproveId']);
+
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

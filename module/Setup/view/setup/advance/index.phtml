@@ -16,7 +16,9 @@ $this->headScript()
 
 <script>
     document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.advances =<?php echo json_encode($list); ?>;
+    document.editLink = '<?= $this->url("advance", ["action" => "edit"]); ?>';
+    document.deleteLink = '<?= $this->url("advance", ["action" => "delete"]); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -37,7 +39,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-
 <div class="margin-top-20">
 
     <div class="portlet light bg-inverse">
@@ -48,8 +49,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('advance', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
+                <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
+                    <a href="<?= $this->url('advance', ['action' => 'add']) ?>" class="btn default btn-sm">
+                        <i class="fa fa-plus-square icon-black"></i>
+                        New 
+                    </a>
+                <?php endif; ?>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -57,8 +62,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="javascript:;" id="export">
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -68,36 +79,4 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div id="advanceTable">
         </div>
     </div>
-
-
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>    
-        #: (ADVANCE_NAME == null) ? '-' : ADVANCE_NAME #
-        </td>
-        <td>    
-        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>    
-        #: MIN_SALARY_AMT # - #: MAX_SALARY_AMT #
-        </td>
-        <td>    
-        #: (AMOUNT_TO_ALLOW == null) ? '-' : AMOUNT_TO_ALLOW #%
-        </td>
-        <td>    
-        #: (MONTH_TO_ALLOW == null) ? '-' : MONTH_TO_ALLOW #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("advance", ["action" => "edit"]); ?>/#:ADVANCE_ID#" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a>
-        <a class="btn-delete confirmation"
-        href="<?= $this->url("advance", ["action" => "delete"]); ?>/#:ADVANCE_ID#" id="bs_#:ADVANCE_ID #" style="height:17px;"> 
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        </td>
-        </tr>
-    </script>
-
 </div>

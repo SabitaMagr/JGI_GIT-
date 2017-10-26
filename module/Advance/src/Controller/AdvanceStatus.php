@@ -5,18 +5,17 @@ namespace Advance\Controller;
 use Advance\Repository\AdvanceStatusRepository;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use ManagerService\Repository\AdvanceApproveRepository;
 use SelfService\Form\AdvanceRequestForm;
 use SelfService\Model\AdvanceRequest;
-use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Model\Advance;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AdvanceStatus extends AbstractActionController {
 
@@ -130,6 +129,24 @@ class AdvanceStatus extends AbstractActionController {
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove' => $recommApprove
         ]);
+    }
+
+    public function pullAdvanceRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $advanceStatusRepository = new AdvanceStatusRepository($this->adapter);
+            $result = $advanceStatusRepository->getAdvanceReqList($data);
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

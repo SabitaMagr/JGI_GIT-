@@ -1,27 +1,35 @@
 <?php
+
 namespace Asset\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
+use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
+use Application\Helper\Helper;
 use Asset\Form\GroupForm;
 use Asset\Model\Group;
 use Asset\Repository\GroupRepository;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Authentication\AuthenticationService;
-use Application\Helper\Helper;
+use Exception;
 use Setup\Repository\EmployeeRepository;
+use Zend\Authentication\Storage\StorageInterface;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
-class GroupController extends AbstractActionController{
+class GroupController extends AbstractActionController {
+
     private $adapter;
     private $repository;
     private $form;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new GroupRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function initializeForm() {
@@ -31,20 +39,21 @@ class GroupController extends AbstractActionController{
     }
 
     public function indexAction() {
-        $result = $this->repository->fetchAll();
-        $list = [];
-        foreach ($result as $row) {
-            array_push($list, $row);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $assetGroupList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $assetGroupList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-//        echo '<pre>';
-//        print_r($list); die();
-//        echo '</pre>';
-        return Helper::addFlashMessagesToArray($this, [
-                    'group' => $list
-        ]);
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
-    
-    public function addAction(){
+
+    public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
@@ -67,15 +76,16 @@ class GroupController extends AbstractActionController{
                 $this->flashmessenger()->addMessage("Asset Group Successfully added!!!");
                 return $this->redirect()->toRoute("assetGroup");
             }
-
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form'=>$this->form
+                    'form' => $this->form
         ]);
     }
 
-
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this)) {
+            return;
+        };
         $id = $this->params()->fromRoute('id');
         if ($id == 0) {
             $this->redirect()->toRoute('assetGroup');
@@ -84,39 +94,37 @@ class GroupController extends AbstractActionController{
         $this->flashmessenger()->addMessage("Asset Group Successfully Deleted!!!");
         return $this->redirect()->toRoute("assetGroup");
     }
-    
-    public function editAction(){
+
+    public function editAction() {
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = $this->params()->fromRoute('id');
-        if($id==0){
+        if ($id == 0) {
             $this->redirect()->toRoute('assetGroup');
         }
         $this->initializeForm();
-        
+
         $request = $this->getRequest();
-        $group= new Group();
-        if(!$request->isPost()){
+        $group = new Group();
+        if (!$request->isPost()) {
             $group->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($group);
-        }else{
+        } else {
             $this->form->setData($request->getPost());
-            if($this->form->isValid()){
+            if ($this->form->isValid()) {
                 $group->exchangeArrayFromForm($this->form->getData());
-                
+
                 $group->modifiedDate = Helper::getcurrentExpressionDate();
                 $group->modifiedBy = $this->employeeId;
-                
+
                 $this->repository->edit($group, $id);
                 $this->flashmessenger()->addMessage("Asset Group Successfully Updated!!!");
                 return $this->redirect()->toRoute("assetGroup");
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form'=>$this->form,
-            'id'=>$id
+                    'form' => $this->form,
+                    'id' => $id
         ]);
     }
 
 }
-
-
-

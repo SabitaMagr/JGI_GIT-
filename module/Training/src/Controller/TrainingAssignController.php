@@ -9,22 +9,29 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use Setup\Model\HrEmployees;
 use Setup\Model\Training;
+use Setup\Repository\EmployeeRepository;
 use Training\Form\TrainingAssignForm;
+use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class TrainingAssignController extends AbstractActionController {
 
     private $form;
     private $adapter;
     private $repository;
+    private $employeeId;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new TrainingAssignRepository($this->adapter);
+        $auth = new AuthenticationService();
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
     public function indexAction() {
@@ -110,6 +117,113 @@ class TrainingAssignController extends AbstractActionController {
         $detail = $this->repository->getDetailByEmployeeID($employeeId, $trainingId);
 
         return Helper::addFlashMessagesToArray($this, ['detail' => $detail]);
+    }
+
+    public function assignEmployeeTrainingAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            if (!isset($data['trainingId']) || $data['trainingId'] == '' || $data['trainingId'] == -1) {
+                throw new Exception('Invalid training selection.');
+            }
+            $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
+            $trainingAssignModel = new TrainingAssign();
+
+            $trainingAssignModel->employeeId = $data['employeeId'];
+            $trainingAssignModel->trainingId = $data['trainingId'];
+
+            $emptrainingAssignedList = $trainingAssignRepo->getAllDetailByEmployeeID($data['employeeId'], $data['trainingId']);
+            $empTrainingAssignedDetail = $emptrainingAssignedList->current();
+
+            if ($empTrainingAssignedDetail != null) {
+                if ($empTrainingAssignedDetail['STATUS'] == EntityHelper::STATUS_ENABLED) {
+                    throw new Exception('Already Assigned');
+                }
+                $trainingAssignClone = clone $trainingAssignModel;
+                unset($trainingAssignClone->employeeId);
+                unset($trainingAssignClone->trainingId);
+                unset($trainingAssignClone->createdDt);
+
+                $trainingAssignClone->status = 'E';
+                $trainingAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
+                $trainingAssignClone->modifiedBy = $this->employeeId;
+                $trainingAssignRepo->edit($trainingAssignClone, [$data['employeeId'], $data['trainingId']]);
+            } else {
+                $trainingAssignModel->createdDt = Helper::getcurrentExpressionDate();
+                $trainingAssignModel->createdBy = $this->employeeId;
+                $trainingAssignModel->status = 'E';
+                $trainingAssignRepo->add($trainingAssignModel);
+            }
+            try {
+                HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this);
+            } catch (Exception $e) {
+                return[
+                    "success" => true,
+                    "data" => null,
+                    "message" => "Training assigned successfully with following error : " . $e->getMessage()
+                ];
+            }
+
+
+
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Training assigned successfully."]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function pullEmployeeForTrainingAssignAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $employeeId = $data['employeeId'];
+            $branchId = $data['branchId'];
+            $departmentId = $data['departmentId'];
+            $designationId = $data['designationId'];
+            $positionId = $data['positionId'];
+            $serviceTypeId = $data['serviceTypeId'];
+            $trainingId = (int) $data['trainingId'];
+            $companyId = $data['companyId'];
+            $employeeRepository = new EmployeeRepository($this->adapter);
+            $trainingAssignRepo = new TrainingAssignRepository($this->adapter);
+            $employeeTypeId = $data['employeeTypeId'];
+
+            $employeeResult = $employeeRepository->filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, -1, 1, $companyId, $employeeTypeId);
+
+            $employeeList = [];
+            foreach ($employeeResult as $employeeRow) {
+                $employeeId = $employeeRow['EMPLOYEE_ID'];
+                if ($trainingId != -1) {
+                    $trainingAssignList = $trainingAssignRepo->getDetailByEmployeeID($employeeId, $trainingId);
+                } else {
+                    $trainingAssignList = null;
+                }
+                if ($trainingAssignList != null) {
+                    $employeeRow['TRAINING_NAME'] = $trainingAssignList['TRAINING_NAME'];
+                    $employeeRow['TRAINING_ID'] = $trainingAssignList['TRAINING_ID'];
+                    $employeeRow['START_DATE'] = $trainingAssignList['START_DATE'];
+                    $employeeRow['END_DATE'] = $trainingAssignList['END_DATE'];
+                    $employeeRow['INSTITUTE_NAME'] = $trainingAssignList['INSTITUTE_NAME'];
+                    $employeeRow['LOCATION'] = $trainingAssignList['LOCATION'];
+                } else {
+                    $employeeRow['TRAINING_NAME'] = "";
+                    $employeeRow['TRAINING_ID'] = "";
+                    $employeeRow['START_DATE'] = "";
+                    $employeeRow['END_DATE'] = "";
+                    $employeeRow['INSTITUTE_NAME'] = "";
+                    $employeeRow['LOCATION'] = "";
+                }
+                array_push($employeeList, $employeeRow);
+            }
+
+            return new JsonModel(['success' => true, 'data' => $employeeList, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

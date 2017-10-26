@@ -1,10 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
@@ -68,6 +65,7 @@ $form->prepare();
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.setup =<?= json_encode($setup) ?>;
+    document.pullAssetBalanceLink = '<?= $this->url("assetSetup", ["action" => "pullAssetBalance"]) ?>';
 </script>
 
 <div class="page-bar">
@@ -297,9 +295,5 @@ $form->prepare();
             <button class="btn btn-defualt" type="button" ng-click="assetIssuecancel()">Cancel</button>
         </div>
   </script>
-    
-     
- 
-
-</div>
+                        </div>
 

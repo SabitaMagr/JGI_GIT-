@@ -1,10 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
@@ -21,9 +18,11 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["statusId"=>"All","employeeTypeId"=>"-1","fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
+    document.ids =<?php echo json_encode(["statusId" => "All", "employeeTypeId" => "-1", "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.pullAttendanceWidOvertimeListLink = '<?php echo $this->url("calculateOvertime", ["action" => "pullAttendanceWidOvertimeList"]); ?>';
+    document.pullInOutTimeLink = '<?php echo $this->url("calculateOvertime", ["action" => "pullInOutTime"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\calculateOvertime')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -147,7 +146,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                     <button ng-click="view()" id="viewAttendanceList" class="btn btn-default btn-sm pull-right">
+                    <button ng-click="view()" id="viewAttendanceList" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
@@ -188,57 +187,57 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </td>
         </tr>
         <tr class="k-alt">
-            <td colspan="3">
-                <span class="pull-right">Total Hour</span>
-            </td>
-            <td> #: (OVERTIME_IN_HOUR == null) ? '' : OVERTIME_IN_HOUR #</td>
+        <td colspan="3">
+        <span class="pull-right">Total Hour</span>
+        </td>
+        <td> #: (OVERTIME_IN_HOUR == null) ? '' : OVERTIME_IN_HOUR #</td>
         </tr>
     </script>
-    
+
     <div class="modal fade calculateOvertimeFormModal" id="myModal" role="dialog">
         <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Please Select Date</h4>
-            </div>
-              <form name="calculateOvertimeForm" id="calculateOvertimeForm" method="post" action="<?= $this->url("calculateOvertime",["action"=>"calculate"]) ?>">
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label>From Date</label>
-                            <input type="text" name="fromDate" id="fromDate1" value="" class="form-control"/>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label style="height:14px;"></label>
-                            <input type="text" id="nepaliFromDate1" class="form-control" value="">
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label>To Date</label>
-                            <input type="text" name="toDate" id="toDate1" value="" class="form-control"/>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label style="height:14px;"></label>
-                            <input type="text" id="nepaliToDate1" class="form-control" value="">
-                        </div>
-                    </div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Please Select Date</h4>
                 </div>
+                <form name="calculateOvertimeForm" id="calculateOvertimeForm" method="post" action="<?= $this->url("calculateOvertime", ["action" => "calculate"]) ?>">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>From Date</label>
+                                    <input type="text" name="fromDate" id="fromDate1" value="" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label style="height:14px;"></label>
+                                    <input type="text" id="nepaliFromDate1" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label>To Date</label>
+                                    <input type="text" name="toDate" id="toDate1" value="" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label style="height:14px;"></label>
+                                    <input type="text" id="nepaliToDate1" class="form-control" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" id="resetForm">Reset</button>
+                        <button type="submit" class="btn green">Submit</button>
+                    </div>
+                </form>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-default" id="resetForm">Reset</button>
-              <button type="submit" class="btn green">Submit</button>
-            </div>
-              </form>
-          </div>
         </div>
     </div>
-    
+
 </div>

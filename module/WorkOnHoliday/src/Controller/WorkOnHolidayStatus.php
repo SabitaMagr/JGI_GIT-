@@ -16,6 +16,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class WorkOnHolidayStatus extends AbstractActionController {
 
@@ -150,6 +151,22 @@ class WorkOnHolidayStatus extends AbstractActionController {
 
     private function wohAppAction($detail) {
         $this->holidayWorkApproveRepository->wohReward($detail['ID']);
+    }
+
+    public function pullHoliayWorkRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $holidayWorkStatusRepo = new WorkOnHolidayStatusRepository($this->adapter);
+            $result = $holidayWorkStatusRepo->getWOHRequestList($data);
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

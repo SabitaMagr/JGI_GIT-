@@ -7,7 +7,7 @@
         const HOLIDAY_ID = "HOLIDAY_ID";
 
         $('select').select2();
-        
+
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'fromDate', 'nepaliEndDate1', 'toDate', function (fromDate, toDate) {
             if (fromDate <= toDate) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
@@ -27,11 +27,8 @@
 
         var employeeChange = function (employeeId) {
             app.floatingProfile.setDataFromRemote(employeeId);
-            app.pullDataById(document.url, {
-                action: 'pullHolidaysForEmployee',
-                data: {
-                    'employeeId': employeeId
-                }
+            app.pullDataById(document.pullHolidaysForEmployeeLink, {
+                'employeeId': employeeId
             }).then(function (success) {
                 holidayList = success.data;
                 $holidayId.html($('<option style="display:none" value="" disabled="" selected>select a type</option>'));

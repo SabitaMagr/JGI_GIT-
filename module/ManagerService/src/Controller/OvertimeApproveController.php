@@ -9,14 +9,18 @@ use Exception;
 use ManagerService\Repository\OvertimeApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Form\OvertimeRequestForm;
 use SelfService\Model\Overtime;
 use SelfService\Repository\OvertimeDetailRepository;
+use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class OvertimeApproveController extends AbstractActionController {
 
@@ -242,6 +246,33 @@ class OvertimeApproveController extends AbstractActionController {
             array_push($overtimeRequest, $row);
         }
         return $overtimeRequest;
+    }
+
+    public function pullOvertimeRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $overtimeStatusRepo = new OvertimeStatusRepository($this->adapter);
+            $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
+            $result = $overtimeStatusRepo->getFilteredRecord($data, $data['recomApproveId']);
+
+            $recordList = [];
+
+            foreach ($result as $row) {
+                $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
+                $overtimeDetails = Helper::extractDbData($overtimeDetailResult);
+                $row['DETAILS'] = $overtimeDetails;
+                array_push($recordList, $row);
+            }
+
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

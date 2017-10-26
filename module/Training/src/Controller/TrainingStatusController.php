@@ -4,9 +4,12 @@ namespace Training\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use ManagerService\Repository\TrainingApproveRepository;
 use SelfService\Form\TrainingRequestForm;
 use SelfService\Model\TrainingRequest;
+use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
 use Training\Repository\TrainingStatusRepository;
 use Zend\Authentication\AuthenticationService;
@@ -14,6 +17,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class TrainingStatusController extends AbstractActionController {
 
@@ -143,6 +147,25 @@ class TrainingStatusController extends AbstractActionController {
             $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
         }
         return ['trainingKVList' => $trainingList, 'trainingList' => $allTrainings];
+    }
+
+    public function pullTrainingRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $trainingStatusRepo = new TrainingStatusRepository($this->adapter);
+            $result = $trainingStatusRepo->getTrainingRequestList($data);
+
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

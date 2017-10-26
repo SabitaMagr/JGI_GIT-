@@ -14,11 +14,13 @@ use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\HolidayRepository;
 use Setup\Repository\RecommendApproveRepository;
+use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class HolidayWorkApproveController extends AbstractActionController {
 
@@ -237,7 +239,7 @@ class HolidayWorkApproveController extends AbstractActionController {
         $holidayList = [];
         $holidayObjList = [];
         foreach ($holidayResult as $holidayRow) {
-            $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE'] . " to " . $holidayRow['END_DATE'] . ")";
+            $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE_AD'] . " to " . $holidayRow['END_DATE_AD'] . ")";
             $holidayObjList[$holidayRow['HOLIDAY_ID']] = $holidayRow;
         }
         return ['holidayKVList' => $holidayList, 'holidayList' => $holidayObjList];
@@ -324,6 +326,26 @@ class HolidayWorkApproveController extends AbstractActionController {
     public function getAllList() {
         $list = $this->holidayWorkApproveRepository->getAllRequest($this->employeeId);
         Helper::extractDbData($list);
+    }
+
+    public function pullHoliayWorkRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $holidayWorkStatusRepo = new WorkOnHolidayStatusRepository($this->adapter);
+            $result = $holidayWorkStatusRepo->getFilteredRecord($data, $data['recomApproveId']);
+
+            $recordList = Helper::extractDbData($result);
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

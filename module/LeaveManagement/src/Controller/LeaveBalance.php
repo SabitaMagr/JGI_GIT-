@@ -22,6 +22,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class LeaveBalance extends AbstractActionController {
 
@@ -99,7 +100,7 @@ class LeaveBalance extends AbstractActionController {
                 $this->leaveRequestRepository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
-                if ($leaveSubstitute !== null && $leaveSubstitute!=="") {
+                if ($leaveSubstitute !== null && $leaveSubstitute !== "") {
                     $leaveSubstituteModel = new LeaveSubstitute();
                     $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
 
@@ -221,6 +222,70 @@ class LeaveBalance extends AbstractActionController {
             $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
             $objWriter->save('php://output');
             exit;
+        }
+    }
+
+    public function pullLeaveBalanceDetailAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $emplyoeeId = $data['employeeId'];
+            $companyId = $data['companyId'];
+            $branchId = $data['branchId'];
+            $departmentId = $data['departmentId'];
+            $designationId = $data['designationId'];
+            $positionId = $data['positionId'];
+            $serviceTypeId = $data['serviceTypeId'];
+            $serviceEventTypeId = $data['serviceEventTypeId'];
+            $employeeTypeId = $data['employeeTypeId'];
+
+            $repository = new LeaveBalanceRepository($this->adapter);
+            $employeeList = $repository->getAllEmployee($emplyoeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId);
+
+            $mainArray = [];
+            foreach ($employeeList as $row) {
+                $employeeId = $row['EMPLOYEE_ID'];
+                if ($row['MIDDLE_NAME'] == '') {
+                    $employeeName = $row['FIRST_NAME'] . " " . $row['LAST_NAME'];
+                } else if ($row['MIDDLE_NAME'] != '') {
+                    $employeeName = $row['FIRST_NAME'] . " " . $row['MIDDLE_NAME'] . " " . $row['LAST_NAME'];
+                }
+                $leaveList = $repository->getAllLeave();
+                $childArray = [];
+//loop through list of leave and if leave is not assigned then set leave balance to zero
+                foreach ($leaveList as $leaveRow) {
+                    $leaveId = $leaveRow['LEAVE_ID'];
+                    $leaveBalanceDtl = $repository->getByEmpIdLeaveId($employeeId, $leaveId);
+                    if ($leaveBalanceDtl == false) {
+                        $leaveBalance = [
+                            'BALANCE' => 0,
+                            'LEAVE_ID' => $leaveId,
+                            'EMPLOYEE_ID' => $employeeId,
+                            'SERVICE_EVENT_TYPE_ID' => 0
+                        ];
+                    } else if ($leaveBalanceDtl != false && $leaveBalanceDtl['BALANCE'] == NULL) {
+                        $leaveBalance = [
+                            'BALANCE' => 0,
+                            'LEAVE_ID' => $leaveId,
+                            'EMPLOYEE_ID' => $employeeId,
+                            'SERVICE_EVENT_TYPE_ID' => 0
+                        ];
+                    } else {
+                        $leaveBalance = $leaveBalanceDtl;
+                    }
+                    array_push($childArray, $leaveBalance);
+                }
+                $mainArray[$employeeName] = $childArray;
+            }
+
+            return new JsonModel([
+                "success" => true,
+                "allList" => $mainArray
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

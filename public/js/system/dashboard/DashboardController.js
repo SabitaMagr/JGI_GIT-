@@ -16,11 +16,8 @@ angular.module('hris', [])
                 if ($role == null) {
                     return;
                 }
-                window.app.pullDataById(document.restfulUrl, {
-                    action: 'fetchRoleDashboards',
-                    data: {
-                        roleId: $role['ROLE_ID']
-                    }
+                window.app.pullDataById(document.fetchRoleDashboardsLink, {
+                    roleId: $role['ROLE_ID']
                 }).then(function (success) {
                     console.log('fetchRoleDashboards res', success);
                     $scope.$apply(function () {
@@ -52,14 +49,11 @@ angular.module('hris', [])
                 var checked = item.checked;
                 var roleType = item.roleType;
 
-                window.app.pullDataById(document.restfulUrl, {
-                    action: 'assignDashboard',
-                    data: {
-                        roleId: $scope.role["ROLE_ID"],
-                        dashboard: dashboard,
-                        roleType: roleType,
-                        status: (typeof checked !== 'undefined') ? checked : false
-                    }
+                window.app.pullDataById(document.assignDashboardLink, {
+                    roleId: $scope.role["ROLE_ID"],
+                    dashboard: dashboard,
+                    roleType: roleType,
+                    status: (typeof checked !== 'undefined') ? checked : false
                 }).then(function (success) {
                     console.log(success);
                     $scope.$apply(function () {
@@ -73,13 +67,10 @@ angular.module('hris', [])
             $scope.roleTypeChange = function (dashboard) {
                 console.log(dashboard);
                 if (dashboard.checked) {
-                    window.app.pullDataById(document.restfulUrl, {
-                        action: 'updateDashboardAssign',
-                        data: {
-                            roleId: $scope.role["ROLE_ID"],
-                            dashboard: dashboard.value,
-                            roleType: dashboard.roleType
-                        }
+                    window.app.pullDataById(document.updateDashboardAssignLink, {
+                        roleId: $scope.role["ROLE_ID"],
+                        dashboard: dashboard.value,
+                        roleType: dashboard.roleType
                     }).then(function (success) {
                         console.log(success);
                         $scope.$apply(function () {

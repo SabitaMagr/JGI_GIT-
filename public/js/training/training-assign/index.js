@@ -52,19 +52,16 @@ angular.module('hris', [])
                 $scope.assignShowHide = false;
 
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullEmployeeForTrainingAssign',
-                    data: {
-                        branchId: branchId,
-                        departmentId: departmentId,
-                        designationId: designationId,
-                        employeeId: employeeId,
-                        positionId: positionId,
-                        serviceTypeId: serviceTypeId,
-                        trainingId: trainingId,
-                        companyId: companyId,
-                        employeeTypeId: employeeTypeId
-                    }
+                window.app.pullDataById(document.pullEmployeeForTrainingAssignLink, {
+                    branchId: branchId,
+                    departmentId: departmentId,
+                    designationId: designationId,
+                    employeeId: employeeId,
+                    positionId: positionId,
+                    serviceTypeId: serviceTypeId,
+                    trainingId: trainingId,
+                    companyId: companyId,
+                    employeeTypeId: employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log("Employee list for assign", success);
@@ -95,13 +92,10 @@ angular.module('hris', [])
                             console.log($scope.employeeList[index].EMPLOYEE_ID + 'is already assigned');
                             continue;
                         }
-                        promises.push(window.app.pullDataById(document.url, {
-                            action: 'assignEmployeeTraining',
-                            data: {
-                                employeeId: $scope.employeeList[index].EMPLOYEE_ID,
-                                trainingId: trainingId,
-                                oldTrainingId: $scope.employeeList[index].TRAINING_ID
-                            }
+                        promises.push(window.app.pullDataById(document.assignEmployeeTrainingLink, {
+                            employeeId: $scope.employeeList[index].EMPLOYEE_ID,
+                            trainingId: trainingId,
+                            oldTrainingId: $scope.employeeList[index].TRAINING_ID
                         }));
                     }
                 }
@@ -136,32 +130,6 @@ angular.module('hris', [])
                 });
             };
 
-            $scope.cancel = function () {
-                l.start();
-                l.setProgress(0.5);
-                var trainingId = angular.element(document.getElementById('trainingId')).val();
-
-                var promises = [];
-                for (var index in $scope.employeeList) {
-                    if ($scope.employeeList[index].checked) {
-                        promises.push(window.app.pullDataById(document.url, {
-                            action: 'cancelEmployeeTraining',
-                            data: {
-                                employeeId: $scope.employeeList[index].EMPLOYEE_ID,
-                                trainingId: trainingId,
-                            }
-                        }));
-                    }
-                }
-                Promise.all(promises).then(function (success) {
-                    console.log(success);
-                    l.stop();
-                    $scope.$apply(function () {
-                        $scope.view();
-                    });
-                    window.toastr.success("Training assign cancelled successfully!", "Notification");
-                });
-            };
             var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
             if (parseInt(employeeIdFromParam) > 0) {
                 angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
