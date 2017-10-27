@@ -309,6 +309,5 @@ angular.module('hris', [])
 
             }
 
-            window.app.UIConfirmations();
 
         });

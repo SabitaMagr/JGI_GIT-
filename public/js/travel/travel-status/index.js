@@ -3,7 +3,6 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
-        app.UIConfirmations();
         var $table = $('#travelRequestStatusTable');
         var $travelStatus = $('#travelRequestStatusId');
         var $fromDate = $('#fromDate');

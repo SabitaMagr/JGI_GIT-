@@ -688,22 +688,18 @@ window.app = (function ($, toastr, App) {
     };
 
 
-    var UIConfirmations = function () {
-        $(".confirmation").each(function () {
-            var confirmationBtnId = $(this).attr("id");
-            var id = confirmationBtnId.split("_").pop(-1);
-            var href = $(this).attr("href");
-            $(this).on("click", function (e) {
-                e.preventDefault();
-                $("#" + confirmationBtnId).confirmation('show');
-            });
-
-            $("#" + confirmationBtnId).on("confirmed.bs.confirmation", function () {
-            }),
-                    $("#" + confirmationBtnId).on("canceled.bs.confirmation", function () {
-            });
+    (function () {
+        $(".page-content").on("click", ".confirmation", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            $this.confirmation({
+                onConfirm: function () {
+                    location.href = $this.attr('href');
+                },
+                onCancel: function () {
+                }, });
         });
-    };
+    })();
 
     var displayErrorMessage = function (formGroup, check, message) {
         var flag = formGroup.find('span.errorMsg').length > 0;
@@ -1208,6 +1204,43 @@ window.app = (function ($, toastr, App) {
         grid.setDataSource(dataSource);
     }
 
+    var genKendoActionTemplate = function (config) {
+        try {
+            if (typeof config === "undefined")
+                throw {message: "no config provided"};
+
+            var editLink = "";
+            if (config.update['ALLOW_UPDATE'] === "Y") {
+                var iParams = config.update['params'];
+                var url = config.update['url'];
+                for (var i in iParams) {
+                    url += `/#: ${iParams[i]} #`;
+                }
+                var editLink = `
+                <a class="btn-edit" title="Edit" href="${url}" style="height:17px;">
+                    <i class="fa fa-edit"></i>
+                </a>`;
+            }
+            var deleteLink = "";
+            if (config.delete['ALLOW_DELETE'] === "Y") {
+                var iParams = config.delete['params'];
+                var url = config.delete['url'];
+                for (var i in iParams) {
+                    url += `/#: ${iParams[i]} #`;
+                }
+                var deleteLink = `
+                <a class="confirmation btn-delete" title="Delete" href="${url}" style="height:17px;">
+                    <i class="fa fa-trash-o"></i>
+                </a>`;
+            }
+
+            var template = editLink + deleteLink;
+            return template;
+        } catch (e) {
+            console.log("error", e.message);
+        }
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1221,7 +1254,6 @@ window.app = (function ($, toastr, App) {
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,
         displayErrorMessage: displayErrorMessage,
-        UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali,
         datePickerWithNepali: datePickerWithNepali,
@@ -1241,7 +1273,8 @@ window.app = (function ($, toastr, App) {
         lockField: lockField,
         minToHour: minToHour,
         initializeKendoGrid: initializeKendoGrid,
-        renderKendoGrid: renderKendoGrid
+        renderKendoGrid: renderKendoGrid,
+        genKendoActionTemplate: genKendoActionTemplate
 
     };
 })(window.jQuery, window.toastr, window.App);

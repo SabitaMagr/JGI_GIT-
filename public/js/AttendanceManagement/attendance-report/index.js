@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate',null,true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
     });
 })(window.jQuery, window.app);
 
@@ -27,7 +27,7 @@ angular.module('hris', [])
                     action: 'pullAllAttendanceReport',
                     data: {
                         'employeeId': employeeId,
-                        'companyId':companyId,
+                        'companyId': companyId,
                         'branchId': branchId,
                         'departmentId': departmentId,
                         'designationId': designationId,
@@ -80,7 +80,7 @@ angular.module('hris', [])
                         {title: "Action", width: 100}
                     ]
                 });
-                
+
 //                app.searchTable('allAttendanceReportTable',['FIRST_NAME','REQUESTED_DT','ATTENDANCE_DT','IN_TIME','OUT_TIME','STATUS']);
 
                 function gridDataBound(e) {
@@ -168,6 +168,5 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AttendanceReport.xlsx"});
                 }
-                window.app.UIConfirmations();
             };
         });

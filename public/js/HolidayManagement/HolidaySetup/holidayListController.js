@@ -180,7 +180,6 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "HolidayList.xlsx"});
                 }
-                window.app.UIConfirmations();
             };
 
 

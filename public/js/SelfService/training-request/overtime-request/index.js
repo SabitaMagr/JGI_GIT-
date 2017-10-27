@@ -181,6 +181,5 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "OvertimeRequestList.xlsx"});
         }
-        window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

@@ -127,7 +127,6 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AppraisalList.xlsx"});
         }
-        window.app.UIConfirmations();
     });
 })(window.jQuery);
 

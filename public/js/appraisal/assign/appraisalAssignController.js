@@ -1,7 +1,6 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        window.app.UIConfirmations();
         $('select').select2();
     });
 })(window.jQuery, window.app);

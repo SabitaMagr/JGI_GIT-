@@ -213,7 +213,6 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "TravelRequestList.xlsx"});
         }
-        window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);
 

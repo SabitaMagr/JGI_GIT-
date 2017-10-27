@@ -46,6 +46,7 @@ return [
     'Overtime',
     'ServiceQuestion',
     'MobileApi',
+    'Customer',
 ];
 
 

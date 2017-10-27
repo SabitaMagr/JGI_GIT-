@@ -33,7 +33,6 @@
             var grid = $("#assetSetupTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
 
 
         //saerch in kendo grid

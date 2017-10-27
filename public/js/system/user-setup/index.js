@@ -80,6 +80,5 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "Users(With Password).xlsx"});
         });
-        window.app.UIConfirmations();
     });
 })(window.jQuery, window.app);

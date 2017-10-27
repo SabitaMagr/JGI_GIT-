@@ -44,6 +44,5 @@
             var grid = $("#preferenceTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
     });
 })(window.jQuery);

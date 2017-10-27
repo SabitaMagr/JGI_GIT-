@@ -273,7 +273,6 @@ angular.module('hris', [])
                     App.unblockUI("#hris-page-content");
                 });
             });
-            window.app.UIConfirmations();
 //            start to get the current Date in  DD-MON-YYY format
             var m_names = new Array("Jan", "Feb", "Mar",
                     "Apr", "May", "Jun", "Jul", "Aug", "Sep",

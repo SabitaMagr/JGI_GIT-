@@ -1,7 +1,6 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        window.app.UIConfirmations();
         $('select').select2();
     });
 })(window.jQuery, window.app);
@@ -175,7 +174,6 @@ angular.module('hris', [])
                         var grid = $('#trainingAssignListTable').data("kendoGrid");
                         dataSource.read();
                         grid.setDataSource(dataSource);
-                        window.app.UIConfirmations();
                     });
                 }, function (failure) {
                     console.log("Employee Get All", failure);

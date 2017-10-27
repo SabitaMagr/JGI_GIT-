@@ -41,6 +41,5 @@
             var grid = $("#roleTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
     });   
 })(window.jQuery, window.app);
