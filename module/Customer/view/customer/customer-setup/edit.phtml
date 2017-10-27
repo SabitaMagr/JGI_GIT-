@@ -1,4 +1,7 @@
 <?php
+$this->headScript()->appendFile($this->basePath('js/customer/customer-setup/edit.js'));
+?>
+<?php
 $customerCode = $form->get('customerCode');
 $customerEname = $form->get('customerEname');
 $customerLname = $form->get('customerLname');
