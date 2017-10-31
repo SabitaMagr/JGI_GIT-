@@ -89,8 +89,9 @@ class RestfulService extends AbstractRestfulController {
                     case "getServerDate":
                         $responseData = $this->getServerDate($postedData->data);
                         break;
-
-
+                    case "getServerDateBS":
+                        $responseData = $this->getServerDateBS($postedData->data);
+                        break;
                     case "submitAppraisalKPI":
                         $responseData = $this->submitAppraisalKPI($postedData->data);
                         break;
@@ -383,6 +384,11 @@ class RestfulService extends AbstractRestfulController {
 
     public function getServerDate($data) {
         return ["success" => true, "data" => ["serverDate" => date(Helper::PHP_DATE_FORMAT)]];
+    }
+
+    public function getServerDateBS($data) {
+        $monthRepo = new MonthRepository($this->adapter);
+        return ["success" => true, "data" => (array) $monthRepo->getCurrentDateBS()];
     }
 
     public function pullHierarchicalQuestion($serviceEventTypeId, $empQaId, $parentQaId = null) {

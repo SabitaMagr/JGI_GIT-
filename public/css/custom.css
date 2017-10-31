@@ -2129,3 +2129,22 @@ div#ndp-nepali-box{
 .portlet-body-birhday{
     background-image: url("../img/birthday_background_2.jpg");
 }
+
+.nc-container{
+    padding:1%;
+}
+
+
+.nc-header{
+    margin-bottom: 20px;
+}
+
+.nc-box{
+    width: 14%;
+    /*float: left;*/
+}
+
+.nc-date{
+    width: 100%;
+    height:100px;
+}

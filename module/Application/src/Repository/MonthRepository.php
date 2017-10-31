@@ -93,4 +93,13 @@ EOT;
         return $result->current();
     }
 
+    public function getCurrentDateBS() {
+        $sql = <<<EOT
+            SELECT BS_DATE(TRUNC(SYSDATE)) AS CURRENT_DATE FROM DUAL              
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
 }

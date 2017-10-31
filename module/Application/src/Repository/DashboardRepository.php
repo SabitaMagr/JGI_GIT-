@@ -274,75 +274,75 @@ class DashboardRepository implements RepositoryInterface {
     }
 
     public function fetchEmployeeCalendarData($employeeId, $startDate, $endDate) {
-        $rangeClause = "";
-        if ($startDate && $endDate) {
-            $rangeClause = "AND ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}', 'YYYY-MM-DD') AND TO_DATE('{$endDate}', 'YYYY-MM-DD')";
-        }
-        $rangeClause = "AND ATTENDANCE_DT BETWEEN TRUNC(TO_DATE('{$startDate}', 'YYYY-MM-DD'), 'MONTH') AND LAST_DAY(TO_DATE('{$endDate}', 'YYYY-MM-DD'))";
-
-
-        $sql = "SELECT TO_CHAR(CAL.MONTH_DAY, 'YYYY-MM-DD') MONTH_DAY,
-                   ATN.EMPLOYEE_ID,
-                   TO_CHAR(ATN.ATTENDANCE_DT, 'YYYY-MM-DD') ATTENDANCE_DT,
-                   TO_CHAR(ATN.IN_TIME, 'HH24:MI') IN_TIME,
-                   TO_CHAR(ATN.OUT_TIME, 'HH24:MI') OUT_TIME,
-                   ATN.LEAVE_ID,
-                   LMS.LEAVE_ENAME,
-                   ATN.HOLIDAY_ID,
-                   HMS.HOLIDAY_ENAME,
-                   ATN.TRAINING_ID,
-                   TMS.TRAINING_NAME,
-                   TO_CHAR(TMS.START_DATE, 'YYYY-MM-DD') TRAINING_START_DATE,
-                   TO_CHAR(TMS.END_DATE, 'YYYY-MM-DD') TRAINING_END_DATE,
-                   ATN.TRAVEL_ID,
-                   ETR.DESTINATION,
-                   TO_CHAR(ETR.FROM_DATE, 'YYYY-MM-DD') TRAVEL_FROM_DATE,
-                   TO_CHAR(ETR.TO_DATE, 'YYYY-MM-DD') TRAVEL_TO_DATE,
-                   TRIM(TO_CHAR(CAL.MONTH_DAY, 'DAY')) WEEK_DAY,
-                   (CASE 
-                      WHEN TO_DATE(CAL.MONTH_DAY, 'DD-MON-YY') > TRUNC(SYSDATE)
-                        THEN 'NEXT'
-                      ELSE 
-                        CASE
-                          WHEN (ATN.ATTENDANCE_DT IS NULL
-                            AND ATN.IN_TIME IS NULL 
-                            AND ATN.OUT_TIME IS NULL 
-                            AND ATN.LEAVE_ID IS NULL 
-                            AND ATN.HOLIDAY_ID IS NULL 
-                            AND ATN.TRAINING_ID IS NULL 
-                            AND ATN.TRAVEL_ID IS NULL 
-                            --AND ATN.DAYOFF_FLAG = 'N'
-                            AND TRIM(TO_CHAR(CAL.MONTH_DAY, 'DAY')) = 'SATURDAY'
-                            )
-                          THEN 'SATURDAY'
-                          ELSE
-                            CASE 
-                              WHEN (ATN.ATTENDANCE_DT IS NULL
-                                AND ATN.IN_TIME IS NULL 
-                                AND ATN.OUT_TIME IS NULL
-                                AND ATN.LEAVE_ID IS NULL
-                                AND ATN.HOLIDAY_ID IS NULL
-                                AND ATN.TRAINING_ID IS NULL 
-                                AND ATN.TRAVEL_ID IS NULL 
-                                AND TRIM(TO_CHAR(CAL.MONTH_DAY, 'DAY')) <> 'SATURDAY'
-                                )
-                              THEN 'ABSENT'
-                            ELSE
-                            'PRESENT'
-                          END
-                        END
-                   END) ATTENDANCE_STATUS
-            FROM (SELECT TRUNC(SYSDATE, 'MONTH') - 1 + ROWNUM AS MONTH_DAY
-                  FROM ALL_OBJECTS
-                  WHERE TRUNC(SYSDATE, 'MONTH') - 1 + ROWNUM <= LAST_DAY(SYSDATE)) CAL
-            LEFT JOIN HRIS_ATTENDANCE_DETAIL ATN ON TRUNC(ATN.ATTENDANCE_DT) = CAL.MONTH_DAY AND ATN.EMPLOYEE_ID = {$employeeId}
-            LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS ON LMS.LEAVE_ID = ATN.LEAVE_ID
-            LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP HMS ON HMS.HOLIDAY_ID = ATN.HOLIDAY_ID
-            LEFT JOIN HRIS_TRAINING_MASTER_SETUP TMS ON TMS.TRAINING_ID = ATN.TRAINING_ID
-            LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST ETR ON ETR.TRAVEL_ID = ATN.TRAVEL_ID
-            WHERE 1 = 1
-            ORDER BY CAL.MONTH_DAY ASC";
-
+        $sql = "SELECT TO_CHAR(ATN.ATTENDANCE_DT, 'YYYY-MM-DD') MONTH_DAY,
+                  ATN.EMPLOYEE_ID,
+                  TO_CHAR(ATN.ATTENDANCE_DT, 'YYYY-MM-DD') ATTENDANCE_DT,
+                  TO_CHAR(ATN.IN_TIME, 'HH24:MI') IN_TIME,
+                  TO_CHAR(ATN.OUT_TIME, 'HH24:MI') OUT_TIME,
+                  (
+                  CASE
+                    WHEN ATN.OVERALL_STATUS = 'DO'
+                    THEN 'Day Off'
+                    WHEN ATN.OVERALL_STATUS ='HD'
+                    THEN 'On Holiday('
+                      ||HMS.HOLIDAY_ENAME
+                      ||')'
+                    WHEN ATN.OVERALL_STATUS ='LV'
+                    THEN 'On Leave('
+                      ||LMS.LEAVE_ENAME
+                      || ')'
+                    WHEN ATN.OVERALL_STATUS ='TV'
+                    THEN 'On Travel('
+                      ||ETR.DESTINATION
+                      ||')'
+                    WHEN ATN.OVERALL_STATUS ='TN'
+                    THEN 'On Training('
+                      ||TMS.TRAINING_NAME
+                      ||')'
+                    WHEN ATN.OVERALL_STATUS ='WD'
+                    THEN 'Work On Dayoff'
+                    WHEN ATN.OVERALL_STATUS ='WH'
+                    THEN 'Work on Holiday('
+                      ||HMS.HOLIDAY_ENAME
+                      ||')'
+                    WHEN ATN.OVERALL_STATUS ='LP'
+                    THEN 'Work on Leave('
+                      ||LMS.LEAVE_ENAME
+                      ||')'
+                    WHEN ATN.OVERALL_STATUS ='VP'
+                    THEN 'Work on Travel('
+                      ||ETR.DESTINATION
+                      ||')'
+                      ||LATE_STATUS_DESC(ATN.LATE_STATUS)
+                    WHEN ATN.OVERALL_STATUS ='TP'
+                    THEN 'Present('
+                      ||TMS.TRAINING_NAME
+                      ||')'
+                      ||LATE_STATUS_DESC(ATN.LATE_STATUS)
+                    WHEN ATN.OVERALL_STATUS ='PR'
+                    THEN 'Present'
+                      ||LATE_STATUS_DESC(ATN.LATE_STATUS)
+                    WHEN ATN.OVERALL_STATUS ='AB'
+                    THEN 'Absent'
+                    WHEN ATN.OVERALL_STATUS ='BA'
+                    THEN 'Present(Late In and Early Out)'
+                    WHEN ATN.OVERALL_STATUS ='LA'
+                    THEN 'Present(Third Day Late)'
+                  END)AS ATTENDANCE_STATUS,
+                  ATN.OVERALL_STATUS
+                FROM HRIS_ATTENDANCE_DETAIL ATN
+                LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
+                ON LMS.LEAVE_ID = ATN.LEAVE_ID
+                LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP HMS
+                ON HMS.HOLIDAY_ID = ATN.HOLIDAY_ID
+                LEFT JOIN HRIS_TRAINING_MASTER_SETUP TMS
+                ON TMS.TRAINING_ID = ATN.TRAINING_ID
+                LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST ETR
+                ON ETR.TRAVEL_ID = ATN.TRAVEL_ID
+                WHERE 1          = 1
+                AND (ATN.ATTENDANCE_DT BETWEEN TO_DATE('{$startDate}','YYYY-MM-DD') AND TO_DATE('{$endDate}','YYYY-MM-DD') )
+                AND ATN.EMPLOYEE_ID = {$employeeId}
+                ORDER BY ATN.ATTENDANCE_DT ASC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
 
