@@ -1,22 +1,14 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:00 PM
- */
-
 namespace System\Repository;
 
 use Application\Model\Model;
-use Application\Model\User;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use System\Model\UserSetup;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
+use Zend\Db\TableGateway\TableGateway;
 
 class UserSetupRepository implements RepositoryInterface {
 

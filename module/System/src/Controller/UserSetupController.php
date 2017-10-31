@@ -4,26 +4,31 @@ namespace System\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use System\Form\UserSetupForm;
 use System\Model\UserSetup;
 use System\Repository\UserSetupRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class UserSetupController extends AbstractActionController {
 
     private $form;
-    private $adapter;
     private $repository;
+    private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->repository = new UserSetupRepository($adapter);
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function initializeForm() {
@@ -33,12 +38,19 @@ class UserSetupController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->repository->fetchAll();
-        $users = [];
-        foreach ($list as $row) {
-            array_push($users, $row);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $list = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['users' => $users]);
+        return Helper::addFlashMessagesToArray($this, [
+                    'acl' => $this->acl
+        ]);
     }
 
     public function addAction() {
@@ -55,7 +67,6 @@ class UserSetupController extends AbstractActionController {
                 $userSetup->createdBy = $this->employeeId;
                 $userSetup->status = 'E';
 
-//                $userSetup->password= md5($userSetup->password);
                 $userSetup->password = Helper::encryptPassword($userSetup->password);
 
 
@@ -79,12 +90,10 @@ class UserSetupController extends AbstractActionController {
 
         $userSetup = new UserSetup();
         $detail = $this->repository->fetchById($id);
-        //print_r($detail['PASSWORD']); die();
         if (!$request->isPost()) {
             $userSetup->exchangeArrayFromDB($detail);
             $this->form->bind($userSetup);
         } else {
-            $modifiedDt = date('d-M-y');
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $userSetup->exchangeArrayFromForm($this->form->getData());
