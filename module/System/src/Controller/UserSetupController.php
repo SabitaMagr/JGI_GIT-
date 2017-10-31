@@ -65,7 +65,6 @@ class UserSetupController extends AbstractActionController {
                 $userSetup->userId = ((int) Helper::getMaxId($this->adapter, UserSetup::TABLE_NAME, UserSetup::USER_ID)) + 1;
                 $userSetup->createdDt = Helper::getcurrentExpressionDate();
                 $userSetup->createdBy = $this->employeeId;
-                $userSetup->status = 'E';
 
                 $userSetup->password = Helper::encryptPassword($userSetup->password);
 
@@ -79,7 +78,8 @@ class UserSetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employeeList' => $this->repository->getEmployeeList(),
-                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true)
+                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true),
+                    'customRenderer' => Helper::renderCustomView(),
         ]);
     }
 
@@ -99,10 +99,6 @@ class UserSetupController extends AbstractActionController {
                 $userSetup->exchangeArrayFromForm($this->form->getData());
                 $userSetup->modifiedDt = Helper::getcurrentExpressionDate();
                 $userSetup->modifiedBy = $this->employeeId;
-                unset($userSetup->createdDt);
-                unset($userSetup->userId);
-                unset($userSetup->status);
-
                 $userSetup->password = Helper::encryptPassword($userSetup->password);
 
                 $this->repository->edit($userSetup, $id);
@@ -115,7 +111,8 @@ class UserSetupController extends AbstractActionController {
                     'id' => $id,
                     'passwordDtl' => $detail['PASSWORD'],
                     'employeeList' => $this->repository->getEmployeeList($detail['EMPLOYEE_ID']),
-                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true)
+                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true),
+                    'customRenderer' => Helper::renderCustomView(),
         ]);
     }
 

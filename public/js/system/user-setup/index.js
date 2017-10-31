@@ -18,12 +18,14 @@
             {field: "ROLE_NAME", title: "Role", width: 150},
             {field: "FULL_NAME", title: "Employee Name", width: 150},
             {field: "USER_NAME", title: "User Name", width: 150},
+            {field: "STATUS", title: "Status", width: 150},
             {field: ["USER_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ];
         var map = {
             'ROLE_NAME': 'Role',
             'FULL_NAME': 'Employee Name',
-            'USER NAME': 'User Name',
+            'USER_NAME': 'User Name',
+            'STATUS': 'Status',
         }
         app.initializeKendoGrid($table, columns, "User List.xlsx");
 
