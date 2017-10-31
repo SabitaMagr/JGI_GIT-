@@ -1,45 +1,51 @@
 (function ($) {
     'use strict';
-    $(document).ready(function () {    
-       
-        $("#roleTable").kendoGrid({
-            excel: {
-                fileName: "RoleList.xlsx",
-                filterable: true,
-                allPages: true
+    $(document).ready(function () {
+        var $table = $('#table');
+        var actiontemplateConfig = {
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': ["ROLE_ID"],
+                'url': document.editLink
             },
-            dataSource: {
-                data: document.roles,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-                {field: "SN", title: "S.N.",width:50},
-                {field: "ROLE_NAME", title: "Role Name",width:200},
-                {title: "Action",width:50}
-            ]
-        });  
-        
-        app.searchTable('roleTable',['ROLE_NAME']);
-        
-        app.pdfExport(
-                'roleTable',
-                {
-                    'ROLE_NAME': 'Role'
-                }
-        );
-        
-        $("#export").click(function (e) {
-            var grid = $("#roleTable").data("kendoGrid");
-            grid.saveAsExcel();
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': ["ROLE_ID"],
+                'url': document.deleteLink
+            }
+        };
+        var columns = [
+            {field: "ROLE_NAME", title: "Role", width: 150},
+            {field: "CONTROL", title: "Control", width: 150},
+            {field: "ALLOW_ADD", title: "Allow Add", width: 150},
+            {field: "ALLOW_UPDATE", title: "Allow Update", width: 150},
+            {field: "ALLOW_DELETE", title: "Allow Delete", width: 150},
+            {field: "REMARKS", title: "Remarks", width: 150},
+            {field: ["ROLE_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
+        ];
+        var map = {
+            'ROLE_NAME': 'Name',
+            'CONTROL': 'Control',
+            'ALLOW_ADD': 'Allow Add',
+            'ALLOW_UPDATE': 'Allow Update',
+            'ALLOW_DELETE': 'Allow Delete',
+            'REMARKS': 'Remarks',
+        }
+        app.initializeKendoGrid($table, columns, "Role List.xlsx");
+
+        app.searchTable($table, ['ROLE_NAME']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, map, 'Role List.xlsx');
         });
-    });   
-})(window.jQuery, window.app);
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, map, 'Role List.pdf');
+        });
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
+    });
+})(window.jQuery);

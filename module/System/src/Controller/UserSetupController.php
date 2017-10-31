@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 1:25 PM
- */
-
 namespace System\Controller;
 
 use Application\Helper\EntityHelper;
@@ -63,8 +56,8 @@ class UserSetupController extends AbstractActionController {
                 $userSetup->status = 'E';
 
 //                $userSetup->password= md5($userSetup->password);
-                 $userSetup->password = Helper::encryptPassword($userSetup->password);
-                
+                $userSetup->password = Helper::encryptPassword($userSetup->password);
+
 
                 $this->repository->add($userSetup);
 

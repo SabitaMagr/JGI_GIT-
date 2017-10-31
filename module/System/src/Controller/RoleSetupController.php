@@ -1,61 +1,70 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 1:25 PM
- */
+
 namespace System\Controller;
 
+use Application\Helper\Helper;
+use Exception;
 use System\Form\RoleSetupForm;
 use System\Model\RoleSetup;
+use System\Repository\RoleSetupRepository;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Application\Helper\Helper;
-use System\Repository\RoleSetupRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\View\Model\JsonModel;
 
 class RoleSetupController extends AbstractActionController {
 
     private $form;
-    private $adapter;
     private $repository;
+    private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->repository = new RoleSetupRepository($adapter);
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
-    public function initializeForm(){
+    public function initializeForm() {
         $roleSetupForm = new RoleSetupForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($roleSetupForm);
     }
 
-    public function indexAction()
-    {
-        $roles = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['roles' => $roles]);
+    public function indexAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $list = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, [
+                    'acl' => $this->acl
+        ]);
     }
-    public function addAction(){
+
+    public function addAction() {
         $request = $this->getRequest();
         $this->initializeForm();
 
-        if($request->isPost()){
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $roleSetup = new RoleSetup();
                 $roleSetup->exchangeArrayFromForm($this->form->getData());
-                $roleSetup->roleId = ((int)Helper::getMaxId($this->adapter, RoleSetup::TABLE_NAME, RoleSetup::ROLE_ID)) + 1;
+                $roleSetup->roleId = ((int) Helper::getMaxId($this->adapter, RoleSetup::TABLE_NAME, RoleSetup::ROLE_ID)) + 1;
                 $roleSetup->createdDt = Helper::getcurrentExpressionDate();
                 $roleSetup->createdBy = $this->employeeId;
-                $roleSetup->status='E';
+                $roleSetup->status = 'E';
 
                 $this->repository->add($roleSetup);
 
@@ -63,10 +72,11 @@ class RoleSetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("rolesetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this,['form'=>$this->form]);
+        return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'customRenderer' => Helper::renderCustomView(),]);
     }
-    public function editAction(){
-        $id = (int)$this->params()->fromRoute("id");
+
+    public function editAction() {
+        $id = (int) $this->params()->fromRoute("id");
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -75,7 +85,6 @@ class RoleSetupController extends AbstractActionController {
             $roleSetup->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($roleSetup);
         } else {
-            $modifiedDt = date('d-M-y');
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $roleSetup->exchangeArrayFromForm($this->form->getData());
@@ -90,12 +99,14 @@ class RoleSetupController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form' => $this->form,
-            'id' => $id
+                    'form' => $this->form,
+                    'id' => $id,
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
-    public function deleteAction(){
-        $id = (int)$this->params()->fromRoute("id");
+
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {
             return $this->redirect()->toRoute('rolesetup');
@@ -104,4 +115,5 @@ class RoleSetupController extends AbstractActionController {
         $this->flashmessenger()->addMessage("Role Successfully Deleted!!!");
         return $this->redirect()->toRoute('rolesetup');
     }
+
 }
