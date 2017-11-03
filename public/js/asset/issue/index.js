@@ -9,17 +9,6 @@
             App.blockUI({target: "form"});
         });
 
-
-
-
-//        $("#export").click(function (e) {
-//            var grid = $("#assetIssueTable").data("kendoGrid");
-//            grid.saveAsExcel();
-//        });
-//        window.app.UIConfirmations();
-
-
-
         $("#assetIssueTable").on("click", "#btnReturn", function () {
             $('#myModal').modal('show');
 
@@ -219,7 +208,6 @@ angular.module('hris', [])
                     grid.saveAsExcel();
                 });
 
-                window.app.UIConfirmations();
 
 
 

@@ -256,4 +256,52 @@ class EntityHelper {
         return "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$companyCondition}{$branchCondition}{$departmentCondition}{$designationCondition}{$positionCondition}{$serviceTypeCondition}{$serviceEventtypeCondition}{$employeeTypeCondition}{$employeeCondition}";
     }
 
+    public static function conditionBuilder($colValue, $colName, $conditonType) {
+        if (gettype($colValue) === "array") {
+            $valuesinCSV = "";
+            for ($i = 0; $i < sizeof($colValue); $i++) {
+                if ($i + 1 == sizeof($colValue)) {
+                    $valuesinCSV .= "{$colValue[$i]}";
+                } else {
+                    $valuesinCSV .= "{$colValue[$i]},";
+                }
+            }
+            return " {$conditonType} {$colName} IN ({$valuesinCSV})";
+        } else {
+            return " {$conditonType} {$colName} = {$colValue}";
+        }
+    }
+
+    public static function getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId) {
+        $conditon = "";
+        if ($companyId != null && $companyId != -1) {
+            $conditon .= self::conditionBuilder($companyId, "E.COMPANY_ID", "AND");
+        }
+        if ($branchId != null && $branchId != -1) {
+            $conditon .= self::conditionBuilder($branchId, "E.BRANCH_ID", "AND");
+        }
+        if ($departmentId != null && $departmentId != -1) {
+            $conditon .= self::conditionBuilder($departmentId, "E.DEPARTMENT_ID", "AND");
+        }
+        if ($positionId != null && $positionId != -1) {
+            $conditon .= self::conditionBuilder($positionId, "E.POSITION_ID", "AND");
+        }
+        if ($designationId != null && $designationId != -1) {
+            $conditon .= self::conditionBuilder($designationId, "E.DESIGNATION_ID", "AND");
+        }
+        if ($serviceTypeId != null && $serviceTypeId != -1) {
+            $conditon .= self::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
+        }
+        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
+            $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
+        }
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $conditon .= self::conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND");
+        }
+        if ($employeeId != null && $employeeId != -1) {
+            $conditon .= self::conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
+        }
+        return $conditon;
+    }
+
 }

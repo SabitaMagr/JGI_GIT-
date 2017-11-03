@@ -15,7 +15,7 @@ $this->headScript()
 
 <script>
     document.list =<?php echo json_encode($list) ?>;
-    document.viewLnk ='<?= $this->url("travelNotification", ["action" => "view"]) ?>';
+    document.viewLink ='<?= $this->url("travelNotification", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelNotification')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

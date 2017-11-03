@@ -374,4 +374,39 @@ class MenuSetupController extends AbstractActionController {
         }
     }
 
+    public function pullRolePermissionListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $menuId = $data['menuId'];
+
+            $rolePermissionRepository = new RolePermissionRepository($this->adapter);
+            $roleRepository = new RoleSetupRepository($this->adapter);
+
+            $result = $roleRepository->fetchAll();
+            $rolePermissionList = $rolePermissionRepository->findAllRoleByMenuId($menuId);
+
+            $tempArray = [];
+            foreach ($result as $item) {
+                array_push($tempArray, $item);
+            }
+
+            $temArray1 = [];
+            foreach ($rolePermissionList as $row) {
+                array_push($temArray1, $row);
+            }
+
+
+            return new JsonModel([
+                "success" => true,
+                "data" => $tempArray,
+                "data1" => $temArray1
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

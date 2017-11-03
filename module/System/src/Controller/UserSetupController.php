@@ -1,36 +1,34 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 1:25 PM
- */
-
 namespace System\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use System\Form\UserSetupForm;
 use System\Model\UserSetup;
 use System\Repository\UserSetupRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class UserSetupController extends AbstractActionController {
 
     private $form;
-    private $adapter;
     private $repository;
+    private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->repository = new UserSetupRepository($adapter);
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function initializeForm() {
@@ -40,12 +38,19 @@ class UserSetupController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->repository->fetchAll();
-        $users = [];
-        foreach ($list as $row) {
-            array_push($users, $row);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $list = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['users' => $users]);
+        return Helper::addFlashMessagesToArray($this, [
+                    'acl' => $this->acl
+        ]);
     }
 
     public function addAction() {
@@ -60,11 +65,9 @@ class UserSetupController extends AbstractActionController {
                 $userSetup->userId = ((int) Helper::getMaxId($this->adapter, UserSetup::TABLE_NAME, UserSetup::USER_ID)) + 1;
                 $userSetup->createdDt = Helper::getcurrentExpressionDate();
                 $userSetup->createdBy = $this->employeeId;
-                $userSetup->status = 'E';
 
-//                $userSetup->password= md5($userSetup->password);
-                 $userSetup->password = Helper::encryptPassword($userSetup->password);
-                
+                $userSetup->password = Helper::encryptPassword($userSetup->password);
+
 
                 $this->repository->add($userSetup);
 
@@ -75,7 +78,8 @@ class UserSetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employeeList' => $this->repository->getEmployeeList(),
-                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true)
+                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true),
+                    'customRenderer' => Helper::renderCustomView(),
         ]);
     }
 
@@ -86,21 +90,15 @@ class UserSetupController extends AbstractActionController {
 
         $userSetup = new UserSetup();
         $detail = $this->repository->fetchById($id);
-        //print_r($detail['PASSWORD']); die();
         if (!$request->isPost()) {
             $userSetup->exchangeArrayFromDB($detail);
             $this->form->bind($userSetup);
         } else {
-            $modifiedDt = date('d-M-y');
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $userSetup->exchangeArrayFromForm($this->form->getData());
                 $userSetup->modifiedDt = Helper::getcurrentExpressionDate();
                 $userSetup->modifiedBy = $this->employeeId;
-                unset($userSetup->createdDt);
-                unset($userSetup->userId);
-                unset($userSetup->status);
-
                 $userSetup->password = Helper::encryptPassword($userSetup->password);
 
                 $this->repository->edit($userSetup, $id);
@@ -113,7 +111,8 @@ class UserSetupController extends AbstractActionController {
                     'id' => $id,
                     'passwordDtl' => $detail['PASSWORD'],
                     'employeeList' => $this->repository->getEmployeeList($detail['EMPLOYEE_ID']),
-                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true)
+                    'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true),
+                    'customRenderer' => Helper::renderCustomView(),
         ]);
     }
 

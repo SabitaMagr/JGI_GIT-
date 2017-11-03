@@ -5,16 +5,16 @@ namespace AttendanceManagement\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Model\FiscalYear;
-use Application\Model\Months;
 use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use AttendanceManagement\Repository\AttendanceRepository;
 use Exception;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AttendanceByHr extends AbstractActionController {
 
@@ -33,7 +33,7 @@ class AttendanceByHr extends AbstractActionController {
         $this->form = $builder->createForm($attendanceByHr);
     }
 
-    public function indexAction() {
+    private function getStatusSelect() {
         $statusFormElement = new Select();
         $statusFormElement->setName("status");
         $status = array(
@@ -46,15 +46,33 @@ class AttendanceByHr extends AbstractActionController {
             "TVL" => "On Travel",
             "WOH" => "Work on Holiday",
             "WOD" => "Work on DAYOFF",
-            "LI" => "Late In",
-            "EO" => "Early Out"
         );
         $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
+        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Status");
+        return $statusFormElement;
+    }
+
+    private function getPresentStatusSelect() {
+        $statusFormElement = new Select();
+        $statusFormElement->setName("presentStatus");
+        $status = array(
+            "LI" => "Late In",
+            "EO" => "Early Out",
+            "MP" => "Missed Punched",
+        );
+        $statusFormElement->setValueOptions($status);
+        $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control", "multiple" => "multiple"]);
+        $statusFormElement->setLabel("Present Status");
+        return $statusFormElement;
+    }
+
+    public function indexAction() {
+
 
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusFormElement,
+                    'status' => $this->getStatusSelect(),
+                    'presentStatus' => $this->getPresentStatusSelect(),
                     'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
@@ -63,8 +81,6 @@ class AttendanceByHr extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         try {
-
-
             if ($request->isPost()) {
                 $this->form->setData($request->getPost());
                 if ($this->form->isValid()) {
@@ -104,7 +120,6 @@ class AttendanceByHr extends AbstractActionController {
                         'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE)
                             ]
             );
-//            return $this->redirect()->toRoute("attendancebyhr");
         }
     }
 
@@ -160,8 +175,7 @@ class AttendanceByHr extends AbstractActionController {
             $fromDate = $data['fromDate'];
             $toDate = $data['toDate'];
             $status = $data['status'];
-            $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
-            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
+            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, $data['presentStatus']);
 
             $result = [];
             $result['success'] = true;
@@ -226,6 +240,28 @@ class AttendanceByHr extends AbstractActionController {
             return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullInOutTimeAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $attendanceDt = $data['attendanceDt'];
+            $employeeId = $data['employeeId'];
+
+            $attendanceRepository = new AttendanceRepository($this->adapter);
+            $result = $attendanceRepository->fetchInOutTimeList($employeeId, $attendanceDt);
+            $list = [];
+            foreach ($result as $row) {
+                array_push($list, $row);
+            }
+
+            return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

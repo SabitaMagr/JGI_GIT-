@@ -30,11 +30,9 @@ $form->setAttribute('action', $this->url('advanceApply', ['action' => 'add']));
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php
-$menu = ["id" => "menuAdvance", "subMenu" => ["id" => "subMenuApply"]];
-echo json_encode($menu);
-?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.pullAdvanceListLink = '<?php echo $this->url("advanceRequest", ["action" => "pullAdvanceList"]); ?>';
+    document.pullAdvanceDetailByEmpIdLink = '<?php echo $this->url("advanceRequest", ["action" => "pullAdvanceDetailByEmpId"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

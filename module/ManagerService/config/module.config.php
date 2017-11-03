@@ -50,16 +50,6 @@ return [
                     ]
                 ]
             ],
-            'salaryReview' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/managerservice/salaryreview[/:action[/:id]]',
-                    'defaults' => [
-                        'controller' => Controller\SalaryReviewController::class,
-                        'action' => 'index'
-                    ]
-                ]
-            ],
             'travelApprove' => [
                 'type' => Segment::class,
                 'options' => [

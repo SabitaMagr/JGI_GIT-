@@ -1,11 +1,6 @@
 <?php
+
 namespace System\Form;
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:11 PM
- */
 
 use Zend\Form\Annotation;
 
@@ -13,8 +8,8 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("RoleSetup")
  */
+class RoleSetupForm {
 
-class RoleSetupForm{
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -23,6 +18,42 @@ class RoleSetupForm{
      * @Annotation\Attributes({ "id":"form-roleName", "class":"form-roleName form-control" })
      */
     public $roleName;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"F":"Full","Company Specific":"No","U":"User Specific"},"label":"Control"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"control"})
+     */
+    public $control;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Add"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"allowAdd"})
+     */
+    public $allowAdd;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Update"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"allowUpdate"})
+     */
+    public $allowUpdate;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Delete"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"allowDelete"})
+     */
+    public $allowDelete;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -38,4 +69,5 @@ class RoleSetupForm{
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+
 }

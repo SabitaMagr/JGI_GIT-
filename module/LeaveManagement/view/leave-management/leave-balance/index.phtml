@@ -20,6 +20,7 @@ $this->headScript()
     document.leaves =<?= json_encode($leavesArrray); ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.leaveApplyUrl = '<?= $this->url("leavebalance", ["action" => "apply"]) ?>';
+    document.pullLeaveBalanceDetailLink = '<?= $this->url("leavebalance", ["action" => "pullLeaveBalanceDetail"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavebalance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -57,7 +58,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                       <li>
+                        <li>
                             <a href="javascript:;" id="export">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                         </li>
@@ -120,10 +121,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
 
-        <div class="row margin-top-10">
-            <div class="col-sm-12">
-                <div id="leaveBalanceTable">
-                </div>
+    <div class="row margin-top-10">
+        <div class="col-sm-12">
+            <div id="leaveBalanceTable">
             </div>
         </div>
-    </div> 
+    </div>
+</div> 

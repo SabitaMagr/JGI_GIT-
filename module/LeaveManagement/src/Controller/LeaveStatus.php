@@ -4,6 +4,7 @@ namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
@@ -17,6 +18,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class LeaveStatus extends AbstractActionController {
 
@@ -150,6 +152,25 @@ class LeaveStatus extends AbstractActionController {
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
                     'gp' => $detail['GRACE_PERIOD']
         ]);
+    }
+
+    public function pullLeaveRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $leaveStatusRepository = new LeaveStatusRepository($this->adapter);
+            $result = $leaveStatusRepository->getLeaveRequestList($data);
+
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

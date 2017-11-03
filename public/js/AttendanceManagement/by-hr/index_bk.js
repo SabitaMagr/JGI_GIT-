@@ -430,7 +430,6 @@ angular.module('hris', [])
                 kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AttendanceList.xlsx"});
             }
 
-            window.app.UIConfirmations();
 //            start to get the current Date in  DD-MON-YYY format
             var m_names = new Array("Jan", "Feb", "Mar",
                     "Apr", "May", "Jun", "Jul", "Aug", "Sep",

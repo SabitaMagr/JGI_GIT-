@@ -43,6 +43,5 @@
             var grid = $("#serviceQuestionTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
     });   
 })(window.jQuery, window.app);

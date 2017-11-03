@@ -84,7 +84,7 @@ class TravelStatus extends AbstractActionController {
 
 
         if (!$request->isPost()) {
-            $travelRequest->exchangeArrayFromDB($detail);
+            $travelRequest->exchangeArrayFromDB((array) $detail);
             $this->form->bind($travelRequest);
         } else {
             $getData = $request->getPost();
@@ -131,17 +131,21 @@ class TravelStatus extends AbstractActionController {
         $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
 
         $numberInWord = new NumberHelper();
-        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+        try {
+            $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+        } catch (Exception $e) {
+            $advanceAmount = "";
+        }
         $subDetail = [];
         if ($detail['SUB_EMPLOYEE_ID'] != null) {
             $subEmpDetail = $empRepository->fetchForProfileById($detail['SUB_EMPLOYEE_ID']);
             $subDetail = [
-                'SUB_EMPLOYEE_NAME' => $fullName($detail['SUB_EMPLOYEE_ID']),
+                'SUB_EMPLOYEE_NAME' => $detail['SUB_EMPLOYEE_ID'],
                 'SUB_DESIGNATION' => $subEmpDetail['DESIGNATION'],
                 'SUB_APPROVED_DATE' => $detail['SUB_APPROVED_DATE']
             ];
         }
-        $duration = ($detail['TO_DATE'] - $detail['FROM_DATE']) + 1;
+        $duration = Helper::dateDiff($detail['FROM_DATE'], $detail['TO_DATE']) + 1;
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -182,26 +186,11 @@ class TravelStatus extends AbstractActionController {
         $detail = $this->travelApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
         $employeeId = $detail['EMPLOYEE_ID'];
-        $approvedDT = $detail['APPROVED_DATE'];
+        $recommApprove = $detail['RECOMMENDER_ID'] == $detail['APPROVER_ID'] ? 1 : 0;
 
-        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-        $recommApprove = 0;
-        if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-            $recommApprove = 1;
-        }
-
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status == 'RC' || $status == 'C' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $detail['APPROVER'] : $detail['APPROVED_BY'];
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
         if ($detail['REFERENCE_TRAVEL_ID'] != null) {
             $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);
@@ -234,8 +223,8 @@ class TravelStatus extends AbstractActionController {
                     'employeeId' => $employeeId,
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $fullName($authRecommender),
-                    'approver' => $fullName($authApprover),
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
                     'approvedDT' => $detail['APPROVED_DATE'],
                     'status' => $status,
                     'advanceAmt' => $advanceAmt,

@@ -1,11 +1,6 @@
 <?php
+
 namespace System\Form;
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:11 PM
- */
 
 use Zend\Form\Annotation;
 
@@ -13,8 +8,8 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("UserSetup")
  */
+class UserSetupForm {
 
-class UserSetupForm{
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
@@ -50,7 +45,7 @@ class UserSetupForm{
      * @Annotation\Attributes({ "id":"form-password", "class":"form-password form-control" })
      */
     public $password;
-    
+
     /**
      * @Annotion\Type("Zend\Form\Element\Password")
      * @Annotation\Required(false)
@@ -61,8 +56,18 @@ class UserSetupForm{
     public $repassword;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"E":"Enabled","D":"Disabled"},"label":"Status"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"status"})
+     */
+    public $status;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success","id":"btnSubmit"})
      */
     public $submit;
+
 }

@@ -25,12 +25,9 @@ angular.module('hris', [])
                 var startDate = angular.element($("#startDate1")).val();
                 var endDate = angular.element($("#endDate1")).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullHolidayList',
-                    data: {
-                        'fromDate': startDate,
-                        'toDate': endDate,
-                    }
+                window.app.pullDataById(document.pullHolidayListLink, {
+                    'fromDate': startDate,
+                    'toDate': endDate,
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
@@ -71,24 +68,24 @@ angular.module('hris', [])
                         {field: "HOLIDAY_ENAME", title: "Holiday"},
 //                        {field: "START_DATE", title: "From Date", width: 130},
                         {title: "From Date",
-                columns: [
-                    {field: "START_DATE",
-                        title: "AD",
-                        template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
-                    {field: "START_DATE_N",
-                        title: "BS",
-                        template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"} ]},
-              {title: "To Date",
-                columns: [
-                    {field: "END_DATE",
-                        title: "AD",
-                        template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                    {field: "END_DATE_N",
-                        title: "BS",
-                        template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"} ]},
+                            columns: [
+                                {field: "START_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"},
+                                {field: "START_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"}]},
+                        {title: "To Date",
+                            columns: [
+                                {field: "END_DATE",
+                                    title: "AD",
+                                    template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
+                                {field: "END_DATE_N",
+                                    title: "BS",
+                                    template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
                         {field: "HALFDAY", title: "Interval"},
                         {field: ["HOLIDAY_ID"], title: "Action", template: `<span><a class="btn-edit"
-                           href="`+ document.editLink +`/#:HOLIDAY_ID#" style="height:17px;"> 
+                           href="` + document.editLink + `/#:HOLIDAY_ID#" style="height:17px;"> 
         <i class="fa fa-edit"></i>
         </a>
         </span>`}
@@ -183,7 +180,6 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "HolidayList.xlsx"});
                 }
-                window.app.UIConfirmations();
             };
 
 

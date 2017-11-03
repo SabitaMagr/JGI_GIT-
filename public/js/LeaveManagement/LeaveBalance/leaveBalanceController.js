@@ -30,32 +30,26 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
 
-                //console.log(employeeId+","+branchId+","+departmentId+","+designationId+","+positionId+","+serviceTypeId);
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullLeaveBalanceDetail',
-                    data: {
-                        'employeeId': employeeId,
-                        'companyId':companyId,
-                        'branchId': branchId,
-                        'departmentId': departmentId,
-                        'designationId': designationId,
-                        'positionId': positionId,
-                        'serviceTypeId': serviceTypeId,
-                        'serviceEventTypeId': serviceEventTypeId,
-                        'employeeTypeId': employeeTypeId
-                    }
+                window.app.pullDataById(document.pullLeaveBalanceDetailLink, {
+                    'employeeId': employeeId,
+                    'companyId': companyId,
+                    'branchId': branchId,
+                    'departmentId': departmentId,
+                    'designationId': designationId,
+                    'positionId': positionId,
+                    'serviceTypeId': serviceTypeId,
+                    'serviceEventTypeId': serviceEventTypeId,
+                    'employeeTypeId': employeeTypeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         $scope.allList = success.allList;
                         $scope.num = success.num;
-                        
-                        console.log(success.allList);
 
                         initializeHeaders($scope.leaves);
                         initializeDatas($scope.leaves, $scope.allList);
-                        
+
                         if (displayKendoFirstTime) {
                             initializekendoGrid(headers);
                             displayKendoFirstTime = false;
@@ -64,7 +58,7 @@ angular.module('hris', [])
                         var grid = $('#leaveBalanceTable').data("kendoGrid");
                         dataSource.read();
                         grid.setDataSource(dataSource);
-                    
+
                     });
                 }, function (failure) {
                     App.unblockUI("#hris-page-content");
@@ -82,7 +76,7 @@ angular.module('hris', [])
                     headers.push({
                         field: "h" + i,
                         title: cols[i].LEAVE_ENAME,
-                        template: '#if(h' + i + '.val>0 && h'+i+'.serviceEventTypeId!=8 && h'+i+'.serviceEventTypeId!=5 && h'+i+'.serviceEventTypeId!=14){# <a href="' + document.leaveApplyUrl + '/#=h' + i + '.eID#/#=h' + i + '.leaveId#">#=h' + i + '.val#</a> #}else{# #=h' + i + '.val#  #}#'
+                        template: '#if(h' + i + '.val>0 && h' + i + '.serviceEventTypeId!=8 && h' + i + '.serviceEventTypeId!=5 && h' + i + '.serviceEventTypeId!=14){# <a href="' + document.leaveApplyUrl + '/#=h' + i + '.eID#/#=h' + i + '.leaveId#">#=h' + i + '.val#</a> #}else{# #=h' + i + '.val#  #}#'
                     });
                     headerForExcel.push({value: cols[i].LEAVE_ENAME});
                 }
@@ -119,9 +113,9 @@ angular.module('hris', [])
                     },
                     columns: columns
                 });
-                
-                app.searchTable('leaveBalanceTable',['EMPLOYEE_NAME']);
-                
+
+                app.searchTable('leaveBalanceTable', ['EMPLOYEE_NAME']);
+
 //                app.pdfExport(
 //                'leaveBalanceTable',
 //                {

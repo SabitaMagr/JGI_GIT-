@@ -5,6 +5,7 @@ namespace ManagerService\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use AttendanceManagement\Repository\AttendanceStatusRepository;
 use Exception;
 use ManagerService\Repository\AttendanceApproveRepository;
 use Notification\Controller\HeadNotification;
@@ -13,11 +14,13 @@ use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AttendanceApproveController extends AbstractActionController {
 
@@ -255,6 +258,30 @@ class AttendanceApproveController extends AbstractActionController {
     public function getAllList() {
         $list = $this->repository->getAllRequest($this->employeeId);
         return Helper::extractDbData($list);
+    }
+
+    public function pullAttendanceRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);
+            if (key_exists('approverId', $data)) {
+                $approverId = $data['approverId'];
+            } else {
+                $approverId = null;
+            }
+            $result = $attendanceStatusRepository->getFilteredRecord($data, $approverId);
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+                "num" => count($recordList)
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

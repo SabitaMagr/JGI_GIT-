@@ -38,7 +38,6 @@
             var grid = $("#assetIssueTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
 
 
 //        app.addDatePicker($('#returnedDate'));

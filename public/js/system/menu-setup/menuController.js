@@ -16,11 +16,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
 
     $scope.permissionList = function (menuId) {
         $('#rolePanel').css('display', 'block');
-        window.app.pullDataById(document.url, {
-            action: 'pullRolePermissionList',
-            data: {
-                menuId: menuId
-            },
+        window.app.pullDataById(document.pullRolePermissionListLink, {
+            menuId: menuId
         }).then(function (success) {
             $scope.$apply(function () {
                 $scope.roleList = success.data;
@@ -120,11 +117,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         }
     }
     $scope.deleteMenu = function () {
-        window.app.pullDataById(document.url, {
-            action: 'menuDelete',
-            data: {
-                menuId: menuId
-            },
+        window.app.pullDataById(document.menuDeleteLink, {
+            menuId: menuId
         }).then(function (success) {
             $scope.$apply(function () {
                 var newData = success.menuData;

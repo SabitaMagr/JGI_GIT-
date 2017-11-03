@@ -17,6 +17,7 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class LoanRequest extends AbstractActionController {
 
@@ -260,6 +261,20 @@ class LoanRequest extends AbstractActionController {
             "approver" => $approver
         ];
         return $responseData;
+    }
+
+    public function pullLoanListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $employeeId = $data['employeeId'];
+            $loanList = LoanAdvanceHelper::getLoanList($this->adapter, $employeeId);
+
+            return new JsonModel(['success' => true, 'data' => $loanList, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

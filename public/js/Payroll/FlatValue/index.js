@@ -53,6 +53,5 @@
             var grid = $("#flatValueTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
     });   
 })(window.jQuery, window.app);

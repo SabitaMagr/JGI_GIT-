@@ -103,7 +103,7 @@
 
         $search.on('click', function () {
             var data = document.searchManager.getSearchValues();
-            app.pullDataById(document.url, {action: 'pullEmployeeListForEmployeeTable', data: data}).then(function (response) {
+            app.pullDataById(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($employeeTable, response.data);
                 } else {

@@ -10,16 +10,20 @@ use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveMasterRepository;
+use LeaveManagement\Repository\LeaveStatusRepository;
 use ManagerService\Repository\LeaveApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class LeaveApproveController extends AbstractActionController {
 
@@ -293,6 +297,31 @@ class LeaveApproveController extends AbstractActionController {
     public function getAllList() {
         $list = $this->repository->getAllRequest($this->employeeId);
         return Helper::extractDbData($list);
+    }
+
+    public function pullLeaveRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $leaveStatusRepository = new LeaveStatusRepository($this->adapter);
+            if (key_exists('recomApproveId', $data)) {
+                $recomApproveId = $data['recomApproveId'];
+            } else {
+                $recomApproveId = null;
+            }
+            $result = $leaveStatusRepository->getFilteredRecord($data, $data['recomApproveId']);
+
+            $recordList = Helper::extractDbData($result);
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

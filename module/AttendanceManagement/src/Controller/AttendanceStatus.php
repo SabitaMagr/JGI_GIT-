@@ -11,11 +11,14 @@ use Exception;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
+use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AttendanceStatus extends AbstractActionController {
 
@@ -142,6 +145,23 @@ class AttendanceStatus extends AbstractActionController {
                         'status' => $status,
                         'requestedDt' => $detail['REQUESTED_DT'],
             ]);
+        }
+    }
+
+    public function pullAttendanceRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);
+            $result = $attendanceStatusRepository->getAttenReqList($data);
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+                "num" => count($recordList)
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

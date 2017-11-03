@@ -31,7 +31,6 @@
             var grid = $("#serviceEventTypeTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
 
     });
 })(window.jQuery, window.app);

@@ -1,85 +1,51 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-
-        $("#userTable").kendoGrid({
-            excel: {
-                fileName: "UserList.xlsx",
-                filterable: true,
-                allPages: true
+        var $table = $('#table');
+        var actiontemplateConfig = {
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': ["USER_ID"],
+                'url': document.editLink
             },
-            dataSource: {
-                data: document.users,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-                {field: "FULL_NAME", title: "Employee Name", width: 200},
-                {field: "USER_NAME", title: "User Name", width: 200},
-                {field: "ROLE_NAME", title: "Role Name", width: 200},
-                {title: "Action", width: 100}
-            ]
-        });
-
-        app.searchTable('userTable', ['FULL_NAME', 'USER_NAME', 'ROLE_NAME']);
-
-        app.pdfExport(
-                'userTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'USER_NAME': 'UserName',
-                    'ROLE_NAME': 'Role'
-                }
-        );
-
-        $("#export").click(function (e) {
-            var grid = $("#userTable").data("kendoGrid");
-            grid.saveAsExcel();
-        });
-
-        $('#exportWithPassword').click(function (e) {
-            var rows = [{
-                    cells: [
-                        {value: "Employee Name"},
-                        {value: "Username"},
-                        {value: "Password"},
-                        {value: "Role"},
-                    ]
-                }];
-            for (var i = 0; i < document.users.length; i++) {
-                var dataItem = document.users[i];
-                rows.push({
-                    cells: [
-                        {value: dataItem.FULL_NAME},
-                        {value: dataItem.USER_NAME},
-                        {value: dataItem.PASSWORD},
-                        {value: dataItem.ROLE_NAME},
-                    ]
-                });
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': ["USER_ID"],
+                'url': document.deleteLink
             }
+        };
+        var columns = [
+            {field: "ROLE_NAME", title: "Role", width: 150},
+            {field: "FULL_NAME", title: "Employee Name", width: 150},
+            {field: "USER_NAME", title: "User Name", width: 150},
+            {field: "STATUS", title: "Status", width: 150},
+            {field: ["USER_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
+        ];
+        var map = {
+            'ROLE_NAME': 'Role',
+            'FULL_NAME': 'Employee Name',
+            'USER_NAME': 'User Name',
+            'STATUS': 'Status',
+        }
+        app.initializeKendoGrid($table, columns, "User List.xlsx");
 
-            var workbook = new kendo.ooxml.Workbook({
-                sheets: [
-                    {
-                        columns: [
-                            {autoWidth: true},
-                            {autoWidth: true},
-                        ],
-                        title: "Users",
-                        rows: rows
-                    }
-                ]
-            });
-            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "Users(With Password).xlsx"});
+        app.searchTable($table, ['ROLE_NAME', 'FULL_NAME']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, map, 'User List.xlsx');
         });
-        window.app.UIConfirmations();
+        $('#excelExportWithPassword').on('click', function () {
+            map['PASSWORD'] = "Password";
+            app.excelExport($table, map, 'User List.xlsx');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, map, 'User List.pdf');
+        });
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
     });
-})(window.jQuery, window.app);
+})(window.jQuery);

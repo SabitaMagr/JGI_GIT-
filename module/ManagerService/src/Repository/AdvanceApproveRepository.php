@@ -107,8 +107,8 @@ class AdvanceApproveRepository implements RepositoryInterface {
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER,
                     LEAVE_STATUS_DESC(AR.STATUS)                     AS STATUS,
-                    REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
-                    REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+                    REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                    REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                     FROM HRIS_EMPLOYEE_ADVANCE_REQUEST AR
                     LEFT JOIN HRIS_EMPLOYEES E ON 
                     E.EMPLOYEE_ID=AR.EMPLOYEE_ID
@@ -116,9 +116,12 @@ class AdvanceApproveRepository implements RepositoryInterface {
                     ON AR.ADVANCE_ID=A.ADVANCE_ID
                     LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                     ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
+                    LEFT JOIN HRIS_EMPLOYEES U
+                    ON (U.EMPLOYEE_ID= RA.RECOMMEND_BY OR U.EMPLOYEE_ID = RA.APPROVED_BY)
                     WHERE A.STATUS = 'E' AND E.STATUS='E'
                     AND E.RETIRED_FLAG='N' 
-                    AND ((RA.RECOMMEND_BY= {$id} AND AR.STATUS='RQ') OR (RA.APPROVED_BY= {$id} AND AR.STATUS='RC') )
+                    AND ((RA.RECOMMEND_BY= U.EMPLOYEE_ID AND AR.STATUS='RQ') OR (RA.APPROVED_BY= U.EMPLOYEE_ID AND AR.STATUS='RC') )
+                    AND U.EMPLOYEE_ID={$id}
                     ORDER BY AR.REQUESTED_DATE DESC"
         ;
         $statement = $this->adapter->query($sql);

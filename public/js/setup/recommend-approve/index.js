@@ -137,6 +137,5 @@ angular.module('hris', [])
                     });
                     kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "ReportingHierarchy.xlsx"});
                 }
-                window.app.UIConfirmations();
             };
         });

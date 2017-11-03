@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Advance\Repository\AdvanceStatusRepository;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -11,14 +12,15 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\AdvanceRequestForm;
 use SelfService\Model\AdvanceRequest;
-use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Model\Advance;
+use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AdvanceApproveController extends AbstractActionController {
 
@@ -251,6 +253,31 @@ class AdvanceApproveController extends AbstractActionController {
     public function getAllList() {
         $list = $this->advanceApproveRepository->getAllRequest($this->employeeId);
         return Helper::extractDbData($list);
+    }
+
+    public function pullAdvanceRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $advanceStatusRepository = new AdvanceStatusRepository($this->adapter);
+            if (key_exists('recomApproveId', $data)) {
+                $recomApproveId = $data['recomApproveId'];
+            } else {
+                $recomApproveId = null;
+            }
+            $result = $advanceStatusRepository->getFilteredRecord($data, $recomApproveId);
+
+            $recordList = Helper::extractDbData($result);
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

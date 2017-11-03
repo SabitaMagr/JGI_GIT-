@@ -5,6 +5,7 @@ namespace Overtime\Controller;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Repository\AttendanceRepository;
+use Exception;
 use ManagerService\Repository\OvertimeApproveRepository;
 use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Form\OvertimeRequestForm;
@@ -13,12 +14,14 @@ use SelfService\Model\OvertimeDetail;
 use SelfService\Repository\OvertimeDetailRepository;
 use SelfService\Repository\OvertimeRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use System\Repository\PreferenceSetupRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class OvertimeStatus extends AbstractActionController {
 
@@ -231,6 +234,32 @@ class OvertimeStatus extends AbstractActionController {
             }
         }
         $this->redirect()->toRoute('overtimeStatus');
+    }
+
+    public function pullOvertimeRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $overtimeStatusRepo = new OvertimeStatusRepository($this->adapter);
+            $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
+            $result = $overtimeStatusRepo->getOTRequestList($data);
+            $recordList = [];
+            foreach ($result as $row) {
+                $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
+                $row['DETAILS'] = Helper::extractDbData($overtimeDetailResult);
+                array_push($recordList, $row);
+            }
+
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

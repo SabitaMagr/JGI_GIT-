@@ -21,6 +21,7 @@ $this->headScript()
     document.menuUpdateLink = '<?= $this->url("menusetup", ["action" => "menuUpdate"]) ?>';
     document.pullMenuDetailLink = '<?= $this->url("menusetup", ["action" => "pullMenuDetail"]) ?>';
     document.permissionAssignLink = '<?= $this->url("menusetup", ["action" => "permissionAssign"]) ?>';
+    document.pullRolePermissionListLink = '<?= $this->url("menusetup", ["action" => "pullRolePermissionList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\menusetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

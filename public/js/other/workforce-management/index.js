@@ -29,6 +29,5 @@
             var grid = $("#workforceTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
     });
 })(window.jQuery);

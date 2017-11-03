@@ -4,7 +4,7 @@
         $('select').select2();
         var $startDate = $("#form-advanceDate");
 //        app.addDatePicker($startDate);
-        app.datePickerWithNepali("form-advanceDate","nepaliDate");
+        app.datePickerWithNepali("form-advanceDate", "nepaliDate");
         $startDate.datepicker('setStartDate', new Date());
         app.setLoadingOnSubmit("advanceAdvance-form");
     });
@@ -21,12 +21,9 @@ angular.module('hris', [])
             $scope.salaryDeduction = null;
 
             $scope.advanceChange = function () {
-                window.app.pullDataById(document.url, {
-                    action: 'pullAdvanceDetailByEmpId',
-                    data: {
-                        'employeeId': $scope.employeeId,
-                        'advanceId': $scope.advanceId
-                    }
+                window.app.pullDataById(document.pullAdvanceDetailByEmpIdLink, {
+                    'employeeId': $scope.employeeId,
+                    'advanceId': $scope.advanceId
                 }).then(function (success) {
                     $scope.$apply(function () {
                         $scope.allowAmt = success.data.allowAmt;
@@ -41,11 +38,8 @@ angular.module('hris', [])
             };
             $scope.employeeChange = function () {
                 window.app.floatingProfile.setDataFromRemote($scope.employeeId);
-                window.app.pullDataById(document.url, {
-                    action: 'pullAdvanceList',
-                    data: {
-                        'employeeId': $scope.employeeId
-                    }
+                window.app.pullDataById(document.pullAdvanceListLink, {
+                    'employeeId': $scope.employeeId
                 }).then(function (success) {
                     $scope.$apply(function () {
                         $scope.advanceList = success.data;

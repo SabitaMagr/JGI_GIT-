@@ -1,10 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
@@ -20,6 +17,7 @@ $this->headScript()
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.restful = {};
     document.restful['generateMonthlySheet'] = '<?php echo $this->url('generate', ['action' => 'generateMonthlySheet']) ?>';
+    document.pullPayRollGeneratedMonthsLink = "<?php echo $this->url("generate", ["action" => "pullPayRollGeneratedMonths"]); ?>";
 </script>
 <?php if ($this->messages) { ?>
     <script>

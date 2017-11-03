@@ -1,22 +1,14 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:00 PM
- */
-
 namespace System\Repository;
 
 use Application\Model\Model;
-use Application\Model\User;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use System\Model\UserSetup;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
+use Zend\Db\TableGateway\TableGateway;
 
 class UserSetupRepository implements RepositoryInterface {
 
@@ -40,7 +32,7 @@ class UserSetupRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("US.STATUS AS STATUS"),
+            new Expression("STATUS_DESC(US.STATUS) AS STATUS"),
             new Expression("US.USER_ID AS USER_ID"),
             new Expression("US.USER_NAME AS USER_NAME"),
             new Expression("FN_DECRYPT_PASSWORD(US.PASSWORD) AS PASSWORD"),
@@ -51,11 +43,6 @@ class UserSetupRepository implements RepositoryInterface {
         $select->from(['US' => UserSetup::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FIRST_NAME' => new Expression("INITCAP(E.FIRST_NAME)"), 'MIDDLE_NAME' => new Expression("INITCAP(E.MIDDLE_NAME)"), 'LAST_NAME' => new Expression("INITCAP(E.LAST_NAME)"), 'FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")])
                 ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME']);
-
-        $select->where([
-            "US.STATUS='E'",
-            "E.STATUS='E'"
-        ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

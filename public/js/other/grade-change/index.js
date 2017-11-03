@@ -32,6 +32,5 @@
             var grid = $("#gradeChangeTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
     });
 })(window.jQuery);
