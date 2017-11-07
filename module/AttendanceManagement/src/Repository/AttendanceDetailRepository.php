@@ -127,7 +127,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 }
                 $presentStatusCondition = "AND A.LATE_STATUS IN ({$q})";
             } else {
-                $presentStatusCondition = "AND A.LATE_STATUS IN ({$presentStatusMap[$status]})";
+                $presentStatusCondition = "AND A.LATE_STATUS IN ({$presentStatusMap[$presentStatus]})";
             }
         }
 
