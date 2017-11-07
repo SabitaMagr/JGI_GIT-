@@ -109,7 +109,7 @@ return [
             'roaster' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/attendance/roaster[/:action[/:id]]',
+                    'route' => '/attendance/roster[/:action[/:id]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -309,11 +309,11 @@ return [
         ],
         'roaster' => [
             [
-                'label' => 'Roaster',
+                'label' => 'Roster',
                 'route' => 'roaster',
             ],
             [
-                'label' => 'Roaster',
+                'label' => 'Roster',
                 'route' => 'roaster',
                 'pages' => [
                     [
