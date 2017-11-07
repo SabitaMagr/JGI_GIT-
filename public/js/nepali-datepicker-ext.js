@@ -41,8 +41,10 @@ window.nepaliDatePickerExt = (function () {
                     }
                 }
             };
-//            return new Date(splittedDate[2], monthsInStringFormat.getKeyByValue(splittedDate[1]) - 1, parseInt(splittedDate[0]) + 1);
             return new Date(splittedDate[2], monthsInStringFormat.getKeyByValue(splittedDate[1]) - 1, parseInt(splittedDate[0]));
+        },
+        getFormatedDate: function (date) {
+            return  date.getDate() + "-" + monthsInStringFormat[date.getMonth() + 1].toUpperCase() + "-" + date.getFullYear();
         }
     };
 })();

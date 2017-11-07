@@ -105,7 +105,21 @@ return [
                         'action' => 'index',
                     ]
                 ],
-            ]
+            ],
+            'roaster' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/attendance/roaster[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\Roaster::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -293,6 +307,23 @@ return [
                 ],
             ],
         ],
+        'roaster' => [
+            [
+                'label' => 'Roaster',
+                'route' => 'roaster',
+            ],
+            [
+                'label' => 'Roaster',
+                'route' => 'roaster',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'roaster',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -303,6 +334,7 @@ return [
             Controller\CalculateOvertime::class => ControllerFactory::class,
             Controller\ShiftAdjustment::class => ControllerFactory::class,
             Controller\Penalty::class => ControllerFactory::class,
+            Controller\Roaster::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

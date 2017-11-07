@@ -1034,8 +1034,11 @@ window.app = (function ($, toastr, App) {
     })();
 
     var populateSelect = function ($element, list, id, value, defaultMessage, defaultValue, selectedId, isMandatory) {
-        if (typeof defaultValue === 'undefined') {
+        if (typeof defaultValue === 'undefined' || defaultValue === null) {
             defaultValue = -1;
+        }
+        if (typeof defaultMessage === "undefined" || defaultMessage === null) {
+            defaultMessage = "";
         }
         $element.html('');
         var $defaultOption = $("<option></option>").val(defaultValue).text(defaultMessage);
@@ -1241,6 +1244,18 @@ window.app = (function ($, toastr, App) {
         }
     };
 
+    var getDateRangeBetween = function (first, second) {
+        var diff = daysBetween(first, second);
+        var range = [];
+        for (var i = 0; i <= diff; i++) {
+            var rangeDate = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+            rangeDate.setDate(rangeDate.getDate() + i)
+            range.push(rangeDate);
+        }
+        return range;
+    }
+
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1274,7 +1289,8 @@ window.app = (function ($, toastr, App) {
         minToHour: minToHour,
         initializeKendoGrid: initializeKendoGrid,
         renderKendoGrid: renderKendoGrid,
-        genKendoActionTemplate: genKendoActionTemplate
+        genKendoActionTemplate: genKendoActionTemplate,
+        getDateRangeBetween: getDateRangeBetween
 
     };
 })(window.jQuery, window.toastr, window.App);
