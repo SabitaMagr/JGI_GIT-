@@ -1255,6 +1255,13 @@ window.app = (function ($, toastr, App) {
         return range;
     }
 
+    var exportDomToPdf = function (divName, cssUrl) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var popupWin = window.open('', '_blank', 'width=1000,height=500,toolbar=0,scrollbars=0,status=0');
+        popupWin.document.open();
+        popupWin.document.write('<style>@page{size:landscape;}</style><html><head><link rel="stylesheet" type="text/css" href="' + cssUrl + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.close();
+    };
 
     return {
         format: format,
@@ -1290,7 +1297,8 @@ window.app = (function ($, toastr, App) {
         initializeKendoGrid: initializeKendoGrid,
         renderKendoGrid: renderKendoGrid,
         genKendoActionTemplate: genKendoActionTemplate,
-        getDateRangeBetween: getDateRangeBetween
+        getDateRangeBetween: getDateRangeBetween,
+        exportDomToPdf: exportDomToPdf
 
     };
 })(window.jQuery, window.toastr, window.App);
