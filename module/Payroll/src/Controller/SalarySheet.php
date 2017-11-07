@@ -70,7 +70,7 @@ class SalarySheet {
         $results = [];
         foreach ($employeeList as $employee) {
             $filter = [];
-            $filter[SalarySheetDetailModel::EMPLOYEE_ID] = $employee['EMPLOYEE_ID'];
+            $filter[SalarySheetDetailModel::EMPLOYEE_ID] = $employee;
             $filter[SalarySheetDetailModel::MONTH_ID] = $monthId;
             $payDetails = Helper::extractDbData($this->salarySheetDetailRepo->fetchById($filter));
 
@@ -83,7 +83,7 @@ class SalarySheet {
                 $payDet['ruleValueKV'][$payDetail[SalarySheetDetailModel::PAY_ID]] = Helper::maintainFloatNumberFormat($tempVal);
             }
 
-            $results[$employee['EMPLOYEE_ID']] = $payDet;
+            $results[$employee] = $payDet;
         }
         return $results;
     }
