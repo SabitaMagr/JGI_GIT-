@@ -39,6 +39,18 @@ class LoginRepository implements RepositoryInterface {
         
     }
 
+    public function fetchByUserName($userName) {
+        $where = ['USER_NAME' => $userName];
+        $result = $this->tableGateway->select($where);
+        return $result->current();
+    }
+
+    public function updateByUserName($userName) {
+        $set = ['IS_LOCKED' => 'Y'];
+        $where = ['USER_NAME' => $userName];
+        $result = $this->tableGateway->update($set, $where);
+    }
+
     public function checkPasswordExpire($userName) {
         $where = "and USER_NAME='$userName'";
         $sql = "select EMPLOYEE_ID,USER_NAME,ROLE_ID,STATUS,CREATED_DT,MODIFIED_DT,IS_LOCKED,TRUNC(SYSDATE) AS CURRENTDATE,TRUNC(SYSDATE)-CREATED_DT AS CREATED_DAYS,TRUNC(SYSDATE)-MODIFIED_DT AS MODIFIED_DAYS from hris_users where status='E' " . $where;
