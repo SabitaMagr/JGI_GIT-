@@ -29,7 +29,7 @@ print $this->form()->openTag($form);
     <?php
     if ($this->messages) {
         foreach ($this->messages as $message) {
-            print '<span class="form-subtitle error-message">' . $message . '</span></br>'; 
+            print '<span class="form-subtitle error-message">' . $message . '</span></br>';
             print '<span class="form-subtitle error-message bigtext">Login to continue.</span>';
         }
     } else {
@@ -63,9 +63,8 @@ print $this->form()->openTag($form);
         print $this->formSubmit($submit);
         ?>
     </div>
-    <div class="pull-right">
+    <div class="pull-right" <?php if(!$preference->allowSystemAttendance){ echo 'style="display:none;"'; } ?>>
         <a href="<?= $this->url('registerAttendance') ?>" id="forget-password" class="forget-password">Register Attendance </a>
-
     </div>
 </div>
 <div class="form-actions ">
