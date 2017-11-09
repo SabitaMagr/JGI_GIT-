@@ -154,16 +154,6 @@ return [
                     ],
                 ],
             ],
-            'checkin' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/checkin[/:action[/:userId][/:type]]',
-                    'defaults' => [
-                        'controller' => Controller\CheckInController::class,
-                        'action' => 'index',
-                    ],
-                ],
-            ],
             'registerAttendance' => [
                 'type' => Segment::class,
                 'options' => [
@@ -248,7 +238,6 @@ return [
             Controller\TaskController::class => Controller\ControllerFactory::class,
             Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
             Controller\ChangePassword::class => Controller\ControllerFactory::class,
-            Controller\CheckInController::class => Controller\ControllerFactory::class,
             Controller\ApiController::class => Controller\ControllerFactory::class,
         ],
     ],

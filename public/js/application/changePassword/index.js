@@ -32,9 +32,16 @@
                 removeErrorSpan($newPassword);
                 removeErrorSpan($reNewPassword);
 
+                var reg = /^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/;
+
+                console.log('sdfdsf');
+                console.log($newPassword.val());
+                console.log(reg.test($newPassword.val()));
 
 
                 try {
+
+
                     if (success.data != $oldPassword.val()) {
                         throw {'message': 'Old Password is not Correct', 'object': $oldPassword};
                     }
@@ -43,6 +50,11 @@
                         throw {'message': 'This field cannot be empty.', 'object': $newPassword};
 
                     }
+
+                    if (!reg.test($newPassword.val())) {
+                        throw {'message': 'the password should be at least 8 character long and should contain Numeric, Alphabet, Capital Letter, Symbol Combinations', 'object': $newPassword}
+                    }
+
 
                     if ($newPassword.val() !== $reNewPassword.val()) {
                         throw {'message': 'Do Not Match With New Password', 'object': $reNewPassword};
@@ -78,4 +90,3 @@
     });
 }
 )(window.jQuery, window.app);
-

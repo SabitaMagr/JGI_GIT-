@@ -18,14 +18,15 @@
         $("#btnSubmit").click(function () {            
             var password = $("#form-password").val();
             var confirmPassword = $("#form-repassword").val();
-            var formGroup = $("#form-repassword").parent(".form-group");
+            var formGroup = $("#rePasswordDiv");
             if (password != confirmPassword) {
+                console.log('password mismatch');
                  $("#form-repassword").focus();
                 window.app.displayErrorMessage(formGroup, 1, "* Passwords do not match!!!");
-                return false;
             }else{
+                console.log('password match');
               window.app.displayErrorMessage(formGroup, 0, "Passwords do not match.");
-              return true;  
+            $('#usersetup-form')[0].submit();
             }
         });
         

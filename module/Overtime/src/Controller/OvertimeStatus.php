@@ -14,7 +14,6 @@ use SelfService\Model\OvertimeDetail;
 use SelfService\Repository\OvertimeDetailRepository;
 use SelfService\Repository\OvertimeRepository;
 use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use System\Repository\PreferenceSetupRepo;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;

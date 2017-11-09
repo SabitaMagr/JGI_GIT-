@@ -122,7 +122,6 @@ function getDateRows(a, b, c, d, e) {
     return k
 }
 function hideCalendarBox(a) {
-    return;
     a = "undefined" != typeof a ? a : !0,
             $("#ndp-nepali-box").fadeOut(100),
             npdCalendarVisible = !1,

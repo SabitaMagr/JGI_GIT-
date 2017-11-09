@@ -4,6 +4,7 @@ namespace Application\Controller;
 
 use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
+use Application\Model\Preference;
 use Application\Model\User;
 use Application\Model\UserLog;
 use Application\Repository\UserLogRepository;
@@ -13,6 +14,10 @@ use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
 use DateTime;
 use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
+use SelfService\Model\AttendanceRequestModel;
+use SelfService\Repository\AttendanceRequestRepository;
 use System\Repository\UserSetupRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
@@ -86,9 +91,11 @@ class RegisterAttendanceController extends AbstractActionController {
                 //check authentication...
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
-//                        ->setCredential(md5($request->getPost('password')))
                         ->setCredential($request->getPost('password'));
                 $result = $this->getAuthService()->authenticate();
+                foreach ($result->getMessages() as $message) {
+                    $this->flashmessenger()->addMessage($message);
+                }
                 if ($result->isValid()) {
                     $redirect = 'login';
                     //after authentication success get the user specific details
@@ -96,6 +103,12 @@ class RegisterAttendanceController extends AbstractActionController {
                     $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                     $employeeId = $resultRow->EMPLOYEE_ID;
                     $attendanceRepo = new AttendanceRepository($this->adapter);
+                    $preference = new Preference();
+                    if (isset($postData['checkInRemarks']) && $preference->needApprovalForLateCheckIn) {
+                        $this->attendanceRequest($postData, $employeeId);
+                        $this->getAuthService()->clearIdentity();
+                        return $this->redirect()->toRoute('login');
+                    }
                     if (!isset($postData['checkInRemarks'])) {
                         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
                         $inTime = $todayAttendance['IN_TIME'];
@@ -137,12 +150,8 @@ class RegisterAttendanceController extends AbstractActionController {
                     // to add user log details in HRIS_USER_LOG
                     $this->setUserLog($this->adapter, $request->getServer('REMOTE_ADDR'), $resultRow->USER_ID);
                     $this->getAuthService()->clearIdentity();
+                    $this->flashmessenger()->clearCurrentMessages();
                     $this->flashmessenger()->addMessage("Attendance Register Successfully!!!");
-                } else {
-                    foreach ($result->getMessages() as $message) {
-                        //save message temporary into flashmessenger
-                        $this->flashmessenger()->addMessage($message);
-                    }
                 }
             }
         }
@@ -246,6 +255,36 @@ class RegisterAttendanceController extends AbstractActionController {
         $this->getAuthService()->clearIdentity();
         $this->flashmessenger()->addMessage("Attendance Registered Successfully!!!");
         return $this->redirect()->toRoute('login');
+    }
+
+    public function attendanceRequest($postData, $employeeId) {
+        $attendanceModel = new AttendanceRequestModel();
+        $attendanceModel->employeeId = $employeeId;
+        $attendanceModel->attendanceDt = new Expression('TRUNC(SYSDATE)');
+        $attendanceModel->id = ((int) Helper::getMaxId($this->adapter, $attendanceModel::TABLE_NAME, "ID")) + 1;
+//
+        $currTime = $postData['time'];
+        if ($postData['type'] == 'IN') {
+            $attendanceModel->inTime = new Expression("TO_DATE('" . $currTime . "', 'HH:MI AM')");
+            $attendanceModel->outTime = NULL;
+            $attendanceModel->inRemarks = $postData['checkInRemarks'];
+        } else {
+            $attendanceModel->inTime = NULL;
+            $attendanceModel->outTime = new Expression("TO_DATE('" . $currTime . "', 'HH:MI AM')");
+            $attendanceModel->outRemarks = $postData['checkInRemarks'];
+        }
+        $attendanceModel->status = "RQ";
+
+
+        $attendanceRepo = new AttendanceRequestRepository($this->adapter);
+        $attendanceRepo->add($attendanceModel);
+
+        try {
+            HeadNotification::pushNotification(NotificationEvents::ATTENDANCE_APPLIED, $attendanceModel, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+        $this->flashmessenger()->addMessage("Attendance Request Submitted Successfully!!");
     }
 
 }
