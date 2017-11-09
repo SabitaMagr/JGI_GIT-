@@ -77,8 +77,9 @@ class PaySlip extends AbstractActionController {
 
             $salarySheetController = new SalarySheet($this->adapter);
             if ($salarySheetController->checkIfGenerated($monthId)) {
-                $employeeList[$employeeId] = "";
-                $results = $salarySheetController->viewSalarySheet($monthId, $employeeList)[$employeeId];
+                $employeeList['EMPLOYEE_ID'] = $employeeId;
+                $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
+                $results = $results[$employeeId];
             }
 
             $employeeRepo = new EmployeeRepository($this->adapter);

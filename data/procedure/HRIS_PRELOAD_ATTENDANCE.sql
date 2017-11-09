@@ -54,6 +54,32 @@ BEGIN
     IF V_ATTENDANCE_DATA_COUNT > 0 THEN
       CONTINUE;
     END IF;
+BEGIN
+      SELECT HS.SHIFT_ID,
+        WEEKDAY1,
+        WEEKDAY2,
+        WEEKDAY3,
+        WEEKDAY4,
+        WEEKDAY5,
+        WEEKDAY6,
+        WEEKDAY7
+      INTO V_SHIFT_ID,
+        V_WEEKDAY1,
+        V_WEEKDAY2,
+        V_WEEKDAY3,
+        V_WEEKDAY4,
+        V_WEEKDAY5,
+        V_WEEKDAY6,
+        V_WEEKDAY7
+      FROM HRIS_EMPLOYEE_SHIFT_ROASTER ES,
+        HRIS_SHIFTS HS
+      WHERE 1                = 1
+      AND ES.EMPLOYEE_ID     = V_EMPLOYEE_ID
+      AND TRUNC(ES.FOR_DATE) = V_ATTENDANCE_DATE
+      AND HS.STATUS          = 'E'
+      AND ES.SHIFT_ID        = HS.SHIFT_ID;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
     BEGIN
       SELECT HS.SHIFT_ID,
         WEEKDAY1,
@@ -120,6 +146,7 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20344, 'No default and normal shift defined for this time period');
       END;
     END;
+END;
     SELECT NVL(MAX (ID),0) + 1 INTO V_MAX_ID FROM HRIS_ATTENDANCE_DETAIL;
     BEGIN
       IF (TO_CHAR(V_ATTENDANCE_DATE,'D') ='1') THEN

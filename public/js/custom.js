@@ -1034,8 +1034,11 @@ window.app = (function ($, toastr, App) {
     })();
 
     var populateSelect = function ($element, list, id, value, defaultMessage, defaultValue, selectedId, isMandatory) {
-        if (typeof defaultValue === 'undefined') {
+        if (typeof defaultValue === 'undefined' || defaultValue === null) {
             defaultValue = -1;
+        }
+        if (typeof defaultMessage === "undefined" || defaultMessage === null) {
+            defaultMessage = "";
         }
         $element.html('');
         var $defaultOption = $("<option></option>").val(defaultValue).text(defaultMessage);
@@ -1241,6 +1244,25 @@ window.app = (function ($, toastr, App) {
         }
     };
 
+    var getDateRangeBetween = function (first, second) {
+        var diff = daysBetween(first, second);
+        var range = [];
+        for (var i = 0; i <= diff; i++) {
+            var rangeDate = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+            rangeDate.setDate(rangeDate.getDate() + i)
+            range.push(rangeDate);
+        }
+        return range;
+    }
+
+    var exportDomToPdf = function (divName, cssUrl) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var popupWin = window.open('', '_blank', 'width=1000,height=500,toolbar=0,scrollbars=0,status=0');
+        popupWin.document.open();
+        popupWin.document.write('<style>@page{size:landscape;}</style><html><head><link rel="stylesheet" type="text/css" href="' + cssUrl + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.close();
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1274,7 +1296,9 @@ window.app = (function ($, toastr, App) {
         minToHour: minToHour,
         initializeKendoGrid: initializeKendoGrid,
         renderKendoGrid: renderKendoGrid,
-        genKendoActionTemplate: genKendoActionTemplate
+        genKendoActionTemplate: genKendoActionTemplate,
+        getDateRangeBetween: getDateRangeBetween,
+        exportDomToPdf: exportDomToPdf
 
     };
 })(window.jQuery, window.toastr, window.App);

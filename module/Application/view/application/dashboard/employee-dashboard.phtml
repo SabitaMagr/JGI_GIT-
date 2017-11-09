@@ -171,68 +171,69 @@ $missPunchUrl = $this->url('myattendance', ['action' => 'index', 'id' => 8]);
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light calendar boxborder">
+            <div class="portlet-title ">
+                <div class="caption">
+                    <i class="fa fa-calendar font-green-sharp"></i>
+                    <span class="caption-subject font-green-sharp bold">Calendar</span>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row" style="padding:1%;">
+                    <div class="col-sm-3">
+                        <select class="form-control" id="nc-year"></select>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" id="nc-month"></select>
+                    </div>
+                </div>
+                <div id="nepaliCalendar" class="nc-container">
+                    <table id="nc-content" class="table table-bordered">
+                        <tr>
+                            <td class="nc-box"><div class="nc-header">Sunday</div><div id="nc-sunday"></div></td>
+                            <td class="nc-box"><div class="nc-header">Monday</div><div id="nc-monday"></div></td>
+                            <td class="nc-box"><div class="nc-header">Tuesday</div><div id="nc-tuesday"></div></td>
+                            <td class="nc-box"><div class="nc-header">Wednesday</div><div id="nc-wednesday"></div></td>
+                            <td class="nc-box"><div class="nc-header">Thrusday</div><div id="nc-thrusday"></div></td>
+                            <td class="nc-box"><div class="nc-header">Friday</div><div id="nc-friday"></div></td>
+                            <td class="nc-box"><div class="nc-header">Saturday</div><div id="nc-saturday"></div></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="calendar-colorbox" >
+                    <ul>
+                        <li>
+                            <div class="color-box colorbox-color1"></div>
+                            <span>Holiday</span>
+                        </li>
+                        <li>
+                            <div class="color-box colorbox-color2"></div>
+                            <span>Leave</span>
+                        </li>
+                        <li>
+                            <div class="color-box colorbox-color3"></div>
+                            <span>Training</span>
+                        </li>
+                        <li>
+                            <div class="color-box colorbox-color4"></div>
+                            <span>Tour</span>
+                        </li>
+                        <li>
+                            <div class="color-box colorbox-color5"></div>
+                            <span>Absent</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-6">
         <div class="row">
-            <div class="col-md-12">
-                <div class="portlet light calendar boxborder">
-                    <div class="portlet-title ">
-                        <div class="caption">
-                            <i class="fa fa-calendar font-green-sharp"></i>
-                            <span class="caption-subject font-green-sharp bold">Calendar</span>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="row" style="padding:1%;">
-                            <div class="col-sm-3">
-                                <select class="form-control" id="nc-year"></select>
-                            </div>
-                            <div class="col-sm-3">
-                                <select class="form-control" id="nc-month"></select>
-                            </div>
-                        </div>
-                        <div id="nepaliCalendar" class="nc-container">
-                            <table id="nc-content" class="table table-bordered">
-                                <tr>
-                                    <td class="nc-box"><div class="nc-header">Sunday</div><div id="nc-sunday"></div></td>
-                                    <td class="nc-box"><div class="nc-header">Monday</div><div id="nc-monday"></div></td>
-                                    <td class="nc-box"><div class="nc-header">Tuesday</div><div id="nc-tuesday"></div></td>
-                                    <td class="nc-box"><div class="nc-header">Wednesday</div><div id="nc-wednesday"></div></td>
-                                    <td class="nc-box"><div class="nc-header">Thrusday</div><div id="nc-thrusday"></div></td>
-                                    <td class="nc-box"><div class="nc-header">Friday</div><div id="nc-friday"></div></td>
-                                    <td class="nc-box"><div class="nc-header">Saturday</div><div id="nc-saturday"></div></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="calendar-colorbox" >
-                            <ul>
-                                <li>
-                                    <div class="color-box colorbox-color1"></div>
-                                    <span>Holiday</span>
-                                </li>
-                                <li>
-                                    <div class="color-box colorbox-color2"></div>
-                                    <span>Leave</span>
-                                </li>
-                                <li>
-                                    <div class="color-box colorbox-color3"></div>
-                                    <span>Training</span>
-                                </li>
-                                <li>
-                                    <div class="color-box colorbox-color4"></div>
-                                    <span>Tour</span>
-                                </li>
-                                <li>
-                                    <div class="color-box colorbox-color5"></div>
-                                    <span>Absent</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md-12">
                 <div class="profile-content">
                     <div class="row">

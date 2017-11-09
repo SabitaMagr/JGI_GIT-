@@ -11,6 +11,7 @@ $this->headScript()
     document.employeeId =<?= $employeeId ?>;
     document.pullPayRollGeneratedMonthsLink = "<?php echo $this->url("payslip", ["action" => "pullPayRollGeneratedMonths"]); ?>";
     document.fetchEmployeePaySlipLink = "<?php echo $this->url("payslip", ["action" => "fetchEmployeePaySlip"]); ?>";
+    document.cssUrl = '<?= $this->basePath('css/custom.css') ?>';
 </script>
 
 <div class="page-bar">
