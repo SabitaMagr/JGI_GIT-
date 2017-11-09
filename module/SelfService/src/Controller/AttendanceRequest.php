@@ -2,8 +2,10 @@
 
 namespace SelfService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -16,23 +18,17 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class AttendanceRequest extends AbstractActionController {
+class AttendanceRequest extends HrisController {
 
-    private $adapter;
     private $repository;
     private $form;
-    private $employeeId;
     private $recommender;
     private $approver;
-    private $storageData;
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->adapter = $adapter;
+        parent::__construct($adapter, $storage);
         $this->repository = new AttendanceRequestRepository($adapter);
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -85,6 +81,16 @@ class AttendanceRequest extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
+        $id = (int) $this->params()->fromRoute("id", 0);
+        if ($id !== 0) {
+            $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+            $attendanceData = $attendanceDetailRepo->fetchById($id);
+            $model = new AttendanceRequestModel();
+            $model->attendanceDt = $attendanceData['ATTENDANCE_DT'];
+            $model->inTime = $attendanceData['IN_TIME'];
+            $model->outTime = $attendanceData['OUT_TIME'];
+            $this->form->bind($model);
+        }
         $request = $this->getRequest();
 
         if ($request->isPost()) {

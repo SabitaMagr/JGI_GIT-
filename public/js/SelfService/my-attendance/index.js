@@ -1,6 +1,3 @@
-/**
- * Created by punam on 10/5/16.
- */
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -13,11 +10,12 @@
                 });
             }
         });
-
-
-
         var $table = $('#attendanceTable');
-
+        var actionTemplate = `
+                <a class="btn-edit" title="Attendance Request" href="${document.applyLink}/#:ID#" style="height:17px;display:#:(LATE_STATUS == 'X' || LATE_STATUS == 'Y')?'block':'none'#;">
+                    <i class="fa fa-edit"></i>
+                </a>
+        `;
         app.initializeKendoGrid($table, [
             {title: "Attendance Date",
                 columns: [{
@@ -33,6 +31,7 @@
             {field: "STATUS", title: "Status"},
             {field: "IN_REMARKS", title: "Late In Reason"},
             {field: "OUT_REMARKS", title: "Early Out Reason"},
+            {field: ["ID", "LATE_STATUS"], title: "Action", template: actionTemplate},
         ], "Attendance List.xlsx");
 
 
@@ -43,24 +42,13 @@
 
 
         var viewAttendance = function () {
-            console.log('sdf');
-            var employeeId = $('#employeeId').val();
-            var fromDate = $('#fromDate').val();
-            var toDate = $('#toDate').val();
-            var status = $('#statusId').val();
-            var missPunchOnly = 0;
-            if (($("#missPunchOnly").is(":checked"))) {
-                missPunchOnly = 1;
-            }
-
             app.pullDataById(document.attendancelistUrl, {data: {
-                    'fromDate': fromDate,
-                    'toDate': toDate,
-                    'employeeId': employeeId,
-                    'status': status,
-                    'missPunchOnly': missPunchOnly
+                    'fromDate': $('#fromDate').val(),
+                    'toDate': $('#toDate').val(),
+                    'employeeId': $('#employeeId').val(),
+                    'status': $('#statusId').val(),
+                    'presentStatus': $('#presentStatusId').val()
                 }}).then(function (response) {
-                console.log(response);
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
                 } else {
@@ -76,31 +64,24 @@
 
         app.searchTable('attendanceTable', ['ATTENDANCE_DT_AD', 'ATTENDANCE_DT_BS', 'IN_TIME', 'OUT_TIME', 'TOTAL_HOUR', 'STATUS', 'IN_REMARKS', 'OUT_REMARKS']);
 
+        var map = {
+            'ATTENDANCE_DT_AD': ' Attendance Date(AD)',
+            'ATTENDANCE_DT_BS': ' Attendance Date(BS)',
+            'IN_TIME': 'In Time',
+            'OUT_TIME': 'Out Time',
+            'TOTAL_HOUR': 'Total Hour',
+            'STATUS': 'Status',
+            'IN_REMARKS': 'In Remarks',
+            'OUT_REMARKS': 'Out Remarks'
+        };
         $('#excelExport').on('click', function () {
-            app.excelExport($table, {
-                'ATTENDANCE_DT_AD': ' Attendance Date(AD)',
-                'ATTENDANCE_DT_BS': ' Attendance Date(BS)',
-                'IN_TIME': 'In Time',
-                'OUT_TIME': 'Out Time',
-                'TOTAL_HOUR': 'Total Hour',
-                'STATUS': 'Status',
-                'IN_REMARKS': 'In Remarks',
-                'OUT_REMARKS': 'Out Remarks'
-            }, 'Attendance List');
+            app.excelExport($table, map, 'Attendance List');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, {
-                'ATTENDANCE_DT_AD': ' Attendance Date(AD)',
-                'ATTENDANCE_DT_BS': ' Attendance Date(BS)',
-                'IN_TIME': 'In Time',
-                'OUT_TIME': 'Out Time',
-                'TOTAL_HOUR': 'Total Hour',
-                'STATUS': 'Status',
-                'IN_REMARKS': 'In Remarks',
-                'OUT_REMARKS': 'Out Remarks'
-            }, 'Attendance List', 'A4');
+            app.exportToPDF($table, map, 'Attendance List', 'A4');
         });
 
+        var paramMap = {1: 'P', 2: 'L', 3: 'T', 4: 'TVL', 5: 'WOH', 6: 'LI', 7: 'EO', 8: 'MP'};
         setTimeout(function () {
             var pageUrl = window.location.href;
             var idFromParameter = pageUrl.substring(pageUrl.lastIndexOf('/') + 1);
@@ -110,18 +91,15 @@
                 var $status = $('#statusId');
                 var $fromDate = $('#fromDate');
                 var $toDate = $('#toDate');
-                var $missPunchOnly = $('#missPunchOnly');
-                var fiscalFromDate = fiscalYear.FROM_DATE;
-                var fiscalEndDate = fiscalYear.TO_DATE;
-                var map = {1: 'P', 2: 'L', 3: 'T', 4: 'TVL', 5: 'WOH', 6: 'LI', 7: 'EO'};
+                var $presentStatus = $('#presentStatusId');
 
-                $fromDate.val(fiscalFromDate);
-                $toDate.val(fiscalEndDate);
+                $fromDate.val(fiscalYear.FROM_DATE);
+                $toDate.val(fiscalYear.TO_DATE);
 
-                if (idFromParameter == 8) {
-                    $missPunchOnly.prop("checked", true);
+                if (idFromParameter >= 6) {
+                    $presentStatus.val(paramMap[idFromParameter]).change();
                 } else {
-                    $status.val(map[idFromParameter]).change();
+                    $status.val(paramMap[idFromParameter]).change();
                 }
 
                 viewAttendance();

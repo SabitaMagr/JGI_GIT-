@@ -140,59 +140,68 @@ class AttendanceRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function attendanceReport($fromDate, $toDate, $employeeId, $status, $missPunchOnly = false) {
+    public function attendanceReport($employeeId, $fromDate, $toDate, $status, $presentStatus) {
+        $employeeCondition = " AND A.EMPLOYEE_ID = {$employeeId}";
         $fromDateCondition = "";
         $toDateCondition = "";
-        $employeeCondition = '';
         $statusCondition = '';
-        $missPunchOnlyCondition = '';
+        $presentStatusCondition = '';
+
+
         if ($fromDate != null) {
             $fromDateCondition = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
         }
         if ($toDate != null) {
             $toDateCondition = " AND A.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
         }
-        if ($employeeId != null) {
-            $employeeCondition = " AND A.EMPLOYEE_ID ={$employeeId} ";
-        }
-        if ($status == "A") {
-            $statusCondition = "AND A.OVERALL_STATUS = 'AB'";
+
+        $statusMap = [
+            "A" => "'AB'",
+            "H" => "'HD','WH'",
+            "L" => "'LV','LP'",
+            "P" => "'PR','WD','WH','BA','LA','TP','LP','VP'",
+            "T" => "'TN','TP'",
+            "TVL" => "'TV','VP'",
+            "WOH" => "'WH'",
+            "WOD" => "'WD'",
+        ];
+
+        if ($status != null) {
+            if (gettype($status) === 'array') {
+                $q = "";
+                for ($i = 0; $i < sizeof($status); $i++) {
+                    if ($i == 0) {
+                        $q = $statusMap[$status[$i]];
+                    } else {
+                        $q .= "," . $statusMap[$status[$i]];
+                    }
+                }
+                $statusCondition = "AND A.OVERALL_STATUS IN ({$q})";
+            } else {
+                $statusCondition = "AND A.OVERALL_STATUS IN ({$statusMap[$status]})";
+            }
         }
 
-        if ($status == "H") {
-            $statusCondition = "AND (A.OVERALL_STATUS = 'HD' OR A.OVERALL_STATUS = 'WH' ) ";
+        $presentStatusMap = [
+            "LI" => "'L','B','Y'",
+            "EO" => "'E','B'",
+            "MP" => "'X','Y'",
+        ];
+        if ($presentStatus != null) {
+            if (gettype($presentStatus) === 'array') {
+                $q = "";
+                for ($i = 0; $i < sizeof($presentStatus); $i++) {
+                    if ($i == 0) {
+                        $q = $presentStatusMap[$presentStatus[$i]];
+                    } else {
+                        $q .= "," . $presentStatusMap[$presentStatus[$i]];
+                    }
+                }
+                $presentStatusCondition = "AND A.LATE_STATUS IN ({$q})";
+            } else {
+                $presentStatusCondition = "AND A.LATE_STATUS IN ({$presentStatusMap[$presentStatus]})";
+            }
         }
-
-        if ($status == "L") {
-            $statusCondition = "AND (A.OVERALL_STATUS = 'LV' OR A.OVERALL_STATUS = 'LP' ) ";
-        }
-
-        if ($status == "P") {
-            $statusCondition = "AND (A.OVERALL_STATUS = 'PR' OR A.OVERALL_STATUS = 'WD' OR A.OVERALL_STATUS = 'WH' OR A.OVERALL_STATUS = 'BA' OR A.OVERALL_STATUS = 'LA' OR A.OVERALL_STATUS = 'TP' OR A.OVERALL_STATUS = 'LP' OR A.OVERALL_STATUS = 'VP' ) ";
-        }
-        if ($status == "T") {
-            $statusCondition = "AND (A.OVERALL_STATUS = 'TN' OR A.OVERALL_STATUS = 'TP' ) ";
-        }
-        if ($status == "TVL") {
-            $statusCondition = "AND (A.OVERALL_STATUS = 'TV' OR A.OVERALL_STATUS = 'VP' ) ";
-        }
-        if ($status == "WOH") {
-            $statusCondition = "AND A.OVERALL_STATUS = 'WH'";
-        }
-        if ($status == "WOD") {
-            $statusCondition = "AND A.OVERALL_STATUS = 'WD'";
-        }
-        if ($status == "LI") {
-            $statusCondition = "AND (A.LATE_STATUS = 'L' OR A.LATE_STATUS = 'B' OR A.LATE_STATUS ='Y') ";
-        }
-        if ($status == "EO") {
-            $statusCondition = "AND (A.LATE_STATUS = 'E' OR A.LATE_STATUS = 'B' ) ";
-        }
-
-        if ($missPunchOnly) {
-            $missPunchOnlyCondition = "AND (A.LATE_STATUS = 'X' OR A.LATE_STATUS = 'Y' ) ";
-        }
-
         $sql = "
                 SELECT A.ID                                        AS ID,
                   A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,
@@ -210,9 +219,7 @@ class AttendanceRepository implements RepositoryInterface {
                   A.SHIFT_ID                                       AS SHIFT_ID,
                   A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
                   A.LATE_STATUS                                    AS LATE_STATUS,
-                  INITCAP(E.FIRST_NAME)                            AS FIRST_NAME,
-                  INITCAP(E.MIDDLE_NAME)                           AS MIDDLE_NAME,
-                  INITCAP(E.LAST_NAME)                             AS LAST_NAME,
+                  A.OVERALL_STATUS                                    AS OVERALL_STATUS,
                   H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
                   L.LEAVE_ENAME                                    AS LEAVE_ENAME,
                   T.TRAINING_NAME                                  AS TRAINING_NAME,
@@ -283,7 +290,7 @@ class AttendanceRepository implements RepositoryInterface {
                 {$fromDateCondition}
                 {$toDateCondition}
                 {$statusCondition}
-                {$missPunchOnlyCondition}
+                {$presentStatusCondition}
                 ORDER BY A.ATTENDANCE_DT DESC
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);

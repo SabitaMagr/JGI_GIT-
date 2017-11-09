@@ -37,7 +37,6 @@ class AttendanceByHr extends AbstractActionController {
         $statusFormElement = new Select();
         $statusFormElement->setName("status");
         $status = array(
-            "All" => "All Status",
             "P" => "Present Only",
             "A" => "Absent Only",
             "H" => "On Holiday",

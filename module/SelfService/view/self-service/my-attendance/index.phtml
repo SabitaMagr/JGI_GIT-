@@ -12,10 +12,10 @@ $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'));
 $this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-        ->appendFile($this->basePath('js/SelfService/my-attendance/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('js/SelfService/my-attendance/index.js'));
 ?>
 
 
@@ -23,6 +23,7 @@ $this->headScript()
     document.ids =<?php echo json_encode(["fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => "", "statusId" => "All"]) ?>;
     document.fiscalYear = '<?php echo json_encode($fiscalYear); ?>';
     document.attendancelistUrl = '<?= $this->url("myattendance", ["action" => "pullAttendanceList"]) ?>';
+    document.applyLink = '<?= $this->url("attendancerequest", ["action" => "add"]) ?>';
 </script>
 
 <div class="page-bar">
@@ -43,7 +44,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<!--<div ng-app="hris" ng-controller="attendanceController" >-->
 <div id="hris-page-content">
     <div class="margin-top-20">
 
@@ -83,76 +83,60 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
 
             <div class="portlet-body">
+                <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-sm-6">
                         <div class="row">
-                            <div class="col-sm-8">
-                                <div class="row">
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="fromDate">From Date</label>
-                                            <input type="text" id="fromDate" name="fromDate" class="form-control"/>
-                                        </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="fromDate">From Date</label>
+                                    <input type="text" id="fromDate" name="fromDate" class="form-control"/>
+                                </div>
 
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="nepaliFromDate">&nbsp;</label>
-                                            <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
-                                        </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="nepaliFromDate">&nbsp;</label>
+                                    <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                                </div>
 
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="toDate">To Date</label>
-                                            <input type="text"  id="toDate" name="toDate"  class="form-control"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <div class="form-group">
-                                            <label for="nepaliToDate">&nbsp;</label>
-                                            <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="toDate">To Date</label>
+                                    <input type="text"  id="toDate" name="toDate"  class="form-control"/>
                                 </div>
                             </div>
-                            <input type="hidden" name="employeeId" ng-model="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
-                            <div class=" col-sm-4 ">
-                                <button id="reset" class="btn default btn-sm pull-right">
-                                    Reset
-                                    <i class="fa fa-refresh"></i>
-                                </button>
-                                <button  id="myAttendance" class="btn btn-default btn-sm pull-right">
-                                    VIEW<i class="fa fa-search"></i>
-                                </button>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="nepaliToDate">&nbsp;</label>
+                                    <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class='row'>
                     <div class="col-sm-2">
+                        <?php print $this->formLabel($status); ?>
                         <?php print $this->formElement($status); ?>
                     </div> 
                     <div class="col-sm-2">
-                        <div  style="float: left;margin-top: 1%;font-size: 12px;">
-                            <label>Missed-Punch Only</label>
-                            <label style="padding-left:0px!important;" class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                <input class="" type="checkbox" id="missPunchOnly" name="missPunchOnly"/>
-                                <span></span>
-                            </label>
-                        </div>
+                        <?php print $this->formLabel($presentStatus); ?>
+                        <?php print $this->formElement($presentStatus); ?>
                     </div>
-
+                    <div class=" col-sm-2">
+                        <button id="reset" class="btn default btn-sm pull-right">
+                            Reset
+                            <i class="fa fa-refresh"></i>
+                        </button>
+                        <button  id="myAttendance" class="btn btn-default btn-sm pull-right">
+                            VIEW<i class="fa fa-search"></i>
+                        </button>
+                    </div>
                 </div>
-
             </div>
         </div>
-
-
         <div id="attendanceTable">
         </div>
 
     </div>
 </div>
-<!--</div>-->
