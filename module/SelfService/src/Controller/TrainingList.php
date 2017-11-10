@@ -58,9 +58,6 @@ class TrainingList extends AbstractActionController {
         }
 
         $detail = $this->trainingAssignRepo->getDetailByEmployeeID($employeeId, $trainingId);
-
-        ///print_r($detail); die();
-
         return Helper::addFlashMessagesToArray($this, ['detail' => $detail]);
     }
 

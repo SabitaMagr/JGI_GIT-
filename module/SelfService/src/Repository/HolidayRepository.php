@@ -8,6 +8,7 @@ use HolidayManagement\Model\EmployeeHoliday;
 use HolidayManagement\Model\Holiday;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -46,19 +47,23 @@ class HolidayRepository implements RepositoryInterface {
             new Expression("H.HOLIDAY_CODE AS HOLIDAY_CODE"),
             new Expression("INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME"),
             new Expression("H.HALFDAY AS HALFDAY"),
+            new Expression("(
+                              CASE
+                                WHEN (H.HALFDAY IS NULL
+                                OR H.HALFDAY     = 'N')
+                                THEN 'Full Day'
+                                WHEN H.HALFDAY = 'F'
+                                THEN 'First Half'
+                                ELSE 'Second Half'
+                              END) AS HALFDAY_DETAIL"),
             new Expression("H.FISCAL_YEAR AS FISCAL_YEAR"),
             new Expression("H.REMARKS AS REMARKS"),
                 ], true);
 
         $select->from(['H' => Holiday::TABLE_NAME])
-                ->join(['EH' => EmployeeHoliday::TABLE_NAME], "EH.HOLIDAY_ID=H.HOLIDAY_ID", ['EMPLOYEE_ID'], "left")
-        ;
-        $select->where([
-            "H.STATUS='E'",
-            "EH.EMPLOYEE_ID=" . $employeeId,
-        ]);
-
-        $select->order("H.START_DATE ASC");
+                ->join(['EH' => EmployeeHoliday::TABLE_NAME], "EH.HOLIDAY_ID=H.HOLIDAY_ID", ['EMPLOYEE_ID'], "left");
+        $select->where(["H.STATUS" => 'E', "EH.EMPLOYEE_ID" => $employeeId,]);
+        $select->order(["H.START_DATE" => Select::ORDER_ASCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;

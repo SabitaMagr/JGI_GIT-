@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -9,22 +10,12 @@ use Exception;
 use SelfService\Repository\AttendanceRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class MyAttendance extends AbstractActionController {
-
-    private $adapter;
-    private $repository;
-    private $employeeId;
-    private $storageData;
-    private $acl;
+class MyAttendance extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->adapter = $adapter;
-        $this->repository = new AttendanceRepository($adapter);
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
-        $this->acl = $this->storageData['acl'];
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(AttendanceRepository::class);
     }
 
     public function indexAction() {
