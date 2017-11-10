@@ -1,7 +1,9 @@
 <?php
+
 namespace Advance;
 
 use Advance\Controller\AdvanceApply;
+use Advance\Controller\AdvanceRequestSelf;
 use Advance\Controller\AdvanceSetup;
 use Advance\Controller\AdvanceStatus;
 use Application\Controller\ControllerFactory;
@@ -52,29 +54,43 @@ return [
                     ],
                 ],
             ],
+            'advance-request-self' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/advance/request/self[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AdvanceRequestSelf::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
         'advanceStatus' => [
-                [
+            [
                 'label' => "Advance Request",
                 'route' => "advanceStatus"
             ],
-                [
+            [
                 'label' => "Advance Request",
                 'route' => "advanceStatus",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'advanceStatus',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'advanceStatus',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Detail',
                         'route' => 'advanceStatus',
                         'action' => 'view',
@@ -83,25 +99,25 @@ return [
             ],
         ],
         'advanceApply' => [
-                [
+            [
                 'label' => "Advance Apply",
                 'route' => "advanceApply"
             ],
-                [
+            [
                 'label' => "Advance Apply",
                 'route' => "advanceApply",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'advanceApply',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'advanceApply',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'advanceApply',
                         'action' => 'edit',
@@ -110,28 +126,55 @@ return [
             ],
         ],
         'advance-setup' => [
-                [
+            [
                 'label' => "Advance Setup",
                 'route' => "advance-setup"
             ],
-                [
+            [
                 'label' => "Advance Setup",
                 'route' => "advance-setup",
                 'pages' => [
-                        [
+                    [
                         'label' => 'List',
                         'route' => 'advance-setup',
                         'action' => 'index',
                     ],
-                        [
+                    [
                         'label' => 'Add',
                         'route' => 'advance-setup',
                         'action' => 'add',
                     ],
-                        [
+                    [
                         'label' => 'Edit',
                         'route' => 'advance-setup',
                         'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
+        'advance-request-self' => [
+            [
+                'label' => "Advance Request",
+                'route' => "advance-request-self"
+            ],
+            [
+                'label' => "Advance Request",
+                'route' => "advance-request-self",
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'advance-request-self',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'advance-request-self',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'View',
+                        'route' => 'advance-request-self',
+                        'action' => 'view',
                     ],
                 ],
             ],
@@ -141,7 +184,8 @@ return [
         'factories' => [
             AdvanceApply::class => ControllerFactory::class,
             AdvanceStatus::class => ControllerFactory::class,
-            AdvanceSetup::class=> ControllerFactory::class
+            AdvanceSetup::class => ControllerFactory::class,
+            AdvanceRequestSelf::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
