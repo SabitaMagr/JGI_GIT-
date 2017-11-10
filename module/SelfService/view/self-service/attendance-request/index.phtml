@@ -24,6 +24,7 @@ $this->headScript()
     document.ids =<?php echo json_encode(["attendanceRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.pullAttendanceUrl = '<?= $this->url("attendancerequest", ["action" => "pullAttendanceRequestList"]) ?>';
     document.viewLink = '<?= $this->url("attendancerequest", ["action" => "view"]) ?>';
+    document.editLink = '<?= $this->url("attendancerequest", ["action" => "edit"]) ?>';
     document.deleteLink = '<?= $this->url("attendancerequest", ["action" => "delete"]) ?>';
 </script>
 
@@ -93,7 +94,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="fromDate">From Date</label>
-                            <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                            <input type="text" id="fromDate" name="fromDate" class="form-control"/>
                         </div>
 
                     </div>
@@ -107,7 +108,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class="col-sm-3">
                         <div class="form-group">
                             <label for="toDate">To Date</label>
-                            <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                            <input type="text"  id="toDate" name="toDate"  class="form-control"/>
                         </div>
                     </div>
                     <div class="col-sm-3">

@@ -79,7 +79,7 @@ class CalculateOvertime extends AbstractActionController {
         $detail = $this->repository->fetchById($id);
         $attendanceByHrModel->exchangeArrayFromDB($detail);
         $this->form->bind($attendanceByHrModel);
-        $overtime = $overtimeRepo->getAllByEmployeeId($detail['EMPLOYEE_ID'], $detail['ATTENDANCE_DT'], 'AP', true);
+        $overtime = $overtimeRepo->getAllByEmployeeId($detail['EMPLOYEE_ID'], $detail['ATTENDANCE_DT'], 'AP')->current();
         $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
         $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($overtime['OVERTIME_ID']);
         $overtimeDetails = [];

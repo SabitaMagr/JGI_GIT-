@@ -124,27 +124,34 @@ class AttendanceRequestRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("INITCAP(TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_AD"),
-            new Expression("BS_DATE(TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_BS"),
+            new Expression("A.ID AS ID"),
+            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_AD"),
             new Expression("BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_BS"),
-            new Expression("INITCAP(TO_CHAR(A.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
-            new Expression("INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM')) AS IN_TIME"),
-            new Expression("INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM')) AS OUT_TIME"),
-            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("A.ID AS ID"),
+            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
+            new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
             new Expression("A.IN_REMARKS AS IN_REMARKS"),
             new Expression("A.OUT_REMARKS AS OUT_REMARKS"),
             new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),
-            new Expression("A.STATUS AS STATUS"),
+            new Expression("INITCAP(TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_AD"),
+            new Expression("BS_DATE(TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY')) AS REQUESTED_DT_BS"),
+            new Expression("LEAVE_STATUS_DESC(A.STATUS) AS STATUS"),
+            new Expression("A.RECOMMENDED_BY AS RECOMMENDED_BY"),
+            new Expression("INITCAP(TO_CHAR(A.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
+            new Expression("A.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
+            new Expression("A.APPROVED_BY AS APPROVED_BY"),
+            new Expression("INITCAP(TO_CHAR(A.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
             new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("A.APPROVED_BY AS APPROVED_BY")
+            new Expression("(CASE WHEN A.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
+            new Expression("(CASE WHEN A.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=A.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left")
-                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=A.EMPLOYEE_ID", ['APPROVER' => 'RECOMMEND_BY'], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.RECOMMEND_BY", ['APRV_FN' => new Expression("INITCAP(APRV.FIRST_NAME)"), 'APRV_MN' => new Expression("INITCAP(APRV.MIDDLE_NAME)"), 'APRV_LN' => new Expression("INITCAP(APRV.LAST_NAME)")], "left");
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=A.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=A.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=A.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=A.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
 
         $select->where(['A.EMPLOYEE_ID=' . $employeeId]);
 

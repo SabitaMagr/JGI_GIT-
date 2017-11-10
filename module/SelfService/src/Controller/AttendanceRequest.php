@@ -235,62 +235,11 @@ class AttendanceRequest extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $postedData = $request->getPost();
-                $data = $postedData->data;
+                $data = $request->getPost();
                 $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
-                $attendanceList = $attendanceRequestRepository->getFilterRecords($data);
-                $attendanceRequest = [];
-                $getValue = function($status) {
-                    if ($status == "RQ") {
-                        return "Pending";
-                    } else if ($status == 'RC') {
-                        return "Recommended";
-                    } else if ($status == "R") {
-                        return "Rejected";
-                    } else if ($status == "AP") {
-                        return "Approved";
-                    } else if ($status == "C") {
-                        return "Cancelled";
-                    }
-                };
-
-                $getAction = function($status) {
-                    if ($status == "RQ") {
-                        return ["delete" => 'Cancel Request'];
-                    } else {
-                        return ["view" => 'View'];
-                    }
-                };
-
-                $fullName = function($id) {
-                    $empRepository = new EmployeeRepository($this->adapter);
-                    $empDtl = $empRepository->fetchById($id);
-                    return $empDtl['FULL_NAME'];
-                };
-                foreach ($attendanceList as $attendanceRow) {
-                    $status = $getValue($attendanceRow['STATUS']);
-                    $action = $getAction($attendanceRow['STATUS']);
-
-                    $statusId = $attendanceRow['STATUS'];
-                    $approvedDT = $attendanceRow['APPROVED_DT'];
-
-                    $authApprover = ($statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $attendanceRow['APPROVER'] : $attendanceRow['APPROVED_BY'];
-                    $approverName = $fullName($authApprover);
-
-                    $new_row = array_merge($attendanceRow, [
-                        'A_STATUS' => $status,
-                        'ACTION' => key($action),
-                        'ACTION_TEXT' => $action[key($action)],
-                        'APPROVER_NAME' => $approverName
-                    ]);
-                    if ($statusId == 'RQ') {
-                        $new_row['ALLOW_TO_EDIT'] = 1;
-                    } else {
-                        $new_row['ALLOW_TO_EDIT'] = 0;
-                    }
-                    array_push($attendanceRequest, $new_row);
-                }
-                return new CustomViewModel(['success' => true, 'data' => $attendanceRequest, 'error' => '']);
+                $rawList = $attendanceRequestRepository->getFilterRecords($data);
+                $attendanceList = Helper::extractDbData($rawList);
+                return new CustomViewModel(['success' => true, 'data' => $attendanceList, 'error' => '']);
             } catch (Exception $e) {
                 return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
