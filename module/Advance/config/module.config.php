@@ -1,9 +1,10 @@
 <?php
 namespace Advance;
 
-use Application\Controller\ControllerFactory;
-use Advance\Controller\AdvanceStatus;
 use Advance\Controller\AdvanceApply;
+use Advance\Controller\AdvanceSetup;
+use Advance\Controller\AdvanceStatus;
+use Application\Controller\ControllerFactory;
 use Zend\Router\Http\Segment;
 
 return [
@@ -33,6 +34,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => AdvanceApply::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'advance-setup' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/advance/setup[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => AdvanceSetup::class,
                         'action' => 'index'
                     ],
                 ],
@@ -94,11 +109,39 @@ return [
                 ],
             ],
         ],
+        'advance-setup' => [
+                [
+                'label' => "Advance Setup",
+                'route' => "advance-setup"
+            ],
+                [
+                'label' => "Advance Setup",
+                'route' => "advance-setup",
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'advance-setup',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'advance-setup',
+                        'action' => 'add',
+                    ],
+                        [
+                        'label' => 'Edit',
+                        'route' => 'advance-setup',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
-            Controller\AdvanceApply::class => ControllerFactory::class,
-            Controller\AdvanceStatus::class => ControllerFactory::class
+            AdvanceApply::class => ControllerFactory::class,
+            AdvanceStatus::class => ControllerFactory::class,
+            AdvanceSetup::class=> ControllerFactory::class
         ],
     ],
     'view_manager' => [
