@@ -23,11 +23,11 @@
                         title: "BS",
                         template: "<span>#: (END_DATE_BS == null) ? '-' : END_DATE_BS #</span>"
                     }]},
-            {field: "HALF_DAY", title: "Interval", template: "<span>#: (HALF_DAY == null) ? '-' : HALF_DAY #</span>"}
+            {field: "HALFDAY_DETAIL", title: "Interval", template: "<span>#: (HALFDAY_DETAIL == null) ? '-' : HALFDAY_DETAIL #</span>"}
             ,
         ], "Holiday List.xlsx");
-        
-        app.searchTable('holidayTable', ["HOLIDAY_ENAME", "START_DATE_AD","START_DATE_BS","END_DATE_AD","END_DATE_BS","HALF_DAY"]);
+
+        app.searchTable('holidayTable', ["HOLIDAY_ENAME", "START_DATE_AD", "START_DATE_BS", "END_DATE_AD", "END_DATE_BS", "HALFDAY_DETAIL"]);
 
         app.pullDataById("", {}).then(function (response) {
             app.renderKendoGrid($table, response.data);
@@ -35,29 +35,22 @@
 
         });
 
+        var exportMap = {
+            'HOLIDAY_ENAME': 'Holiday Name',
+            'START_DATE_AD': 'START_DATE AD',
+            'START_DATE_BS': 'START_DATE BS',
+            'END_DATE_AD': 'END_DATE AD',
+            'END_DATE_BS': 'END_DATE BS',
+            'HALFDAY_DETAIL': 'Interval'
+        };
         $('#excelExport').on('click', function () {
-            app.excelExport($table, {
-                'HOLIDAY_ENAME': 'Holiday Name',
-                'START_DATE_AD': 'START_DATE AD',
-                'START_DATE_BS': 'START_DATE BS',
-                'END_DATE_AD': 'END_DATE AD',
-                'END_DATE_BS': 'END_DATE BS',
-                'HALF_DAY': 'Interval'
-            }, 'Holiday List');
+            app.excelExport($table, exportMap, 'Holiday List');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, {
-                'HOLIDAY_ENAME': 'Holiday Name',
-                'START_DATE_AD': 'START_DATE AD',
-                'START_DATE_BS': 'START_DATE BS',
-                'END_DATE_AD': 'END_DATE AD',
-                'END_DATE_BS': 'END_DATE BS',
-                'HALF_DAY': 'Interval'
-            }, 'Holiday List');
+            app.exportToPDF($table, exportMap, 'Holiday List');
         });
 
 
-    }
-    );
+    });
 }
 )(window.jQuery, window.app);

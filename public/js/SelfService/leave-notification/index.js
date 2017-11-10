@@ -39,8 +39,8 @@
                         template: "<span>#: (TO_DATE_BS == null) ? '-' : TO_DATE_BS #</span>"}
                 ]},
             {field: "NO_OF_DAYS", title: "Duration"},
-            {field: "STATUS", title: "Status"},
-            {field: "APPROVED_FLAG", title: "Approved Flag"},
+            {field: "STATUS", title: "Overall Status"},
+            {field: "SUB_APPROVED_FLAG", title: "Approved"},
             {field: ["ID"], title: "Action", template: action}
         ], "leave Notification List.xlsx");
 
@@ -51,55 +51,34 @@
         }, function (error) {
 
         });
-
+        var exportMap = {
+            'FULL_NAME': 'Name',
+            'LEAVE_ENAME': 'Leave',
+            'REQUESTED_DT_AD': 'Requested Date(AD)',
+            'REQUESTED_DT_BS': 'Requested Date(BS)',
+            'FROM_DATE_AD': 'From Date(AD)',
+            'FROM_DATE_BS': 'From Date(BS)',
+            'TO_DATE_AD': 'To Date(AD)',
+            'TO_DATE_BS': 'To Date(BS)',
+            'NO_OF_DAYS': 'No Days',
+            'STATUS': 'Overall Status',
+            'REMARKS': 'Remarks',
+            'RECOMMENDER_NAME': 'Recommender',
+            'APPROVER_NAME': 'Approver',
+            'RECOMMENDED_REMARKS': 'Recommender Remarks',
+            'RECOMMENDED_DT': 'Recommender Date',
+            'APPROVED_REMARKS': 'Approved Remarks',
+            'APPROVED_DT': 'Approved Date',
+            'SUB_EMPLOYEE_NAME': 'Substitute Employee',
+            'SUB_APPROVED_FLAG': 'Substitute App Flag',
+            'SUB_APPROVED_DATE': 'Substitute Approved Date',
+        };
         $('#excelExport').on('click', function () {
-            app.excelExport($table, {
-                'FULL_NAME': 'Name',
-                'LEAVE_ENAME': 'Leave',
-                'REQUESTED_DT_AD': 'Requested Date(AD)',
-                'REQUESTED_DT_BS': 'Requested Date(BS)',
-                'FROM_DATE_AD': 'From Date(AD)',
-                'FROM_DATE_BS': 'From Date(BS)',
-                'TO_DATE_AD': 'To Date(AD)',
-                'TO_DATE_BS': 'To Date(BS)',
-                'NO_OF_DAYS': 'No Days',
-                'STATUS': 'Status',
-                'REMARKS': 'Remarks',
-                'RECOMMENDER_NAME': 'Recommender',
-                'APPROVER_NAME': 'Approver',
-                'RECOMMENDED_REMARKS': 'Recommender Remarks',
-                'RECOMMENDED_DT': 'Recommender Date',
-                'APPROVED_REMARKS': 'Approved Remarks',
-                'APPROVED_DT': 'Approved Date',
-                'SUB_EMPLOYEE_NAME': 'Substitute Employee',
-                'SUB_APPROVED_FLAG': 'Substitute App Flag',
-                'SUB_APPROVED_DATE': 'Substitute Approved Date',
-            }, 'Leave Notification List');
+            app.excelExport($table, exportMap, 'Leave Notification List');
         });
 
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, {
-                'FULL_NAME': 'Name',
-                'LEAVE_ENAME': 'Leave',
-                'REQUESTED_DT_AD': 'Requested Date(AD)',
-                'REQUESTED_DT_BS': 'Requested Date(BS)',
-                'FROM_DATE_AD': 'From Date(AD)',
-                'FROM_DATE_BS': 'From Date(BS)',
-                'TO_DATE_AD': 'To Date(AD)',
-                'TO_DATE_BS': 'To Date(BS)',
-                'NO_OF_DAYS': 'No Days',
-                'STATUS': 'Status',
-                'REMARKS': 'Remarks',
-                'RECOMMENDER_NAME': 'Recommender',
-                'APPROVER_NAME': 'Approver',
-                'RECOMMENDED_REMARKS': 'Recommender Remarks',
-                'RECOMMENDED_DT': 'Recommender Date',
-                'APPROVED_REMARKS': 'Approved Remarks',
-                'APPROVED_DT': 'Approved Date',
-                'SUB_EMPLOYEE_NAME': 'Substitute Employee',
-                'SUB_APPROVED_FLAG': 'Substitute App Flag',
-                'SUB_APPROVED_DATE': 'Substitute Approved Date',
-            }, 'Leave Notification List', 'A2');
+            app.exportToPDF($table, exportMap, 'Leave Notification List', 'A2');
         });
     });
 })(window.jQuery, window.app);

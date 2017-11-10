@@ -13,15 +13,23 @@
         });
 
         var $table = $('#leaveRequestTable');
-        var viewAction = '<span><a class="btn-edit" href="' + document.viewLink + '/#: ID #" style="height:17px;" title="view detail">'
-                + '<i class="fa fa-search-plus"></i>'
-                + '</a>';
-        var deleteAction = '#if(ALLOW_TO_EDIT == 1){#'
-                + '<a class="confirmation btn-delete" href="' + document.deleteLink + '/#: ID #" id="bs_#:ID #" style="height:17px;">'
-                + '<i class="fa fa-trash-o"></i>'
-                + '</a> #}#'
-                + '</span>';
-        var action = viewAction + deleteAction;
+        var action = `
+            <div class="clearfix">
+                <a class="btn btn-icon-only green" href="${document.viewLink}/#:ID#" style="height:17px;" title="View Detail">
+                    <i class="fa fa-search"></i>
+                </a>
+                #if(ALLOW_EDIT=='Y'){#
+                <a class="btn btn-icon-only yellow" href="${document.editLink}/#:ID#" style="height:17px;" title="Edit">
+                    <i class="fa fa-edit"></i>
+                </a>
+                #}#
+                #if(ALLOW_DELETE=='Y'){#
+                <a  class="btn btn-icon-only red confirmation" href="${document.deleteLink}/#:ID#" style="height:17px;" title="Cancel">
+                    <i class="fa fa-times"></i>
+                </a>
+                #}#
+            </div>
+        `;
         app.initializeKendoGrid($table, [
             {field: "LEAVE_ENAME", title: "Leave Name"},
             {title: "Applied Date",
@@ -51,8 +59,8 @@
                         template: "<span>#: (TO_DATE_BS == null) ? '-' : TO_DATE_BS #</span>"}]},
 
             {field: "NO_OF_DAYS", title: "Duration"},
-            {field: "STATUS", title: "Status"},
-            {field: ["ID", "ALLOW_TO_EDIT"], title: "Action", template: action}
+            {field: "STATUS_DETAIL", title: "Status"},
+            {field: ["ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
         ], "leave Request List.xlsx");
 
 
@@ -63,13 +71,13 @@
             var fromDate = $('#fromDate').val();
             var toDate = $('#toDate').val();
 
-            app.pullDataById(document.getLeaveRequest, {data: {
-                    'employeeId': employeeId,
-                    'leaveId': leaveId,
-                    'leaveRequestStatusId': leaveRequestStatusId,
-                    'fromDate': fromDate,
-                    'toDate': toDate
-                }}).then(function (response) {
+            app.pullDataById('', {
+                'employeeId': employeeId,
+                'leaveId': leaveId,
+                'leaveRequestStatusId': leaveRequestStatusId,
+                'fromDate': fromDate,
+                'toDate': toDate
+            }).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
                 } else {
@@ -82,48 +90,31 @@
         });
 
 
-        app.searchTable('leaveRequestTable', ['LEAVE_ENAME', 'REQUESTED_DT_AD', 'REQUESTED_DT_Bs', 'FROM_DATE_AD', 'FROM_DATE_BS', 'TO_DATE_AD', 'TO_DATE_BS', 'NO_OF_DAYS', 'STATUS']);
-
+        app.searchTable('leaveRequestTable', ['LEAVE_ENAME', 'REQUESTED_DT_AD', 'REQUESTED_DT_BS', 'FROM_DATE_AD', 'FROM_DATE_BS', 'TO_DATE_AD', 'TO_DATE_BS', 'NO_OF_DAYS', 'STATUS_DETAIL']);
+        var exportMap = {
+            'LEAVE_ENAME': 'Leave',
+            'REQUESTED_DT_AD': 'Requested Date(AD)',
+            'REQUESTED_DT_BS': 'Requested Date(BS)',
+            'FROM_DATE_AD': 'Start Date(AD)',
+            'FROM_DATE_BS': 'Start Date(BS)',
+            'TO_DATE_AD': 'End Date(AD)',
+            'TO_DATE_BS': 'End Date(BS)',
+            'NO_OF_DAYS': 'No Of Days',
+            'STATUS_DETAIL': 'Status',
+            'REMARKS': 'Remarks',
+            'RECOMMENDER_NAME': 'Recommender',
+            'RECOMMENDED_REMARKS': 'Recommender Remarks',
+            'RECOMMENDED_DT': 'Recommended Date',
+            'APPROVER_NAME': 'Approver',
+            'APPROVED_REMARKS': 'Approver Remarks',
+            'APPROVED_DT': 'Aprroved Date'
+        };
         $('#excelExport').on('click', function () {
-            app.excelExport($table, {
-                'LEAVE_ENAME': 'Leave',
-                'REQUESTED_DT_AD': 'Requested Date(AD)',
-                'REQUESTED_DT_BS': 'Requested Date(BS)',
-                'FROM_DATE_AD': 'Start Date(AD)',
-                'FROM_DATE_BS': 'Start Date(BS)',
-                'TO_DATE_AD': 'End Date(AD)',
-                'TO_DATE_BS': 'End Date(BS)',
-                'NO_OF_DAYS': 'No Of Days',
-                'STATUS': 'Status',
-                'REMARKS': 'Remarks',
-                'RECOMMENDER_NAME': 'Recommender',
-                'RECOMMENDED_REMARKS': 'Recommender Remarks',
-                'RECOMMENDED_DT': 'Recommended Date',
-                'APPROVER_NAME': 'Approver',
-                'APPROVED_REMARKS': 'Approver Remarks',
-                'APPROVED_DT': 'Aprroved Date'
-            }, 'leave Request List');
+            app.excelExport($table, exportMap, 'leave Request List');
         });
 
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, {
-                'LEAVE_ENAME': 'Leave',
-                'REQUESTED_DT_AD': 'Requested Date(AD)',
-                'REQUESTED_DT_BS': 'Requested Date(BS)',
-                'FROM_DATE_AD': 'Start Date(AD)',
-                'FROM_DATE_BS': 'Start Date(BS)',
-                'TO_DATE_AD': 'End Date(AD)',
-                'TO_DATE_BS': 'End Date(BS)',
-                'NO_OF_DAYS': 'No Of Days',
-                'STATUS': 'Status',
-                'REMARKS': 'Remarks',
-                'RECOMMENDER_NAME': 'Recommender',
-                'RECOMMENDED_REMARKS': 'Recommender Remarks',
-                'RECOMMENDED_DT': 'Recommended Date',
-                'APPROVER_NAME': 'Approver',
-                'APPROVED_REMARKS': 'Approver Remarks',
-                'APPROVED_DT': 'Aprroved Date'
-            }, 'leave Request List');
+            app.exportToPDF($table, exportMap, 'leave Request List');
         });
 
     });
