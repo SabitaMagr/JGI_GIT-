@@ -32,4 +32,9 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
         
     }
 
+    public function getAllAdvanceList($employeeid) {
+        
+        
+    }
+
 }

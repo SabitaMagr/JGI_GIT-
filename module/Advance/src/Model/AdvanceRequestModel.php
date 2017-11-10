@@ -6,6 +6,7 @@ use Application\Model\Model;
 
 class AdvanceRequestModel extends Model {
 
+    const TABLE_NAME = "HRIS_EMPLOYEE_ADVANCE_REQUEST";
     const ADVANCE_REQUEST_ID = "ADVANCE_REQUEST_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const ADVANCE_ID = "ADVANCE_ID";
