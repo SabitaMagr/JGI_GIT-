@@ -1034,7 +1034,7 @@ window.app = (function ($, toastr, App) {
     })();
 
     var populateSelect = function ($element, list, id, value, defaultMessage, defaultValue, selectedId, isMandatory) {
-        if (typeof defaultValue === 'undefined' || defaultValue === null) {
+        if (typeof defaultValue === 'undefined') {
             defaultValue = -1;
         }
         if (typeof defaultMessage === "undefined" || defaultMessage === null) {

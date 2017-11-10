@@ -1,7 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
- 
+
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
@@ -12,7 +12,6 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'workOnHoliday-form');
 
 $holidayId = $form->get('holidayId');
-$holidayId->setValueOptions($holidays);
 $fromDate = $form->get('fromDate');
 $toDate = $form->get('toDate');
 $duration = $form->get('duration');
@@ -60,8 +59,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="portlet-body">
                 <div class="form-group">
-                        <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
-                    </div>
+                    <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                </div>
                 <?php
                 print $this->form()->openTag($form);
                 ?>
