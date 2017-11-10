@@ -13,7 +13,7 @@ $form->setAttribute('class', 'overtimeRequest-form');
 $form->setAttribute('id', 'overtimeRequest-form');
 
 $overtimeDate = $form->get('overtimeDate');
-$overtimeDate->setAttributes(["disabled"=>"disabled"]);
+$overtimeDate->setAttributes(["disabled" => "disabled"]);
 $startTime = $form->get('startTime');
 $startTime->setValue("10:00 AM");
 $startTime->setAttributes(['readonly' => "readonly"]);
@@ -21,9 +21,9 @@ $endTime = $form->get('endTime');
 $endTime->setValue("5:00 PM");
 $endTime->setAttributes(['readonly' => "readonly"]);
 $description = $form->get('description');
-$description->setAttributes(["disabled"=>"disabled"]);
+$description->setAttributes(["disabled" => "disabled"]);
 $remarks = $form->get('remarks');
-$remarks->setAttributes(["disabled"=>"disabled"]);
+$remarks->setAttributes(["disabled" => "disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
 $recommendedRemarks->setAttributes(["disabled" => "disabled"]);
 $approvedRemarks = $form->get('approvedRemarks');
@@ -58,7 +58,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <script>
     document.urlOvertime = '<?= $this->url("overtimeRequest", ["action" => "index"]) ?>';
 </script>
-    <div class="row margin-top-20">
+<div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -90,19 +90,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php
-                                            if ($status == 'RQ') {
-                                                echo "Pending";
-                                            } else if ($status == 'RC') {
-                                                echo "Recommended";
-                                            } else if ($status == 'AP') {
-                                                echo "Approved";
-                                            } else if ($status == "R") {
-                                                echo "Rejected";
-                                            } else if ($status == "C") {
-                                                echo "Cancelled";
-                                            }
-                                            ?>
+                                            <?php echo $statusDetail; ?>
                                         </td>
                                     </tr>
 
@@ -144,7 +132,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="form-group <?= empty($overtimeDate->getMessages()) ? "" : "error" ?>">
                                 <?php print $this->formLabel($overtimeDate); ?>
                                 <span class="required" aria-required="true">*</span>
-                                    <?php print $this->formElement($overtimeDate); ?>
+                                <?php print $this->formElement($overtimeDate); ?>
                             </div>
                             <?php print $this->formElementErrors()->render($overtimeDate, ['class' => 'help-block error']); ?>
                         </div>     
@@ -152,7 +140,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div class="form-group">
                                 <label for="nepaliDate">&nbsp;</label>
                                 <input disabled="disabled" placeholder="Overtime Date Nepali" type="text" name="nepaliDate" id="nepaliDate"
-                                           class="form-control" value="">
+                                       class="form-control" value="">
                             </div>
                         </div>  
                         <div class="col-sm-4">
@@ -166,38 +154,38 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                     <div class="row">
                         <div class="col-sm-8">
-                        <table width='100%' style="margin-bottom:10px;">
-                            <tr>
-                                <td class="col-sm-4" style="padding:0px;"><label>Start Time</label></td>
-                                <td class="col-sm-4" style="padding:0px;"><label>End Time</label></td>
-                                <td><label>Total Hour</label></td>
-                            </tr>
-                            <?php foreach($overtimeDetails as $detail){ ?>
-                            <tr height="30"> 
-                                <td width="45%" style="padding-right:5px;">
-                                    <input timepicker type="text" size="3" class="form-control" name="startTime[]"  value="<?= $detail['START_TIME']; ?>" required="required" readonly="readonly"/>
-                                </td>
-                                <td width="45%" style="padding:5px;">
-                                    <input timepicker type="text" size="3"  class="form-control" name="endTime[]"   value="<?= $detail['END_TIME']; ?>" required="required" readonly="readonly"/>
-                                </td>
-                                <td width="45%" style="padding:5px;">
-                                    <input type="text" size="3" class="form-control" name="totalHour[]"  value="<?= $detail['TOTAL_HOUR']; ?>"  required="required" readonly="readonly"/>
-                                </td>
-                            </tr>
-                            <?php } ?>
-                            <tr height="30">
-                                </td>
-                                <td>
-                                </td>
-                                <td width="45%" style="padding:5px;">
-                                    <label class="pull-right">Total Hour:</label>
-                                </td>
-                                <td width="45%" style="padding:5px;"> 
-                                    <input size="3" class="form-control" type="text" name="allTotalHour" id="sumAllTotal" step="0.01" min="0" readonly="readonly"  value="<?= $totalHour; ?>" />
-                                </td>
-                                <td>
-                            </tr>
-                        </table>
+                            <table width='100%' style="margin-bottom:10px;">
+                                <tr>
+                                    <td class="col-sm-4" style="padding:0px;"><label>Start Time</label></td>
+                                    <td class="col-sm-4" style="padding:0px;"><label>End Time</label></td>
+                                    <td><label>Total Hour</label></td>
+                                </tr>
+                                <?php foreach ($overtimeDetails as $detail) { ?>
+                                    <tr height="30"> 
+                                        <td width="45%" style="padding-right:5px;">
+                                            <input timepicker type="text" size="3" class="form-control" name="startTime[]"  value="<?= $detail['START_TIME']; ?>" required="required" readonly="readonly"/>
+                                        </td>
+                                        <td width="45%" style="padding:5px;">
+                                            <input timepicker type="text" size="3"  class="form-control" name="endTime[]"   value="<?= $detail['END_TIME']; ?>" required="required" readonly="readonly"/>
+                                        </td>
+                                        <td width="45%" style="padding:5px;">
+                                            <input type="text" size="3" class="form-control" name="totalHour[]"  value="<?= $detail['TOTAL_HOUR']; ?>"  required="required" readonly="readonly"/>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                                <tr height="30">
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td width="45%" style="padding:5px;">
+                                        <label class="pull-right">Total Hour:</label>
+                                    </td>
+                                    <td width="45%" style="padding:5px;"> 
+                                        <input size="3" class="form-control" type="text" name="allTotalHour" id="sumAllTotal" step="0.01" min="0" readonly="readonly"  value="<?= $totalHour; ?>" />
+                                    </td>
+                                    <td>
+                                </tr>
+                            </table>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group <?= empty($remarks->getMessages()) ? "" : "error" ?>">

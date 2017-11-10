@@ -14,7 +14,6 @@ use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
@@ -302,6 +301,39 @@ class EntityHelper {
             $conditon .= self::conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
         }
         return $conditon;
+    }
+
+    public static function getAttendanceStatusSelectElement() {
+        $statusFormElement = new \Zend\Form\Element\Select();
+        $statusFormElement->setName("status");
+        $status = array(
+            "P" => "Present Only",
+            "A" => "Absent Only",
+            "H" => "On Holiday",
+            "L" => "On Leave",
+            "T" => "On Training",
+            "TVL" => "On Travel",
+            "WOH" => "Work on Holiday",
+            "WOD" => "Work on DAYOFF",
+        );
+        $statusFormElement->setValueOptions($status);
+        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control", "multiple" => "multiple"]);
+        $statusFormElement->setLabel("Status");
+        return $statusFormElement;
+    }
+
+    public static function getAttendancePresentStatusSelectElement() {
+        $statusFormElement = new \Zend\Form\Element\Select();
+        $statusFormElement->setName("presentStatus");
+        $status = array(
+            "LI" => "Late In",
+            "EO" => "Early Out",
+            "MP" => "Missed Punched",
+        );
+        $statusFormElement->setValueOptions($status);
+        $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control", "multiple" => "multiple"]);
+        $statusFormElement->setLabel("Present Status");
+        return $statusFormElement;
     }
 
 }

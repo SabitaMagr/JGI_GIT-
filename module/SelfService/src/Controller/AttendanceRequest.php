@@ -2,8 +2,10 @@
 
 namespace SelfService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
+use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
@@ -16,23 +18,17 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class AttendanceRequest extends AbstractActionController {
+class AttendanceRequest extends HrisController {
 
-    private $adapter;
     private $repository;
     private $form;
-    private $employeeId;
     private $recommender;
     private $approver;
-    private $storageData;
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->adapter = $adapter;
+        parent::__construct($adapter, $storage);
         $this->repository = new AttendanceRequestRepository($adapter);
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
     }
 
     public function initializeForm() {
@@ -85,6 +81,16 @@ class AttendanceRequest extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
+        $id = (int) $this->params()->fromRoute("id", 0);
+        if ($id !== 0) {
+            $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+            $attendanceData = $attendanceDetailRepo->fetchById($id);
+            $model = new AttendanceRequestModel();
+            $model->attendanceDt = $attendanceData['ATTENDANCE_DT'];
+            $model->inTime = $attendanceData['IN_TIME'];
+            $model->outTime = $attendanceData['OUT_TIME'];
+            $this->form->bind($model);
+        }
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -229,62 +235,11 @@ class AttendanceRequest extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $postedData = $request->getPost();
-                $data = $postedData->data;
+                $data = $request->getPost();
                 $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
-                $attendanceList = $attendanceRequestRepository->getFilterRecords($data);
-                $attendanceRequest = [];
-                $getValue = function($status) {
-                    if ($status == "RQ") {
-                        return "Pending";
-                    } else if ($status == 'RC') {
-                        return "Recommended";
-                    } else if ($status == "R") {
-                        return "Rejected";
-                    } else if ($status == "AP") {
-                        return "Approved";
-                    } else if ($status == "C") {
-                        return "Cancelled";
-                    }
-                };
-
-                $getAction = function($status) {
-                    if ($status == "RQ") {
-                        return ["delete" => 'Cancel Request'];
-                    } else {
-                        return ["view" => 'View'];
-                    }
-                };
-
-                $fullName = function($id) {
-                    $empRepository = new EmployeeRepository($this->adapter);
-                    $empDtl = $empRepository->fetchById($id);
-                    return $empDtl['FULL_NAME'];
-                };
-                foreach ($attendanceList as $attendanceRow) {
-                    $status = $getValue($attendanceRow['STATUS']);
-                    $action = $getAction($attendanceRow['STATUS']);
-
-                    $statusId = $attendanceRow['STATUS'];
-                    $approvedDT = $attendanceRow['APPROVED_DT'];
-
-                    $authApprover = ($statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $attendanceRow['APPROVER'] : $attendanceRow['APPROVED_BY'];
-                    $approverName = $fullName($authApprover);
-
-                    $new_row = array_merge($attendanceRow, [
-                        'A_STATUS' => $status,
-                        'ACTION' => key($action),
-                        'ACTION_TEXT' => $action[key($action)],
-                        'APPROVER_NAME' => $approverName
-                    ]);
-                    if ($statusId == 'RQ') {
-                        $new_row['ALLOW_TO_EDIT'] = 1;
-                    } else {
-                        $new_row['ALLOW_TO_EDIT'] = 0;
-                    }
-                    array_push($attendanceRequest, $new_row);
-                }
-                return new CustomViewModel(['success' => true, 'data' => $attendanceRequest, 'error' => '']);
+                $rawList = $attendanceRequestRepository->getFilterRecords($data);
+                $attendanceList = Helper::extractDbData($rawList);
+                return new CustomViewModel(['success' => true, 'data' => $attendanceList, 'error' => '']);
             } catch (Exception $e) {
                 return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }

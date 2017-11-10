@@ -437,7 +437,6 @@ class AttendanceDetailRepository implements RepositoryInterface {
                     AttendanceDetail::IN_TIME,
                     AttendanceDetail::OUT_TIME
                         ], NULL, NULL, 'A'), false);
-//        $select->columns([new Expression("INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT"), new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"), new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"), new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"), new Expression("A.ID AS ID"), new Expression("A.IN_REMARKS AS IN_REMARKS"), new Expression("A.OUT_REMARKS AS OUT_REMARKS"), new Expression("A.TOTAL_HOUR AS TOTAL_HOUR")], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression('INITCAP(E.FIRST_NAME)')], "left");
         $select->where([AttendanceDetail::ID => $id]);
