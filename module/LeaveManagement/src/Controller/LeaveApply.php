@@ -2,45 +2,74 @@
 
 namespace LeaveManagement\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
+use LeaveManagement\Model\LeaveApply as LeaveApplyModel;
 use LeaveManagement\Repository\LeaveApplyRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
+use SelfService\Model\LeaveSubstitute;
 use SelfService\Repository\LeaveRequestRepository;
-use Setup\Repository\EmployeeRepository;
+use SelfService\Repository\LeaveSubstituteRepository;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class LeaveApply extends AbstractActionController {
+class LeaveApply extends HrisController {
 
-    private $repository;
-    private $form;
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->repository = new LeaveApplyRepository($adapter);
-        $this->adapter = $adapter;
-    }
-
-    public function initializeForm() {
-        $leaveApplyForm = new LeaveApplyForm();
-        $builder = new AnnotationBuilder();
-        $this->form = $builder->createForm($leaveApplyForm);
-    }
-
-    public function indexAction() {
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeList = $employeeRepo->fetchAll();
-        return Helper::addFlashMessagesToArray($this, [
-                    'employeeList' => $employeeList,
-        ]);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(LeaveApplyRepository::class);
+        $this->initializeForm(LeaveApplyForm::class);
     }
 
     public function addAction() {
-        $this->initializeForm();
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
+            $leaveSubstitute = $postedData->leaveSubstitute;
+            if ($this->form->isValid()) {
+                $leaveRequest = new LeaveApplyModel();
+                $leaveRequest->exchangeArrayFromForm($this->form->getData());
+                $leaveRequest->id = (int) Helper::getMaxId($this->adapter, LeaveApplyModel::TABLE_NAME, LeaveApplyModel::ID) + 1;
+                $leaveRequest->startDate = Helper::getExpressionDate($leaveRequest->startDate);
+                $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
+                $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
+                $leaveRequest->status = "RQ";
+                $this->repository->add($leaveRequest);
+                $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
+
+                if ($leaveSubstitute !== null && $leaveSubstitute !== "") {
+                    $leaveSubstituteModel = new LeaveSubstitute();
+                    $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
+
+
+                    $leaveSubstituteModel->leaveRequestId = $leaveRequest->id;
+                    $leaveSubstituteModel->employeeId = $leaveSubstitute;
+                    $leaveSubstituteModel->createdBy = $this->employeeId;
+                    $leaveSubstituteModel->createdDate = Helper::getcurrentExpressionDate();
+                    $leaveSubstituteModel->status = 'E';
+
+                    $leaveSubstituteRepo->add($leaveSubstituteModel);
+                    try {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_SUBSTITUTE_APPLIED, $leaveRequest, $this->adapter, $this);
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
+                } else {
+                    try {
+                        HeadNotification::pushNotification(NotificationEvents::LEAVE_APPLIED, $leaveRequest, $this->adapter, $this);
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
+                }
+                return $this->redirect()->toRoute("leavestatus");
+            }
+        }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N', 'IS_ADMIN' => "N"], "FULL_NAME", "ASC", null, FALSE, TRUE),

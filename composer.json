@@ -66,12 +66,8 @@
             "Asset\\": "module/Asset/src/",
             "Other\\": "module/Other/src/",
             "Report\\": "module/Report/src/",
-<<<<<<< HEAD
-			"MobileApi\\":"module/MobileApi/src"
-=======
             "MobileApi\\": "module/MobileApi/src/",
             "Customer\\": "module/Customer/src/"
->>>>>>> d66d96f4ca9fdab512f406f0988b5cddb2db130a
         }
     },
     "autoload-dev": {

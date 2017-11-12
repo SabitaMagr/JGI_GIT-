@@ -368,7 +368,7 @@ class LeaveStatusRepository implements RepositoryInterface {
             $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}')";
         }
 
-        if ($leaveId != -1) {
+        if ($leaveId != null && $leaveId != -1) {
             $sql .= " AND LA.LEAVE_ID ='" . $leaveId . "'";
         }
 
