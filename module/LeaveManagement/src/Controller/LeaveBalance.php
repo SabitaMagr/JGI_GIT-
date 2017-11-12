@@ -29,7 +29,9 @@ class LeaveBalance extends HrisController {
         $leaves = Helper::extractDbData($leaveList);
         return $this->stickFlashMessagesTo([
                     'leavesArrray' => $leaves,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 

@@ -2,76 +2,49 @@
 
 namespace Travel\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\NumberHelper;
+use Exception;
 use ManagerService\Repository\TravelApproveRepository;
 use SelfService\Form\TravelRequestForm;
 use SelfService\Model\TravelRequest;
 use SelfService\Repository\TravelExpenseDtlRepository;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use Travel\Repository\TravelStatusRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class TravelStatus extends AbstractActionController {
+class TravelStatus extends HrisController {
 
-    private $adapter;
     private $travelApproveRepository;
     private $travelStatusRepository;
-    private $form;
-    private $employeeId;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeForm(TravelRequestForm::class);
         $this->travelApproveRepository = new TravelApproveRepository($adapter);
         $this->travelStatusRepository = new TravelStatusRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new TravelRequestForm();
-        $this->form = $builder->createForm($form);
     }
 
     public function indexAction() {
-        $travelStatus = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected',
-            'C' => 'Cancelled'
-        ];
-        $travelStatusFormElement = new Select();
-        $travelStatusFormElement->setName("travelStatus");
-        $travelStatusFormElement->setValueOptions($travelStatus);
-        $travelStatusFormElement->setAttributes(["id" => "travelRequestStatusId", "class" => "form-control"]);
-        $travelStatusFormElement->setLabel("Status");
-
+        $statusSE = $this->getStatusSelectElement(['name' => 'travelStatus', "id" => "travelRequestStatusId", "class" => "form-control", 'label' => 'status']);
         return Helper::addFlashMessagesToArray($this, [
-                    'travelStatus' => $travelStatusFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'travelStatus' => $statusSE,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
     public function viewAction() {
-        $this->initializeForm();
-
         $id = (int) $this->params()->fromRoute('id');
-
         if ($id === 0) {
             return $this->redirect()->toRoute("travelStatus");
         }
         $travelRequest = new TravelRequest();
-        $request = $this->getRequest();
 
         $detail = $this->travelApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
@@ -83,10 +56,8 @@ class TravelStatus extends AbstractActionController {
         $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
 
-        if (!$request->isPost()) {
-            $travelRequest->exchangeArrayFromDB((array) $detail);
-            $this->form->bind($travelRequest);
-        } else {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
             $getData = $request->getPost();
             $reason = $getData->approvedRemarks;
             $action = $getData->submit;
@@ -105,16 +76,13 @@ class TravelStatus extends AbstractActionController {
 
             return $this->redirect()->toRoute("travelStatus");
         }
+
+        $travelRequest->exchangeArrayFromDB((array) $detail);
+        $this->form->bind($travelRequest);
         $requestType = array(
             'ad' => 'Advance',
             'ep' => 'Expense'
         );
-        if ($detail['REFERENCE_TRAVEL_ID'] != null) {
-            $referenceTravelDtl = $this->travelApproveRepository->fetchById($detail['REFERENCE_TRAVEL_ID']);
-            $advanceAmt = $referenceTravelDtl['REQUESTED_AMOUNT'];
-        } else {
-            $advanceAmt = 0;
-        }
         $transportTypes = array(
             'AP' => 'Aero Plane',
             'OV' => 'Office Vehicles',
@@ -157,7 +125,6 @@ class TravelStatus extends AbstractActionController {
                     'approver' => $authApprover,
                     'approvedDT' => $detail['APPROVED_DATE'],
                     'status' => $status,
-                    'advanceAmt' => $advanceAmt,
                     'transportTypes' => $transportTypes,
                     'recommApprove' => $recommApprove,
                     'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
@@ -175,10 +142,7 @@ class TravelStatus extends AbstractActionController {
     }
 
     public function expenseDetailAction() {
-        $this->initializeForm();
-
         $id = (int) $this->params()->fromRoute('id');
-
         if ($id === 0) {
             return $this->redirect()->toRoute("travelStatus");
         }

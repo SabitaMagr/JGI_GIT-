@@ -17,6 +17,8 @@ $this->headScript()
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.leaveApplyUrl = '<?= $this->url("leavebalance", ["action" => "apply"]) ?>';
     document.pullLeaveBalanceDetailLink = '<?= $this->url("leavebalance", ["action" => "pullLeaveBalanceDetail"]) ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavebalance')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

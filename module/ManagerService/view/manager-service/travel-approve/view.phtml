@@ -459,7 +459,7 @@ print $this->form()->openTag($form);
             <?php } ?>
         </div>
 
-        <div class="col-md-12" style="text-align:center;">
+        <div class="col-md-12" style="text-align:center;display:<?php echo $detail['STATUS'] == 'AP' ? 'block' : 'none'; ?>">
             <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
         </div>
 

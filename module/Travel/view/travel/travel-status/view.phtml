@@ -61,7 +61,7 @@ $approvedRemarks->setAttributes(['required' => 'true']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
-$submit->setAttribute('id','approve');
+$submit->setAttribute('id', 'approve');
 
 $form->setAttribute('action', $this->url('travelStatus', ['action' => 'view', 'id' => $id]));
 
@@ -135,17 +135,6 @@ print $this->form()->openTag($form);
                                             <input type="checkbox"  ng-model="aprover" ng-click="approverView(aprover)" name="approver" style="margin-top:-1%; margin-left:2%;" />
                                         </td>
                                     </tr>
-                                    <?php if ($advanceAmt > 0) { ?>
-                                        <tr height="30">
-                                            <td>
-                                                Advance Amount
-                                            </td>
-                                            <td width="15">:</td>
-                                            <td>
-                                                Rs.<?php echo $advanceAmt; ?>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
                                 </table>
                             </div>
                             <div class="col-sm-4">
@@ -183,7 +172,7 @@ print $this->form()->openTag($form);
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <?php print $this->formLabel($fromDate); ?>
-                                            <?php print $this->formElement($fromDate); ?>
+                                        <?php print $this->formElement($fromDate); ?>
                                         <?php print $this->formElementErrors()->render($fromDate, ['class' => 'help-block']); ?>
                                     </div>
                                 </div>     
@@ -205,139 +194,139 @@ print $this->form()->openTag($form);
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <?php print $this->formLabel($toDate); ?>
-                                            <?php print $this->formElement($toDate); ?>
+                                        <?php print $this->formElement($toDate); ?>
                                         <?php print $this->formElementErrors()->render($toDate, ['class' => 'help-block']); ?>
                                     </div>
                                 </div>     
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                    <label for="nepaliEndDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                               class="form-control" value="" disabled="disabled">
+                                        <label for="nepaliEndDate">&nbsp;</label>
+                                        <div class="input-group">
+                                            <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
+                                                   class="form-control" value="" disabled="disabled">
+                                        </div>
                                     </div>
-                                </div>
+                                </div>     
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($destination); ?>
+                                <?php print $this->formElement($destination); ?>
+                                <?php print $this->formElementErrors()->render($destination, ['class' => 'help-block']); ?>
+                            </div>               
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($purpose); ?>
+                                <?php print $this->formElement($purpose); ?>
+                                <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($requestedType); ?>
+                                <?php print $this->formElement($requestedType); ?>
+                                <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
                             </div>     
                         </div>
-
-                    </div>
-                </div>
-
-
-                <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($destination); ?>
-                            <?php print $this->formElement($destination); ?>
-                            <?php print $this->formElementErrors()->render($destination, ['class' => 'help-block']); ?>
-                        </div>               
                     </div>
 
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($purpose); ?>
-                            <?php print $this->formElement($purpose); ?>
-                            <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($transportType); ?>
+                                <?php print $this->formElement($transportType); ?>
+                                <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
+                            </div> 
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($requestedAmount); ?>
+                                <?php print $this->formElement($requestedAmount); ?>
+                                <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                                <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($requestedType); ?>
-                            <?php print $this->formElement($requestedType); ?>
-                            <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
-                        </div>     
-                    </div>
-                </div>
 
-                <div class=" row">
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($transportType); ?>
-                            <?php print $this->formElement($transportType); ?>
-                            <?php print $this->formElementErrors()->render($transportType, ['class' => 'help-block']); ?>
-                        </div> 
-                    </div>
+                    <?php
+                    if ($subEmployeeId != null) {
+                        $disabled = ($subApprovedFlag != null) ? "disabled" : "";
+                        if ($subApprovedFlag == 'Y') {
+                            $note = "[Approved]";
+                        } else if ($subApprovedFlag == 'N') {
+                            $note = "[Rejected]";
+                        }
+                        ?>
+                        <div class="form-group padding-0">
+                            <label for="noOfDays">
+                                Substitute Employee 
 
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($requestedAmount); ?>
-                            <?php print $this->formElement($requestedAmount); ?>
-                            <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
+                            </label>
+                            <div>
+                                <select disabled="disabled" class="form-control" name="travelSubstitute">
+                                    <?php
+                                    foreach ($employeeList as $key => $value) {
+                                        $selected = ($key == $subEmployeeId) ? "selected" : "";
+                                        ?>
+                                        <option style="cursor: pointer;" value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($remarks); ?>
-                            <?php print $this->formElement($remarks); ?>
-                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        <div
+                            class="form-group margin-top-10 required">
+                            <label>Reason for action [From Substitute Employee] <?php echo $note; ?></label>
+                            <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks; ?></textarea>
                         </div>
-                    </div>
+                    <?php } ?>
                 </div>
-
 
                 <?php
-                if ($subEmployeeId != null) {
-                    $disabled = ($subApprovedFlag != null) ? "disabled" : "";
-                    if ($subApprovedFlag == 'Y') {
-                        $note = "[Approved]";
-                    } else if ($subApprovedFlag == 'N') {
-                        $note = "[Rejected]";
-                    }
+                if (($status == 'RC' || $status == 'AP' || $status == 'R') && $recommApprove == 0) {
+                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
                     ?>
                     <div class="form-group padding-0">
-                        <label for="noOfDays">
-                            Substitute Employee 
-
-                        </label>
-                        <div>
-                            <select disabled="disabled" class="form-control" name="travelSubstitute">
-                                <?php
-                                foreach ($employeeList as $key => $value) {
-                                    $selected = ($key == $subEmployeeId) ? "selected" : "";
-                                    ?>
-                                    <option style="cursor: pointer;" value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $value; ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
+                        <label>Reason for action [From Recommender]</label>
+                        <?php print $this->formElement($recommendedRemarks); ?>
                     </div>
-                    <div
-                        class="form-group margin-top-10 required">
-                        <label>Reason for action [From Substitute Employee] <?php echo $note; ?></label>
-                        <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" required="required" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks; ?></textarea>
+                    <?php
+                }
+                if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
+                    ?>
+                    <div class="form-group padding-0">
+                        <?php print $this->formLabel($approvedRemarks); ?>
+                        <?php print $this->formElement($approvedRemarks); ?>
                     </div>
                 <?php } ?>
+
+                <?php if ($status == 'RQ' || $status == 'RC') { ?>
+                    <?php print $this->formSubmit($submit); ?>
+                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
+                <?php } ?>
             </div>
-
-            <?php
-            if (($status == 'RC' || $status == 'AP' || $status == 'R') && $recommApprove == 0) {
-                $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
-                ?>
-                <div class="form-group padding-0">
-                    <label>Reason for action [From Recommender]</label>
-                    <?php print $this->formElement($recommendedRemarks); ?>
-                </div>
-                <?php
-            }
-            if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
-                ?>
-                <div class="form-group padding-0">
-                    <?php print $this->formLabel($approvedRemarks); ?>
-                    <?php print $this->formElement($approvedRemarks); ?>
-                </div>
-            <?php } ?>
-
-            <?php if ($status == 'RQ' || $status == 'RC') { ?>
-                <?php print $this->formSubmit($submit); ?>
-                <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-            <?php } ?>
         </div>
     </div>
-</div>
-<?php
-print $this->form()->closeTag();
-?>
+    <?php
+    print $this->form()->closeTag();
+    ?>
 
 
 
@@ -346,8 +335,8 @@ print $this->form()->closeTag();
             <div class="col-md-8 col-sm-offset-2">
                 <ul id="headingList">
                     <li>
-                        <?php if($empDtl['COMPANY_FILE_PATH']!=null || $empDtl['COMPANY_FILE_PATH']!=""){ ?>
-                        <img src="<?= $this->basePath() . "/uploads/" . $empDtl['COMPANY_FILE_PATH']; ?>" style="float:left;" height="50" width="50"/>
+                        <?php if ($empDtl['COMPANY_FILE_PATH'] != null || $empDtl['COMPANY_FILE_PATH'] != "") { ?>
+                            <img src="<?= $this->basePath() . "/uploads/" . $empDtl['COMPANY_FILE_PATH']; ?>" style="float:left;" height="50" width="50"/>
                         <?php } ?>
                         <h2><?= strtoupper($empDtl['COMPANY_NAME']); ?></h2></li>
                     <li id="underline"><h3>Travel Authorization Form</h3></li>
@@ -437,7 +426,7 @@ print $this->form()->closeTag();
         <?php } ?>
     </div>
 
-    <div class="col-md-12" style="text-align:center;">
+    <div class="col-md-12" style="text-align:center;display:<?php echo $detail['STATUS'] == 'AP' ? 'block' : 'none'; ?>">
         <a class="btn btn-success" ng-click="printDiv('printableArea');"> Print</a>
     </div>
 

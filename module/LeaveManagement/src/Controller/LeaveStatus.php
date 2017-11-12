@@ -113,16 +113,6 @@ class LeaveStatus extends HrisController {
         ]);
     }
 
-    public function addAction() {
-        
-        
-        $employeeRepo = new EmployeeRepository($this->adapter);
-        $employeeList = $employeeRepo->fetchAll();
-        return Helper::addFlashMessagesToArray($this, [
-                    'employeeList' => $employeeList,
-        ]);
-    }
-
     public function pullLeaveRequestStatusListAction() {
         try {
             $request = $this->getRequest();
