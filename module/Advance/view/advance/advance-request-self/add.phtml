@@ -34,13 +34,16 @@ $advanceId = $form->get('advanceId');
 $requestedAmount = $form->get('requestedAmount');
 $dateOfadvance = $form->get('dateOfadvance');
 $reason = $form->get('reason');
-$recommendedBy = $form->get('recommendedBy');
-$recommendedRemarks = $form->get('recommendedRemarks');
-$approvedBy = $form->get('approvedBy');
-$approvedRemarks = $form->get('approvedRemarks');
-$deductionType = $form->get('deductionType');
 $deductionRate = $form->get('deductionRate');
 $deductionIn = $form->get('deductionIn');
+$overrideRecommenderId = $form->get('overrideRecommenderId');
+$overrideApproverId = $form->get('overrideApproverId');
+//$overrideApproverId->setValueOptions($employeeList);
+
+//echo '<pre>';
+//print_r($employeeList);
+//die();
+
 
 
 
@@ -55,7 +58,9 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.advanceList = '<?=json_encode($advance);?>';
+    document.employeeId =<?=json_encode($advance);?>;
+    document.advanceList =<?=json_encode($advance);?>;
+    document.employeeList =<?=json_encode($employeeList);?>;
 </script>
 
 
@@ -95,11 +100,30 @@ print $this->form()->openTag($form);
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
-                        <div class="form-group">
-                            <?php print $this->formLabel($dateOfadvance); ?>
-                            <?php print $this->formElement($dateOfadvance); ?>
-                            <?php print $this->formElementErrors()->render($dateOfadvance, ['class' => 'help-block']); ?>
-                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($dateOfadvance); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                    <?php print $this->formElement($dateOfadvance); ?>
+                                    <?php print $this->formElementErrors()->render($dateOfadvance, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliDate">&nbsp;</label>
+                                    <input type="text" name="nepaliDate" id="nepalidateOfadvance"
+                                           class="form-control" value="">
+                                </div>
+                            </div>     
+                        </div> 
+                        
+                        <!--<div class="form-group">-->
+                            <?php // print $this->formLabel($dateOfadvance); ?>
+                            <?php // print $this->formElement($dateOfadvance); ?>
+                            <?php // print $this->formElementErrors()->render($dateOfadvance, ['class' => 'help-block']); ?>
+                        <!--</div>-->
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
@@ -110,45 +134,8 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
-                        <div class="form-group">
-                            <?php print $this->formLabel($recommendedBy); ?>
-                            <?php print $this->formElement($recommendedBy); ?>
-                            <?php print $this->formElementErrors()->render($recommendedBy, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
-                        <div class="form-group">
-                            <?php print $this->formLabel($recommendedRemarks); ?>
-                            <?php print $this->formElement($recommendedRemarks); ?>
-                            <?php print $this->formElementErrors()->render($recommendedRemarks, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
-                        <div class="form-group">
-                            <?php print $this->formLabel($approvedBy); ?>
-                            <?php print $this->formElement($approvedBy); ?>
-                            <?php print $this->formElementErrors()->render($approvedBy, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
-                        <div class="form-group">
-                            <?php print $this->formLabel($approvedRemarks); ?>
-                            <?php print $this->formElement($approvedRemarks); ?>
-                            <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
-                        <div class="form-group">
-                            <?php print $this->formLabel($deductionType); ?>
-                            <?php print $this->formElement($deductionType); ?>
-                            <?php print $this->formElementErrors()->render($deductionType, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
@@ -166,9 +153,24 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
 
+                    <div id="overrideRecommenderDiv" class="col-sm-12 col-md-6 col-lg-4" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($overrideRecommenderId); ?>
+                            <?php print $this->formElement($overrideRecommenderId); ?>
+                            <?php print $this->formElementErrors()->render($overrideRecommenderId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+
+
+                    <div id="overrideApproverDiv" class="col-sm-12 col-md-6 col-lg-4" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($overrideApproverId); ?>
+                            <?php print $this->formElement($overrideApproverId); ?>
+                            <?php print $this->formElementErrors()->render($overrideApproverId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
 
                 </div>
-
 
                 <?php print $this->formSubmit($submit); ?>
 

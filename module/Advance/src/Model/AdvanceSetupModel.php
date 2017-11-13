@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class AdvanceSetupModel extends Model {
 
-    const TABLE_NAME = "HRIS_ADVANCE_MASTER_SETUP_NEW";
+    const TABLE_NAME = "HRIS_ADVANCE_MASTER_SETUP";
     const ADVANCE_ID = "ADVANCE_ID";
     const ADVANCE_CODE = "ADVANCE_CODE";
     const ADVANCE_ENAME = "ADVANCE_ENAME";
@@ -47,7 +47,7 @@ class AdvanceSetupModel extends Model {
     public $minOverrideRate;
     public $allowOverrideMonth;
     public $maxOverrideMonth;
-    public $overrideRecommenderflag;
+    public $overrideRecommenderFlag;
     public $overrideApproverFlag;
     public $createdBy;
     public $createdDate;
@@ -71,8 +71,8 @@ class AdvanceSetupModel extends Model {
         'minOverrideRate' => self::MIN_OVERRIDE_RATE,
         'allowOverrideMonth' => self::ALLOW_OVERRIDE_MONTH,
         'maxOverrideMonth' => self::MAX_OVERRIDE_MONTH,
-        'overrideRecommenderflag' => self::OVERRIDE_RECOMMENDER_FLAG,
-        'overrideApproverFlag' => self::OVERRIDE_RECOMMENDER_FLAG,
+        'overrideRecommenderFlag' => self::OVERRIDE_RECOMMENDER_FLAG,
+        'overrideApproverFlag' => self::OVERRIDE_APPROVER_FLAG,
         'createdBy' => self::CREATED_BY,
         'createdDate' => self::CREATED_DATE,
         'modifiedBy' => self::MODIFIED_BY,
