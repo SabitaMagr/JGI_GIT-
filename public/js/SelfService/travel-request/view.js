@@ -1,8 +1,7 @@
 (function ($, app) {
     'use strict';
-    $(document).ready(function (e) {
+    $(document).ready(function () {
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate')
-        app.setLoadingOnSubmit("travelApprove-form");
         var employeeId = $('#employeeId').val();
         window.app.floatingProfile.setDataFromRemote(employeeId);
 

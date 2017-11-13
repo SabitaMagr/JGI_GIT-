@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -17,134 +18,37 @@ use SelfService\Repository\TravelExpenseDtlRepository;
 use SelfService\Repository\TravelRequestRepository;
 use SelfService\Repository\TravelSubstituteRepository;
 use Setup\Model\HrEmployees;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class TravelRequest extends AbstractActionController {
+class TravelRequest extends HrisController {
 
-    private $form;
-    private $adapter;
-    private $repository;
-    private $employeeId;
-    private $recommender;
-    private $approver;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new TravelRequestRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new TravelRequestForm();
-        $this->form = $builder->createForm($form);
-    }
-
-    public function getRecommendApprover() {
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
-
-        if ($empRecommendApprove != null) {
-            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
-            $this->approver = $empRecommendApprove['APPROVED_BY'];
-        } else {
-            $result = $this->recommendApproveList();
-            if (count($result['recommender']) > 0) {
-                $this->recommender = $result['recommender'][0]['id'];
-            } else {
-                $this->recommender = null;
-            }
-            if (count($result['approver']) > 0) {
-                $this->approver = $result['approver'][0]['id'];
-            } else {
-                $this->approver = null;
-            }
-        }
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(TravelRequestRepository::class);
+        $this->initializeForm(TravelRequestForm::class);
     }
 
     public function indexAction() {
-        $this->getRecommendApprover();
-        $result = $this->repository->getAllByEmployeeId($this->employeeId);
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
-
-        $list = [];
-        $getValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = (array) $request->getPost();
+                $data['employeeId'] = $this->employeeId;
+                $data['requestedType'] = 'ad';
+                $rawList = $this->repository->getFilteredRecords($data);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
-        };
-        $getAction = function($status) {
-            if ($status == "RQ") {
-                return ["delete" => 'Cancel Request'];
-            } else {
-                return ["view" => 'View'];
-            }
-        };
-        $getRequestedType = function($requestedType) {
-            if ($requestedType == 'ad') {
-                return 'Advance';
-            } else if ($requestedType == 'ep') {
-                return 'Expense';
-            }
-        };
-        foreach ($result as $row) {
-            $status = $getValue($row['STATUS']);
-            $action = $getAction($row['STATUS']);
-            $statusID = $row['STATUS'];
-            $approvedDT = $row['APPROVED_DATE'];
-            $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
-            $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
-            $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
-            $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
-            $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
-            $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-
-            $new_row = array_merge($row, [
-                'RECOMMENDER_NAME' => $authRecommender,
-                'APPROVER_NAME' => $authApprover,
-                'STATUS' => $status,
-                'ACTION' => key($action),
-                'REQUESTED_TYPE' => $getRequestedType($row['REQUESTED_TYPE']),
-                'ACTION_TEXT' => $action[key($action)]
-            ]);
-            if (in_array($statusID, ['C', 'R'])) {
-                $new_row['ALLOW_TO_EDIT'] = 0;
-            } else {
-                $new_row['ALLOW_TO_EDIT'] = 1;
-            }
-            $checkForExpense = $this->repository->fetchByReferenceId($row['TRAVEL_ID']);
-            //print_r($checkForExpense); die();
-            $new_row['ALLOW_TO_REQUEST_EX'] = ($statusID == 'AP' && $new_row['REQUESTED_TYPE'] == 'Advance' && count($checkForExpense) == 0) ? 1 : 0;
-            array_push($list, $new_row);
         }
-        //print_r($list); die();
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'statusId', 'class' => 'form-control', 'label' => 'Status']);
+        return $this->stickFlashMessagesTo(['status' => $statusSE]);
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $model = new TravelRequestModel();
@@ -208,7 +112,35 @@ class TravelRequest extends AbstractActionController {
         ]);
     }
 
-    public function expenseRequestAction() {
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
+        if (!$id) {
+            return $this->redirect()->toRoute('travelRequest');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Travel Request Successfully Cancelled!!!");
+        return $this->redirect()->toRoute('travelRequest');
+    }
+
+    public function expenseAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = (array) $request->getPost();
+                $data['employeeId'] = $this->employeeId;
+                $data['requestedType'] = 'ep';
+                $rawList = $this->repository->getFilteredRecords($data);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'statusId', 'class' => 'form-control', 'label' => 'Status']);
+        return $this->stickFlashMessagesTo(['status' => $statusSE]);
+    }
+
+    public function expenseAddAction() {
         $request = $this->getRequest();
         $model = new TravelRequestModel();
         if ($request->isPost()) {
@@ -216,7 +148,6 @@ class TravelRequest extends AbstractActionController {
             $expenseDtlList = $postData['data']['expenseDtlList'];
             $departureDate = $postData['data']['departureDate'];
             $returnedDate = $postData['data']['returnedDate'];
-            $requestedType = $postData['data']['requestedType'];
             $travelId = (int) $postData['data']['travelId'];
             $sumAllTotal = (float) $postData['data']['sumAllTotal'];
             $detail = $this->repository->fetchById($travelId);
@@ -224,30 +155,28 @@ class TravelRequest extends AbstractActionController {
             $expenseDtlModel = new TravelExpenseDetail();
 
             $requestedAmt = $sumAllTotal;
-            if ($requestedType == 'ad') {
-                $model->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequestModel::TABLE_NAME, TravelRequestModel::TRAVEL_ID)) + 1;
-                $model->employeeId = $this->employeeId;
-                $model->requestedDate = Helper::getcurrentExpressionDate();
-                $model->status = 'RQ';
-                $model->fromDate = $detail['FROM_DATE'];
-                $model->toDate = $detail['TO_DATE'];
-                $model->destination = $detail['DESTINATION'];
-                $model->purpose = $detail['PURPOSE'];
-                $model->travelCode = $detail['TRAVEL_CODE'];
-                $model->requestedType = 'ep';
-                $model->requestedAmount = $requestedAmt;
-                $model->referenceTravelId = $travelId;
-                $model->departureDate = Helper::getExpressionDate($departureDate);
-                $model->returnedDate = Helper::getExpressionDate($returnedDate);
-                $this->repository->add($model);
-            } else if ($requestedType == 'ep') {
-                $this->repository->updateDates($departureDate, $returnedDate, $requestedAmt, $travelId);
-            }
+            $model->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequestModel::TABLE_NAME, TravelRequestModel::TRAVEL_ID)) + 1;
+            $model->employeeId = $this->employeeId;
+            $model->requestedDate = Helper::getcurrentExpressionDate();
+            $model->status = 'RQ';
+            $model->fromDate = $detail['FROM_DATE'];
+            $model->toDate = $detail['TO_DATE'];
+            $model->destination = $detail['DESTINATION'];
+            $model->purpose = $detail['PURPOSE'];
+            $model->travelCode = $detail['TRAVEL_CODE'];
+            $model->requestedType = 'ep';
+            $model->requestedAmount = $detail['REQUESTED_AMOUNT'];
+            $model->referenceTravelId = $travelId;
+            $model->departureDate = Helper::getExpressionDate($departureDate);
+            $model->returnedDate = Helper::getExpressionDate($returnedDate);
+            $this->repository->add($model);
+
 
             foreach ($expenseDtlList as $expenseDtl) {
                 $transportType = $expenseDtl['transportType'];
-                $id = (int) $expenseDtl['id'];
 
+                $expenseDtlModel->id = ((int) Helper::getMaxId($this->adapter, TravelExpenseDetail::TABLE_NAME, TravelExpenseDetail::ID)) + 1;
+                $expenseDtlModel->travelId = $model->travelId;
                 $expenseDtlModel->departureDate = Helper::getExpressionDate($expenseDtl['departureDate']);
                 $expenseDtlModel->departurePlace = $expenseDtl['departurePlace'];
                 $expenseDtlModel->departureTime = Helper::getExpressionTime($expenseDtl['departureTime']);
@@ -263,40 +192,94 @@ class TravelRequest extends AbstractActionController {
                 $expenseDtlModel->remarks = ($expenseDtl['remarks'] != null) ? $expenseDtl['remarks'] : null;
                 $expenseDtlModel->status = 'E';
 
-                if ($id == 0) {
-                    $expenseDtlModel->id = ((int) Helper::getMaxId($this->adapter, TravelExpenseDetail::TABLE_NAME, TravelExpenseDetail::ID)) + 1;
-                    $expenseDtlModel->travelId = ($requestedType == 'ad') ? $model->travelId : $travelId;
-                    $expenseDtlModel->createdBy = $this->employeeId;
-                    $expenseDtlModel->createdDate = Helper::getcurrentExpressionDate();
-                    $expenseDtlRepo->add($expenseDtlModel);
-                } else {
-                    $expenseDtlModel->modifiedBy = (int) $this->employeeId;
-                    $expenseDtlModel->modifiedDate = Helper::getcurrentExpressionDate();
-                    $expenseDtlRepo->edit($expenseDtlModel, $id);
-                }
+                $expenseDtlModel->createdBy = $this->employeeId;
+                $expenseDtlModel->createdDate = Helper::getcurrentExpressionDate();
+                $expenseDtlRepo->add($expenseDtlModel);
             }
+            $error = "";
             try {
                 HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
             } catch (Exception $e) {
-                $this->flashmessenger()->addMessage($e->getMessage());
+                $error = $e->getMessage();
             }
-            return new CustomViewModel(['success' => true, 'data' => ['msg' => 'Travel Request Successfully added!!!']]);
-        } else {
-            $id = (int) $this->params()->fromRoute('id');
-            if ($id === 0) {
-                return $this->redirect()->toRoute("travelRequest");
-            }
-            $detail = $this->repository->fetchById($id);
-            $travelId = ($detail['REQUESTED_TYPE'] == 'ep') ? $detail['REFERENCE_TRAVEL_ID'] : $id;
-            $referenceDetail = $this->repository->fetchById($travelId);
-            return Helper::addFlashMessagesToArray($this, [
-                        'form' => $this->form,
-                        'advanceAmt' => $referenceDetail['REQUESTED_AMOUNT'],
-                        'detail' => $referenceDetail,
-                        'id' => $id,
-                        'requestedType' => $detail['REQUESTED_TYPE']
-            ]);
+            return new JsonModel(['success' => true, 'data' => null, 'error' => $error]);
         }
+
+
+        $id = (int) $this->params()->fromRoute('id');
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelRequest");
+        }
+        $detail = $this->repository->fetchById($id);
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'detail' => $detail,
+                    'id' => $id
+        ]);
+    }
+
+    public function viewAction() {
+        $id = (int) $this->params()->fromRoute('id');
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelRequest");
+        }
+
+        $detail = $this->repository->fetchById($id);
+        $model = new TravelRequestModel();
+        $model->exchangeArrayFromDB($detail);
+        $this->form->bind($model);
+
+        $numberInWord = new NumberHelper();
+        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'recommender' => $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'],
+                    'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
+                    'detail' => $detail,
+                    'todayDate' => date('d-M-Y'),
+                    'advanceAmount' => $advanceAmount,
+        ]);
+    }
+
+    public function expenseViewAction() {
+        $id = (int) $this->params()->fromRoute('id');
+
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelRequest");
+        }
+
+        $detail = $this->repository->fetchById($id);
+        $model = new TravelRequestModel();
+        $model->exchangeArrayFromDB($detail);
+        $this->form->bind($model);
+
+        $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
+        $expenseDtlList = [];
+        $result = $expenseDtlRepo->fetchByTravelId($id);
+        $totalAmount = 0;
+        foreach ($result as $row) {
+            $totalAmount += $row['TOTAL_AMOUNT'];
+            array_push($expenseDtlList, $row);
+        }
+        $balance = $detail['REQUESTED_AMOUNT'] - $totalAmount;
+
+        $numberInWord = new NumberHelper();
+        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+        $totalExpenseInWords = $numberInWord->toText($totalAmount);
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'recommender' => $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'],
+                    'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
+                    'detail' => $detail,
+                    'expenseDtlList' => $expenseDtlList,
+                    'todayDate' => date('d-M-Y'),
+                    'advanceAmount' => $advanceAmount,
+                    'totalExpenseInWords' => $totalExpenseInWords,
+                    'totalExpense' => $totalAmount,
+                    'balance' => $balance,
+        ]);
     }
 
     public function deleteExpenseDetailAction() {
@@ -341,231 +324,6 @@ class TravelRequest extends AbstractActionController {
         } else {
             return new CustomViewModel(['success' => false]);
         }
-    }
-
-    public function viewExpenseAction() {
-        $this->initializeForm();
-        $this->getRecommendApprover();
-        $id = (int) $this->params()->fromRoute('id');
-
-        if ($id === 0) {
-            return $this->redirect()->toRoute("travelRequest");
-        }
-        $empRepository = new EmployeeRepository($this->adapter);
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
-
-        $model = new TravelRequestModel();
-        $detail = $this->repository->fetchById($id);
-        $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DATE'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
-        $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-
-        $model->exchangeArrayFromDB($detail);
-        $this->form->bind($model);
-
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
-
-        $requestType = array(
-            'ad' => 'Advance',
-            'ep' => 'Expense'
-        );
-        if ($detail['REFERENCE_TRAVEL_ID'] != null) {
-            $referenceTravelDtl = $this->repository->fetchById($detail['REFERENCE_TRAVEL_ID']);
-            $advanceAmt = $referenceTravelDtl['REQUESTED_AMOUNT'];
-        } else {
-            $advanceAmt = 0;
-        }
-
-        $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
-        $expenseDtlList = [];
-        $result = $expenseDtlRepo->fetchByTravelId($id);
-        $totalAmount = 0;
-        foreach ($result as $row) {
-            $totalAmount += $row['TOTAL_AMOUNT'];
-            array_push($expenseDtlList, $row);
-        }
-        $transportType = [
-            "AP" => "Aero Plane",
-            "OV" => "Office Vehicles",
-            "TI" => "Taxi",
-            "BS" => "Bus"
-        ];
-
-        $numberInWord = new NumberHelper();
-        $totalExpense = $numberInWord->toText($totalAmount);
-
-        $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'requestTypes' => $requestType,
-                    'employeeName' => $employeeName,
-                    'status' => $detail['STATUS'],
-                    'requestedDate' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'advanceAmt' => $advanceAmt,
-                    'expenseDtlList' => $expenseDtlList,
-                    'transportType' => $transportType,
-                    'todayDate' => date('d-M-Y'),
-                    'detail' => $detail,
-                    'empDtl' => $empDtl,
-                    'totalExpense' => $totalExpense,
-                    'id' => $id
-        ]);
-    }
-
-    public function deleteAction() {
-        $id = (int) $this->params()->fromRoute("id");
-        if (!$id) {
-            return $this->redirect()->toRoute('travelRequest');
-        }
-        $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Travel Request Successfully Cancelled!!!");
-        return $this->redirect()->toRoute('travelRequest');
-    }
-
-    public function viewAction() {
-        $this->initializeForm();
-        $this->getRecommendApprover();
-        $id = (int) $this->params()->fromRoute('id');
-
-        if ($id === 0) {
-            return $this->redirect()->toRoute("travelRequest");
-        }
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
-
-        $model = new TravelRequestModel();
-        $detail = $this->repository->fetchById($id);
-        $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DATE'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
-        $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-
-        if ($detail) {
-            $model->exchangeArrayFromDB($detail);
-        }
-        $this->form->bind($model);
-
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
-
-        $requestType = array(
-            'ad' => 'Advance',
-            'ep' => 'Expense'
-        );
-        $transportTypes = array(
-            'AP' => 'Aero Plane',
-            'OV' => 'Office Vehicles',
-            'TI' => 'Taxi',
-            'BS' => 'Bus'
-        );
-        $vehicle = '';
-        foreach ($transportTypes as $key => $value) {
-            if ($detail['TRANSPORT_TYPE'] == $key) {
-                $vehicle = $value;
-            }
-        }
-        $empRepository = new EmployeeRepository($this->adapter);
-        $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
-
-        $numberInWord = new NumberHelper();
-        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
-        $subDetail = [];
-        if ($detail['SUB_EMPLOYEE_ID'] != null) {
-            $subEmpDetail = $empRepository->fetchForProfileById($detail['SUB_EMPLOYEE_ID']);
-            $subDetail = [
-                'SUB_EMPLOYEE_NAME' => $fullName($detail['SUB_EMPLOYEE_ID']),
-                'SUB_DESIGNATION' => $subEmpDetail['DESIGNATION'],
-                'SUB_APPROVED_DATE' => $detail['SUB_APPROVED_DATE']
-            ];
-        }
-        $fromDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['FROM_DATE']);
-        $toDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $detail['TO_DATE']);
-        $interval = $fromDate->diff($toDate);
-        $duration = $interval->format('%a') + 1;
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'requestTypes' => $requestType,
-                    'employeeName' => $employeeName,
-                    'status' => $detail['STATUS'],
-                    'requestedDate' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'transportTypes' => $transportTypes,
-                    'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
-                    'subRemarks' => $detail['SUB_REMARKS'],
-                    'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
-                    'empDtl' => $empDtl,
-                    'detail' => $detail,
-                    'todayDate' => date('d-M-Y'),
-                    'vehicle' => $vehicle,
-                    'advanceAmount' => $advanceAmount,
-                    'subDetail' => $subDetail,
-                    'duration' => $duration,
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true)
-        ]);
-    }
-
-    public function recommendApproveList() {
-        $employeeRepository = new EmployeeRepository($this->adapter);
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $employeeId = $this->employeeId;
-        $employeeDetail = $employeeRepository->fetchById($employeeId);
-        $branchId = $employeeDetail['BRANCH_ID'];
-        $departmentId = $employeeDetail['DEPARTMENT_ID'];
-        $designations = $recommendApproveRepository->getDesignationList($employeeId);
-
-        $recommender = array();
-        $approver = array();
-        foreach ($designations as $key => $designationList) {
-            $withinBranch = $designationList['WITHIN_BRANCH'];
-            $withinDepartment = $designationList['WITHIN_DEPARTMENT'];
-            $designationId = $designationList['DESIGNATION_ID'];
-            $employees = $recommendApproveRepository->getEmployeeList($withinBranch, $withinDepartment, $designationId, $branchId, $departmentId);
-
-            if ($key == 1) {
-                $i = 0;
-                foreach ($employees as $employeeList) {
-                    // array_push($recommender,$employeeList);
-                    $recommender [$i]["id"] = $employeeList['EMPLOYEE_ID'];
-                    $recommender [$i]["name"] = $employeeList['FIRST_NAME'] . " " . $employeeList['MIDDLE_NAME'] . " " . $employeeList['LAST_NAME'];
-                    $i++;
-                }
-            } else if ($key == 2) {
-                $i = 0;
-                foreach ($employees as $employeeList) {
-                    //array_push($approver,$employeeList);
-                    $approver [$i]["id"] = $employeeList['EMPLOYEE_ID'];
-                    $approver [$i]["name"] = $employeeList['FIRST_NAME'] . " " . $employeeList['MIDDLE_NAME'] . " " . $employeeList['LAST_NAME'];
-                    $i++;
-                }
-            }
-        }
-        $responseData = [
-            "recommender" => $recommender,
-            "approver" => $approver
-        ];
-        return $responseData;
     }
 
 }

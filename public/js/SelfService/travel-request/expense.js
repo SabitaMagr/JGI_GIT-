@@ -28,11 +28,6 @@
                     <i class="fa fa-times"></i>
                 </a>
                 #}#
-                #if(ALLOW_EXPENSE_APPLY=='Y'){#
-                <a  class="btn btn-icon-only blue" href="${document.expenseAddLink}/#:TRAVEL_ID#" style="height:17px;" title="Apply For Expense">
-                    <i class="fa fa-arrow-right"></i>
-                </a>
-                #}#
             </div>
         `;
         app.initializeKendoGrid($table, [
@@ -65,7 +60,7 @@
             {field: "REQUESTED_AMOUNT", title: "Request Amt."},
             {field: "REQUESTED_TYPE", title: "Request For"},
             {field: "STATUS_DETAIL", title: "Status"},
-            {field: ["TRAVEL_ID", "ALLOW_EDIT", "ALLOW_DELETE", "ALLOW_EXPENSE_APPLY"], title: "Action", template: action}
+            {field: ["TRAVEL_ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
         ], "Travel Request List.xlsx");
 
 

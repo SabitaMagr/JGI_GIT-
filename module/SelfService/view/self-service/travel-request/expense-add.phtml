@@ -7,14 +7,13 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/spin.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/ladda/ladda.min.js'));
 $this->headScript()
-        ->appendFile($this->basePath('js/SelfService/travel-request/expense-request.js'))
+        ->appendFile($this->basePath('js/SelfService/travel-request/expense-add.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/SelfService/travel-request/expenseDtlController.js'));
 ?>
 <script>
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.urlExpenseRequest = '<?= $this->url("travelRequest", ["action" => "expenseRequest"]) ?>';
-    document.urlTravelRequest = '<?= $this->url("travelRequest", ["action" => "index"]) ?>';
+    document.urlExpenseAdd = '<?= $this->url("travelRequest", ["action" => "expenseAdd"]) ?>';
+    document.urlExpense = '<?= $this->url("travelRequest", ["action" => "expense"]) ?>';
     document.urlExpenseDetailList = '<?= $this->url("travelRequest", ["action" => "expenseDetailList"]) ?>';
     document.urlDeleteExpenseDetail = '<?= $this->url("travelRequest", ["action" => "deleteExpenseDetail"]) ?>';</script>
 <div class="page-bar">
@@ -45,10 +44,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <div class="portlet-body div-font-11">
                 <form name="travelExpenseForm" id="travelRequest-form" ng-submit="submitExpenseDtl()" novalidate>
                     <input type="hidden" id="travelId" value="<?php echo $id; ?>" />
-                    <input type="hidden" id="requestedType" value="<?php echo $requestedType ?>"/>
                     <div class="row">
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-                           <table>
+                            <table>
                                 <tr>
                                     <td width="40%">
                                         <label for="purpose">Purpose :</label> 
@@ -121,17 +119,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </tr>
                             </table>
                         </div>
-                        
+
                         <div class="col-xs-12 col-sm-4 col-md-4 col-box bottomgap">
-<!--                             <table>
-                                <tr>
-                                    <td width="40%">
-                                        <label for="travelCode">Travel Code :</label></td>
-                                    <td><input type="text" disabled="disabled" value="<?php // echo $detail['TRAVEL_ID']; ?>" name="travelCode" required="required" id="travelCode" class="form-control"></td>
-                                </tr>
-                            </table>-->
                         </div>
-                        
+
                     </div>
                     <div class="margin-top-10 scrollbar-horizantal">
                         <table width="100%" align="center" class="table table-striped table-bordered table-hover no-footer customTable div-font-11">
