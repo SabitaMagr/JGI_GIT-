@@ -195,25 +195,27 @@ class LeaveRequestRepository implements RepositoryInterface {
         ]);
 
         if ($leaveId != null && $leaveId != -1) {
-            $select->where([
-                "LA.LEAVE_ID=" . $leaveId
-            ]);
+            $select->where(["LA.LEAVE_ID" => $leaveId]);
         }
         if ($leaveRequestStatusId != -1) {
+            $select->where(["LA.STATUS" => $leaveRequestStatusId]);
+        }
+        if ($leaveRequestStatusId != 'C') {
             $select->where([
-                "LA.STATUS='" . $leaveRequestStatusId . "'"
+                "(TRUNC(SYSDATE)- LA.REQUESTED_DT) < (
+                      CASE
+                        WHEN LA.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
             ]);
         }
 
         if ($fromDate != null) {
-            $select->where([
-                "LA.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')"
-            ]);
+            $select->where("LA.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')");
         }
         if ($toDate != null) {
-            $select->where([
-                "LA.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')"
-            ]);
+            $select->where(["LA.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')"]);
         }
         $select->order("LA.REQUESTED_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);

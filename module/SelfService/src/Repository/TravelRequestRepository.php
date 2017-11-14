@@ -3,7 +3,6 @@
 namespace SelfService\Repository;
 
 use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use SelfService\Model\TravelRequest;
@@ -54,27 +53,12 @@ class TravelRequestRepository implements RepositoryInterface {
 ");
     }
 
-    public function updateDates($departureDate, $returnedDate, $requestedAmt, $travelId) {
-        $this->tableGateway->update([
-            TravelRequest::DEPARTURE_DATE => Helper::getExpressionDate($departureDate),
-            TravelRequest::RETURNED_DATE => Helper::getExpressionDate($returnedDate),
-            TravelRequest::REQUESTED_AMOUNT => $requestedAmt
-                ], [TravelRequest::TRAVEL_ID => $travelId]);
-    }
-
     public function edit(Model $model, $id) {
         
     }
 
     public function fetchAll() {
         
-    }
-
-    public function fetchByReferenceId($id) {
-        $result = $this->tableGateway->select([
-            TravelRequest::REFERENCE_TRAVEL_ID . "=" . $id . " AND (STATUS!='C' AND STATUS!='R')"
-        ]);
-        return $result->current();
     }
 
     public function fetchById($id) {
@@ -184,6 +168,16 @@ class TravelRequestRepository implements RepositoryInterface {
                 "TR.STATUS" => $search['statusId']
             ]);
         }
+        if ($search['statusId'] != 'C') {
+            $select->where([
+                "(TRUNC(SYSDATE)- TR.REQUESTED_DATE) < (
+                      CASE
+                        WHEN TR.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
+            ]);
+        }
 
         if ($search['fromDate'] != null) {
             $select->where([
@@ -204,19 +198,6 @@ class TravelRequestRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
-    }
-
-    public function checkEmployeeTravel(int $employeeId, Expression $date) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns([TravelRequest::TRAVEL_ID], FALSE);
-        $select->from(TravelRequest::TABLE_NAME);
-        $select->where([TravelRequest::EMPLOYEE_ID => $employeeId]);
-        $select->where([TravelRequest::STATUS => 'AP']);
-        $select->where([$date->getExpression() . " BETWEEN " . TravelRequest::FROM_DATE . " AND " . TravelRequest::TO_DATE]);
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result->current();
     }
 
 }

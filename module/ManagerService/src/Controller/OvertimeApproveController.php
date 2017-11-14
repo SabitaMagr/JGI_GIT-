@@ -13,8 +13,6 @@ use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Form\OvertimeRequestForm;
 use SelfService\Model\Overtime;
 use SelfService\Repository\OvertimeDetailRepository;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;

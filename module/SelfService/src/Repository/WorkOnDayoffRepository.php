@@ -114,6 +114,14 @@ class WorkOnDayoffRepository implements RepositoryInterface {
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
         ]);
+        $select->where([
+            "(TRUNC(SYSDATE)- WD.REQUESTED_DATE) < (
+                      CASE
+                        WHEN WD.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
+        ]);
         $select->order("WD.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

@@ -3,7 +3,6 @@
 namespace SelfService\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Exception;
@@ -14,7 +13,7 @@ use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Element\Select;
+use Zend\View\Model\JsonModel;
 
 class AttendanceRequest extends HrisController {
 
@@ -25,23 +24,25 @@ class AttendanceRequest extends HrisController {
     }
 
     public function indexAction() {
-        $attendanceStatus = [
-            '-1' => 'All',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected'
-        ];
-        $attendanceStatusFormElement = new Select();
-        $attendanceStatusFormElement->setName("attendanceStatus");
-        $attendanceStatusFormElement->setValueOptions($attendanceStatus);
-        $attendanceStatusFormElement->setAttributes(["id" => "attendanceRequestStatusId", "class" => "form-control"]);
-        $attendanceStatusFormElement->setLabel("Attendance Request Status");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'attendanceStatus' => $attendanceStatusFormElement,
+        $statusSE = $this->getStatusSelectElement(['name' => 'attendanceStatus', "id" => "attendanceRequestStatusId", "class" => "form-control", 'label' => 'Status']);
+        return $this->stickFlashMessagesTo([
+                    'attendanceStatus' => $statusSE,
                     'employeeId' => $this->employeeId
         ]);
+    }
+
+    public function pullAttendanceRequestListAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $rawList = $this->repository->getFilterRecords($data);
+                $attendanceList = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $attendanceList, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
     }
 
     public function addAction() {
@@ -156,21 +157,6 @@ class AttendanceRequest extends HrisController {
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DT'],
         ]);
-    }
-
-    public function pullAttendanceRequestListAction() {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            try {
-                $data = $request->getPost();
-                $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
-                $rawList = $attendanceRequestRepository->getFilterRecords($data);
-                $attendanceList = Helper::extractDbData($rawList);
-                return new CustomViewModel(['success' => true, 'data' => $attendanceList, 'error' => '']);
-            } catch (Exception $e) {
-                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-            }
-        }
     }
 
 }

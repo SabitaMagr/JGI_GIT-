@@ -118,6 +118,14 @@ class WorkOnHolidayRepository implements RepositoryInterface {
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
         ]);
+        $select->where([
+            "(TRUNC(SYSDATE)- WH.REQUESTED_DATE) < (
+                      CASE
+                        WHEN WH.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
+        ]);
         $select->order("WH.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

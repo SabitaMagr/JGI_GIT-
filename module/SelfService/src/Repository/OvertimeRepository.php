@@ -91,7 +91,9 @@ class OvertimeRepository implements RepositoryInterface {
             new Expression("BS_DATE(TO_CHAR(OT.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_BS"),
             new Expression("OT.DESCRIPTION AS IN_DESCRIPTION"),
             new Expression("OT.REMARKS AS REMARKS"),
-            new Expression("OT.TOTAL_HOUR AS TOTAL_HOUR"),
+            new Expression("OT.TOTAL_HOUR AS TOTAL_MIN"),
+            new Expression("TRUNC(OT.TOTAL_HOUR/60,2) AS TOTAL_HOUR"),
+            new Expression("MIN_TO_HOUR(OT.TOTAL_HOUR) AS TOTAL_HOUR_DETAIL"),
             new Expression("LEAVE_STATUS_DESC(OT.STATUS) AS STATUS"),
             new Expression("OT.RECOMMENDED_BY AS RECOMMENDED_BY"),
             new Expression("INITCAP(TO_CHAR(OT.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
@@ -121,6 +123,14 @@ class OvertimeRepository implements RepositoryInterface {
                 "OT." . Overtime::STATUS . "='" . $status . "'"
             ]);
         }
+        $select->where([
+            "(TRUNC(SYSDATE)- OT.REQUESTED_DATE) < (
+                      CASE
+                        WHEN OT.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
+        ]);
         $select->order("OT.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
