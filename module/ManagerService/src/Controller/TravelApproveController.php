@@ -126,25 +126,15 @@ class TravelApproveController extends HrisController {
             return $this->redirect()->toRoute("travelApprove");
         }
         $detail = $this->repository->fetchById($id);
-        $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DATE'];
 
-        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FULL_NAME'];
         $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
         $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
         $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
 
-        if ($detail['REFERENCE_TRAVEL_ID'] != null) {
-            $referenceTravelDtl = $this->repository->fetchById($detail['REFERENCE_TRAVEL_ID']);
-            $advanceAmt = $referenceTravelDtl['REQUESTED_AMOUNT'];
-        } else {
-            $advanceAmt = 0;
-        }
 
         $expenseDtlRepo = new TravelExpenseDtlRepository($this->adapter);
-        $expenseDtlList = [];
         $result = $expenseDtlRepo->fetchByTravelId($id);
+        $expenseDtlList = [];
         $totalAmount = 0;
         foreach ($result as $row) {
             $totalAmount += $row['TOTAL_AMOUNT'];
@@ -157,29 +147,23 @@ class TravelApproveController extends HrisController {
             "BS" => "Bus"
         ];
         $numberInWord = new NumberHelper();
-        $totalExpense = $numberInWord->toText($totalAmount);
-        $empRepository = new EmployeeRepository($this->adapter);
-        $empDtl = $empRepository->fetchForProfileById($detail['EMPLOYEE_ID']);
+        $totalAmountInWords = $numberInWord->toText($totalAmount);
+        $balance = $detail['REQUESTED_AMOUNT'] - $totalAmount;
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'employeeName' => $employeeName,
-                    'requestedDate' => $detail['REQUESTED_DATE'],
                     'role' => $role,
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
-                    'status' => $status,
                     'recommendedBy' => $recommenderId,
-                    'approvedDT' => $approvedDT,
                     'employeeId' => $this->employeeId,
-                    'advanceAmt' => $advanceAmt,
                     'expenseDtlList' => $expenseDtlList,
                     'transportType' => $transportType,
-                    'requestedEmployeeId' => $requestedEmployeeID,
                     'todayDate' => date('d-M-Y'),
                     'detail' => $detail,
-                    'empDtl' => $empDtl,
-                    'totalExpense' => $totalExpense
+                    'totalAmount' => $totalAmount,
+                    'totalAmountInWords' => $totalAmountInWords,
+                    'balance' => $balance
                         ]
         );
     }
