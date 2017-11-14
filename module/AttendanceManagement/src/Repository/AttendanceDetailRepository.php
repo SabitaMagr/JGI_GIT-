@@ -48,23 +48,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
                     AttendanceDetail::OUT_TIME
                         ], NULL, NULL, 'A'), false);
 
-//        $select->columns([
-//            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
-//            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
-//            new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
-//            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"),
-//            new Expression("A.ID AS ID"),
-//            new Expression("A.IN_REMARKS AS IN_REMARKS"),
-//            new Expression("A.OUT_REMARKS AS OUT_REMARKS")
-//                ], true);
         $select->from(['A' => AttendanceDetail::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression('INITCAP(E.FIRST_NAME)'), "MIDDLE_NAME" => new Expression('INITCAP(E.MIDDLE_NAME)'), "LAST_NAME" => new Expression('INITCAP(E.LAST_NAME)')], "left");
         $select->where(["E.STATUS='E'"]);
         $select->where(["E.RETIRED_FLAG='N'"]);
         $select->order("E.FIRST_NAME,A.ATTENDANCE_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print($statement->getSql());
-//        exit;
         $result = $statement->execute();
         return $result;
     }

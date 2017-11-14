@@ -2,24 +2,23 @@
 
 namespace SelfService\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\AdapterInterface;
-use Exception;
-use Application\Helper\Helper;
-use SelfService\Model\TravelSubstitute;
-use Zend\Authentication\AuthenticationService;
-use Setup\Repository\EmployeeRepository;
-use ManagerService\Repository\TravelApproveRepository;
-use Travel\Repository\TravelStatusRepository;
-use SelfService\Form\TravelRequestForm;
-use Zend\Form\Annotation\AnnotationBuilder;
-use SelfService\Model\TravelRequest;
-use SelfService\Repository\TravelSubstituteRepository;
-use SelfService\Repository\TravelRequestRepository;
 use Application\Helper\EntityHelper;
-use Setup\Model\HrEmployees;
+use Application\Helper\Helper;
+use Exception;
+use ManagerService\Repository\TravelApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
+use SelfService\Form\TravelRequestForm;
+use SelfService\Model\TravelRequest;
+use SelfService\Model\TravelSubstitute;
+use SelfService\Repository\TravelRequestRepository;
+use SelfService\Repository\TravelSubstituteRepository;
+use Setup\Model\HrEmployees;
+use Setup\Repository\EmployeeRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Mvc\Controller\AbstractActionController;
 
 class TravelNotification extends AbstractActionController {
 

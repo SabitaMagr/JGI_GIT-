@@ -14,10 +14,8 @@ use Notification\Model\NotificationEvents;
 use SelfService\Form\TravelRequestForm;
 use SelfService\Model\TravelRequest;
 use SelfService\Repository\TravelExpenseDtlRepository;
-use Setup\Repository\EmployeeRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Element\Select;
 use Zend\View\Model\JsonModel;
 
 class TravelApproveController extends HrisController {
@@ -32,7 +30,9 @@ class TravelApproveController extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $rawList = $this->repository->getAllRequest($this->employeeId);
+                $search['employeeId'] = $this->employeeId;
+                $search['status'] = ['RQ', 'RC'];
+                $rawList = $this->repository->getAllFiltered($search);
                 $list = Helper::extractDbData($rawList);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
@@ -169,21 +169,21 @@ class TravelApproveController extends HrisController {
     }
 
     public function statusAction() {
-        $travelStatus = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected'
-        ];
-        $travelStatusFormElement = new Select();
-        $travelStatusFormElement->setName("travelStatus");
-        $travelStatusFormElement->setValueOptions($travelStatus);
-        $travelStatusFormElement->setAttributes(["id" => "travelRequestStatusId", "class" => "form-control"]);
-        $travelStatusFormElement->setLabel("Status");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'travelStatus' => $travelStatusFormElement,
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $searchQuery = $request->getPost();
+                $searchQuery['employeeId'] = $this->employeeId;
+                $rawList = $this->repository->getAllFiltered((array) $searchQuery);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'status', 'class' => 'form-control', 'label' => 'Status']);
+        return $this->stickFlashMessagesTo([
+                    'travelStatus' => $statusSE,
                     'recomApproveId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
