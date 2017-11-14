@@ -157,7 +157,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
-                WHERE U.EMPLOYEE_ID=1000376
+                WHERE U.EMPLOYEE_ID={$recomApproveId}
                 AND E.STATUS       ='E'
                 AND E.RETIRED_FLAG ='N'
                 AND (E1.STATUS     =
