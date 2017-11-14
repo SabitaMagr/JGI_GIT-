@@ -84,6 +84,7 @@ $form->prepare();
                             <label for="form-password">Password</label>
                             <span class="required" aria-required="true">*</span>
                             <input name="password" required="required" id="form-password" class="form-password form-control" type="password" value="<?php echo $passwordDtl; ?>">
+                            <?php print $this->formElementErrors()->render($password, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
 
