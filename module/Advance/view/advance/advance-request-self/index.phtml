@@ -16,6 +16,7 @@ $this->headScript()
 <?php } ?>
 
 <script>
+    document.employeeId =<?=json_encode($employeeId);?>;
 //    document.ids =<?php // echo json_encode(["attendanceRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.pullAttendanceUrl = '<?= $this->url("advance-request-self", ["action" => "pullAttendanceRequestList"]) ?>';
     document.viewLink = '<?= $this->url("advance-request-self", ["action" => "view"]) ?>';

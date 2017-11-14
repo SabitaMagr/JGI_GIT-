@@ -64,7 +64,7 @@ class AdvanceRequestModel extends Model {
         'deductionType' => self::DEDUCTION_TYPE,
         'deductionRate' => self::DEDUCTION_RATE,
         'deductionIn' => self::DEDUCTION_IN,
-        'overrideRecommenderid' => self::OVERRIDE_RECOMMENDER_ID,
+        'overrideRecommenderId' => self::OVERRIDE_RECOMMENDER_ID,
         'overrideApproverId' => self::OVERRIDE_APPROVER_ID
     ];
 

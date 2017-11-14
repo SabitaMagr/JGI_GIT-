@@ -58,7 +58,8 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.employeeId =<?=json_encode($advance);?>;
+    document.employeeId =<?=json_encode($employeeId);?>;
+    document.salary =<?=$salary?>;
     document.advanceList =<?=json_encode($advance);?>;
     document.employeeList =<?=json_encode($employeeList);?>;
 </script>
@@ -78,16 +79,21 @@ print $this->form()->openTag($form);
             </div>
             <div class="portlet-body">
                 <div class="form-group">
-                    <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                    <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                    <input type="hidden" name="deductionType" id="deductionType" />
                 </div>
 
                 <div class="row">
+                    
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
                             <?php print $this->formLabel($advanceId); ?>
                             <?php print $this->formElement($advanceId); ?>
                             <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
+                            <span id="maxReqAmt" class="clearText"></span></br>
+                            <span id="minDeductionPer" class="clearText"></span></br>
+                            <span id="maxDeductionMonth" class="clearText"></span></br>
                         </div>
                     </div>
 
