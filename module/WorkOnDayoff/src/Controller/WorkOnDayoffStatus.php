@@ -2,68 +2,41 @@
 
 namespace WorkOnDayoff\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use ManagerService\Repository\DayoffWorkApproveRepository;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class WorkOnDayoffStatus extends AbstractActionController {
+class WorkOnDayoffStatus extends HrisController {
 
-    private $adapter;
     private $dayoffWorkApproveRepository;
     private $workonDayoffStatusRepository;
-    private $form;
-    private $employeeId;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
         $this->dayoffWorkApproveRepository = new DayoffWorkApproveRepository($adapter);
         $this->workonDayoffStatusRepository = new WorkOnDayoffStatusRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new WorkOnDayoffForm();
-        $this->form = $builder->createForm($form);
+        $this->initializeForm(WorkOnDayoffForm::class);
     }
 
     public function indexAction() {
-        $status = [
-            '-1' => 'All',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected',
-            'C' => 'Cancelled'
-        ];
-        $statusFormElement = new Select();
-        $statusFormElement->setName("status");
-        $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "requestStatusId", "class" => "form-control"]);
-        $statusFormElement->setLabel("Status");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusFormElement,
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "requestStatusId", "class" => "form-control", 'label' => 'Status']);
+        return $this->stickFlashMessagesTo([
+                    'status' => $statusSE,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
     public function viewAction() {
-        $this->initializeForm();
-
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {

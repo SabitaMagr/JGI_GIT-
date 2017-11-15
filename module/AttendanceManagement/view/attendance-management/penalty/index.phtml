@@ -19,6 +19,8 @@ $this->headScript()
     document.months =<?php echo json_encode($months); ?>;
     document.penalty = '<?php echo $this->url('penalty', ['action' => 'index']); ?>';
     document.penaltyDetailWS = '<?php echo $this->url('penalty', ['action' => 'penaltyDetailWS']); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
 
 <div class="page-bar">

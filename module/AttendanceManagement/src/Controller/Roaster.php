@@ -4,8 +4,6 @@ namespace AttendanceManagement\Controller;
 
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
-use AttendanceManagement\Model\RoasterModel;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\RoasterRepo;
 use Exception;
@@ -15,9 +13,6 @@ use Zend\View\Model\JsonModel;
 
 class Roaster extends HrisController {
 
-    private $form;
-    private $repository;
-
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
         $this->repository = new RoasterRepo($this->adapter);
@@ -26,7 +21,9 @@ class Roaster extends HrisController {
     public function indexAction() {
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'shifts' => EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => EntityHelper::STATUS_ENABLED])
+                    'shifts' => EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => EntityHelper::STATUS_ENABLED]),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
