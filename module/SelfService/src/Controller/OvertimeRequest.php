@@ -14,26 +14,18 @@ use SelfService\Repository\OvertimeDetailRepository;
 use SelfService\Repository\OvertimeRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class OvertimeRequest extends HrisController {
 
-    private $form;
-    private $repository;
     private $detailRepository;
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
+        $this->initializeForm(OvertimeRequestForm::class);
         $this->repository = new OvertimeRepository($adapter);
         $this->detailRepository = new OvertimeDetailRepository($adapter);
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new OvertimeRequestForm();
-        $this->form = $builder->createForm($form);
     }
 
     public function overtimeDetail($overtimeId) {
@@ -61,7 +53,6 @@ class OvertimeRequest extends HrisController {
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $model = new Overtime();
@@ -124,7 +115,6 @@ class OvertimeRequest extends HrisController {
         if ($id === 0) {
             return $this->redirect()->toRoute("overtimeRequest");
         }
-        $this->initializeForm();
 
         $overtimeModel = new Overtime();
         $detail = $this->repository->fetchById($id);

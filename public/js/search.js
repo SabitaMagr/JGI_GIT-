@@ -295,6 +295,17 @@
                     employeeSearchAndPopulate();
                 });
             }
+            var acl = document.acl;
+            var employeeDetail = document.employeeDetail;
+            if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
+                switch (acl['CONTROL']) {
+                    case 'F':
+                        $company.val(employeeDetail['COMPANY_ID']);
+                        $company.prop('disabled', true);
+                        break;
+                }
+            }
+
         };
         changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId");
 

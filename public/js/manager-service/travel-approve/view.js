@@ -1,20 +1,14 @@
-(function ($,app) {
+(function ($, app) {
     'use strict';
     $(document).ready(function (e) {
-        $("#approve").on("click", function () {
-            try {
-                var recommendRemarksId = $("#form-recommendedRemarks");
-                var approveRemarksId = $("#form-approvedRemarks");
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate')
+        app.setLoadingOnSubmit("travelApprove-form");
+        var employeeId = $('#employeeId').val();
+        window.app.floatingProfile.setDataFromRemote(employeeId);
 
-                if (typeof recommendRemarksId !== "undefined") {
-                    recommendRemarksId.removeAttr("required");
-                }
-                if (typeof approveRemarksId !== "undefined") {
-                    approveRemarksId.removeAttr("required");
-                }
-            } catch (e) {
-                console.log("onApproveBtnClick", e.message);
-            }
+        var $print = $('#print');
+        $print.on('click', function () {
+            app.exportDomToPdf('printableArea', document.urlCss);
         });
     });
 })(window.jQuery, window.app);

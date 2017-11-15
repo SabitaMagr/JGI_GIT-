@@ -641,34 +641,39 @@ return [
                 'route' => 'travelRequest',
                 'pages' => [
                     [
-                        'label' => 'List',
+                        'label' => 'Advance List',
                         'route' => 'travelRequest',
                         'action' => 'index',
                     ],
                     [
-                        'label' => 'Add',
+                        'label' => 'Add Advance',
                         'route' => 'travelRequest',
                         'action' => 'add',
                     ],
                     [
-                        'label' => 'Edit',
+                        'label' => 'Edit Advance',
                         'route' => 'travelRequest',
                         'action' => 'edit',
                     ],
                     [
-                        'label' => 'Detail',
+                        'label' => 'Advance Detail',
                         'route' => 'travelRequest',
                         'action' => 'view',
                     ],
                     [
-                        'label' => 'Detail',
+                        'label' => 'Expense List',
                         'route' => 'travelRequest',
-                        'action' => 'viewExpense',
+                        'action' => 'expense',
                     ],
                     [
-                        'label' => 'For Expense',
+                        'label' => 'Add Expense',
                         'route' => 'travelRequest',
-                        'action' => 'expenseRequest',
+                        'action' => 'expenseAdd',
+                    ],
+                    [
+                        'label' => 'Expense Detail',
+                        'route' => 'travelRequest',
+                        'action' => 'expenseView',
                     ],
                 ],
             ],

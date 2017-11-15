@@ -51,7 +51,7 @@ return [
             'leavebalance' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/leave-balance[/:action[/:eid[/:id]]]',
+                    'route' => '/leave-balance[/:action]',
                     'defaults' => [
                         'controller' => Controller\LeaveBalance::class,
                         'action' => 'index'

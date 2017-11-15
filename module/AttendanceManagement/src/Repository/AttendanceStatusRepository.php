@@ -43,20 +43,6 @@ class AttendanceStatusRepository implements RepositoryInterface {
                     AttendanceRequestModel::OUT_TIME
                         ], NULL, NULL, 'AR'), false);
 
-//        $select->columns([
-//            new Expression("TO_CHAR(AR.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
-//            new Expression("TO_CHAR(AR.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
-//            new Expression("TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
-//            new Expression("AR.STATUS AS STATUS"),
-//            new Expression("AR.ID AS ID"),
-//            new Expression("TO_CHAR(AR.IN_TIME, 'HH:MI AM') AS IN_TIME"),
-//            new Expression("TO_CHAR(AR.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
-//            new Expression("AR.IN_REMARKS AS IN_REMARKS"),
-//            new Expression("AR.OUT_REMARKS AS OUT_REMARKS"),
-//            new Expression("AR.EMPLOYEE_ID AS EMPLOYEE_ID"),
-//            new Expression("AR.TOTAL_HOUR AS TOTAL_HOUR"),
-//                ], true);
-
         $select->from(['AR' => AttendanceRequestModel::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['FIRST_NAME' => new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME' => new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME' => new Expression('INITCAP(E.LAST_NAME)')], "left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')], "left");
@@ -94,23 +80,8 @@ class AttendanceStatusRepository implements RepositoryInterface {
                     AttendanceRequestModel::OUT_TIME
                         ], NULL, NULL, 'A'), false);
 
-//        $select->columns(
-//                [
-//            new Expression("TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY') AS ATTENDANCE_DT"),
-//            new Expression("TO_CHAR(A.IN_TIME, 'HH:MI AM') AS IN_TIME"),
-//            new Expression("TO_CHAR(A.OUT_TIME, 'HH:MI AM') AS OUT_TIME"),
-//            new Expression("E.EMPLOYEE_ID AS EMPLOYEE_ID"),
-//            new Expression("A.ID AS ID"),
-//            new Expression("A.IN_REMARKS AS IN_REMARKS"),
-//            new Expression("A.OUT_REMARKS AS OUT_REMARKS"),
-//            new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),
-//            new Expression("A.STATUS AS STATUS"),
-//            new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS"),
-//            new Expression("TO_CHAR(A.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT")
-//                ], true);
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ['FIRST_NAME' => new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME' => new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME' => new Expression('INITCAP(E.LAST_NAME)')], "left")
-//                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=A.APPROVED_BY", ['FIRST_NAME1' => "FIRST_NAME", 'MIDDLE_NAME1' => "MIDDLE_NAME", 'LAST_NAME1' => "LAST_NAME"],"left");
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=AR.APPROVED_BY", ['FIRST_NAME1' => new Expression('INITCAP(E1.FIRST_NAME)'), 'MIDDLE_NAME1' => new Expression('INITCAP(E1.MIDDLE_NAME)'), 'LAST_NAME1' => new Expression('INITCAP(E1.LAST_NAME)')], "left");
 
         $select->where([AttendanceRequestModel::ID => $id]);
@@ -186,7 +157,7 @@ class AttendanceStatusRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
-                WHERE U.EMPLOYEE_ID=1000376
+                WHERE U.EMPLOYEE_ID={$recomApproveId}
                 AND E.STATUS       ='E'
                 AND E.RETIRED_FLAG ='N'
                 AND (E1.STATUS     =

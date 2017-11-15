@@ -90,10 +90,7 @@ class UserSetupController extends AbstractActionController {
 
         $userSetup = new UserSetup();
         $detail = $this->repository->fetchById($id);
-        if (!$request->isPost()) {
-            $userSetup->exchangeArrayFromDB($detail);
-            $this->form->bind($userSetup);
-        } else {
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $userSetup->exchangeArrayFromForm($this->form->getData());
@@ -106,6 +103,9 @@ class UserSetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("usersetup");
             }
         }
+        $userSetup->exchangeArrayFromDB($detail);
+        $this->form->bind($userSetup);
+
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,

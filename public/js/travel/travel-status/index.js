@@ -1,91 +1,64 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
-        var $table = $('#travelRequestStatusTable');
-        var $travelStatus = $('#travelRequestStatusId');
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+        var $table = $('#table');
+        var $search = $('#search');
+        var $status = $('#status');
         var $fromDate = $('#fromDate');
         var $toDate = $('#toDate');
-        var $search = $('#search');
+        var action = `
+            <div class="clearfix">
+                #if(REQUESTED_TYPE=='ad'){#
+                <a class="btn btn-icon-only green" href="${document.viewLink}/#:TRAVEL_ID#" style="height:17px;" title="View Detail">
+                    <i class="fa fa-search"></i>
+                </a>
+                #}else{#
+                <a class="btn btn-icon-only green" href="${document.expenseDetailLink}/#:TRAVEL_ID#" style="height:17px;" title="View Detail">
+                    <i class="fa fa-search"></i>
+                </a>
+                #}#
+            </div>
+        `;
         app.initializeKendoGrid($table, [
-            {field: "FULL_NAME", title: "Employee"},
-            {title: "From Date",
+            {field: "EMPLOYEE_NAME", title: "Employee"},
+            {title: "Start Date",
                 columns: [{
-                        field: "FROM_DATE",
-                        title: "AD",
-                        template: "<span>#: (FROM_DATE == null) ? '-' : FROM_DATE #</span>"},
-                    {field: "FROM_DATE_N",
-                        title: "BS",
-                        template: "<span>#: (FROM_DATE_N == null) ? '-' : FROM_DATE_N #</span>"}]},
+                        field: "FROM_DATE_AD",
+                        title: "English",
+                    },
+                    {
+                        field: "FROM_DATE_BS",
+                        title: "Nepali",
+                    }]},
             {title: "To Date",
                 columns: [{
-                        field: "TO_DATE",
-                        title: "AD",
-                        template: "<span>#: (TO_DATE == null) ? '-' : TO_DATE #</span>"},
-                    {field: "TO_DATE_N",
-                        title: "BS",
-                        template: "<span>#: (TO_DATE_N == null) ? '-' : TO_DATE_N #</span>"}]},
-            {title: "Requested Date",
+                        field: "TO_DATE_AD",
+                        title: "English",
+                    },
+                    {field: "TO_DATE_BS",
+                        title: "Nepali",
+                    }]},
+            {title: "Applied Date",
                 columns: [{
-                        field: "REQUESTED_DATE",
-                        title: "AD",
-                        template: "<span>#: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #</span>"},
-                    {field: "REQUESTED_DATE_N",
-                        title: "BS",
-                        template: "<span>#: (REQUESTED_DATE_N == null) ? '-' : REQUESTED_DATE_N #</span>"}]},
+                        field: "REQUESTED_DATE_AD",
+                        title: "English",
+                    },
+                    {field: "REQUESTED_DATE_BS",
+                        title: "Nepali",
+                    }]},
             {field: "DESTINATION", title: "Destination"},
-            {field: "REQUESTED_AMOUNT", title: "Requested Amt."},
-            {field: "REQUESTED_TYPE", title: "Request For"},
-            {field: "STATUS", title: "Status"},
-            {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action",
-                template: `
-                <span>
-                    #if(REQUESTED_TYPE=='Expense'){ #
-                    <a class="btn-edit"
-                       href="${document.expenseDetailLink}/#: TRAVEL_ID #" style="height:17px;" title="view detail">
-                       <i class="fa fa-search-plus"></i>
-                    </a> #} else{ # <a class="btn-edit"
-                                       href="${document.viewLink}/#: TRAVEL_ID #" style="height:17px;" title="view detail">
-                        <i class="fa fa-search-plus"></i>
-                    </a>
-                    # }# </span>
-`}
-        ], 'TravelRequestList.xlsx');
-        app.searchTable('travelRequestStatusTable', ['FULL_NAME', 'FROM_DATE', 'TO_DATE', 'REQUESTED_DATE', 'FROM_DATE_N', 'TO_DATE_N', 'REQUESTED_DATE_N', 'DESTINATION', 'REQUESTED_AMOUNT', 'REQUESTED_TYPE', 'STATUS']);
-        var map = {
-            'FULL_NAME': 'Name',
-            'FROM_DATE': 'From Date(AD)',
-            'FROM_DATE_N': 'From Date(BS)',
-            'TO_DATE': 'To Date(AD)',
-            'TO_DATE_N': 'To Date(BS)',
-            'REQUESTED_DATE': 'Request Date(AD)',
-            'REQUESTED_DATE_N': 'Request Date(BS)',
-            'REQUESTED_AMOUNT': 'Request Amt',
-            'REQUESTED_TYPE': 'Request Type',
-            'DESTINATION': 'Destination',
-            'PURPOSE': 'Purpose',
-            'RECOMMENDER_NAME': 'Recommender',
-            'APPROVER_NAME': 'Approver',
-            'STATUS': 'Status',
-            'REMARKS': 'Remarks',
-            'RECOMMENDED_REMARKS': 'Recommender Remarks',
-            'RECOMMENDED_DATE': 'Recommended Date',
-            'APPROVED_REMARKS': 'Approver Remarks',
-            'APPROVED_DATE': 'Approved Date',
-        };
-        $('#exportExcel').on('click', function () {
-            app.excelExport($table, map, "TravelRequestList.xlsx");
-        });
-        $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, map, "TravelRequestList.pdf");
-        });
+            {field: "REQUESTED_AMOUNT", title: "Request Amt."},
+            {field: "REQUESTED_TYPE_DETAIL", title: "Request For"},
+            {field: "STATUS_DETAIL", title: "Status"},
+            {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: action}
+        ], "Travel Request List.xlsx");
         $search.on('click', function () {
-            var data = document.searchManager.getSearchValues();
-            data['travelRequestStatusId'] = $travelStatus.val();
-            data['fromDate'] = $fromDate.val();
-            data['toDate'] = $toDate.val();
-            app.pullDataById(document.url, {action: 'pullTravelRequestStatusList', data: data}).then(function (response) {
+            var search = document.searchManager.getSearchValues();
+            search['status'] = $status.val();
+            search['fromDate'] = $fromDate.val();
+            search['toDate'] = $toDate.val();
+            app.pullDataById('', search).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
                 } else {
@@ -94,6 +67,36 @@
             }, function (error) {
                 app.showMessage(error, 'error');
             });
+        });
+        app.searchTable($table, ['EMPLOYEE_NAME']);
+        var exportMap = {
+            'EMPLOYEE_NAME': 'Employee Name',
+            'REQUESTED_DATE_AD': 'Request Date(AD)',
+            'REQUESTED_DATE_BS': 'Request Date(BS)',
+            'FROM_DATE_AD': 'From Date(AD)',
+            'FROM_DATE_BS': 'From Date(BS)',
+            'TO_DATE_AD': 'To Date(AD)',
+            'TO_DATE_BS': 'To Date(BS)',
+            'DESTINATION': 'Destination',
+            'REQUESTED_AMOUNT': 'Request Amt',
+            'REQUESTED_TYPE_DETAIL': 'Request Type',
+            'STATUS_DETAIL': 'Status',
+            'PURPOSE': 'Purpose',
+            'REMARKS': 'Remarks',
+            'RECOMMENDER_NAME': 'Recommender',
+            'APPROVER_NAME': 'Approver',
+            'RECOMMENDED_BY_NAME': 'Recommended By',
+            'APPROVED_BY_NAME': 'Approved By',
+            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+            'RECOMMENDED_DATE': 'Recommended Date',
+            'APPROVED_REMARKS': 'Approved Remarks',
+            'APPROVED_DATE': 'Approved Date'
+        };
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, exportMap, 'Travel Request List.xlsx');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, exportMap, 'Travel Request List.pdf');
         });
     });
 })(window.jQuery, window.app);

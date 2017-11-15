@@ -81,21 +81,6 @@ class LeaveStatusRepository implements RepositoryInterface {
                     LeaveApply::APPROVED_DT
                         ], NULL, NULL, NULL, 'LA'), false);
 
-//        $select->columns([
-//            new Expression("TO_CHAR(LA.START_DATE, 'DD-MON-YYYY') AS START_DATE"),
-//            new Expression("TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY') AS REQUESTED_DT"),
-//            new Expression("LA.STATUS AS STATUS"),
-//            new Expression("LA.ID AS ID"),
-//            new Expression("TO_CHAR(LA.END_DATE, 'DD-MON-YYYY') AS END_DATE"),
-//            new Expression("TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY') AS APPROVED_DT"),
-//            new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
-//            new Expression("LA.HALF_DAY AS HALF_DAY"),
-//            new Expression("LA.EMPLOYEE_ID AS EMPLOYEE_ID"),
-//            new Expression("LA.LEAVE_ID AS LEAVE_ID"),
-//            new Expression("LA.REMARKS AS REMARKS"),
-//            new Expression("LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
-//            new Expression("LA.APPROVED_REMARKS AS APPROVED_REMARKS"),
-//                ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
 //                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], "left")
@@ -108,7 +93,6 @@ class LeaveStatusRepository implements RepositoryInterface {
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
-        //print_r($statement->getSql()); DIE();
         $result = $statement->execute();
         return $result->current();
     }
@@ -368,7 +352,7 @@ class LeaveStatusRepository implements RepositoryInterface {
             $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}')";
         }
 
-        if ($leaveId != -1) {
+        if ($leaveId != null && $leaveId != -1) {
             $sql .= " AND LA.LEAVE_ID ='" . $leaveId . "'";
         }
 

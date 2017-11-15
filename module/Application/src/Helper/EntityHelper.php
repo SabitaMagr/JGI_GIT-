@@ -50,7 +50,13 @@ class EntityHelper {
 
         $entitiesArray = array();
         if ($emptyColumn) {
-            $entitiesArray[null] = "----";
+            if (gettype($emptyColumn) == 'array') {
+                foreach ($emptyColumn as $k => $v) {
+                    $entitiesArray[$k] = $v;
+                }
+            } else {
+                $entitiesArray[null] = "----";
+            }
         }
         foreach ($resultset as $result) {
             $concattedValue = "";

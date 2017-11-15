@@ -2,6 +2,7 @@
 
 namespace AttendanceManagement\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -10,27 +11,17 @@ use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
 use Exception;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class AttendanceByHr extends AbstractActionController {
+class AttendanceByHr extends HrisController {
 
-    private $adapter;
-    private $repository;
-    private $form;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new AttendanceDetailRepository($adapter);
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $attendanceByHr = new AttendanceByHrForm();
-        $this->form = $builder->createForm($attendanceByHr);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeForm(AttendanceByHrForm::class);
+        $this->initializeRepository(AttendanceDetailRepository::class);
     }
 
     private function getStatusSelect() {
@@ -67,17 +58,16 @@ class AttendanceByHr extends AbstractActionController {
     }
 
     public function indexAction() {
-
-
         return Helper::addFlashMessagesToArray($this, [
                     'status' => $this->getStatusSelect(),
                     'presentStatus' => $this->getPresentStatusSelect(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
         try {
             if ($request->isPost()) {
@@ -123,7 +113,6 @@ class AttendanceByHr extends AbstractActionController {
     }
 
     public function editAction() {
-        $this->initializeForm();
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute("attendancebyhr");

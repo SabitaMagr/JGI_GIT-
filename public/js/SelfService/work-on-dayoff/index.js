@@ -3,16 +3,23 @@
     $(document).ready(function () {
 
         var $table = $('#workOnDayoffTbl');
-
-        var viewAction = '<span><a class="btn-edit" href="' + document.viewLink + '/#: ID #" style="height:17px;" title="view detail">'
-                + '<i class="fa fa-search-plus"></i>'
-                + '</a>';
-        var deleteAction = '#if(ALLOW_TO_EDIT == 1){#'
-                + '<a class="confirmation btn-delete" href="' + document.deleteLink + '/#: ID #" id="bs_#:ID #" style="height:17px;">'
-                + '<i class="fa fa-trash-o"></i>'
-                + '</a> #}#'
-                + '</span>';
-        var action = viewAction + deleteAction;
+        var action = `
+            <div class="clearfix">
+                <a class="btn btn-icon-only green" href="${document.viewLink}/#:ID#" style="height:17px;" title="View Detail">
+                    <i class="fa fa-search"></i>
+                </a>
+                #if(ALLOW_EDIT=='Y'){#
+                <a class="btn btn-icon-only yellow" href="${document.editLink}/#:ID#" style="height:17px;" title="Edit">
+                    <i class="fa fa-edit"></i>
+                </a>
+                #}#
+                #if(ALLOW_DELETE=='Y'){#
+                <a  class="btn btn-icon-only red confirmation" href="${document.deleteLink}/#:ID#" style="height:17px;" title="Cancel">
+                    <i class="fa fa-times"></i>
+                </a>
+                #}#
+            </div>
+        `;
         app.initializeKendoGrid($table, [
             {title: "Applied Date",
                 columns: [{
@@ -42,55 +49,39 @@
                         template: "<span>#: (TO_DATE_BS == null) ? '-' : TO_DATE_BS #</span>"
                     }]},
             {field: "DURATION", title: "Duration"},
-            {field: "STATUS", title: "Status"},
-            {field: ["ID", "ALLOW_TO_EDIT"], title: "Action", template: action}
+            {field: "STATUS_DETAIL", title: "Status"},
+            {field: ["ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
         ], "Work On day Off List.xlsx");
 
-        app.searchTable('workOnDayoffTbl', ['REQUESTED_DATE_AD', 'REQUESTED_DATE_BS', 'FROM_DATE_AD', 'FROM_DATE_BS', 'TO_DATE_AD', 'TO_DATE_BS', 'DURATION', 'STATUS']);
+        app.searchTable('workOnDayoffTbl', ['REQUESTED_DATE_AD', 'REQUESTED_DATE_BS', 'FROM_DATE_AD', 'FROM_DATE_BS', 'TO_DATE_AD', 'TO_DATE_BS', 'DURATION', 'STATUS_DETAIL']);
 
         app.pullDataById("", {}).then(function (response) {
             app.renderKendoGrid($table, response.data);
         }, function (error) {
 
         });
-
+        var exportMap = {
+            'REQUESTED_DATE_AD': 'Requested Date(AD)',
+            'REQUESTED_DATE_BS': 'Requested Date(BS)',
+            'FROM_DATE_AD': 'From Date(AD)',
+            'FROM_DATE_BS': 'From Date(BS)',
+            'TO_DATE_AD': 'To Date(AD)',
+            'TO_DATE_BS': 'To Date(BS)',
+            'DURATION': 'Duration',
+            'STATUS_DETAIL': 'Status',
+            'REMARKS': 'Remarks',
+            'RECOMMENDER_NAME': 'Recommender',
+            'APPROVER_NAME': 'Approver',
+            'RECOMMENDED_REMARKS': 'Recommended Remarks',
+            'RECOMMENDED_DATE': 'Recommended Dt',
+            'APPROVED_REMARKS': 'Approved Remarks',
+            'APPROVED_DATE': 'Approved Dt'
+        };
         $('#excelExport').on('click', function () {
-            app.excelExport($table, {
-                'REQUESTED_DATE_AD': 'Requested Date(AD)',
-                'REQUESTED_DATE_BS': 'Requested Date(BS)',
-                'FROM_DATE_AD': 'From Date(AD)',
-                'FROM_DATE_BS': 'From Date(BS)',
-                'TO_DATE_AD': 'To Date(AD)',
-                'TO_DATE_BS': 'To Date(BS)',
-                'DURATION': 'Duration',
-                'STATUS': 'Status',
-                'REMARKS': 'Remarks',
-                'RECOMMENDER_NAME': 'Recommender',
-                'APPROVER_NAME': 'Approver',
-                'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                'RECOMMENDED_DATE': 'Recommended Dt',
-                'APPROVED_REMARKS': 'Approved Remarks',
-                'APPROVED_DATE': 'Approved Dt'
-            }, 'Work On day Off List');
+            app.excelExport($table, exportMap, 'Work On day Off List');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, {
-                'REQUESTED_DATE_AD': 'Requested Date(AD)',
-                'REQUESTED_DATE_BS': 'Requested Date(BS)',
-                'FROM_DATE_AD': 'From Date(AD)',
-                'FROM_DATE_BS': 'From Date(BS)',
-                'TO_DATE_AD': 'To Date(AD)',
-                'TO_DATE_BS': 'To Date(BS)',
-                'DURATION': 'Duration',
-                'STATUS': 'Status',
-                'REMARKS': 'Remarks',
-                'RECOMMENDER_NAME': 'Recommender',
-                'APPROVER_NAME': 'Approver',
-                'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                'RECOMMENDED_DATE': 'Recommended Dt',
-                'APPROVED_REMARKS': 'Approved Remarks',
-                'APPROVED_DATE': 'Approved Dt'
-            }, 'Work On day Off List');
+            app.exportToPDF($table, exportMap, 'Work On day Off List');
         });
 
     });

@@ -18,7 +18,7 @@ class HrisController extends AbstractActionController {
     protected $form;
     protected $repository;
     protected $status = [
-        '-1' => 'All',
+        '-1' => 'All Status',
         'RQ' => 'Pending',
         'RC' => 'Recommended',
         'AP' => 'Approved',

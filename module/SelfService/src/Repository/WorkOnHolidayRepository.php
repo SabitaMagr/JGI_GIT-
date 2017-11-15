@@ -7,7 +7,6 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use HolidayManagement\Model\Holiday;
 use SelfService\Model\WorkOnHoliday;
-use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
@@ -48,14 +47,12 @@ class WorkOnHolidayRepository implements RepositoryInterface {
             new Expression("WH.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("WH.HOLIDAY_ID AS HOLIDAY_ID"),
             new Expression("INITCAP(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
-            new Expression("BS_DATE(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N"),
             new Expression("INITCAP(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
-            new Expression("BS_DATE(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE_N"),
             new Expression("INITCAP(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
-            new Expression("BS_DATE(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE_N"),
             new Expression("WH.DURATION AS DURATION"),
             new Expression("WH.REMARKS AS REMARKS"),
             new Expression("WH.STATUS AS STATUS"),
+            new Expression("LEAVE_STATUS_DESC(WH.STATUS) AS STATUS_DETAIL"),
             new Expression("WH.RECOMMENDED_BY AS RECOMMENDED_BY"),
             new Expression("INITCAP(TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("WH.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
@@ -66,14 +63,15 @@ class WorkOnHolidayRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['WH' => WorkOnHoliday::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=WH." . WorkOnHoliday::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
                 ->join(['H' => Holiday::TABLE_NAME], "H." . Holiday::HOLIDAY_ID . "=WH." . WorkOnHoliday::HOLIDAY_ID, [Holiday::HOLIDAY_CODE, "HOLIDAY_ENAME" => new Expression("INITCAP(H.HOLIDAY_ENAME)")])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=WH.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WH.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=WH.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WH.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+                ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=WH.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=WH.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
 
-        $select->where([
-            "WH.ID=" . $id
-        ]);
+        $select->where(["WH.ID" => $id]);
         $select->order("WH.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -96,6 +94,7 @@ class WorkOnHolidayRepository implements RepositoryInterface {
             new Expression("WH.DURATION AS DURATION"),
             new Expression("WH.REMARKS AS REMARKS"),
             new Expression("WH.STATUS AS STATUS"),
+            new Expression("LEAVE_STATUS_DESC(WH.STATUS) AS STATUS_DETAIL"),
             new Expression("WH.RECOMMENDED_BY AS RECOMMENDED_BY"),
             new Expression("INITCAP(TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("WH.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
@@ -103,16 +102,29 @@ class WorkOnHolidayRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(WH.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("WH.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("INITCAP(TO_CHAR(WH.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"),
+            new Expression("(CASE WHEN WH.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
+            new Expression("(CASE WHEN WH.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
 
         $select->from(['WH' => WorkOnHoliday::TABLE_NAME])
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=WH." . WorkOnHoliday::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
                 ->join(['H' => Holiday::TABLE_NAME], "H." . Holiday::HOLIDAY_ID . "=WH." . WorkOnHoliday::HOLIDAY_ID, [Holiday::HOLIDAY_CODE, "HOLIDAY_ENAME" => new Expression("INITCAP(H.HOLIDAY_ENAME)")])
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=WH.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WH.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=WH.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WH.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+                ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=WH.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=WH.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
 
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
+        ]);
+        $select->where([
+            "(TRUNC(SYSDATE)- WH.REQUESTED_DATE) < (
+                      CASE
+                        WHEN WH.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
         ]);
         $select->order("WH.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);

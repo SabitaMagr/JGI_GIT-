@@ -7,6 +7,7 @@ use Application\Repository\RepositoryInterface;
 use System\Model\UserSetup;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate\Expression;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -41,9 +42,11 @@ class UserSetupRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['US' => UserSetup::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FIRST_NAME' => new Expression("INITCAP(E.FIRST_NAME)"), 'MIDDLE_NAME' => new Expression("INITCAP(E.MIDDLE_NAME)"), 'LAST_NAME' => new Expression("INITCAP(E.LAST_NAME)"), 'FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")])
-                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME']);
+                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME'])
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")], Select::JOIN_LEFT)
+                ->join(['C' => "HRIS_COMPANY"], "C.COMPANY_ID=E.COMPANY_ID", ['COMPANY_NAME' => new Expression("INITCAP(C.COMPANY_NAME)")], Select::JOIN_LEFT);
 
+        $select->order(['C.COMPANY_NAME' => Select::ORDER_ASCENDING, 'R.ROLE_NAME' => Select::ORDER_ASCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 

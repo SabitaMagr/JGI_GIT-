@@ -146,11 +146,21 @@ class AttendanceRequestRepository implements RepositoryInterface {
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
                 ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
 
-        $select->where(['A.EMPLOYEE_ID=' . $employeeId]);
+        $select->where(['A.EMPLOYEE_ID' => $employeeId]);
 
         if ($attendanceRequestStatusId != -1) {
             $select->where([
                 "A.STATUS='" . $attendanceRequestStatusId . "'"
+            ]);
+        }
+        if ($attendanceRequestStatusId != 'C') {
+            $select->where([
+                "(TRUNC(SYSDATE)- A.ATTENDANCE_DT) < (
+                      CASE
+                        WHEN A.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
             ]);
         }
 
@@ -164,6 +174,7 @@ class AttendanceRequestRepository implements RepositoryInterface {
                 "A.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY')"
             ]);
         }
+
         $select->order("A.REQUESTED_DT DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

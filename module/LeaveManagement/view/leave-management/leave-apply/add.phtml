@@ -43,7 +43,7 @@ $gracePeriod = $form->get('gracePeriod');
 $submit->setAttribute('value', 'Apply Leave');
 $submit->setAttribute('id', 'request');
 
-$form->setAttribute('action', $this->url('leavebalance', ['action' => 'apply']));
+$form->setAttribute('action', $this->url('leaveapply', ['action' => 'add']));
 
 
 $form->prepare();

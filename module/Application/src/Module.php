@@ -67,8 +67,6 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             RegisterAttendanceController::class . "-checkIn",
             RegisterAttendanceController::class . "-checkOut",
             RegisterAttendanceController::class . "-authenticate",
-            Controller\CronController::class . '-index',
-            Controller\CronController::class . '-employee-attendance',
             Controller\ApiController::class . "-index",
             Controller\ApiController::class . "-employee",
             Controller\ApiController::class . "-setup",

@@ -29,8 +29,6 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'workOnHoliday-form');
 
 $holidayId = $form->get('holidayId');
-$holidayId->setValueOptions($holidays);
-$holidayId->setAttributes(["disabled" => "disabled"]);
 $fromDate = $form->get('fromDate');
 $fromDate->setAttributes(["disabled" => "disabled"]);
 $toDate = $form->get('toDate');

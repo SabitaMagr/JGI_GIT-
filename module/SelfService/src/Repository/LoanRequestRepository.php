@@ -4,13 +4,13 @@ namespace SelfService\Repository;
 
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
 use SelfService\Model\LoanRequest;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Sql;
 use Setup\Model\HrEmployees;
 use Setup\Model\Loan;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class LoanRequestRepository implements RepositoryInterface {
 
@@ -43,10 +43,8 @@ class LoanRequestRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns([
             new Expression("INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE"),
-//            new Expression("BS_DATE(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY')) AS LOAN_DATE_N"),
             new Expression("LR.STATUS AS STATUS"),
             new Expression("INITCAP(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
-//            new Expression("BS_DATE(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N"),
             new Expression("INITCAP(TO_CHAR(LR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("INITCAP(TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("LR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
@@ -103,13 +101,17 @@ class LoanRequestRepository implements RepositoryInterface {
         $select->where([
             "E.EMPLOYEE_ID=" . $employeeId
         ]);
+        $select->where([
+            "(TRUNC(SYSDATE)- LR.REQUESTED_DATE) < (
+                      CASE
+                        WHEN LR.STATUS = 'C'
+                        THEN 20
+                        ELSE 365
+                      END)"
+        ]);
         $select->order("LR.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-//        $list = [];
-//        foreach($result  as $row){
-//            array_push($list, $row);
-//        }
         return $result;
     }
 
