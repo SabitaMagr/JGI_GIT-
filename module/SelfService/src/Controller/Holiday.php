@@ -3,12 +3,12 @@
 namespace SelfService\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
 use Exception;
 use SelfService\Repository\HolidayRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class Holiday extends HrisController {
@@ -24,9 +24,9 @@ class Holiday extends HrisController {
             try {
                 $rawList = $this->repository->selectAll($this->employeeId);
                 $holidays = Helper::extractDbData($rawList);
-                return new CustomViewModel(['success' => true, 'data' => $holidays, 'error' => '']);
+                return new JsonModel(['success' => true, 'data' => $holidays, 'error' => '']);
             } catch (Exception $e) {
-                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
         return new ViewModel();
