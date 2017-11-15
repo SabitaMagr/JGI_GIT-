@@ -51,7 +51,7 @@ class AdvanceRequestForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Reason"})
-     * @Annotation\Attributes({"id":"reason","class":"form-control","style":"height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"reason","class":"form-reason form-control","style":"height: 50px; font-size:12px"})
      */
     public $reason;
 
@@ -60,7 +60,7 @@ class AdvanceRequestForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Recommeder Remarks"})
-     * @Annotation\Attributes({"id":"recommendedRemarks","class":"form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"recommendedRemarks","class":"form-reason form-control","style":"    height: 50px; font-size:12px"})
      */
     public $recommendedRemarks;
 
@@ -69,7 +69,7 @@ class AdvanceRequestForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Approved Remarks"})
-     * @Annotation\Attributes({"id":"approvedRemarks","class":"form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"approvedRemarks","class":"form-reason form-control","style":"    height: 50px; font-size:12px"})
      */
     public $approvedRemarks;
 
