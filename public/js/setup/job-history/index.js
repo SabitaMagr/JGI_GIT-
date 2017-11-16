@@ -73,7 +73,7 @@
                 App.unblockUI("#hris-page-content");
                 data = success.data;
                 app.renderKendoGrid($table, data);
-                window.app.scrollTo('jobHistoryTable');
+                window.app.scrollTo($table);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
             });
