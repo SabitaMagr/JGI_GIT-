@@ -43,7 +43,7 @@ angular.module('hris', [])
                         <i class="fa fa-trash-o"></i></a>
                         </a>`}
             ];
-            app.initializeKendoGrid($table, columns, "Employee Service History");
+            app.initializeKendoGrid($table, columns);
             app.searchTable('jobHistoryTable', ['FULL_NAME', 'START_DATE', 'SERVICE_EVENT_TYPE_NAME', 'TO_SERVICE_NAME', 'TO_BRANCH_NAME', 'TO_DEPARTMENT_NAME', 'TO_DESIGNATION_TITLE', 'TO_POSITION_NAME']);
 
             var exportKV = {

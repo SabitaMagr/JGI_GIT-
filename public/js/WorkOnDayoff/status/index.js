@@ -57,7 +57,7 @@
             'APPROVED_DATE': 'Approved Date'
 
         };
-        app.initializeKendoGrid($tableContainer, columns, "DayoffWorkRequestList.xlsx");
+        app.initializeKendoGrid($tableContainer, columns);
         app.searchTable('dayoffWorkRequestStatusTable', ['FULL_NAME', 'REQUESTED_DATE_AD', 'FROM_DATE_AD', 'TO_DATE_AD', 'REQUESTED_DATE_BS', 'FROM_DATE_BS', 'TO_DATE_BS', 'DURATION', 'STATUS']);
 
         $search.on('click', function () {

@@ -1092,7 +1092,7 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail, bulkOptions) {
+    var initializeKendoGrid = function ($table, columns, detail, bulkOptions) {
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1115,11 +1115,6 @@ window.app = (function ($, toastr, App) {
 
         }
         var kendoConfig = {
-            excel: {
-                fileName: excelExportFileName || "Default_generated.xlsx",
-                filterable: true,
-                allPages: true
-            },
             height: 500,
             scrollable: true,
             sortable: true,

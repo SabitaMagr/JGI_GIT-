@@ -23,7 +23,7 @@
             {field: "SERVICE_TYPE_NAME", title: "Service Type", width: 150},
             {field: "EMPLOYEE_TYPE", title: "Employee Type", width: 150},
             {field: "FULL_NAME", title: "Name", width: 150},
-        ], 'Employees.xlsx', function (e) {
+        ], function (e) {
             app.pullDataById(document.employeeShiftsWS, {employeeId: e.data.EMPLOYEE_ID}).then(function (response) {
                 if (!response.success) {
                     app.showMessage(response.error, 'error');

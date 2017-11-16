@@ -102,7 +102,7 @@ class OvertimeRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(OT.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("OT.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("(CASE WHEN OT.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
-            new Expression("(CASE WHEN OT.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
+            new Expression("(CASE WHEN OT.STATUS IN ('RQ','RC','AP') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
         $select->from(['OT' => Overtime::TABLE_NAME])
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=OT.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")

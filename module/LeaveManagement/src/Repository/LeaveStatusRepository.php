@@ -349,7 +349,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                   END
                 OR LS.EMPLOYEE_ID IS NULL)";
         if ($leaveRequestStatusId != -1) {
-            $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}')";
+            $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}'";
         }
 
         if ($leaveId != null && $leaveId != -1) {
@@ -395,9 +395,7 @@ class LeaveStatusRepository implements RepositoryInterface {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
 
-
         $sql .= " ORDER BY LA.REQUESTED_DT DESC";
-
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

@@ -85,7 +85,7 @@ angular.module('hris', [])
                 'TOTAL_HOUR': 'Total Hour',
                 'STATUS': 'Status'
             };
-            window.app.initializeKendoGrid($grid, columns, "AttendanceList.xlsx", detailInit);
+            window.app.initializeKendoGrid($grid, columns, detailInit);
             window.app.searchTable("attendanceByHrTable", ['EMPLOYEE_NAME']);
             $('#excelExport').on('click', function () {
                 console.log("test");

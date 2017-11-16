@@ -31,7 +31,7 @@
             'ALLOW_DELETE': 'Allow Delete',
             'REMARKS': 'Remarks',
         }
-        app.initializeKendoGrid($table, columns, "Role List.xlsx");
+        app.initializeKendoGrid($table, columns);
 
         app.searchTable($table, ['ROLE_NAME']);
 

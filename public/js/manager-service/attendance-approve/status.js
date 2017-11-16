@@ -55,7 +55,7 @@
             'APPROVED_REMARKS': 'Approved Remarks',
 
         };
-        app.initializeKendoGrid($tableContainer, columns, "AttendanceRequestList.xlsx");
+        app.initializeKendoGrid($tableContainer, columns);
         app.searchTable('attendanceRequestStatusTable', ['FULL_NAME', 'REQUESTED_DT_AD', 'ATTENDANCE_DT_AD', 'REQUESTED_DT_BS', 'ATTENDANCE_DT_BS', 'IN_TIME', 'OUT_TIME', 'YOUR_ROLE', 'STATUS']);
 
 

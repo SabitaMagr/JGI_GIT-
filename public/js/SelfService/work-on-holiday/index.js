@@ -51,7 +51,7 @@
             {field: "DURATION", title: "Duration"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
-        ], "workOnHoliday List.xlsx");
+        ]);
 
 
         app.pullDataById("", {}).then(function (response) {

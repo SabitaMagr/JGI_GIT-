@@ -64,7 +64,7 @@
             'APPROVED_REMARKS': 'Approved Remarks',
             'APPROVED_DATE': 'Approved Date'
         };
-        app.initializeKendoGrid($tableContainer, columns, "Training Request List.xlsx");
+        app.initializeKendoGrid($tableContainer, columns);
         app.searchTable($tableContainer, ['FULL_NAME']);
 
         $search.on('click', function () {

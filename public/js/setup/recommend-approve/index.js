@@ -28,7 +28,7 @@
             'RECOMMENDER_NAME': 'Recommender',
             'APPROVER_NAME': 'Approver',
         }
-        app.initializeKendoGrid($table, columns, "Recommender Approver List.xlsx");
+        app.initializeKendoGrid($table, columns);
 
         app.searchTable($table, ['EMPLOYEE_NAME']);
 

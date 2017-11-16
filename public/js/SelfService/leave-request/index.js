@@ -61,7 +61,7 @@
             {field: "NO_OF_DAYS", title: "Duration"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
-        ], "leave Request List.xlsx");
+        ]);
 
 
         $('#viewLeaveRequestStatus').on('click', function () {

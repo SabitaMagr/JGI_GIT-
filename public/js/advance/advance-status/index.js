@@ -50,7 +50,7 @@
             'APPROVED_REMARKS': 'Approver Remarks',
             'APPROVED_DATE': 'Approved Date'
         };
-        app.initializeKendoGrid($tableContainer, columns, "AdvanceRequestList.xlsx");
+        app.initializeKendoGrid($tableContainer, columns);
         app.searchTable('advanceRequestStatusTable', ['FULL_NAME', 'ADVANCE_NAME', 'REQUESTED_DATE', 'ADVANCE_DATE', 'REQUESTED_DATE_N', 'ADVANCE_DATE_N', 'REQUESTED_AMOUNT', 'TERMS', 'YOUR_ROLE', 'STATUS']);
 
         $search.on('click', function () {

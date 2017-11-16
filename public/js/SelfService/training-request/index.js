@@ -45,7 +45,7 @@
             {field: "TRAINING_TYPE", title: "Training Type"},
             {field: "STATUS", title: "Status"},
             {field: ["REQUEST_ID", "ALLOW_TO_EDIT"], title: "Action", template: action}
-        ], "Training Request List.xlsx");
+        ]);
 
         app.pullDataById("", {}).then(function (response) {
             app.renderKendoGrid($table, response.data);
@@ -77,7 +77,7 @@
                 'APPROVED_DATE': 'Approved Dt'
             }, 'Training Request List');
         });
-        
+
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, {
                 'TRAINING_CODE': 'Training',
@@ -99,7 +99,7 @@
                 'RECOMMENDED_DATE': 'Recommeder Date',
                 'APPROVED_REMARKS': 'Approved Remarks',
                 'APPROVED_DATE': 'Approved Dt'
-            }, 'Training Request List','A2');
+            }, 'Training Request List', 'A2');
         });
 
         app.searchTable('trainingRequestTable', ['TITLE', 'REQUESTED_DATE_AD', 'REQUESTED_DATE_BS', 'START_DATE_AD', 'START_DATE_BS', 'END_DATE_AD', 'END_DATE_BS', 'DURATION', 'TRAINING_TYPE', 'STATUS']);

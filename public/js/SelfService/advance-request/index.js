@@ -34,7 +34,7 @@
             {field: "TERMS", title: "Terms(in month)"},
             {field: "STATUS", title: "Status"},
             {field: ["ADVANCE_REQUEST_ID", "ALLOW_TO_EDIT"], title: "Action", template: action}
-        ], "Advance Request List.xlsx");
+        ]);
 
         app.searchTable('advanceTable', ['ADVANCE_NAME', 'REQUESTED_DATE_AD', 'REQUESTED_DATE_BS', 'ADVANCE_DATE_AD', 'ADVANCE_DATE_BS', 'REQUESTED_AMOUNT', 'TERMS', 'STATUS']);
 
@@ -61,7 +61,7 @@
 
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, {
-                 'ADVANCE_NAME': 'Advance',
+                'ADVANCE_NAME': 'Advance',
                 'REQUESTED_DATE_AD': 'Request Dt(AD)',
                 'REQUESTED_DATE_BS': 'Request Dt(BS)',
                 'ADVANCE_DATE_AD': 'Advance Dt(AD)',
@@ -85,6 +85,6 @@
         }, function (error) {
             console.log(error);
         });
-        
+
     });
 })(window.jQuery, window.app);

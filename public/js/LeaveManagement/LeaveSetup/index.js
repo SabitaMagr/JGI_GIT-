@@ -14,7 +14,7 @@
             {field: "CASHABLE", title: "Cashable"},
             {field: "PAID", title: "Paid"},
             {field: "LEAVE_ID", title: "Action", width: 120, template: action}
-        ], "LeaveList.xlsx");
+        ]);
 
         app.searchTable('leaveTable', ['LEAVE_ENAME', 'COMPANY_NAME', 'ALLOW_HALFDAY', 'DEFAULT_DAYS', 'CARRY_FORWARD', 'CASHABLE', 'PAID']);
 

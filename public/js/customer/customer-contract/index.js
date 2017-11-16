@@ -47,7 +47,7 @@
             'CHARGE_RATE': 'Charge Rate',
             'REMARKS': 'Remarks',
         }
-        app.initializeKendoGrid($table, columns, "Customer Contract List.xlsx");
+        app.initializeKendoGrid($table, columns);
 
         app.searchTable($table, ['CUSTOMER_ENAME']);
 

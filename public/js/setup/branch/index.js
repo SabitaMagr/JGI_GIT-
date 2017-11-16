@@ -12,7 +12,7 @@
             {field: "EMAIL", title: "Email", width: 140},
             {field: "COMPANY_NAME", title: "Company", width: 120},
             {field: "BRANCH_ID", title: "Action", width: 120, template: action}
-        ], "Branch List.xlsx");
+        ]);
 
         app.searchTable('branchTable', ['BRANCH_NAME', 'STREET_ADDRESS', 'TELEPHONE', 'EMAIL', 'COMPANY_NAME']);
         $('#excelExport').on('click', function () {

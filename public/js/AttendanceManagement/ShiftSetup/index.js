@@ -11,7 +11,7 @@
             {field: "START_TIME", title: "Start Time", width: 120},
             {field: "END_TIME", title: "End Time", width: 120},
             {field: "SHIFT_ID", title: "Action", width: 120, template: action}
-        ], "ShiftList.xlsx");
+        ]);
 
         app.searchTable('shiftTable', ['SHIFT_ENAME', 'COMPANY_NAME', 'START_TIME', 'END_TIME']);
 

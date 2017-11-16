@@ -12,7 +12,7 @@
             {field: "COMPANY_NAME", title: "Company", width: 250},
             {field: "REMARKS", title: "Remarks", hidden: true},
             {field: "POSITION_ID", title: "Action", width: 120, template: action}
-        ], "Company List.xlsx");
+        ]);
 
         app.searchTable('positionTable', ['LEVEL_NO', 'POSITION_NAME', 'COMPANY_NAME']);
 

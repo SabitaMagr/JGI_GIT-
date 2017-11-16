@@ -42,7 +42,7 @@
             {field: "STATUS", title: "Overall Status"},
             {field: "SUB_APPROVED_FLAG", title: "Approved"},
             {field: ["ID"], title: "Action", template: action}
-        ], "leave Notification List.xlsx");
+        ]);
 
         app.searchTable('leaveNotificationTable', ['FULL_NAME', 'LEAVE_ENAME', 'REQUESTED_DT_AD', 'REQUESTED_DT_BS', 'FROM_DATE_AD', 'FROM_DATE_BS', 'TO_DATE_AD', 'TO_DATE_BS', 'NO_OF_DAYS', 'STATUS', 'APPROVED_FLAG']);
 

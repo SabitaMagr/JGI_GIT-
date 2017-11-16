@@ -42,7 +42,7 @@
                 </a>
             </span>`}
         ];
-        app.initializeKendoGrid($tableContainer, columns, "Leave Request List.xlsx");
+        app.initializeKendoGrid($tableContainer, columns);
         app.searchTable($tableContainer, ["FULL_NAME"]);
 
         var map = {

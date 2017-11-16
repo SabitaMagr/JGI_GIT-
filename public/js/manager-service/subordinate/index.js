@@ -20,7 +20,7 @@
             {field: "DESIGNATION_TITLE", title: "Designation", template: "<span>#: (DESIGNATION_TITLE == null) ? '-' : DESIGNATION_TITLE #</span>"},
             {field: "SERVICE_TYPE_NAME", title: "Service Type", template: "<span>#: (SERVICE_TYPE_NAME == null) ? '-' : SERVICE_TYPE_NAME    #</span>"},
             {field: "EMPLOYEE_ID", title: "Action", width: 120, template: action}
-        ], "Subordinate List.xlsx");
+        ]);
         app.searchTable('employeeList', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', "DESIGNATION_TITLE"]);
         app.pdfExport(
                 'Subordinate List',

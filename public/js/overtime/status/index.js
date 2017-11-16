@@ -59,7 +59,7 @@
             'APPROVED_DATE': 'Approved Date'
 
         };
-        app.initializeKendoGrid($tableContainer, columns, "Overtime Request List.xlsx");
+        app.initializeKendoGrid($tableContainer, columns);
         app.searchTable($tableContainer, ["FULL_NAME"]);
 
         $('#excelExport').on('click', function () {

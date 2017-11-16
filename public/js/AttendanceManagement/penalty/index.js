@@ -27,7 +27,7 @@
                     {field: "ATTENDANCE_DT_N", title: "BS", width: 75},
                 ]},
             {field: "TYPE", title: "Type", width: 150},
-        ], 'Test.xlsx', function (e) {
+        ], function (e) {
             app.pullDataById(document.penaltyDetailWS, {employeeId: e.data.EMPLOYEE_ID, attendanceDt: e.data.ATTENDANCE_DT, type: e.data.TYPE_CODE}).then(function (response) {
                 if (!response.success) {
                     app.showMessage(response.error, 'error');
