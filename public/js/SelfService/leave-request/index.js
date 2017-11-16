@@ -57,7 +57,8 @@
                     {field: "TO_DATE_BS",
                         title: "BS",
                         template: "<span>#: (TO_DATE_BS == null) ? '-' : TO_DATE_BS #</span>"}]},
-
+            {field: "HALF_DAY_DETAIL", title: "Day Interval"},
+            {field: "GRACE_PERIOD_DETAIL", title: "Grace"},
             {field: "NO_OF_DAYS", title: "Duration"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
@@ -99,7 +100,8 @@
             'FROM_DATE_BS': 'Start Date(BS)',
             'TO_DATE_AD': 'End Date(AD)',
             'TO_DATE_BS': 'End Date(BS)',
-            'NO_OF_DAYS': 'No Of Days',
+            'HALF_DAY_DETAIL': 'Day Interval',
+            'GRACE_PERIOD_DETAIL': 'Grace',
             'STATUS_DETAIL': 'Status',
             'REMARKS': 'Remarks',
             'RECOMMENDER_NAME': 'Recommender',
