@@ -1107,7 +1107,7 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, detail, bulkOptions) {
+    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config) {
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1145,11 +1145,18 @@ window.app = (function ($, toastr, App) {
                 }
             },
             pageable: {
-                input: true,
-                numeric: false
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
             },
             columns: columns
         };
+        if (typeof config !== "undefined" && config !== null) {
+            for (var key in config) {
+                kendoConfig[key] = config[key];
+            }
+        }
+
         if (typeof detail !== 'undefined' && detail !== null) {
             kendoConfig['detailInit'] = detail;
         }

@@ -1,6 +1,7 @@
-CREATE OR REPLACE PROCEDURE HRIS_PRELOAD_ATTENDANCE(
+create or replace PROCEDURE HRIS_PRELOAD_ATTENDANCE(
     V_ATTENDANCE_DATE DATE,
-    P_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE:=NULL)
+    P_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE:=NULL,
+    P_SHIFT_ID HRIS_SHIFTS.SHIFT_ID%TYPE         :=NULL)
 AS
   V_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE;
   V_DAYOFF  VARCHAR2(1 BYTE);
@@ -38,7 +39,7 @@ BEGIN
     FETCH CUR_EMPLOYEE INTO V_EMPLOYEE_ID;
     EXIT
   WHEN CUR_EMPLOYEE%NOTFOUND;
-    --
+    -- RESET VALUES FOR EACH LOOP
     V_DAYOFF     :='N';
     V_HALFDAY    :='N';
     V_HOLIDAY_ID :=NULL;
@@ -46,6 +47,7 @@ BEGIN
     V_TRAINING_ID:=NULL;
     V_TRAVEL_ID  :=NULL;
     --
+    -- CHECK IF ALREADY LOADED ATTENDANCE DATA FOR THIS EMPLOYEE_ID
     SELECT COUNT (EMPLOYEE_ID)
     INTO V_ATTENDANCE_DATA_COUNT
     FROM HRIS_ATTENDANCE_DETAIL
@@ -54,73 +56,10 @@ BEGIN
     IF V_ATTENDANCE_DATA_COUNT > 0 THEN
       CONTINUE;
     END IF;
-BEGIN
-      SELECT HS.SHIFT_ID,
-        WEEKDAY1,
-        WEEKDAY2,
-        WEEKDAY3,
-        WEEKDAY4,
-        WEEKDAY5,
-        WEEKDAY6,
-        WEEKDAY7
-      INTO V_SHIFT_ID,
-        V_WEEKDAY1,
-        V_WEEKDAY2,
-        V_WEEKDAY3,
-        V_WEEKDAY4,
-        V_WEEKDAY5,
-        V_WEEKDAY6,
-        V_WEEKDAY7
-      FROM HRIS_EMPLOYEE_SHIFT_ROASTER ES,
-        HRIS_SHIFTS HS
-      WHERE 1                = 1
-      AND ES.EMPLOYEE_ID     = V_EMPLOYEE_ID
-      AND TRUNC(ES.FOR_DATE) = V_ATTENDANCE_DATE
-      AND HS.STATUS          = 'E'
-      AND ES.SHIFT_ID        = HS.SHIFT_ID;
-    EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-    BEGIN
-      SELECT HS.SHIFT_ID,
-        WEEKDAY1,
-        WEEKDAY2,
-        WEEKDAY3,
-        WEEKDAY4,
-        WEEKDAY5,
-        WEEKDAY6,
-        WEEKDAY7
-      INTO V_SHIFT_ID,
-        V_WEEKDAY1,
-        V_WEEKDAY2,
-        V_WEEKDAY3,
-        V_WEEKDAY4,
-        V_WEEKDAY5,
-        V_WEEKDAY6,
-        V_WEEKDAY7
-      FROM
-        (SELECT *
-        FROM
-          (SELECT *
-          FROM HRIS_EMPLOYEE_SHIFT_ASSIGN
-          WHERE EMPLOYEE_ID              = V_EMPLOYEE_ID
-          AND (TRUNC(V_ATTENDANCE_DATE) >= START_DATE
-          AND TRUNC(V_ATTENDANCE_DATE)  <=
-            CASE
-              WHEN END_DATE IS NOT NULL
-              THEN END_DATE
-              ELSE TRUNC(V_ATTENDANCE_DATE)
-            END)
-          ORDER BY START_DATE DESC,
-            END_DATE ASC
-          )
-        WHERE ROWNUM=1
-        ) ES,
-        HRIS_SHIFTS HS
-      WHERE ES.SHIFT_ID = HS.SHIFT_ID;
-    EXCEPTION
-    WHEN NO_DATA_FOUND THEN
+    --
+    IF P_SHIFT_ID IS NOT NULL THEN
       BEGIN
-        SELECT SHIFT_ID,
+        SELECT HS.SHIFT_ID,
           WEEKDAY1,
           WEEKDAY2,
           WEEKDAY3,
@@ -136,17 +75,104 @@ BEGIN
           V_WEEKDAY5,
           V_WEEKDAY6,
           V_WEEKDAY7
-        FROM HRIS_SHIFTS
-        WHERE V_ATTENDANCE_DATE BETWEEN START_DATE AND END_DATE
-        AND DEFAULT_SHIFT = 'Y'
-        AND STATUS        ='E'
-        AND ROWNUM        =1 ;
+        FROM HRIS_SHIFTS HS
+        WHERE HS.SHIFT_ID = P_SHIFT_ID ;
+      END;
+    ELSE
+      BEGIN
+        SELECT HS.SHIFT_ID,
+          WEEKDAY1,
+          WEEKDAY2,
+          WEEKDAY3,
+          WEEKDAY4,
+          WEEKDAY5,
+          WEEKDAY6,
+          WEEKDAY7
+        INTO V_SHIFT_ID,
+          V_WEEKDAY1,
+          V_WEEKDAY2,
+          V_WEEKDAY3,
+          V_WEEKDAY4,
+          V_WEEKDAY5,
+          V_WEEKDAY6,
+          V_WEEKDAY7
+        FROM HRIS_EMPLOYEE_SHIFT_ROASTER ES,
+          HRIS_SHIFTS HS
+        WHERE 1                = 1
+        AND ES.EMPLOYEE_ID     = V_EMPLOYEE_ID
+        AND TRUNC(ES.FOR_DATE) = V_ATTENDANCE_DATE
+        AND HS.STATUS          = 'E'
+        AND ES.SHIFT_ID        = HS.SHIFT_ID;
       EXCEPTION
       WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20344, 'No default and normal shift defined for this time period');
+        BEGIN
+          SELECT HS.SHIFT_ID,
+            WEEKDAY1,
+            WEEKDAY2,
+            WEEKDAY3,
+            WEEKDAY4,
+            WEEKDAY5,
+            WEEKDAY6,
+            WEEKDAY7
+          INTO V_SHIFT_ID,
+            V_WEEKDAY1,
+            V_WEEKDAY2,
+            V_WEEKDAY3,
+            V_WEEKDAY4,
+            V_WEEKDAY5,
+            V_WEEKDAY6,
+            V_WEEKDAY7
+          FROM
+            (SELECT *
+            FROM
+              (SELECT *
+              FROM HRIS_EMPLOYEE_SHIFT_ASSIGN
+              WHERE EMPLOYEE_ID              = V_EMPLOYEE_ID
+              AND (TRUNC(V_ATTENDANCE_DATE) >= START_DATE
+              AND TRUNC(V_ATTENDANCE_DATE)  <=
+                CASE
+                  WHEN END_DATE IS NOT NULL
+                  THEN END_DATE
+                  ELSE TRUNC(V_ATTENDANCE_DATE)
+                END)
+              ORDER BY START_DATE DESC,
+                END_DATE ASC
+              )
+            WHERE ROWNUM=1
+            ) ES,
+            HRIS_SHIFTS HS
+          WHERE ES.SHIFT_ID = HS.SHIFT_ID;
+        EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          BEGIN
+            SELECT SHIFT_ID,
+              WEEKDAY1,
+              WEEKDAY2,
+              WEEKDAY3,
+              WEEKDAY4,
+              WEEKDAY5,
+              WEEKDAY6,
+              WEEKDAY7
+            INTO V_SHIFT_ID,
+              V_WEEKDAY1,
+              V_WEEKDAY2,
+              V_WEEKDAY3,
+              V_WEEKDAY4,
+              V_WEEKDAY5,
+              V_WEEKDAY6,
+              V_WEEKDAY7
+            FROM HRIS_SHIFTS
+            WHERE V_ATTENDANCE_DATE BETWEEN START_DATE AND END_DATE
+            AND DEFAULT_SHIFT = 'Y'
+            AND STATUS        ='E'
+            AND ROWNUM        =1 ;
+          EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            RAISE_APPLICATION_ERROR(-20344, 'No default and normal shift defined for this time period');
+          END;
+        END;
       END;
-    END;
-END;
+    END IF;
     SELECT NVL(MAX (ID),0) + 1 INTO V_MAX_ID FROM HRIS_ATTENDANCE_DETAIL;
     BEGIN
       IF (TO_CHAR(V_ATTENDANCE_DATE,'D') ='1') THEN
