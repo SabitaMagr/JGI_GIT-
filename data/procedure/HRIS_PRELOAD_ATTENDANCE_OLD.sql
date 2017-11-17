@@ -4,6 +4,14 @@ create or replace PROCEDURE HRIS_PRELOAD_ATTENDANCE(
     P_SHIFT_ID HRIS_SHIFTS.SHIFT_ID%TYPE         :=NULL)
 AS
   V_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE;
+  V_DAYOFF  VARCHAR2(1 BYTE);
+  V_HALFDAY CHAR(1 BYTE);
+  V_HOLIDAY_ID HRIS_HOLIDAY_MASTER_SETUP.HOLIDAY_ID%TYPE;
+  V_LEAVE_ID HRIS_LEAVE_MASTER_SETUP.LEAVE_ID%TYPE;
+  V_TRAINING_ID HRIS_TRAINING_MASTER_SETUP.TRAINING_ID%TYPE;
+  V_TRAVEL_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.TRAVEL_ID%TYPE;
+  V_MAX_ID                NUMBER;
+  V_ATTENDANCE_DATA_COUNT NUMBER;
   V_SHIFT_ID HRIS_SHIFTS.SHIFT_ID%TYPE;
   V_WEEKDAY1 HRIS_SHIFTS.WEEKDAY1%TYPE;
   V_WEEKDAY2 HRIS_SHIFTS.WEEKDAY2%TYPE;
@@ -12,14 +20,6 @@ AS
   V_WEEKDAY5 HRIS_SHIFTS.WEEKDAY5%TYPE;
   V_WEEKDAY6 HRIS_SHIFTS.WEEKDAY6%TYPE;
   V_WEEKDAY7 HRIS_SHIFTS.WEEKDAY7%TYPE;
-  V_DAYOFF  VARCHAR2(1 BYTE);
-  V_HALFDAY CHAR(1 BYTE);
-  V_HOLIDAY_ID HRIS_HOLIDAY_MASTER_SETUP.HOLIDAY_ID%TYPE;
-  V_LEAVE_ID HRIS_LEAVE_MASTER_SETUP.LEAVE_ID%TYPE;
-  V_TRAVEL_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.TRAVEL_ID%TYPE;
-  V_TRAINING_ID HRIS_TRAINING_MASTER_SETUP.TRAINING_ID%TYPE;
-  V_MAX_ID                NUMBER;
-  V_ATTENDANCE_DATA_COUNT NUMBER;
   CURSOR CUR_EMPLOYEE
   IS
     SELECT EMPLOYEE_ID
@@ -33,8 +33,6 @@ AS
         THEN P_EMPLOYEE_ID
       END
     OR P_EMPLOYEE_ID IS NULL);
-  --
-  V_OVERALL_STATUS CHAR(2 BYTE);
 BEGIN
   OPEN CUR_EMPLOYEE;
   LOOP
@@ -42,13 +40,12 @@ BEGIN
     EXIT
   WHEN CUR_EMPLOYEE%NOTFOUND;
     -- RESET VALUES FOR EACH LOOP
-    V_DAYOFF      :='N';
-    V_HALFDAY     :='N';
-    V_HOLIDAY_ID  :=NULL;
-    V_LEAVE_ID    :=NULL;
-    V_TRAINING_ID :=NULL;
-    V_TRAVEL_ID   :=NULL;
-    V_OVERALL_STATUS:=NULL;
+    V_DAYOFF     :='N';
+    V_HALFDAY    :='N';
+    V_HOLIDAY_ID :=NULL;
+    V_LEAVE_ID   :=NULL;
+    V_TRAINING_ID:=NULL;
+    V_TRAVEL_ID  :=NULL;
     --
     -- CHECK IF ALREADY LOADED ATTENDANCE DATA FOR THIS EMPLOYEE_ID
     SELECT COUNT (EMPLOYEE_ID)
@@ -61,7 +58,6 @@ BEGIN
     END IF;
     --
     IF P_SHIFT_ID IS NOT NULL THEN
-      --    FETCH SHIFT DATA IF PASSED
       BEGIN
         SELECT HS.SHIFT_ID,
           WEEKDAY1,
@@ -82,7 +78,6 @@ BEGIN
         FROM HRIS_SHIFTS HS
         WHERE HS.SHIFT_ID = P_SHIFT_ID ;
       END;
-      --
     ELSE
       BEGIN
         SELECT HS.SHIFT_ID,
@@ -223,11 +218,51 @@ BEGIN
           V_HALFDAY                        := 'Y';
         END IF;
       END IF;
-      IF (V_DAYOFF     ='Y') THEN
-        V_OVERALL_STATUS:='DO';
+      IF (V_DAYOFF='Y') THEN
+        INSERT
+        INTO HRIS_ATTENDANCE_DETAIL
+          (
+            EMPLOYEE_ID,
+            ATTENDANCE_DT,
+            ID ,
+            SHIFT_ID,
+            DAYOFF_FLAG,
+            OVERALL_STATUS
+          )
+          VALUES
+          (
+            V_EMPLOYEE_ID,
+            V_ATTENDANCE_DATE,
+            V_MAX_ID,
+            V_SHIFT_ID,
+            'Y',
+            'DO'
+          );
+        COMMIT;
+        CONTINUE;
       END IF;
-      IF (V_HALFDAY    ='Y') THEN
-        V_OVERALL_STATUS:='AB';
+      IF (V_HALFDAY='Y') THEN
+        INSERT
+        INTO HRIS_ATTENDANCE_DETAIL
+          (
+            EMPLOYEE_ID,
+            ATTENDANCE_DT,
+            ID ,
+            SHIFT_ID,
+            HALFDAY_FLAG,
+            OVERALL_STATUS
+          )
+          VALUES
+          (
+            V_EMPLOYEE_ID,
+            V_ATTENDANCE_DATE,
+            V_MAX_ID,
+            V_SHIFT_ID,
+            'Y',
+            'AB'
+          );
+        COMMIT;
+        CONTINUE;
       END IF;
     END;
     BEGIN
@@ -240,7 +275,27 @@ BEGIN
       AND EH.EMPLOYEE_ID=V_EMPLOYEE_ID
       AND ROWNUM        <2;
       IF V_HOLIDAY_ID  IS NOT NULL THEN
-        V_OVERALL_STATUS :='HD';
+        INSERT
+        INTO HRIS_ATTENDANCE_DETAIL
+          (
+            EMPLOYEE_ID,
+            ATTENDANCE_DT,
+            HOLIDAY_ID,
+            ID,
+            SHIFT_ID,
+            OVERALL_STATUS
+          )
+          VALUES
+          (
+            V_EMPLOYEE_ID,
+            V_ATTENDANCE_DATE,
+            V_HOLIDAY_ID,
+            V_MAX_ID,
+            V_SHIFT_ID,
+            'HD'
+          );
+        COMMIT;
+        CONTINUE;
       END IF;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -252,10 +307,30 @@ BEGIN
       FROM HRIS_EMPLOYEE_LEAVE_REQUEST L
       WHERE L.EMPLOYEE_ID = V_EMPLOYEE_ID
       AND V_ATTENDANCE_DATE BETWEEN L.START_DATE AND L.END_DATE
-      AND L.STATUS     = 'AP'
-      AND ROWNUM       =1;
-      IF V_LEAVE_ID   IS NOT NULL THEN
-        V_OVERALL_STATUS:='LV';
+      AND L.STATUS   = 'AP'
+      AND ROWNUM     =1;
+      IF V_LEAVE_ID IS NOT NULL THEN
+        INSERT
+        INTO HRIS_ATTENDANCE_DETAIL
+          (
+            EMPLOYEE_ID,
+            ATTENDANCE_DT,
+            LEAVE_ID,
+            ID,
+            SHIFT_ID,
+            OVERALL_STATUS
+          )
+          VALUES
+          (
+            V_EMPLOYEE_ID,
+            V_ATTENDANCE_DATE,
+            V_LEAVE_ID,
+            V_MAX_ID,
+            V_SHIFT_ID,
+            'LV'
+          );
+        COMMIT;
+        CONTINUE;
       END IF;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -271,8 +346,28 @@ BEGIN
       AND TA.STATUS           = 'E'
       AND T.IS_WITHIN_COMPANY ='N'
       AND V_ATTENDANCE_DATE BETWEEN T.START_DATE AND T.END_DATE;
-      IF V_TRAINING_ID  IS NOT NULL THEN
-        V_OVERALL_STATUS:='TN';
+      IF V_TRAINING_ID IS NOT NULL THEN
+        INSERT
+        INTO HRIS_ATTENDANCE_DETAIL
+          (
+            EMPLOYEE_ID,
+            ATTENDANCE_DT,
+            TRAINING_ID,
+            ID,
+            SHIFT_ID,
+            OVERALL_STATUS
+          )
+          VALUES
+          (
+            V_EMPLOYEE_ID,
+            V_ATTENDANCE_DATE,
+            V_TRAINING_ID,
+            V_MAX_ID,
+            V_SHIFT_ID,
+            'TN'
+          );
+        COMMIT;
+        CONTINUE;
       END IF;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -285,9 +380,29 @@ BEGIN
       WHERE EMPLOYEE_ID = V_EMPLOYEE_ID
       AND STATUS        = 'AP'
       AND (V_ATTENDANCE_DATE BETWEEN FROM_DATE AND TO_DATE)
-      AND ROWNUM          =1;
-      IF V_TRAVEL_ID     IS NOT NULL THEN
-        V_OVERALL_STATUS := 'TV';
+      AND ROWNUM      =1;
+      IF V_TRAVEL_ID IS NOT NULL THEN
+        INSERT
+        INTO HRIS_ATTENDANCE_DETAIL
+          (
+            EMPLOYEE_ID,
+            ATTENDANCE_DT,
+            TRAVEL_ID,
+            ID,
+            SHIFT_ID,
+            OVERALL_STATUS
+          )
+          VALUES
+          (
+            V_EMPLOYEE_ID,
+            V_ATTENDANCE_DATE,
+            V_TRAVEL_ID,
+            V_MAX_ID,
+            V_SHIFT_ID,
+            'TV'
+          );
+        COMMIT;
+        CONTINUE;
       END IF;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -297,36 +412,19 @@ BEGIN
       INSERT
       INTO HRIS_ATTENDANCE_DETAIL
         (
-          ID,
           EMPLOYEE_ID,
           ATTENDANCE_DT,
+          ID,
           SHIFT_ID,
-          DAYOFF_FLAG,
-          HALFDAY_FLAG,
-          HOLIDAY_ID,
-          LEAVE_ID,
-          TRAVEL_ID,
-          TRAINING_ID,
           OVERALL_STATUS
         )
         VALUES
         (
-          V_MAX_ID,
           V_EMPLOYEE_ID,
           V_ATTENDANCE_DATE,
+          V_MAX_ID,
           V_SHIFT_ID,
-          V_DAYOFF,
-          V_HALFDAY,
-          V_HOLIDAY_ID,
-          V_LEAVE_ID,
-          V_TRAVEL_ID,
-          V_TRAINING_ID,
-          (
-          CASE
-            WHEN V_OVERALL_STATUS IS NULL
-            THEN 'AB'
-            ELSE V_OVERALL_STATUS
-          END)
+          'AB'
         );
       COMMIT;
     END;
