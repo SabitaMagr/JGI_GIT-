@@ -70,7 +70,6 @@ class LeaveApproveController extends HrisController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
-
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
@@ -93,7 +92,7 @@ class LeaveApproveController extends HrisController {
 
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
-                $leaveApply->approvedBy = $detail['APPROVER'];
+                $leaveApply->approvedBy = $detail['APPROVER_ID'];
                 try {
                     if ($leaveApply->status == 'RC') {
                         HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
