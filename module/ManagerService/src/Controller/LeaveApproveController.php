@@ -281,13 +281,7 @@ class LeaveApproveController extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
 
-
             $leaveStatusRepository = new LeaveStatusRepository($this->adapter);
-            if (key_exists('recomApproveId', $data)) {
-                $recomApproveId = $data['recomApproveId'];
-            } else {
-                $recomApproveId = null;
-            }
             $result = $leaveStatusRepository->getFilteredRecord($data, $data['recomApproveId']);
 
             $recordList = Helper::extractDbData($result);
