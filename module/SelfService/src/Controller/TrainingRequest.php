@@ -245,8 +245,6 @@ class TrainingRequest extends AbstractActionController {
             $detail['DURATION'] = $detail['T_DURATION'];
             $detail['TRAINING_TYPE'] = $detail['T_TRAINING_TYPE'];
         }
-//        print '<pre>';
-//        print_r($detail); die();
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
 
@@ -267,7 +265,7 @@ class TrainingRequest extends AbstractActionController {
                     'approver' => $authApprover,
                     'trainings' => $trainings["trainingKVList"],
                     'trainingTypes' => $trainingTypes,
-//                    'trainingList'=>$trainings['trainingList']
+                    'trainingList'=>$trainings['trainingList']
         ]);
     }
 
