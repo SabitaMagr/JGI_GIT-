@@ -183,8 +183,8 @@ class LeaveRequestRepository implements RepositoryInterface {
             new Expression("LA.APPROVED_BY AS APPROVED_BY"),
             new Expression("INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
             new Expression("LA.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("(CASE WHEN LA.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
-            new Expression("(CASE WHEN LA.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
+            new Expression("(CASE WHEN LA.STATUS = 'XX' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
+            new Expression("(CASE WHEN LA.STATUS IN ('RQ','RC','AP') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
