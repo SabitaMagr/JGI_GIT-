@@ -26,7 +26,7 @@ class Penalty extends HrisController {
             try {
                 $data = $request->getPost();
                 $reportData = $this->repository->monthWiseReport($data);
-                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'alreadyPenalized' => $this->repository->checkIfAlreadyDeducted($data['monthId']), 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
@@ -49,6 +49,21 @@ class Penalty extends HrisController {
             }
             $data = $request->getPost();
             $reportData = $this->repository->penaltyDetail($data['employeeId'], Helper::getExpressionDate($data['attendanceDt']), $data['type']);
+            return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function deductAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception("must be a post request.");
+            }
+            $data = $request->getPost();
+            $data['employeeId'] = $this->employeeId;
+            $reportData = $this->repository->deduct($data);
             return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

@@ -2,10 +2,13 @@
 
 namespace AttendanceManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Zend\Db\Adapter\AdapterInterface;
 
 class PenaltyRepo {
+
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -127,6 +130,29 @@ EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
+    }
+
+    public function checkIfAlreadyDeducted($monthId) {
+        return EntityHelper::rawQueryResult($this->adapter, "
+            SELECT (
+              CASE
+                WHEN COUNT(PM.YEAR) > 0
+                THEN 'Y'
+                ELSE 'N'
+              END) AS IS_DEDUCTED
+            FROM HRIS_PENALIZED_MONTHS PM
+            JOIN HRIS_MONTH_CODE M
+            ON (PM.YEAR     =M.YEAR
+            AND PM.MONTH_NO = M.MONTH_NO)
+            WHERE M.MONTH_ID= {$monthId} ")->current();
+    }
+
+    public function deduct($data) {
+        EntityHelper::rawQueryResult($this->adapter, "
+                BEGIN
+                  HRIS_LATE_LEAVE_DEDUCTION({$data['monthId']},{$data['noOfDays']},{$data['employeeId']});
+                END;
+");
     }
 
 }

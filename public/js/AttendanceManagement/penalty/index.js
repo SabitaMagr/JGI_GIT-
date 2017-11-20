@@ -83,12 +83,37 @@
             app.pullDataById(document.penalty, data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($penalty, response.data);
+                    actionBtnStatus(response.alreadyPenalized);
                 } else {
                     app.showMessage(response.error, 'error');
                 }
             }, function (error) {
                 app.showMessage(error, 'error');
             });
+        });
+        var $actionBtn = $('#actionBtn');
+        var $noOfDays = $('#noOfDays');
+
+        var actionBtnStatus = function (alreadyPenalized) {
+            $('#actionDiv').show();
+            if (alreadyPenalized['IS_DEDUCTED'] == 'Y') {
+                $actionBtn.html('Rededuct');
+            } else {
+                $actionBtn.html('Deduct');
+            }
+        };
+
+        $actionBtn.on('click', function () {
+            if ($noOfDays.val() == '') {
+                app.showMessage('No of Days is required.', 'error');
+                $noOfDays.focus();
+            }
+            var data = {'monthId': $monthId.val(), 'noOfDays': $noOfDays.val()};
+            app.pullDataById(document.deductLink, data).then(function (response) {
+                app.showMessage("The leave is successfully deducted.");
+                $search.trigger('click');
+            }, function (error) {});
+
         });
 
     });
