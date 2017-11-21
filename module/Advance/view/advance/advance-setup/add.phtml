@@ -18,7 +18,7 @@ $allowOverrideRate = $form->get('allowOverrideRate');
 $minOverrideRate = $form->get('minOverrideRate');
 $allowOverrideMonth = $form->get('allowOverrideMonth');
 $maxOverrideMonth = $form->get('maxOverrideMonth');
-$overrideRecommenderflag = $form->get('overrideRecommenderflag');
+$overrideRecommenderFlag = $form->get('overrideRecommenderFlag');
 $overrideApproverFlag = $form->get('overrideApproverFlag');
 
 
@@ -84,18 +84,18 @@ $form->prepare();
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
-                            <?php print $this->formLabel($allowedMonthGap); ?>
-                            <?php print $this->formElement($allowedMonthGap); ?>
-                            <?php print $this->formElementErrors()->render($allowedMonthGap, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($allowUncleardAdvance); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($allowUncleardAdvance); ?>
+                            </div>
                         </div>
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
-                            <?php print $this->formLabel($allowUncleardAdvance); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($allowUncleardAdvance); ?>
-                            </div>
+                            <?php print $this->formLabel($allowedMonthGap); ?>
+                            <?php print $this->formElement($allowedMonthGap); ?>
+                            <?php print $this->formElementErrors()->render($allowedMonthGap, ['class' => 'help-block']); ?>
                         </div>
                     </div>
 
@@ -177,9 +177,9 @@ $form->prepare();
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
-                            <?php print $this->formLabel($overrideRecommenderflag); ?>
+                            <?php print $this->formLabel($overrideRecommenderFlag); ?>
                             <div class="md-radio-inline">
-                                <?php $customRenderer($overrideRecommenderflag); ?>
+                                <?php $customRenderer($overrideRecommenderFlag); ?>
                             </div>
                         </div>
                     </div>

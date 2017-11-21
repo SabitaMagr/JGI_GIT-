@@ -1,5 +1,5 @@
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\advance-request-self')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\advance-request')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -24,7 +24,7 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 $this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
-$this->headScript()->appendFile($this->basePath('js/advance/advance-request-self/view.js'));
+$this->headScript()->appendFile($this->basePath('js/advance/advance-request/view.js'));
 
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'advance-form');
@@ -183,6 +183,11 @@ $form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']))
                                 <?php print $this->formLabel($deductionRate); ?>
                                 <?php print $this->formElement($deductionRate); ?>
                                 <?php print $this->formElementErrors()->render($deductionRate, ['class' => 'help-block']); ?>
+                                <span ><?php 
+                                $monthlyDeductAmt=($advanceRequestData['DEDUCTION_RATE']/100)*$advanceRequestData['SALARY'];
+                                        echo 'RS.'.$monthlyDeductAmt;
+                                ?></span>
+                            
                             </div>
                         </div>
                         <div class="col-sm-4">

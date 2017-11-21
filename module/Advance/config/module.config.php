@@ -3,7 +3,8 @@
 namespace Advance;
 
 use Advance\Controller\AdvanceApply;
-use Advance\Controller\AdvanceRequestSelf;
+use Advance\Controller\AdvanceApprove;
+use Advance\Controller\AdvanceRequest;
 use Advance\Controller\AdvanceSetup;
 use Advance\Controller\AdvanceStatus;
 use Application\Controller\ControllerFactory;
@@ -54,7 +55,7 @@ return [
                     ],
                 ],
             ],
-            'advance-request-self' => [
+            'advance-request' => [
                 'type' => Segment::class,
                 'options' => [
                     'route' => '/advance/request/self[/:action[/:id]]',
@@ -63,10 +64,20 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => AdvanceRequestSelf::class,
+                        'controller' => AdvanceRequest::class,
                         'action' => 'index'
                     ],
                 ],
+            ],
+            'advance-approve' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/advance/approve[/:action[/:id][/:role]]',
+                    'defaults' => [
+                        'controller' => AdvanceApprove::class,
+                        'action' => 'index'
+                    ]
+                ]
             ],
         ],
     ],
@@ -152,28 +163,60 @@ return [
                 ],
             ],
         ],
-        'advance-request-self' => [
+        'advance-request' => [
             [
                 'label' => "Advance Request",
-                'route' => "advance-request-self"
+                'route' => "advance-request"
             ],
             [
                 'label' => "Advance Request",
-                'route' => "advance-request-self",
+                'route' => "advance-request",
                 'pages' => [
                     [
                         'label' => 'List',
-                        'route' => 'advance-request-self',
+                        'route' => 'advance-request',
                         'action' => 'index',
                     ],
                     [
                         'label' => 'Add',
-                        'route' => 'advance-request-self',
+                        'route' => 'advance-request',
                         'action' => 'add',
                     ],
                     [
                         'label' => 'View',
-                        'route' => 'advance-request-self',
+                        'route' => 'advance-request',
+                        'action' => 'view',
+                    ],
+                    [
+                        'label' => 'Payment View',
+                        'route' => 'advance-request',
+                        'action' => 'paymentView',
+                    ],
+                ],
+            ],
+        ],
+        'advance-approve' => [
+            [
+                'label' => "Advance Approve",
+                'route' => "advance-approve"
+            ],
+            [
+                'label' => "Advance Approve",
+                'route' => "advance-approve",
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'advance-approve',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'List',
+                        'route' => 'advance-approve',
+                        'action' => 'status',
+                    ],
+                    [
+                        'label' => 'View',
+                        'route' => 'advance-approve',
                         'action' => 'view',
                     ],
                 ],
@@ -185,7 +228,8 @@ return [
             AdvanceApply::class => ControllerFactory::class,
             AdvanceStatus::class => ControllerFactory::class,
             AdvanceSetup::class => ControllerFactory::class,
-            AdvanceRequestSelf::class => ControllerFactory::class
+            AdvanceRequest::class => ControllerFactory::class,
+            AdvanceApprove::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

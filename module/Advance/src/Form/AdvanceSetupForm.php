@@ -69,7 +69,7 @@ class AdvanceSetupForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Max Salary Rate"})
      * @Annotation\Attributes({ "id":"maxSalaryRate","class":"form-control","step":"0.01","min":"0","max":"100"})
@@ -78,7 +78,7 @@ class AdvanceSetupForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Max Advance Months"})
      * @Annotation\Attributes({"id":"maxAdvanceMonth","class":"form-control","min":"0","max":"12"})
@@ -153,16 +153,16 @@ class AdvanceSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Override Recommender"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({"id":"overrideRecommenderflag"})
+     * @Annotation\Attributes({"id":"overrideRecommenderFlag"})
      */
-    public $overrideRecommenderflag;
+    public $overrideRecommenderFlag;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Override Approver"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({"id":"overrideRecommenderflag"})
+     * @Annotation\Attributes({"id":"overrideApproverFlag"})
      */
     public $overrideApproverFlag;
     

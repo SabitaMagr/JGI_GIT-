@@ -69,6 +69,7 @@ class AdvanceSetup extends AbstractActionController {
 //                die();
                 $advanceSetupModel = new AdvanceSetupModel();
                 $advanceSetupModel->exchangeArrayFromForm($form->getData());
+                $advanceSetupModel->status="E";
                 $advanceSetupModel->advanceId = ((int) Helper::getMaxId($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID)) + 1;
                 $advanceSetupModel->createdBy = $this->employeeId;
                 $this->repository->add($advanceSetupModel);

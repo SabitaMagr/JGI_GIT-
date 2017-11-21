@@ -5,7 +5,8 @@ namespace Advance\Controller;
 use Advance\Form\AdvanceRequestForm;
 use Advance\model\AdvanceRequestModel;
 use Advance\model\AdvanceSetupModel;
-use Advance\Repository\AdvanceRequestSelfRepository;
+use Advance\Repository\AdvancePaymentRepository;
+use Advance\Repository\AdvanceRequestRepository;
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -15,11 +16,11 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
 
-class AdvanceRequestSelf extends HrisController {
+class AdvanceRequest extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
-        $this->initializeRepository(AdvanceRequestSelfRepository::class);
+        $this->initializeRepository(AdvanceRequestRepository::class);
         $this->initializeForm(AdvanceRequestForm::class);
     }
 
@@ -61,7 +62,7 @@ class AdvanceRequestSelf extends HrisController {
                 $this->repository->add($advanceRequestModel);
                 $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
 
-                return $this->redirect()->toRoute("advance-request-self");
+                return $this->redirect()->toRoute("advance-request");
             }
         }
 
@@ -77,19 +78,14 @@ class AdvanceRequestSelf extends HrisController {
     }
 
     public function viewAction() {
-
         $id = (int) $this->params()->fromRoute('id', 0);
         if ($id === 0) {
-            return $this->redirect()->toRoute("advance-request-self");
+            return $this->redirect()->toRoute("advance-request");
         }
-         $detail = $this->repository->fetchById($id);
-         
-         
+        $detail = $this->repository->fetchById($id);
 //         echo '<pre>';
 //         print_r($detail);
 //         die();
-         
-        
         $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
         $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
@@ -108,29 +104,43 @@ class AdvanceRequestSelf extends HrisController {
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
 //                    'advances' => EntityHelper::getTableList($this->adapter, AdvanceSetupModel::TABLE_NAME, ['*'], [AdvanceSetupModel::STATUS => 'E']),
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'],AdvanceSetupModel::ADVANCE_ENAME , "ASC"," ", FALSE, TRUE),
+                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'], AdvanceSetupModel::ADVANCE_ENAME, "ASC", " ", FALSE, TRUE),
                     'advanceRequestData' => $detail
         ]);
-        
-//        'employeeName' => $detail['FULL_NAME'],
-//                    'requestedDt' => $detail['REQUESTED_DT'],
-//                    'availableDays' => $preBalance,
-//                    'status' => $detail['STATUS'],
-//                    'recommender' => $authRecommender,
-//                    'approver' => $authApprover,
-//                    'remarksDtl' => $detail['REMARKS'],
-//                    'totalDays' => $result['TOTAL_DAYS'],
-//                    'recommendedBy' => $detail['RECOMMENDED_BY'],
-//                    'employeeId' => $this->employeeId,
-//                    'allowHalfDay' => $detail['ALLOW_HALFDAY'],
-//                    'leave' => $this->repository->getLeaveList($detail['EMPLOYEE_ID']),
-//                    'customRenderer' => Helper::renderCustomView(),
-//                    'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
-//                    'subRemarks' => $detail['SUB_REMARKS'],
-//                    'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
-//                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true),
-//                    'gp' => $detail['GRACE_PERIOD']
-        
+    }
+
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
+        if (!$id) {
+            return $this->redirect()->toRoute('advance-request');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Advance Request Successfully Cancelled!!!");
+        return $this->redirect()->toRoute('advance-request');
+    }
+
+    public function paymentViewAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if ($id === 0) {
+            return $this->redirect()->toRoute("advance-request");
+        }
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $paymentRepository= new AdvancePaymentRepository($this->adapter);
+                $rawList = $paymentRepository->getPaymentStatus($id);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'acl' => $this->acl
+        ]);
     }
 
 }

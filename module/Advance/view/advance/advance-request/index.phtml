@@ -6,7 +6,7 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
-        ->appendFile($this->basePath('js/advance/advance-request-self/index.js'));
+        ->appendFile($this->basePath('js/advance/advance-request/index.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -17,15 +17,14 @@ $this->headScript()
 
 <script>
     document.employeeId =<?=json_encode($employeeId);?>;
-//    document.ids =<?php // echo json_encode(["attendanceRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
-    document.pullAttendanceUrl = '<?= $this->url("advance-request-self", ["action" => "pullAttendanceRequestList"]) ?>';
-    document.viewLink = '<?= $this->url("advance-request-self", ["action" => "view"]) ?>';
-    document.editLink = '<?= $this->url("advance-request-self", ["action" => "edit"]) ?>';
-    document.deleteLink = '<?= $this->url("advance-request-self", ["action" => "delete"]) ?>';
+    document.viewLink = '<?= $this->url("advance-request", ["action" => "view"]) ?>';
+    document.editLink = '<?= $this->url("advance-request", ["action" => "edit"]) ?>';
+    document.deleteLink = '<?= $this->url("advance-request", ["action" => "delete"]) ?>';
+    document.paymentViewLink = '<?= $this->url("advance-request", ["action" => "paymentView"]) ?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\advance-request-self')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\advance-request')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
@@ -37,7 +36,7 @@ $this->headScript()
             </div>
             <div class="actions">
                 <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
-                    <a href="<?= $this->url('advance-request-self', ['action' => 'add']) ?>" class="btn default btn-sm">
+                    <a href="<?= $this->url('advance-request', ['action' => 'add']) ?>" class="btn default btn-sm">
                         <i class="fa fa-plus-square icon-black"></i>
                         New 
                     </a>

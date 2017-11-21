@@ -11,7 +11,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class AdvanceRequestSelfRepository implements RepositoryInterface {
+class AdvanceRequestRepository implements RepositoryInterface {
 
     private $adapter;
     private $tableGateway;
@@ -26,7 +26,7 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+        $this->tableGateway->update([AdvanceRequestModel::STATUS => 'C'], [AdvanceRequestModel::ADVANCE_REQUEST_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
@@ -52,7 +52,7 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
             new Expression("AR.REASON AS REASON"),
             new Expression("AR.REASON AS REASON"),
             new Expression("AR.STATUS AS STATUS"),
-            new Expression("LEAVE_STATUS_DESC(AR.STATUS) AS STATUS_DETAIL"),
+            new Expression("LEAVE_STATUS_DESC(TRIM(AR.STATUS)) AS STATUS_DETAIL"),
             new Expression("AR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("AR.DEDUCTION_TYPE AS DEDUCTION_TYPE"),
@@ -64,7 +64,7 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
 
         $select->from(['AR' => AdvanceRequestModel::TABLE_NAME])
                 ->join(['A' => AdvanceSetupModel::TABLE_NAME], "A.ADVANCE_ID=AR.ADVANCE_ID", ['ADVANCE_CODE', 'ADVANCE_ENAME' => new Expression("INITCAP(A.ADVANCE_ENAME)")])
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'AR.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'AR.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)"), "SALARY" => "SALARY"], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=AR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
@@ -101,7 +101,7 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
             new Expression("AR.REASON AS REASON"),
             new Expression("AR.REASON AS REASON"),
             new Expression("AR.STATUS AS STATUS"),
-            new Expression("LEAVE_STATUS_DESC(AR.STATUS) AS STATUS_DETAIL"),
+            new Expression("LEAVE_STATUS_DESC(TRIM(AR.STATUS)) AS STATUS_DETAIL"),
             new Expression("AR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("AR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("AR.DEDUCTION_TYPE AS DEDUCTION_TYPE"),
@@ -109,10 +109,6 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
             new Expression("AR.DEDUCTION_IN AS DEDUCTION_IN"),
             new Expression("AR.DEDUCTION_TYPE AS DEDUCTION_TYPE"),
             new Expression("(CASE WHEN AR.DEDUCTION_TYPE = 'M' THEN 'MONTH' ELSE 'SALARY' END) AS DEDUCTION_TYPE_NAME"),
-//            new Expression("LA.NO_OF_DAYS AS NO_OF_DAYS"),
-//            new Expression("LA.ID AS ID"),
-//            new Expression("LA.RECOMMENDED_BY AS RECOMMENDED_BY"),
-//            new Expression("LA.APPROVED_BY AS APPROVED_BY"),
             new Expression("(CASE WHEN AR.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
             new Expression("(CASE WHEN AR.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
@@ -129,7 +125,6 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
                 ->join(['OVA' => "HRIS_EMPLOYEES"], "OVA.EMPLOYEE_ID=AR.OVERRIDE_APPROVER_ID", ['OV_APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
 
         $select->where([
-//            "L.STATUS='E'",
             "E.EMPLOYEE_ID=" . $employeeId
         ]);
 
@@ -137,8 +132,13 @@ class AdvanceRequestSelfRepository implements RepositoryInterface {
 
         $select->order("AR.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
+//        
+//        echo $statement->getSql()
+//        die();
         $result = $statement->execute();
         return $result;
     }
+
+    
 
 }
