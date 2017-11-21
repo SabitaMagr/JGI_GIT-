@@ -234,7 +234,8 @@ BEGIN
       SET IN_TIME         = V_IN_TIME,
         OUT_TIME          =V_OUT_TIME,
         OVERALL_STATUS    = V_OVERALL_STATUS,
-        LATE_STATUS       = V_LATE_STATUS
+        LATE_STATUS       = V_LATE_STATUS,
+        TOTAL_HOUR        = V_DIFF_IN_MIN
       WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
       AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
       --
