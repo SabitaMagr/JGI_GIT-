@@ -7,6 +7,11 @@
                 <a class="btn btn-icon-only green" href="${document.viewLink}/#:ADVANCE_REQUEST_ID#" style="height:17px;" title="View Detail">
                     <i class="fa fa-search"></i>
                 </a>
+                 #if(STATUS=='AP'){#
+                <a class="btn btn-icon-only green" href="${document.paymentViewLink}/#:ADVANCE_REQUEST_ID#" style="height:17px;" title="Paymnet Detail">
+                    <i class="fa fa-money"></i>
+                </a>
+                #}#
                 #if(ALLOW_EDIT=='Y'){#
                 <a class="btn btn-icon-only yellow" href="${document.editLink}/#:ADVANCE_REQUEST_ID#" style="height:17px;" title="Edit">
                     <i class="fa fa-edit"></i>
