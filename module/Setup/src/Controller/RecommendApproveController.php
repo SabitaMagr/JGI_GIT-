@@ -2,6 +2,7 @@
 
 namespace Setup\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -13,66 +14,49 @@ use Setup\Model\HrEmployees;
 use Setup\Model\RecommendApprove;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class RecommendApproveController extends AbstractActionController {
+class RecommendApproveController extends HrisController {
 
-    private $form;
-    private $adapter;
-    private $repository;
-    private $employeeId;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->repository = new RecommendApproveRepository($adapter);
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(RecommendApproveRepository::class);
+        $this->initializeForm(RecommendApproveForm::class);
     }
 
     public function indexAction() {
-        $recommenderFormElement = new Select();
-        $recommenderFormElement->setName("leave");
-        $recommeders = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true);
-        $recommenders1 = [-1 => "All Recommender"] + $recommeders;
-        $recommenderFormElement->setValueOptions($recommenders1);
-        $recommenderFormElement->setAttributes(["id" => "recommenderId", "class" => "form-control"]);
-        $recommenderFormElement->setLabel("Recommender");
-
-        $approverFormElement = new Select();
-        $approverFormElement->setName("leave");
-        $approvers = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true);
-        $approvers1 = [-1 => "All Approver"] + $approvers;
-        $approverFormElement->setValueOptions($approvers1);
-        $approverFormElement->setAttributes(["id" => "approverId", "class" => "form-control"]);
-        $approverFormElement->setLabel("Approver");
-
-        $list = $this->repository->fetchAll();
-        $recommendApproves = [];
-        foreach ($list as $row) {
-            array_push($recommendApproves, $row);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $search = $request->getPost();
+                $result = $this->repository->getFilteredList((array) $search);
+                $list = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'recommendApproves' => $recommendApproves,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'approverFormElement' => $approverFormElement,
-                    'recommenderFormElement' => $recommenderFormElement
-        ]);
-    }
 
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $recommendApproveForm = new RecommendApproveForm();
-        $this->form = $builder->createForm($recommendApproveForm);
+        $recommeders = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FULL_NAME"], ["STATUS" => "E"], "FULL_NAME", "ASC", null, [-1 => "All Recommender"], true);
+        $recommenderSE = $this->getSelectElement(['name' => 'recommender', "id" => "recommenderId", "class" => "form-control", "label" => "Recommender"], $recommeders);
+
+        $approvers = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FULL_NAME"], ["STATUS" => "E"], "FULL_NAME", "ASC", null, [-1 => "All Approver"], true);
+        $approverSE = $this->getSelectElement(['name' => 'approver', "id" => "approverId", "class" => "form-control", "label" => "Approver"], $approvers);
+
+        return $this->stickFlashMessagesTo([
+                    'approverFormElement' => $recommenderSE,
+                    'recommenderFormElement' => $approverSE,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+        ]);
     }
 
     public function addAction() {
         $request = $this->getRequest();
-        $this->initializeForm();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
 
@@ -98,7 +82,6 @@ class RecommendApproveController extends AbstractActionController {
 
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $recommendApprove = new RecommendApprove();

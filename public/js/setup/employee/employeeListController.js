@@ -21,7 +21,7 @@
             {field: "DEPARTMENT_NAME", title: "Department"},
             {field: "DESIGNATION_TITLE", title: "Designation"},
             {field: "EMPLOYEE_ID", title: "Action", template: action}
-        ], 'Employee List.xlsx');
+        ]);
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], true);
 
         var map = {

@@ -29,7 +29,7 @@
             'USER_NAME': 'User Name',
             'STATUS': 'Status',
         }
-        app.initializeKendoGrid($table, columns, "User List.xlsx");
+        app.initializeKendoGrid($table, columns);
 
         app.searchTable($table, ['COMPANY_NAME', 'ROLE_NAME', 'FULL_NAME']);
 

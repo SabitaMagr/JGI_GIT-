@@ -299,7 +299,7 @@
             var employeeDetail = document.employeeDetail;
             if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
                 switch (acl['CONTROL']) {
-                    case 'F':
+                    case 'C':
                         $company.val(employeeDetail['COMPANY_ID']);
                         $company.prop('disabled', true);
                         break;

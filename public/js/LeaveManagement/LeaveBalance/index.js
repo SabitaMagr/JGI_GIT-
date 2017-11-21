@@ -5,7 +5,7 @@
         var $table = $("#table");
         var $search = $('#search');
         var columns = [
-            {field: "FULL_NAME", title: "Employee"},
+            {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
         ];
         var map = {
             'EMPLOYEE_ID': 'Id',
@@ -19,15 +19,18 @@
                 columns: [
                     {
                         title: 'Total',
-                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'TOTAL'
+                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'TOTAL',
+                        width: 100
                     },
                     {
                         title: 'Taken',
-                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'TAKEN'
+                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'TAKEN',
+                        width: 100
                     },
                     {
                         title: 'Balance',
-                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'BALANCE'
+                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'BALANCE',
+                        width: 100
                     }
                 ]
             });
@@ -54,7 +57,7 @@
             app.excelExport($table, map, "Employee Leave Balance Report.xlsx");
         });
         $('#pdfExport').on("click", function () {
-            app.exportToPDF($table, map, "Employee Leave Balance Report.pdf",'A2');
+            app.exportToPDF($table, map, "Employee Leave Balance Report.pdf", 'A2');
         });
 
     });

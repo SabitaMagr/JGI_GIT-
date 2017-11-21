@@ -1,19 +1,15 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/setup/recommend-approve/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
+        ->appendFile($this->basePath('js/setup/recommend-approve/index.js'));
 ?>
 <?php if ($this->messages) { ?>
     <script>
@@ -22,143 +18,120 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.ids =<?php echo json_encode(["recommenderId" => -1, "approverId" => -1]) ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.recommendApproves =<?php echo json_encode($recommendApproves); ?>;
     document.searchLink = '<?php echo $this->url('recommendapprove', ["action" => "pullEmployeeForRecAppAssign"]); ?>';
+    document.editLink = '<?php echo $this->url("recommendapprove", ["action" => "edit"]); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\recommendapprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<div ng-app="hris" ng-controller="recommedApproverController">
-    <div class="margin-top-20">
-        <div class="portlet light bg-inverse">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="icon-paper-plane font-green-haze"></i>
-                    <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
-                </div>
-                <div class="tools">
-                    <a href="" class="collapse" data-original-title="" title=""> </a>
-                    <a href="" class="fullscreen" data-original-title="" title=""> </a>
-                </div>
-                <div class="actions">
-                    <div class="btn-group">
-                        <button class="btn default btn-sm" data-toggle="dropdown">Add New
-                            <i class="fa fa-angle-down"></i>
-                        </button>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="<?= $this->url('recommendapprove', ['action' => 'add']) ?>"> Designation Wise </a>
-                            </li>
-                            <li>
-                                <a href="<?= $this->url('recommendapprove', ['action' => 'groupAssign']) ?>"> Group Wise</a>
-                            </li>
-                        </ul>
-                    </div>
-
-
-                    <div class="btn-group">
-                        <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-copy"></i> Tools
-                            <i class="fa fa-angle-down "></i>
+<div class="portlet light bg-inverse">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-paper-plane font-green-haze"></i>
+            <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
+        </div>
+        <div class="tools">
+            <a href="" class="collapse" data-original-title="" title=""> </a>
+            <a href="" class="fullscreen" data-original-title="" title=""> </a>
+        </div>
+        <div class="actions">
+            <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
+                <a href="<?= $this->url('recommendapprove', ['action' => 'groupAssign']) ?>" class="btn default btn-sm">
+                    <i class="fa fa-plus-square icon-black"></i>
+                    Group Assign
+                </a>
+            <?php endif; ?>
+            <div class="btn-group">
+                <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-copy"></i> Tools
+                    <i class="fa fa-angle-down "></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li>
+                        <a href="javascript:;" id="excelExport">
+                            <i class="fa fa-file-excel-o" ></i> 
+                            Export to Excel 
                         </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li>
-                                <a href="javascript:;" id="export">
-                                    <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="row">
-                    <div class="col-sm-2">
-                        <select class="form-control" name="company" id="companyId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <select class="form-control" name="branchId" id="branchId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <select class="form-control" name="department" id="departmentId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <select class="form-control" name="designation" id="designationId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <select class="form-control" name="position" id="positionId">
-                        </select>
-                    </div>
-                </div>
-                <div class="row margin-top-10">
-                    <div class="col-sm-2">
-                        <select class="form-control" name="serviceType" id="serviceTypeId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <select class="form-control" name="serviceEventType" id="serviceEventTypeId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <select class="form-control" name="employeeType" id="employeeTypeId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <select class="form-control" name="employee" id="employeeId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <?php print $this->formElement($recommenderFormElement); ?>
-                    </div>
-                </div>
-                <div class="row margin-top-20">
-                    <div class="col-sm-2">
-                        <?php print $this->formElement($approverFormElement); ?>
-                    </div>   
-                    <div class="col-sm-4 col-sm-offset-6">
-                        <button id="reset" class="btn default btn-sm pull-right">
-                            Reset
-                            <i class="fa fa-refresh"></i>
-                        </button>
-                        <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
-                            Search
-                            <i class="fa fa-search"></i>
-                        </button>
-                    </div>
-                </div>
+                    </li>
+                    <li>
+                        <a href="javascript:;" id="pdfExport">
+                            <i class="fa fa-file-excel-o" ></i> 
+                            Export to PDF 
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-
-
-        <div id="recommendApproveTable">
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+            <div class="col-sm-2">
+                <select class="form-control" name="company" id="companyId">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="branchId" id="branchId">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="department" id="departmentId">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="designation" id="designationId">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="position" id="positionId">
+                </select>
+            </div>
         </div>
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>
-            #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-            </td>
-            <td>
-            # if(RETIRED_R!='Y' && STATUS_R!='D'){ #
-            #: (RECOMMENDER_NAME == null) ? ' ' : RECOMMENDER_NAME #
-            #} #
-            </td>
-            <td>
-            # if(RETIRED_A!='Y' && STATUS_A!='D'){ #
-            #: (APPROVER_NAME == null) ? ' ' : APPROVER_NAME #
-            #}#
-            </td>
-            <td>
-            <a class="btn-edit"
-            href="<?= $this->url("recommendapprove", ["action" => "edit"]) ?>/#:EMPLOYEE_ID #" style="height:17px;">
-            <i class="fa fa-edit"></i>
-            </a>
-            </td>
-            </tr>
-        </script>
+        <div class="row margin-top-10">
+            <div class="col-sm-2">
+                <select class="form-control" name="serviceType" id="serviceTypeId">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="employeeType" id="employeeTypeId">
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" name="employee" id="employeeId">
+                </select>
+            </div>
+        </div>
+        <div class="row margin-top-10">
+            <div class="col-sm-2">
+                <?php print $this->formElement($approverFormElement); ?>
+            </div>   
+            <div class="col-sm-2">
+                <?php print $this->formElement($recommenderFormElement); ?>
+            </div>   
+            <div class="col-sm-4 col-sm-offset-4">
+                <button id="reset" class="btn default btn-sm pull-right">
+                    Reset
+                    <i class="fa fa-refresh"></i>
+                </button>
+                <button id="search" class="btn btn-default btn-sm pull-right">
+                    Search
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
+<div class="margin-top-20">
+    <div id="table">
+    </div>
+</div>
+
+
+
+

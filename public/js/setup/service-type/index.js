@@ -9,7 +9,7 @@
         app.initializeKendoGrid($table, [
             {field: "SERVICE_TYPE_NAME", title: "Service Type", width: 400},
             {field: "SERVICE_TYPE_ID", title: "Action", width: 120, template: action}
-        ], "ServiceType List.xlsx");
+        ]);
 
         app.searchTable('serviceTypeTable', ['SERVICE_TYPE_NAME']);
 

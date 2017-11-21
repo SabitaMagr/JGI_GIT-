@@ -25,7 +25,12 @@ BEGIN
   )
   LOOP
     BEGIN
-      SELECT SUM(R.NO_OF_DAYS) AS TOTAL_NO_OF_DAYS
+      SELECT SUM(R.NO_OF_DAYS/(
+        CASE
+          WHEN R.HALF_DAY IN ('F','S')
+          THEN 2
+          ELSE 1
+        END)) AS TOTAL_NO_OF_DAYS
       INTO V_TOTAL_NO_OF_DAYS
       FROM HRIS_EMPLOYEE_LEAVE_REQUEST R
       WHERE R.STATUS    = 'AP'

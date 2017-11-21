@@ -61,7 +61,7 @@
             {field: "REQUESTED_TYPE", title: "Request For"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["TRAVEL_ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
-        ], "Travel Request List.xlsx");
+        ]);
 
 
         $('#search').on('click', function () {

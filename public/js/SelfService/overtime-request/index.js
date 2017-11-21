@@ -68,7 +68,7 @@
             'APPROVED_REMARKS': 'Approved Remarks',
             'APPROVED_DATE': 'Approved Date'
         };
-        app.initializeKendoGrid($table, columns, "Overtime Request List.xlsx");
+        app.initializeKendoGrid($table, columns);
 
         app.searchTable($table, ['OVERTIME_DATE_AD', 'OVERTIME_DATE_BS', 'REQUESTED_DATE_AD', 'REQUESTED_DATE_BS', 'STATUS']);
 

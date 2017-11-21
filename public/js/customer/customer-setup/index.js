@@ -25,7 +25,7 @@
             'ADDRESS': 'Address',
             'PHONE_NO': 'Phone no',
         }
-        app.initializeKendoGrid($table, columns, "Customer List.xlsx");
+        app.initializeKendoGrid($table, columns);
 
         app.searchTable($table, ['CUSTOMER_ENAME']);
 

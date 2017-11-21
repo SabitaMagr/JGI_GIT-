@@ -39,8 +39,10 @@ class HolidayRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
+            new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
             new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE_AD"),
             new Expression("BS_DATE(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE_BS"),
+            new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
             new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD"),
             new Expression("BS_DATE(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE_BS"),
             new Expression("H.HOLIDAY_ID AS HOLIDAY_ID"),

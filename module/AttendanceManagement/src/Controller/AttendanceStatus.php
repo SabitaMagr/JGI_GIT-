@@ -36,7 +36,6 @@ class AttendanceStatus extends HrisController {
 
     public function viewAction() {
         $request = $this->getRequest();
-        $this->initializeForm();
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {

@@ -56,6 +56,7 @@
             'DATE_OF_ADVANCE_BS': 'Advance Date(BS)',
             'STATUS_DETAIL': 'Status',
         };
+
         $('#excelExport').on('click', function () {
             app.excelExport($table, exportMap, 'Advance Request List.xlsx');
         });
@@ -63,6 +64,8 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'Advance Request List.pdf');
         });
+
+
 
         $search.on('click', function () {
 

@@ -89,7 +89,7 @@ class WorkOnHolidayStatus extends AbstractActionController {
 
         $employeeName = $detail['FULL_NAME'];
         $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
-        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['PPROVED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
         if (!$request->isPost()) {
             $workOnHolidayModel->exchangeArrayFromDB($detail);

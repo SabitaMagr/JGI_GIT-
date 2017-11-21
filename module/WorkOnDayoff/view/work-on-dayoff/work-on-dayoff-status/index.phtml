@@ -11,12 +11,11 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-        ->appendFile($this->basePath('js/WorkOnDayoff/status/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
+        ->appendFile($this->basePath('js/WorkOnDayoff/status/index.js'));
 ?>
 
 <script>
@@ -25,6 +24,8 @@ $this->headScript()
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("workOnDayoffStatus", ["action" => "view"]) ?>';
     document.pullDayoffWorkRequestStatusListLink = '<?= $this->url("workOnDayoffStatus", ["action" => "pullDayoffWorkRequestStatusList"]) ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnDayoffStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

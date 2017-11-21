@@ -83,7 +83,6 @@ class LeaveStatusRepository implements RepositoryInterface {
 
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
-//                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], "left")
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['FIRST_NAME' => new Expression('INITCAP(E.FIRST_NAME)'), 'MIDDLE_NAME' => new Expression('INITCAP(E.MIDDLE_NAME)'), 'LAST_NAME' => new Expression('INITCAP(E.LAST_NAME)')], "left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left");
@@ -201,7 +200,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                 OR LS.EMPLOYEE_ID IS NULL)
                 AND U.EMPLOYEE_ID  ={$recomApproveId}";
         if ($leaveRequestStatusId != -1) {
-            $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}')";
+            $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}'";
         }
 
         if ($leaveId != -1) {
@@ -349,7 +348,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                   END
                 OR LS.EMPLOYEE_ID IS NULL)";
         if ($leaveRequestStatusId != -1) {
-            $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}')";
+            $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}'";
         }
 
         if ($leaveId != null && $leaveId != -1) {
@@ -395,9 +394,7 @@ class LeaveStatusRepository implements RepositoryInterface {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
 
-
         $sql .= " ORDER BY LA.REQUESTED_DT DESC";
-
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

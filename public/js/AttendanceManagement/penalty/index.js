@@ -27,7 +27,7 @@
                     {field: "ATTENDANCE_DT_N", title: "BS", width: 75},
                 ]},
             {field: "TYPE", title: "Type", width: 150},
-        ], 'Test.xlsx', function (e) {
+        ], function (e) {
             app.pullDataById(document.penaltyDetailWS, {employeeId: e.data.EMPLOYEE_ID, attendanceDt: e.data.ATTENDANCE_DT, type: e.data.TYPE_CODE}).then(function (response) {
                 if (!response.success) {
                     app.showMessage(response.error, 'error');
@@ -83,12 +83,37 @@
             app.pullDataById(document.penalty, data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($penalty, response.data);
+                    actionBtnStatus(response.alreadyPenalized);
                 } else {
                     app.showMessage(response.error, 'error');
                 }
             }, function (error) {
                 app.showMessage(error, 'error');
             });
+        });
+        var $actionBtn = $('#actionBtn');
+        var $noOfDays = $('#noOfDays');
+
+        var actionBtnStatus = function (alreadyPenalized) {
+            $('#actionDiv').show();
+            if (alreadyPenalized['IS_DEDUCTED'] == 'Y') {
+                $actionBtn.html('Rededuct');
+            } else {
+                $actionBtn.html('Deduct');
+            }
+        };
+
+        $actionBtn.on('click', function () {
+            if ($noOfDays.val() == '') {
+                app.showMessage('No of Days is required.', 'error');
+                $noOfDays.focus();
+            }
+            var data = {'monthId': $monthId.val(), 'noOfDays': $noOfDays.val()};
+            app.pullDataById(document.deductLink, data).then(function (response) {
+                app.showMessage("The leave is successfully deducted.");
+                $search.trigger('click');
+            }, function (error) {});
+
         });
 
     });

@@ -770,9 +770,14 @@ window.app = (function ($, toastr, App) {
         }
     };
     var scrollTo = function (id) {
-        id = id.replace("link", "");
+        var $id = null;
+        if (id instanceof jQuery) {
+            $id = id;
+        } else {
+            $id = $("#" + id);
+        }
         $('html,body').animate({
-            scrollTop: $("#" + id).offset().top - 50},
+            scrollTop: $id.offset().top - 50},
                 500);
     };
 
@@ -904,6 +909,9 @@ window.app = (function ($, toastr, App) {
 
     };
     var exportToPDF = function ($table, col, fileName, pageSize, fn) {
+        if (!checkForFileExt(fileName)) {
+            fileName = fileName + ".pdf";
+        }
         var colWidths = [];
         var head = [];
         $.each(col, function (key, value) {
@@ -962,6 +970,9 @@ window.app = (function ($, toastr, App) {
     };
 
     var excelExport = function ($table, col, fileName) {
+        if (!checkForFileExt(fileName)) {
+            fileName = fileName + ".xlsx";
+        }
         var header = [];
         var cellWidths = [];
         $.each(col, function (key, value) {
@@ -1005,6 +1016,10 @@ window.app = (function ($, toastr, App) {
             ]
         });
         kendo.saveAs({dataURI: workbook.toDataURL(), fileName: fileName});
+    };
+
+    var checkForFileExt = function (file) {
+        return (file.indexOf('.') >= 0);
     };
 
     (function () {
@@ -1092,7 +1107,7 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail, bulkOptions) {
+    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config) {
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1115,11 +1130,6 @@ window.app = (function ($, toastr, App) {
 
         }
         var kendoConfig = {
-            excel: {
-                fileName: excelExportFileName || "Default_generated.xlsx",
-                filterable: true,
-                allPages: true
-            },
             height: 500,
             scrollable: true,
             sortable: true,
@@ -1135,11 +1145,18 @@ window.app = (function ($, toastr, App) {
                 }
             },
             pageable: {
-                input: true,
-                numeric: false
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
             },
             columns: columns
         };
+        if (typeof config !== "undefined" && config !== null) {
+            for (var key in config) {
+                kendoConfig[key] = config[key];
+            }
+        }
+
         if (typeof detail !== 'undefined' && detail !== null) {
             kendoConfig['detailInit'] = detail;
         }

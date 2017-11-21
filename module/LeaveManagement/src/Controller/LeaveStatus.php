@@ -123,6 +123,7 @@ class LeaveStatus extends HrisController {
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,
+                "message" => null
             ]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);

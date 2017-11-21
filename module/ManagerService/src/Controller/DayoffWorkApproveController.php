@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -11,44 +12,35 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class DayoffWorkApproveController extends AbstractActionController {
+class DayoffWorkApproveController extends HrisController {
 
-    private $dayoffWorkApproveRepository;
-    private $employeeId;
-    private $adapter;
-    private $form;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->dayoffWorkApproveRepository = new DayoffWorkApproveRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new WorkOnDayoffForm();
-        $this->form = $builder->createForm($form);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(DayoffWorkApproveRepository::class);
+        $this->initializeForm(WorkOnDayoffForm::class);
     }
 
     public function indexAction() {
-        $dayoffWorkRequest = $this->getAllList();
-        return Helper::addFlashMessagesToArray($this, ['dayoffWorkRequest' => $dayoffWorkRequest, 'id' => $this->employeeId]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $rawList = $this->repository->getAllRequest($this->employeeId);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([]);
     }
 
     public function viewAction() {
-        $this->initializeForm();
-
         $id = (int) $this->params()->fromRoute('id');
         $role = $this->params()->fromRoute('role');
 
@@ -58,7 +50,7 @@ class DayoffWorkApproveController extends AbstractActionController {
         $workOnDayoffModel = new WorkOnDayoff();
         $request = $this->getRequest();
 
-        $detail = $this->dayoffWorkApproveRepository->fetchById($id);
+        $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
 
@@ -85,7 +77,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $this->flashmessenger()->addMessage("Work on Day-off Request Approved!!!");
                 }
                 $workOnDayoffModel->recommendedRemarks = $getData->recommendedRemarks;
-                $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
+                $this->repository->edit($workOnDayoffModel, $id);
                 try {
                     $workOnDayoffModel->id = $id;
                     HeadNotification::pushNotification(($workOnDayoffModel->status == 'RC') ? NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED : NotificationEvents::WORKONDAYOFF_RECOMMEND_REJECTED, $workOnDayoffModel, $this->adapter, $this);
@@ -113,7 +105,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                 }
 
                 $workOnDayoffModel->approvedRemarks = $getData->approvedRemarks;
-                $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
+                $this->repository->edit($workOnDayoffModel, $id);
 
                 try {
                     $workOnDayoffModel->id = $id;
@@ -141,28 +133,16 @@ class DayoffWorkApproveController extends AbstractActionController {
     }
 
     public function statusAction() {
-        $status = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected'
-        ];
-        $statusFormElement = new Select();
-        $statusFormElement->setName("status");
-        $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "requestStatusId", "class" => "form-control"]);
-        $statusFormElement->setLabel("Status");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusFormElement,
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "requestStatusId", "class" => "form-control", 'label' => 'Status']);
+        return $this->stickFlashMessagesTo([
+                    'status' => $statusSE,
                     'recomApproveId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 
     private function wodApproveAction($detail) {
-        $this->dayoffWorkApproveRepository->wodReward($detail['ID']);
+        $this->repository->wodReward($detail['ID']);
     }
 
     public function batchApproveRejectAction() {
@@ -188,7 +168,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                     $workOnDayoffModel = new WorkOnDayoff();
                     $id = $data['id'];
                     $role = $data['role'];
-                    $detail = $this->dayoffWorkApproveRepository->fetchById($id);
+                    $detail = $this->repository->fetchById($id);
 
                     if ($role == 2) {
                         $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
@@ -198,7 +178,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                         } else if ($action == "Approve") {
                             $workOnDayoffModel->status = "RC";
                         }
-                        $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
+                        $this->repository->edit($workOnDayoffModel, $id);
                         try {
                             $workOnDayoffModel->id = $id;
                             HeadNotification::pushNotification(($workOnDayoffModel->status == 'RC') ? NotificationEvents::WORKONDAYOFF_RECOMMEND_ACCEPTED : NotificationEvents::WORKONDAYOFF_RECOMMEND_REJECTED, $workOnDayoffModel, $this->adapter, $this);
@@ -223,7 +203,7 @@ class DayoffWorkApproveController extends AbstractActionController {
                             $workOnDayoffModel->recommendedDate = Helper::getcurrentExpressionDate();
                         }
 
-                        $this->dayoffWorkApproveRepository->edit($workOnDayoffModel, $id);
+                        $this->repository->edit($workOnDayoffModel, $id);
 
                         try {
                             $workOnDayoffModel->id = $id;
@@ -239,11 +219,6 @@ class DayoffWorkApproveController extends AbstractActionController {
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
         }
-    }
-
-    public function getAllList() {
-        $list = $this->dayoffWorkApproveRepository->getAllRequest($this->employeeId);
-        return Helper::extractDbData($list);
     }
 
     public function pullDayoffWorkRequestStatusListAction() {

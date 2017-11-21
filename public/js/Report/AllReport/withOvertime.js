@@ -47,7 +47,7 @@
             {field: "TRAINING", title: "Training", width: 150},
             {field: "WORK_ON_HOLIDAY", title: "Work on Holiday", width: 150},
             {field: "WORK_ON_DAYOFF", title: "Work on Dayoff", width: 150},
-        ], 'Test.xlsx');
+        ]);
 
         $search.on('click', function () {
             var data = document.searchManager.getSearchValues();

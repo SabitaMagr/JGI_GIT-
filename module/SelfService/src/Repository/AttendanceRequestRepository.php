@@ -135,7 +135,7 @@ class AttendanceRequestRepository implements RepositoryInterface {
             new Expression("A.APPROVED_BY AS APPROVED_BY"),
             new Expression("INITCAP(TO_CHAR(A.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
             new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("(CASE WHEN A.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
+            new Expression("(CASE WHEN A.STATUS = 'XX' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
             new Expression("(CASE WHEN A.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
@@ -150,7 +150,7 @@ class AttendanceRequestRepository implements RepositoryInterface {
 
         if ($attendanceRequestStatusId != -1) {
             $select->where([
-                "A.STATUS='" . $attendanceRequestStatusId . "'"
+                "A.STATUS='{$attendanceRequestStatusId}'"
             ]);
         }
         if ($attendanceRequestStatusId != 'C') {

@@ -140,7 +140,10 @@ class TravelRequest extends HrisController {
             }
         }
         $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'statusId', 'class' => 'form-control', 'label' => 'Status']);
-        return $this->stickFlashMessagesTo(['status' => $statusSE]);
+        return $this->stickFlashMessagesTo([
+                    'status' => $statusSE,
+                    'employeeId' => $this->employeeId
+        ]);
     }
 
     public function expenseAddAction() {

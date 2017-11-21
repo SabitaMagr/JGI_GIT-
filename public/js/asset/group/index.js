@@ -8,7 +8,7 @@
         app.initializeKendoGrid($table, [
             {field: "ASSET_GROUP_EDESC", title: "Asset Group", width: 400},
             {field: "ASSET_GROUP_ID", title: "Action", width: 120, template: action}
-        ], "AssetGroupList.xlsx");
+        ]);
 
         app.searchTable('assetGroupTable', ['ASSET_GROUP_EDESC']);
 

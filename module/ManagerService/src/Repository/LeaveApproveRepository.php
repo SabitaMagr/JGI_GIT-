@@ -30,30 +30,38 @@ class LeaveApproveRepository implements RepositoryInterface {
 
     public function getAllRequest($id) {
         $sql = "
-                SELECT INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
-                  LA.NO_OF_DAYS,
-                  INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE,
-                  BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE_N,
-                  INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))     AS END_DATE,
-                  BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))     AS END_DATE_N,
-                  INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE,
-                  BS_DATE(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE_N,
-                  LA.EMPLOYEE_ID,
+                SELECT 
                   LA.ID                  AS ID,
-                  INITCAP(E.FIRST_NAME)  AS FIRST_NAME,
-                  INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
-                  INITCAP(E.LAST_NAME)   AS LAST_NAME,
+                  LA.EMPLOYEE_ID,
                   INITCAP(E.FULL_NAME)   AS FULL_NAME,
-                  LA.RECOMMENDED_BY,
-                  LA.APPROVED_BY,
+                  INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
+                  INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE_AD,
+                  BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE_BS,
+                  INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))     AS END_DATE_AD,
+                  BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY'))     AS END_DATE_BS,
+                  LA.NO_OF_DAYS,
+                  INITCAP(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE_AD,
+                  BS_DATE(TO_CHAR(LA.REQUESTED_DT, 'DD-MON-YYYY')) AS APPLIED_DATE_BS,
+                  LA.HALF_DAY AS HALF_DAY,
+                  (CASE WHEN (LA.HALF_DAY IS NULL OR LA.HALF_DAY = 'N') THEN 'Full Day' WHEN (LA.HALF_DAY = 'F') THEN 'First Half' ELSE 'Second Half' END) AS HALF_DAY_DETAIL,
+                  LA.GRACE_PERIOD AS GRACE_PERIOD,
+                  (CASE WHEN LA.GRACE_PERIOD = 'E' THEN 'Early' WHEN LA.GRACE_PERIOD = 'L' THEN 'Late' ELSE '-' END) AS GRACE_PERIOD_DETAIL,
+                   LA.REMARKS AS REMARKS,                  
+                  LA.STATUS                            AS STATUS,
+                  LEAVE_STATUS_DESC(LA.STATUS) AS STATUS_DETAIL,
+                  LA.RECOMMENDED_BY AS RECOMMENDED_BY,
+                  INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
+                  LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
+                  LA.APPROVED_BY AS APPROVED_BY,
+                  INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT,
+                  LA.APPROVED_REMARKS AS APPROVED_REMARKS,
                   RA.RECOMMEND_BY                                         AS RECOMMENDER,
                   RA.APPROVED_BY                                          AS APPROVER,
                   LS.APPROVED_FLAG                                        AS APPROVED_FLAG,
                   INITCAP(TO_CHAR(LS.APPROVED_DATE, 'DD-MON-YYYY'))       AS SUB_APPROVED_DATE,
                   LS.EMPLOYEE_ID                                          AS SUB_EMPLOYEE_ID,
-                  LEAVE_STATUS_DESC(LA.STATUS)                            AS STATUS,
-                  REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
-                  REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+                  REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                  REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID=LA.LEAVE_ID
@@ -67,18 +75,20 @@ class LeaveApproveRepository implements RepositoryInterface {
                 ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
                 LEFT JOIN HRIS_LEAVE_SUBSTITUTE LS
                 ON LA.ID              = LS.LEAVE_REQUEST_ID
+                LEFT JOIN HRIS_EMPLOYEES U
+                ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
+                OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
                 WHERE E.STATUS        ='E'
                 AND E.RETIRED_FLAG    ='N'
-                AND ((RA.RECOMMEND_BY = {$id}
-                AND LA.STATUS         ='RQ'
+                AND ((RA.RECOMMEND_BY= U.EMPLOYEE_ID AND LA.STATUS='RQ') OR (RA.APPROVED_BY= U.EMPLOYEE_ID AND LA.STATUS='RC') )
+                AND U.EMPLOYEE_ID={$id}
                 AND (LS.APPROVED_FLAG =
                   CASE
                     WHEN LS.EMPLOYEE_ID IS NOT NULL
                     THEN ('Y')
                   END
-                OR LS.EMPLOYEE_ID IS NULL)))
-                OR (RA.APPROVED_BY = {$id}
-                AND LA.STATUS      ='RC')  ORDER BY LA.REQUESTED_DT DESC";
+                OR LS.EMPLOYEE_ID IS NULL)
+                ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;

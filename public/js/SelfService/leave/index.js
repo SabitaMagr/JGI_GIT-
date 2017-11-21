@@ -8,7 +8,7 @@
             {field: "TOTAL_DAYS", title: "Total Days"},
             {field: "LEAVE_TAKEN", title: "Leave taken"},
             {field: "BALANCE", title: "Available Days"}
-        ], "Leave Balanace List.xlsx");
+        ]);
 
 
         app.pullDataById("", {}).then(function (response) {

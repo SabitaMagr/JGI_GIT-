@@ -30,7 +30,7 @@
                     {field: "TO_DATE_AD", title: "AD", width: 75},
                     {field: "TO_DATE_BS", title: "BS", width: 75},
                 ]},
-        ], 'Employee_Shifts.xlsx', null, {id: 'ID', atLast: true, fn: function (selected) {
+        ], null, {id: 'ID', atLast: true, fn: function (selected) {
                 if (selected) {
                     $bulkActionDiv.show();
                 } else {

@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -16,47 +17,35 @@ use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class LeaveApproveController extends AbstractActionController {
+class LeaveApproveController extends HrisController {
 
-    private $repository;
-    private $adapter;
-    private $employeeId;
-    private $userId;
-    private $authService;
-    private $form;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new LeaveApproveRepository($adapter);
-
-        $this->authService = new AuthenticationService();
-        $recordDetail = $this->authService->getIdentity();
-        $this->userId = $recordDetail['user_id'];
-        $this->employeeId = $recordDetail['employee_id'];
-    }
-
-    public function initializeForm() {
-        $leaveApplyForm = new LeaveApplyForm();
-        $builder = new AnnotationBuilder();
-        $this->form = $builder->createForm($leaveApplyForm);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(LeaveApproveRepository::class);
+        $this->initializeForm(LeaveApplyForm::class);
     }
 
     public function indexAction() {
-        $leaveApprove = $this->getAllList();
-        return Helper::addFlashMessagesToArray($this, ['leaveApprove' => $leaveApprove, 'id' => $this->employeeId]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $rawList = $this->repository->getAllRequest($this->employeeId);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([]);
     }
 
     public function viewAction() {
-        $this->initializeForm();
         $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
 
         $id = (int) $this->params()->fromRoute('id');
@@ -81,7 +70,6 @@ class LeaveApproveController extends AbstractActionController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
-
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
@@ -104,7 +92,7 @@ class LeaveApproveController extends AbstractActionController {
 
                 $leaveApply->id = $id;
                 $leaveApply->employeeId = $requestedEmployeeID;
-                $leaveApply->approvedBy = $detail['APPROVER'];
+                $leaveApply->approvedBy = $detail['APPROVER_ID'];
                 try {
                     if ($leaveApply->status == 'RC') {
                         HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
@@ -211,7 +199,6 @@ class LeaveApproveController extends AbstractActionController {
             if (!$request->ispost()) {
                 throw new Exception('the request is not post');
             }
-            $action;
             $postData = $request->getPost()['data'];
             $postBtnAction = $request->getPost()['btnAction'];
             if ($postBtnAction == 'btnApprove') {
@@ -221,9 +208,6 @@ class LeaveApproveController extends AbstractActionController {
             } else {
                 throw new Exception('no action defined');
             }
-//            print_r($action);
-//            die();
-
             if ($postData == null) {
                 throw new Exception('no selected rows');
             } else {
@@ -244,7 +228,6 @@ class LeaveApproveController extends AbstractActionController {
                             $leaveApply->status = "RC";
                         }
                         $leaveApply->recommendedBy = $this->employeeId;
-//                        $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
                         $this->repository->edit($leaveApply, $id);
 
 
@@ -270,7 +253,6 @@ class LeaveApproveController extends AbstractActionController {
                         }
                         unset($leaveApply->halfDay);
                         $leaveApply->approvedBy = $this->employeeId;
-                        // $leaveApply->approvedRemarks = $getData->approvedRemarks;
 
                         if ($role == 4) {
                             $leaveApply->recommendedBy = $this->employeeId;
@@ -294,23 +276,12 @@ class LeaveApproveController extends AbstractActionController {
         }
     }
 
-    public function getAllList() {
-        $list = $this->repository->getAllRequest($this->employeeId);
-        return Helper::extractDbData($list);
-    }
-
     public function pullLeaveRequestStatusListAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
 
-
             $leaveStatusRepository = new LeaveStatusRepository($this->adapter);
-            if (key_exists('recomApproveId', $data)) {
-                $recomApproveId = $data['recomApproveId'];
-            } else {
-                $recomApproveId = null;
-            }
             $result = $leaveStatusRepository->getFilteredRecord($data, $data['recomApproveId']);
 
             $recordList = Helper::extractDbData($result);

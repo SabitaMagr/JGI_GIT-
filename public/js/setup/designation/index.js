@@ -11,7 +11,7 @@
             {field: "COMPANY_NAME", title: "Company", width: 120},
             {field: "BASIC_SALARY", title: "Basic Salary", width: 120},
             {field: "DESIGNATION_ID", title: "Action", width: 120, template: action}
-        ], "Designation List.xlsx");
+        ]);
 
         app.searchTable('designationTable', ['DESIGNATION_TITLE', 'COMPANY_NAME', 'BASIC_SALARY']);
 

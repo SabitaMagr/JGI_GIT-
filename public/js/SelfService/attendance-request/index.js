@@ -55,7 +55,7 @@
             {field: "STATUS", title: "Status"},
             {field: ["ID", "ALLOW_EDIT", "ALLOW_DELETE"], title: "Action", template: action}
         ];
-        app.initializeKendoGrid($table, columns, "Attendance Request List.xlsx");
+        app.initializeKendoGrid($table, columns);
 
         $search.on('click', function () {
             var employeeId = $('#employeeId').val();
