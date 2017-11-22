@@ -13,6 +13,8 @@ use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -68,6 +70,15 @@ class AdvanceApprove extends HrisController {
                 $advanceRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->repository->edit($advanceRequestModel, $id);
                 $advanceRequestModel->advanceRequestId = $id;
+                
+                try {
+                    $advanceRequestModel->advanceRequestId = $id;
+                    HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                
+                
             } else if ($role == 3 || $role == 4) {
                 $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $advanceRequestModel->approvedBy = (int) $this->employeeId;

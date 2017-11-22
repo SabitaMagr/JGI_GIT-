@@ -42,6 +42,7 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $select = $sql->select();
 
         $select->columns([
+            new Expression("AR.ADVANCE_REQUEST_ID AS ADVANCE_REQUEST_ID"),
             new Expression("AR.ADVANCE_ID AS ADVANCE_ID"),
             new Expression("AR.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("INITCAP(TO_CHAR(AR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
@@ -59,6 +60,8 @@ class AdvanceRequestRepository implements RepositoryInterface {
             new Expression("AR.DEDUCTION_RATE AS DEDUCTION_RATE"),
             new Expression("AR.DEDUCTION_IN AS DEDUCTION_IN"),
             new Expression("AR.DEDUCTION_TYPE AS DEDUCTION_TYPE"),
+            new Expression("AR.OVERRIDE_RECOMMENDER_ID AS OVERRIDE_RECOMMENDER_ID"),
+            new Expression("AR.OVERRIDE_APPROVER_ID AS OVERRIDE_APPROVER_ID"),
             new Expression("(CASE WHEN AR.DEDUCTION_TYPE = 'M' THEN 'MONTH' ELSE 'SALARY' END) AS DEDUCTION_TYPE_NAME"),
                 ], true);
 

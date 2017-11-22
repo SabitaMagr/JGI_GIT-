@@ -61,14 +61,11 @@ class AdvanceRequest extends HrisController {
                 $advanceRequestModel->advanceRequestId = (int) Helper::getMaxId($this->adapter, AdvanceRequestModel::TABLE_NAME, AdvanceRequestModel::ADVANCE_REQUEST_ID) + 1;
                 $advanceRequestModel->status = "RQ";
 
-                $this->repository->add($advanceRequestModel);
-                
-                
                 $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
                 try {
-                HeadNotification::pushNotification(NotificationEvents::ADVANCE_APPLIED, $advanceRequestModel, $this->adapter, $this,$this->employeeId,$advanceRequestModel->overrideRecommenderId);
+                    HeadNotification::pushNotification(NotificationEvents::ADVANCE_APPLIED, $advanceRequestModel, $this->adapter, $this);
                 } catch (Exception $e) {
-                $this->flashmessenger()->addMessage($e->getMessage());
+                    $this->flashmessenger()->addMessage($e->getMessage());
                 }
 
                 return $this->redirect()->toRoute("advance-request");
@@ -92,9 +89,6 @@ class AdvanceRequest extends HrisController {
             return $this->redirect()->toRoute("advance-request");
         }
         $detail = $this->repository->fetchById($id);
-//         echo '<pre>';
-//         print_r($detail);
-//         die();
         $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
         $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
@@ -138,7 +132,7 @@ class AdvanceRequest extends HrisController {
         if ($request->isPost()) {
             try {
                 $data = $request->getPost();
-                $paymentRepository= new AdvancePaymentRepository($this->adapter);
+                $paymentRepository = new AdvancePaymentRepository($this->adapter);
                 $rawList = $paymentRepository->getPaymentStatus($id);
                 $list = Helper::extractDbData($rawList);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);

@@ -303,18 +303,24 @@ class HeadNotification {
     public static function advanceApplied(AdvanceRequestModel $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
-        $roleAndId = self::findRoleType($recommdAppModel, $type);
-        
-        $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
 
+        if ($request->overrideRecommenderId != null) {
+            $recommdAppModel['RECOMMEND_BY'] = $request->overrideRecommenderId;
+        }
+        if ($request->overrideApproverId != null) {
+            $recommdAppModel['APPROVED_BY'] = $request->overrideApproverId;
+        }
+        $roleAndId = self::findRoleType($recommdAppModel, $type);
+
+        $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
         $notification->dateOfadvance = $request->dateOfadvance;
         $notification->reason = $request->reason;
         $notification->requestedAmount = $request->requestedAmount;
-        $notification->deductionRate=$request->deductionRate;
-        $notification->deductionIn=$request->deductionIn;
-        
+        $notification->deductionRate = $request->deductionRate;
+        $notification->deductionIn = $request->deductionIn;
 
-        $notification->route = json_encode(["route" => "advanceApprove", "action" => "view", "id" => $request->advanceRequestId, "role" => $roleAndId['role']]);
+
+        $notification->route = json_encode(["route" => "advance-approve", "action" => "view", "id" => $request->advanceRequestId, "role" => $roleAndId['role']]);
         $title = "Advance Request";
         $desc = "No description for now";
 
@@ -325,15 +331,23 @@ class HeadNotification {
     public static function advanceRecommend(AdvanceRequest $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        
+        if ($request->overrideRecommenderId != null) {
+            $recommdAppModel['RECOMMEND_BY'] = $request->overrideRecommenderId;
+        }
+        if ($request->overrideApproverId != null) {
+            $recommdAppModel['APPROVED_BY'] = $request->overrideApproverId;
+        }
+        
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
-
+        
         $notification->advanceDate = $request->advanceDate;
         $notification->reason = $request->reason;
         $notification->requestedAmount = $request->requestedAmount;
         $notification->terms = $request->terms;
         $notification->status = $status;
 
-        $notification->route = json_encode(["route" => "advanceRequest", "action" => "view", "id" => $request->advanceRequestId]);
+        $notification->route = json_encode(["route" => "advance-request", "action" => "view", "id" => $request->advanceRequestId]);
         $title = "Advance Recommend";
         $desc = "Advance Recommend is {$status}";
 
