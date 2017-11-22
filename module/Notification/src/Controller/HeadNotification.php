@@ -33,7 +33,6 @@ use Notification\Model\TravelSubNotificationModel;
 use Notification\Model\WorkOnDayoffNotificationModel;
 use Notification\Model\WorkOnHolidayNotificationModel;
 use Notification\Repository\NotificationRepo;
-use SelfService\Model\AdvanceRequest;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Model\BirthdayModel;
 use SelfService\Model\LoanRequest;
@@ -318,6 +317,7 @@ class HeadNotification {
         $notification->requestedAmount = $request->requestedAmount;
         $notification->deductionRate = $request->deductionRate;
         $notification->deductionIn = $request->deductionIn;
+        $notification->status = $status;
 
 
         $notification->route = json_encode(["route" => "advance-approve", "action" => "view", "id" => $request->advanceRequestId, "role" => $roleAndId['role']]);
@@ -328,7 +328,7 @@ class HeadNotification {
         self::sendEmail($notification, 6, $adapter, $url);
     }
 
-    public static function advanceRecommend(AdvanceRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+    public static function advanceRecommend(AdvanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         
@@ -341,10 +341,11 @@ class HeadNotification {
         
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
         
-        $notification->advanceDate = $request->advanceDate;
+        $notification->dateOfadvance = $request->dateOfadvance;
         $notification->reason = $request->reason;
         $notification->requestedAmount = $request->requestedAmount;
-        $notification->terms = $request->terms;
+        $notification->deductionRate = $request->deductionRate;
+        $notification->deductionIn = $request->deductionIn;
         $notification->status = $status;
 
         $notification->route = json_encode(["route" => "advance-request", "action" => "view", "id" => $request->advanceRequestId]);
@@ -355,18 +356,27 @@ class HeadNotification {
         self::sendEmail($notification, 7, $adapter, $url);
     }
 
-    private static function advanceApprove(AdvanceRequest $request, AdapterInterface $adapter, Url $url, string $status) {
+    private static function advanceApprove(AdvanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
+        
+        if ($request->overrideRecommenderId != null) {
+            $recommdAppModel['RECOMMEND_BY'] = $request->overrideRecommenderId;
+        }
+        if ($request->overrideApproverId != null) {
+            $recommdAppModel['APPROVED_BY'] = $request->overrideApproverId;
+        }
+        
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
 
-        $notification->advanceDate = $request->advanceDate;
+        $notification->dateOfadvance = $request->dateOfadvance;
         $notification->reason = $request->reason;
         $notification->requestedAmount = $request->requestedAmount;
-        $notification->terms = $request->terms;
+        $notification->deductionRate = $request->deductionRate;
+        $notification->deductionIn = $request->deductionIn;
         $notification->status = $status;
 
-        $notification->route = json_encode(["route" => "advanceRequest", "action" => "view", "id" => $request->advanceRequestId]);
+        $notification->route = json_encode(["route" => "advance-request", "action" => "view", "id" => $request->advanceRequestId]);
         $title = "Advance Approve";
         $desc = "Advance Approve is {$status}";
 

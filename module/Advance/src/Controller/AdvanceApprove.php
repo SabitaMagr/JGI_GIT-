@@ -69,16 +69,13 @@ class AdvanceApprove extends HrisController {
                 }
                 $advanceRequestModel->recommendedRemarks = $getData->recommendedRemarks;
                 $this->repository->edit($advanceRequestModel, $id);
-                $advanceRequestModel->advanceRequestId = $id;
-                
+
                 try {
                     $advanceRequestModel->advanceRequestId = $id;
                     HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
-                
-                
             } else if ($role == 3 || $role == 4) {
                 $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                 $advanceRequestModel->approvedBy = (int) $this->employeeId;
@@ -98,8 +95,12 @@ class AdvanceApprove extends HrisController {
 
                 $this->advancePaymentAdd($detail);
                 $this->repository->edit($advanceRequestModel, $id);
-
-                $advanceRequestModel->advanceRequestId = $id;
+                try {
+                    $advanceRequestModel->advanceRequestId = $id;
+                    HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
             return $this->redirect()->toRoute("advance-approve");
         }
@@ -163,7 +164,12 @@ class AdvanceApprove extends HrisController {
                                 $advanceRequestModel->status = "RC";
                             }
                             $this->repository->edit($advanceRequestModel, $id);
-                            $advanceRequestModel->advanceRequestId = $id;
+                            try {
+                                $advanceRequestModel->advanceRequestId = $id;
+                                HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                
+                            }
                         } else if ($role == 3 || $role == 4) {
                             $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                             $advanceRequestModel->approvedBy = (int) $this->employeeId;
@@ -178,7 +184,12 @@ class AdvanceApprove extends HrisController {
                             }
                             $this->advancePaymentAdd($detail);
                             $this->repository->edit($advanceRequestModel, $id);
-                            $advanceRequestModel->advanceRequestId = $id;
+                            try {
+                                $advanceRequestModel->advanceRequestId = $id;
+                                HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                $this->flashmessenger()->addMessage($e->getMessage());
+                            }
                         }
                     }
                 } catch (Exception $ex) {
@@ -228,8 +239,8 @@ class AdvanceApprove extends HrisController {
         $monthlyDedeuctionAmt = ($monthlyDeductionRate / 100) * $employeeSalary;
         $monthCodeDetails = $advancePaymentRepository->getMonthCode($advanceDate);
 
-        $nepYear = $monthCodeDetails['NEP_YEAR'];
-        $nepMonth = $monthCodeDetails['NEP_MONTH'];
+        $nepYear = $monthCodeDetails['YEAR'];
+        $nepMonth = $monthCodeDetails['MONTH_NO'];
 
 
         $actualPyamentMonths = ceil($requestedAmt / $monthlyDedeuctionAmt);
