@@ -5,8 +5,9 @@ namespace Notification\Model;
 class AdvanceRequestNotificationModel extends NotificationModel {
 
     public $requestedAmount;
-    public $advanceDate;
-    public $terms;
+    public $dateOfadvance;
+    public $deductionRate;
+    public $deductionIn;
     public $reason;
     public $status;
 
