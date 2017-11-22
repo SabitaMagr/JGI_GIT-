@@ -2148,3 +2148,10 @@ div#ndp-nepali-box{
     width: 100%;
     height:100px;
 }
+
+.truncate {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

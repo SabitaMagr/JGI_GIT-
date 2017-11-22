@@ -284,43 +284,44 @@ class DashboardRepository implements RepositoryInterface {
                     WHEN ATN.OVERALL_STATUS = 'DO'
                     THEN 'Day Off'
                     WHEN ATN.OVERALL_STATUS ='HD'
-                    THEN 'On Holiday('
+                    THEN 'On Holiday ('
                       ||HMS.HOLIDAY_ENAME
                       ||')'
                     WHEN ATN.OVERALL_STATUS ='LV'
-                    THEN 'On Leave('
+                    THEN 'On Leave ('
                       ||LMS.LEAVE_ENAME
                       || ')'
                     WHEN ATN.OVERALL_STATUS ='TV'
-                    THEN 'On Travel('
+                    THEN 'On Travel ('
                       ||ETR.DESTINATION
                       ||')'
                     WHEN ATN.OVERALL_STATUS ='TN'
-                    THEN 'On Training('
+                    THEN 'On Training ('
                       ||TMS.TRAINING_NAME
                       ||')'
                     WHEN ATN.OVERALL_STATUS ='WD'
                     THEN 'Work On Dayoff'
                     WHEN ATN.OVERALL_STATUS ='WH'
-                    THEN 'Work on Holiday('
+                    THEN 'Work on Holiday ('
                       ||HMS.HOLIDAY_ENAME
                       ||')'
                     WHEN ATN.OVERALL_STATUS ='LP'
-                    THEN 'Work on Leave('
+                    THEN 'On Partial Leave ('
                       ||LMS.LEAVE_ENAME
-                      ||')'
+                      ||') '
+                      ||LATE_STATUS_DESC(ATN.LATE_STATUS) 
                     WHEN ATN.OVERALL_STATUS ='VP'
-                    THEN 'Work on Travel('
+                    THEN 'Work on Travel ('
                       ||ETR.DESTINATION
                       ||')'
                       ||LATE_STATUS_DESC(ATN.LATE_STATUS)
                     WHEN ATN.OVERALL_STATUS ='TP'
-                    THEN 'Present('
+                    THEN 'Present ('
                       ||TMS.TRAINING_NAME
                       ||')'
                       ||LATE_STATUS_DESC(ATN.LATE_STATUS)
                     WHEN ATN.OVERALL_STATUS ='PR'
-                    THEN 'Present'
+                    THEN 'Present '
                       ||LATE_STATUS_DESC(ATN.LATE_STATUS)
                     WHEN ATN.OVERALL_STATUS ='AB'
                     THEN 'Absent'

@@ -121,7 +121,7 @@ window.nepaliCalendar = (function ($) {
                     <td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="status" style="font-size:10px;">
+                    <td colspan="2" class="status" style="font-size:0.6em;">
                     <td>
                 </tr>
                 <tr>
