@@ -2,6 +2,7 @@
 
 namespace Notification\Controller;
 
+use Advance\model\AdvanceRequestModel;
 use Application\Helper\EmailHelper;
 use Application\Helper\Helper;
 use Application\Model\ForgotPassword;
@@ -299,16 +300,20 @@ class HeadNotification {
         self::sendEmail($notification, 5, $adapter, $url);
     }
 
-    public static function advanceApplied(AdvanceRequest $request, AdapterInterface $adapter, Url $url, $type) {
+    public static function advanceApplied(AdvanceRequestModel $request, AdapterInterface $adapter, Url $url, $type) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
         $roleAndId = self::findRoleType($recommdAppModel, $type);
+//        if($senderDetail!=null){
+//            $roleAndId=['id' => $senderDetail, 'role' => 1];
+//        }
+        
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::EMPLOYEE_ID], $roleAndId['id'], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
 
-        $notification->advanceDate = $request->advanceDate;
+        $notification->advanceDate = $request->dateOfadvance;
         $notification->reason = $request->reason;
         $notification->requestedAmount = $request->requestedAmount;
-        $notification->terms = $request->terms;
+        $notification->terms = $request->deductionIn;
 
         $notification->route = json_encode(["route" => "advanceApprove", "action" => "view", "id" => $request->advanceRequestId, "role" => $roleAndId['role']]);
         $title = "Advance Request";

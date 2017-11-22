@@ -11,6 +11,8 @@ use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -60,7 +62,14 @@ class AdvanceRequest extends HrisController {
                 $advanceRequestModel->status = "RQ";
 
                 $this->repository->add($advanceRequestModel);
+                
+                
                 $this->flashmessenger()->addMessage("Advance Request Successfully added!!!");
+                try {
+                HeadNotification::pushNotification(NotificationEvents::ADVANCE_APPLIED, $advanceRequestModel, $this->adapter, $this,$this->employeeId,$advanceRequestModel->overrideRecommenderId);
+                } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+                }
 
                 return $this->redirect()->toRoute("advance-request");
             }

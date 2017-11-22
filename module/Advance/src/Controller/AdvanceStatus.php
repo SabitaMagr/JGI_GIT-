@@ -76,7 +76,7 @@ class AdvanceStatus extends HrisController {
             $advanceRequestModel->recommendedRemarks = $getData->approvedRemarks;
             $advanceRequestModel->approvedBy = $this->employeeId;
             $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
-            
+
             $this->advancePaymentAdd($detail);
             $advanceApproveRepository->edit($advanceRequestModel, $id);
             return $this->redirect()->toRoute("advanceStatus");
@@ -105,10 +105,8 @@ class AdvanceStatus extends HrisController {
                     'recommApprove' => $recommApprove
         ]);
     }
-    
-    
-    
-      public function advancePaymentAdd($details) {
+
+    public function advancePaymentAdd($details) {
 
         $advancePaymentRepository = new AdvancePaymentRepository($this->adapter);
 
@@ -152,8 +150,7 @@ class AdvanceStatus extends HrisController {
             $advancePaymentRepository->add($advancePayment);
         }
     }
-    
-    
+
     public function paymentViewAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if ($id === 0) {
@@ -164,7 +161,7 @@ class AdvanceStatus extends HrisController {
         if ($request->isPost()) {
             try {
                 $data = $request->getPost();
-                $paymentRepository= new AdvancePaymentRepository($this->adapter);
+                $paymentRepository = new AdvancePaymentRepository($this->adapter);
                 $rawList = $paymentRepository->getPaymentStatus($id);
                 $list = Helper::extractDbData($rawList);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
@@ -174,8 +171,24 @@ class AdvanceStatus extends HrisController {
         }
 
         return Helper::addFlashMessagesToArray($this, [
+                    'id' => $id,
                     'acl' => $this->acl
         ]);
     }
-    
+
+    public function skipAdvanceAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $id = (int) $this->params()->fromRoute('id', 0);
+                $paymentRepository = new AdvancePaymentRepository($this->adapter);
+                $paymentRepository->skipAdvance($data['year'],$data['month'],$id,$this->employeeId);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+    }
+
 }
