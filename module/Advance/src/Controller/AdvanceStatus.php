@@ -13,6 +13,8 @@ use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -79,6 +81,14 @@ class AdvanceStatus extends HrisController {
 
             $this->advancePaymentAdd($detail);
             $advanceApproveRepository->edit($advanceRequestModel, $id);
+            
+            try {
+                    $advanceRequestModel->advanceRequestId = $id;
+                    HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                
             return $this->redirect()->toRoute("advanceStatus");
         }
 
@@ -121,8 +131,8 @@ class AdvanceStatus extends HrisController {
         $monthlyDedeuctionAmt = ($monthlyDeductionRate / 100) * $employeeSalary;
         $monthCodeDetails = $advancePaymentRepository->getMonthCode($advanceDate);
 
-        $nepYear = $monthCodeDetails['NEP_YEAR'];
-        $nepMonth = $monthCodeDetails['NEP_MONTH'];
+        $nepYear = $monthCodeDetails['YEAR'];
+        $nepMonth = $monthCodeDetails['MONTH_NO'];
 
 
         $actualPyamentMonths = ceil($requestedAmt / $monthlyDedeuctionAmt);

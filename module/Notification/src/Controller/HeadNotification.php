@@ -322,7 +322,7 @@ class HeadNotification {
 
         $notification->route = json_encode(["route" => "advance-approve", "action" => "view", "id" => $request->advanceRequestId, "role" => $roleAndId['role']]);
         $title = "Advance Request";
-        $desc = "No description for now";
+        $desc = "Advance Request Applied";
 
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 6, $adapter, $url);
@@ -331,16 +331,16 @@ class HeadNotification {
     public static function advanceRecommend(AdvanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
-        
+
         if ($request->overrideRecommenderId != null) {
             $recommdAppModel['RECOMMEND_BY'] = $request->overrideRecommenderId;
         }
         if ($request->overrideApproverId != null) {
             $recommdAppModel['APPROVED_BY'] = $request->overrideApproverId;
         }
-        
+
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);
-        
+
         $notification->dateOfadvance = $request->dateOfadvance;
         $notification->reason = $request->reason;
         $notification->requestedAmount = $request->requestedAmount;
@@ -359,12 +359,15 @@ class HeadNotification {
     private static function advanceApprove(AdvanceRequestModel $request, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new AdvanceRequestRepository($adapter), $request, $request->advanceRequestId);
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
-        
+
         if ($request->overrideRecommenderId != null) {
             $recommdAppModel['RECOMMEND_BY'] = $request->overrideRecommenderId;
         }
         if ($request->overrideApproverId != null) {
             $recommdAppModel['APPROVED_BY'] = $request->overrideApproverId;
+        }
+        if ($request->status='AP' && $request->approvedBy != null) {
+            $recommdAppModel['APPROVED_BY'] = $request->approvedBy;
         }
         
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], \Notification\Model\AdvanceRequestNotificationModel::class, $adapter);

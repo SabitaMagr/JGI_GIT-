@@ -62,6 +62,8 @@ class AdvanceRequestRepository implements RepositoryInterface {
             new Expression("AR.DEDUCTION_TYPE AS DEDUCTION_TYPE"),
             new Expression("AR.OVERRIDE_RECOMMENDER_ID AS OVERRIDE_RECOMMENDER_ID"),
             new Expression("AR.OVERRIDE_APPROVER_ID AS OVERRIDE_APPROVER_ID"),
+            new Expression("AR.RECOMMENDED_BY AS RECOMMENDED_BY"),
+            new Expression("AR.APPROVED_BY AS APPROVED_BY"),
             new Expression("(CASE WHEN AR.DEDUCTION_TYPE = 'M' THEN 'MONTH' ELSE 'SALARY' END) AS DEDUCTION_TYPE_NAME"),
              new Expression("(CASE
               WHEN AR.OVERRIDE_RECOMMENDER_ID IS NOT NULL THEN OVR.FULL_NAME
