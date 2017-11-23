@@ -60,7 +60,17 @@ class AdvanceApproveRepository implements RepositoryInterface {
             new Expression("AR.DEDUCTION_RATE AS DEDUCTION_RATE"),
             new Expression("AR.DEDUCTION_IN AS DEDUCTION_IN"),
             new Expression("AR.DEDUCTION_TYPE AS DEDUCTION_TYPE"),
+            new Expression("AR.OVERRIDE_RECOMMENDER_ID AS OVERRIDE_RECOMMENDER_ID"),
+            new Expression("AR.OVERRIDE_APPROVER_ID AS OVERRIDE_APPROVER_ID"),
             new Expression("(CASE WHEN AR.DEDUCTION_TYPE = 'M' THEN 'MONTH' ELSE 'SALARY' END) AS DEDUCTION_TYPE_NAME"),
+            new Expression("(CASE
+              WHEN AR.OVERRIDE_RECOMMENDER_ID IS NOT NULL THEN OVR.FULL_NAME
+              ELSE RECM.FULL_NAME
+              END) AS RECOMMENDER_NAME"),
+            new Expression("(CASE
+              WHEN AR.OVERRIDE_RECOMMENDER_ID IS NOT NULL THEN OVA.FULL_NAME
+              ELSE APRV.FULL_NAME
+              END) AS APPROVER_NAME"),
                 ], true);
 
         $select->from(['AR' => AdvanceRequestModel::TABLE_NAME])
@@ -69,10 +79,10 @@ class AdvanceApproveRepository implements RepositoryInterface {
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=AR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=AR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=AR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
-                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left")
-                ->join(['OVR' => "HRIS_EMPLOYEES"], "OVR.EMPLOYEE_ID=AR.OVERRIDE_RECOMMENDER_ID", ['OV_RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
-                ->join(['OVA' => "HRIS_EMPLOYEES"], "OVA.EMPLOYEE_ID=AR.OVERRIDE_APPROVER_ID", ['OV_APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
+                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['DEFAULT_RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['DEFAULT_APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left")
+                ->join(['OVR' => "HRIS_EMPLOYEES"], "OVR.EMPLOYEE_ID=AR.OVERRIDE_RECOMMENDER_ID", ['OV_RECOMMENDER_NAME' => new Expression("INITCAP(OVR.FULL_NAME)")], "left")
+                ->join(['OVA' => "HRIS_EMPLOYEES"], "OVA.EMPLOYEE_ID=AR.OVERRIDE_APPROVER_ID", ['OV_APPROVER_NAME' => new Expression("INITCAP(OVA.FULL_NAME)")], "left");
 
         $select->where([
             "AR.ADVANCE_REQUEST_ID=" . $id
