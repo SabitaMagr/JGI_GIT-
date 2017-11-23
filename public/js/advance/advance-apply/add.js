@@ -59,7 +59,7 @@
             $('#deductionType').val(advanceData.DEDUCTION_TYPE);
             $monthlyDeductionPercentage.val(advanceData.DEDUCTION_RATE);
             $monthToRepay.val(advanceData.DEDUCTION_IN);
-            $('#defaultValues').text(advanceData.DEDUCTION_RATE + ' within ' + advanceData.DEDUCTION_IN + ' Months');
+            $('#defaultValues').text(advanceData.DEDUCTION_RATE + ' % within ' + advanceData.DEDUCTION_IN + ' Months');
 
 //if allow overrite rate='Y'
             if (advanceData.ALLOW_OVERRIDE_RATE == 'Y') {
@@ -104,7 +104,7 @@
             var salaryRate = advanceData.MAX_SALARY_RATE;
             var maxMonths = advanceData.MAX_ADVANCE_MONTH;
             maximunRequestAmt = (salaryRate / 100) * monthlySalary * maxMonths;
-            $('#maxReqAmt').text("Max Req.Amt=Rs " + maximunRequestAmt);
+            $('#maxReqAmt').text("Max Request Amount=Rs " + maximunRequestAmt);
             $requestAmt.attr('max', maximunRequestAmt);
 
             (advanceData.DEDUCTION_TYPE == 'S' && advanceData.ALLOW_OVERRIDE_RATE == 'Y') ? $monthlyDeductionPercentage.prop('readonly', false) : $monthlyDeductionPercentage.prop('readonly', true);

@@ -44,7 +44,7 @@ class AdvanceSetupForm {
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Restriction"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Allowed To"})
      * @Annotation\Attributes({ "id":"allowedTo","class":"form-control","options":{"ALL":"All","PER":"Permanent","PRO":"Probational","CON":"Contract"}})
      */
     public $allowedTo;
@@ -53,7 +53,7 @@ class AdvanceSetupForm {
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Next Advance Gap"})
+     * @Annotation\Options({"label":"Next Advance Month Gap"})
      * @Annotation\Attributes({ "id":"allowedMonthGap","class":"form-control","min":"0"})
      */
     public $allowedMonthGap;

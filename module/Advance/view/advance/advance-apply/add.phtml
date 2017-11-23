@@ -88,7 +88,6 @@ print $this->form()->openTag($form);
                             <?php print $this->formLabel($employeeId); ?>
                             <?php print $this->formElement($employeeId); ?>
                             <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
-                            <span id="monthlySalary" class="clearText"></span></br>
                         </div>
                     </div>
                     
@@ -97,8 +96,6 @@ print $this->form()->openTag($form);
                             <?php print $this->formLabel($advanceId); ?>
                             <?php print $this->formElement($advanceId); ?>
                             <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
-                            <span id="defaultValues" class="clearText"></span></br>
-                            <span id="monthlyDeductionAmt" class="clearText"></span></br>
                         </div>
                     </div>
 
@@ -107,7 +104,6 @@ print $this->form()->openTag($form);
                             <?php print $this->formLabel($requestedAmount); ?>
                             <?php print $this->formElement($requestedAmount); ?>
                             <?php print $this->formElementErrors()->render($requestedAmount, ['class' => 'help-block']); ?>
-                            <span id="maxReqAmt" class="clearText"></span></br>
                         </div>
                     </div>
 
@@ -131,11 +127,6 @@ print $this->form()->openTag($form);
                             </div>     
                         </div> 
                         
-                        <!--<div class="form-group">-->
-                            <?php // print $this->formLabel($dateOfadvance); ?>
-                            <?php // print $this->formElement($dateOfadvance); ?>
-                            <?php // print $this->formElementErrors()->render($dateOfadvance, ['class' => 'help-block']); ?>
-                        <!--</div>-->
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
@@ -154,7 +145,6 @@ print $this->form()->openTag($form);
                             <?php print $this->formLabel($deductionRate); ?>
                             <?php print $this->formElement($deductionRate); ?>
                             <?php print $this->formElementErrors()->render($deductionRate, ['class' => 'help-block']); ?>
-                            <span id="overrideDeductionPer" class="clearText"></span>
                         </div>
                     </div>
 
@@ -163,7 +153,6 @@ print $this->form()->openTag($form);
                             <?php print $this->formLabel($deductionIn); ?>
                             <?php print $this->formElement($deductionIn); ?>
                             <?php print $this->formElementErrors()->render($deductionIn, ['class' => 'help-block']); ?>
-                            <span id="overrideDeductionMonth" class="clearText"></span>
                         </div>
                     </div>
 
@@ -183,6 +172,16 @@ print $this->form()->openTag($form);
                             <?php print $this->formElementErrors()->render($overrideApproverId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+
+                </div>
+                
+                <div>
+                    <div><span id="monthlySalary" class="clearText"></span></div>
+                    <div><span id="defaultValues" class="clearText"></span></div>
+                    <div><span id="monthlyDeductionAmt" class="clearText"></span></div>
+                    <div><span id="maxReqAmt" class="clearText"></span></div>
+                    <div><span id="overrideDeductionPer" class="clearText"></span></div>
+                    <div><span id="overrideDeductionMonth" class="clearText"></span></div>
 
                 </div>
 
