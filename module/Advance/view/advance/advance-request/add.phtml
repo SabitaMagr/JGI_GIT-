@@ -1,5 +1,5 @@
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\advanceApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\advance-request')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -23,14 +23,13 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/advance/advance-apply/add.js'));
+$this->headScript()->appendFile($this->basePath('js/advance/advance-request/add.js'));
 ?>
 
 
 <?php
 $form->setAttribute('role', 'form');
 
-$employeeId = $form->get('employeeId');
 $advanceId = $form->get('advanceId');
 $requestedAmount = $form->get('requestedAmount');
 $dateOfadvance = $form->get('dateOfadvance');
@@ -40,7 +39,6 @@ $deductionIn = $form->get('deductionIn');
 $overrideRecommenderId = $form->get('overrideRecommenderId');
 $overrideApproverId = $form->get('overrideApproverId');
 //$overrideApproverId->setValueOptions($employeeList);
-
 //echo '<pre>';
 //print_r($employeeList);
 //die();
@@ -52,15 +50,17 @@ $submit = $form->get('submit');
 $submit->setAttribute('value', 'Apply Advance');
 $submit->setAttribute('id', 'request');
 //
-$form->setAttribute('action', $this->url('advanceApply', ['action' => 'add']));
+$form->setAttribute('action', $this->url('advance-request', ['action' => 'add']));
 
 
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.advanceList =<?=json_encode($advance);?>;
-    document.employeeList =<?=json_encode($employeeList);?>;
+    document.employeeId =<?= json_encode($employeeId); ?>;
+    document.salary =<?= $salary ?>;
+    document.advanceList =<?= json_encode($advance); ?>;
+    document.employeeList =<?= json_encode($employeeList); ?>;
 </script>
 
 
@@ -78,19 +78,13 @@ print $this->form()->openTag($form);
             </div>
             <div class="portlet-body">
                 <div class="form-group">
+                    <input type="hidden" name="employeeId" id="employeeId" value="<?php echo $employeeId; ?>"/>
                     <input type="hidden" name="deductionType" id="deductionType" />
                 </div>
 
                 <div class="row">
-                    
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
-                        <div class="form-group">
-                            <?php print $this->formLabel($employeeId); ?>
-                            <?php print $this->formElement($employeeId); ?>
-                            <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                    
+
+
                     <div class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
                             <?php print $this->formLabel($advanceId); ?>
@@ -108,7 +102,7 @@ print $this->form()->openTag($form);
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
-                        
+
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -126,7 +120,6 @@ print $this->form()->openTag($form);
                                 </div>
                             </div>     
                         </div> 
-                        
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
@@ -174,9 +167,7 @@ print $this->form()->openTag($form);
                     </div>
 
                 </div>
-                
                 <div>
-                    <div><span id="monthlySalary" class="clearText"></span></div>
                     <div><span id="defaultValues" class="clearText"></span></div>
                     <div><span id="monthlyDeductionAmt" class="clearText"></span></div>
                     <div><span id="maxReqAmt" class="clearText"></span></div>
@@ -186,6 +177,7 @@ print $this->form()->openTag($form);
                 </div>
 
                 <span id="beforeSubmitVal" class="errorMsg"></span></br>
+
                 <?php print $this->formSubmit($submit); ?>
 
             </div>

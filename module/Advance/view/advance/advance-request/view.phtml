@@ -1,3 +1,20 @@
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\advance-request')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
@@ -6,16 +23,15 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/advance/advance-approve/view.js'));
-
+$this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
+$this->headScript()->appendFile($this->basePath('js/advance/advance-request/view.js'));
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id',"advance-form");
+$form->setAttribute('id', 'advance-form');
 
 $advanceId = $form->get('advanceId');
 $advanceId->setValueOptions($advances);
 $advanceId->setAttributes(["disabled" => "disabled"]);
-
 
 $requestedAmount = $form->get('requestedAmount');
 $requestedAmount->setAttributes(["disabled" => "disabled"]);
@@ -33,43 +49,21 @@ $deductionIn = $form->get('deductionIn');
 $deductionIn->setAttributes(["disabled" => "disabled"]);
 
 $recommendedRemarks = $form->get('recommendedRemarks');
+$recommendedRemarks->setAttributes(["disabled" => "disabled"]);
 
 $approvedRemarks = $form->get('approvedRemarks');
-
+$approvedRemarks->setAttributes(["disabled" => "disabled"]);
 
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'Approve');
-$submit->setAttribute('id','approve');
+$submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('advanceStatus', ['action' => 'view', 'id' => $id]));
-
-
-$form->prepare();
-print $this->form()->openTag($form);
+$form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']));
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.employeeId =<?= json_encode($employeeId) ?>;
+    document.advanceRequestData =<?php echo json_encode($advanceRequestData); ?>;
 </script>
 
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-</div>
-
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 <div class="row margin-top-20" >
     <div class="col-sm-12">
         <div class="portlet box custom-box">
@@ -80,22 +74,39 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="actions">
                     <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
                 </div>
+
             </div>
             <div class="portlet-body">
-                <div class="border-bottom margin-bottom-10">
+                <div class="border-bottom">
                     <div class="form-group">
                         <div class="row div-font-11">
                             <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
                                         <td>
-                                            Employee Name
+                                            Requested Date
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php echo $employeeName; ?>
+                                            <?php echo $requestedDate; ?>
                                         </td>
                                     </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Status
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php
+                                            echo $statusDetail;
+                                            ?>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table>
                                     <tr height="30">
                                         <td>
                                             Recommender
@@ -109,16 +120,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 </table>
                             </div>
                             <div class="col-sm-4">
-                                <table>
-                                    <tr height="30">
-                                        <td>
-                                            Requested Date
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $advanceRequestData['REQUESTED_DATE']; ?>
-                                        </td>
-                                    </tr>
+                                <table>  
                                     <tr height="30">
                                         <td>
                                             Approver
@@ -127,27 +129,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td>
                                             <?php echo $approver; ?>
                                         </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-sm-4">
-                                <table>
-                                    <tr height="30">
-                                        <td>
-                                            Status
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php
-                                            echo $statusDetail;
-                                            ?>
-                                        </td>
-                                    </tr>
+                                    </tr>                               
                                 </table>
                             </div>
                         </div>
                     </div>
-
                     <input type="hidden" id="form-employeeId" value="<?php echo $employeeId; ?>"/>
 
                     <div class=" row">
@@ -185,11 +171,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </div>
                                     </div>
                                 </div>     
-                            </div>
-                            
-                        </div>
-                    </div>
+                            </div> 
 
+                        </div>
+
+                    </div>
 
                     <div class=" row">
                         <div class="col-sm-4">
@@ -201,6 +187,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 $monthlyDeductAmt=($advanceRequestData['DEDUCTION_RATE']/100)*$advanceRequestData['SALARY'];
                                         echo 'RS.'.$monthlyDeductAmt;
                                 ?></span>
+                            
                             </div>
                         </div>
                         <div class="col-sm-4">
@@ -223,33 +210,18 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
                 </div>
-
-                <?php
-                if (($status == 'RC' || $status == 'AP' || $status == 'R') && $recommApprove == 0) {
-                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
-                    ?>
-                    <div class="form-group padding-0">
-                        <label>Reason for action [From Recommender]</label>
-                        <?php print $this->formElement($recommendedRemarks); ?>
-                    </div>
-                    <?php
-                }
-                if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
-                    ?>
-                    <div class="form-group padding-0">
-                        <?php print $this->formLabel($approvedRemarks); ?>
-                        <?php print $this->formElement($approvedRemarks); ?>
-                    </div>
-                <?php } ?>
-
-                <?php if ($status == 'RQ' || $status == 'RC') { ?>
-                    <?php print $this->formSubmit($submit); ?>
-                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                <?php } ?>
+                <div
+                    class="form-group margin-top-10 required <?= empty($recommendedRemarks->getMessages()) ? "" : "error" ?>">
+                    <label>Reason for action [From Recommender]</label>
+                    <?php print $this->formElement($recommendedRemarks); ?>
+                </div>
+                <div
+                    class="form-group required <?= empty($approvedRemarks->getMessages()) ? "" : "error" ?>">
+                    <label>Reason for action [From Approver]</label>
+                    <?php print $this->formElement($approvedRemarks); ?>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
-<?php
-print $this->form()->closeTag();
-?>

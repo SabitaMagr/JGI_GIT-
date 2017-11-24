@@ -3,18 +3,17 @@
     $(document).ready(function () {
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
-        var $search = $('#searchAdvance');
+        var $search = $('#search');
+        var $status = $('#status');
+        var $fromDate = $('#fromDate');
+        var $toDate = $('#toDate');
+
         var $table = $('#table');
         var action = `
             <div class="clearfix">
-                <a class="btn btn-icon-only green" href="${document.viewLink}/#:ADVANCE_REQUEST_ID#" style="height:17px;" title="View Detail">
+                <a class="btn btn-icon-only green" href="${document.viewLink}/#:ADVANCE_REQUEST_ID#/#:ROLE#" style="height:17px;" title="View Detail">
                     <i class="fa fa-search"></i>
                 </a>
-            #if(STATUS=='AP'){#
-                <a class="btn btn-icon-only green" href="${document.paymentViewLink}/#:ADVANCE_REQUEST_ID#" style="height:17px;" title="Payment Detail">
-                    <i class="fa fa-money"></i>
-                </a>
-            #}#
             </div>
         `;
 
@@ -40,11 +39,30 @@
                     }]},
             {field: "REQUESTED_AMOUNT", title: "Request Amt."},
             {field: "STATUS_DETAIL", title: "Status"},
-            {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: action}
+            {field: "YOUR_ROLE", title: "Role"},
+            {field: ["ADVANCE_REQUEST_ID", "ROLE"], title: "Action", template: action}
         ];
 
+        app.initializeKendoGrid($table, columns, "Advance To Approve List.xlsx");
 
-        app.initializeKendoGrid($table, columns, "Advance List.xlsx");
+
+        $search.on('click', function () {
+            app.pullDataById('', {
+                'status': $status.val(),
+                'fromDate': $fromDate.val(),
+                'toDate': $toDate.val()
+            }).then(function (response) {
+                if (response.success) {
+                    app.renderKendoGrid($table, response.data);
+                } else {
+                    app.showMessage(response.error, 'error');
+                }
+            }, function (error) {
+                app.showMessage(error, 'error');
+            });
+        });
+
+
 
         app.searchTable($table, ['EMPLOYEE_NAME']);
         var exportMap = {
@@ -55,33 +73,25 @@
             'DATE_OF_ADVANCE_AD': 'Advance Date(AD)',
             'DATE_OF_ADVANCE_BS': 'Advance Date(BS)',
             'STATUS_DETAIL': 'Status',
+            'YOUR_ROLE': 'Role',
         };
-
         $('#excelExport').on('click', function () {
-            app.excelExport($table, exportMap, 'Advance Request List.xlsx');
+            app.excelExport($table, exportMap, 'Travel Request List.xlsx');
         });
 
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, exportMap, 'Advance Request List.pdf');
+            app.exportToPDF($table, exportMap, 'Travel Request List.pdf');
+        });
+
+        $("#reset").on("click", function () {
+            if (typeof document.ids !== "undefined") {
+                $.each(document.ids, function (key, value) {
+                    $("#" + key).val(value).change();
+                });
+            }
         });
 
 
-
-        $search.on('click', function () {
-
-            var data = document.searchManager.getSearchValues();
-            data['status'] = $('#status').val();
-            data['fromDate'] = $('#fromDate').val();
-            data['toDate'] = $('#toDate').val();
-            App.blockUI({target: "#hris-page-content"});
-            app.pullDataById("", data).then(function (response) {
-                App.unblockUI("#hris-page-content");
-                console.log(response.data);
-                app.renderKendoGrid($table, response.data, "AdvanceRequestList.xlsx");
-            }, function (failure) {
-                App.unblockUI("#hris-page-content");
-            });
-        });
 
     });
 })(window.jQuery, window.app);
