@@ -14,6 +14,8 @@ create or replace TRIGGER DEVICE_ATTENDANCE_TRIGGER AFTER
   V_ADJUSTED_END_TIME HRIS_SHIFT_ADJUSTMENT.END_TIME%TYPE    :=NULL;
   V_LATE_COUNT NUMBER                                        :=0;
   V_TOTAL_HOUR NUMBER                                        :=0;
+  V_TWO_DAY_SHIFT HRIS_ATTENDANCE_DETAIL.TWO_DAY_SHIFT%TYPE;
+  V_HALF_INTERVAL DATE;
   BEGIN
     --
     BEGIN
@@ -25,7 +27,8 @@ create or replace TRIGGER DEVICE_ATTENDANCE_TRIGGER AFTER
         GRACE_PERIOD,
         IN_TIME,
         HALFDAY_PERIOD,
-        GRACE_PERIOD
+        GRACE_PERIOD,
+        TWO_DAY_SHIFT
       INTO V_SHIFT_ID,
         V_OVERALL_STATUS,
         V_LATE_STATUS,
@@ -34,10 +37,50 @@ create or replace TRIGGER DEVICE_ATTENDANCE_TRIGGER AFTER
         V_GRACE_PERIOD,
         V_IN_TIME,
         V_HALFDAY_PERIOD,
-        V_GRACE_PERIOD
+        V_GRACE_PERIOD,
+        V_TWO_DAY_SHIFT
       FROM HRIS_ATTENDANCE_DETAIL
-      WHERE ATTENDANCE_DT = TO_DATE (:new.ATTENDANCE_DT, 'DD-MON-YY')
+      WHERE ATTENDANCE_DT = TRUNC(:new.ATTENDANCE_DT)
       AND EMPLOYEE_ID     = :new.EMPLOYEE_ID;
+      IF V_TWO_DAY_SHIFT  ='E' THEN
+        --
+        SELECT S.LATE_IN,
+          S.EARLY_OUT,
+          S.START_TIME+((1/1440)*NVL(S.LATE_IN,0)),
+          S.END_TIME  -((1/1440)*NVL(S.EARLY_OUT,0))
+        INTO V_LATE_IN,
+          V_EARLY_OUT,
+          V_LATE_START_TIME,
+          V_EARLY_END_TIME
+        FROM HRIS_SHIFTS S
+        WHERE S.SHIFT_ID=V_SHIFT_ID ;
+        --
+        SELECT V_EARLY_END_TIME + (V_LATE_START_TIME -V_EARLY_END_TIME)/2
+        INTO V_HALF_INTERVAL
+        FROM DUAL;
+        IF (TO_DATE(TO_CHAR(:new.ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM')) < (TO_DATE(TO_CHAR(V_HALF_INTERVAL,'HH:MI AM'),'HH:MI AM')) THEN
+          SELECT OVERALL_STATUS,
+            LATE_STATUS,
+            HALFDAY_FLAG,
+            HALFDAY_PERIOD,
+            GRACE_PERIOD,
+            IN_TIME,
+            HALFDAY_PERIOD,
+            GRACE_PERIOD
+          INTO V_OVERALL_STATUS,
+            V_LATE_STATUS,
+            V_HALFDAY_FLAG,
+            V_HALFDAY_PERIOD,
+            V_GRACE_PERIOD,
+            V_IN_TIME,
+            V_HALFDAY_PERIOD,
+            V_GRACE_PERIOD
+          FROM HRIS_ATTENDANCE_DETAIL
+          WHERE ATTENDANCE_DT = TRUNC(:new.ATTENDANCE_DT-1)
+          AND EMPLOYEE_ID     = :new.EMPLOYEE_ID;
+        END IF;
+        --
+      END IF;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
       DBMS_OUTPUT.PUT_LINE ('Attendance Job for '||:new.ATTENDANCE_DT||' not excecuted');
@@ -127,61 +170,128 @@ create or replace TRIGGER DEVICE_ATTENDANCE_TRIGGER AFTER
       V_EARLY_END_TIME     := V_EARLY_END_TIME -((1/1440)*NVL(V_EARLY_OUT,0));
     END IF;
     --      END FOR CHECK FOR ADJUSTED_SHIFT
-    IF (V_IN_TIME            IS NULL) THEN
-      IF(V_OVERALL_STATUS     ='DO') THEN
-        V_OVERALL_STATUS     :='WD';
-      ELSIF (V_OVERALL_STATUS ='HD') THEN
-        V_OVERALL_STATUS     :='WH';
-      ELSIF (V_OVERALL_STATUS ='LV') THEN
-        NULL;
-      ELSIF (V_OVERALL_STATUS ='TV') THEN
-        NULL;
-      ELSIF (V_OVERALL_STATUS ='TN') THEN
-        NULL;
-      ELSIF(V_HALFDAY_FLAG !='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
-        V_OVERALL_STATUS   :='LP';
+    IF(V_TWO_DAY_SHIFT = 'E') THEN
+      --    two day shift
+      IF (TO_DATE(TO_CHAR(:new.ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM')) < (TO_DATE(TO_CHAR(V_HALF_INTERVAL,'HH:MI AM'),'HH:MI AM')) THEN
+        IF V_OVERALL_STATUS                                             ='PR' AND (V_EARLY_END_TIME-TRUNC(V_EARLY_END_TIME))>(:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME)) THEN
+          IF (V_LATE_STATUS                                             = 'L') THEN
+            V_LATE_STATUS                                              :='B';
+          ELSE
+            V_LATE_STATUS :='E';
+          END IF;
+        ELSE
+          IF (V_LATE_STATUS     ='B') THEN
+            V_LATE_STATUS      :='L';
+          ELSIF ( V_LATE_STATUS ='E') THEN
+            V_LATE_STATUS      := 'N';
+          END IF;
+        END IF;
+        --
+        SELECT SUM(ABS(EXTRACT( HOUR FROM DIFF ))*60 + ABS(EXTRACT( MINUTE FROM DIFF )))
+        INTO V_TOTAL_HOUR
+        FROM
+          (SELECT (:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME))-(V_IN_TIME-TRUNC(V_IN_TIME)) AS DIFF
+          FROM DUAL
+          ) ;
+        UPDATE HRIS_ATTENDANCE_DETAIL
+        SET OUT_TIME        = TO_DATE ( TO_CHAR (:new.ATTENDANCE_TIME, 'DD-MON-YY HH:MI AM'), 'DD-MON-YY HH:MI AM'),
+          LATE_STATUS       =V_LATE_STATUS,
+          OUT_REMARKS       = :new.REMARKS,
+          TOTAL_HOUR        =V_TOTAL_HOUR
+        WHERE ATTENDANCE_DT = TRUNC(:new.ATTENDANCE_DT-1)
+        AND EMPLOYEE_ID     = :new.EMPLOYEE_ID;
       ELSE
-        V_OVERALL_STATUS :='PR';
+        IF (V_IN_TIME            IS NULL) THEN
+          IF(V_OVERALL_STATUS     ='DO') THEN
+            V_OVERALL_STATUS     :='WD';
+          ELSIF (V_OVERALL_STATUS ='HD') THEN
+            V_OVERALL_STATUS     :='WH';
+          ELSIF (V_OVERALL_STATUS ='LV') THEN
+            NULL;
+          ELSIF (V_OVERALL_STATUS ='TV') THEN
+            NULL;
+          ELSIF (V_OVERALL_STATUS ='TN') THEN
+            NULL;
+          ELSIF(V_HALFDAY_FLAG !='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
+            V_OVERALL_STATUS   :='LP';
+          ELSE
+            V_OVERALL_STATUS :='PR';
+          END IF;
+          IF V_OVERALL_STATUS = 'PR' AND ( V_LATE_START_TIME-TRUNC(V_LATE_START_TIME))<(:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME)) THEN
+            V_LATE_STATUS    :='L';
+          END IF;
+          --
+          UPDATE HRIS_ATTENDANCE_DETAIL
+          SET IN_TIME         = TO_DATE ( TO_CHAR (:new.ATTENDANCE_TIME, 'DD-MON-YY HH:MI AM'), 'DD-MON-YY HH:MI AM'),
+            OVERALL_STATUS    = V_OVERALL_STATUS,
+            LATE_STATUS       = V_LATE_STATUS,
+            IN_REMARKS        = :new.REMARKS
+          WHERE ATTENDANCE_DT = TRUNC (:new.ATTENDANCE_DT)
+          AND EMPLOYEE_ID     = :new.EMPLOYEE_ID;
+          RETURN;
+        END IF;
+        --
       END IF;
-      IF V_OVERALL_STATUS = 'PR' AND ( V_LATE_START_TIME-TRUNC(V_LATE_START_TIME))<(:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME)) THEN
-        V_LATE_STATUS    :='L';
+      --      end for two day shift
+    ELSE
+      --    nornal shift
+      IF (V_IN_TIME            IS NULL) THEN
+        IF(V_OVERALL_STATUS     ='DO') THEN
+          V_OVERALL_STATUS     :='WD';
+        ELSIF (V_OVERALL_STATUS ='HD') THEN
+          V_OVERALL_STATUS     :='WH';
+        ELSIF (V_OVERALL_STATUS ='LV') THEN
+          NULL;
+        ELSIF (V_OVERALL_STATUS ='TV') THEN
+          NULL;
+        ELSIF (V_OVERALL_STATUS ='TN') THEN
+          NULL;
+        ELSIF(V_HALFDAY_FLAG !='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
+          V_OVERALL_STATUS   :='LP';
+        ELSE
+          V_OVERALL_STATUS :='PR';
+        END IF;
+        IF V_OVERALL_STATUS = 'PR' AND ( V_LATE_START_TIME-TRUNC(V_LATE_START_TIME))<(:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME)) THEN
+          V_LATE_STATUS    :='L';
+        END IF;
+        --
+        UPDATE HRIS_ATTENDANCE_DETAIL
+        SET IN_TIME         = TO_DATE ( TO_CHAR (:new.ATTENDANCE_TIME, 'DD-MON-YY HH:MI AM'), 'DD-MON-YY HH:MI AM'),
+          OVERALL_STATUS    = V_OVERALL_STATUS,
+          LATE_STATUS       = V_LATE_STATUS,
+          IN_REMARKS        = :new.REMARKS
+        WHERE ATTENDANCE_DT = TO_DATE (:new.ATTENDANCE_DT, 'DD-MON-YY')
+        AND EMPLOYEE_ID     = :new.EMPLOYEE_ID;
+        RETURN;
       END IF;
       --
+      IF V_OVERALL_STATUS ='PR' AND (V_EARLY_END_TIME-TRUNC(V_EARLY_END_TIME))>(:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME)) THEN
+        IF (V_LATE_STATUS = 'L') THEN
+          V_LATE_STATUS  :='B';
+        ELSE
+          V_LATE_STATUS :='E';
+        END IF;
+      ELSE
+        IF (V_LATE_STATUS     ='B') THEN
+          V_LATE_STATUS      :='L';
+        ELSIF ( V_LATE_STATUS ='E') THEN
+          V_LATE_STATUS      := 'N';
+        END IF;
+      END IF;
+      --
+      SELECT SUM(ABS(EXTRACT( HOUR FROM DIFF ))*60 + ABS(EXTRACT( MINUTE FROM DIFF )))
+      INTO V_TOTAL_HOUR
+      FROM
+        (SELECT (:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME))-(V_IN_TIME-TRUNC(V_IN_TIME)) AS DIFF
+        FROM DUAL
+        ) ;
       UPDATE HRIS_ATTENDANCE_DETAIL
-      SET IN_TIME         = TO_DATE ( TO_CHAR (:new.ATTENDANCE_TIME, 'DD-MON-YY HH:MI AM'), 'DD-MON-YY HH:MI AM'),
-        OVERALL_STATUS    = V_OVERALL_STATUS,
-        LATE_STATUS       = V_LATE_STATUS,
-        IN_REMARKS        = :new.REMARKS
+      SET OUT_TIME        = TO_DATE ( TO_CHAR (:new.ATTENDANCE_TIME, 'DD-MON-YY HH:MI AM'), 'DD-MON-YY HH:MI AM'),
+        LATE_STATUS       =V_LATE_STATUS,
+        OUT_REMARKS       = :new.REMARKS,
+        TOTAL_HOUR        =V_TOTAL_HOUR
       WHERE ATTENDANCE_DT = TO_DATE (:new.ATTENDANCE_DT, 'DD-MON-YY')
       AND EMPLOYEE_ID     = :new.EMPLOYEE_ID;
-      RETURN;
+      --      end of nornal shift
     END IF;
-    --
-    IF V_OVERALL_STATUS ='PR' AND (V_EARLY_END_TIME-TRUNC(V_EARLY_END_TIME))>(:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME)) THEN
-      IF (V_LATE_STATUS = 'L') THEN
-        V_LATE_STATUS  :='B';
-      ELSE
-        V_LATE_STATUS :='E';
-      END IF;
-    ELSE
-      IF (V_LATE_STATUS     ='B') THEN
-        V_LATE_STATUS      :='L';
-      ELSIF ( V_LATE_STATUS ='E') THEN
-        V_LATE_STATUS      := 'N';
-      END IF;
-    END IF;
-    --
-    SELECT SUM(ABS(EXTRACT( HOUR FROM DIFF ))*60 + ABS(EXTRACT( MINUTE FROM DIFF )))
-    INTO V_TOTAL_HOUR
-    FROM
-      (SELECT (:new.ATTENDANCE_TIME-TRUNC(:new.ATTENDANCE_TIME))-(V_IN_TIME-TRUNC(V_IN_TIME)) AS DIFF
-      FROM DUAL
-      ) ;
-    UPDATE HRIS_ATTENDANCE_DETAIL
-    SET OUT_TIME        = TO_DATE ( TO_CHAR (:new.ATTENDANCE_TIME, 'DD-MON-YY HH:MI AM'), 'DD-MON-YY HH:MI AM'),
-      LATE_STATUS       =V_LATE_STATUS,
-      OUT_REMARKS       = :new.REMARKS,
-      TOTAL_HOUR        =V_TOTAL_HOUR
-    WHERE ATTENDANCE_DT = TO_DATE (:new.ATTENDANCE_DT, 'DD-MON-YY')
-    AND EMPLOYEE_ID     = :new.EMPLOYEE_ID;
   END;
