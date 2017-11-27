@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_PRELOAD_ATTENDANCE(
+create or replace PROCEDURE HRIS_PRELOAD_ATTENDANCE(
     V_ATTENDANCE_DATE DATE,
     P_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE:=NULL,
     P_SHIFT_ID HRIS_SHIFTS.SHIFT_ID%TYPE         :=NULL)
@@ -22,6 +22,7 @@ AS
   V_TRAINING_ID HRIS_TRAINING_MASTER_SETUP.TRAINING_ID%TYPE;
   V_WOD_ID HRIS_EMPLOYEE_WORK_DAYOFF.ID%TYPE;
   V_WOH_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE;
+  V_TWO_DAY_SHIFT HRIS_SHIFTS.TWO_DAY_SHIFT%TYPE;
   V_MAX_ID                NUMBER;
   V_ATTENDANCE_DATA_COUNT NUMBER;
   CURSOR CUR_EMPLOYEE
@@ -74,7 +75,8 @@ BEGIN
           WEEKDAY4,
           WEEKDAY5,
           WEEKDAY6,
-          WEEKDAY7
+          WEEKDAY7,
+          TWO_DAY_SHIFT
         INTO V_SHIFT_ID,
           V_WEEKDAY1,
           V_WEEKDAY2,
@@ -82,7 +84,8 @@ BEGIN
           V_WEEKDAY4,
           V_WEEKDAY5,
           V_WEEKDAY6,
-          V_WEEKDAY7
+          V_WEEKDAY7,
+          V_TWO_DAY_SHIFT
         FROM HRIS_SHIFTS HS
         WHERE HS.SHIFT_ID = P_SHIFT_ID ;
       END;
@@ -96,7 +99,8 @@ BEGIN
           WEEKDAY4,
           WEEKDAY5,
           WEEKDAY6,
-          WEEKDAY7
+          WEEKDAY7,
+          TWO_DAY_SHIFT
         INTO V_SHIFT_ID,
           V_WEEKDAY1,
           V_WEEKDAY2,
@@ -104,7 +108,8 @@ BEGIN
           V_WEEKDAY4,
           V_WEEKDAY5,
           V_WEEKDAY6,
-          V_WEEKDAY7
+          V_WEEKDAY7,
+          V_TWO_DAY_SHIFT
         FROM HRIS_EMPLOYEE_SHIFT_ROASTER ES,
           HRIS_SHIFTS HS
         WHERE 1                = 1
@@ -122,7 +127,8 @@ BEGIN
             WEEKDAY4,
             WEEKDAY5,
             WEEKDAY6,
-            WEEKDAY7
+            WEEKDAY7,
+            TWO_DAY_SHIFT
           INTO V_SHIFT_ID,
             V_WEEKDAY1,
             V_WEEKDAY2,
@@ -130,7 +136,8 @@ BEGIN
             V_WEEKDAY4,
             V_WEEKDAY5,
             V_WEEKDAY6,
-            V_WEEKDAY7
+            V_WEEKDAY7,
+            V_TWO_DAY_SHIFT
           FROM
             (SELECT *
             FROM
@@ -161,7 +168,8 @@ BEGIN
               WEEKDAY4,
               WEEKDAY5,
               WEEKDAY6,
-              WEEKDAY7
+              WEEKDAY7,
+              TWO_DAY_SHIFT
             INTO V_SHIFT_ID,
               V_WEEKDAY1,
               V_WEEKDAY2,
@@ -169,7 +177,8 @@ BEGIN
               V_WEEKDAY4,
               V_WEEKDAY5,
               V_WEEKDAY6,
-              V_WEEKDAY7
+              V_WEEKDAY7,
+              V_TWO_DAY_SHIFT
             FROM HRIS_SHIFTS
             WHERE V_ATTENDANCE_DATE BETWEEN START_DATE AND END_DATE
             AND DEFAULT_SHIFT = 'Y'
@@ -237,7 +246,6 @@ BEGIN
         --
       END IF;
     END;
-   
     -- CHECK FOR HOLIDAY
     BEGIN
       SELECT H.HOLIDAY_ID
@@ -256,7 +264,6 @@ BEGIN
       NULL;
     END;
     --
-    
     BEGIN
       SELECT LEAVE_ID,
         HALF_DAY,
@@ -323,7 +330,7 @@ BEGIN
     WHEN NO_DATA_FOUND THEN
       NULL;
     END;
-     -- CHECK FOR WOD
+    -- CHECK FOR WOD
     BEGIN
       SELECT ID
       INTO V_WOD_ID
@@ -336,7 +343,13 @@ BEGIN
         ORDER BY REQUESTED_DATE DESC
         )
       WHERE ROWNUM      =1 ;
-      V_OVERALL_STATUS := CASE WHEN V_OVERALL_STATUS ='TV' THEN 'VP' ELSE 'WD' END;
+      V_OVERALL_STATUS :=
+      CASE
+      WHEN V_OVERALL_STATUS ='TV' THEN
+        'VP'
+      ELSE
+        'WD'
+      END;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
       NULL;
@@ -355,7 +368,13 @@ BEGIN
         ORDER BY REQUESTED_DATE DESC
         )
       WHERE ROWNUM      =1 ;
-      V_OVERALL_STATUS := CASE WHEN V_OVERALL_STATUS ='TV' THEN 'VP' ELSE 'WH' END;
+      V_OVERALL_STATUS :=
+      CASE
+      WHEN V_OVERALL_STATUS ='TV' THEN
+        'VP'
+      ELSE
+        'WH'
+      END;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
       NULL;
@@ -375,7 +394,8 @@ BEGIN
           LEAVE_ID,
           TRAVEL_ID,
           TRAINING_ID,
-          OVERALL_STATUS
+          OVERALL_STATUS,
+          TWO_DAY_SHIFT
         )
         VALUES
         (
@@ -394,6 +414,12 @@ BEGIN
             WHEN V_OVERALL_STATUS IS NULL
             THEN 'AB'
             ELSE V_OVERALL_STATUS
+          END),
+          (
+          CASE
+            WHEN V_TWO_DAY_SHIFT IS NULL
+            THEN 'D'
+            ELSE V_TWO_DAY_SHIFT
           END)
         );
       COMMIT;
