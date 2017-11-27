@@ -3,6 +3,27 @@
 namespace Setup;
 
 use Application\Controller\ControllerFactory;
+use Setup\Controller\AcademicCourseController;
+use Setup\Controller\AcademicDegreeController;
+use Setup\Controller\AcademicProgramController;
+use Setup\Controller\AcademicUniversityController;
+use Setup\Controller\BranchController;
+use Setup\Controller\CompanyController;
+use Setup\Controller\DepartmentController;
+use Setup\Controller\DesignationController;
+use Setup\Controller\EmpCurrentPostingController;
+use Setup\Controller\EmployeeController;
+use Setup\Controller\ExperienceController;
+use Setup\Controller\InstituteController;
+use Setup\Controller\JobHistoryController;
+use Setup\Controller\LoanController;
+use Setup\Controller\PositionController;
+use Setup\Controller\RecommendApproveController;
+use Setup\Controller\ServiceEventTypeController;
+use Setup\Controller\ServiceQuestionController;
+use Setup\Controller\ServiceTypeController;
+use Setup\Controller\TrainingController;
+use Setup\Controller\WebServiceController;
 use Zend\Router\Http\Segment;
 
 return [
@@ -13,7 +34,7 @@ return [
                 'options' => [
                     'route' => '/setup/employee[/:action[/:id[/:tab]]]',
                     'defaults' => [
-                        'controller' => Controller\EmployeeController::class,
+                        'controller' => EmployeeController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -23,7 +44,7 @@ return [
                 'options' => [
                     'route' => '/setup/designation[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\DesignationController::class,
+                        'controller' => DesignationController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -37,7 +58,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\CompanyController::class,
+                        'controller' => CompanyController::class,
                         'action' => 'index',
                     ],
                 ],
@@ -51,7 +72,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\BranchController::class,
+                        'controller' => BranchController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -65,7 +86,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\DepartmentController::class,
+                        'controller' => DepartmentController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -79,7 +100,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\PositionController::class,
+                        'controller' => PositionController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -93,7 +114,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ServiceTypeController::class,
+                        'controller' => ServiceTypeController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -107,7 +128,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\JobHistoryController::class,
+                        'controller' => JobHistoryController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -121,7 +142,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\EmpCurrentPostingController::class,
+                        'controller' => EmpCurrentPostingController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -135,7 +156,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\WebServiceController::class,
+                        'controller' => WebServiceController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -149,7 +170,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\RecommendApproveController::class,
+                        'controller' => RecommendApproveController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -163,7 +184,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ServiceEventTypeController::class,
+                        'controller' => ServiceEventTypeController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -177,7 +198,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AcademicDegreeController::class,
+                        'controller' => AcademicDegreeController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -191,7 +212,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AcademicUniversityController::class,
+                        'controller' => AcademicUniversityController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -205,7 +226,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AcademicProgramController::class,
+                        'controller' => AcademicProgramController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -219,7 +240,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AcademicCourseController::class,
+                        'controller' => AcademicCourseController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -233,7 +254,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\TrainingController::class,
+                        'controller' => TrainingController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -247,21 +268,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\LoanController::class,
-                        'action' => 'index',
-                    ]
-                ],
-            ],
-            'advance' => [
-                'type' => segment::class,
-                'options' => [
-                    'route' => '/setup/advance[/:action[/:id]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => Controller\AdvanceController::class,
+                        'controller' => LoanController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -275,7 +282,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\InstituteController::class,
+                        'controller' => InstituteController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -289,7 +296,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ExperienceController::class,
+                        'controller' => ExperienceController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -303,7 +310,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ServiceQuestionController::class,
+                        'controller' => ServiceQuestionController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -780,33 +787,6 @@ return [
                 ]
             ]
         ],
-        'advance' => [
-            [
-                'label' => 'Advance',
-                'route' => 'advance',
-            ],
-            [
-                'label' => 'Advance',
-                'route' => 'advance',
-                'pages' => [
-                    [
-                        'label' => 'List',
-                        'route' => 'advance',
-                        'action' => 'index',
-                    ],
-                    [
-                        'label' => 'Add',
-                        'route' => 'advance',
-                        'action' => 'add',
-                    ],
-                    [
-                        'label' => 'Edit',
-                        'route' => 'advance',
-                        'action' => 'edit',
-                    ],
-                ]
-            ]
-        ],
         'institute' => [
             [
                 'label' => 'Institute',
@@ -891,28 +871,27 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\EmployeeController::class => ControllerFactory::class,
-            Controller\DesignationController::class => ControllerFactory::class,
-            Controller\CompanyController::class => ControllerFactory::class,
-            Controller\BranchController::class => ControllerFactory::class,
-            Controller\DepartmentController::class => ControllerFactory::class,
-            Controller\PositionController::class => ControllerFactory::class,
-            Controller\ServiceTypeController::class => ControllerFactory::class,
-            Controller\EmpCurrentPostingController::class => ControllerFactory::class,
-            Controller\JobHistoryController::class => ControllerFactory::class,
-            Controller\WebServiceController::class => ControllerFactory::class,
-            Controller\RecommendApproveController::class => ControllerFactory::class,
-            Controller\ServiceEventTypeController::class => ControllerFactory::class,
-            Controller\AcademicDegreeController::class => ControllerFactory::class,
-            Controller\AcademicUniversityController::class => ControllerFactory::class,
-            Controller\AcademicProgramController::class => ControllerFactory::class,
-            Controller\AcademicCourseController::class => ControllerFactory::class,
-            Controller\TrainingController::class => ControllerFactory::class,
-            Controller\LoanController::class => ControllerFactory::class,
-            Controller\AdvanceController::class => ControllerFactory::class,
-            Controller\InstituteController::class => ControllerFactory::class,
-            Controller\ExperienceController::class => ControllerFactory::class,
-            Controller\ServiceQuestionController::class => ControllerFactory::class
+            EmployeeController::class => ControllerFactory::class,
+            DesignationController::class => ControllerFactory::class,
+            CompanyController::class => ControllerFactory::class,
+            BranchController::class => ControllerFactory::class,
+            DepartmentController::class => ControllerFactory::class,
+            PositionController::class => ControllerFactory::class,
+            ServiceTypeController::class => ControllerFactory::class,
+            EmpCurrentPostingController::class => ControllerFactory::class,
+            JobHistoryController::class => ControllerFactory::class,
+            WebServiceController::class => ControllerFactory::class,
+            RecommendApproveController::class => ControllerFactory::class,
+            ServiceEventTypeController::class => ControllerFactory::class,
+            AcademicDegreeController::class => ControllerFactory::class,
+            AcademicUniversityController::class => ControllerFactory::class,
+            AcademicProgramController::class => ControllerFactory::class,
+            AcademicCourseController::class => ControllerFactory::class,
+            TrainingController::class => ControllerFactory::class,
+            LoanController::class => ControllerFactory::class,
+            InstituteController::class => ControllerFactory::class,
+            ExperienceController::class => ControllerFactory::class,
+            ServiceQuestionController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

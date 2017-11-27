@@ -3,8 +3,8 @@
 namespace SelfService;
 
 use Application\Controller\ControllerFactory;
-use SelfService\Controller\AdvanceRequest;
 use SelfService\Controller\AttendanceRequest;
+use SelfService\Controller\Birthday;
 use SelfService\Controller\Holiday;
 use SelfService\Controller\Leave;
 use SelfService\Controller\LeaveNotification;
@@ -150,20 +150,6 @@ return [
                     ],
                     'defaults' => [
                         'controller' => LoanRequest::class,
-                        'action' => 'index',
-                    ]
-                ],
-            ],
-            'advanceRequest' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/selfservice/advanceRequest[/:action[/:id]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => AdvanceRequest::class,
                         'action' => 'index',
                     ]
                 ],
@@ -316,7 +302,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\Birthday::class,
+                        'controller' => Birthday::class,
                         'action' => 'index',
                     ]
                 ],
@@ -567,38 +553,6 @@ return [
                     [
                         'label' => 'Detail',
                         'route' => 'loanRequest',
-                        'action' => 'view',
-                    ],
-                ],
-            ],
-        ],
-        'advanceRequest' => [
-            [
-                'label' => 'Advance Request',
-                'route' => 'advanceRequest',
-            ],
-            [
-                'label' => 'Advance Request',
-                'route' => 'advanceRequest',
-                'pages' => [
-                    [
-                        'label' => 'Detail',
-                        'route' => 'advanceRequest',
-                        'action' => 'index',
-                    ],
-                    [
-                        'label' => 'Add',
-                        'route' => 'advanceRequest',
-                        'action' => 'add',
-                    ],
-                    [
-                        'label' => 'Edit',
-                        'route' => 'advanceRequest',
-                        'action' => 'edit',
-                    ],
-                    [
-                        'label' => 'Detail',
-                        'route' => 'advanceRequest',
                         'action' => 'view',
                     ],
                 ],
@@ -902,7 +856,6 @@ return [
             PaySlip::class => ControllerFactory::class,
             LoanRequest::class => ControllerFactory::class,
             TrainingList::class => ControllerFactory::class,
-            AdvanceRequest::class => ControllerFactory::class,
             TravelRequest::class => ControllerFactory::class,
             WorkOnHoliday::class => ControllerFactory::class,
             WorkOnDayoff::class => ControllerFactory::class,
@@ -912,7 +865,7 @@ return [
             TrainingRequest::class => ControllerFactory::class,
             OvertimeRequest::class => ControllerFactory::class,
             SubordinatesReview::class => ControllerFactory::class,
-            Controller\Birthday::class => ControllerFactory::class,
+            Birthday::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
