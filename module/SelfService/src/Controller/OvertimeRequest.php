@@ -134,7 +134,7 @@ class OvertimeRequest extends HrisController {
                     'recommender' => $detail['RECOMMENDED_BY_NAME'] ? $detail['RECOMMENDED_BY_NAME'] : $detail['RECOMMENDER_NAME'],
                     'approver' => $detail['APPROVED_BY_NAME'] ? $detail['APPROVED_BY_NAME'] : $detail['APPROVER_NAME'],
                     'overtimeDetails' => $overtimeDetails,
-                    'totalHour' => $detail['TOTAL_HOUR']
+                    'totalHour' => $detail['TOTAL_HOUR_DETAIL']
         ]);
     }
 
