@@ -1,4 +1,4 @@
-create or replace PROCEDURE HRIS_WOH_OT_ADDITION(
+CREATE OR REPLACE PROCEDURE HRIS_WOH_OT_ADDITION(
     P_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE)
 AS
   V_OVERTIME_ID HRIS_OVERTIME.OVERTIME_ID%TYPE;
@@ -42,7 +42,7 @@ BEGIN
     SELECT NVL(MAX(OVERTIME_ID),1)+1 INTO V_OVERTIME_ID FROM HRIS_OVERTIME;
     SELECT NVL(MAX(DETAIL_ID),1)+1 INTO V_DETAIL_ID FROM HRIS_OVERTIME_DETAIL;
     BEGIN
-       SELECT (
+      SELECT (
         CASE
           WHEN AD.OVERALL_STATUS = 'WD'
           THEN AD.IN_TIME
@@ -68,58 +68,60 @@ BEGIN
       ON (AD.SHIFT_ID        =S.SHIFT_ID)
       WHERE AD.ATTENDANCE_DT = TRUNC(V_FROM_DATE)+i
       AND AD.EMPLOYEE_ID     =V_EMPLOYEE_ID
-      AND AD.OVERALL_STATUS IN ( 'WH','TV');
+      AND AD.OVERALL_STATUS IN ( 'WH','VP');
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
-     CONTINUE;
+      CONTINUE;
     END;
-    INSERT
-    INTO HRIS_OVERTIME
-      (
-        OVERTIME_ID,
-        EMPLOYEE_ID,
-        OVERTIME_DATE,
-        REQUESTED_DATE,
-        DESCRIPTION,
-        STATUS,
-        RECOMMENDED_BY,
-        RECOMMENDED_DATE,
-        APPROVED_BY,
-        APPROVED_DATE,
-        TOTAL_HOUR
-      )
-      VALUES
-      (
-        V_OVERTIME_ID,
-        V_EMPLOYEE_ID,
-        V_FROM_DATE+i,
-        V_REQUESTED_DT,
-        V_DESCRIPTION,
-        V_STATUS,
-        V_RECOMMENDED_BY,
-        V_REQUESTED_DT,
-        V_APPROVED_BY,
-        V_REQUESTED_DT,
-        V_TOTAL_HOUR
-      );
-    INSERT
-    INTO HRIS_OVERTIME_DETAIL
-      (
-        DETAIL_ID,
-        OVERTIME_ID,
-        START_TIME,
-        END_TIME,
-        STATUS,
-        TOTAL_HOUR
-      )
-      VALUES
-      (
-        V_DETAIL_ID,
-        V_OVERTIME_ID,
-        V_START_TIME,
-        V_END_TIME,
-        V_DETAIL_STATUS,
-        V_TOTAL_HOUR
-      );
+    IF(V_START_TIME IS NOT NULL AND V_END_TIME IS NOT NULL ) THEN
+      INSERT
+      INTO HRIS_OVERTIME
+        (
+          OVERTIME_ID,
+          EMPLOYEE_ID,
+          OVERTIME_DATE,
+          REQUESTED_DATE,
+          DESCRIPTION,
+          STATUS,
+          RECOMMENDED_BY,
+          RECOMMENDED_DATE,
+          APPROVED_BY,
+          APPROVED_DATE,
+          TOTAL_HOUR
+        )
+        VALUES
+        (
+          V_OVERTIME_ID,
+          V_EMPLOYEE_ID,
+          V_FROM_DATE+i,
+          V_REQUESTED_DT,
+          V_DESCRIPTION,
+          V_STATUS,
+          V_RECOMMENDED_BY,
+          V_REQUESTED_DT,
+          V_APPROVED_BY,
+          V_REQUESTED_DT,
+          V_TOTAL_HOUR
+        );
+      INSERT
+      INTO HRIS_OVERTIME_DETAIL
+        (
+          DETAIL_ID,
+          OVERTIME_ID,
+          START_TIME,
+          END_TIME,
+          STATUS,
+          TOTAL_HOUR
+        )
+        VALUES
+        (
+          V_DETAIL_ID,
+          V_OVERTIME_ID,
+          V_START_TIME,
+          V_END_TIME,
+          V_DETAIL_STATUS,
+          V_TOTAL_HOUR
+        );
+    END IF;
   END LOOP;
 END;
