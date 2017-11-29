@@ -103,4 +103,13 @@ class RolePermissionRepository implements RepositoryInterface {
         return $result;
     }
 
+    public function menuRoleAssign($menuId, $roleId, $assignFlag) {
+        $sql = "BEGIN
+                  HRIS_MENU_ROLE_ASSIGN({$menuId},{$roleId},'{$assignFlag}');
+                END;";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
+    }
+
 }

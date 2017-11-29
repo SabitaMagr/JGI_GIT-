@@ -290,83 +290,12 @@ class MenuSetupController extends AbstractActionController {
             $data = $request->getPost();
 
             $rolePermissionRepository = new RolePermissionRepository($this->adapter);
-            $menuSetupRepository = new MenuSetupRepository($this->adapter);
-            $rolePermissionModel = new RolePermission();
 
             $roleId = $data['roleId'];
             $menuId = $data['menuId'];
             $checked = $data['checked'];
 
-//if child of same parent menu were assigned on same roleId then don't need to deactivate parent menu list
-            $menuDtl = $menuSetupRepository->fetchById($menuId);
-            $menuListOfSameParent = $menuSetupRepository->getMenuListOfSameParent($menuDtl['PARENT_MENU']);
-            $numMenuListOfSameParent = 0;
-            foreach ($menuListOfSameParent as $childOfSameParent) {
-                $existChildDtl = $rolePermissionRepository->getActiveRoleMenu($childOfSameParent['MENU_ID'], $roleId);
-                if ($existChildDtl) {
-                    $numMenuListOfSameParent += 1;
-                }
-            }
-
-            $childMenuList = $menuSetupRepository->getAllCHildMenu($menuId);
-            $parentMenuList = $menuSetupRepository->getAllParentMenu($menuId);
-
-            if ($checked == "true") {
-                foreach ($childMenuList as $row) {
-
-                    $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'], $roleId);
-//$num = count($result);
-                    if ($result) {
-                        $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
-                    } else {
-
-                        $rolePermissionModel->roleId = $roleId;
-                        $rolePermissionModel->menuId = $row['MENU_ID'];
-                        $rolePermissionModel->createdDt = Helper::getcurrentExpressionDate();
-                        $rolePermissionModel->status = 'E';
-
-                        $rolePermissionRepository->add($rolePermissionModel);
-                    }
-                }
-                foreach ($parentMenuList as $row) {
-
-                    $result = $rolePermissionRepository->selectRoleMenu($row['MENU_ID'], $roleId);
-//$num = count($result);
-                    if ($result) {
-                        $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
-                    } else {
-
-                        $rolePermissionModel->roleId = $roleId;
-                        $rolePermissionModel->menuId = $row['MENU_ID'];
-                        $rolePermissionModel->createdDt = Helper::getcurrentExpressionDate();
-                        $rolePermissionModel->status = 'E';
-
-                        $rolePermissionRepository->add($rolePermissionModel);
-                    }
-                }
-                $data = "Role Successfully Assigned";
-            } else if ($checked == "false") {
-                foreach ($childMenuList as $row) {
-                    $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
-                }
-                if ($numMenuListOfSameParent == 1) {
-                    foreach ($parentMenuList as $row) {
-                        $rolePermissionRepository->deleteAll($row['MENU_ID'], $roleId);
-
-//need to activate those parent key whose another child key is assigned on same roleId
-                        $childMenuList1 = $menuSetupRepository->getMenuListOfSameParent($row['MENU_ID']);
-                        foreach ($childMenuList1 as $childRow) {
-                            $getPermissionDtl = $rolePermissionRepository->getActiveRoleMenu($childRow['MENU_ID'], $roleId);
-                            if ($getPermissionDtl) {
-                                $rolePermissionRepository->updateDetail($row['MENU_ID'], $roleId);
-                            }
-                        }
-                    }
-                } else {
-                    $rolePermissionRepository->deleteAll($menuId, $roleId);
-                }
-                $data = "Role Assign Successfully Removed";
-            }
+            $rolePermissionRepository->menuRoleAssign($menuId, $roleId, $checked == 'true' ? 'Y' : 'N');
 
             return new JsonModel(['success' => true, 'data' => $data, 'message' => null]);
         } catch (Exception $e) {
