@@ -3,6 +3,7 @@
 namespace Setup\Controller;
 
 use Application\Controller\HrisController;
+use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
 use Asset\Repository\IssueRepository;
@@ -43,6 +44,7 @@ use Zend\View\Model\JsonModel;
 
 class EmployeeController extends HrisController {
 
+    private $config;
     private $employeeFileRepo;
     private $jobHistoryRepo;
     private $formOne;
@@ -53,11 +55,12 @@ class EmployeeController extends HrisController {
     private $formSeven;
     private $formEight;
 
-    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage, ConfigInterface $config) {
         parent::__construct($adapter, $storage);
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
         $this->jobHistoryRepo = new JobHistoryRepository($this->adapter);
+        $this->config = $config;
     }
 
     public function indexAction() {
