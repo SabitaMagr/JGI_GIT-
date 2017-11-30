@@ -323,12 +323,16 @@ class Helper {
     }
 
     public static function hoursToMinutes($hours) {
-        $minutes = 0;
-        if (strpos($hours, ':') !== false) {
-            // Split hours and minutes. 
-            list($hours, $minutes) = explode(':', $hours);
+        if (isset($hours) && strpos($hours, ":") >= 0) {
+            $minutes = 0;
+            if (strpos($hours, ':') !== false) {
+                // Split hours and minutes. 
+                list($hours, $minutes) = explode(':', $hours);
+            }
+            return $hours * 60 + $minutes;
+        } else {
+            return 0;
         }
-        return $hours * 60 + $minutes;
     }
 
     public static function minutesToHours($minutes) {
@@ -343,10 +347,9 @@ class Helper {
         $interval = $fromDate->diff($toDate);
         return $interval->format('%a');
     }
-    
-    public static function encryptPassword($password){
+
+    public static function encryptPassword($password) {
         return new Expression("FN_ENCRYPT_PASSWORD('$password')");
     }
-    
 
 }
