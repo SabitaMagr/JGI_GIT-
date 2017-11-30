@@ -2,6 +2,7 @@
 
 namespace Payroll\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\ConstraintHelper;
 use Application\Helper\EntityHelper;
@@ -13,25 +14,15 @@ use Payroll\Form\MonthlyValue as MonthlyValueForm;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\MonthlyValueRepository;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class MonthlyValue extends AbstractActionController {
+class MonthlyValue extends HrisController {
 
-    private $adapter;
-    private $repository;
-    private $form;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new MonthlyValueRepository($adapter);
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $monthlyValueForm = new MonthlyValueForm();
-        $this->form = $builder->createForm($monthlyValueForm);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(MonthlyValueRepository::class);
+        $this->initializeForm(MonthlyValueForm::class);
     }
 
     public function indexAction() {
@@ -50,7 +41,6 @@ class MonthlyValue extends AbstractActionController {
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
@@ -74,7 +64,6 @@ class MonthlyValue extends AbstractActionController {
 
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $monthlyValueMode = new MonthlyValueModel();
