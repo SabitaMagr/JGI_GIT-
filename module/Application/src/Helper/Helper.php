@@ -323,7 +323,7 @@ class Helper {
     }
 
     public static function hoursToMinutes($formattedHours) {
-        if (isset($formattedHours) && strpos($formattedHours, ":") >= 0) {
+        if (isset($formattedHours) && strpos($formattedHours, ":") > 0) {
             list($hours, $minutes) = explode(':', $formattedHours);
             return $hours * 60 + $minutes;
         } else {
