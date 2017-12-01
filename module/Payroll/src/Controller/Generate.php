@@ -6,11 +6,14 @@ use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
+use Application\Model\Months;
 use Application\Repository\MonthRepository;
 use Exception;
 use Payroll\Controller\SalarySheet as SalarySheetController;
 use Payroll\Model\SalarySheet;
 use Payroll\Repository\PayrollRepository;
+use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
 use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
@@ -25,7 +28,11 @@ class Generate extends HrisController {
     }
 
     public function indexAction() {
-        return $this->stickFlashMessagesTo([]);
+        $ruleRepo = new RulesRepository($this->repository);
+        $data['ruleList'] = $ruleRepo->fetchAll();
+        $data['fiscalYearList'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
+        $data['monthList'] = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]);
+        return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
     }
 
     public function generateMonthlySheetAction() {
