@@ -27,11 +27,16 @@ class PayEmployeeRepo {
 
     public function fetchByEmployeeId($id) {
         $sql = "
-                SELECT P.*
-                FROM HRIS_PAY_EMPLOYEE_SETUP PE
-                JOIN HRIS_PAY_SETUP P
-                ON (PE.PAY_ID        = P.PAY_ID)
-                WHERE PE.EMPLOYEE_ID = {$id}";
+                SELECT P.PAY_ID,
+                  P.PAY_EDESC,
+                  P.PAY_TYPE_FLAG,
+                  P.PRIORITY_INDEX,
+                  PD.IS_MONTHLY,
+                  PD.MNENONIC_NAME
+                FROM HRIS_PAY_SETUP P
+                JOIN HRIS_PAY_DETAIL_SETUP PD
+                ON (P.PAY_ID  =PD.PAY_ID)
+                WHERE P.PAY_ID={$id}";
 
         $statement = $this->adapter->query($sql);
         return $statement->execute();

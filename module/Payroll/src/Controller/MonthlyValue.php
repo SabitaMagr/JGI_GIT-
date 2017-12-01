@@ -14,6 +14,7 @@ use Payroll\Form\MonthlyValue as MonthlyValueForm;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\MonthlyValueRepository;
+use Setup\Model\Position;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 
@@ -145,6 +146,58 @@ class MonthlyValue extends HrisController {
             $detailRepo->postMonthlyValuesDetail($data);
 
             return new CustomViewModel(['success' => true, 'data' => $data, 'error' => '']);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function positionWiseAction() {
+        $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
+        $months = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]);
+        $monthlyValues = EntityHelper::getTableList($this->adapter, MonthlyValueModel::TABLE_NAME, [MonthlyValueModel::MTH_ID, MonthlyValueModel::MTH_EDESC]);
+        $positions = EntityHelper::getTableList($this->adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::LEVEL_NO]);
+        return Helper::addFlashMessagesToArray($this, [
+                    'fiscalYears' => $fiscalYears,
+                    'months' => $months,
+                    'monthlyValues' => $monthlyValues,
+                    'positions' => $positions,
+        ]);
+    }
+
+    public function getPositionMonthlyValueAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception("The request should be of type post");
+            }
+            $postedData = $request->getPost();
+            $monthId = $postedData['monthId'];
+
+            $detailRepo = new MonthlyValueDetailRepo($this->adapter);
+            $result = $detailRepo->getPositionMonthlyValue($monthId);
+
+            return new CustomViewModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function setPositionMonthlyValueAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception("The request should be of type post");
+            }
+            $postedData = $request->getPost();
+            $monthId = $postedData['monthId'];
+            $positionId = $postedData['positionId'];
+            $mthId = $postedData['mthId'];
+            $assignedValue = $postedData['assignedValue'];
+
+            $detailRepo = new MonthlyValueDetailRepo($this->adapter);
+            $detailRepo->setPositionMonthlyValue($monthId, $positionId, $mthId, $assignedValue);
+
+            return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

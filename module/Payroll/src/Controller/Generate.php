@@ -2,41 +2,30 @@
 
 namespace Payroll\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Repository\MonthRepository;
 use Exception;
 use Payroll\Controller\SalarySheet as SalarySheetController;
-use Payroll\Model\Rules;
 use Payroll\Model\SalarySheet;
 use Payroll\Repository\PayrollRepository;
 use Payroll\Repository\SalarySheetRepo;
 use Setup\Model\HrEmployees;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class Generate extends AbstractActionController {
+class Generate extends HrisController {
 
-    private $adapter;
-    private $payrollRepo;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->payrollRepo = new PayrollRepository($this->adapter);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(PayrollRepository::class);
     }
 
     public function indexAction() {
-        $rules = EntityHelper::getTableKVListWithSortOption($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID, [Rules::PAY_EDESC], [Rules::STATUS => 'E'], Rules::PRIORITY_INDEX, Select::ORDER_ASCENDING, null, false, true);
-        $fiscalYears = $this->payrollRepo->fetchFiscalYears();
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'rules' => $rules,
-                    'fiscalYears' => $fiscalYears,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
-        ]);
+        return $this->stickFlashMessagesTo([]);
     }
 
     public function generateMonthlySheetAction() {
