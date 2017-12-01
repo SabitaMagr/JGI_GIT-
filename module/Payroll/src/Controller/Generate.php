@@ -28,7 +28,7 @@ class Generate extends HrisController {
     }
 
     public function indexAction() {
-        $ruleRepo = new RulesRepository($this->repository);
+        $ruleRepo = new RulesRepository($this->adapter);
         $data['ruleList'] = $ruleRepo->fetchAll();
         $data['fiscalYearList'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
         $data['monthList'] = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]);
