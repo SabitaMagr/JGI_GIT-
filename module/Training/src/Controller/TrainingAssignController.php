@@ -48,33 +48,13 @@ class TrainingAssignController extends HrisController {
         ]);
     }
 
-    public function addAction() {
-        $employee = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E'], " ");
-        $trainingList = array(
-            '1' => 'Organizational Hard Skills',
-            '2' => 'Organizational',
-            '3' => 'Organizational Soft Skills'
-        );
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'employees' => $employee,
-                    'training' => $trainingList
-        ]);
-    }
-
     public function assignAction() {
-        $trainingFormElement = new Select();
-        $trainingFormElement->setName("training");
-        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC", null, true, true);
-        $trainingFormElement->setValueOptions($trainings);
-        $trainingFormElement->setAttributes(["id" => "trainingId", "class" => "form-control"]);
-        $trainingFormElement->setLabel("Training");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'list' => 'list',
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'trainings' => $trainingFormElement
-        ]);
+        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC", null, [-1 => "Select Training"], true);
+        $trainingSE = $this->getSelectElement(['name' => 'trainingId', 'id' => 'trainingId', 'class' => 'form-control', 'label' => 'Training'], $trainings);
+        return [
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'trainings' => $trainingSE
+        ];
     }
 
     public function deleteAction() {
@@ -149,15 +129,12 @@ class TrainingAssignController extends HrisController {
             try {
                 HeadNotification::pushNotification(NotificationEvents::TRAINING_ASSIGNED, $trainingAssignModel, $this->adapter, $this);
             } catch (Exception $e) {
-                return[
+                return new JsonModel([
                     "success" => true,
                     "data" => null,
                     "message" => "Training assigned successfully with following error : " . $e->getMessage()
-                ];
+                ]);
             }
-
-
-
             return new JsonModel(['success' => true, 'data' => null, 'message' => "Training assigned successfully."]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);

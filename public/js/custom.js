@@ -1280,6 +1280,52 @@ window.app = (function ($, toastr, App) {
         popupWin.document.close();
     };
 
+    var bulkServerRequest = function (link, dataList, completeFn, errorFn) {
+        (function (dataList) {
+            var counter = 0;
+            var length = dataList.length;
+            var addShift = function (data) {
+                serverRequest(link, data).then(function (response) {
+                    NProgress.set((counter + 1) / length);
+                    counter++;
+                    if (!response.success) {
+                        if (typeof errorFn !== 'undefined' && errorFn !== null) {
+                            errorFn(data);
+                        }
+                    }
+                    if (counter >= length) {
+                        if (typeof completeFn !== 'undefined' && completeFn !== null) {
+                            completeFn();
+                        }
+                        return;
+                    }
+                    addShift(dataList[counter]);
+                }, function (error) {
+                    if (typeof errorFn !== 'undefined' && errorFn !== null) {
+                        errorFn(data, error);
+                    }
+                });
+
+            };
+            NProgress.start();
+            addShift(dataList[counter]);
+        })(dataList);
+    };
+
+    var serverRequest = function (link, data) {
+        return new Promise(function (resolve, reject) {
+            App.blockUI({target: "#hris-page-content"});
+            pullDataById(link, data).then(function (response) {
+                App.unblockUI("#hris-page-content");
+                resolve(response);
+            }, function (error) {
+                App.unblockUI("#hris-page-content");
+                reject(error);
+            });
+
+        });
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1315,7 +1361,10 @@ window.app = (function ($, toastr, App) {
         renderKendoGrid: renderKendoGrid,
         genKendoActionTemplate: genKendoActionTemplate,
         getDateRangeBetween: getDateRangeBetween,
-        exportDomToPdf: exportDomToPdf
+        exportDomToPdf: exportDomToPdf,
+        serverRequest: serverRequest,
+        bulkServerRequest: bulkServerRequest
+
 
     };
 })(window.jQuery, window.toastr, window.App);
