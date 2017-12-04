@@ -98,7 +98,7 @@ class ShiftAssign extends AbstractActionController {
                 throw new Exception("The request should be of type post");
             }
             $data = $request->getPost();
-            $ids = $data['employeeShiftIds'];
+            $ids = $data['employeeIds'];
             $shiftId = $data['shiftId'];
             $fromDate = Helper::getExpressionDate($data['fromDate']);
             $toDate = Helper::getExpressionDate($data['toDate']);

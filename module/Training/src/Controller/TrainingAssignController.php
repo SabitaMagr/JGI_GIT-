@@ -2,6 +2,7 @@
 
 namespace Training\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -13,52 +14,41 @@ use Setup\Repository\EmployeeRepository;
 use Training\Form\TrainingAssignForm;
 use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class TrainingAssignController extends AbstractActionController {
+class TrainingAssignController extends HrisController {
 
-    private $form;
-    private $adapter;
-    private $repository;
-    private $employeeId;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new TrainingAssignRepository($this->adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(TrainingAssignRepository::class);
+        $this->initializeForm(TrainingAssignForm::class);
     }
 
     public function indexAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $rawList = $this->repository->filterRecords($data);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
 
-        $trainingFormElement = new Select();
-        $trainingFormElement->setName("training");
-        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC", null, false, true);
-        $trainings1 = [-1 => "All Training"] + $trainings;
-        $trainingFormElement->setValueOptions($trainings1);
-        $trainingFormElement->setAttributes(["id" => "trainingId", "class" => "form-control"]);
-        $trainingFormElement->setLabel("Training");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'list' => 'list',
-                    'trainings' => $trainingFormElement,
+        $trainings = EntityHelper::getTableKVListWithSortOption($this->adapter, Training::TABLE_NAME, Training::TRAINING_ID, [Training::TRAINING_NAME], [Training::STATUS => 'E'], "TRAINING_NAME", "ASC", null, [-1 => "All Training"], true);
+        $trainingSE = $this->getSelectElement(['name' => 'trainingId', 'id' => 'trainingId', 'class' => 'form-control', 'label' => 'Training'], $trainings);
+        return $this->stickFlashMessagesTo([
+                    'trainings' => $trainingSE,
                     'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new TrainingAssignForm();
-        $this->form = $builder->createForm($form);
-    }
-
     public function addAction() {
-        $this->initializeForm();
         $employee = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E'], " ");
         $trainingList = array(
             '1' => 'Organizational Hard Skills',

@@ -44,9 +44,9 @@ class TrainingAssignRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE")
                 ], true);
         $select->from(['TA' => TrainingAssign::TABLE_NAME]);
-        $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::TRAINING_CODE, Training::DURATION, "TRAINING_NAME"=>new Expression("INITCAP(T.TRAINING_NAME)"), "INSTRUCTOR_NAME"=>new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")
-                ->join(['I' => Institute::TABLE_NAME], "I." . Institute::INSTITUTE_ID . "=T." . Training::INSTITUTE_ID, ["INSTITUTE_NAME"=>new Expression("INITCAP(I.INSTITUTE_NAME)"), Institute::LOCATION, Institute::EMAIL, Institute::TELEPHONE], "left")
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TA." . TrainingAssign::EMPLOYEE_ID, ["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)")], "left");
+        $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::TRAINING_CODE, Training::DURATION, "TRAINING_NAME" => new Expression("INITCAP(T.TRAINING_NAME)"), "INSTRUCTOR_NAME" => new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")
+                ->join(['I' => Institute::TABLE_NAME], "I." . Institute::INSTITUTE_ID . "=T." . Training::INSTITUTE_ID, ["INSTITUTE_NAME" => new Expression("INITCAP(I.INSTITUTE_NAME)"), Institute::LOCATION, Institute::EMAIL, Institute::TELEPHONE], "left")
+                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TA." . TrainingAssign::EMPLOYEE_ID, ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
 
 
         $select->where([
@@ -74,15 +74,14 @@ class TrainingAssignRepository implements RepositoryInterface {
             new Expression("BS_DATE(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE_BS")
                 ], true);
         $select->from(['TA' => TrainingAssign::TABLE_NAME]);
-        $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::TRAINING_CODE, Training::DURATION, "TRAINING_NAME"=>new Expression("INITCAP(T.TRAINING_NAME)"),"INSTRUCTOR_NAME"=>new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")
-                ->join(['I' => Institute::TABLE_NAME], "I." . Institute::INSTITUTE_ID . "=T." . Training::INSTITUTE_ID, ["INSTITUTE_NAME"=>new Expression("INITCAP(I.INSTITUTE_NAME)"), Institute::LOCATION, Institute::EMAIL, Institute::TELEPHONE], "left");
+        $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::TRAINING_CODE, Training::DURATION, "TRAINING_NAME" => new Expression("INITCAP(T.TRAINING_NAME)"), "INSTRUCTOR_NAME" => new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")
+                ->join(['I' => Institute::TABLE_NAME], "I." . Institute::INSTITUTE_ID . "=T." . Training::INSTITUTE_ID, ["INSTITUTE_NAME" => new Expression("INITCAP(I.INSTITUTE_NAME)"), Institute::LOCATION, Institute::EMAIL, Institute::TELEPHONE], "left");
 
         $select->where([
             "TA.EMPLOYEE_ID=" . $employeeId,
             "TA.STATUS='E'"
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }
@@ -99,8 +98,8 @@ class TrainingAssignRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE")
                 ], true);
         $select->from(['TA' => TrainingAssign::TABLE_NAME]);
-        $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::TRAINING_CODE, Training::DURATION, "TRAINING_NAME"=>new Expression("INITCAP(T.TRAINING_NAME)"),"INSTRUCTOR_NAME"=>new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")
-                ->join(['I' => Institute::TABLE_NAME], "I." . Institute::INSTITUTE_ID . "=T." . Training::INSTITUTE_ID, ["INSTITUTE_NAME"=>new Expression("INITCAP(I.INSTITUTE_NAME)")], "left");
+        $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::TRAINING_CODE, Training::DURATION, "TRAINING_NAME" => new Expression("INITCAP(T.TRAINING_NAME)"), "INSTRUCTOR_NAME" => new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")
+                ->join(['I' => Institute::TABLE_NAME], "I." . Institute::INSTITUTE_ID . "=T." . Training::INSTITUTE_ID, ["INSTITUTE_NAME" => new Expression("INITCAP(I.INSTITUTE_NAME)")], "left");
 
         $select->where([
             "TA.EMPLOYEE_ID=" . $employeeId,
@@ -112,90 +111,54 @@ class TrainingAssignRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filterRecords($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $trainingId,$companyId=null,$employeeTypeId=null) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns([
-            new Expression("TA.TRAINING_ID AS TRAINING_ID"),
-            new Expression("TA.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("TA.STATUS AS STATUS"),
-            new Expression("TA.REMARKS AS REMARKS"),
-            new Expression("INITCAP(TO_CHAR(T." . Training::START_DATE . ", 'DD-MON-YYYY')) AS START_DATE"),
-            new Expression("BS_DATE(TO_CHAR(T." . Training::START_DATE . ", 'DD-MON-YYYY')) AS START_DATE_N"),
-            new Expression("INITCAP(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE"),
-            new Expression("BS_DATE(TO_CHAR(T." . Training::END_DATE . ", 'DD-MON-YYYY')) AS END_DATE_N")
-                ], true);
-        $select->from(['TA' => TrainingAssign::TABLE_NAME]);
-        $select->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TA." . TrainingAssign::TRAINING_ID, [Training::TRAINING_ID, Training::DURATION, "TRAINING_NAME"=>new Expression("INITCAP(T.TRAINING_NAME)"),"INSTRUCTOR_NAME"=>new Expression("INITCAP(T.INSTRUCTOR_NAME)"), Training::REMARKS, Training::TRAINING_TYPE], "left")
-                ->join(['I' => Institute::TABLE_NAME], "I." . Institute::INSTITUTE_ID . "=T." . Training::INSTITUTE_ID, ["INSTITUTE_NAME"=>new Expression("INITCAP(I.INSTITUTE_NAME)"), Institute::LOCATION], "left")
-                ->join(['E' => HrEmployees::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=TA." . TrainingAssign::EMPLOYEE_ID, ["FIRST_NAME"=>new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME"=>new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME"=>new Expression("INITCAP(E.LAST_NAME)"), "FULL_NAME"=>new Expression("INITCAP(E.FULL_NAME)")], "left");
+    public function filterRecords($search) {
+        $condition = "";
+        $condition = EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
 
-        $select->where([
-            "TA.STATUS='E'"
-        ]);
-        if ($trainingId != -1) {
-            $select->where([
-                "TA.TRAINING_ID=" . $trainingId
-            ]);
+        if (isset($search['trainingId']) && $search['trainingId'] != null && $search['trainingId'] != -1) {
+            if (gettype($search['trainingId']) === 'array') {
+                $csv = "";
+                for ($i = 0; $i < sizeof($search['trainingId']); $i++) {
+                    if ($i == 0) {
+                        $csv = "'{$search['trainingId'][$i]}'";
+                    } else {
+                        $csv .= ",'{$search['trainingId'][$i]}'";
+                    }
+                }
+                $condition .= "AND TA.TRAINING_ID IN ({$csv})";
+            } else {
+                $condition .= "AND TA.TRAINING_ID IN ('{$search['trainingId']}')";
+            }
         }
 
-        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
-            $select->where(["E.RETIRED_FLAG='Y'"]);
-        } else {
-            $select->where(["E.RETIRED_FLAG='N'"]);
-        }
-        
-        if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $select->where([
-                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
-            ]);
-        }
-
-        if ($employeeId != -1) {
-            $select->where([
-                "E.EMPLOYEE_ID=" . $employeeId
-            ]);
-        }
-        if ($companyId!=null && $companyId != -1) {
-            $select->where([
-                "E.COMPANY_ID=" . $companyId
-            ]);
-        }
-        if ($branchId != -1) {
-            $select->where([
-                "E.BRANCH_ID=" . $branchId
-            ]);
-        }
-        if ($departmentId != -1) {
-            $select->where([
-                "E.DEPARTMENT_ID=" . $departmentId
-            ]);
-        }
-        if ($designationId != -1) {
-            $select->where([
-                "E.DESIGNATION_ID=" . $designationId
-            ]);
-        }
-        if ($positionId != -1) {
-            $select->where([
-                "E.POSITION_ID=" . $positionId
-            ]);
-        }
-        if ($serviceTypeId != -1) {
-            $select->where([
-                "E.SERVICE_TYPE_ID=" . $serviceTypeId
-            ]);
-        }
-        if ($serviceEventTypeId != -1) {
-            $select->where([
-                "E.SERVICE_EVENT_TYPE_ID=" . $serviceEventTypeId
-            ]);
-        }
-        $select->order("E.FIRST_NAME ASC");
-        $statement = $sql->prepareStatementForSqlObject($select);
-        //print_r($statement->getSql()); die();
-        $result = $statement->execute();
-        return $result;
+        $sql = "SELECT TA.TRAINING_ID,
+                  TMS.TRAINING_CODE,
+                  TMS.TRAINING_NAME,
+                  TMS.TRAINING_TYPE,
+                  (
+                  CASE
+                    WHEN TMS.TRAINING_TYPE = 'CC'
+                    THEN 'Company Contribution'
+                    ELSE 'Personal'
+                  END)                                  AS TRAINING_TYPE_DETAIL,
+                  TO_CHAR(TMS.START_DATE,'DD-MON-YYYY') AS START_DATE,
+                  TO_CHAR(TMS.START_DATE,'DD-MON-YYYY') AS START_DATE_AD,
+                  BS_DATE(TMS.START_DATE)               AS START_DATE_BS,
+                  TO_CHAR(TMS.END_DATE,'DD-MON-YYYY')   AS END_DATE,
+                  TO_CHAR(TMS.END_DATE,'DD-MON-YYYY')   AS END_DATE_AD,
+                  BS_DATE(TMS.END_DATE)                 AS END_DATE_BS,
+                  TA.EMPLOYEE_ID,
+                  E.FULL_NAME AS EMPLOYEE_NAME,
+                  'Y' AS ALLOW_VIEW,
+                  'Y' AS ALLOW_DELETE
+                FROM HRIS_EMPLOYEE_TRAINING_ASSIGN TA
+                LEFT JOIN HRIS_TRAINING_MASTER_SETUP TMS
+                ON (TA.TRAINING_ID= TMS.TRAINING_ID)
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON (TA.EMPLOYEE_ID=E.EMPLOYEE_ID)
+                WHERE 1=1
+                {$condition} ORDER BY TMS.TRAINING_NAME,E.FULL_NAME";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
     public function edit(Model $model, $id) {

@@ -96,7 +96,7 @@ return [
                         'action' => 'view',
                     ],
                     [
-                        'label' => 'Add',
+                        'label' => 'Assign',
                         'route' => 'trainingAssign',
                         'action' => 'assign',
                     ],
