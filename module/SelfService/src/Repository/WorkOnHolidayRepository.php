@@ -103,7 +103,7 @@ class WorkOnHolidayRepository implements RepositoryInterface {
             new Expression("WH.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("INITCAP(TO_CHAR(WH.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"),
             new Expression("(CASE WHEN WH.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
-            new Expression("(CASE WHEN WH.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
+            new Expression("(CASE WHEN WH.STATUS IN ('RQ','RC','AP') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
 
         $select->from(['WH' => WorkOnHoliday::TABLE_NAME])

@@ -147,7 +147,7 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE"),
             new Expression("(CASE WHEN LOWER(TR.REQUESTED_TYPE) = 'ad' THEN 'Advance' ELSE 'Expense' END) AS REQUESTED_TYPE"),
             new Expression("(CASE WHEN TR.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
-            new Expression("(CASE WHEN TR.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
+            new Expression("(CASE WHEN TR.STATUS IN ('RQ','RC','AP') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
             new Expression("(CASE WHEN (TR.STATUS = 'AP' AND TR.TRAVEL_ID NOT IN (SELECT DISTINCT REFERENCE_TRAVEL_ID FROM HRIS_EMPLOYEE_TRAVEL_REQUEST) ) THEN 'Y' ELSE 'N' END) AS ALLOW_EXPENSE_APPLY"),
                 ], true);
 

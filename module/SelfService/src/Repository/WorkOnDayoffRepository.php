@@ -100,7 +100,7 @@ class WorkOnDayoffRepository implements RepositoryInterface {
             new Expression("WD.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("INITCAP(TO_CHAR(WD.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"),
             new Expression("(CASE WHEN WD.STATUS = 'XX' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
-            new Expression("(CASE WHEN WD.STATUS IN ('RQ','RC') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
+            new Expression("(CASE WHEN WD.STATUS IN ('RQ','RC','AP') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
                 ], true);
 
         $select->from(['WD' => WorkOnDayoff::TABLE_NAME])
