@@ -108,19 +108,39 @@
             for (var i in employeeShift) {
                 employeeShiftIds.push(employeeShift[i]['EMPLOYEE_ID']);
             }
-            app.pullDataById(document.addWs, {
-                shiftId: shiftId,
-                fromDate: fromDate,
-                toDate: toDate,
-                employeeIds: employeeShiftIds
-            }).then(function (response) {
-                if (response.success) {
-                    app.showMessage("Employee shift added successfully.", 'success');
-                    $search.trigger('click');
-                }
-            }, function (error) {
 
-            });
+
+            (function (employeeIdList) {
+                var counter = 0;
+                var length = employeeIdList.length;
+                var addShift = function (employeeId) {
+                    app.pullDataById(document.addWs, {
+                        shiftId: shiftId,
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        employeeIds: [employeeId]
+                    }).then(function (response) {
+                        NProgress.set((counter + 1) / length);
+                        if (!response.success) {
+                            app.showMessage("Shift Assign for Employee Id : " + employeeId + "Failed.", 'error');
+                        }
+                        counter++;
+                        if (counter < length) {
+                            addShift(employeeIdList[counter]);
+                        } else {
+                            app.showMessage("Shift Assigned.");
+                            $search.trigger('click');
+                        }
+                    }, function (error) {
+
+                    });
+
+                };
+                NProgress.start();
+                addShift(employeeIdList[counter]);
+
+
+            })(employeeShiftIds);
         });
 
 

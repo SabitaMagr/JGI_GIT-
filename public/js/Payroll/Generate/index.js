@@ -21,8 +21,23 @@
             app.populateSelect($month, filteredMonths, "MONTH_ID", "MONTH_EDESC", "Select Month");
         });
 
-        
 
+        var columns = [
+            {field: "EMPLOYEE_NAME", title: "Employee", width: 150, locked: true},
+        ];
+
+        var addtion = {title: "Additions", columns: []};
+        var deduction = {title: "Deductions", columns: []};
+        $.each(data.ruleList, function (key, value) {
+            if (value['PAY_TYPE_FLAG' ] == 'A') {
+                addtion.columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'], width: 150});
+            } else {
+                deduction.columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'], width: 150});
+            }
+        });
+        columns.push(addtion);
+        columns.push(deduction);
+        app.initializeKendoGrid($table, columns);
     });
 })(window.jQuery, window.app);
 
