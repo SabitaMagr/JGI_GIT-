@@ -142,9 +142,6 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   A.SHIFT_ID                                       AS SHIFT_ID,
                   A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
                   A.LATE_STATUS                                    AS LATE_STATUS,
-                  INITCAP(E.FIRST_NAME)                            AS FIRST_NAME,
-                  INITCAP(E.MIDDLE_NAME)                           AS MIDDLE_NAME,
-                  INITCAP(E.LAST_NAME)                             AS LAST_NAME,
                   INITCAP(E.FULL_NAME)                             AS EMPLOYEE_NAME,
                   H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
                   L.LEAVE_ENAME                                    AS LEAVE_ENAME,
@@ -199,8 +196,11 @@ class AttendanceDetailRepository implements RepositoryInterface {
                     WHEN A.OVERALL_STATUS ='BA'
                     THEN 'Present(Late In and Early Out)'
                     WHEN A.OVERALL_STATUS ='LA'
-                    THEN 'Present(Third Day Late)'
-                  END) AS STATUS
+                    THEN 'Present(Late Penalty)'
+                  END) AS STATUS,
+                   S.SHIFT_ENAME,
+                  TO_CHAR(S.START_TIME,'HH:MI AM') AS START_TIME,
+                  TO_CHAR(S.END_TIME,'HH:MI AM')   AS END_TIME
                 FROM HRIS_ATTENDANCE_DETAIL A
                 LEFT JOIN HRIS_EMPLOYEES E
                 ON A.EMPLOYEE_ID=E.EMPLOYEE_ID
@@ -212,6 +212,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON A.TRAINING_ID=T.TRAINING_ID
                 LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TVL
                 ON A.TRAVEL_ID      =TVL.TRAVEL_ID
+                LEFT JOIN HRIS_SHIFTS S
+                ON A.SHIFT_ID=S.SHIFT_ID
                 WHERE 1=1
                 {$searchConditon}
                 {$fromDateCondition}

@@ -73,6 +73,11 @@ angular.module('hris', [])
                 {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME # </span>"},
                 {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME # </span>"},
                 {field: "STATUS", title: "Status", template: "<span>#: (STATUS == null) ? '-' : STATUS # </span>"},
+                {title: 'Shift Details', columns: [
+                        {field: "SHIFT_ENAME", title: "Name"},
+                        {field: "START_TIME", title: "From"},
+                        {field: "END_TIME", title: "To"},
+                    ]}
             ];
             var exportMap = {
                 'EMPLOYEE_NAME': ' Name',

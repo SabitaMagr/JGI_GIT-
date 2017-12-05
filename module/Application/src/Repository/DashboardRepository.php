@@ -328,7 +328,7 @@ class DashboardRepository implements RepositoryInterface {
                     WHEN ATN.OVERALL_STATUS ='BA'
                     THEN 'Present(Late In and Early Out)'
                     WHEN ATN.OVERALL_STATUS ='LA'
-                    THEN 'Present(Third Day Late)'
+                    THEN 'Present(Late Penalty)'
                   END)AS ATTENDANCE_STATUS,
                   ATN.OVERALL_STATUS
                 FROM HRIS_ATTENDANCE_DETAIL ATN
