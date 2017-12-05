@@ -88,7 +88,10 @@ angular.module('hris', [])
                 'IN_REMARKS': 'In Remarks',
                 'OUT_REMARKS': 'Out Remarks',
                 'TOTAL_HOUR': 'Total Hour',
-                'STATUS': 'Status'
+                'STATUS': 'Status',
+                'SHIFT_ENAME':'Shift Name',
+                'START_TIME':'Start Time',
+                'END_TIME':'End Time'
             };
             window.app.initializeKendoGrid($grid, columns, detailInit);
             window.app.searchTable("attendanceByHrTable", ['EMPLOYEE_NAME']);

@@ -261,14 +261,15 @@ class EntityHelper {
         return "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$companyCondition}{$branchCondition}{$departmentCondition}{$designationCondition}{$positionCondition}{$serviceTypeCondition}{$serviceEventtypeCondition}{$employeeTypeCondition}{$employeeCondition}";
     }
 
-    public static function conditionBuilder($colValue, $colName, $conditonType) {
+    public static function conditionBuilder($colValue, $colName, $conditonType, $isString = false) {
         if (gettype($colValue) === "array") {
             $valuesinCSV = "";
             for ($i = 0; $i < sizeof($colValue); $i++) {
+                $value = $isString ? "'{$colValue[$i]}'" : $colValue[$i];
                 if ($i + 1 == sizeof($colValue)) {
-                    $valuesinCSV .= "{$colValue[$i]}";
+                    $valuesinCSV .= "{$value}";
                 } else {
-                    $valuesinCSV .= "{$colValue[$i]},";
+                    $valuesinCSV .= "{$value},";
                 }
             }
             return " {$conditonType} {$colName} IN ({$valuesinCSV})";
@@ -301,7 +302,7 @@ class EntityHelper {
             $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
         }
         if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $conditon .= self::conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND");
+            $conditon .= self::conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND", true);
         }
         if ($employeeId != null && $employeeId != -1) {
             $conditon .= self::conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
