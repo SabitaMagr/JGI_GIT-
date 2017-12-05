@@ -152,10 +152,6 @@ class UserSetupRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
-
-
-//        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID => $employeeId]);
-//        return $result->current();
     }
 
 }
