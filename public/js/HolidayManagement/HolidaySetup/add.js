@@ -2,10 +2,6 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-//$('#example-enableFiltering-includeSelectAllOption').multiselect({
-//            enableFiltering: true,
-//            includeSelectAllOption: true
-//        });
 
         var holidays = [];
         var holidayOptionElements = document.querySelectorAll('#holidayId option');
@@ -22,8 +18,8 @@
         window.app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
 
         /* prevent past event post */
-        $('#startDate').datepicker("setStartDate", new Date());
-        $('#endDate').datepicker("setStartDate", new Date());
+//        $('#startDate').datepicker("setStartDate", new Date());
+//        $('#endDate').datepicker("setStartDate", new Date());
         /* end of  prevent past event post */
 
 

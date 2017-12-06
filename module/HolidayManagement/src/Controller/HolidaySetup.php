@@ -3,6 +3,7 @@
 namespace HolidayManagement\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -57,11 +58,67 @@ class HolidaySetup extends AbstractActionController {
         return $viewModel;
     }
 
+    private function holidayAssign($holidayId, $postData) {
+        $holidayAssign = [];
+        if (isset($postData['company'])) {
+            foreach ($postData['company'] as $item) {
+                array_push($holidayAssign, ['COMPANY_ID' => $item]);
+            }
+        }
+        if (isset($postData['branch'])) {
+            foreach ($postData['branch'] as $item) {
+                array_push($holidayAssign, ['BRANCH_ID' => $item]);
+            }
+        }
+        if (isset($postData['department'])) {
+            foreach ($postData['department'] as $item) {
+                array_push($holidayAssign, ['DEPARTMENT_ID' => $item]);
+            }
+        }
+        if (isset($postData['designation'])) {
+            foreach ($postData['designation'] as $item) {
+                array_push($holidayAssign, ['DESIGNATION_ID' => $item]);
+            }
+        }
+        if (isset($postData['position'])) {
+            foreach ($postData['position'] as $item) {
+                array_push($holidayAssign, ['POSITION_ID' => $item]);
+            }
+        }
+        if (isset($postData['serviceType'])) {
+            foreach ($postData['serviceType'] as $item) {
+                array_push($holidayAssign, ['SERVICE_TYPE_ID' => $item]);
+            }
+        }
+        if (isset($postData['serviceEventType'])) {
+            foreach ($postData['serviceEventType'] as $item) {
+                array_push($holidayAssign, ['SERVICE_EVENT_TYPE_ID' => $item]);
+            }
+        }
+        if (isset($postData['employeeType'])) {
+            foreach ($postData['employeeType'] as $item) {
+                array_push($holidayAssign, ['EMPLOYEE_TYPE' => $item]);
+            }
+        }
+        if (isset($postData['gender'])) {
+            foreach ($postData['gender'] as $item) {
+                array_push($holidayAssign, ['GENDER_ID' => $item]);
+            }
+        }
+        if (isset($postData['employee'])) {
+            foreach ($postData['employee'] as $item) {
+                array_push($holidayAssign, ['EMPLOYEE_ID' => $item]);
+            }
+        }
+        $this->repository->holidayAssign($holidayId, $holidayAssign);
+    }
+
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
+            $postData = $request->getPost();
+            $this->form->setData($postData);
             if ($this->form->isValid()) {
                 $holiday = new Holiday();
                 $holiday->exchangeArrayFromForm($this->form->getData());
@@ -71,8 +128,9 @@ class HolidaySetup extends AbstractActionController {
                 $holiday->fiscalYear = (int) Helper::getMaxId($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID");
                 $holiday->holidayId = ((int) Helper::getMaxId($this->adapter, 'HRIS_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
                 $this->repository->add($holiday);
-
                 $this->flashmessenger()->addMessage("Holiday Successfully added!!!");
+
+                $this->holidayAssign($holiday->holidayId, $postData);
                 return $this->redirect()->toRoute("holidaysetup");
             }
         }
@@ -80,6 +138,7 @@ class HolidaySetup extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
                         ]
                 )
         );
@@ -101,7 +160,6 @@ class HolidaySetup extends AbstractActionController {
         $holidayFormElement->setValueOptions($holidays);
         $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
         $holidayFormElement->setLabel("Holiday");
-        //print_r($holidayFormElement); die();
         $holidayList = $this->repository->fetchAll();
         $viewModel = new ViewModel(Helper::addFlashMessagesToArray($this, [
                     'holidayList' => $holidays,

@@ -24,7 +24,7 @@ angular.module('hris', [])
                         if (!response.success) {
                             throw response.error;
                         }
-console.log(response);
+                        console.log(response);
                         $scope.$apply(function () {
                             var temp = response.data;
                             $scope.holidayDtl.holidayCode = temp.HOLIDAY_CODE;
@@ -40,8 +40,8 @@ console.log(response);
                                 window.app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
 
                                 /* prevent past event post */
-                                $('#startDate').datepicker("setStartDate", new Date());
-                                $('#endDate').datepicker("setStartDate", new Date());
+//                                $('#startDate').datepicker("setStartDate", new Date());
+//                                $('#endDate').datepicker("setStartDate", new Date());
                                 /* end of  prevent past event post */
                             }, 500);
 
