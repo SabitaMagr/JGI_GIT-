@@ -2,6 +2,7 @@
 
 namespace Payroll\Controller;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Payroll\Model\Rules;
 use Payroll\Model\SalarySheet as SalarySheetModel;
@@ -9,6 +10,7 @@ use Payroll\Model\SalarySheetDetail as SalarySheetDetailModel;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetDetailRepo;
 use Payroll\Repository\SalarySheetRepo;
+use Setup\Model\HrEmployees;
 
 class SalarySheet {
 
@@ -44,7 +46,6 @@ class SalarySheet {
         foreach ($salarySheetDetails as $empId => $salarySheetDetail) {
             $salarySheetDetailModel = new SalarySheetDetailModel($this->adapter);
             $salarySheetDetailModel->employeeId = $empId;
-            $salarySheetDetailModel->monthId = $monthId;
             $salarySheetDetailModel->sheetNo = $salarySheet;
 
             $payRepo = new RulesRepository($this->adapter);
@@ -56,7 +57,7 @@ class SalarySheet {
                 $payId = $pay[Rules::PAY_ID];
                 $salarySheetDetailModel->payId = $payId;
                 $salarySheetDetailModel->val = isset($salarySheetDetail['ruleValueKV'][$payId]) ? $salarySheetDetail['ruleValueKV'][$payId] : 0;
-                $salarySheetDetailModel->totalVal = $salarySheetDetail['calculatedValue'];
+//                $salarySheetDetailModel->totalVal = $salarySheetDetail['calculatedValue'];
                 $this->salarySheetDetailRepo->add($salarySheetDetailModel);
             }
         }
@@ -66,26 +67,8 @@ class SalarySheet {
         return $this->salarySheetDetailRepo->delete($monthId);
     }
 
-    public function viewSalarySheet(int $monthId, array $employeeList) {
-        $results = [];
-        foreach ($employeeList as $employee) {
-            $filter = [];
-            $filter[SalarySheetDetailModel::EMPLOYEE_ID] = $employee;
-            $filter[SalarySheetDetailModel::MONTH_ID] = $monthId;
-            $payDetails = Helper::extractDbData($this->salarySheetDetailRepo->fetchById($filter));
-
-            $payDet = [];
-            $payDet['ruleValueKV'] = [];
-            foreach ($payDetails as $payDetail) {
-                $tempTotalVal = $payDetail[SalarySheetDetailModel::TOTAL_VAL];
-                $payDet['calculatedValue'] = Helper::maintainFloatNumberFormat($tempTotalVal);
-                $tempVal = $payDetail[SalarySheetDetailModel::VAL];
-                $payDet['ruleValueKV'][$payDetail[SalarySheetDetailModel::PAY_ID]] = Helper::maintainFloatNumberFormat($tempVal);
-            }
-
-            $results[$employee] = $payDet;
-        }
-        return $results;
+    public function viewSalarySheet(int $sheetId) {
+        return Helper::extractDbData($this->salarySheetDetailRepo->fetchSalarySheetDetail($sheetId));
     }
 
     public function checkIfGenerated(int $monthId) {
@@ -95,6 +78,26 @@ class SalarySheet {
         } else {
             return false;
         }
+    }
+
+    public function newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate) {
+        $salarySheetModal = new SalarySheetModel();
+        $salarySheetModal->sheetNo = ((int) Helper::getMaxId($this->adapter, SalarySheetModel::TABLE_NAME, SalarySheetModel::SHEET_NO)) + 1;
+        $salarySheetModal->monthId = $monthId;
+        $salarySheetModal->year = $year;
+        $salarySheetModal->monthNo = $monthNo;
+        $salarySheetModal->startDate = Helper::getExpressionDate($fromDate);
+        $salarySheetModal->endDate = Helper::getExpressionDate($toDate);
+        $salarySheetModal->createdDt = Helper::getcurrentExpressionDate();
+        $salarySheetModal->status = EntityHelper::STATUS_ENABLED;
+
+        $this->salarySheetRepo->add($salarySheetModal);
+        return $salarySheetModal->sheetNo;
+    }
+
+    public function fetchEmployeeList($fromDate, $toDate) {
+        $rawList = EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => EntityHelper::STATUS_ENABLED]);
+        return Helper::extractDbData($rawList);
     }
 
 }

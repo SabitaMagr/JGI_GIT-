@@ -22,25 +22,75 @@ use Zend\View\Model\JsonModel;
 
 class Generate extends HrisController {
 
+    private $salarySheetRepo;
+
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
         $this->initializeRepository(PayrollRepository::class);
+        $this->salarySheetRepo = new SalarySheetRepo($adapter);
     }
 
     public function indexAction() {
         $ruleRepo = new RulesRepository($this->adapter);
         $data['ruleList'] = Helper::extractDbData($ruleRepo->fetchAll());
         $data['fiscalYearList'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
-        $data['monthList'] = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]);
+        $monthRepo = new MonthRepository($this->adapter);
+        $data['monthList'] = Helper::extractDbData($monthRepo->fetchAll());
+        $data['salarySheetList'] = Helper::extractDbData($this->salarySheetRepo->fetchAll());
+        $links['viewLink'] = $this->url()->fromRoute('generate', ['action' => 'viewSalarySheet']);
+        $links['generateLink'] = $this->url()->fromRoute('generate', ['action' => 'generateSalarySheet']);
+        $data['links'] = $links;
         return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
+    }
+
+    public function viewSalarySheetAction() {
+        $request = $this->getRequest();
+        $data = $request->getPost();
+        $sheetId = $data['sheetNo'];
+        $salarySheetController = new SalarySheetController($this->adapter);
+        $salarySheet = $salarySheetController->viewSalarySheet($sheetId);
+
+        return new JsonModel(['success' => true, 'data' => $salarySheet, 'error' => '']);
+    }
+
+    public function generateSalarySheetAction() {
+        $salarySheetRepo = new SalarySheetController($this->adapter);
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $stage = $data['stage'];
+
+            $returnData = null;
+            switch ($stage) {
+                case 1:
+                    $monthId = $data['monthId'];
+                    $year = $data['year'];
+                    $monthNo = $data['monthNo'];
+                    $fromDate = $data['fromDate'];
+                    $toDate = $data['toDate'];
+                    /*  */
+                    $sheetNo = $salarySheetRepo->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate);
+                    /*  */
+                    $employeeList = $salarySheetRepo->fetchEmployeeList($fromDate, $toDate);
+                    $returnData['sheetNo'] = $sheetNo;
+                    $returnData['employeeList'] = $employeeList;
+                    break;
+                case 2:
+                    $employeeId = $data['employeeId'];
+                    $returnData = [];
+                    break;
+                case 3:break;
+            }
+
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage(), 'stackTrace' => $e->getTrace()]);
+        }
     }
 
     public function generateMonthlySheetAction() {
         try {
             $request = $this->getRequest();
-            if (!($request->isPost())) {
-                throw new Exception("The request should be of type post");
-            }
             $data = $request->getPost();
 
             $monthId = $data['month'];

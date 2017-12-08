@@ -15,6 +15,8 @@ class Months extends Model {
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
     const STATUS = "STATUS";
+    const YEAR = "YEAR";
+    const MONTH_NO = "MONTH_NO";
 
     public $fiscalYearId;
     public $monthId;
@@ -26,6 +28,8 @@ class Months extends Model {
     public $createdDt;
     public $modifiedDt;
     public $status;
+    public $year;
+    public $monthNo;
     public $mappings = [
         'fiscalYearId' => self::FISCAL_YEAR_ID,
         'monthId' => self::MONTH_ID,
@@ -37,6 +41,8 @@ class Months extends Model {
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
         'status' => self::STATUS,
+        'year' => self::YEAR,
+        'monthNo' => self::MONTH_NO,
     ];
 
 }

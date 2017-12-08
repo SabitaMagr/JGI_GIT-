@@ -31,8 +31,15 @@ $this->headScript()
                 <select id="monthId">
                 </select>
             </div>
-            <div class="col-sm-8">
-                <button class="btn btn-info pull-right">View</button>
+            <div class="col-sm-2">
+                <input type="text" id="fromDate" />
+            </div>
+            <div class="col-sm-2">
+                <input type="text" id="toDate" />
+            </div>
+            <div class="col-sm-4">
+                <button id="viewBtn" class="btn btn-info pull-right">View</button>
+                <button id="generateBtn" class="btn btn-info pull-right">Generate</button>
             </div>
         </div>
         <div id="table" class="margin-top-10">
