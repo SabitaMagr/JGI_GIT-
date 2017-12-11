@@ -34,7 +34,7 @@ class Rules {
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction"},"label":"Pay Type"})
+     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction","V":"View"},"label":"Pay Type"})
      * @Annotation\Attributes({ "id":"payTypeFlag","class":"form-control"})
      */
     public $payTypeFlag;
@@ -50,8 +50,9 @@ class Rules {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Options({"label":"Is Monthly"})
-     * @Annotation\Attributes({ "id":"isMonthly","class":"form-control"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Monthly"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"isMonthly"})
      */
     public $isMonthly;
 
