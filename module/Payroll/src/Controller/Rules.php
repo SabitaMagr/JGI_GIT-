@@ -48,7 +48,7 @@ class Rules extends HrisController {
     }
 
     public function addAction() {
-        
+        return ['form' => $this->form, 'customRenderer' => Helper::renderCustomView()];
     }
 
     public function editAction() {
