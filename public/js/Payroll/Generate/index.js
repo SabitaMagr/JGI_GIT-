@@ -4,6 +4,7 @@
         var data = document.data;
         var salarySheetList = data['salarySheetList'];
         var monthList = data['monthList'];
+        var generateLink = data['links']['generateLink'];
 //        
         var selectedMonth = {};
 //
@@ -119,19 +120,23 @@
             var stage2 = function (data) {
                 sheetNo = data['sheetNo'];
                 employeeList = data['employeeList'];
-                var stage2Link = data['links']['generateLink'];
                 var dataList = [];
                 for (var i in employeeList) {
                     dataList.push({
                         stage: 2,
-                        employeeId: employeeList['EMPLOYEE_ID']
+                        monthId: monthId,
+                        year: year,
+                        monthNo: monthNo,
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        employeeId: employeeList[i]['EMPLOYEE_ID']
                     });
                 }
                 (function (dataList) {
                     var counter = 0;
                     var length = dataList.length;
                     var recursionFn = function (data) {
-                        app.pullDataById(stage2Link, data).then(function (response) {
+                        app.pullDataById(generateLink, data).then(function (response) {
                             counter++;
                             if (!response.success) {
                                 stage2Error(data);

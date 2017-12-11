@@ -41,7 +41,7 @@ class SystemRuleProcessor {
             case PayrollGenerator::SYSTEM_RULE[2]:
                 $calculatedValue = 0;
                 foreach ($this->ruleDetailList as $ruleDetail) {
-                    $ruleValue = ($ruleDetail['ruleDetail']['IS_MONTHLY'] == "N") ? $ruleDetail['ruleValue'] * 12 : $ruleDetail['ruleValue'];
+                    $ruleValue = ($ruleDetail['rule']['IS_MONTHLY'] == "N") ? $ruleDetail['ruleValue'] * 12 : $ruleDetail['ruleValue'];
                     if ($ruleDetail['rule']['PAY_TYPE_FLAG'] == 'A') {
                         $calculatedValue = $calculatedValue + $ruleValue;
                     } else {

@@ -36,8 +36,9 @@ class PayEmployeeRepo {
                 FROM HRIS_PAY_SETUP P
                 JOIN HRIS_PAY_DETAIL_SETUP PD
                 ON (P.PAY_ID  =PD.PAY_ID)
-                WHERE P.PAY_ID={$id}";
-
+                JOIN HRIS_PAY_EMPLOYEE_SETUP PE
+                ON (PE.PAY_ID=P.PAY_ID)
+                WHERE PE.EMPLOYEE_ID={$id}";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }

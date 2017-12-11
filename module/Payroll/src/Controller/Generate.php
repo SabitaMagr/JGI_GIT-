@@ -77,7 +77,10 @@ class Generate extends HrisController {
                     break;
                 case 2:
                     $employeeId = $data['employeeId'];
-                    $returnData = [];
+                    $monthId = $data['monthId'];
+                    $payrollGenerator = new PayrollGenerator($this->adapter);
+                    $returnData = $payrollGenerator->generate($employeeId, $monthId);
+
                     break;
                 case 3:break;
             }

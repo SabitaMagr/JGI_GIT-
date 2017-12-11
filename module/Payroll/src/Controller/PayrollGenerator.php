@@ -3,17 +3,14 @@
 namespace Payroll\Controller;
 
 use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
 use Application\Repository\RepositoryInterface;
-use Payroll\Model\FlatValue as FlatValueModel;
-use Payroll\Model\MonthlyValue as MonthlyValueModel;
+use Payroll\Controller\SystemRuleProcessor;
+use Payroll\Controller\VariableProcessor;
 use Payroll\Model\PayEmployeeSetup;
 use Payroll\Model\Rules;
-use Payroll\Model\RulesDetail;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\PayEmployeeRepo;
-use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 
 class PayrollGenerator {
@@ -22,7 +19,6 @@ class PayrollGenerator {
     private $flatValueDetRepo;
     private $monthlyValueDetRepo;
     private $payEmployeeRepo;
-    private $ruleDetailRepo;
     private $ruleRepo;
     private $employeeId;
     private $monthlyValues;
@@ -57,13 +53,11 @@ class PayrollGenerator {
         "CUR_MTH_LAST_DAY",
     ];
 
-    public function __construct($adapter, int $monthId) {
+    public function __construct($adapter) {
         $this->adapter = $adapter;
-        $this->monthId = $monthId;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
         $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
         $this->payEmployeeRepo = new PayEmployeeRepo($adapter);
-        $this->ruleDetailRepo = new RulesDetailRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
 
         $this->monthlyValues = $this->getMonthlyValueList();
@@ -72,37 +66,12 @@ class PayrollGenerator {
         $this->sanitizeStringArray($this->flatValues);
     }
 
-    private function getMonthlyValueList() {
-        $list = EntityHelper::getTableList($this->adapter, MonthlyValueModel::TABLE_NAME, [MonthlyValueModel::MTH_EDESC]);
-        $listWithOutKey = [];
-
-        foreach ($list as $item) {
-            array_push($listWithOutKey, $item[MonthlyValueModel::MTH_EDESC]);
-        }
-
-        return $listWithOutKey;
-    }
-
-    private function getFlatValueList() {
-        $list = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_EDESC]);
-        $listWithOutKey = [];
-
-        foreach ($list as $item) {
-            array_push($listWithOutKey, $item[FlatValueModel::FLAT_EDESC]);
-        }
-
-        return $listWithOutKey;
-    }
-
-    private function getPositionId($id) {
-        return EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["POSITION_ID"], ["EMPLOYEE_ID" => $id], null)[$id];
-    }
-
-    public function generate($employeeId) {
+    public function generate($employeeId, $monthId) {
         $this->employeeId = $employeeId;
+        $this->monthId = $monthId;
         $payList = $this->payEmployeeRepo->fetchByEmployeeId($this->employeeId);
 
-        $ruleValueKV = [];
+        $ruleValueMap = [];
         $counter = 0;
         foreach ($payList as $ruleDetail) {
             $ruleId = $ruleDetail[PayEmployeeSetup::PAY_ID];
@@ -132,18 +101,50 @@ class PayrollGenerator {
 
             $ruleValue = eval("return {$processedformula} ;");
 
-            array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleDetail, "ruleDetail" => $ruleDetail]);
+            array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleDetail]);
 
-            if ($operationType == 'A') {
-                $this->calculatedValue = $this->calculatedValue + $ruleValue;
-            } else if ($operationType == 'D') {
-                $this->calculatedValue = $this->calculatedValue - $ruleValue;
+            switch ($operationType) {
+                case 'A':
+                    $this->calculatedValue = $this->calculatedValue + $ruleValue;
+                    break;
+                case 'D':
+                    $this->calculatedValue = $this->calculatedValue - $ruleValue;
+                    break;
+                case 'V':
+                    break;
             }
-            $ruleValueKV[$ruleId] = $ruleValue;
+
+            $ruleValueMap[$ruleId] = $ruleValue;
             $counter++;
         }
 
-        return ["ruleValueKV" => $ruleValueKV, "calculatedValue" => $this->calculatedValue];
+        return ["ruleValueKV" => $ruleValueMap, "calculatedValue" => $this->calculatedValue];
+    }
+
+    private function getMonthlyValueList() {
+        $list = EntityHelper::getTableList($this->adapter, MonthlyValueModel::TABLE_NAME, [MonthlyValueModel::MTH_EDESC]);
+        $listWithOutKey = [];
+
+        foreach ($list as $item) {
+            array_push($listWithOutKey, $item[MonthlyValueModel::MTH_EDESC]);
+        }
+
+        return $listWithOutKey;
+    }
+
+    private function getFlatValueList() {
+        $list = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_EDESC]);
+        $listWithOutKey = [];
+
+        foreach ($list as $item) {
+            array_push($listWithOutKey, $item[FlatValueModel::FLAT_EDESC]);
+        }
+
+        return $listWithOutKey;
+    }
+
+    private function getPositionId($id) {
+        return EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["POSITION_ID"], ["EMPLOYEE_ID" => $id], null)[$id];
     }
 
     private function sanitizeStringArray(array &$stringArray) {

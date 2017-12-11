@@ -2,6 +2,7 @@
 
 namespace Payroll\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -12,45 +13,26 @@ use Payroll\Model\FlatValue;
 use Payroll\Model\MonthlyValue;
 use Payroll\Model\PayEmployeeSetup;
 use Payroll\Model\Rules as RulesModel;
-use Payroll\Model\RulesDetail;
 use Payroll\Repository\PayEmployeeRepo;
-use Payroll\Repository\RulesDetailRepo;
 use Payroll\Repository\RulesRepository;
 use Setup\Model\Gender;
 use Setup\Model\ServiceType;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class Rules extends AbstractActionController {
+class Rules extends HrisController {
 
-    private $adapter;
-    private $repository;
-    private $form;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new RulesRepository($adapter);
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $ruleForm = new RuleForm();
-        $this->form = $builder->createForm($ruleForm);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(RulesRepository::class);
+        $this->initializeForm(RuleForm::class);
     }
 
     public function indexAction() {
         $ruleList = $this->repository->fetchAll();
-        $rules = [];
-        foreach ($ruleList as $ruleRow) {
-            array_push($rules, $ruleRow);
-        }
-        return Helper::addFlashMessagesToArray($this, [
-                    'rules' => $rules
-        ]);
     }
 
     public function editAction() {
@@ -185,47 +167,6 @@ class Rules extends AbstractActionController {
             $repository = new RulesRepository($this->adapter);
 
             return new JsonModel(['success' => true, 'data' => ["rule" => $repository->fetchById($data['ruleId'])], 'message' => "Rule successfully added"]);
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function pushRuleDetailAction() {
-        try {
-            $request = $this->getRequest();
-            $data = (array) $request->getPost();
-
-            $repository = new RulesDetailRepo($this->adapter);
-            $ruleDetail = new RulesDetail();
-
-            $ruleDetail->payId = $data['payId'];
-            $ruleDetail->mnenonicName = $data['mnenonicName'];
-            $ruleDetail->isMonthly = ($data['isMonthly'] == 'true') ? 'Y' : 'N';
-            if ($data['srNo'] == null) {
-                $ruleDetail->srNo = 1;
-                $repository->add($ruleDetail);
-            } else {
-                $payId = $ruleDetail->payId;
-                unset($ruleDetail->payId);
-                $repository->edit($ruleDetail, $payId);
-                $ruleDetail->srNo = $data['srNo'];
-            }
-
-            return new JsonModel(['success' => true, 'data' => $data, 'message' => null]);
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function pullRuleDetailByPayIdAction() {
-        try {
-            $request = $this->getRequest();
-            $data = $request->getPost();
-
-            $repository = new RulesDetailRepo($this->adapter);
-            $payDetail = $repository->fetchById($data["payId"]);
-
-            return new JsonModel(['success' => true, 'data' => $payDetail, 'message' => null]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
