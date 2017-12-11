@@ -1,23 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 4:43 PM
- */
 
 namespace Payroll\Form;
 
 use Zend\Form\Annotation;
 
-
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Rules")
  */
-class Rules
-{
- 
+class Rules {
+
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(true)
@@ -55,6 +47,22 @@ class Rules
      * @Annotation\Attributes({ "id":"priorityIndex","class":"form-control"})
      */
     public $priorityIndex;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"label":"Is Monthly"})
+     * @Annotation\Attributes({ "id":"isMonthly","class":"form-control"})
+     */
+    public $isMonthly;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Formula"})
+     * @Annotation\Attributes({ "id":"formula","class":"form-control"})
+     */
+    public $formula;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")

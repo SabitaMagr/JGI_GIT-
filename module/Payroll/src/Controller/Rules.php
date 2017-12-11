@@ -32,7 +32,23 @@ class Rules extends HrisController {
     }
 
     public function indexAction() {
-        $ruleList = $this->repository->fetchAll();
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+//                $data = $request->getPost();
+                $rawList = $this->repository->fetchAll();
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo(['acl' => $this->acl]);
+    }
+
+    public function addAction() {
+        
     }
 
     public function editAction() {

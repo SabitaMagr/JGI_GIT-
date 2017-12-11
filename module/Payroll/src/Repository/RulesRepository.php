@@ -30,11 +30,34 @@ class RulesRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->gateway->select(function(Select $select) {
-                    $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class, [Rules::PAY_EDESC, Rules::PAY_LDESC]), false);
-                    $select->where([Rules::STATUS => 'E']);
-                    $select->order([Rules::PRIORITY_INDEX => Select::ORDER_ASCENDING]);
-                });
+        $query = "SELECT PAY_ID,
+                  PAY_CODE,
+                  PAY_EDESC,
+                  (
+                  CASE
+                    WHEN PAY_TYPE_FLAG ='A'
+                    THEN 'Additon'
+                    WHEN PAY_TYPE_FLAG='D'
+                    THEN 'DEDUCTION'
+                    ELSE 'VIEW'
+                  END) AS PAY_TYPE,
+                  PRIORITY_INDEX,
+                  IS_MONTHLY,
+                  (
+                  CASE
+                    WHEN IS_MONTHLY = 'Y'
+                    THEN 'Yes'
+                    ELSE 'No'
+                  END ) AS IS_MONTHLY_DETAIL,
+                  FORMULA,
+                  REMARKS,
+                  STATUS
+                FROM HRIS_PAY_SETUP
+                WHERE STATUS ='E'";
+
+        $statement = $this->adapter->query($query);
+        $result = $statement->execute();
+        return $result;
     }
 
     public function fetchById($id) {
