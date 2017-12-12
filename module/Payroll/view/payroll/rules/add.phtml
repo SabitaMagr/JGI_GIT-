@@ -1,5 +1,11 @@
 <?php
+$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/codemirror/lib/codemirror.css'));
+$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/codemirror/addon/hint/show-hint.css'));
+
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/codemirror/lib/codemirror.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/codemirror/addon/hint/show-hint.js'));
 $this->headScript()->appendFile($this->basePath('js/Payroll/Rules/formula-writer.js'));
+$this->headScript()->appendFile($this->basePath('js/Payroll/Rules/add.js'));
 ?>
 
 <?php
@@ -9,13 +15,16 @@ $payLdesc = $form->get('payLdesc');
 $payTypeFlag = $form->get('payTypeFlag');
 $priorityIndex = $form->get('priorityIndex');
 $isMonthly = $form->get('isMonthly');
+$remarks = $form->get('remarks');
 $formula = $form->get('formula');
 $submit = $form->get('submit');
 //
 $form->setAttribute('action', $this->url('rules', ['action' => 'add']));
 $form->prepare();
 ?>
-
+<script>
+    window.formulaData =<?php echo $formulaData ?>;
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\rules')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -40,7 +49,6 @@ $form->prepare();
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <?php print $this->formLabel($payCode); ?>
-                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($payCode); ?>
                             <?php print $this->formElementErrors()->render($payCode, ['class' => 'help-block']); ?>
                         </div>
@@ -49,6 +57,7 @@ $form->prepare();
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <?php print $this->formLabel($payEdesc); ?>
+                            <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($payEdesc); ?>
                             <?php print $this->formElementErrors()->render($payEdesc, ['class' => 'help-block']); ?>
                         </div>
@@ -60,6 +69,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($payLdesc, ['class' => 'help-block']); ?>
                         </div>
                     </div>
+
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <?php print $this->formLabel($priorityIndex); ?>
@@ -84,6 +94,13 @@ $form->prepare();
                                 <?php $customRenderer($isMonthly); ?>
                             </div>
                             <?php print $this->formElementErrors()->render($isMonthly, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-12">

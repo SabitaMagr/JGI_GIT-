@@ -74,8 +74,16 @@ class RulesRepository implements RepositoryInterface {
         $this->gateway->update($rule->getArrayCopyForDB(), [Rules::PAY_ID => $id]);
     }
 
-    public function fetchReferencingRules($payId) {
-        $sql = "
+    public function fetchReferencingRules($payId = null) {
+
+        if ($payId == null) {
+            $sql = "
+                SELECT P.PAY_ID,
+                  INITCAP(P.PAY_EDESC) AS PAY_EDESC,
+                  INITCAP(P.PAY_LDESC) AS PAY_LDESC
+                FROM HRIS_PAY_SETUP P";
+        } else {
+            $sql = "
                 SELECT P.PAY_ID,
                   INITCAP(P.PAY_EDESC) AS PAY_EDESC,
                   INITCAP(P.PAY_LDESC) AS PAY_LDESC
@@ -83,6 +91,7 @@ class RulesRepository implements RepositoryInterface {
                   (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=$payId
                   ) PS
                 WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
+        }
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);

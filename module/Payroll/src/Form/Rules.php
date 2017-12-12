@@ -6,7 +6,7 @@ use Zend\Form\Annotation;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Rules")
+ * @Annotation\Name("rules")
  */
 class Rules {
 
@@ -68,7 +68,7 @@ class Rules {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Formula"})
      * @Annotation\Attributes({ "id":"formula","class":"form-control"})
@@ -77,7 +77,7 @@ class Rules {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
      * @Annotation\Options({"label":"Remarks"})
