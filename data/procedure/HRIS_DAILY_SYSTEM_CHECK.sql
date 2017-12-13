@@ -1,0 +1,64 @@
+create or replace PROCEDURE HRIS_DAILY_SYSTEM_CHECK(
+    P_DATE DATE:=NULL)
+AS
+  V_DATE            DATE;
+  IS_START_OF_MONTH CHAR(1 BYTE):='N';
+BEGIN
+  --SET DATE
+  IF P_DATE IS NULL THEN
+    V_DATE  :=TRUNC(SYSDATE);
+  ELSE
+    V_DATE :=TRUNC(P_DATE);
+  END IF;
+  --
+  --CHECK FOR START OF MONTH
+  BEGIN
+    SELECT 'Y'
+    INTO IS_START_OF_MONTH
+    FROM HRIS_MONTH_CODE
+    WHERE FROM_DATE = V_DATE;
+  EXCEPTION
+  WHEN no_data_found THEN
+    NULL;
+  END;
+  --
+  --SERVICE STATUS UPDATE
+  FOR service IN
+  (SELECT * FROM HRIS_JOB_HISTORY WHERE START_DATE =V_DATE
+  )
+  LOOP
+    UPDATE HRIS_EMPLOYEES
+    SET BRANCH_ID           =service.TO_BRANCH_ID,
+      DEPARTMENT_ID         =service.TO_DEPARTMENT_ID,
+      DESIGNATION_ID        =service.TO_DESIGNATION_ID,
+      POSITION_ID           =service.TO_POSITION_ID,
+      SERVICE_TYPE_ID       =service.TO_SERVICE_TYPE_ID,
+      SERVICE_EVENT_TYPE_ID =service.SERVICE_EVENT_TYPE_ID,
+      COMPANY_ID            =service.TO_COMPANY_ID,
+      SALARY                = service.TO_SALARY,
+      RETIRED_FLAG          = service.RETIRED_FLAG,
+      STATUS                = (
+      CASE
+        WHEN service.DISABLED_FLAG = 'Y'
+        THEN 'D'
+        ELSE 'E'
+      END)
+    WHERE EMPLOYEE_ID =service.EMPLOYEE_ID;
+  END LOOP;
+  --END OF SERVICE STATUS UPDATE
+  --  MONTHLY ACTIONS
+  IF(IS_START_OF_MONTH='Y') THEN
+    --RESETTING MONTHLY LEAVES
+    FOR monthlyLeaves IN
+    (SELECT * FROM HRIS_LEAVE_MASTER_SETUP WHERE IS_MONTHLY ='Y' AND STATUS ='E'
+    )
+    LOOP
+      UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
+      SET BALANCE    = monthlyLeaves.DEFAULT_DAYS,
+        TOTAL_DAYS   =monthlyLeaves.DEFAULT_DAYS
+      WHERE LEAVE_ID = monthlyLeaves.LEAVE_ID;
+    END LOOP;
+    --
+  END IF;
+  --
+END;

@@ -136,7 +136,9 @@
             /* setup functions */
             var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
                 $element.html('');
-                $element.append($("<option></option>").val(-1).text(defaultMessage));
+                if (typeof defaultMessage !== "undefined" && !$element.prop('multiple')) {
+                    $element.append($("<option></option>").val(-1).text(defaultMessage));
+                }
                 var concatArray = function (keyList, list, concatWith) {
                     var temp = '';
                     if (typeof concatWith === 'undefined') {
@@ -167,12 +169,37 @@
                     }
                 }
             };
+//            var search = function (list, where) {
+//                return list.filter(function (item) {
+//                    for (var i in where) {
+//                        if (!(item[i] === where[i] || where[i] == -1)) {
+//                            return false;
+//                        }
+//                    }
+//                    return true;
+//                });
+//            };
             var search = function (list, where) {
                 return list.filter(function (item) {
                     for (var i in where) {
-                        if (!(item[i] === where[i] || where[i] == -1)) {
-                            return false;
+                        var value = where[i];
+                        if (Array.isArray(value)) {
+                            var xc = false;
+                            for (var x in value) {
+                                if (item[i] === value[x]) {
+                                    xc = true;
+                                    break;
+                                }
+                            }
+                            return xc;
+                        } else if (value === null) {
+
+                        } else {
+                            if (!(item[i] === value || value == -1)) {
+                                return false;
+                            }
                         }
+
                     }
                     return true;
                 });
@@ -268,6 +295,17 @@
                     employeeSearchAndPopulate();
                 });
             }
+            var acl = document.acl;
+            var employeeDetail = document.employeeDetail;
+            if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
+                switch (acl['CONTROL']) {
+                    case 'C':
+                        $company.val(employeeDetail['COMPANY_ID']);
+                        $company.prop('disabled', true);
+                        break;
+                }
+            }
+
         };
         changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId");
 

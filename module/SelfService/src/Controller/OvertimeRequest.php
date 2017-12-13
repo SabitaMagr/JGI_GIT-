@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\Helper;
 use Exception;
 use Notification\Controller\HeadNotification;
@@ -11,159 +12,50 @@ use SelfService\Model\Overtime;
 use SelfService\Model\OvertimeDetail;
 use SelfService\Repository\OvertimeDetailRepository;
 use SelfService\Repository\OvertimeRepository;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ViewModel;
 
-class OvertimeRequest extends AbstractActionController {
+class OvertimeRequest extends HrisController {
 
-    private $form;
-    private $adapter;
-    private $repository;
     private $detailRepository;
-    private $employeeId;
-    private $recommender;
-    private $approver;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeForm(OvertimeRequestForm::class);
         $this->repository = new OvertimeRepository($adapter);
         $this->detailRepository = new OvertimeDetailRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
 
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new OvertimeRequestForm();
-        $this->form = $builder->createForm($form);
-    }
-
-    public function getRecommendApprover() {
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($this->employeeId);
-
-        if ($empRecommendApprove != null) {
-            $this->recommender = $empRecommendApprove['RECOMMEND_BY'];
-            $this->approver = $empRecommendApprove['APPROVED_BY'];
-        } else {
-            $result = $this->recommendApproveList();
-            if (count($result['recommender']) > 0) {
-                $this->recommender = $result['recommender'][0]['id'];
-            } else {
-                $this->recommender = null;
-            }
-            if (count($result['approver']) > 0) {
-                $this->approver = $result['approver'][0]['id'];
-            } else {
-                $this->approver = null;
-            }
-        }
+    public function overtimeDetail($overtimeId) {
+        $rawList = $this->detailRepository->fetchByOvertimeId($overtimeId);
+        return Helper::extractDbData($rawList);
     }
 
     public function indexAction() {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $postedData = $request->getPost()->getArrayCopy();
-                switch ($postedData['action']) {
-                    case "pullOvertimeDetail":
-                        $responseData = $this->pullOvertimeDetail($postedData['data']);
-                        break;
-                    default:
-                        throw new Exception("action not found");
-                        break;
+                $rawList = $this->repository->getAllByEmployeeId($this->employeeId);
+                $list = [];
+                foreach ($rawList as $item) {
+                    $detail = $this->overtimeDetail($item['OVERTIME_ID']);
+                    $item['DETAILS'] = $detail;
+                    array_push($list, $item);
                 }
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
-                $responseData = [
-                    "success" => false,
-                    "message" => $e->getMessage(),
-                    "traceAsString" => $e->getTraceAsString(),
-                    "line" => $e->getLine()
-                ];
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
-        } else {
-            $this->getRecommendApprover();
-            $result = $this->repository->getAllByEmployeeId($this->employeeId);
-            $fullName = function($id) {
-                $empRepository = new EmployeeRepository($this->adapter);
-                $empDtl = $empRepository->fetchById($id);
-                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-            };
-
-            $recommenderName = $fullName($this->recommender);
-            $approverName = $fullName($this->approver);
-
-            $list = [];
-            $getValue = function($status) {
-                if ($status == "RQ") {
-                    return "Pending";
-                } else if ($status == 'RC') {
-                    return "Recommended";
-                } else if ($status == "R") {
-                    return "Rejected";
-                } else if ($status == "AP") {
-                    return "Approved";
-                } else if ($status == "C") {
-                    return "Cancelled";
-                }
-            };
-            $getAction = function($status) {
-                if ($status == "RQ") {
-                    return ["delete" => 'Cancel Request'];
-                } else {
-                    return ["view" => 'View'];
-                }
-            };
-
-            foreach ($result as $row) {
-                $status = $getValue($row['STATUS']);
-                $action = $getAction($row['STATUS']);
-                $statusID = $row['STATUS'];
-                $approvedDT = $row['APPROVED_DATE'];
-                $MN1 = ($row['MN1'] != null) ? " " . $row['MN1'] . " " : " ";
-                $recommended_by = $row['FN1'] . $MN1 . $row['LN1'];
-                $MN2 = ($row['MN2'] != null) ? " " . $row['MN2'] . " " : " ";
-                $approved_by = $row['FN2'] . $MN2 . $row['LN2'];
-                $authRecommender = ($statusID == 'RQ' || $statusID == 'C') ? $recommenderName : $recommended_by;
-                $authApprover = ($statusID == 'RC' || $statusID == 'RQ' || $statusID == 'C' || ($statusID == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
-
-                $new_row = array_merge($row, [
-                    'RECOMMENDER_NAME' => $authRecommender,
-                    'APPROVER_NAME' => $authApprover,
-                    'STATUS' => $status,
-                    'ACTION' => key($action),
-                    'ACTION_TEXT' => $action[key($action)]
-                ]);
-
-                if ($statusID == 'RQ') {
-                    $new_row['ALLOW_TO_EDIT'] = 1;
-                } else {
-                    $new_row['ALLOW_TO_EDIT'] = 0;
-                }
-
-                $overtimeDetailResult = $this->detailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
-                $overtimeDetails = [];
-                foreach ($overtimeDetailResult as $overtimeDetailRow) {
-                    array_push($overtimeDetails, $overtimeDetailRow);
-                }
-                $new_row['DETAILS'] = $overtimeDetails;
-                array_push($list, $new_row);
-            }
-            return Helper::addFlashMessagesToArray($this, ['list' => $list]);
         }
+        return new ViewModel();
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $model = new Overtime();
-        $detailModel = new OvertimeDetail();
         if ($request->isPost()) {
             $postData = $request->getPost();
             $this->form->setData($postData);
@@ -219,110 +111,31 @@ class OvertimeRequest extends AbstractActionController {
     }
 
     public function viewAction() {
-        $this->initializeForm();
-        $this->getRecommendApprover();
-        $id = (int) $this->params()->fromRoute('id');
-
+        $id = (int) $this->params()->fromRoute('id', 0);
         if ($id === 0) {
             return $this->redirect()->toRoute("overtimeRequest");
         }
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
 
-        $recommenderName = $fullName($this->recommender);
-        $approverName = $fullName($this->approver);
-
-        $model = new Overtime();
-        $detailModel = new OvertimeDetail();
+        $overtimeModel = new Overtime();
         $detail = $this->repository->fetchById($id);
-        $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DATE'];
-        $recommended_by = $fullName($detail['RECOMMENDED_BY']);
-        $approved_by = $fullName($detail['APPROVED_BY']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommenderName : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || $status == 'C' || ($status == 'R' && $approvedDT == null)) ? $approverName : $approved_by;
 
-        $model->exchangeArrayFromDB($detail);
-        $this->form->bind($model);
+        $overtimeModel->exchangeArrayFromDB($detail);
+        $this->form->bind($overtimeModel);
 
         $overtimeDetailResult = $this->detailRepository->fetchByOvertimeId($detail['OVERTIME_ID']);
-        $overtimeDetails = [];
-        foreach ($overtimeDetailResult as $overtimeDetailRow) {
-            array_push($overtimeDetails, $overtimeDetailRow);
-        }
+        $overtimeDetails = Helper::extractDbData($overtimeDetailResult);
 
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employeeName' => $employeeName,
+                    'employeeName' => $detail['FULL_NAME'],
                     'status' => $detail['STATUS'],
+                    'statusDetail' => $detail['STATUS_DETAIL'],
                     'requestedDate' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
+                    'recommender' => $detail['RECOMMENDED_BY_NAME'] ? $detail['RECOMMENDED_BY_NAME'] : $detail['RECOMMENDER_NAME'],
+                    'approver' => $detail['APPROVED_BY_NAME'] ? $detail['APPROVED_BY_NAME'] : $detail['APPROVER_NAME'],
                     'overtimeDetails' => $overtimeDetails,
-                    'totalHour' => $detail['TOTAL_HOUR']
+                    'totalHour' => $detail['TOTAL_HOUR_DETAIL']
         ]);
-    }
-
-    public function pullOvertimeDetail($data) {
-        $overtimeId = $data['overtimeId'];
-        $result = $this->detailRepository->fetchByOvertimeId($overtimeId);
-        $overtimeDetailList = [];
-        foreach ($result as $row) {
-            array_push($overtimeDetailList, $row);
-        }
-        return [
-            'success' => true,
-            'data' => [
-                'overtimeDetailList' => $overtimeDetailList
-            ]
-        ];
-    }
-
-    public function recommendApproveList() {
-        $employeeRepository = new EmployeeRepository($this->adapter);
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $employeeId = $this->employeeId;
-        $employeeDetail = $employeeRepository->fetchById($employeeId);
-        $branchId = $employeeDetail['BRANCH_ID'];
-        $departmentId = $employeeDetail['DEPARTMENT_ID'];
-        $designations = $recommendApproveRepository->getDesignationList($employeeId);
-
-        $recommender = array();
-        $approver = array();
-        foreach ($designations as $key => $designationList) {
-            $withinBranch = $designationList['WITHIN_BRANCH'];
-            $withinDepartment = $designationList['WITHIN_DEPARTMENT'];
-            $designationId = $designationList['DESIGNATION_ID'];
-            $employees = $recommendApproveRepository->getEmployeeList($withinBranch, $withinDepartment, $designationId, $branchId, $departmentId);
-
-            if ($key == 1) {
-                $i = 0;
-                foreach ($employees as $employeeList) {
-                    // array_push($recommender,$employeeList);
-                    $recommender [$i]["id"] = $employeeList['EMPLOYEE_ID'];
-                    $recommender [$i]["name"] = $employeeList['FIRST_NAME'] . " " . $employeeList['MIDDLE_NAME'] . " " . $employeeList['LAST_NAME'];
-                    $i++;
-                }
-            } else if ($key == 2) {
-                $i = 0;
-                foreach ($employees as $employeeList) {
-                    //array_push($approver,$employeeList);
-                    $approver [$i]["id"] = $employeeList['EMPLOYEE_ID'];
-                    $approver [$i]["name"] = $employeeList['FIRST_NAME'] . " " . $employeeList['MIDDLE_NAME'] . " " . $employeeList['LAST_NAME'];
-                    $i++;
-                }
-            }
-        }
-        $responseData = [
-            "recommender" => $recommender,
-            "approver" => $approver
-        ];
-        return $responseData;
     }
 
 }

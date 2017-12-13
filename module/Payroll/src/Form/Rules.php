@@ -1,25 +1,27 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 4:43 PM
- */
 
 namespace Payroll\Form;
 
 use Zend\Form\Annotation;
 
-
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
- * @Annotation\Name("Rules")
+ * @Annotation\Name("rules")
  */
-class Rules
-{
- 
+class Rules {
+
     /**
-     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Options({"label":"Pay Code"})
+     * @Annotation\Attributes({ "id":"payCode","class":"form-control"})
+     */
+    public $payCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
@@ -29,7 +31,7 @@ class Rules
     public $payEdesc;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
@@ -42,7 +44,7 @@ class Rules
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction"},"label":"Pay Type"})
+     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction","V":"View"},"label":"Pay Type"})
      * @Annotation\Attributes({ "id":"payTypeFlag","class":"form-control"})
      */
     public $payTypeFlag;
@@ -57,8 +59,25 @@ class Rules
     public $priorityIndex;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Monthly"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"isMonthly"})
+     */
+    public $isMonthly;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Formula"})
+     * @Annotation\Attributes({ "id":"formula","class":"form-control"})
+     */
+    public $formula;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
      * @Annotation\Options({"label":"Remarks"})

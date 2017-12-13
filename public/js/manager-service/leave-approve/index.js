@@ -1,267 +1,152 @@
-(function ($) {
+(function ($, app) {
     'use strict';
     $(document).ready(function () {
-        var leaveGrid = $("#leaveApproveTable").kendoGrid({
-            excel: {
-                fileName: "LeaveRequestList.xlsx",
-                filterable: true,
-                allPages: true
+        var $table = $('#table');
+        var action = `
+            <div class="clearfix">
+                <a class="btn btn-icon-only green" href="${document.viewLink}/#:ID#/#:ROLE#" style="height:17px;" title="View Detail">
+                    <i class="fa fa-search"></i>
+                </a>
+            </div>
+        `;
+        app.initializeKendoGrid($table, [
+            {
+                title: 'Select All',
+                headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
+                template: "<input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
+                width: 40
             },
-            dataSource: {
-                data: document.leaveApprove,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            dataBound: gridDataBound,
-            columns: [
-                {
-                    title: 'Select All',
-                    headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
-                    template: "<input type='checkbox' id='#:ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
-                    width: 80
-                },
-                {field: "FULL_NAME", title: "Employee"},
-                {field: "LEAVE_ENAME", title: "Leave"},
-                {title: "Requested Date",
-                    columns: [{
-                            field: "APPLIED_DATE",
-                            title: "English",
-                            template: "<span>#: (APPLIED_DATE == null) ? '-' : APPLIED_DATE #</span>"
-                        },
-                        {field: "APPLIED_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (APPLIED_DATE_N == null) ? '-' : APPLIED_DATE_N #</span>"
-                        }]},
-                {title: "From Date",
-                    columns: [{
-                            field: "START_DATE",
-                            title: "English",
-                            template: "<span>#: (START_DATE == null) ? '-' : START_DATE #</span>"
-                        },
-                        {field: "START_DATE_N",
-                            title: "Nepali",
-                            template: "<span>#: (START_DATE_N == null) ? '-' : START_DATE_N #</span>"
-                        }]},
-                {title: "To Date",
-                    columns: [{
-                            field: "END_DATE",
-                            title: "English",
-                            template: "<span>#: (END_DATE == null) ? '-' : END_DATE #</span>"},
-                        {field: "END_DATE_N",
-                            title: "English",
-                            template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"
-                        }]},
-                {field: "NO_OF_DAYS", title: "Duration"},
-                {field: "YOUR_ROLE", title: "Your Role"},
-                {field: ["ID"], title: "Action", template: `<span><a class="btn-edit" href="` + document.viewLink + `/#: ID #" style="height:17px;" title="view detail">
-                            <i class="fa fa-search-plus"></i>
-                            </a>
-                            </span>`}
-            ]
-        });
-        var checkedIds = {};
-        leaveGrid.on("click", ".k-checkbox", selectRow);
+            {field: "FULL_NAME", title: "Employee"},
+            {field: "LEAVE_ENAME", title: "Leave Name"},
+            {title: "Applied Date",
+                columns: [{
+                        field: "APPLIED_DATE_AD",
+                        title: "AD",
+                    },
+                    {
+                        field: "APPLIED_DATE_BS",
+                        title: "BS",
+                    }]},
 
-        function selectRow() {
-            var checked = this.checked,
-                    row = $(this).closest("tr"),
-                    grid = $("#leaveApproveTable").data("kendoGrid"),
-                    dataItem = grid.dataItem(row);
-            checkedIds[dataItem.ID] = {
-                'checked': checked,
-                data: {
-                    'id': dataItem.ID,
-                    'role': dataItem.ROLE
+            {title: "From Date",
+                columns: [{
+                        field: "START_DATE_AD",
+                        title: "AD",
+                    },
+                    {
+                        field: "START_DATE_BS",
+                        title: "BS",
+                    }]},
+            {title: "To Date",
+                columns: [{
+                        field: "END_DATE_AD",
+                        title: "AD",
+                    },
+                    {
+                        field: "END_DATE_BS",
+                        title: "BS",
+                    }]},
+            {field: "HALF_DAY_DETAIL", title: "Day Interval"},
+            {field: "GRACE_PERIOD_DETAIL", title: "Grace"},
+            {field: "NO_OF_DAYS", title: "Duration"},
+            {field: "STATUS_DETAIL", title: "Status"},
+            {field: ["ID", "ROLE"], title: "Action", template: action}
+        ]);
+
+
+        app.pullDataById('', {}).then(function (response) {
+            if (response.success) {
+                app.renderKendoGrid($table, response.data);
+                selectItems = {};
+                var data = response.data;
+                for (var i in data) {
+                    selectItems[data[i]['ID']] = {'checked': false, 'role': data[i]['ROLE']};
                 }
-
+            } else {
+                app.showMessage(response.error, 'error');
             }
+        }, function (error) {
+            app.showMessage(error, 'error');
+        });
+
+        app.searchTable($table, ['EMPLOYEE_NAME']);
+        var exportMap = {
+            'EMPLOYEE_NAME': 'Employee Name',
+            'LEAVE_ENAME': 'Leave',
+            'REQUESTED_DT_AD': 'Requested Date(AD)',
+            'REQUESTED_DT_BS': 'Requested Date(BS)',
+            'FROM_DATE_AD': 'Start Date(AD)',
+            'FROM_DATE_BS': 'Start Date(BS)',
+            'TO_DATE_AD': 'End Date(AD)',
+            'TO_DATE_BS': 'End Date(BS)',
+            'HALF_DAY_DETAIL': 'Day Interval',
+            'GRACE_PERIOD_DETAIL': 'Grace',
+            'STATUS_DETAIL': 'Status',
+            'REMARKS': 'Remarks',
+            'RECOMMENDER_NAME': 'Recommender',
+            'RECOMMENDED_DT': 'Recommended Date',
+            'RECOMMENDED_REMARKS': 'Recommender Remarks',
+            'APPROVER_NAME': 'Approver',
+            'APPROVED_DT': 'Aprroved Date',
+            'APPROVED_REMARKS': 'Approver Remarks'
+        };
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, exportMap, 'Leave Request List');
+        });
+
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, exportMap, 'Leave Request List');
+        });
+        var selectItems = {};
+        var $bulkBtnContainer = $('#acceptRejectDiv');
+        var $bulkBtns = $(".btnApproveReject");
+        $table.on('click', '.k-checkbox', function () {
+            var checked = this.checked;
+            var row = $(this).closest("tr");
+            var grid = $table.data("kendoGrid");
+            var dataItem = grid.dataItem(row);
+            selectItems[dataItem['ID']].checked = checked;
             if (checked) {
-                //-select the row
                 row.addClass("k-state-selected");
+                $bulkBtnContainer.show();
             } else {
-                //-remove selection
                 row.removeClass("k-state-selected");
-            }
-
-            var checkedNo = $('.k-state-selected').length;
-            if (checkedNo > 0) {
-                $('#acceptRejectDiv').show();
-                if ($('#header-chb').prop('checked') == 1 && checkedNo == 1) {
-                    $('#acceptRejectDiv').hide();
-                }
-            } else {
-                $('#acceptRejectDiv').hide();
-            }
-        }
-
-
-
-        $('#header-chb').change(function (ev) {
-            var checked = ev.target.checked;
-            $('.row-checkbox').each(function (idx, item) {
-                if (checked) {
-                    if (!($(item).closest('tr').is('.k-state-selected'))) {
-                        $(item).click();
+                var atleastOne = false;
+                for (var key in selectItems) {
+                    if (selectItems[key]['checked']) {
+                        atleastOne = true;
+                        return;
                     }
+                }
+                if (atleastOne) {
+                    $bulkBtnContainer.show();
                 } else {
-                    if ($(item).closest('tr').is('.k-state-selected')) {
-                        $(item).click();
-                    }
+                    $bulkBtnContainer.hide();
                 }
-            });
+
+            }
         });
-        $(".btnApproveReject").bind("click", function () {
+        $bulkBtns.bind("click", function () {
             var btnId = $(this).attr('id');
             var selectedValues = [];
-            for (var i in checkedIds) {
-                if (checkedIds[i].checked) {
-                    selectedValues.push(checkedIds[i].data);
+            for (var i in selectItems) {
+                if (selectItems[i].checked) {
+                    selectedValues.push({id: i, role: selectItems[i]['role']});
                 }
             }
 
-//            console.log(selectedValues);
             App.blockUI({target: "#hris-page-content"});
             app.pullDataById(
                     document.approveRejectUrl,
                     {data: selectedValues, btnAction: btnId}
             ).then(function (success) {
                 App.unblockUI("#hris-page-content");
-                console.log(success);
-                if (success.success == true) {
-                    var dataSource = new kendo.data.DataSource({data: success.data, pageSize: 20});
-                    var grid = $('#leaveApproveTable').data("kendoGrid");
-                    dataSource.read();
-                    grid.setDataSource(dataSource);
-                    checkedIds = {};
-                    $('#acceptRejectDiv').hide();
-                }
-
+                window.location.reload(true);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
-                console.log(failure);
             });
         });
-        app.searchTable('leaveApproveTable', ['FULL_NAME', 'LEAVE_ENAME', 'APPLIED_DATE', 'APPLIED_DATE_N', 'START_DATE', 'START_DATE_N', 'END_DATE', 'END_DATE_N', 'NO_OF_DAYS', 'YOUR_ROLE']);
-        app.pdfExport(
-                'leaveApproveTable',
-                {
-                    'FULL_NAME': 'Name',
-                    'LEAVE_ENAME': 'Leave',
-                    'APPLIED_DATE': 'Applied Date(AD)',
-                    'APPLIED_DATE_N': 'Applied Date(BS)',
-                    'START_DATE': 'Start Date(AD)',
-                    'START_DATE_N': 'Start Date(BS)',
-                    'END_DATE': 'End Date(AD)',
-                    'END_DATE_N': 'End Date(BS)',
-                    'YOUR_ROLE': 'Role',
-                    'NO_OF_DAYS': 'No Of Days',
-                    'STATUS': 'Status',
-                    'REMARKS': 'Remarks',
-                    'RECOMMENDED_REMARKS': 'Recommended Remarks',
-                    'RECOMMENDED_DATE': 'Recommended Date',
-                    'APPROVED_REMARKS': 'Approved Remarks',
-                    'APPROVED_DATE': 'Approved Date'
 
-                });
-        function gridDataBound(e) {
-            var grid = e.sender;
-            if (grid.dataSource.total() == 0) {
-                var colCount = grid.columns.length;
-                $(e.sender.wrapper)
-                        .find('tbody')
-                        .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
-            }
-        }
-        ;
-        $("#export").click(function (e) {
-            var rows = [{
-                    cells: [
-                        {value: "Employee Name"},
-                        {value: "Leave Name"},
-                        {value: "Requested Date(AD"},
-                        {value: "Requested Date(BS)"},
-                        {value: "From Date(AD)"},
-                        {value: "From Date(BS)"},
-                        {value: "To Date(AD)"},
-                        {value: "To Date(BS)"},
-                        {value: "Your Role"},
-                        {value: "Duration"},
-                        {value: "Status"},
-                        {value: "Remarks By Employee"},
-                        {value: "Remarks By Recommender"},
-                        {value: "Recommended Date"},
-                        {value: "Remarks By Approver"},
-                        {value: "Approved Date"},
-                    ]
-                }];
-            var dataSource = $("#leaveApproveTable").data("kendoGrid").dataSource;
-            var filteredDataSource = new kendo.data.DataSource({
-                data: dataSource.data(),
-                filter: dataSource.filter()
-            });
-            filteredDataSource.read();
-            var data = filteredDataSource.view();
-            for (var i = 0; i < data.length; i++) {
-                var dataItem = data[i];
-                var middleName = dataItem.MIDDLE_NAME != null ? " " + dataItem.MIDDLE_NAME + " " : " ";
-                rows.push({
-                    cells: [
-                        {value: dataItem.FULL_NAME},
-                        {value: dataItem.LEAVE_ENAME},
-                        {value: dataItem.APPLIED_DATE},
-                        {value: dataItem.APPLIED_DATE_N},
-                        {value: dataItem.START_DATE},
-                        {value: dataItem.START_DATE_N},
-                        {value: dataItem.END_DATE},
-                        {value: dataItem.END_DATE_N},
-                        {value: dataItem.YOUR_ROLE},
-                        {value: dataItem.NO_OF_DAYS},
-                        {value: dataItem.STATUS},
-                        {value: dataItem.REMARKS},
-                        {value: dataItem.RECOMMENDED_REMARKS},
-                        {value: dataItem.RECOMMENDED_DT},
-                        {value: dataItem.APPROVED_REMARKS},
-                        {value: dataItem.APPROVED_DT}
-                    ]
-                });
-            }
-            excelExport(rows);
-            e.preventDefault();
-        });
-        function excelExport(rows) {
-            var workbook = new kendo.ooxml.Workbook({
-                sheets: [
-                    {
-                        columns: [
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true}
-                        ],
-                        title: "Leave Request List",
-                        rows: rows
-                    }
-                ]
-            });
-            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LeaveRequestList.xlsx"});
-        }
+
     });
 })(window.jQuery, window.app);

@@ -7,6 +7,8 @@ use Application\Factory\ConfigInterface;
 use Application\Factory\HrLogger;
 use Interop\Container\ContainerInterface;
 use ReflectionClass;
+use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Log\Logger;
 use Zend\ServiceManager\Factory\FactoryInterface;
@@ -30,6 +32,11 @@ class ControllerFactory implements FactoryInterface {
                     $appConfig = new ApplicationConfig();
                     $appConfig->setApplicationConfig($container->get('config'));
                     $output = $appConfig;
+                    break;
+                case StorageInterface::class:
+                    $auth = new AuthenticationService();
+                    $storage = $auth->getStorage();
+                    $output = $storage;
                     break;
             }
             return $output;

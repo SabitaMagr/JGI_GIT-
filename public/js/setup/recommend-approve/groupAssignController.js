@@ -45,19 +45,15 @@ angular.module('hris', ['ui.bootstrap'])
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullEmployeeForRecomApproverAssign',
-                    // pullEmployeeForShiftAssign
-                    data: {
-                        companyId: companyId,
-                        branchId: branchId,
-                        departmentId: departmentId,
-                        designationId: designationId,
-                        positionId: positionId,
-                        serviceTypeId: serviceTypeId,
-                        employeeTypeId: employeeTypeId,
-                        employeeId: employeeId
-                    }
+                window.app.pullDataById(document.searchLink, {
+                    companyId: companyId,
+                    branchId: branchId,
+                    departmentId: departmentId,
+                    designationId: designationId,
+                    positionId: positionId,
+                    serviceTypeId: serviceTypeId,
+                    employeeTypeId: employeeTypeId,
+                    employeeId: employeeId
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
                     console.log("Employee list for assign", success);
@@ -213,13 +209,10 @@ angular.module('hris', ['ui.bootstrap'])
                 }
                 for (var index in $scope.employeeList) {
                     if ($scope.employeeList[index].checked) {
-                        promises.push(window.app.pullDataById(document.url, {
-                            action: 'assignEmployeeReportingHierarchy',
-                            data: {
-                                employeeId: $scope.employeeList[index].EMPLOYEE_ID,
-                                recommenderId: recommenderId1,
-                                approverId: approverId1
-                            }
+                        promises.push(window.app.pullDataById(document.assignEmployeeReportingHierarchyLink, {
+                            employeeId: $scope.employeeList[index].EMPLOYEE_ID,
+                            recommenderId: recommenderId1,
+                            approverId: approverId1
                         }));
                     }
                 }

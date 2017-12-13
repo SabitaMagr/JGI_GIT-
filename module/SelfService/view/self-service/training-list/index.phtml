@@ -14,7 +14,6 @@ $this->headScript()
 ?>
 
 <script>
-    document.list =<?php echo json_encode($list); ?>;
     document.editLink = '<?= $this->url("trainingList", ['action' => 'view']) ?>';
 </script>
 <div class="page-bar">
@@ -51,9 +50,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        <li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -66,33 +73,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     
 
 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (TRAINING_NAME == null) ? '-' : TRAINING_NAME #
-        </td>
-        <td>
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
-        #: (DURATION == null) ? '-' : DURATION #
-        </td>
-        <td>
-        #: (INSTITUTE_NAME == null) ? '-' : INSTITUTE_NAME #
-        </td>
-        <td>
-        #: (LOCATION == null) ? '-' : LOCATION #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("trainingList", ['action' => 'view']); ?>/#:EMPLOYEE_ID #/#:TRAINING_ID #" style="height:17px;" title="view detail">
-            <i class="fa fa-search-plus"></i>
-            </a>
-        </td>
-        </tr>
-    </script>
+   
 
 </div>

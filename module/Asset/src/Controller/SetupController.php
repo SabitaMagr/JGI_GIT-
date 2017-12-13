@@ -10,6 +10,7 @@ use Asset\Model\Group;
 use Asset\Model\Setup;
 use Asset\Repository\IssueRepository;
 use Asset\Repository\SetupRepository;
+use Exception;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeFile;
 use Setup\Repository\EmployeeRepository;
@@ -17,6 +18,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class SetupController extends AbstractActionController {
 
@@ -72,7 +74,7 @@ class SetupController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $setup = new Setup();
                 $setup->exchangeArrayFromForm($this->form->getData());
-                $setup->assetImage=$postedData['logo'];
+                $setup->assetImage = $postedData['logo'];
                 $setup->createdBy = $this->employeeId;
                 $setup->createdDate = Helper::getcurrentExpressionDate();
                 $setup->approvedDate = Helper::getcurrentExpressionDate();
@@ -95,11 +97,10 @@ class SetupController extends AbstractActionController {
                     'form' => $this->form,
 //            'group'=>$groupList
                     'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC", NULL, FALSE, TRUE),
-            'imageData' => $imageData
+                    'imageData' => $imageData
         ]);
     }
-    
-    
+
     private function getFileInfo(AdapterInterface $adapter, $fileId) {
         $fileRepo = new EmployeeFile($adapter);
         $fileDetail = $fileRepo->fetchById($fileId);
@@ -136,7 +137,7 @@ class SetupController extends AbstractActionController {
             $this->form->setData($postedData);
             if ($this->form->isValid()) {
                 $setup->exchangeArrayFromForm($this->form->getData());
-                $setup->assetImage=$postedData['logo'];
+                $setup->assetImage = $postedData['logo'];
                 $setup->modifiedDate = Helper::getcurrentExpressionDate();
                 $setup->modifiedBy = $this->employeeId;
                 $setup->quantityBalance = $setup->quantity;
@@ -146,11 +147,11 @@ class SetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("assetSetup");
             }
         }
-        
+
         $imageData = $this->getFileInfo($this->adapter, $setup->assetImage);
 //        print_r($imageData);
 //        die();
-        
+
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'group' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Group::TABLE_NAME, Group::ASSET_GROUP_ID, [Group::ASSET_GROUP_EDESC], ["STATUS" => "E"], Group::ASSET_GROUP_EDESC, "ASC", NULL, FALSE, TRUE),
@@ -167,6 +168,23 @@ class SetupController extends AbstractActionController {
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Asset Setup Successfully Deleted!!!");
         return $this->redirect()->toRoute("assetSetup");
+    }
+
+    public function pullAssetBalanceAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $assetId = $data['assetId'];
+
+            $assetIssueRepo = new IssueRepository($this->adapter);
+            $assetRemQuantity = $assetIssueRepo->fetchAssetRemBalance($assetId);
+
+
+            return new JsonModel(['success' => true, 'data' => $assetRemQuantity['QUANTITY_BALANCE'], 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

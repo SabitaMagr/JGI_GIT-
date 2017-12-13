@@ -2,12 +2,11 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-//        app.startEndDatePicker('startDate', 'endDate');
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
 
         /* prevent past events */
-        $('#startDate').datepicker("setStartDate", new Date());
-        $('#endDate').datepicker("setStartDate", new Date());
+//        $('#startDate').datepicker("setStartDate", new Date());
+//        $('#endDate').datepicker("setStartDate", new Date());
         /* end of prevent past events */
 
         var inputFieldId = "form-trainingName";

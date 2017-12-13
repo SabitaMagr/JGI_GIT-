@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/30/16
- * Time: 11:20 AM
- */
+
 namespace SelfService\Repository;
 
 use Application\Model\Model;
@@ -15,47 +10,45 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class LeaveRepository implements RepositoryInterface
-{
-    public function __construct(AdapterInterface $adapter)
-    {
+class LeaveRepository implements RepositoryInterface {
+
+    public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway(LeaveAssign::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
-    function add(Model $model)
-    {
+    function add(Model $model) {
         // TODO: Implement add() method.
     }
-    function edit(Model $model, $id)
-    {
+
+    function edit(Model $model, $id) {
         // TODO: Implement edit() method.
     }
-    function delete($id)
-    {
+
+    function delete($id) {
         // TODO: Implement delete() method.
     }
-    function fetchAll()
-    {
 
+    function fetchAll() {
+        
     }
-    function selectAll($employeeId){
+
+    function selectAll($employeeId) {
 
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
             new Expression("LA.TOTAL_DAYS AS TOTAL_DAYS"),
             new Expression("LA.BALANCE AS BALANCE"),
-            new Expression("LA.PREVIOUS_YEAR_BAL AS PREVIOUS_YEAR_BAL"),
-        ], true);
+            new Expression("(LA.TOTAL_DAYS - LA.BALANCE) AS LEAVE_TAKEN"),
+                ], true);
 
         $select->from(['LA' => LeaveAssign::TABLE_NAME])
-            ->join(['E'=>"HRIS_EMPLOYEES"],"E.EMPLOYEE_ID=LA.EMPLOYEE_ID",["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"),"MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"),"LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
-            ->join(['L'=>'HRIS_LEAVE_MASTER_SETUP'],"L.LEAVE_ID=LA.LEAVE_ID",['LEAVE_CODE','LEAVE_ENAME'=> new Expression("INITCAP(L.LEAVE_ENAME)")]);
+                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("INITCAP(L.LEAVE_ENAME)")]);
 
         $select->where([
-            "L.STATUS='E'",
-            "E.EMPLOYEE_ID=".$employeeId
+            "L.STATUS" => 'E',
+            "LA.EMPLOYEE_ID" => $employeeId
         ]);
         $select->order("L.LEAVE_ENAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -63,9 +56,8 @@ class LeaveRepository implements RepositoryInterface
         return $result;
     }
 
-    function fetchById($id)
-    {
+    function fetchById($id) {
         // TODO: Implement fetchById() method.
-
     }
+
 }

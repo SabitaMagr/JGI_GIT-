@@ -10,13 +10,13 @@ use ManagerService\Repository\HolidayWorkApproveRepository;
 use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\HolidayRepository;
-use Setup\Repository\RecommendApproveRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class WorkOnHolidayStatus extends AbstractActionController {
 
@@ -83,28 +83,13 @@ class WorkOnHolidayStatus extends AbstractActionController {
         $detail = $this->holidayWorkApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
         $employeeId = $detail['EMPLOYEE_ID'];
-        $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-        $recommApprove = 0;
-        if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-            $recommApprove = 1;
-        }
+        $recommApprove = $detail['RECOMMENDER_ID'] == $detail['APPROVER_ID'] ? 1 : 0;
 
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'C' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
-
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
         if (!$request->isPost()) {
             $workOnHolidayModel->exchangeArrayFromDB($detail);
@@ -166,6 +151,22 @@ class WorkOnHolidayStatus extends AbstractActionController {
 
     private function wohAppAction($detail) {
         $this->holidayWorkApproveRepository->wohReward($detail['ID']);
+    }
+
+    public function pullHoliayWorkRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $holidayWorkStatusRepo = new WorkOnHolidayStatusRepository($this->adapter);
+            $result = $holidayWorkStatusRepo->getWOHRequestList($data);
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

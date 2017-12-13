@@ -2,46 +2,97 @@
 
 namespace Payroll\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
 use Application\Repository\MonthRepository;
 use Exception;
 use Payroll\Controller\SalarySheet as SalarySheetController;
-use Payroll\Model\Rules;
 use Payroll\Model\SalarySheet;
 use Payroll\Repository\PayrollRepository;
+use Payroll\Repository\RulesRepository;
+use Payroll\Repository\SalarySheetRepo;
+use Setup\Model\HrEmployees;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class Generate extends AbstractActionController {
+class Generate extends HrisController {
 
-    private $adapter;
-    private $payrollRepo;
+    private $salarySheetRepo;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->payrollRepo = new PayrollRepository($this->adapter);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(PayrollRepository::class);
+        $this->salarySheetRepo = new SalarySheetRepo($adapter);
     }
 
     public function indexAction() {
-        $rules = EntityHelper::getTableKVListWithSortOption($this->adapter, Rules::TABLE_NAME, Rules::PAY_ID, [Rules::PAY_EDESC], [Rules::STATUS => 'E'], Rules::PRIORITY_INDEX, Select::ORDER_ASCENDING, null, false, true);
-        $fiscalYears = $this->payrollRepo->fetchFiscalYears();
+        $ruleRepo = new RulesRepository($this->adapter);
+        $data['ruleList'] = Helper::extractDbData($ruleRepo->fetchAll());
+        $data['fiscalYearList'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
+        $monthRepo = new MonthRepository($this->adapter);
+        $data['monthList'] = Helper::extractDbData($monthRepo->fetchAll());
+        $data['salarySheetList'] = Helper::extractDbData($this->salarySheetRepo->fetchAll());
+        $links['viewLink'] = $this->url()->fromRoute('generate', ['action' => 'viewSalarySheet']);
+        $links['generateLink'] = $this->url()->fromRoute('generate', ['action' => 'generateSalarySheet']);
+        $data['links'] = $links;
+        return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
+    }
 
-        return Helper::addFlashMessagesToArray($this, [
-                    'rules' => $rules,
-                    'fiscalYears' => $fiscalYears,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
-        ]);
+    public function viewSalarySheetAction() {
+        $request = $this->getRequest();
+        $data = $request->getPost();
+        $sheetId = $data['sheetNo'];
+        $salarySheetController = new SalarySheetController($this->adapter);
+        $salarySheet = $salarySheetController->viewSalarySheet($sheetId);
+
+        return new JsonModel(['success' => true, 'data' => $salarySheet, 'error' => '']);
+    }
+
+    public function generateSalarySheetAction() {
+        $salarySheetRepo = new SalarySheetController($this->adapter);
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $stage = $data['stage'];
+
+            $returnData = null;
+            switch ($stage) {
+                case 1:
+                    $monthId = $data['monthId'];
+                    $year = $data['year'];
+                    $monthNo = $data['monthNo'];
+                    $fromDate = $data['fromDate'];
+                    $toDate = $data['toDate'];
+                    /*  */
+                    $sheetNo = $salarySheetRepo->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate);
+                    /*  */
+                    $employeeList = $salarySheetRepo->fetchEmployeeList($fromDate, $toDate);
+                    $returnData['sheetNo'] = $sheetNo;
+                    $returnData['employeeList'] = $employeeList;
+                    break;
+                case 2:
+                    $employeeId = $data['employeeId'];
+                    $monthId = $data['monthId'];
+                    $payrollGenerator = new PayrollGenerator($this->adapter);
+                    $returnData = $payrollGenerator->generate($employeeId, $monthId);
+
+                    break;
+                case 3:break;
+            }
+
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage(), 'stackTrace' => $e->getTrace()]);
+        }
     }
 
     public function generateMonthlySheetAction() {
         try {
             $request = $this->getRequest();
-            if (!($request->isPost())) {
-                throw new Exception("The request should be of type post");
-            }
             $data = $request->getPost();
 
             $monthId = $data['month'];
@@ -76,6 +127,32 @@ class Generate extends AbstractActionController {
             return new CustomViewModel(['success' => true, 'data' => $results, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
+        }
+    }
+
+    public function pullPayRollGeneratedMonthsAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $employeeId = null;
+            $joinDate = null;
+            if (isset($data['employeeId'])) {
+                $employeeId = $data['employeeId'];
+            }
+            if ($employeeId != null) {
+                $result = EntityHelper::getTableKVList($this->adapter, HrEmployees::TABLE_NAME, null, [HrEmployees::JOIN_DATE], [HrEmployees::EMPLOYEE_ID => $employeeId], null, null);
+                if (sizeof($result) > 0) {
+                    $joinDate = $result[0];
+                }
+            }
+            $salarySheetRepo = new SalarySheetRepo($this->adapter);
+            $generatedSalarySheets = Helper::extractDbData($salarySheetRepo->joinWithMonth(null, $joinDate));
+
+            return new JsonModel(['success' => true, 'data' => $generatedSalarySheets, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

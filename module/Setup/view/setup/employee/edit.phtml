@@ -245,7 +245,21 @@ if ($this->messages) {
     document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
     document.employeeId =<?= $id ?>;
     document.address =<?php echo json_encode($address); ?>;
-    document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';</script>
+    document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';
+    document.pullAcademicDetailLink = '<?php echo $this->url('employee', ['action' => 'pullAcademicDetail']); ?>';
+    document.pullExperienceDetailLink = '<?php echo $this->url('employee', ['action' => 'pullExperienceDetail']); ?>';
+    document.pullTrainingDetailLink = '<?php echo $this->url('employee', ['action' => 'pullTrainingDetail']); ?>';
+    document.submitQualificationDtlLink = '<?php echo $this->url('employee', ['action' => 'submitQualificationDtl']); ?>';
+    document.submitExperienceDtlLink = '<?php echo $this->url('employee', ['action' => 'submitExperienceDtl']); ?>';
+    document.submitTrainingDtlLink = '<?php echo $this->url('employee', ['action' => 'submitTrainingDtl']); ?>';
+    document.deleteQualificationDtlLink = '<?php echo $this->url('employee', ['action' => 'deleteQualificationDtl']); ?>';
+    document.deleteExperienceDtlLink = '<?php echo $this->url('employee', ['action' => 'deleteExperienceDtl']); ?>';
+    document.deleteTrainingDtlLink = '<?php echo $this->url('employee', ['action' => 'deleteTrainingDtl']); ?>';
+    document.pullEmployeeFileLink = '<?php echo $this->url('employee', ['action' => 'pullEmployeeFile']); ?>';
+    document.pushEmployeeProfileLink = '<?php echo $this->url('employee', ['action' => 'pushEmployeeProfile']); ?>';
+    document.pushEmployeeDocumentLink = '<?php echo $this->url('employee', ['action' => 'pushEmployeeDocument']); ?>';
+    document.pullEmployeeFileByEmpIdLink = '<?php echo $this->url('employee', ['action' => 'pullEmployeeFileByEmpId']); ?>';
+    document.dropEmployeeFileLink = '<?php echo $this->url('employee', ['action' => 'dropEmployeeFile']); ?>';</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -527,7 +541,7 @@ if ($this->messages) {
                                         <?php print $this->formLabel($socialActivity) ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($socialActivity) ?></div>
-                                    <?php print $this->formElementErrors()->render($socialActivity, ['class' => 'help-block error']) ?>
+                                        <?php print $this->formElementErrors()->render($socialActivity, ['class' => 'help-block error']) ?>
                                 </div>
                             </div>
                         </div>
@@ -652,7 +666,7 @@ if ($this->messages) {
                                         <?php print $this->formLabel($addrPermDistrictId); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($addrPermDistrictId); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermDistrictId, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermDistrictId, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
                         </div>
@@ -665,7 +679,7 @@ if ($this->messages) {
                                         <?php print $this->formLabel($addrPermVdcMunicipalityId); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($addrPermVdcMunicipalityId); ?></div>
-                                    <?php print $this->formElementErrors()->render($addrPermVdcMunicipalityId, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElementErrors()->render($addrPermVdcMunicipalityId, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
 
@@ -685,7 +699,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($addrTempHouseNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                             <?php print $this->formElement($addrTempHouseNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($addrTempHouseNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($addrTempHouseNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -699,7 +713,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($addrTempWardNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                             <?php print $this->formElement($addrTempWardNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($addrTempWardNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($addrTempWardNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -711,7 +725,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($addrTempStreetAddress); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                             <?php print $this->formElement($addrTempStreetAddress); ?></div>
-                                        <?php print $this->formElementErrors()->render($addrTempStreetAddress, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($addrTempStreetAddress, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -723,7 +737,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($addrTempZoneId); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                             <?php print $this->formElement($addrTempZoneId); ?></div>
-                                        <?php print $this->formElementErrors()->render($addrTempZoneId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($addrTempZoneId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -735,7 +749,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($addrTempDistrictId); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                             <?php print $this->formElement($addrTempDistrictId); ?></div>
-                                        <?php print $this->formElementErrors()->render($addrTempDistrictId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($addrTempDistrictId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -747,7 +761,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($addrTempVdcMunicipalityId); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                             <?php print $this->formElement($addrTempVdcMunicipalityId); ?></div>
-                                        <?php print $this->formElementErrors()->render($addrTempVdcMunicipalityId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($addrTempVdcMunicipalityId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                                 <?php print $this->formElementErrors()->render($addrTempVdcMunicipalityId, ['class' => 'help-block error']); ?>
@@ -773,7 +787,7 @@ if ($this->messages) {
                                         <?php print $this->formLabel($emergContactName); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($emergContactName); ?></div>
-                                    <?php print $this->formElementErrors()->render($emergContactName, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElementErrors()->render($emergContactName, ['class' => 'help-block error']); ?>
 
                                 </div>
                             </div>
@@ -787,7 +801,7 @@ if ($this->messages) {
                                         <?php print $this->formLabel($emergContactRelationship); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($emergContactRelationship); ?></div>
-                                    <?php print $this->formElementErrors()->render($emergContactRelationship, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElementErrors()->render($emergContactRelationship, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
                         </div>
@@ -802,7 +816,7 @@ if ($this->messages) {
                                         <?php print $this->formLabel($emergContactAddress); ?></div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($emergContactAddress); ?></div>
-                                    <?php print $this->formElementErrors()->render($emergContactAddress, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElementErrors()->render($emergContactAddress, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
                         </div>
@@ -818,7 +832,7 @@ if ($this->messages) {
                                     </div>
                                     <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                         <?php print $this->formElement($emergContactNo); ?></div>
-                                    <?php print $this->formElementErrors()->render($emergContactNo, ['class' => 'help-block error']); ?>
+                                        <?php print $this->formElementErrors()->render($emergContactNo, ['class' => 'help-block error']); ?>
                                 </div>
                             </div>
 
@@ -855,7 +869,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famFatherName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famFatherName); ?></div>
-                                        <?php print $this->formElementErrors()->render($famFatherName, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famFatherName, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -867,7 +881,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famFatherOccupation); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famFatherOccupation); ?></div>
-                                        <?php print $this->formElementErrors()->render($famFatherOccupation, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famFatherOccupation, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -879,7 +893,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famGrandFatherName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famGrandFatherName); ?></div>
-                                        <?php print $this->formElementErrors()->render($famGrandFatherName, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famGrandFatherName, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -893,7 +907,7 @@ if ($this->messages) {
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($maritualStatus); ?></div>
-                                        <?php print $this->formElementErrors()->render($maritualStatus, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($maritualStatus, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -906,7 +920,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famSpouseName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famSpouseName); ?></div>
-                                        <?php print $this->formElementErrors()->render($famSpouseName, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famSpouseName, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -917,7 +931,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famSpouseOccupation); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famSpouseOccupation); ?></div>
-                                        <?php print $this->formElementErrors()->render($famSpouseOccupation, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famSpouseOccupation, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
 
@@ -932,7 +946,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famMotherName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famMotherName); ?></div>
-                                        <?php print $this->formElementErrors()->render($famMotherName, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famMotherName, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -944,7 +958,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famMotherOccupation); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famMotherOccupation); ?></div>
-                                        <?php print $this->formElementErrors()->render($famMotherOccupation, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famMotherOccupation, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -957,7 +971,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($famGrandMotherName); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-2">
                                             <?php print $this->formElement($famGrandMotherName); ?></div>
-                                        <?php print $this->formElementErrors()->render($famGrandMotherName, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($famGrandMotherName, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1048,7 +1062,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idLbrf); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idLbrf); ?></div>
-                                        <?php print $this->formElementErrors()->render($idLbrf, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idLbrf, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1060,7 +1074,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idBarCode); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idBarCode); ?></div>
-                                        <?php print $this->formElementErrors()->render($idBarCode, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idBarCode, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1071,7 +1085,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idProvidentFundNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idProvidentFundNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($idProvidentFundNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idProvidentFundNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1082,7 +1096,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idDrivingLicenseNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idDrivingLicenseNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($idDrivingLicenseNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idDrivingLicenseNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1120,7 +1134,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idDrivingLicenseType); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">  
                                             <?php print $this->formElement($idDrivingLicenseType); ?></div>
-                                        <?php print $this->formElementErrors()->render($idDrivingLicenseType, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idDrivingLicenseType, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1132,7 +1146,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idPassportNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3"> 
                                             <?php print $this->formElement($idPassportNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($idPassportNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idPassportNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
 
@@ -1147,7 +1161,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idThumbId); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idThumbId); ?></div>
-                                        <?php print $this->formElementErrors()->render($idThumbId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idThumbId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1159,7 +1173,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idPanNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idPanNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($idPanNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idPanNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1170,7 +1184,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idAccountId); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idAccountId); ?></div>
-                                        <?php print $this->formElementErrors()->render($idAccountId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idAccountId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1181,7 +1195,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idRetirementNo); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idRetirementNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($idRetirementNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idRetirementNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1195,7 +1209,7 @@ if ($this->messages) {
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idCitizenshipNo); ?></div>
-                                        <?php print $this->formElementErrors()->render($idCitizenshipNo, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idCitizenshipNo, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1235,7 +1249,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($idCitizenshipIssuePlace); ?></div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                             <?php print $this->formElement($idCitizenshipIssuePlace); ?></div>
-                                        <?php print $this->formElementErrors()->render($idCitizenshipIssuePlace, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($idCitizenshipIssuePlace, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1319,7 +1333,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($employeeType); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($employeeType); ?></div>
-                                        <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1332,7 +1346,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($salary); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($salary); ?></div>
-                                        <?php print $this->formElementErrors()->render($salary, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($salary, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1344,7 +1358,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($salaryPf); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($salaryPf); ?></div>
-                                        <?php print $this->formElementErrors()->render($salaryPf, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($salaryPf, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1356,7 +1370,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($serviceTypeId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($serviceTypeId); ?></div>
-                                        <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($serviceTypeId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1368,7 +1382,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($branchId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($branchId); ?></div>
-                                        <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1380,7 +1394,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($departmentId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($departmentId); ?></div>
-                                        <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1394,7 +1408,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($designationId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($designationId); ?></div>
-                                        <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -1407,7 +1421,7 @@ if ($this->messages) {
                                             <?php print $this->formLabel($positionId); ?></div>
                                         <div class="col-xs-6 col-sm-6 cgap-4">
                                             <?php print $this->formElement($positionId); ?></div>
-                                        <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block error']); ?>
+                                            <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block error']); ?>
                                     </div>
                                 </div>
                             </div>

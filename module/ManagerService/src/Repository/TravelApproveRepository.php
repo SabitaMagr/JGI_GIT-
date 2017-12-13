@@ -70,109 +70,160 @@ class TravelApproveRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
-            new Expression("INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
-            new Expression("TR.STATUS AS STATUS"),
-            new Expression("TR.DESTINATION AS DESTINATION"),
-            new Expression("INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
-            new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
-            new Expression("INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
-            new Expression("TR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
+            new Expression("TR.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("TR.TRAVEL_ID AS TRAVEL_ID"),
             new Expression("TR.TRAVEL_CODE AS TRAVEL_CODE"),
-            new Expression("TR.REFERENCE_TRAVEL_ID AS REFERENCE_TRAVEL_ID"),
+            new Expression("TR.DESTINATION AS DESTINATION"),
+            new Expression("TR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("TR.PURPOSE AS PURPOSE"),
-            new Expression("TR.EMPLOYEE_ID AS EMPLOYEE_ID"),
-            new Expression("TR.RECOMMENDED_BY AS RECOMMENDED_BY"),
-            new Expression("TR.APPROVED_BY AS APPROVED_BY"),
-            new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
-            new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
-            new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.TRANSPORT_TYPE AS TRANSPORT_TYPE"),
+            new Expression("(CASE WHEN TR.TRANSPORT_TYPE = 'AP' THEN 'Aeroplane' WHEN TR.TRANSPORT_TYPE = 'OV' THEN 'Office Vehicles' WHEN TR.TRANSPORT_TYPE = 'TI' THEN 'Taxi' WHEN TR.TRANSPORT_TYPE = 'BS' THEN 'Bus' END) AS TRANSPORT_TYPE_DETAIL"),
+            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE"),
+            new Expression("(CASE WHEN LOWER(TR.REQUESTED_TYPE) = 'ap' THEN 'Advance' ELSE 'Expense' END) AS REQUESTED_TYPE_DETAIL"),
             new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE"),
-            new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE")
+            new Expression("INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
+            new Expression("(TR.TO_DATE)-TRUNC(TR.FROM_DATE) AS DURATION"),
+            new Expression("INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("TR.REMARKS AS REMARKS"),
+            new Expression("TR.STATUS AS STATUS"),
+            new Expression("LEAVE_STATUS_DESC(TR.STATUS) AS STATUS_DETAIL"),
+            new Expression("TR.RECOMMENDED_BY AS RECOMMENDED_BY"),
+            new Expression("INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
+            new Expression("TR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
+            new Expression("TR.APPROVED_BY AS APPROVED_BY"),
+            new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
+            new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
+            new Expression("TR.REFERENCE_TRAVEL_ID AS REFERENCE_TRAVEL_ID"),
                 ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=TR.EMPLOYEE_ID", ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left")
-                ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['FN1' => new Expression("INITCAP(E1.FIRST_NAME)"), 'MN1' => new Expression("INITCAP(E1.MIDDLE_NAME)"), 'LN1' => new Expression("INITCAP(E1.LAST_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.APPROVED_BY", ['FN2' => new Expression("INITCAP(E2.FIRST_NAME)"), 'MN2' => new Expression("INITCAP(E2.MIDDLE_NAME)"), 'LN2' => new Expression("INITCAP(E2.LAST_NAME)")], "left")
-                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER' => 'RECOMMEND_BY', 'APPROVER' => 'APPROVED_BY'], "left")
-                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECM_FN' => new Expression("INITCAP(RECM.FIRST_NAME)"), 'RECM_MN' => new Expression("INITCAP(RECM.MIDDLE_NAME)"), 'RECM_LN' => new Expression("INITCAP(RECM.LAST_NAME)")], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APRV_FN' => new Expression("INITCAP(APRV.FIRST_NAME)"), 'APRV_MN' => new Expression("INITCAP(APRV.MIDDLE_NAME)"), 'APRV_LN' => new Expression("INITCAP(APRV.LAST_NAME)")], "left")
-                ->join(['TS' => "HRIS_TRAVEL_SUBSTITUTE"], "TS.TRAVEL_ID=TR.TRAVEL_ID", ['SUB_EMPLOYEE_ID' => 'EMPLOYEE_ID', 'SUB_APPROVED_DATE' => new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"), 'SUB_REMARKS' => "REMARKS", 'SUB_APPROVED_FLAG' => "APPROVED_FLAG"], "left");
-
-        $select->where([
-            "TR.TRAVEL_ID=" . $id
-        ]);
-
+                ->join(['TS' => "HRIS_TRAVEL_SUBSTITUTE"], "TR.TRAVEL_ID=TS.TRAVEL_ID", [
+                    'SUB_EMPLOYEE_ID' => 'EMPLOYEE_ID',
+                    'SUB_APPROVED_DATE' => new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"),
+                    'SUB_REMARKS' => "REMARKS",
+                    'SUB_APPROVED_FLAG' => "APPROVED_FLAG",
+                    'SUB_APPROVED_FLAG_DETAIL' => new Expression("(CASE WHEN APPROVED_FLAG = 'Y' THEN 'Approved' WHEN APPROVED_FLAG = 'N' THEN 'Rejected' ELSE 'Pending' END)")
+                        ], "left")
+                ->join(['TSE' => 'HRIS_EMPLOYEES'], 'TS.EMPLOYEE_ID=TSE.EMPLOYEE_ID', ["SUB_EMPLOYEE_NAME" => new Expression("INITCAP(TSE.FULL_NAME)")], "left")
+                ->join(['TSED' => 'HRIS_DESIGNATIONS'], 'TSE.DESIGNATION_ID=TSED.DESIGNATION_ID', ["SUB_DESIGNATION_TITLE" => "DESIGNATION_TITLE"], "left")
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=TR.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+                ->join(['ED' => 'HRIS_DESIGNATIONS'], 'E.DESIGNATION_ID=ED.DESIGNATION_ID', ["DESIGNATION_TITLE" => "DESIGNATION_TITLE"], "left")
+                ->join(['EC' => 'HRIS_COMPANY'], 'E.COMPANY_ID=EC.COMPANY_ID', ["COMPANY_NAME" => "COMPANY_NAME"], "left")
+                ->join(['ECF' => 'HRIS_EMPLOYEE_FILE'], 'EC.LOGO=ECF.FILE_CODE', ["COMPANY_FILE_PATH" => "FILE_PATH"], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+                ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=TR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
+        $select->where(["TR.TRAVEL_ID" => $id]);
+        $select->order("TR.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
     }
 
-    public function getAllRequest($id = null, $status = null) {
-        $sql = "SELECT 
-                    TR.TRAVEL_ID,
-                    TR.TRAVEL_CODE,
-                    TR.EMPLOYEE_ID,
-                    TR.REQUESTED_AMOUNT,
-                    INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
-                    BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_N,
-                    TR.APPROVED_BY,
-                    TR.RECOMMENDED_BY,
-                    TR.PURPOSE,
-                    TR.STATUS,
-                    TR.REQUESTED_TYPE,
-                    TR.REMARKS,
-                    TR.RECOMMENDED_REMARKS,
-                    TR.APPROVED_REMARKS,
-                    TR.DESTINATION,
-                    INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE,
-                    BS_DATE(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE_N,
-                    INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE,
-                    BS_DATE(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE_N,
-                    INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
-                    INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
-                    INITCAP(E.FIRST_NAME) AS FIRST_NAME,
-                    INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
-                    INITCAP(E.LAST_NAME) AS LAST_NAME,
-                    INITCAP(E.FULL_NAME) AS FULL_NAME,
-                    RA.RECOMMEND_BY as RECOMMENDER,
-                    RA.APPROVED_BY AS APPROVER,
-                    TS.APPROVED_FLAG AS APPROVED_FLAG,
-                    INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY')) AS SUB_APPROVED_DATE,
-                    TS.EMPLOYEE_ID AS SUB_EMPLOYEE_ID
-                    FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
-                    LEFT JOIN HRIS_EMPLOYEES E ON 
-                    E.EMPLOYEE_ID=TR.EMPLOYEE_ID
-                    LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
-                    ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
-                    LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
-                    ON TS.TRAVEL_ID = TR.TRAVEL_ID
-                    WHERE E.STATUS='E'
-                    AND E.RETIRED_FLAG='N'";
-        if ($status == null) {
-            $sql .= " AND ((RA.RECOMMEND_BY=" . $id . " AND TR.STATUS='RQ'"
-                    . " AND
-                    (TS.APPROVED_FLAG = CASE WHEN TS.EMPLOYEE_ID IS NOT NULL
-                         THEN ('Y')     
-                    END OR  TS.EMPLOYEE_ID is null)) OR (RA.APPROVED_BY=" . $id . " AND TR.STATUS='RC') )";
-        } else if ($status == 'RC') {
-            $sql .= " AND TR.STATUS='RC' AND
-                RA.RECOMMEND_BY=" . $id;
-        } else if ($status == 'AP') {
-            $sql .= " AND TR.STATUS='AP' AND
-                RA.APPROVED_BY=" . $id;
-        } else if ($status == 'R') {
-            $sql .= " AND TR.STATUS='" . $status . "' AND
-                ((RA.RECOMMEND_BY=" . $id . " AND TR.APPROVED_DATE IS NULL) OR (RA.APPROVED_BY=" . $id . " AND TR.APPROVED_DATE IS NOT NULL) )";
+    public function getAllFiltered($search) {
+        $condition = "";
+        if (isset($search['fromDate']) && $search['fromDate'] != null) {
+            $condition .= " AND TR.FROM_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
         }
-        $sql .= " ORDER BY TR.REQUESTED_DATE DESC";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        if (isset($search['fromDate']) && $search['toDate'] != null) {
+            $condition .= " AND TR.TO_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+        }
+
+
+        if (isset($search['status']) && $search['status'] != null && $search['status'] != -1) {
+            if (gettype($search['status']) === 'array') {
+                $csv = "";
+                for ($i = 0; $i < sizeof($search['status']); $i++) {
+                    if ($i == 0) {
+                        $csv = "'{$search['status'][$i]}'";
+                    } else {
+                        $csv .= ",'{$search['status'][$i]}'";
+                    }
+                }
+                $condition .= "AND TR.STATUS IN ({$csv})";
+            } else {
+                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
+            }
+        }
+
+        $sql = "SELECT TR.TRAVEL_ID                   AS TRAVEL_ID,
+                  TR.TRAVEL_CODE                      AS TRAVEL_CODE,
+                  TR.EMPLOYEE_ID                      AS EMPLOYEE_ID,
+                  E.FULL_NAME                         AS EMPLOYEE_NAME,
+                  TO_CHAR(TR.REQUESTED_DATE,'DD-MON-YYYY') AS REQUESTED_DATE_AD,
+                  BS_DATE(TR.REQUESTED_DATE)               AS REQUESTED_DATE_BS,
+                  TO_CHAR(TR.FROM_DATE,'DD-MON-YYYY') AS FROM_DATE_AD,
+                  BS_DATE(TR.FROM_DATE)               AS FROM_DATE_BS,
+                  TO_CHAR(TR.TO_DATE,'DD-MON-YYYY')   AS TO_DATE_AD,
+                  BS_DATE(TR.TO_DATE)                 AS TO_DATE_BS,
+                  TR.DESTINATION                      AS DESTINATION,
+                  TR.PURPOSE                          AS PURPOSE,
+                  TR.REQUESTED_TYPE                   AS REQUESTED_TYPE,
+                  (
+                  CASE
+                    WHEN TR.REQUESTED_TYPE = 'ad'
+                    THEN 'Advance'
+                    ELSE 'Expense'
+                  END)                       AS REQUESTED_TYPE_DETAIL,
+                  NVL(TR.REQUESTED_AMOUNT,0) AS REQUESTED_AMOUNT,
+                  TR.TRANSPORT_TYPE          AS TRANSPORT_TYPE,
+                  (
+                  CASE
+                    WHEN TR.TRANSPORT_TYPE = 'AP'
+                    THEN 'Aeroplane'
+                    WHEN TR.TRANSPORT_TYPE = 'OV'
+                    THEN 'Office Vehicles'
+                    WHEN TR.TRANSPORT_TYPE = 'TI'
+                    THEN 'Taxi'
+                    WHEN TR.TRANSPORT_TYPE = 'BS'
+                    THEN 'Bus'
+                  END)                                                            AS TRANSPORT_TYPE_DETAIL,
+                  TO_CHAR(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_AD,
+                  BS_DATE(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_BS,
+                  TO_CHAR(TR.RETURNED_DATE)                                       AS RETURNED_DATE_AD,
+                  BS_DATE(TR.RETURNED_DATE)                                       AS RETURNED_DATE_BS,
+                  TR.REMARKS                                                      AS REMARKS,
+                  TR.STATUS                                                       AS STATUS,
+                  LEAVE_STATUS_DESC(TR.STATUS)                                    AS STATUS_DETAIL,
+                  TR.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
+                  RE.FULL_NAME                                                    AS RECOMMENDED_BY_NAME,
+                  TO_CHAR(TR.RECOMMENDED_DATE)                                    AS RECOMMENDED_DATE_AD,
+                  BS_DATE(TR.RECOMMENDED_DATE)                                    AS RECOMMENDED_DATE_BS,
+                  TR.RECOMMENDED_REMARKS                                          AS RECOMMENDED_REMARKS,
+                  TR.APPROVED_BY                                                  AS APPROVED_BY,
+                  AE.FULL_NAME                                                    AS APPROVED_BY_NAME,
+                  TO_CHAR(TR.APPROVED_DATE)                                       AS APPROVED_DATE_AD,
+                  BS_DATE(TR.APPROVED_DATE)                                       AS APPROVED_DATE_BS,
+                  TR.APPROVED_REMARKS                                             AS APPROVED_REMARKS,
+                  RAR.EMPLOYEE_ID                                                 AS RECOMMENDER_ID,
+                  RAR.FULL_NAME                                                   AS RECOMMENDER_NAME,
+                  RAA.EMPLOYEE_ID                                                 AS APPROVER_ID,
+                  RAA.FULL_NAME                                                   AS APPROVER_NAME,
+                  REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                  REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+                FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON (E.EMPLOYEE_ID =TR.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES RE
+                ON(RE.EMPLOYEE_ID =TR.RECOMMENDED_BY)
+                LEFT JOIN HRIS_EMPLOYEES AE
+                ON (AE.EMPLOYEE_ID =TR.APPROVED_BY)
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
+                ON (RA.EMPLOYEE_ID=TR.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES RAR
+                ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES RAA
+                ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES U
+                ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
+                OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
+                WHERE 1=1
+                AND U.EMPLOYEE_ID={$search['employeeId']} {$condition}";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
 }

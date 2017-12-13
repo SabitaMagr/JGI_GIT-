@@ -14,9 +14,8 @@ $this->headScript()
 ?>
 
 <script>
-    document.trainingRequestList =<?php echo json_encode($list) ?>;
-    document.viewLink ='<?= $this->url("trainingRequest", ["action" => "view"]) ?>';
-    document.deleteLink ='<?= $this->url("trainingRequest", ["action" => "delete"]) ?>';
+    document.viewLink = '<?= $this->url("trainingRequest", ["action" => "view"]) ?>';
+    document.deleteLink = '<?= $this->url("trainingRequest", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\trainingRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -38,9 +37,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -55,56 +54,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        <li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-    <div id="trainingRequestTable">
+        <div id="trainingRequestTable">
+        </div>
     </div>
-	</div>
 
-    
-    
-<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (TITLE == null) ? '-' : TITLE #
-        </td>
-        <td>
-        #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-        </td>
-        <td>
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
-        #: (DURATION == null) ? '-' : DURATION #
-        </td>
-        <td>
-        #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("trainingRequest", ["action" => "view"]) ?>/#: REQUEST_ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        #if(ALLOW_TO_EDIT == 1){#       
-        <a class="confirmation btn-delete"
-        href="<?= $this->url("trainingRequest", ["action" => "delete"]) ?>/#: REQUEST_ID #" id="bs_#:REQUEST_ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        #}#
-        </td>
-        </tr>
-    </script>-->
+
 </div>

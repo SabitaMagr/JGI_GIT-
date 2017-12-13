@@ -1,72 +1,58 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:00 PM
- */
+
 namespace System\Repository;
 
+use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use System\Model\RoleSetup;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
-use Application\Helper\EntityHelper;
+use Zend\Db\TableGateway\TableGateway;
 
 class RoleSetupRepository implements RepositoryInterface {
 
     private $adapter;
     private $tableGateway;
-    public function __construct(AdapterInterface $adapter)
-    {
-        $this->tableGateway = new TableGateway(RoleSetup::TABLE_NAME,$adapter);
+
+    public function __construct(AdapterInterface $adapter) {
+        $this->tableGateway = new TableGateway(RoleSetup::TABLE_NAME, $adapter);
         $this->adapter = $adapter;
     }
 
-    public function add(Model $model)
-    {
+    public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
-    public function edit(Model $model, $id)
-    {
-        $this->tableGateway->update($model->getArrayCopyForDB(),[RoleSetup::ROLE_ID=>$id]);
+    public function edit(Model $model, $id) {
+        $this->tableGateway->update($model->getArrayCopyForDB(), [RoleSetup::ROLE_ID => $id]);
     }
 
-    public function fetchAll()
-    {
-        $rowset = $this->tableGateway->select(function(Select $select){
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(RoleSetup::class, 
-                    [RoleSetup::ROLE_NAME]),false);
-            $select->where([RoleSetup::STATUS=>"E"]);
-        });
-        $result = [];
-        $i=1;
-        foreach($rowset as $row){
-            array_push($result, [
-                'SN'=>$i,
-                'ROLE_ID'=>$row['ROLE_ID'],
-                'ROLE_NAME'=>$row['ROLE_NAME']
-            ]);
-            $i+=1;
-        }
+    public function fetchAll() {
+        $sql = "SELECT ROLE_ID,
+                  ROLE_NAME,
+                  ROLE_CONTROL_DESC(CONTROL) AS CONTROL,
+                  BOOLEAN_DESC(ALLOW_ADD)    AS ALLOW_ADD,
+                  BOOLEAN_DESC(ALLOW_UPDATE) AS ALLOW_UPDATE,
+                  BOOLEAN_DESC(ALLOW_DELETE) AS ALLOW_DELETE,
+                  REMARKS
+                FROM HRIS_ROLES";
+        $rowset = EntityHelper::rawQueryResult($this->adapter, $sql);
+        $result = Helper::extractDbData($rowset);
         return $result;
     }
 
-    public function fetchById($id)
-    {
-        $result = $this->tableGateway->select(function(Select $select)use($id){
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(RoleSetup::class, 
-                    [RoleSetup::ROLE_NAME]),false);
-            $select->where([RoleSetup::ROLE_ID=>$id]);
+    public function fetchById($id) {
+        $result = $this->tableGateway->select(function(Select $select)use($id) {
+            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(RoleSetup::class, [RoleSetup::ROLE_NAME]), false);
+            $select->where([RoleSetup::ROLE_ID => $id]);
         });
         return $result->current();
     }
 
-    public function delete($id)
-    {
-        $this->tableGateway->update([RoleSetup::STATUS=>"D"],[RoleSetup::ROLE_ID=>$id]);
+    public function delete($id) {
+        $this->tableGateway->update([RoleSetup::STATUS => "D"], [RoleSetup::ROLE_ID => $id]);
     }
+
 }

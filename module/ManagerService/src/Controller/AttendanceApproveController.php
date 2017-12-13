@@ -5,6 +5,7 @@ namespace ManagerService\Controller;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use AttendanceManagement\Repository\AttendanceStatusRepository;
 use Exception;
 use ManagerService\Repository\AttendanceApproveRepository;
 use Notification\Controller\HeadNotification;
@@ -13,11 +14,13 @@ use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use SelfService\Repository\AttendanceRequestRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class AttendanceApproveController extends AbstractActionController {
 
@@ -61,38 +64,20 @@ class AttendanceApproveController extends AbstractActionController {
         }
         $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
 
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
 
         $request = $this->getRequest();
         $model = new AttendanceRequestModel();
         $detail = $attendanceRequestRepository->fetchById($id);
 
         $employeeId = $detail['EMPLOYEE_ID'];
-        $employeeName = $fullName($employeeId);
+        $employeeName = $detail['FULL_NAME'];
 
-        $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DT'];
 
-
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
-
-        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
+        $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
 
         if (!$request->isPost()) {
             $model->exchangeArrayFromDB($detail);
@@ -272,50 +257,31 @@ class AttendanceApproveController extends AbstractActionController {
 
     public function getAllList() {
         $list = $this->repository->getAllRequest($this->employeeId);
-        $attendanceApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($recommender = $approver) {
-                return 'RECOMMENDER/APPROVER';
+        return Helper::extractDbData($list);
+    }
+
+    public function pullAttendanceRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);
+            if (key_exists('approverId', $data)) {
+                $approverId = $data['approverId'];
             } else {
-                if ($this->employeeId == $recommender) {
-                    return 'RECOMMENDER';
-                } else if ($this->employeeId == $approver) {
-                    return 'APPROVER';
-                }
+                $approverId = null;
             }
-        };
-
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } elseif ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-
-        foreach ($list as $row) {
-            $new_row = array_merge($row, [
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER']),
-                'STATUS' => $getStatusValue($row['STATUS'])
+            $result = $attendanceStatusRepository->getFilteredRecord($data, $approverId);
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+                "num" => count($recordList)
             ]);
-            array_push($attendanceApprove, $new_row);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
-        return $attendanceApprove;
     }
 
 }

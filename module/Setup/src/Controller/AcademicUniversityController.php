@@ -1,38 +1,45 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: root
  * Date: 11/10/16
  * Time: 4:37 PM
  */
+
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\Helper;
-use Zend\Mvc\Controller\AbstractActionController;
+use Exception;
+use Setup\Form\AcademicUniversityForm;
+use Setup\Model\AcademicUniversity;
+use Setup\Repository\AcademicUniversityRepository;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Authentication\AuthenticationService;
-use Setup\Form\AcademicUniversityForm;
-use Setup\Repository\AcademicUniversityRepository;
-use Setup\Model\AcademicUniversity;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class AcademicUniversityController extends AbstractActionController {
+
     private $repository;
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    public function __construct(AdapterInterface $adapter)
-    {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
         $this->repository = new AcademicUniversityRepository($adapter);
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
-    public function initializeForm()
-    {
+    public function initializeForm() {
         $form = new AcademicUniversityForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
@@ -40,18 +47,22 @@ class AcademicUniversityController extends AbstractActionController {
         }
     }
 
-    public function indexAction()
-    {
-        $universityList = $this->repository->fetchAll();
-        $academicUniversities = [];
-        foreach($universityList  as $universityRow){
-            array_push($academicUniversities, $universityRow);
+    public function indexAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $universityList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $universityList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['academicUniversities' => $academicUniversities]);
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
 
@@ -62,10 +73,10 @@ class AcademicUniversityController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $academicUniversity = new AcademicUniversity();
                 $academicUniversity->exchangeArrayFromForm($this->form->getData());
-                $academicUniversity->academicUniversityId=((int) Helper::getMaxId($this->adapter,AcademicUniversity::TABLE_NAME,AcademicUniversity::ACADEMIC_UNIVERSITY_ID))+1;
+                $academicUniversity->academicUniversityId = ((int) Helper::getMaxId($this->adapter, AcademicUniversity::TABLE_NAME, AcademicUniversity::ACADEMIC_UNIVERSITY_ID)) + 1;
                 $academicUniversity->createdDt = Helper::getcurrentExpressionDate();
                 $academicUniversity->createdBy = $this->employeeId;
-                $academicUniversity->status ='E';
+                $academicUniversity->status = 'E';
                 $this->repository->add($academicUniversity);
 
                 $this->flashmessenger()->addMessage("Academic University Successfully added!!!");
@@ -73,18 +84,17 @@ class AcademicUniversityController extends AbstractActionController {
             }
         }
         return new ViewModel(Helper::addFlashMessagesToArray(
-            $this,
-            [
-                'form' => $this->form,
-                'messages' => $this->flashmessenger()->getMessages()
-            ]
-        )
+                        $this, [
+                    'form' => $this->form,
+                    'messages' => $this->flashmessenger()->getMessages()
+                        ]
+                )
         );
     }
 
-    public function editAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function editAction() {
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
+        $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('academicUniversity');
         }
@@ -109,13 +119,15 @@ class AcademicUniversityController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray(
-            $this, ['form' => $this->form, 'id' => $id]
+                        $this, ['form' => $this->form, 'id' => $id]
         );
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
+        $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('academicUniversity');
         }
@@ -123,4 +135,5 @@ class AcademicUniversityController extends AbstractActionController {
         $this->flashmessenger()->addMessage("Academic University Successfully Deleted!!!");
         return $this->redirect()->toRoute('academicUniversity');
     }
+
 }

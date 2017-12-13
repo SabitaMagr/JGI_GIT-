@@ -1,11 +1,6 @@
 <?php
+
 namespace System\Form;
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:11 PM
- */
 
 use Zend\Form\Annotation;
 
@@ -13,8 +8,8 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("UserSetup")
  */
+class UserSetupForm {
 
-class UserSetupForm{
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"true"})
@@ -47,10 +42,11 @@ class UserSetupForm{
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Password"})
+     * @Annotation\Validator({"name":"Regex", "options":{"pattern":"/^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/","messages":{"regexNotMatch":"the password should be at least 8 character long and should contain Numeric, Alphabet, Capital Letter, Symbol Combinations"}}})
      * @Annotation\Attributes({ "id":"form-password", "class":"form-password form-control" })
      */
     public $password;
-    
+
     /**
      * @Annotion\Type("Zend\Form\Element\Password")
      * @Annotation\Required(false)
@@ -59,10 +55,28 @@ class UserSetupForm{
      * @Annotation\Attributes({ "id":"form-repassword", "class":"form-repassword form-control" })
      */
     public $repassword;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Locked Status","value_options":{"N":"No","Y":"Yes"}})
+     * @Annotation\Attributes({ "id":"isLocked","class":"form-control"})
+     */
+    public $isLocked;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"E":"Enabled","D":"Disabled"},"label":"Status"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"status"})
+     */
+    public $status;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success","id":"btnSubmit"})
      */
     public $submit;
+
 }

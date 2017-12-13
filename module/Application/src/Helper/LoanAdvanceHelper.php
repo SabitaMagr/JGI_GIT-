@@ -1,12 +1,13 @@
 <?php
 namespace Application\Helper;
 
-use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
+use DateTime;
+use Setup\Repository\AdvanceRepository;
+use Setup\Repository\EmployeeRepository;
 use Setup\Repository\LoanRepository;
 use Setup\Repository\LoanRestrictionRepository;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\AdvanceRepository;
+use Zend\Db\Adapter\AdapterInterface;
 
 class LoanAdvanceHelper{
     
@@ -24,12 +25,12 @@ class LoanAdvanceHelper{
         
         $salary = (int)$employeeDetail['SALARY'];
         if($employeeDetail['JOIN_DATE']==null){
-            $joinDate = new \DateTime();
+            $joinDate = new DateTime();
         }else{
-            $joinDate = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $employeeDetail['JOIN_DATE']);
+            $joinDate = DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $employeeDetail['JOIN_DATE']);
         }
         
-        $currentDate = new \DateTime();
+        $currentDate = new DateTime();
         
         $different = date_diff($joinDate,$currentDate);
         $yr = $different->format('%y');

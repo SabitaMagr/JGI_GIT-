@@ -1,22 +1,15 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 10/17/16
- * Time: 3:00 PM
- */
-
 namespace System\Repository;
 
 use Application\Model\Model;
-use Application\Model\User;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use System\Model\UserSetup;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Predicate\Expression;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Expression;
+use Zend\Db\TableGateway\TableGateway;
 
 class UserSetupRepository implements RepositoryInterface {
 
@@ -40,7 +33,7 @@ class UserSetupRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("US.STATUS AS STATUS"),
+            new Expression("STATUS_DESC(US.STATUS) AS STATUS"),
             new Expression("US.USER_ID AS USER_ID"),
             new Expression("US.USER_NAME AS USER_NAME"),
             new Expression("FN_DECRYPT_PASSWORD(US.PASSWORD) AS PASSWORD"),
@@ -49,14 +42,11 @@ class UserSetupRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['US' => UserSetup::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FIRST_NAME' => new Expression("INITCAP(E.FIRST_NAME)"), 'MIDDLE_NAME' => new Expression("INITCAP(E.MIDDLE_NAME)"), 'LAST_NAME' => new Expression("INITCAP(E.LAST_NAME)"), 'FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")])
-                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME']);
+                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME'])
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")], Select::JOIN_LEFT)
+                ->join(['C' => "HRIS_COMPANY"], "C.COMPANY_ID=E.COMPANY_ID", ['COMPANY_NAME' => new Expression("INITCAP(C.COMPANY_NAME)")], Select::JOIN_LEFT);
 
-        $select->where([
-            "US.STATUS='E'",
-            "E.STATUS='E'"
-        ]);
-
+        $select->order(['C.COMPANY_NAME' => Select::ORDER_ASCENDING, 'R.ROLE_NAME' => Select::ORDER_ASCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
 
@@ -93,6 +83,7 @@ class UserSetupRepository implements RepositoryInterface {
             new Expression("FN_DECRYPT_PASSWORD(PASSWORD) AS PASSWORD"),
             new Expression("EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("ROLE_ID AS ROLE_ID"),
+            new Expression("IS_LOCKED AS IS_LOCKED"),
                 ], true);
 
         $select->from(UserSetup::TABLE_NAME);
@@ -161,10 +152,6 @@ class UserSetupRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
-
-
-//        $result = $this->tableGateway->select([UserSetup::EMPLOYEE_ID => $employeeId]);
-//        return $result->current();
     }
 
 }

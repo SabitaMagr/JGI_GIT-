@@ -2,56 +2,54 @@
 
 namespace SelfService\Controller;
 
+use Application\Controller\HrisController;
+use Application\Custom\CustomViewModel;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use SelfService\Repository\AttendanceRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class MyAttendance extends AbstractActionController {
+class MyAttendance extends HrisController {
 
-    private $repository;
-    private $employeeId;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->repository = new AttendanceRepository($adapter);
-
-        $authService = new AuthenticationService();
-        $detail = $authService->getIdentity();
-        $this->employeeId = $detail['employee_id'];
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(AttendanceRepository::class);
     }
 
     public function indexAction() {
-        $statusFormElement = new Select();
-        $statusFormElement->setName("status");
-        $status = array(
-            "All" => "All Status",
-            "P" => "Present Only",
-            "A" => "Absent Only",
-            "H" => "On Holiday",
-            "L" => "On Leave",
-            "T" => "On Training",
-            "TVL" => "On Travel",
-            "WOH" => "Work on Holiday",
-            "WOD" => "Work on DAYOFF",
-            "LI" => "Late In",
-            "EO" => "Early Out"
-        );
-        $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
-        $statusFormElement->setLabel("Status");
-
-        $attendanceList = $this->repository->fetchByEmpId($this->employeeId);
-        $fiscal_year = $this->repository->getCurrentNeplaiMonthStartDateEndDate();
+        $statusSelectElement = EntityHelper::getAttendanceStatusSelectElement();
+        $presentStatusSelectElement = EntityHelper::getAttendancePresentStatusSelectElement();
         return Helper::addFlashMessagesToArray($this, [
-                    'attendanceList' => $attendanceList,
                     'employeeId' => $this->employeeId,
-                    'status' => $statusFormElement,
-                    'fiscalYear' => $fiscal_year
+                    'status' => $statusSelectElement,
+                    'presentStatus' => $presentStatusSelectElement,
+                    'fiscalYear' => $this->storageData['fiscal_year']
         ]);
     }
-    
-    
+
+    public function pullAttendanceListAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $attendanceRepository = new AttendanceRepository($this->adapter);
+                $filtersDetail = $postedData->data;
+                $employeeId = $filtersDetail['employeeId'];
+                $fromDate = $filtersDetail['fromDate'];
+                $toDate = $filtersDetail['toDate'];
+                $status = $filtersDetail['status'];
+                $presentStatus = $filtersDetail['presentStatus'];
+
+                $result = $attendanceRepository->attendanceReport($employeeId, $fromDate, $toDate, $status, $presentStatus);
+                $itemList = Helper::extractDbData($result);
+
+                return new CustomViewModel(['success' => true, 'data' => $itemList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+    }
 
 }

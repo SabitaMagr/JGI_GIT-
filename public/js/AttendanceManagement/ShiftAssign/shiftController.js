@@ -30,7 +30,7 @@
                     {field: "TO_DATE_AD", title: "AD", width: 75},
                     {field: "TO_DATE_BS", title: "BS", width: 75},
                 ]},
-        ], 'Employee_Shifts.xlsx', null, {id: 'ID', atLast: true, fn: function (selected) {
+        ], null, {id: 'ID', atLast: true, fn: function (selected) {
                 if (selected) {
                     $bulkActionDiv.show();
                 } else {
@@ -94,19 +94,38 @@
             for (var i in employeeShift) {
                 employeeShiftIds.push(employeeShift[i]['ID']);
             }
-            app.pullDataById(document.editWs, {
-                shiftId: shiftId,
-                fromDate: fromDate,
-                toDate: toDate,
-                employeeShiftIds: employeeShiftIds
-            }).then(function (response) {
-                if (response.success) {
-                    app.showMessage("Employee shift edited successfully.", 'success');
-                    $search.trigger('click');
-                }
-            }, function (error) {
+            (function (employeeIdList) {
+                var counter = 0;
+                var length = employeeIdList.length;
+                var addShift = function (employeeId) {
+                    app.pullDataById(document.editWs, {
+                        shiftId: shiftId,
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        employeeIds: [employeeId]
+                    }).then(function (response) {
+                        NProgress.set((counter + 1) / length);
+                        if (!response.success) {
+                            app.showMessage("Shift Assign Edit for Employee Id : " + employeeId + "Failed.", 'error');
+                        }
+                        counter++;
+                        if (counter < length) {
+                            addShift(employeeIdList[counter]);
+                        } else {
+                            app.showMessage("Shift Assign Edited.");
+                            $search.trigger('click');
+                        }
+                    }, function (error) {
 
-            });
+                    });
+
+                };
+                NProgress.start();
+                addShift(employeeIdList[counter]);
+
+
+            })(employeeShiftIds);
+
         });
 
 

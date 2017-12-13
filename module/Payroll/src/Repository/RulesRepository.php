@@ -30,11 +30,34 @@ class RulesRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        return $this->gateway->select(function(Select $select) {
-                    $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class, [Rules::PAY_EDESC, Rules::PAY_LDESC]), false);
-                    $select->where([Rules::STATUS => 'E']);
-                    $select->order([Rules::PRIORITY_INDEX => Select::ORDER_ASCENDING]);
-                });
+        $query = "SELECT PAY_ID,
+                  PAY_CODE,
+                  PAY_EDESC,
+                  (
+                  CASE
+                    WHEN PAY_TYPE_FLAG ='A'
+                    THEN 'Additon'
+                    WHEN PAY_TYPE_FLAG='D'
+                    THEN 'DEDUCTION'
+                    ELSE 'VIEW'
+                  END) AS PAY_TYPE,
+                  PRIORITY_INDEX,
+                  IS_MONTHLY,
+                  (
+                  CASE
+                    WHEN IS_MONTHLY = 'Y'
+                    THEN 'Yes'
+                    ELSE 'No'
+                  END ) AS IS_MONTHLY_DETAIL,
+                  FORMULA,
+                  REMARKS,
+                  STATUS
+                FROM HRIS_PAY_SETUP
+                WHERE STATUS ='E'";
+
+        $statement = $this->adapter->query($query);
+        $result = $statement->execute();
+        return $result;
     }
 
     public function fetchById($id) {
@@ -51,8 +74,16 @@ class RulesRepository implements RepositoryInterface {
         $this->gateway->update($rule->getArrayCopyForDB(), [Rules::PAY_ID => $id]);
     }
 
-    public function fetchReferencingRules($payId) {
-        $sql = "
+    public function fetchReferencingRules($payId = null) {
+
+        if ($payId == null) {
+            $sql = "
+                SELECT P.PAY_ID,
+                  INITCAP(P.PAY_EDESC) AS PAY_EDESC,
+                  INITCAP(P.PAY_LDESC) AS PAY_LDESC
+                FROM HRIS_PAY_SETUP P";
+        } else {
+            $sql = "
                 SELECT P.PAY_ID,
                   INITCAP(P.PAY_EDESC) AS PAY_EDESC,
                   INITCAP(P.PAY_LDESC) AS PAY_LDESC
@@ -60,9 +91,10 @@ class RulesRepository implements RepositoryInterface {
                   (SELECT PRIORITY_INDEX FROM HRIS_PAY_SETUP WHERE PAY_ID=$payId
                   ) PS
                 WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
+        }
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return $result;
+        return Helper::extractDbData($result);
     }
 
 }

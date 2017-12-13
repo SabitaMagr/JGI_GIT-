@@ -52,6 +52,7 @@ class AttendanceDeviceController extends AbstractActionController {
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
                 $attendanceDevice->deviceId = ((int) Helper::getMaxId($this->adapter, AttendanceDevice::TABLE_NAME, AttendanceDevice::DEVICE_ID)) + 1;
                 $attendanceDevice->status = 'E';
+                $attendanceDevice->branchId = $attendanceDevice->deviceId;
                 $this->repository->add($attendanceDevice);
 
                 $this->flashmessenger()->addMessage("Attendance Device Successfully Added!!!");
@@ -60,8 +61,8 @@ class AttendanceDeviceController extends AbstractActionController {
         }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-                    'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
+//                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
+//                    'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }
 
@@ -89,8 +90,8 @@ class AttendanceDeviceController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
                     'form' => $this->form,
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-                    'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
+//                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
+//                    'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }
 

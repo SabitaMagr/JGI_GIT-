@@ -1,12 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
-
-
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
@@ -15,7 +10,6 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
@@ -24,10 +18,11 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["holidayId"=>-1,"requestStatusId"=>-1,"fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
+    document.ids =<?php echo json_encode(["holidayId" => -1, "requestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.searchValues ='<?php echo json_encode($searchValues) ?>';
-    document.viewLink ='<?= $this->url("holidayWorkApprove", ["action" => "view"]) ?>';
+    document.searchValues = '<?php echo json_encode($searchValues) ?>';
+    document.viewLink = '<?= $this->url("holidayWorkApprove", ["action" => "view"]) ?>';
+    document.pullHoliayWorkRequestStatusListLink = '<?= $this->url("holidayWorkApprove", ["action" => "pullHoliayWorkRequestStatusList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidayWorkApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -52,7 +47,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<div ng-app="hris" ng-controller="holidayWorkStatusListController">
+<div>
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
@@ -71,8 +66,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li>
-                            <a href="javascript:;" id="export">
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> Export to PDF </a>
                         </li>
                     </ul>
                 </div>
@@ -121,27 +120,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-2 ">
                     <?php print $this->formElement($holidays); ?>
                 </div>
-                
+
             </div>
             <div class="row margin-top-10">
                 <div class="col-sm-2 ">
                     <?php print $this->formElement($status); ?>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control" placeholder="From Date"/>
+                    <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
                 </div>
                 <div class="col-sm-2">
                     <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control" placeholder="From Date Nepali"/>
 
                 </div>
                 <div class="col-sm-2">
-                    <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control" placeholder="To Date"/>
+                    <input type="text"  id="toDate" name="toDate"  class="form-control" placeholder="To Date"/>
                 </div>
                 <div class="col-sm-2">
                     <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                 </div>
                 <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
-                
+
             </div>
             <div class="row margin-top-10">
                 <div class=" col-sm-offset-8 col-sm-4">
@@ -149,7 +148,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
-                    <button ng-click="view()" id="viewLoanRequestStatus" class="btn btn-default btn-sm pull-right">
+                    <button  id="search" class="btn btn-default btn-sm pull-right">
                         Search
                         <i class="fa fa-search"></i>
                     </button>
@@ -157,45 +156,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div>
-    
+
     <div class="margin-top-20">  
 
         <div id="holidayWorkRequestStatusTable">
         </div>
     </div>
-    <!--
-        <script id="rowTemplate" type="text/x-kendo-tmpl">
-            <tr>
-            <td>    
-            #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-            </td>
-            <td>
-            #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
-            </td>
-            <td>
-            #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-            </td>        
-            <td>
-            #: (FROM_DATE == null) ? '-' : FROM_DATE #
-            </td>
-            <td>
-            #: (TO_DATE == null) ? '-' : TO_DATE #
-            </td>
-            <td>
-            #: (DURATION == null) ? '-' : DURATION #
-            </td>
-            <td>
-            #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
-            </td>
-            <td>
-            #: (STATUS == null) ? '-' : STATUS #
-            </td>
-            <td>
-            <a class="btn  btn-icon-only btn-success"
-            href=" ` + document.viewLink  + ` /#: ID #/#: ROLE #" style="height:17px;" title="view">
-            <i class="fa fa-search-plus"></i></a>
-            </a>
-            </td>
-            </tr>
-        </script>-->
 </div>

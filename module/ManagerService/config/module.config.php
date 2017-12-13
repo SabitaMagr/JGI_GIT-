@@ -2,10 +2,21 @@
 
 namespace ManagerService;
 
-use Zend\Router\Http\Segment;
 use Application\Controller\ControllerFactory;
 use ManagerService\Controller\AppraisalEvaluation;
+use ManagerService\Controller\AppraisalFinalReview;
 use ManagerService\Controller\AppraisalReview;
+use ManagerService\Controller\AttendanceApproveController;
+use ManagerService\Controller\DayoffWorkApproveController;
+use ManagerService\Controller\HolidayWorkApproveController;
+use ManagerService\Controller\LeaveApproveController;
+use ManagerService\Controller\LoanApproveController;
+use ManagerService\Controller\ManagerReportController;
+use ManagerService\Controller\OvertimeApproveController;
+use ManagerService\Controller\Subordinate;
+use ManagerService\Controller\TrainingApproveController;
+use ManagerService\Controller\TravelApproveController;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
@@ -15,7 +26,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/leaveapprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\LeaveApproveController::class,
+                        'controller' => LeaveApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -25,7 +36,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/attendanceapprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\AttendanceApproveController::class,
+                        'controller' => AttendanceApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -35,27 +46,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/loanApprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\LoanApproveController::class,
-                        'action' => 'index'
-                    ]
-                ]
-            ],
-            'advanceApprove' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/managerservice/advanceApprove[/:action[/:id][/:role]]',
-                    'defaults' => [
-                        'controller' => Controller\AdvanceApproveController::class,
-                        'action' => 'index'
-                    ]
-                ]
-            ],
-            'salaryReview' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/managerservice/salaryreview[/:action[/:id]]',
-                    'defaults' => [
-                        'controller' => Controller\SalaryReviewController::class,
+                        'controller' => LoanApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -65,7 +56,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/travelApprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\TravelApproveController::class,
+                        'controller' => TravelApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -75,7 +66,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/dayoffWorkApprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\DayoffWorkApproveController::class,
+                        'controller' => DayoffWorkApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -85,7 +76,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/holidayWorkApprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\HolidayWorkApproveController::class,
+                        'controller' => HolidayWorkApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -95,7 +86,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/trainingApprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\TrainingApproveController::class,
+                        'controller' => TrainingApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -105,7 +96,7 @@ return [
                 'options' => [
                     'route' => '/managerservice/overtimeApprove[/:action[/:id][/:role]]',
                     'defaults' => [
-                        'controller' => Controller\OvertimeApproveController::class,
+                        'controller' => OvertimeApproveController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -147,7 +138,7 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\AppraisalFinalReview::class,
+                        'controller' => AppraisalFinalReview::class,
                         'action' => 'index',
                     ]
                 ],
@@ -161,10 +152,20 @@ return [
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => Controller\ManagerReportController::class,
+                        'controller' => ManagerReportController::class,
                         'action' => 'index',
                     ]
                 ],
+            ],
+            'subordinate' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/managerservice/subordinate[/:action[/:id][/:tab]]',
+                    'defaults' => [
+                        'controller' => Subordinate::class,
+                        'action' => 'index'
+                    ]
+                ]
             ],
         ]
     ],
@@ -250,33 +251,6 @@ return [
                     [
                         'label' => 'View',
                         'route' => 'loanApprove',
-                        'action' => 'view',
-                    ],
-                ]
-            ]
-        ],
-        'advanceApprove' => [
-            [
-                'label' => 'Advance Request',
-                'route' => 'advanceApprove',
-            ],
-            [
-                'label' => 'Advance Request',
-                'route' => 'advanceApprove',
-                'pages' => [
-                    [
-                        'label' => 'List',
-                        'route' => 'advanceApprove',
-                        'action' => 'index',
-                    ],
-                    [
-                        'label' => 'List',
-                        'route' => 'advanceApprove',
-                        'action' => 'status',
-                    ],
-                    [
-                        'label' => 'View',
-                        'route' => 'advanceApprove',
                         'action' => 'view',
                     ],
                 ]
@@ -541,23 +515,45 @@ return [
                 ]
             ]
         ],
+        'subordinate' => [
+            [
+                'label' => 'Subordinate',
+                'route' => 'subordinate',
+            ],
+            [
+                'label' => 'Subordinate',
+                'route' => 'subordinate',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'subordinate',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'subordinate',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
-            Controller\LeaveApproveController::class => ControllerFactory::class,
-            Controller\AttendanceApproveController::class => ControllerFactory::class,
-            Controller\LoanApproveController::class => ControllerFactory::class,
+            LeaveApproveController::class => ControllerFactory::class,
+            AttendanceApproveController::class => ControllerFactory::class,
+            LoanApproveController::class => ControllerFactory::class,
             Controller\SalaryReviewController::class => ControllerFactory::class,
-            Controller\AdvanceApproveController::class => ControllerFactory::class,
-            Controller\TravelApproveController::class => ControllerFactory::class,
-            Controller\DayoffWorkApproveController::class => ControllerFactory::class,
-            Controller\HolidayWorkApproveController::class => ControllerFactory::class,
-            Controller\TrainingApproveController::class => ControllerFactory::class,
-            Controller\OvertimeApproveController::class => ControllerFactory::class,
-            Controller\AppraisalEvaluation::class => ControllerFactory::class,
-            Controller\AppraisalReview::class => ControllerFactory::class,
-            Controller\AppraisalFinalReview::class => ControllerFactory::class,
-            Controller\ManagerReportController::class => ControllerFactory::class
+            TravelApproveController::class => ControllerFactory::class,
+            DayoffWorkApproveController::class => ControllerFactory::class,
+            HolidayWorkApproveController::class => ControllerFactory::class,
+            TrainingApproveController::class => ControllerFactory::class,
+            OvertimeApproveController::class => ControllerFactory::class,
+            AppraisalEvaluation::class => ControllerFactory::class,
+            AppraisalReview::class => ControllerFactory::class,
+            AppraisalFinalReview::class => ControllerFactory::class,
+            ManagerReportController::class => ControllerFactory::class,
+            Subordinate::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

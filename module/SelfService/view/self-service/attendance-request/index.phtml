@@ -1,10 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
@@ -13,18 +10,18 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-        ->appendFile($this->basePath('js/SelfService/attendance-request/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
+        ->appendFile($this->basePath('js/SelfService/attendance-request/index.js'));
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["attendanceRequestStatusId"=>-1,"fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-     document.viewLink = '<?= $this->url("attendancerequest", ["action" => "view"]) ?>';
-     document.deleteLink = '<?= $this->url("attendancerequest", ["action" => "delete"]) ?>';
+    document.ids =<?php echo json_encode(["attendanceRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
+    document.pullAttendanceUrl = '<?= $this->url("attendancerequest", ["action" => "pullAttendanceRequestList"]) ?>';
+    document.viewLink = '<?= $this->url("attendancerequest", ["action" => "view"]) ?>';
+    document.editLink = '<?= $this->url("attendancerequest", ["action" => "edit"]) ?>';
+    document.deleteLink = '<?= $this->url("attendancerequest", ["action" => "delete"]) ?>';
 </script>
 
 <div class="page-bar">
@@ -44,37 +41,42 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div ng-app="hris" ng-controller="attendanceRequestListController">
-    <div id="hris-page-content">
-        
-        <div class="portlet light bg-inverse">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class="icon-paper-plane font-green-haze"></i>
-                <span class="caption-subject bold font-green-haze uppercase"> Filter</span>
-            </div>
-            <div class="tools">
-                <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
-                <a href="" class="fullscreen" data-original-title="" title=""> </a>
-            </div>
-            <div class="actions">
-                <a href="<?= $this->url('attendancerequest', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
-                <div class="btn-group">
-                    <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-copy"></i> Tools
-                        <i class="fa fa-angle-down "></i>
-                    </a>
-                    <ul class="dropdown-menu pull-right">
-                        <li>
-                            <a href="javascript:;" id="export" >
-                                <i class="fa fa-pencil"></i> Export to Excel </a>
-                        </li>
-                    </ul>
-                </div>
+<div class="portlet light bg-inverse">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-paper-plane font-green-haze"></i>
+            <span class="caption-subject bold font-green-haze uppercase"> Filter</span>
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+            <a href="" class="fullscreen" data-original-title="" title=""> </a>
+        </div>
+        <div class="actions">
+            <a href="<?= $this->url('attendancerequest', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn default btn-sm">
+                <i class="fa fa-plus-square icon-black"></i> New </a>
+            <div class="btn-group">
+                <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-copy"></i> Tools
+                    <i class="fa fa-angle-down "></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li >
+                        <a href="javascript:;" id="excelExport">
+                            <i class="fa fa-file-excel-o" ></i> 
+                            Export to Excel 
+                        </a>
+                    </li>
+                    <li >
+                        <a href="javascript:;" id="pdfExport">
+                            <i class="fa fa-file-pdf-o" ></i> 
+                            Export to PDF 
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-        
+    </div>
+
     <div class="row margin-top-20">
         <div class="col-sm-3">
             <?php print $this->formLabel($attendanceStatus); ?>
@@ -86,7 +88,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="fromDate">From Date</label>
-                        <input type="text" id="fromDate" name="fromDate" ng-model="fromDate" class="form-control"/>
+                        <input type="text" id="fromDate" name="fromDate" class="form-control"/>
                     </div>
 
                 </div>
@@ -100,7 +102,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <div class="col-sm-3">
                     <div class="form-group">
                         <label for="toDate">To Date</label>
-                        <input type="text"  id="toDate" name="toDate" ng-model="toDate" class="form-control"/>
+                        <input type="text"  id="toDate" name="toDate"  class="form-control"/>
                     </div>
                 </div>
                 <div class="col-sm-3">
@@ -114,24 +116,22 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div class="col-sm-3">
             <label height="45"></label>
             <button id="reset" class="btn default btn-sm pull-right">
-                        Reset
-                        <i class="fa fa-refresh"></i>
-                    </button>
-            <button ng-click="view()" id="viewAttendanceRequestStatus" class="btn btn-default btn-sm pull-right">
+                Reset
+                <i class="fa fa-refresh"></i>
+            </button>
+            <button  id="viewAttendanceRequestStatus" class="btn btn-default btn-sm pull-right">
                 Search
                 <i class="fa fa-search"></i>
             </button>
         </div>
     </div>
-    </div>
-
-    <div class="margin-top-20">
-        
-        
-        <div id="attendanceRequestTable">
-        </div>
-
-        
-    </div>
 </div>
+
+<div class="margin-top-20">
+
+
+    <div id="attendanceRequestTable">
+    </div>
+
+
 </div>

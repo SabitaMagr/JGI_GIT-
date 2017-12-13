@@ -19,12 +19,9 @@ angular.module("hris", ['ui.bootstrap'])
             $scope.allowTerms = null;
             $scope.salaryDeduction = parseFloat(reqAmt) / parseFloat(terms);
 
-            window.app.pullDataById(document.url, {
-                action: 'pullAdvanceDetailByEmpId',
-                data: {
-                    'employeeId': employeeId,
-                    'advanceId': advanceId
-                }
+            window.app.pullDataById(document.pullAdvanceDetailByEmpIdLink, {
+                'employeeId': employeeId,
+                'advanceId': advanceId
             }).then(function (success) {
                 $scope.$apply(function () {
                     $scope.allowAmt = success.data.allowAmt;
@@ -33,7 +30,6 @@ angular.module("hris", ['ui.bootstrap'])
             }, function (failure) {
                 console.log("pullAdvanceDetailByEmpId", failure);
             });
-            console.log(document.advanceRequestData);
 
             $scope.advanceRequestData = document.advanceRequestData;
             var generateVoucherFn = function () {
@@ -62,7 +58,7 @@ angular.module("hris", ['ui.bootstrap'])
                 });
             };
             var printVoucherFn = function () {
-                
+
             };
 
             var showNGModal = function () {

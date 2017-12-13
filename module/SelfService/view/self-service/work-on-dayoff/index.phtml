@@ -14,8 +14,9 @@ $this->headScript()
 ?>
 
 <script>
-    document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.workOnDayoffRequestList =<?php echo json_encode($list); ?>
+    document.viewLink = '<?= $this->url("workOnDayoff", ["action" => "view"]) ?>';
+    document.editLink = '<?= $this->url("workOnDayoff", ["action" => "edit"]) ?>';
+    document.deleteLink = '<?= $this->url("workOnDayoff", ["action" => "delete"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnDayoff')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -36,9 +37,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -53,48 +54,56 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        <li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-    <div id="workOnDayoffTbl">
+        <div id="workOnDayoffTbl">
+        </div>
     </div>
-	</div>
-      
+
 <!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-        </td>
-        <td>
-        #: (FROM_DATE == null) ? '-' : FROM_DATE #
-        </td>
-        <td>
-        #: (TO_DATE == null) ? '-' : TO_DATE #
-        </td>
-        <td>
-        #: (DURATION == null) ? '-' : DURATION #
-        </td>
-        <td>
-        #: (STATUS == null) ? '-' : STATUS #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("workOnDayoff", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
-        <i class="fa fa-search-plus"></i></a>
-        </a>
-        #if(ALLOW_TO_EDIT == 1){#       
-        <a class="confirmation btn-delete"
-        href="<?= $this->url("workOnDayoff", ["action" => "delete"]) ?>/#: ID #" id="bs_#:ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        #}#
-        </td>
-        </tr>
-    </script>-->
+  <tr>
+  <td>
+  #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
+  </td>
+  <td>
+  #: (FROM_DATE == null) ? '-' : FROM_DATE #
+  </td>
+  <td>
+  #: (TO_DATE == null) ? '-' : TO_DATE #
+  </td>
+  <td>
+  #: (DURATION == null) ? '-' : DURATION #
+  </td>
+  <td>
+  #: (STATUS == null) ? '-' : STATUS #
+  </td>
+  <td>
+  <a class="btn-edit"
+  href="<?= $this->url("workOnDayoff", ["action" => "view"]) ?>/#: ID #" style="height:17px;" title="view detail">
+  <i class="fa fa-search-plus"></i></a>
+  </a>
+  #if(ALLOW_TO_EDIT == 1){#       
+  <a class="confirmation btn-delete"
+  href="<?= $this->url("workOnDayoff", ["action" => "delete"]) ?>/#: ID #" id="bs_#:ID #" style="height:17px;">
+  <i class="fa fa-trash-o"></i></a>
+  </a>
+  #}#
+  </td>
+  </tr>
+</script>-->
 </div>

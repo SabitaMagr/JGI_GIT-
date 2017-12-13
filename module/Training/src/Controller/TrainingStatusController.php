@@ -1,51 +1,46 @@
 <?php
+
 namespace Training\Controller;
 
-use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
-use Training\Repository\TrainingStatusRepository;
+use Application\Helper\Helper;
+use Exception;
 use ManagerService\Repository\TrainingApproveRepository;
-use SelfService\Repository\TrainingRequestRepository;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
 use SelfService\Form\TrainingRequestForm;
-use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Model\TrainingRequest;
-use Setup\Repository\TrainingRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceType;
-use Zend\Form\Element\Select;
-use Setup\Model\ServiceEventType;
-use Zend\Authentication\AuthenticationService;
-use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
+use Setup\Repository\TrainingRepository;
+use Training\Repository\TrainingStatusRepository;
+use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Form\Element\Select;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class TrainingStatusController extends AbstractActionController
-{
+class TrainingStatusController extends AbstractActionController {
+
     private $adapter;
     private $trainingApproveRepository;
     private $trainingStatusRepository;
     private $form;
     private $employeeId;
-    
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->trainingApproveRepository = new TrainingApproveRepository($adapter);
         $this->trainingStatusRepository = new TrainingStatusRepository($adapter);
         $auth = new AuthenticationService();
-        $this->employeeId =  $auth->getStorage()->read()['employee_id'];       
+        $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
-    
-    public function initializeForm(){
+
+    public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new TrainingRequestForm();
         $this->form = $builder->createForm($form);
     }
 
-    
     public function indexAction() {
         $status = [
             '-1' => 'All Status',
@@ -53,7 +48,7 @@ class TrainingStatusController extends AbstractActionController
             'RC' => 'Recommended',
             'AP' => 'Approved',
             'R' => 'Rejected',
-            'C'=>'Cancelled'
+            'C' => 'Cancelled'
         ];
         $statusFormElement = new Select();
         $statusFormElement->setName("status");
@@ -63,9 +58,10 @@ class TrainingStatusController extends AbstractActionController
 
         return Helper::addFlashMessagesToArray($this, [
                     'status' => $statusFormElement,
-                    'searchValues'=> EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
+
     public function viewAction() {
         $this->initializeForm();
         $id = (int) $this->params()->fromRoute('id');
@@ -79,29 +75,18 @@ class TrainingStatusController extends AbstractActionController
         $detail = $this->trainingApproveRepository->fetchById($id);
         $status = $detail['STATUS'];
         $employeeId = $detail['EMPLOYEE_ID'];
-        $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-        $recommApprove = 0;
-        if($empRecommendApprove['RECOMMEND_BY']==$empRecommendApprove['APPROVED_BY']){
-            $recommApprove=1;
-        }
-        
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-        };
-        
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);        
-        $authRecommender = ($status=='RQ' || $status=='C')? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status=='RC' || $status=='C' || $status=='RQ' || ($status=='R' && $approvedDT==null))? $detail['APPROVER'] : $detail['APPROVED_BY'];
 
-        if($detail['TRAINING_ID']!=0){
-            $detail['START_DATE']=$detail['T_START_DATE'];
+
+        $recommApprove = $detail['RECOMMENDER_ID'] == $detail['APPROVER_ID'] ? 1 : 0;
+
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
+
+        if ($detail['TRAINING_ID'] != 0) {
+            $detail['START_DATE'] = $detail['T_START_DATE'];
             $detail['END_DATE'] = $detail['T_END_DATE'];
             $detail['DURATION'] = $detail['T_DURATION'];
             $detail['TRAINING_TYPE'] = $detail['T_TRAINING_TYPE'];
@@ -129,8 +114,8 @@ class TrainingStatusController extends AbstractActionController
             return $this->redirect()->toRoute("trainingStatus");
         }
         $trainingTypes = array(
-           'CP'=>'Company Personal',
-           'CC'=>'Company Contribution'
+            'CP' => 'Company Personal',
+            'CC' => 'Company Contribution'
         );
         $trainings = $this->getTrainingList($requestedEmployeeID);
         return Helper::addFlashMessagesToArray($this, [
@@ -139,18 +124,19 @@ class TrainingStatusController extends AbstractActionController
                     'employeeId' => $employeeId,
                     'employeeName' => $employeeName,
                     'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $fullName($authRecommender),
-                    'approver' => $fullName($authApprover),
-                    'approvedDT'=>$detail['APPROVED_DATE'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
+                    'approvedDT' => $detail['APPROVED_DATE'],
                     'status' => $status,
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove'=>$recommApprove,
-                    'trainingIdSelected'=>$detail['TRAINING_ID'],
+                    'recommApprove' => $recommApprove,
+                    'trainingIdSelected' => $detail['TRAINING_ID'],
                     'trainings' => $trainings["trainingKVList"],
-                    'trainingList'=>$trainings['trainingList'],
-                    'trainingTypes'=>$trainingTypes,
+                    'trainingList' => $trainings['trainingList'],
+                    'trainingTypes' => $trainingTypes,
         ]);
     }
+
     public function getTrainingList($employeeId) {
         $trainingRepo = new TrainingRepository($this->adapter);
         $trainingResult = $trainingRepo->selectAll($employeeId);
@@ -160,6 +146,26 @@ class TrainingStatusController extends AbstractActionController
             $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
             $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
         }
-        return ['trainingKVList' => $trainingList,'trainingList'=>$allTrainings];
-    }   
+        return ['trainingKVList' => $trainingList, 'trainingList' => $allTrainings];
+    }
+
+    public function pullTrainingRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $trainingStatusRepo = new TrainingStatusRepository($this->adapter);
+            $result = $trainingStatusRepo->getTrainingRequestList($data);
+
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

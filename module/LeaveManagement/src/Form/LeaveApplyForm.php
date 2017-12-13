@@ -85,6 +85,7 @@ class LeaveApplyForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
      * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"height: 50px; font-size:12px"})
      */
     public $remarks;

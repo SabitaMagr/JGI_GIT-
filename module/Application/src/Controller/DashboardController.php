@@ -123,91 +123,10 @@ class DashboardController extends AbstractActionController {
                 $employeeId = $auth->getStorage()->read()['employee_id'];
                 $dahsboardRepo = new DashboardRepository($this->adapter);
 
-                $startDate = $this->getRequest()->getPost('start');
-                $endDate = $this->getRequest()->getPost('end');
+                $startDate = $this->getRequest()->getPost('startDate');
+                $endDate = $this->getRequest()->getPost('endDate');
                 $calendarData = $dahsboardRepo->fetchEmployeeCalendarData($employeeId, $startDate, $endDate);
-                $calendarJsonFeedArray = [];
-                foreach ($calendarData as $eventData) {
-                    if ('ABSENT' == $eventData['ATTENDANCE_STATUS']) {
-                        $calendarJsonFeedArray[] = [
-                            'title' => 'Absent',
-                            'start' => $eventData['MONTH_DAY'],
-                            'textColor' => '#cc0000',
-                            'backgroundColor' => '#fff'
-                        ];
-                    }
-
-                    if ($eventData['ATTENDANCE_DT']) {
-                        $inOutTitle = "";
-                        if ($eventData['IN_TIME']) {
-                            $inOutTitle .= $eventData['IN_TIME'];
-                        }
-                        if ($eventData['OUT_TIME']) {
-                            $inOutTitle .= ' ' . $eventData['OUT_TIME'];
-                        }
-                        // In/Out
-                        $calendarJsonFeedArray[] = [
-                            'title' => $inOutTitle,
-                            'start' => $eventData['ATTENDANCE_DT'],
-                            'textColor' => '#616161',
-                            'backgroundColor' => '#fff'
-                        ];
-
-                        // Training
-                        if ($eventData['TRAINING_NAME']) {
-                            $calendarJsonFeedArray[] = [
-                                'title' => $eventData['TRAINING_NAME'],
-                                'start' => $eventData['TRAINING_START_DATE'],
-                                'end' => $eventData['TRAINING_END_DATE'],
-                                'textColor' => '#fff',
-                                'backgroundColor' => '#39c7b8',
-                            ];
-                        }
-                        // Leave
-                        if ($eventData['LEAVE_ENAME']) {
-                            $calendarJsonFeedArray[] = [
-                                'title' => $eventData['LEAVE_ENAME'],
-                                'start' => $eventData['ATTENDANCE_DT'],
-                                'textColor' => '#fff',
-                                'backgroundColor' => '#a7aeaf',
-                            ];
-                        }
-                        // Tour
-                        if ($eventData['TRAVEL_ID']) {
-                            if ($eventData['MONTH_DAY'] >= $eventData['TRAVEL_FROM_DATE'] || $eventData['MONTH_DAY'] <= $eventData['TRAVEL_TO_DATE']) {
-                                $calendarJsonFeedArray[] = [
-                                    'title' => $eventData['DESTINATION'],
-                                    'start' => $eventData['MONTH_DAY'],
-                                    'textColor' => '#fff',
-                                    'backgroundColor' => '#e89c0a',
-                                ];
-                            }
-                        }
-
-                        if ($eventData['HOLIDAY_ID']) {
-                            $calendarJsonFeedArray[] = [
-                                'title' => $eventData['HOLIDAY_ENAME'],
-                                'start' => $eventData['MONTH_DAY'],
-                                'textColor' => '#fff',
-                                'backgroundColor' => '#eaea2a',
-                            ];
-                        }
-                    }
-                }
-//                $upcomingLeaves = $dahsboardRepo->fetchUpcomingLeaves($employeeId);
-//                foreach ($upcomingLeaves as $upcomingLeave) {
-//                    for ($i = 0; $i < $upcomingLeave['DIFF']; $i++) {
-//                        $d = \DateTime::createFromFormat(Helper::PHP_DATE_FORMAT, $upcomingLeave['START_DATE']);
-//                        $d->add(new \DateInterval("P{$i}D"));
-//                        $calendarJsonFeedArray[] = [
-//                            'title' => $upcomingLeave['LEAVE_ENAME'],
-//                            'start' => $d->format(Helper::PHP_DATE_FORMAT),
-//                            'textColor' => '#fff',
-//                            'backgroundColor' => '#a7aeaf',
-//                        ];
-//                    }
-//                }
-                //return new CustomViewModel(['success' => true, 'data' => $calendarJsonFeedArray, 'error' => '']);
+                $calendarJsonFeedArray = Helper::extractDbData($calendarData);
                 return new CustomViewModel($calendarJsonFeedArray);
             } else {
                 throw new Exception("The request should be of type post");

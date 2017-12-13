@@ -2,14 +2,14 @@
 
 namespace Setup\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use Setup\Model\RecommendApprove;
+use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
-use Setup\Model\HrEmployees;
+use Zend\Db\TableGateway\TableGateway;
 
 class RecommendApproveRepository implements RepositoryInterface {
 
@@ -73,33 +73,33 @@ class RecommendApproveRepository implements RepositoryInterface {
             "RA.STATUS='E'",
             "E.STATUS='E'",
             "E.RETIRED_FLAG='N' AND
-  (((E1.STATUS =
-    CASE
-      WHEN E1.STATUS IS NOT NULL
-      THEN ('E')
-    END
-  OR E1.STATUS IS NULL)
-  AND
-  (E1.RETIRED_FLAG =
-    CASE
-      WHEN E1.RETIRED_FLAG IS NOT NULL
-      THEN ('N')
-    END
-  OR E1.RETIRED_FLAG IS NULL))
-OR
-  ((E2.STATUS =
-    CASE
-      WHEN E2.STATUS IS NOT NULL
-      THEN ('E')
-    END
-  OR E2.STATUS IS NULL)
-AND
-  (E2.RETIRED_FLAG =
-    CASE
-      WHEN E2.RETIRED_FLAG IS NOT NULL
-      THEN ('N')
-    END
-  OR E2.RETIRED_FLAG IS NULL)))"
+              (((E1.STATUS =
+                CASE
+                  WHEN E1.STATUS IS NOT NULL
+                  THEN ('E')
+                END
+              OR E1.STATUS IS NULL)
+              AND
+              (E1.RETIRED_FLAG =
+                CASE
+                  WHEN E1.RETIRED_FLAG IS NOT NULL
+                  THEN ('N')
+                END
+              OR E1.RETIRED_FLAG IS NULL))
+            OR
+              ((E2.STATUS =
+                CASE
+                  WHEN E2.STATUS IS NOT NULL
+                  THEN ('E')
+                END
+              OR E2.STATUS IS NULL)
+            AND
+              (E2.RETIRED_FLAG =
+                CASE
+                  WHEN E2.RETIRED_FLAG IS NOT NULL
+                  THEN ('N')
+                END
+              OR E2.RETIRED_FLAG IS NULL)))"
         ]);
         $select->order("E.FIRST_NAME ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -204,6 +204,63 @@ AND
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
+    }
+
+    public function getFilteredList($search) {
+        $condition = "";
+        $condition .= EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
+        if (isset($search['recommenderId']) && $search['recommenderId'] != null && $search['recommenderId'] != -1) {
+            if (gettype($search['recommenderId']) === 'array') {
+                $csv = "";
+                for ($i = 0; $i < sizeof($search['recommenderId']); $i++) {
+                    if ($i == 0) {
+                        $csv = "'{$search['recommenderId'][$i]}'";
+                    } else {
+                        $csv .= ",'{$search['recommenderId'][$i]}'";
+                    }
+                }
+                $condition .= "AND RA.RECOMMEND_BY IN ({$csv})";
+            } else {
+                $condition .= "AND RA.RECOMMEND_BY IN ('{$search['recommenderId']}')";
+            }
+        }
+        if (isset($search['approverId']) && $search['approverId'] != null && $search['approverId'] != -1) {
+            if (gettype($search['approverId']) === 'array') {
+                $csv = "";
+                for ($i = 0; $i < sizeof($search['approverId']); $i++) {
+                    if ($i == 0) {
+                        $csv = "'{$search['approverId'][$i]}'";
+                    } else {
+                        $csv .= ",'{$search['approverId'][$i]}'";
+                    }
+                }
+                $condition .= "AND RA.APPROVED_BY IN ({$csv})";
+            } else {
+                $condition .= "AND RA.APPROVED_BY IN ('{$search['approverId']}')";
+            }
+        }
+
+        $sql = "  
+            SELECT EC.COMPANY_NAME, 
+                E.EMPLOYEE_ID,
+                E.FULL_NAME    AS EMPLOYEE_NAME,
+                RE.EMPLOYEE_ID AS RECOMMENDER_ID,
+                RE.FULL_NAME   AS RECOMMENDER_NAME,
+                AE.EMPLOYEE_ID AS APPROVER_ID,
+                AE.FULL_NAME   AS APPROVER_NAME
+              FROM HRIS_RECOMMENDER_APPROVER RA
+              LEFT JOIN HRIS_EMPLOYEES E
+              ON (E.EMPLOYEE_ID=RA.EMPLOYEE_ID)
+              LEFT JOIN HRIS_EMPLOYEES RE
+              ON (RE.EMPLOYEE_ID = RA.RECOMMEND_BY)
+              LEFT JOIN HRIS_EMPLOYEES AE
+              ON (AE.EMPLOYEE_ID=RA.APPROVED_BY)
+              LEFT JOIN HRIS_COMPANY EC
+              ON (EC.COMPANY_ID=E.COMPANY_ID)
+              WHERE 1           =1
+              AND RA.STATUS        = 'E' 
+              {$condition}";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
 }

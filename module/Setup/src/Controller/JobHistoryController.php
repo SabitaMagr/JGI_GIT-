@@ -2,6 +2,7 @@
 
 namespace Setup\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -17,53 +18,35 @@ use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\JobHistoryRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate\Predicate;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class JobHistoryController extends AbstractActionController {
+class JobHistoryController extends HrisController {
 
-    private $repository;
-    private $form;
-    private $adapter;
-    private $employeeId;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->repository = new JobHistoryRepository($adapter);
-        $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $jobHistoryForm = new JobHistoryForm();
-        $builder = new AnnotationBuilder();
-        if (!$this->form) {
-            $this->form = $builder->createForm($jobHistoryForm);
-        }
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(JobHistoryRepository::class);
+        $this->initializeForm(JobHistoryForm::class);
     }
 
     public function indexAction() {
-
-        $serviceEventTypeFormElement = new Select();
-        $serviceEventTypeFormElement->setName("serviceEventType");
-        $serviceEventTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true);
-        $serviceEventTypes1 = [-1 => "All Service Event Type"] + $serviceEventTypes;
-        $serviceEventTypeFormElement->setValueOptions($serviceEventTypes1);
-        $serviceEventTypeFormElement->setAttributes(["id" => "serviceEventTypeId1", "class" => "form-control"]);
-        $serviceEventTypeFormElement->setLabel("Service Event Type");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'serviceEventType' => $serviceEventTypeFormElement,
+        $serviceEventTypes = EntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, [-1 => "All Service Event Type"], true);
+        $serviceEventTypeSE = $this->getSelectElement([
+            'name' => 'serviceEventType',
+            "id" => "serviceEventTypeId1",
+            "class" => "form-control",
+            "label" => "Service Event Type"
+                ], $serviceEventTypes);
+        return $this->stickFlashMessagesTo([
+                    'serviceEventType' => $serviceEventTypeSE,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
         ]);
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -78,6 +61,9 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->createdDt = Helper::getcurrentExpressionDate();
                 $jobHistory->createdBy = $this->employeeId;
                 $jobHistory->status = 'E';
+                $jobHistory->retiredFlag = $jobHistory->retiredFlag ? 'Y' : 'N';
+                $jobHistory->disabledFlag = $jobHistory->disabledFlag ? 'Y' : 'N';
+                $jobHistory->eventDate = Helper::getExpressionDate($jobHistory->eventDate);
 
                 $this->repository->add($jobHistory);
 
@@ -104,7 +90,6 @@ class JobHistoryController extends AbstractActionController {
             return $this->redirect()->toRoute('jobHistory');
         }
 
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $jobHistory = new JobHistory();
@@ -116,6 +101,9 @@ class JobHistoryController extends AbstractActionController {
                 $jobHistory->endDate = Helper::getExpressionDate($jobHistory->endDate);
                 $jobHistory->modifiedDt = Helper::getcurrentExpressionDate();
                 $jobHistory->modifiedBy = $this->employeeId;
+                $jobHistory->retiredFlag = $jobHistory->retiredFlag ? 'Y' : 'N';
+                $jobHistory->disabledFlag = $jobHistory->disabledFlag ? 'Y' : 'N';
+                $jobHistory->eventDate = Helper::getExpressionDate($jobHistory->eventDate);
 
                 $this->repository->edit($jobHistory, $id);
                 $this->flashmessenger()->addMessage("Job History Successfully Updated!!!");
@@ -129,7 +117,6 @@ class JobHistoryController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
                     'form' => $this->form,
-//                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E", "RETIRED_FLAG" => "N"], "FIRST_NAME", "ASC", " ", false, true),
                     'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], null, "FIRST_NAME", "ASC", " ", false, true),
                     'departments' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true, true),
                     'designations' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true, true),
@@ -138,6 +125,8 @@ class JobHistoryController extends AbstractActionController {
                     'positions' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
                     'serviceTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
                     'serviceEventTypes' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_EVENT_TYPES", "SERVICE_EVENT_TYPE_ID", ["SERVICE_EVENT_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
+                    'retiredFlagValue' => $jobHistoryDetail['RETIRED_FLAG'],
+                    'disabledFlagValue' => $jobHistoryDetail['DISABLED_FLAG'],
                         ]
         );
     }
@@ -163,8 +152,6 @@ class JobHistoryController extends AbstractActionController {
                 $prevAndNextHistory['next'] = $nextJobHistory[0];
             }
         }
-
-        $this->initializeForm();
 
         $jobHistory = new JobHistory();
         $jobHistoryDetail = $this->repository->fetchById($id);
@@ -272,7 +259,7 @@ class JobHistoryController extends AbstractActionController {
             $serviceEventTypeId = $data['serviceEventTypeId'];
             $employeeTypeId = $data['employeeTypeId'];
 
-            $result = $this->repository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId,$employeeTypeId);
+            $result = $this->repository->filter($fromDate, $toDate, $employeeId, $serviceEventTypeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $employeeTypeId);
 
             $jobHistoryRecord = Helper::extractDbData($result);
 

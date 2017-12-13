@@ -61,8 +61,8 @@ class IssueController extends AbstractActionController {
         $assetFormElement->setValueOptions($asset1);
         $assetFormElement->setAttributes(["id" => "asset", "class" => "form-control"]);
         $assetFormElement->setLabel("Asset");
-        
-        
+
+
         //form element for asset status
         $assetStatus = [
             '-1' => 'All Status',
@@ -71,13 +71,13 @@ class IssueController extends AbstractActionController {
             'R' => 'Returnable',
             'RED' => 'Returned'
         ];
-        
+
         $assetStatusFormElement = new Select();
         $assetStatusFormElement->setName("assetStatus");
         $assetStatusFormElement->setValueOptions($assetStatus);
         $assetStatusFormElement->setAttributes(["id" => "assetStatusId", "class" => "form-control"]);
         $assetStatusFormElement->setLabel("Status");
-        
+
 
         return Helper::addFlashMessagesToArray($this, [
 //                    'issue' => $list,
@@ -202,7 +202,7 @@ class IssueController extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         $issue = new Issue();
-        $redirectLink= $this->redirect()->toRoute('assetIssue', ['action' => 'index']);
+        $redirectLink = $this->redirect()->toRoute('assetIssue', ['action' => 'index']);
         if ($request->isPost()) {
 
             $postdata = $request->getPost();
@@ -211,11 +211,11 @@ class IssueController extends AbstractActionController {
             $issueId = $postdata['issueId'];
             $issueBal = $postdata['issueBal'];
             $returnedDate = $postdata['returndeDate'];
-            
-            if($redirectPage=='indexPage'){
-                $redirectLink= $this->redirect()->toRoute('assetIssue', ['action' => 'index']);
-            }else{
-                $redirectLink= $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $assetId]);
+
+            if ($redirectPage == 'indexPage') {
+                $redirectLink = $this->redirect()->toRoute('assetIssue', ['action' => 'index']);
+            } else {
+                $redirectLink = $this->redirect()->toRoute('assetIssue', ['action' => 'view', 'id' => $assetId]);
             }
 
             if (!empty($assetId) && !empty($assetId) && !empty($issueId) && !empty($issueBal)) {
@@ -236,7 +236,7 @@ class IssueController extends AbstractActionController {
                 }
 
                 $this->flashmessenger()->addMessage("Asset return Sucessfully recorded");
-                
+
                 return $redirectLink;
             }
         } else {
@@ -263,15 +263,14 @@ class IssueController extends AbstractActionController {
         }
         return $imageData;
     }
-    
-    
-    public function getAssetIssueListAction(){
-        
+
+    public function getAssetIssueListAction() {
+
         $request = $this->getRequest();
         $postValue = $request->getPost();
-        $postData=$postValue['data'];
-        $result=$this->repository->getFilteredRecord($postData);
-        
+        $postData = $postValue['data'];
+        $result = $this->repository->getFilteredRecord($postData);
+
         $list = [];
         foreach ($result as $row) {
             array_push($list, $row);
@@ -282,24 +281,23 @@ class IssueController extends AbstractActionController {
             "num" => count($list),
         ]);
     }
-    
-    public function getAssetFilterListAction(){
+
+    public function getAssetFilterListAction() {
         $request = $this->getRequest();
         $postValue = $request->getPost();
-        $assetTypeId=$postValue['assetTypeId'];
-        if($assetTypeId==-1){
+        $assetTypeId = $postValue['assetTypeId'];
+        if ($assetTypeId == -1) {
             $assetList = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E"], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE);
-        }else{
-            $assetList = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E","ASSET_GROUP_ID"=>$assetTypeId], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE);
+        } else {
+            $assetList = ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::ASSET_ID, [Setup::ASSET_EDESC], ["STATUS" => "E", "ASSET_GROUP_ID" => $assetTypeId], Setup::ASSET_EDESC, "ASC", NULL, FALSE, TRUE);
         }
-  
+
         return new CustomViewModel([
             "success" => "true",
             "data" => $assetList,
             "postData" => $assetTypeId,
             "num" => count($assetList)
         ]);
-        
     }
 
 }

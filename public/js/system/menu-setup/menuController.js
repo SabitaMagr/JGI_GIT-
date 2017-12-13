@@ -16,11 +16,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
 
     $scope.permissionList = function (menuId) {
         $('#rolePanel').css('display', 'block');
-        window.app.pullDataById(document.url, {
-            action: 'pullRolePermissionList',
-            data: {
-                menuId: menuId
-            },
+        window.app.pullDataById(document.pullRolePermissionListLink, {
+            menuId: menuId
         }).then(function (success) {
             $scope.$apply(function () {
                 $scope.roleList = success.data;
@@ -45,13 +42,10 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         var checked = roleDtl.checked;
         var selectedMenu = menuId;
 
-        window.app.pullDataById(document.url, {
-            action: 'permissionAssign',
-            data: {
-                roleId: roleId,
-                menuId: selectedMenu,
-                checked: checked
-            },
+        window.app.pullDataById(document.permissionAssignLink, {
+            roleId: roleId,
+            menuId: selectedMenu,
+            checked: checked
         }).then(function (success) {
             window.toastr.success(success.data, "Notifications");
 
@@ -70,11 +64,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
             $scope.permissionList(menuId);
         });
         App.blockUI({target: "#hris-page-content"});
-        window.app.pullDataById(document.url, {
-            action: 'pullMenuDetail',
-            data: {
-                id: menuId
-            },
+        window.app.pullDataById(document.pullMenuDetailLink, {
+            id: menuId
         }).then(function (success) {
             App.unblockUI("#hris-page-content");
             $scope.$apply(function () {
@@ -100,11 +91,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
     $scope.submitForm = function () {
         if ($scope.userForm.$valid) {
             App.blockUI({target: "#hris-page-content"});
-            window.app.pullDataById(document.url, {
-                action: 'menuUpdate',
-                data: {
-                    dataArray: $scope.menuDtl
-                },
+            window.app.pullDataById(document.menuUpdateLink, {
+                dataArray: $scope.menuDtl
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 console.log(success);
@@ -129,11 +117,8 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
         }
     }
     $scope.deleteMenu = function () {
-        window.app.pullDataById(document.url, {
-            action: 'menuDelete',
-            data: {
-                menuId: menuId
-            },
+        window.app.pullDataById(document.menuDeleteLink, {
+            menuId: menuId
         }).then(function (success) {
             $scope.$apply(function () {
                 var newData = success.menuData;
@@ -179,12 +164,9 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $scope.submitForm = function () {
                     if ($scope.userForm.$valid) {
                         App.blockUI({target: "#hris-page-content"});
-                        window.app.pullDataById(document.url, {
-                            action: 'menuInsertion',
-                            data: {
-                                dataArray: $scope.menuDtl,
-                                parentMenu: menuId
-                            },
+                        window.app.pullDataById(document.menuInsertionLink, {
+                            dataArray: $scope.menuDtl,
+                            parentMenu: menuId
                         }).then(function (success) {
                             App.unblockUI("#hris-page-content");
                             console.log(success);

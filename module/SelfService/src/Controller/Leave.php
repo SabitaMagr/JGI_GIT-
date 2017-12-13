@@ -1,47 +1,35 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/29/16
- * Time: 12:46 PM
- */
 
 namespace SelfService\Controller;
 
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Authentication\AuthenticationService;
-use SelfService\Repository\LeaveRepository;
+use Application\Controller\HrisController;
 use Application\Helper\Helper;
+use Exception;
+use SelfService\Repository\LeaveRepository;
+use Zend\Authentication\Storage\StorageInterface;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ViewModel;
 
-class Leave extends AbstractActionController
-{
-    private $authService;
-    private $user_id;
-    private $employee_id;
-    private $leaveRepository;
+class Leave extends HrisController {
 
-    public function __construct(AdapterInterface $adapter)
-    {
-        $this->leaveRepository = new LeaveRepository($adapter);
-
-        $this->authService = new AuthenticationService();
-        $recordDetail = $this->authService->getIdentity();
-        $this->user_id = $recordDetail['user_id'];
-        $this->employee_id = $recordDetail['employee_id'];
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(LeaveRepository::class);
     }
 
-    public function indexAction()
-    {
-        $leaveList = $this->leaveRepository->selectAll($this->employee_id);
-        $leaves = [];
-        foreach($leaveList as $leaveRow){
-            
-            $allTotalDays = $leaveRow['PREVIOUS_YEAR_BAL']+$leaveRow['TOTAL_DAYS'];
-            $leaveTaken =  $allTotalDays-$leaveRow['BALANCE'];
-            $new_row = array_merge($leaveRow,['LEAVE_TAKEN'=>$leaveTaken,'ALL_TOTAL_DAYS'=>$allTotalDays]);
-            array_push($leaves, $new_row);
+    public function indexAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $leaveList = $this->repository->selectAll($this->employeeId);
+                $leaves = Helper::extractDbData($leaveList);
+                return new JsonModel(['success' => true, 'data' => $leaves, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['leaves' => $leaves]);
+        return new ViewModel();
     }
+
 }

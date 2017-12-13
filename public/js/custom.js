@@ -688,42 +688,18 @@ window.app = (function ($, toastr, App) {
     };
 
 
-    var UIConfirmations = function () {
-        $(".confirmation").each(function () {
-            var confirmationBtnId = $(this).attr("id");
-            var id = confirmationBtnId.split("_").pop(-1);
-            var href = $(this).attr("href");
-            $(this).on("click", function (e) {
-                e.preventDefault();
-                $("#" + confirmationBtnId).confirmation('show');
-            });
-
-            $("#" + confirmationBtnId).on("confirmed.bs.confirmation", function () {
-                //console.log(href);
-
-//                window.app.pullDataById(document.deleteURL, {
-//                    action: 'deleteContent',
-//                    data: {
-//                        'tableName': tableName,
-//                        'columnName': columnName,
-//                        'id': id
-//                    }
-//                }).then(function (success) {
-//                    removeByAttr(listData, columnName, id);
-//
-//                    $("#" + kendoGridId).data('kendoGrid').dataSource.read();
-//                    $("#" + kendoGridId).data('kendoGrid').refresh();
-//                    window.toastr.success(success.msg, "Notifications");  
-//                    window.app.UIConfirmations(tableName, columnName, kendoGridId, listData);
-//                    
-//                }, function (failure) {
-//                    console.log(failure);
-//                });
-            }),
-                    $("#" + confirmationBtnId).on("canceled.bs.confirmation", function () {
-            });
+    (function () {
+        $(".page-content").on("click", ".confirmation", function (e) {
+            e.preventDefault();
+            var $this = $(this);
+            $this.confirmation({
+                onConfirm: function () {
+                    location.href = $this.attr('href');
+                },
+                onCancel: function () {
+                }, });
         });
-    };
+    })();
 
     var displayErrorMessage = function (formGroup, check, message) {
         var flag = formGroup.find('span.errorMsg').length > 0;
@@ -794,9 +770,14 @@ window.app = (function ($, toastr, App) {
         }
     };
     var scrollTo = function (id) {
-        id = id.replace("link", "");
+        var $id = null;
+        if (id instanceof jQuery) {
+            $id = id;
+        } else {
+            $id = $("#" + id);
+        }
         $('html,body').animate({
-            scrollTop: $("#" + id).offset().top - 50},
+            scrollTop: $id.offset().top - 50},
                 500);
     };
 
@@ -816,6 +797,12 @@ window.app = (function ($, toastr, App) {
     }
 
     var searchTable = function (kendoId, searchFields, Hidden) {
+        var $kendoId = null;
+        if (kendoId instanceof jQuery) {
+            $kendoId = kendoId;
+        } else {
+            $kendoId = $("#" + kendoId);
+        }
         var $searchHtml = $("<div class='row search' id='searchFieldDiv'>"
                 + "<div class='col-sm-12'>"
                 + "<input class='form-group pull-right' placeholder='search here' type='text' id='kendoSearchField' style='width:136px;padding:2px;font-size:12px;'/>"
@@ -823,7 +810,7 @@ window.app = (function ($, toastr, App) {
                 + "</div>");
 
 
-        $searchHtml.insertBefore("#" + kendoId);
+        $searchHtml.insertBefore($kendoId);
 
         if (typeof Hidden !== "undefined") {
             $("#searchFieldDiv").hide();
@@ -839,7 +826,7 @@ window.app = (function ($, toastr, App) {
                 });
             }
 
-            $("#" + kendoId).data("kendoGrid").dataSource.filter({
+            $kendoId.data("kendoGrid").dataSource.filter({
                 logic: "or",
                 filters: filters
             });
@@ -921,6 +908,119 @@ window.app = (function ($, toastr, App) {
         });
 
     };
+    var exportToPDF = function ($table, col, fileName, pageSize, fn) {
+        if (!checkForFileExt(fileName)) {
+            fileName = fileName + ".pdf";
+        }
+        var colWidths = [];
+        var head = [];
+        $.each(col, function (key, value) {
+            colWidths.push('auto');
+            head.push(value);
+        });
+
+        var data = [];
+        if (Array.isArray($table)) {
+            data = $table;
+        } else {
+            var dataSource = $table.data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+        }
+
+        var body = [];
+        body.push(head);
+        for (var i = 0; i < data.length; i++) {
+            var row = [];
+            $.each(col, function (key, value) {
+                if (typeof (data[i][key]) == 'undefined' || data[i][key] == null) {
+                    row.push('-');
+                } else {
+                    if (typeof fn !== 'undefined') {
+                        row.push(fn(data[i][key], key));
+                    } else {
+                        row.push(data[i][key]);
+                    }
+                }
+            });
+            body.push(row);
+        }
+
+
+
+        var docDefinition = {
+            pageSize: typeof pageSize === "undefined" ? "A3" : pageSize,
+            pageOrientation: 'landscape',
+            content: [
+                {
+                    table: {
+                        headerRows: 1,
+                        widths: colWidths,
+                        body: body
+                    }
+                }
+            ]
+        };
+
+        pdfMake.createPdf(docDefinition).download(fileName);
+    };
+
+    var excelExport = function ($table, col, fileName) {
+        if (!checkForFileExt(fileName)) {
+            fileName = fileName + ".xlsx";
+        }
+        var header = [];
+        var cellWidths = [];
+        $.each(col, function (key, value) {
+            header.push({value: value});
+            cellWidths.push({autoWidth: true});
+        });
+        var rows = [{
+                cells: header
+            }];
+
+        var data = [];
+        if (Array.isArray($table)) {
+            data = $table;
+        } else {
+            var dataSource = $table.data("kendoGrid").dataSource;
+            var filteredDataSource = new kendo.data.DataSource({
+                data: dataSource.data(),
+                filter: dataSource.filter()
+            });
+            filteredDataSource.read();
+            var data = filteredDataSource.view();
+        }
+
+        for (var i = 0; i < data.length; i++) {
+            var dataItem = data[i];
+            var row = [];
+            $.each(col, function (key, value) {
+                row.push({value: dataItem[key]});
+            });
+            rows.push({
+                cells: row
+            });
+        }
+        var workbook = new kendo.ooxml.Workbook({
+            sheets: [
+                {
+                    columns: cellWidths,
+                    title: fileName,
+                    rows: rows
+                }
+            ]
+        });
+        kendo.saveAs({dataURI: workbook.toDataURL(), fileName: fileName});
+    };
+
+    var checkForFileExt = function (file) {
+        return (file.indexOf('.') >= 0);
+    };
 
     (function () {
         $('.hris-export-to-excel').on("click", function () {
@@ -951,6 +1051,9 @@ window.app = (function ($, toastr, App) {
     var populateSelect = function ($element, list, id, value, defaultMessage, defaultValue, selectedId, isMandatory) {
         if (typeof defaultValue === 'undefined') {
             defaultValue = -1;
+        }
+        if (typeof defaultMessage === "undefined" || defaultMessage === null) {
+            defaultMessage = "";
         }
         $element.html('');
         var $defaultOption = $("<option></option>").val(defaultValue).text(defaultMessage);
@@ -1004,7 +1107,7 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, excelExportFileName, detail, bulkOptions) {
+    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config) {
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1027,11 +1130,6 @@ window.app = (function ($, toastr, App) {
 
         }
         var kendoConfig = {
-            excel: {
-                fileName: excelExportFileName,
-                filterable: true,
-                allPages: true
-            },
             height: 500,
             scrollable: true,
             sortable: true,
@@ -1047,11 +1145,18 @@ window.app = (function ($, toastr, App) {
                 }
             },
             pageable: {
-                input: true,
-                numeric: false
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
             },
             columns: columns
         };
+        if (typeof config !== "undefined" && config !== null) {
+            for (var key in config) {
+                kendoConfig[key] = config[key];
+            }
+        }
+
         if (typeof detail !== 'undefined' && detail !== null) {
             kendoConfig['detailInit'] = detail;
         }
@@ -1119,6 +1224,108 @@ window.app = (function ($, toastr, App) {
         grid.setDataSource(dataSource);
     }
 
+    var genKendoActionTemplate = function (config) {
+        try {
+            if (typeof config === "undefined")
+                throw {message: "no config provided"};
+
+            var editLink = "";
+            if (config.update['ALLOW_UPDATE'] === "Y") {
+                var iParams = config.update['params'];
+                var url = config.update['url'];
+                for (var i in iParams) {
+                    url += `/#: ${iParams[i]} #`;
+                }
+                var editLink = `
+                <a class="btn-edit" title="Edit" href="${url}" style="height:17px;">
+                    <i class="fa fa-edit"></i>
+                </a>`;
+            }
+            var deleteLink = "";
+            if (config.delete['ALLOW_DELETE'] === "Y") {
+                var iParams = config.delete['params'];
+                var url = config.delete['url'];
+                for (var i in iParams) {
+                    url += `/#: ${iParams[i]} #`;
+                }
+                var deleteLink = `
+                <a class="confirmation btn-delete" title="Delete" href="${url}" style="height:17px;">
+                    <i class="fa fa-trash-o"></i>
+                </a>`;
+            }
+
+            var template = editLink + deleteLink;
+            return template;
+        } catch (e) {
+            console.log("error", e.message);
+        }
+    };
+
+    var getDateRangeBetween = function (first, second) {
+        var diff = daysBetween(first, second);
+        var range = [];
+        for (var i = 0; i <= diff; i++) {
+            var rangeDate = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+            rangeDate.setDate(rangeDate.getDate() + i)
+            range.push(rangeDate);
+        }
+        return range;
+    }
+
+    var exportDomToPdf = function (divName, cssUrl) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var popupWin = window.open('', '_blank', 'width=1000,height=500,toolbar=0,scrollbars=0,status=0');
+        popupWin.document.open();
+        popupWin.document.write('<style>@page{size:landscape;}</style><html><head><link rel="stylesheet" type="text/css" href="' + cssUrl + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.close();
+    };
+
+    var bulkServerRequest = function (link, dataList, completeFn, errorFn) {
+        (function (dataList) {
+            var counter = 0;
+            var length = dataList.length;
+            var addShift = function (data) {
+                serverRequest(link, data).then(function (response) {
+                    NProgress.set((counter + 1) / length);
+                    counter++;
+                    if (!response.success) {
+                        if (typeof errorFn !== 'undefined' && errorFn !== null) {
+                            errorFn(data);
+                        }
+                    }
+                    if (counter >= length) {
+                        if (typeof completeFn !== 'undefined' && completeFn !== null) {
+                            completeFn();
+                        }
+                        return;
+                    }
+                    addShift(dataList[counter]);
+                }, function (error) {
+                    if (typeof errorFn !== 'undefined' && errorFn !== null) {
+                        errorFn(data, error);
+                    }
+                });
+
+            };
+            NProgress.start();
+            addShift(dataList[counter]);
+        })(dataList);
+    };
+
+    var serverRequest = function (link, data) {
+        return new Promise(function (resolve, reject) {
+            App.blockUI({target: "#hris-page-content"});
+            pullDataById(link, data).then(function (response) {
+                App.unblockUI("#hris-page-content");
+                resolve(response);
+            }, function (error) {
+                App.unblockUI("#hris-page-content");
+                reject(error);
+            });
+
+        });
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1132,7 +1339,6 @@ window.app = (function ($, toastr, App) {
         floatingProfile: floatingProfile,
         checkUniqueConstraints: checkUniqueConstraints,
         displayErrorMessage: displayErrorMessage,
-        UIConfirmations: UIConfirmations,
         startEndDatePicker: startEndDatePicker,
         startEndDatePickerWithNepali: startEndDatePickerWithNepali,
         datePickerWithNepali: datePickerWithNepali,
@@ -1145,12 +1351,20 @@ window.app = (function ($, toastr, App) {
         daysBetween: daysBetween,
         searchTable: searchTable,
         pdfExport: pdfExport,
+        exportToPDF: exportToPDF,
+        excelExport: excelExport,
         populateSelect: populateSelect,
         floatToRound: floatToRound,
         lockField: lockField,
         minToHour: minToHour,
         initializeKendoGrid: initializeKendoGrid,
-        renderKendoGrid: renderKendoGrid
+        renderKendoGrid: renderKendoGrid,
+        genKendoActionTemplate: genKendoActionTemplate,
+        getDateRangeBetween: getDateRangeBetween,
+        exportDomToPdf: exportDomToPdf,
+        serverRequest: serverRequest,
+        bulkServerRequest: bulkServerRequest
+
 
     };
 })(window.jQuery, window.toastr, window.App);

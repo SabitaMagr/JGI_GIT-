@@ -2,27 +2,20 @@
 
 namespace Setup\Form;
 
-
 use Zend\Form\Annotation;
-use Setup\Model\Model;
-
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("DesignationForm")
  */
-
-class DesignationForm
-{
-    
-
+class DesignationForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Designation Title"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"min":"5"}})
+     * @Annotation\Validator({"name":"StringLength", "options":{"min":"1","max":255}})
      * @Annotation\Attributes({ "id":"form-designationTitle", "class":"form-designationTitle form-control" })
      */
     public $designationTitle;
@@ -75,10 +68,10 @@ class DesignationForm
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
-    */
+     */
     public $submit;
-    
-        /**
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

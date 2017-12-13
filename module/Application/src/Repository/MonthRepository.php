@@ -67,10 +67,7 @@ class MonthRepository implements RepositoryInterface {
         return $this->gateway->select(function(Select $select) use($id) {
                     $select->where([Months::FISCAL_YEAR_ID => $id]);
                     $select->where([Months::STATUS => 'E']);
-//                    $select->where(function(Where $where) {
-//                        $where->lessThan(Months::TO_DATE, Helper::getcurrentExpressionDate());
-//                    });
-                    $select->order([Months::FROM_DATE => Select::ORDER_DESCENDING]);
+                    $select->order([Months::FROM_DATE => Select::ORDER_ASCENDING]);
                 });
     }
 
@@ -90,6 +87,15 @@ class MonthRepository implements RepositoryInterface {
                       FISCAL_YEAR_ID
                     FROM HRIS_FISCAL_YEARS
                     WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE               
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
+    public function getCurrentDateBS() {
+        $sql = <<<EOT
+            SELECT BS_DATE(TRUNC(SYSDATE)) AS CURRENT_DATE FROM DUAL              
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

@@ -28,7 +28,7 @@ class JobHistoryRepository implements RepositoryInterface {
             $history['TO_SALARY'] = 0;
         }
         $this->tableGateway->insert($history);
-        $this->updateEmployeeProfile($model);
+        $this->updateEmployeeProfile($history['JOB_HISTORY_ID']);
     }
 
     public function edit(Model $model, $id) {
@@ -37,7 +37,7 @@ class JobHistoryRepository implements RepositoryInterface {
             $history['TO_SALARY'] = 0;
         }
         $this->tableGateway->update($history, [JobHistory::JOB_HISTORY_ID => $id]);
-        $this->updateEmployeeProfile($model);
+        $this->updateEmployeeProfile($id);
     }
 
     public function delete($id) {
@@ -66,12 +66,16 @@ class JobHistoryRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId = null, $companyId = null, $branchId = null, $departmentId = null, $designationId = null, $positionId = null, $serviceTypeId = null,$employeeTypeId=null) {
+    public function filter($fromDate, $toDate, $employeeId, $serviceEventTypeId = null, $companyId = null, $branchId = null, $departmentId = null, $designationId = null, $positionId = null, $serviceTypeId = null, $employeeTypeId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
-            new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE"),
-            new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE"),
+            new Expression("INITCAP(TO_CHAR(H.START_DATE, 'DD-MON-YYYY')) AS START_DATE_AD"),
+            new Expression("BS_DATE(H.START_DATE) AS START_DATE_BS"),
+            new Expression("INITCAP(TO_CHAR(H.END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD"),
+            new Expression("BS_DATE(H.END_DATE) AS END_DATE_BS"),
+            new Expression("INITCAP(TO_CHAR(H.EVENT_DATE, 'DD-MON-YYYY')) AS EVENT_DATE_AD"),
+            new Expression("BS_DATE(TRUNC(H.EVENT_DATE)) AS EVENT_DATE_BS"),
             new Expression("H.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("H.JOB_HISTORY_ID AS JOB_HISTORY_ID")], true);
         $select->from(['H' => "HRIS_JOB_HISTORY"])
@@ -94,7 +98,7 @@ class JobHistoryRepository implements RepositoryInterface {
                 "H.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')"
             ]);
         }
-        
+
         if ($employeeTypeId != null && $employeeTypeId != -1) {
             $select->where([
                 "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
@@ -164,6 +168,9 @@ class JobHistoryRepository implements RepositoryInterface {
             new Expression("H.TO_SERVICE_TYPE_ID AS TO_SERVICE_TYPE_ID"),
             new Expression("H.TO_COMPANY_ID AS TO_COMPANY_ID"),
             new Expression("H.TO_SALARY AS TO_SALARY"),
+            new Expression("H.RETIRED_FLAG AS RETIRED_FLAG"),
+            new Expression("H.DISABLED_FLAG AS DISABLED_FLAG"),
+            new Expression("H.EVENT_DATE AS EVENT_DATE"),
                 ], true);
         $select->from(['H' => "HRIS_JOB_HISTORY"]);
         $select->where(['H.JOB_HISTORY_ID' => $id]);
@@ -283,7 +290,9 @@ class JobHistoryRepository implements RepositoryInterface {
               H.TO_DESIGNATION_ID                                AS TO_DESIGNATION_ID,
               H.TO_POSITION_ID                                   AS TO_POSITION_ID,
               H.TO_SERVICE_TYPE_ID                               AS TO_SERVICE_TYPE_ID,
-              H.TO_SALARY                                        AS TO_SALARY
+              H.TO_SALARY                                        AS TO_SALARY,
+              H.RETIRED_FLAG,
+              H.DISABLED_FLAG
             FROM HRIS_JOB_HISTORY H
             WHERE H.START_DATE<{$date}
             AND H.EMPLOYEE_ID = {$employeeId}
@@ -328,11 +337,11 @@ class JobHistoryRepository implements RepositoryInterface {
         return Helper::extractDbData($result);
     }
 
-    function updateEmployeeProfile(JobHistory $j) {
+    function updateEmployeeProfile($jobHistoryId) {
         $salary = isset($j->toSalary) ? $j->toSalary : 0;
         EntityHelper::rawQueryResult($this->adapter, "
             BEGIN
-              HRIS_UPDATE_EMPLOYEE_SERVICE({$j->toCompanyId},{$j->toBranchId},{$j->toDepartmentId}, {$j->toDesignationId},{$j->toPositionId} ,{$j->toServiceTypeId} ,{$j->serviceEventTypeId} ,{$j->employeeId},{$j->startDate->getExpression()},{$salary});
+              HRIS_UPDATE_EMPLOYEE_SERVICE({$jobHistoryId});
             END;");
     }
 

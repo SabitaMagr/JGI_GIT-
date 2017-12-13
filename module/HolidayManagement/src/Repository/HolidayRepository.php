@@ -2,17 +2,17 @@
 
 namespace HolidayManagement\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Exception;
 use HolidayManagement\Model\EmployeeHoliday;
 use HolidayManagement\Model\Holiday;
-use HolidayManagement\Model\HolidayBranch;
+use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Authentication\AuthenticationService;
 
 class HolidayRepository implements RepositoryInterface {
 
@@ -48,11 +48,11 @@ class HolidayRepository implements RepositoryInterface {
             INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
             A.HALFDAY
                 FROM HRIS_HOLIDAY_MASTER_SETUP A 
-                WHERE A.STATUS='E' AND A.FISCAL_YEAR=".$this->fiscalYr;
+                WHERE A.STATUS='E' AND A.FISCAL_YEAR=" . $this->fiscalYr;
         if ($today != null) {
             $sql .= " AND (" . $today->getExpression() . " between A.START_DATE AND A.END_DATE) OR " . $today->getExpression() . " <= A.START_DATE";
         }
-        $sql .=" ORDER BY A.START_DATE";
+        $sql .= " ORDER BY A.START_DATE";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -119,8 +119,8 @@ WHERE A.STATUS ='E'";
         if ($toDate != null) {
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
-        if($fromDate==null && $toDate==null){
-            $sql .=" AND A.FISCAL_YEAR=".$this->fiscalYr;
+        if ($fromDate == null && $toDate == null) {
+            $sql .= " AND A.FISCAL_YEAR=" . $this->fiscalYr;
         }
 
         $sql .= " ORDER BY A.START_DATE";
@@ -150,6 +150,16 @@ WHERE A.STATUS ='E'";
 
         $statement = $sql->prepareStatementForSqlObject($select);
         return $statement->execute();
+    }
+
+    public function holidayAssign(int $holidayId, array $assignedTo) {
+        $holidayAssignGateway = new TableGateway("HRIS_HOLIDAY_ASSIGN", $this->adapter);
+        $holidayAssignGateway->delete(["HOLIDAY_ID" => $holidayId]);
+        foreach ($assignedTo as $item) {
+            $item['HOLIDAY_ID'] = $holidayId;
+            $holidayAssignGateway->insert($item);
+        }
+        EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_HOLIDAY_ASSIGN_AUTO({$holidayId}); END;");
     }
 
 }

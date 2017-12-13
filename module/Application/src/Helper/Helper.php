@@ -322,13 +322,13 @@ class Helper {
         return number_format($floatNumber, self::FLOAT_ROUNDING_DIGIT_NO, '.', '');
     }
 
-    public static function hoursToMinutes($hours) {
-        $minutes = 0;
-        if (strpos($hours, ':') !== false) {
-            // Split hours and minutes. 
-            list($hours, $minutes) = explode(':', $hours);
+    public static function hoursToMinutes($formattedHours) {
+        if (isset($formattedHours) && strpos($formattedHours, ":") > 0) {
+            list($hours, $minutes) = explode(':', $formattedHours);
+            return $hours * 60 + $minutes;
+        } else {
+            return 0;
         }
-        return $hours * 60 + $minutes;
     }
 
     public static function minutesToHours($minutes) {
@@ -343,10 +343,9 @@ class Helper {
         $interval = $fromDate->diff($toDate);
         return $interval->format('%a');
     }
-    
-    public static function encryptPassword($password){
+
+    public static function encryptPassword($password) {
         return new Expression("FN_ENCRYPT_PASSWORD('$password')");
     }
-    
 
 }

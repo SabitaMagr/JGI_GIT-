@@ -6,9 +6,7 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/angular.min.js'));
-$this->headScript()->appendFile($this->basePath('js/SelfService/advance-request/add.js'))
-            ->appendFile($this->basePath('js/manager-service/advance-approve/view.js'));
+$this->headScript()->appendFile($this->basePath('js/advance/advance-approve/view.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -17,18 +15,27 @@ $form->setAttribute('id',"advance-form");
 $advanceId = $form->get('advanceId');
 $advanceId->setValueOptions($advances);
 $advanceId->setAttributes(["disabled" => "disabled"]);
+
+
 $requestedAmount = $form->get('requestedAmount');
 $requestedAmount->setAttributes(["disabled" => "disabled"]);
-$advanceDate = $form->get('advanceDate');
-$advanceDate->setAttributes(["disabled" => "disabled"]);
+
+$dateOfadvance = $form->get('dateOfadvance');
+$dateOfadvance->setAttributes(["disabled" => "disabled"]);
+
 $reason = $form->get('reason');
 $reason->setAttributes(["disabled" => "disabled"]);
-$terms = $form->get('terms');
-$terms->setAttributes(["disabled" => "disabled"]);
+
+$deductionRate = $form->get('deductionRate');
+$deductionRate->setAttributes(["disabled" => "disabled"]);
+
+$deductionIn = $form->get('deductionIn');
+$deductionIn->setAttributes(["disabled" => "disabled"]);
+
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(['required' => 'true']);
+
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required' => 'true']);
+
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
@@ -63,7 +70,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<div class="row margin-top-20" ng-app="hris" ng-controller="advanceDetailController">
+<div class="row margin-top-20" >
     <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
@@ -109,7 +116,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php echo $requestedDt; ?>
+                                            <?php echo $advanceRequestData['REQUESTED_DATE']; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -132,17 +139,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <td width="15">:</td>
                                         <td>
                                             <?php
-                                            if ($status == 'RQ') {
-                                                echo "Pending";
-                                            } else if ($status == 'RC') {
-                                                echo "Recommended";
-                                            } else if ($status == 'AP') {
-                                                echo "Approved";
-                                            } else if ($status == "R") {
-                                                echo "Rejected";
-                                            } else if ($status == "C") {
-                                                echo "Cancelled";
-                                            }
+                                            echo $statusDetail;
                                             ?>
                                         </td>
                                     </tr>
@@ -159,8 +156,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $this->formLabel($advanceId); ?>
                                 <?php print $this->formElement($advanceId); ?>
                                 <?php print $this->formElementErrors()->render($advanceId, ['class' => 'help-block']); ?>
-                                <span ng-bind="allowAmt" style="font-size:11px; font-weight: bold;"></span>
-                                <span ng-bind="allowTerms" style="font-size:11px; font-weight: bold;"></span>
                             </div>               
                         </div>
 
@@ -173,36 +168,47 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
 
                         <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($terms); ?>
-                                <?php print $this->formElement($terms); ?>
-                                <?php print $this->formElementErrors()->render($terms, ['class' => 'help-block']); ?>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class=" row">
-                        <div class="col-sm-4">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <?php print $this->formLabel($advanceDate); ?>
-                                        <?php print $this->formElement($advanceDate); ?>
-                                        <?php print $this->formElementErrors()->render($advanceDate, ['class' => 'help-block']); ?>
+                                        <?php print $this->formLabel($dateOfadvance); ?>
+                                        <?php print $this->formElement($dateOfadvance); ?>
+                                        <?php print $this->formElementErrors()->render($dateOfadvance, ['class' => 'help-block']); ?>
                                     </div>
                                 </div>     
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="nepaliDate">&nbsp;</label>
                                         <div class="input-group">
-                                            <input type="text" name="nepaliDate" id="nepaliDate"
+                                            <input type="text" name="nepaliDate" id="nepalidateOfadvance"
                                                    class="form-control" value="" disabled="disabled">
                                         </div>
                                     </div>
                                 </div>     
-                            </div>       
+                            </div>
+                            
+                        </div>
+                    </div>
 
+
+                    <div class=" row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($deductionRate); ?>
+                                <?php print $this->formElement($deductionRate); ?>
+                                <?php print $this->formElementErrors()->render($deductionRate, ['class' => 'help-block']); ?>
+                                <span ><?php 
+                                $monthlyDeductAmt=($advanceRequestData['DEDUCTION_RATE']/100)*$advanceRequestData['SALARY'];
+                                        echo 'RS.'.$monthlyDeductAmt;
+                                ?></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <?php print $this->formLabel($deductionIn); ?>
+                                <?php print $this->formElement($deductionIn); ?>
+                                <?php print $this->formElementErrors()->render($deductionIn, ['class' => 'help-block']); ?>
+                            </div>
                         </div>
 
                         <div class="col-sm-4">
@@ -212,6 +218,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                             </div>
                         </div>
+
                     </div>
 
 

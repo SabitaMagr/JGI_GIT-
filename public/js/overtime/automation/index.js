@@ -38,7 +38,6 @@
                 }
         );
 
-        app.UIConfirmations();
 
     });
 })(window.jQuery, window.app);

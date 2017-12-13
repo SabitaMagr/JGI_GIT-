@@ -2,139 +2,71 @@
 
 namespace LeaveManagement\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\LeaveApplyForm;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
-use LeaveManagement\Repository\LeaveMasterRepository;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use ManagerService\Repository\LeaveApproveRepository;
 use SelfService\Repository\LeaveRequestRepository;
-use Setup\Model\Branch;
-use Setup\Model\Department;
-use Setup\Model\Designation;
-use Setup\Model\Position;
-use Setup\Model\ServiceEventType;
-use Setup\Model\ServiceType;
-use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
-use Setup\Repository\RecommendApproveRepository;
-use SelfService\Repository\LeaveSubstituteRepository;
 use Setup\Model\HrEmployees;
+use Zend\Authentication\Storage\StorageInterface;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 
-class LeaveStatus extends AbstractActionController {
+class LeaveStatus extends HrisController {
 
-    private $repository;
-    private $adapter;
-    private $form;
-    private $userId;
-    private $employeeId;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->repository = new LeaveStatusRepository($adapter);
-        $this->adapter = $adapter;
-        $this->authService = new AuthenticationService();
-        $recordDetail = $this->authService->getIdentity();
-        $this->userId = $recordDetail['user_id'];
-        $this->employeeId = $recordDetail['employee_id'];
-    }
-
-    public function initializeForm() {
-        $leaveApplyForm = new LeaveApplyForm();
-        $builder = new AnnotationBuilder();
-        $this->form = $builder->createForm($leaveApplyForm);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(LeaveStatusRepository::class);
+        $this->initializeForm(LeaveApplyForm::class);
     }
 
     public function indexAction() {
+        $leaveList = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", NULL, ['-1' => 'All Leaves'], TRUE);
+        $leaveSE = $this->getSelectElement(['name' => 'leave', 'id' => 'leaveId', 'class' => 'form-control', 'label' => 'Type'], $leaveList);
+        $leaveStatusSE = $this->getStatusSelectElement(['name' => 'leaveStatus', 'id' => 'leaveRequestStatusId', 'class' => 'form-control', 'label' => 'Status']);
 
-        $leaveFormElement = new Select();
-        $leaveFormElement->setName("leave");
-        $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", NULL, FALSE, TRUE);
-        $leaves1 = [-1 => "All Type"] + $leaves;
-        $leaveFormElement->setValueOptions($leaves1);
-        $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
-        $leaveFormElement->setLabel("Type");
-
-        $leaveStatus = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected',
-            'C' => 'Cancelled'
-        ];
-        $leaveStatusFormElement = new Select();
-        $leaveStatusFormElement->setName("leaveStatus");
-        $leaveStatusFormElement->setValueOptions($leaveStatus);
-        $leaveStatusFormElement->setAttributes(["id" => "leaveRequestStatusId", "class" => "form-control"]);
-        $leaveStatusFormElement->setLabel("Status");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'leaves' => $leaveFormElement,
-                    'leaveStatus' => $leaveStatusFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        return $this->stickFlashMessagesTo([
+                    'leaves' => $leaveSE,
+                    'leaveStatus' => $leaveStatusSE,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
     public function viewAction() {
-        $this->initializeForm();
-        $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-        $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
-
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
             return $this->redirect()->toRoute("leavestatus");
         }
-        $leaveApply = new LeaveApply();
         $request = $this->getRequest();
+        $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
+        $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
+
 
         $detail = $leaveApproveRepository->fetchById($id);
-        //print_r($detail); die();
-
-        $leaveId = $detail['LEAVE_ID'];
-        $leaveRepository = new LeaveMasterRepository($this->adapter);
-        $leaveDtl = $leaveRepository->fetchById($leaveId);
 
         $status = $detail['STATUS'];
-        $approvedDT = $detail['APPROVED_DT'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-        $recommApprove = 0;
-        if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-            $recommApprove = 1;
-        }
+        $recommApprove = $detail['RECOMMENDER_ID'] == $detail['APPROVER_ID'] ? 1 : 0;
 
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'C' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
 
-        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
         $preBalance = $result['BALANCE'];
 
-        $leaveSubstituteRepo = new LeaveSubstituteRepository($this->adapter);
-        $leaveSubstituteDetail = $leaveSubstituteRepo->fetchById($detail['ID']);
-
-        if (!$request->isPost()) {
-            $leaveApply->exchangeArrayFromDB($detail);
-            $this->form->bind($leaveApply);
-        } else {
+        $leaveApply = new LeaveApply();
+        if ($request->isPost()) {
             $getData = $request->getPost();
             $reason = $getData->approvedRemarks;
             $action = $getData->submit;
@@ -154,6 +86,8 @@ class LeaveStatus extends AbstractActionController {
 
             return $this->redirect()->toRoute("leavestatus");
         }
+        $leaveApply->exchangeArrayFromDB($detail);
+        $this->form->bind($leaveApply);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -167,7 +101,7 @@ class LeaveStatus extends AbstractActionController {
                     'approvedDT' => $detail['APPROVED_DT'],
                     'remarkDtl' => $detail['REMARKS'],
                     'status' => $status,
-                    'allowHalfDay' => $leaveDtl['ALLOW_HALFDAY'],
+                    'allowHalfDay' => $detail['ALLOW_HALFDAY'],
                     'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove' => $recommApprove,
@@ -177,6 +111,23 @@ class LeaveStatus extends AbstractActionController {
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
                     'gp' => $detail['GRACE_PERIOD']
         ]);
+    }
+
+    public function pullLeaveRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $result = $this->repository->getLeaveRequestList($data);
+
+            $recordList = Helper::extractDbData($result);
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+                "message" => null
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

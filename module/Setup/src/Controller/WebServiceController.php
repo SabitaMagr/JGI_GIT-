@@ -61,7 +61,7 @@ class WebServiceController extends AbstractActionController {
                 case "pullEmployeeLeave":
                     $leaveAssign = new LeaveAssignRepository($this->adapter);
                     $ids = $postedData->id;
-                    $temp = $leaveAssign->filter($ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId'], $ids['serviceTypeId'], $ids['employeeId'], $ids['companyId'], $ids['positionId'],$ids['employeeTypeId']);
+                    $temp = $leaveAssign->filter($ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId'], $ids['serviceTypeId'], $ids['employeeId'], $ids['companyId'], $ids['positionId'], $ids['employeeTypeId']);
 
                     $tempArray = [];
                     foreach ($temp as $item) {
@@ -214,16 +214,16 @@ class WebServiceController extends AbstractActionController {
                 "success" => false
             ];
         }
-        return new JsonModel(['data' => $responseData]);
+        return new JsonModel($responseData);
     }
 
     public function districtAction() {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $id = $request->getPost()->id;
-            $jsonModel = new JsonModel([
-                'data' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS, ["ZONE_ID" => $id])
-            ]);
+            $jsonModel = new JsonModel(
+                    EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS, ["ZONE_ID" => $id])
+            );
             return $jsonModel;
         } else {
             
@@ -234,9 +234,8 @@ class WebServiceController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $id = $request->getPost()->id;
-            return new JsonModel([
-                'data' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY, ["DISTRICT_ID" => $id])
-            ]);
+            return new JsonModel(EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY, ["DISTRICT_ID" => $id])
+            );
         } else {
             
         }

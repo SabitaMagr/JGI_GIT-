@@ -44,7 +44,9 @@ return [
     'Other',
     'Report',
     'Overtime',
-    'ServiceQuestion'
+    'ServiceQuestion',
+    'MobileApi',
+    'Customer',
 ];
 
 

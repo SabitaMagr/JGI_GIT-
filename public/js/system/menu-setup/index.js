@@ -28,15 +28,12 @@ var UITree = function () {
     return {
         init: function () {
             App.blockUI({target: "#hris-page-content"});
-            window.app.pullDataById(document.url, {
-                action: 'menu',
+            window.app.pullDataById(document.menuLink, {
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
-                console.log("success", success);
-                n(success);
+                n(success.data);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
-                console.log("failure", failure);
             });
         },
         populateTree: n

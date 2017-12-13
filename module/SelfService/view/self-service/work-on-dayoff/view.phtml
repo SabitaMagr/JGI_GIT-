@@ -85,19 +85,7 @@ print $this->form()->openTag($form);
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php
-                                            if ($status == 'RQ') {
-                                                echo "Pending";
-                                            } else if ($status == 'RC') {
-                                                echo "Recommended";
-                                            } else if ($status == 'AP') {
-                                                echo "Approved";
-                                            } else if ($status == "R") {
-                                                echo "Rejected";
-                                            } else if ($status == "C") {
-                                                echo "Cancelled";
-                                            }
-                                            ?>
+                                            <?php echo $statusDetail; ?>
                                         </td>
                                     </tr>
                                 </table>

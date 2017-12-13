@@ -1,16 +1,17 @@
 (function ($, app) {
     $('#export').on("click", function () {
-        html2canvas($("#paySlip"), {
-            onrendered: function (canvas) {
-                console.log("canvas", canvas);
-                var imgData = canvas.toDataURL("image/jpeg", 1.0);
-                var pdf = new jsPDF();
-
-                pdf.addImage(imgData, 'JPEG', 15, 40, 180, 160);
-                pdf.save("download.pdf");
-
-            }
-        });
+//        html2canvas($("#paySlip"), {
+//            onrendered: function (canvas) {
+//                console.log("canvas", canvas);
+//                var imgData = canvas.toDataURL("image/jpeg", 1.0);
+//                var pdf = new jsPDF();
+//
+//                pdf.addImage(imgData, 'JPEG', 15, 40, 180, 160);
+//                pdf.save("download.pdf");
+//
+//            }
+//        });
+        app.exportDomToPdf('paySlip', document.cssUrl);
     });
 
 })(window.jQuery, window.app);
@@ -26,11 +27,8 @@ angular.module('hris', [])
             $scope.paySlip = null;
 
             $scope.fetchPayRollGeneratedMonths = function () {
-                window.app.pullDataById(document.restfulUrl, {
-                    action: 'pullPayRollGeneratedMonths',
-                    data: {
-                        employeeId: document.employeeId
-                    }
+                window.app.pullDataById(document.pullPayRollGeneratedMonthsLink, {
+                    employeeId: document.employeeId
                 }).then(function (success) {
                     $scope.$apply(function () {
                         console.log("pullPayRollGeneratedMonths res", success);
@@ -43,18 +41,13 @@ angular.module('hris', [])
             $scope.fetchPayRollGeneratedMonths();
 
             $scope.changeMonths = function (monthId) {
-                window.app.pullDataById(document.restfulUrl, {
-                    action: 'fetchEmployeePaySlip',
-                    data: {
-                        month: monthId
-                    }
+                window.app.pullDataById(document.fetchEmployeePaySlipLink, {
+                    month: monthId
                 }).then(function (success) {
                     $scope.$apply(function () {
-                        console.log("fetchEmployeePaySlip res", success);
                         $scope.paySlip = success.data;
                     });
                 }, function (failure) {
-                    console.log("fetchEmployeePaySlip fail", failure);
                 });
             };
 

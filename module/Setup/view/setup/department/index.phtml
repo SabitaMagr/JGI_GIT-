@@ -1,12 +1,7 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
-
-
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
@@ -21,24 +16,30 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.departments =<?= json_encode($departments) ?>;
+document.editLink='<?= $this->url("department", ["action" => "edit"]); ?>';
+document.deleteLink='<?= $this->url("department", ["action" => "delete"]); ?>';
+document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Department')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
             </div>
             <div class="actions">
-                <a href="<?= $this->url('department', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
+                <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
+                    <a href="<?= $this->url('department', ['action' => 'add']) ?>" class="btn default btn-sm">
+                        <i class="fa fa-plus-square icon-black"></i>
+                        New 
+                    </a>
+                <?php endif; ?>
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -46,39 +47,21 @@ $this->headScript()
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="javascript:;" id="export">
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-    <div id="departmentTable">
+        <div id="departmentTable">
+        </div>
     </div>
-	</div>
- 
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>    
-        #: (DEPARTMENT_NAME == null) ? '-' : DEPARTMENT_NAME #
-        </td>
-        <td>    
-        #: (COMPANY_NAME == null) ? '-' : COMPANY_NAME #
-        </td>
-        <td>    
-        #: (BRANCH_NAME == null) ? '-' : BRANCH_NAME #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("department", ["action" => "edit"]); ?>/#:DEPARTMENT_ID#" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a>
-        <a class="btn-delete confirmation"
-        href="<?= $this->url("department", ["action" => "delete"]); ?>/#:DEPARTMENT_ID#" id="bs_#:DEPARTMENT_ID #" style="height:17px;"> 
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        </td>
-        </tr>
-    </script>
 </div>

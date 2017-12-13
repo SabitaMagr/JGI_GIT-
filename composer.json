@@ -44,7 +44,6 @@
         "psr-4": {
             "Application\\": "module/Application/src/",
             "Album\\": "module/Album/src/",
-            "Test\\": "module/Test/src/",
             "LeaveManagement\\": "module/LeaveManagement/src/",
             "HolidayManagement\\": "module/HolidayManagement/src/",
             "Setup\\": "module/Setup/src/",
@@ -66,7 +65,9 @@
             "ServiceQuestion\\": "module/ServiceQuestion/src/",
             "Asset\\": "module/Asset/src/",
             "Other\\": "module/Other/src/",
-            "Report\\": "module/Report/src/"
+            "Report\\": "module/Report/src/",
+            "MobileApi\\": "module/MobileApi/src/",
+            "Customer\\": "module/Customer/src/"
         }
     },
     "autoload-dev": {
@@ -86,6 +87,9 @@
         "zendframework/zend-developer-tools": "^1.1"
     },
     "repositories": {
-        "packagist": { "url": "https://packagist.org", "type": "composer" }
+        "packagist": {
+            "url": "https://packagist.org",
+            "type": "composer"
+        }
     }
 }

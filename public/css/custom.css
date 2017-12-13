@@ -1481,7 +1481,7 @@ ul#personalInfo li{
     padding: 0px !important;
 }
 .font-common{
-    font-family: Impact, Charcoal, sans-serif;
+    /*font-family: Impact, Charcoal, sans-serif;*/
     font-size:12px;
 }
 
@@ -2265,6 +2265,7 @@ font-weight: 400;
     {
         padding-left:0px;
     }
+
     .databox
     {
         width:100%;
@@ -2272,4 +2273,109 @@ font-weight: 400;
     .changes{
         width:25%;
     }
+
+}
+
+
+.portlet.portlet-fullscreen{
+    z-index: 1000 !important;
+}
+
+
+.div-3-name{
+    width: 40%;
+    float:left;
+}
+
+.div-3-designation{
+    width: 35%;
+    float:left;
+}
+
+.div-3-department{
+    width: 25%;
+    float:left;
+}
+
+.serviceQuestionList{
+    margin-bottom: 3%;
+}
+
+.serviceQuestionList1{
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+div#ndp-nepali-box{
+    z-index: 99999 !important ;
+}
+
+.lobilists .lobilist-placeholder, .lobilists .lobilist-wrapper{
+    width: 100%;
+    margin-right: 0px;
+}
+
+.col-md-6.nopaddinggap{
+    padding-right:0px !important;  
+
+}
+.minpaddingleft
+{
+    padding-left:2px;
+}
+#green{
+    color:green !important;
+}
+#red{
+    color:red !important;
+}
+
+.datepicker{
+    z-index: 1001 !important;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+#tabContent h7{
+    font-weight: 600;
+    font-size:11px !important;
+}
+#assignBtnWrap{
+    position: absolute;
+    bottom: 0;
+    right: 7%;
+}
+.position-relative{
+    position: relative;
+}
+
+.portlet-body-birhday{
+    background-image: url("../img/birthday_background_2.jpg");
+}
+
+.nc-container{
+    padding:1%;
+}
+
+
+.nc-header{
+    margin-bottom: 20px;
+}
+
+.nc-box{
+    width: 14%;
+    /*float: left;*/
+}
+
+.nc-date{
+    width: 100%;
+    height:100px;
+}
+
+.truncate {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
 }

@@ -1,5 +1,4 @@
-<link href="<?= $this->basePath('assets/global/plugins/hide-show-password/css/example.wink.css') ?>" rel="stylesheet"
-              type="text/css"/>
+<link href="<?= $this->basePath('assets/global/plugins/hide-show-password/css/example.wink.css') ?>" rel="stylesheet" type="text/css"/>
 <?php
 $this->headScript()->appendFile($this->basePath('js/system/user-setup/add.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/hide-show-password/hideShowPassword.min.js'));
@@ -10,10 +9,12 @@ $form->setAttribute('id', 'usersetup-form');
 
 $userName = $form->get('userName');
 $password = $form->get('password');
+$status = $form->get('status');
 $roleId = $form->get('roleId');
 $roleId->setValueOptions($roleList);
 $employeeId = $form->get('employeeId');
 $employeeId->setValueOptions($employeeList);
+$isLocked = $form->get('isLocked');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -28,12 +29,8 @@ if ($this->messages) {
 }
 $form->prepare();
 ?>
-<script>
-    document.menu =<?php $menu = ["id" => "menuSystem", "subMenu" => ["id" => "subMenuUserSetup"]];
-echo json_encode($menu); ?>;
-</script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div class="row margin-top-20">
     <div class="col-sm-12">
@@ -47,65 +44,76 @@ echo json_encode($menu); ?>;
                 </div>
             </div>
             <div class="portlet-body">
-                    <?php print $this->form()->openTag($form); ?>
-                
-                
-                <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($employeeId); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($employeeId); ?>
-<?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
-                </div>
-                    </div>
-                    
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($roleId); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($roleId); ?>
-<?php print $this->formElementErrors()->render($roleId, ['class' => 'help-block error']); ?>
-                </div>
-                    </div>
-                    
-                    <div class="col-sm-4">
-                <div class="form-group<?= empty($userName->getMessages()) ? "" : "error" ?>">
-                    <?php print $this->formLabel($userName); ?>
-                    <span class="required" aria-required="true">*</span>
-                <?php print $this->formElement($userName); ?>
-                    <input type="hidden" id="userId" value="<?php echo $id; ?>"/>
-                </div>
-<?php print $this->formElementErrors()->render($userName, ['class' => 'help-block error']); ?>
-                    </div>
-                </div>
-                
-                
-                <div class=" row">
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="form-password">Password</label>
-                    <span class="required" aria-required="true">*</span>
-                    <input name="password" required="required" id="form-password" class="form-password form-control" type="password" value="<?php echo $passwordDtl; ?>">
-                </div>
-                    </div>
-                    
-                    <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="form-password">Re-Enter Password</label>
-                    <span class="required" aria-required="true">*</span>
-                    <input name="repassword" required="required" id="form-repassword" class="form-repassword form-control" type="password" value="<?php echo $passwordDtl; ?>">
-                </div>
-                    </div>
-                    
-                    <div class="col-sm-4">
-                    </div>
-                </div>
-                
-                
-                
+                <?php print $this->form()->openTag($form); ?>
 
 
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($employeeId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($employeeId); ?>
+                            <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($roleId); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($roleId); ?>
+                            <?php print $this->formElementErrors()->render($roleId, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group<?= empty($userName->getMessages()) ? "" : "error" ?>">
+                            <?php print $this->formLabel($userName); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($userName); ?>
+                            <input type="hidden" id="userId" value="<?php echo $id; ?>"/>
+                        </div>
+                        <?php print $this->formElementErrors()->render($userName, ['class' => 'help-block error']); ?>
+                    </div>
+                </div>
+
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="form-password">Password</label>
+                            <span class="required" aria-required="true">*</span>
+                            <input name="password" required="required" id="form-password" class="form-password form-control" type="password" value="<?php echo $passwordDtl; ?>">
+                            <?php print $this->formElementErrors()->render($password, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="form-password">Re-Enter Password</label>
+                            <span class="required" aria-required="true">*</span>
+                            <input name="repassword" required="required" id="form-repassword" class="form-repassword form-control" type="password" value="<?php echo $passwordDtl; ?>">
+                        </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($status); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($status); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($status, ['class' => 'help-block error']); ?>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($isLocked); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($isLocked); ?>
+                            <?php print $this->formElementErrors()->render($isLocked, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
                 <?php print $this->formSubmit($submit); ?>
                 <?php
                 print $this->form()->closeTag();

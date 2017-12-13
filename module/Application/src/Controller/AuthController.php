@@ -4,6 +4,7 @@ namespace Application\Controller;
 
 use Application\Helper\Helper;
 use Application\Model\HrisAuthStorage;
+use Application\Model\Preference;
 use Application\Model\User;
 use Application\Model\UserLog;
 use Application\Repository\LoginRepository;
@@ -12,6 +13,7 @@ use Application\Repository\UserLogRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Setup\Repository\EmployeeRepository;
 use System\Repository\RolePermissionRepository;
+use System\Repository\RoleSetupRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -82,7 +84,8 @@ class AuthController extends AbstractActionController {
         return new ViewModel([
             'form' => $form,
             'type' => $type,
-            'messages' => $this->flashmessenger()->getMessages()
+            'messages' => $this->flashmessenger()->getMessages(),
+            'preference' => new Preference()
         ]);
     }
 
@@ -96,10 +99,10 @@ class AuthController extends AbstractActionController {
                 /*
                  * password expiration check | comment this code if this feature is not needed
                  */
-//                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'));
-//                if ($needPwdChange) {
-//                    return $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $request->getPost('username')]);
-//                }
+                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'));
+                if ($needPwdChange) {
+                    return $needPwdChange;
+                }
                 /*
                  * end of password expiration check
                  */
@@ -113,15 +116,28 @@ class AuthController extends AbstractActionController {
                 foreach ($result->getMessages() as $message) {
                     $this->flashmessenger()->addMessage($message);
                 }
-                $redirect = 'login';
                 if ($result->isValid()) {
+                    if (isset($_COOKIE[$request->getPost('username')])) {
+                        setcookie($request->getPost('username'), '', 1, "/");
+                    }
+                    //after authentication success get the user specific details
                     $resultRow = $this->getAuthService()->getAdapter()->getResultRowObject();
 
-                    $employeeId = $resultRow->EMPLOYEE_ID;
-                    $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
-                    $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
-                    $inTime = $todayAttendance['IN_TIME'];
-                    $attendanceType = ($inTime) ? "OUT" : "IN";
+                    $isLocked = $this->checkIfAccountLocked($resultRow);
+                    if ($isLocked) {
+                        return $isLocked;
+                    }
+                    $preference = new Preference();
+                    $allowRegisterAttendance = false;
+                    $attendanceType = "IN";
+                    if ($preference->allowSystemAttendance) {
+                        $employeeId = $resultRow->EMPLOYEE_ID;
+                        $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
+                        $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
+                        $inTime = $todayAttendance['IN_TIME'];
+                        $attendanceType = ($inTime) ? "OUT" : "IN";
+                        $allowRegisterAttendance = ($todayAttendance['TRAVEL_ID'] == null && $todayAttendance['LEAVE_ID'] == null && $todayAttendance['TRAINING_ID'] == null && $todayAttendance['HOLIDAY_ID'] == null) ? true : false;
+                    }
 
                     $employeeRepo = new EmployeeRepository($this->adapter);
                     $employeeDetail = $employeeRepo->employeeDetailSession($resultRow->EMPLOYEE_ID);
@@ -133,6 +149,9 @@ class AuthController extends AbstractActionController {
                     $rawMenus = $repository->fetchAllMenuByRoleId($resultRow->ROLE_ID);
                     $menus = Helper::extractDbData($rawMenus);
 
+                    $roleRepo = new RoleSetupRepository($this->adapter);
+                    $acl = $roleRepo->fetchById($resultRow->ROLE_ID);
+
                     $this->getAuthService()->getStorage()->write([
                         "user_name" => $request->getPost('username'),
                         "user_id" => $resultRow->USER_ID,
@@ -142,6 +161,8 @@ class AuthController extends AbstractActionController {
                         "fiscal_year" => $fiscalYear,
                         "menus" => $menus,
                         'register_attendance' => $attendanceType,
+                        'allow_register_attendance' => $allowRegisterAttendance,
+                        'acl' => (array) $acl
                     ]);
 
 
@@ -161,6 +182,8 @@ class AuthController extends AbstractActionController {
                      */
 
                     $redirect = 'dashboard';
+                } else {
+                    $this->allowLoginFor($request->getPost('username'), 5, 3600);
                 }
             }
         }
@@ -186,7 +209,11 @@ class AuthController extends AbstractActionController {
     }
 
     public function checkPasswordExpire($userName) {
-        $maxPasswordDays = 45;
+        $preference = new Preference();
+        if (!$preference->forcePasswordRenew) {
+            return false;
+        }
+        $maxPasswordDays = $preference->forcePasswordRenewDay;
         $loginRepo = new LoginRepository($this->adapter);
         $result = $loginRepo->checkPasswordExpire($userName);
         $createdDays = $result['CREATED_DAYS'];
@@ -204,7 +231,7 @@ class AuthController extends AbstractActionController {
         }
 
         if ($passwordDays > $maxPasswordDays) {
-            return true;
+            return $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $userName]);
         } else {
             return false;
         }
@@ -238,6 +265,55 @@ class AuthController extends AbstractActionController {
             'userName' => $userName,
             'messages' => $message
         ]);
+    }
+
+    public function checkIfAccountLocked($account) {
+        $preference = new Preference();
+        if (!$preference->allowAccountLock) {
+            return false;
+        }
+        if ($account->IS_LOCKED == 'Y') {
+            $this->flashmessenger()->clearCurrentMessages();
+            $this->flashmessenger()->addMessage('The account ' . $account->USER_NAME . ' has been locked Please contact the Admin');
+            $this->getAuthService()->clearIdentity();
+            return $this->redirect()->toRoute('login');
+        } else {
+            return false;
+        }
+    }
+
+    public function allowLoginFor($cookie_name, $tryCount, $withIn) {
+        $preference = new Preference();
+        if (!$preference->allowAccountLock) {
+            return;
+        }
+        $tryCount = $preference->accountLockTryNumber;
+        $withIn = $preference->accountLockTrySecond;
+        $loginRepo = new LoginRepository($this->adapter);
+        $userValid = $loginRepo->fetchByUserName($cookie_name);
+        if ($userValid && ($userValid->IS_LOCKED == 'Y')) {
+            $this->flashmessenger()->clearCurrentMessages();
+            $this->flashmessenger()->addMessage("The account {$cookie_name} has been locked Please contact the Admin");
+            $this->getAuthService()->clearIdentity();
+            return;
+        }
+
+        if ($userValid) {
+            $cookie_value = isset($_COOKIE[$cookie_name]) ? $_COOKIE[$cookie_name] : 0;
+            $cookie_value++;
+            $atteptLeft = $tryCount - $cookie_value;
+            setcookie($cookie_name, $cookie_value, time() + $withIn, "/");
+            $this->flashmessenger()->clearCurrentMessages();
+            $this->flashmessenger()->addMessage("Incorrect password for {$cookie_name}. After {$atteptLeft} unsuccessful attempt, account will be locked");
+            $this->getAuthService()->clearIdentity();
+            if ($cookie_value === $tryCount) {
+                $loginRepo->updateByUserName($cookie_name);
+                setcookie($cookie_name, '', 1, "/");
+                $this->flashmessenger()->clearCurrentMessages();
+                $this->flashmessenger()->addMessage("The account {$cookie_name} has been locked Please contact the Admin");
+                $this->getAuthService()->clearIdentity();
+            }
+        }
     }
 
 }

@@ -3,6 +3,7 @@
 namespace Setup\Controller;
 
 use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\Helper;
 use Exception;
 use Setup\Form\CompanyForm;
@@ -10,7 +11,7 @@ use Setup\Model\Company;
 use Setup\Model\EmployeeFile as EmployeeFile2;
 use Setup\Repository\CompanyRepository;
 use Setup\Repository\EmployeeFile;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -22,12 +23,15 @@ class CompanyController extends AbstractActionController {
     private $form;
     private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    function __construct(AdapterInterface $adapter) {
+    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->adapter = $adapter;
         $this->repository = new CompanyRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function initializeForm() {
@@ -39,11 +43,21 @@ class CompanyController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $companyList = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['companyList' => Helper::extractDbData($companyList)]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $companyList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $companyList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
         $imageData = null;
@@ -96,7 +110,7 @@ class CompanyController extends AbstractActionController {
     }
 
     public function editAction() {
-
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('company');
@@ -134,6 +148,9 @@ class CompanyController extends AbstractActionController {
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Company Successfully Deleted!!!");

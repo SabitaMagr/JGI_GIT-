@@ -48,6 +48,12 @@ $toSalary = $form->get('toSalary');
 $toPositionId = $form->get('toPositionId');
 $toPositionId->setValueOptions($positions);
 
+$retiredFlag = $form->get('retiredFlag');
+$disabledFlag = $form->get('disabledFlag');
+$eventDate = $form->get('eventDate');
+
+$retiredFlag->setAttribute('checked', $retiredFlagValue === "Y");
+$disabledFlag->setAttribute('checked', $disabledFlagValue === "Y");
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -174,6 +180,38 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formLabel($toServiceTypeId); ?>
                             <?php print $this->formElement($toServiceTypeId); ?>
                             <?php print $this->formElementErrors()->render($toServiceTypeId, ['class' => 'help-block']); ?>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($eventDate); ?>
+                                    <?php print $this->formElement($eventDate) ?>
+                                    <?php print $this->formElementErrors()->render($eventDate, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="eventDateNepali">&nbsp;</label>
+                                    <input type="text" name="eventDateNepali" id="eventDateNepali"
+                                           class="form-control" value="">
+                                </div>
+                            </div>     
+                        </div>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($retiredFlag); ?>
+                            <?php print $this->formElement($retiredFlag); ?>
+                            <?php print $this->formElementErrors()->render($retiredFlag, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($disabledFlag); ?>
+                            <?php print $this->formElement($disabledFlag); ?>
+                            <?php print $this->formElementErrors()->render($disabledFlag, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                 </div>

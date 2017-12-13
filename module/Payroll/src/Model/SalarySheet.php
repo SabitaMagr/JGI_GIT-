@@ -13,6 +13,10 @@ class SalarySheet extends Model {
     const REMARKS = "REMARKS";
     const CREATED_DT = "CREATED_DT";
     const MODIFIED_DT = "MODIFIED_DT";
+    const YEAR = "YEAR";
+    const MONTH_NO = "MONTH_NO";
+    const START_DATE = "START_DATE";
+    const END_DATE = "END_DATE";
 
     public $sheetNo;
     public $monthId;
@@ -20,6 +24,10 @@ class SalarySheet extends Model {
     public $remarks;
     public $createdDt;
     public $modifiedDt;
+    public $year;
+    public $monthNo;
+    public $startDate;
+    public $endDate;
     public $mappings = [
         'sheetNo' => self::SHEET_NO,
         'monthId' => self::MONTH_ID,
@@ -27,6 +35,10 @@ class SalarySheet extends Model {
         'remarks' => self::REMARKS,
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
+        'year' => self::YEAR,
+        'monthNo' => self::MONTH_NO,
+        'startDate' => self::START_DATE,
+        'endDate' => self::END_DATE
     ];
 
 }

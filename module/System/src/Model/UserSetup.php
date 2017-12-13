@@ -22,6 +22,7 @@ class UserSetup extends Model {
     const MODIFIED_DT = "MODIFIED_DT";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const IS_LOCKED = "IS_LOCKED";
 
     public $userId;
     public $userName;
@@ -33,6 +34,7 @@ class UserSetup extends Model {
     public $modifiedDt;
     public $createdBy;
     public $modifiedBy;
+    public $isLocked;
 
     public $mappings=[
         'userId'=>Self::USER_ID,
@@ -44,6 +46,7 @@ class UserSetup extends Model {
         'createdDt'=>Self::CREATED_DT,
         'modifiedDt'=>Self::MODIFIED_DT,
         'createdBy' => self::CREATED_BY,
-        'modifiedBy' => self::MODIFIED_BY
+        'modifiedBy' => self::MODIFIED_BY,
+        'isLocked' => self::IS_LOCKED
     ];
 }

@@ -14,6 +14,10 @@ $this->headScript()
     document.roles =<?= json_encode($roles) ?>;
     document.dashboardItems =<?= json_encode($dashboardItems) ?>;
     document.roleTypes =<?= json_encode($roleTypes) ?>;
+    document.fetchRoleDashboardsLink = '<?php echo $this->url('dashboardsetup', ["action" => "fetchRoleDashboards"]); ?>';
+    document.assignDashboardLink = '<?php echo $this->url('dashboardsetup', ["action" => "assignDashboard"]); ?>';
+    document.updateDashboardAssignLink = '<?php echo $this->url('dashboardsetup', ["action" => "updateDashboardAssign"]); ?>';
+    document.menuDeleteLink = '<?php echo $this->url('dashboardsetup', ["action" => "menuDelete"]); ?>';
 </script>
 
 <div class="page-bar">

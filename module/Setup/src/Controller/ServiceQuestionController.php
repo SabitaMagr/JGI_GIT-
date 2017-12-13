@@ -1,19 +1,22 @@
 <?php
+
 namespace Setup\Controller;
 
+use Application\Custom\CustomViewModel;
+use Application\Helper\ACLHelper;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use Setup\Form\ServiceQuestionForm;
-use Setup\Helper\EntityHelper;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceQuestion;
+use Setup\Repository\EmployeeRepository;
 use Setup\Repository\ServiceQuestionRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Setup\Repository\EmployeeRepository;
 
 class ServiceQuestionController extends AbstractActionController {
 
@@ -21,12 +24,15 @@ class ServiceQuestionController extends AbstractActionController {
     private $repository;
     private $adapter;
     private $employeeId;
+    private $storageData;
+    private $acl;
 
-    function __construct(AdapterInterface $adapter) {
+    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         $this->repository = new ServiceQuestionRepository($adapter);
         $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->storageData = $storage->read();
+        $this->employeeId = $this->storageData['employee_id'];
+        $this->acl = $this->storageData['acl'];
     }
 
     public function initializeForm() {
@@ -38,20 +44,29 @@ class ServiceQuestionController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['serviceQuestion' => Helper::extractDbData($list)]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $serviceQuestionList = Helper::extractDbData($result);
+                return new CustomViewModel(['success' => true, 'data' => $serviceQuestionList, 'error' => '']);
+            } catch (Exception $e) {
+                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function addAction() {
+        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
         $this->initializeForm();
         $request = $this->getRequest();
         $questionTypeList = [
-            'TEXT'=>'Text',
-            'NUMBER'=>'Number',
-            'TEXTAREA'=>'Textarea',
-            'DATEPICKER'=>'DatePicker',
-            'TIMEPICKER'=>'TimePicker'
-            
+            'TEXT' => 'Text',
+            'NUMBER' => 'Number',
+            'TEXTAREA' => 'Textarea',
+            'DATEPICKER' => 'DatePicker',
+            'TIMEPICKER' => 'TimePicker'
         ];
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
@@ -80,15 +95,15 @@ class ServiceQuestionController extends AbstractActionController {
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
                     'form' => $this->form,
-                    'questionTypeList'=>$questionTypeList,
-                    'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
-                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC",null,false,false),
+                    'questionTypeList' => $questionTypeList,
+                    'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
+                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC", null, false, false),
                         ]
         ));
     }
 
     public function editAction() {
-
+        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->
@@ -97,12 +112,11 @@ class ServiceQuestionController extends AbstractActionController {
         $this->initializeForm();
         $request = $this->getRequest();
         $questionTypeList = [
-            'TEXT'=>'Text',
-            'NUMBER'=>'Number',
-            'TEXTAREA'=>'Textarea',
-            'DATEPICKER'=>'DatePicker',
-            'TIMEPICKER'=>'TimePicker'
-            
+            'TEXT' => 'Text',
+            'NUMBER' => 'Number',
+            'TEXTAREA' => 'Textarea',
+            'DATEPICKER' => 'DatePicker',
+            'TIMEPICKER' => 'TimePicker'
         ];
         $serviceQuestion = new ServiceQuestion();
         $detail = $this->repository->fetchById($id)->getArrayCopy();
@@ -114,11 +128,11 @@ class ServiceQuestionController extends AbstractActionController {
             if ($this->form->isValid()) {
                 $serviceQuestion->exchangeArrayFromForm($this->form->getData());
                 if ($serviceQuestion->parentQaId == 0) {
-                    $serviceQuestion->parentQaId=null;
+                    $serviceQuestion->parentQaId = null;
                 }
                 $serviceQuestion->modifiedDate = Helper::getcurrentExpressionDate();
                 $serviceQuestion->modifiedBy = $this->employeeId;
-                
+
                 $this->repository->edit($serviceQuestion, $id);
                 $this->flashmessenger()->addMessage("Question for Servicess Successfully Updated!!!");
                 return $this->redirect()->toRoute("serviceQuestion");
@@ -129,14 +143,17 @@ class ServiceQuestionController extends AbstractActionController {
                         $this, [
                     'id' => $id,
                     'form' => $this->form,
-                    'questionTypeList'=>$questionTypeList,
-                    'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC",null,false,true),
-                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC",null,false,false),
+                    'questionTypeList' => $questionTypeList,
+                    'serviceEventType' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID, [ServiceEventType::SERVICE_EVENT_TYPE_NAME], ["STATUS" => "E"], "SERVICE_EVENT_TYPE_NAME", "ASC", null, false, true),
+                    'serviceQuestion' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, ServiceQuestion::TABLE_NAME, ServiceQuestion::QA_ID, [ServiceQuestion::QUESTION_EDESC], ["STATUS" => "E"], "QA_ID", "ASC", null, false, false),
                         ]
         );
     }
 
     public function deleteAction() {
+        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
+            return;
+        };
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('serviceQuestion');

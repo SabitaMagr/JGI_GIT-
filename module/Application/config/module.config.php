@@ -7,39 +7,6 @@ use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'console' => [
-        'router' => [
-            'routes' => [
-                'user-reset-password' => [
-                    'options' => [
-                        'route' => 'attendance daily-attendance',
-                        'defaults' => [
-                            'controller' => Controller\CronController::class,
-                            'action' => 'index',
-                        ],
-                    ],
-                ],
-                'test' => [
-                    'options' => [
-                        'route' => 'test',
-                        'defaults' => [
-                            'controller' => Controller\CronController::class,
-                            'action' => 'test',
-                        ],
-                    ],
-                ],
-                'check-update' => [
-                    'options' => [
-                        'route' => 'attendance employee-attendance <employeeId> <attendanceDt> <attendanceTime>',
-                        'defaults' => [
-                            'controller' => Controller\CronController::class,
-                            'action' => 'employeeAttendance',
-                        ],
-                    ],
-                ],
-            ],
-        ],
-    ],
     'router' => [
         'routes' => [
             'home' => [
@@ -154,16 +121,6 @@ return [
                     ],
                 ],
             ],
-            'checkin' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/checkin[/:action[/:userId][/:type]]',
-                    'defaults' => [
-                        'controller' => Controller\CheckInController::class,
-                        'action' => 'index',
-                    ],
-                ],
-            ],
             'registerAttendance' => [
                 'type' => Segment::class,
                 'options' => [
@@ -244,11 +201,9 @@ return [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\DashboardController::class => Controller\ControllerFactory::class,
-            Controller\CronController::class => Controller\ControllerFactory::class,
             Controller\TaskController::class => Controller\ControllerFactory::class,
             Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
             Controller\ChangePassword::class => Controller\ControllerFactory::class,
-            Controller\CheckInController::class => Controller\ControllerFactory::class,
             Controller\ApiController::class => Controller\ControllerFactory::class,
         ],
     ],

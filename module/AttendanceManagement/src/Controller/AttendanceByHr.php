@@ -2,42 +2,32 @@
 
 namespace AttendanceManagement\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Model\FiscalYear;
-use Application\Model\Months;
 use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
+use AttendanceManagement\Repository\AttendanceRepository;
 use Exception;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class AttendanceByHr extends AbstractActionController {
+class AttendanceByHr extends HrisController {
 
-    private $adapter;
-    private $repository;
-    private $form;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new AttendanceDetailRepository($adapter);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeForm(AttendanceByHrForm::class);
+        $this->initializeRepository(AttendanceDetailRepository::class);
     }
 
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $attendanceByHr = new AttendanceByHrForm();
-        $this->form = $builder->createForm($attendanceByHr);
-    }
-
-    public function indexAction() {
+    private function getStatusSelect() {
         $statusFormElement = new Select();
         $statusFormElement->setName("status");
         $status = array(
-            "All" => "All Status",
             "P" => "Present Only",
             "A" => "Absent Only",
             "H" => "On Holiday",
@@ -46,25 +36,40 @@ class AttendanceByHr extends AbstractActionController {
             "TVL" => "On Travel",
             "WOH" => "Work on Holiday",
             "WOD" => "Work on DAYOFF",
-            "LI" => "Late In",
-            "EO" => "Early Out"
         );
         $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
+        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Status");
+        return $statusFormElement;
+    }
 
+    private function getPresentStatusSelect() {
+        $statusFormElement = new Select();
+        $statusFormElement->setName("presentStatus");
+        $status = array(
+            "LI" => "Late In",
+            "EO" => "Early Out",
+            "MP" => "Missed Punched",
+        );
+        $statusFormElement->setValueOptions($status);
+        $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control", "multiple" => "multiple"]);
+        $statusFormElement->setLabel("Present Status");
+        return $statusFormElement;
+    }
+
+    public function indexAction() {
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'status' => $this->getStatusSelect(),
+                    'presentStatus' => $this->getPresentStatusSelect(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
         try {
-
-
             if ($request->isPost()) {
                 $this->form->setData($request->getPost());
                 if ($this->form->isValid()) {
@@ -104,12 +109,10 @@ class AttendanceByHr extends AbstractActionController {
                         'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE)
                             ]
             );
-//            return $this->redirect()->toRoute("attendancebyhr");
         }
     }
 
     public function editAction() {
-        $this->initializeForm();
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute("attendancebyhr");
@@ -148,14 +151,6 @@ class AttendanceByHr extends AbstractActionController {
             $request = $this->getRequest();
             $data = $request->getPost();
 
-            $take = $data['take'];
-            $skip = $data['skip'];
-            $page = $data['page'];
-            $pageSize = $data['pageSize'];
-
-            $max = $pageSize * $page;
-            $min = $pageSize * ($page - 1);
-
             $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
             $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
@@ -168,19 +163,57 @@ class AttendanceByHr extends AbstractActionController {
             $fromDate = $data['fromDate'];
             $toDate = $data['toDate'];
             $status = $data['status'];
-            $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
-            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly, $min, $max);
-            $total = $this->repository->filterRecordCount($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
+            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, $data['presentStatus']);
 
             $result = [];
-            $result['total'] = $total['TOTAL'];
-            $result['results'] = Helper::extractDbData($results);
+            $result['success'] = true;
+            $result['data'] = Helper::extractDbData($results);
+            $result['error'] = "";
 
             return new CustomViewModel($result);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+
+//    public function pullAttendanceAction() {
+//        try {
+//            $request = $this->getRequest();
+//            $data = $request->getPost();
+//
+//            $take = $data['take'];
+//            $skip = $data['skip'];
+//            $page = $data['page'];
+//            $pageSize = $data['pageSize'];
+//
+//            $max = $pageSize * $page;
+//            $min = $pageSize * ($page - 1);
+//
+//            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+//            $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+//            $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+//            $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+//            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+//            $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+//            $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+//            $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+//            $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+//            $fromDate = $data['fromDate'];
+//            $toDate = $data['toDate'];
+//            $status = $data['status'];
+//            $missPunchOnly = ((int) $data['missPunchOnly'] == 1) ? true : false;
+//            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly, $min, $max);
+//            $total = $this->repository->filterRecordCount($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, false, $missPunchOnly);
+//
+//            $result = [];
+//            $result['total'] = $total['TOTAL'];
+//            $result['results'] = Helper::extractDbData($results);
+//
+//            return new CustomViewModel($result);
+//        } catch (Exception $e) {
+//            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+//        }
+//    }
 
     public function bulkAttendanceWSAction() {
         try {
@@ -195,6 +228,28 @@ class AttendanceByHr extends AbstractActionController {
             return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullInOutTimeAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $attendanceDt = $data['attendanceDt'];
+            $employeeId = $data['employeeId'];
+
+            $attendanceRepository = new AttendanceRepository($this->adapter);
+            $result = $attendanceRepository->fetchInOutTimeList($employeeId, $attendanceDt);
+            $list = [];
+            foreach ($result as $row) {
+                array_push($list, $row);
+            }
+
+            return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace Payroll\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Payroll\Model\SalarySheetDetail;
@@ -36,6 +37,37 @@ class SalarySheetDetailRepo implements RepositoryInterface {
 
     public function fetchById($id) {
         return $this->gateway->select($id);
+    }
+
+    public function fetchSalarySheetDetail($sheetId) {
+        $in = $this->fetchPayIdsAsArray();
+        $sql = "SELECT P.*,E.FULL_NAME AS EMPLOYEE_NAME
+                FROM
+                  (SELECT *
+                  FROM
+                    (SELECT EMPLOYEE_ID,
+                      PAY_ID,
+                      VAL
+                    FROM HRIS_SALARY_SHEET_DETAIL
+                    WHERE SHEET_NO                =6
+                    ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
+                  ) P
+                JOIN HRIS_EMPLOYEES E
+                ON (P.EMPLOYEE_ID=E.EMPLOYEE_ID)";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    private function fetchPayIdsAsArray() {
+        $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT PAY_ID FROM HRIS_PAY_SETUP WHERE STATUS ='E'");
+        $dbArray = "";
+        foreach ($rawList as $key => $row) {
+            if ($key == sizeof($rawList)) {
+                $dbArray .= "{$row['PAY_ID']} AS P_{$row['PAY_ID']}";
+            } else {
+                $dbArray .= "{$row['PAY_ID']} AS P_{$row['PAY_ID']},";
+            }
+        }
+        return $dbArray;
     }
 
 }

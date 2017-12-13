@@ -8,7 +8,7 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
-$this->headScript()->appendFile($this->basePath('js/AttendanceManagement/attendance/add.js'));
+$this->headScript()->appendFile($this->basePath('js/SelfService/attendance-request/add.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -16,13 +16,10 @@ $form->setAttribute('class', 'attendanceByHr-form');
 
 $attendanceDt = $form->get('attendanceDt');
 $inTime = $form->get('inTime');
-$inTime->setValue("10:00 AM");
 $outTime = $form->get('outTime');
-$outTime->setValue("5:00 PM");
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
-$totalHour->setValue("7.0");
 $totalHour->setAttributes(['readonly' => "readonly"]);
 
 $submit = $form->get('submit');
@@ -63,9 +60,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
             <div class="portlet-body">
                 <div class="form-group">
-                        <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
-                    </div>
-                
+                    <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
+                </div>
+
                 <?php
                 print $this->form()->openTag($form);
                 ?>
@@ -78,7 +75,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                                     <?php print $this->formLabel($attendanceDt); ?>
                                     <span class="required" aria-required="true">*</span>
-                                        <?php print $this->formElement($attendanceDt); ?>
+                                    <?php print $this->formElement($attendanceDt); ?>
                                 </div>
                                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
                             </div>     

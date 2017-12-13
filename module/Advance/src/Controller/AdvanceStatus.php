@@ -2,146 +2,203 @@
 
 namespace Advance\Controller;
 
+use Advance\Form\AdvanceRequestForm;
+use Advance\model\AdvancePayment;
+use Advance\model\AdvanceRequestModel;
+use Advance\model\AdvanceSetupModel;
+use Advance\Repository\AdvanceApproveRepository;
+use Advance\Repository\AdvancePaymentRepository;
 use Advance\Repository\AdvanceStatusRepository;
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use ManagerService\Repository\AdvanceApproveRepository;
-use SelfService\Form\AdvanceRequestForm;
-use SelfService\Model\AdvanceRequest;
-use SelfService\Repository\AdvanceRequestRepository;
-use Setup\Model\Advance;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
-use Zend\Authentication\AuthenticationService;
+use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class AdvanceStatus extends AbstractActionController {
+class AdvanceStatus extends HrisController {
 
-    private $adapter;
-    private $advanceApproveRepository;
-    private $advanceStatusRepository;
-    private $form;
-    private $employeeId;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->advanceApproveRepository = new AdvanceApproveRepository($adapter);
-        $this->advanceStatusRepository = new AdvanceStatusRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new AdvanceRequestForm();
-        $this->form = $builder->createForm($form);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(AdvanceStatusRepository::class);
+        $this->initializeForm(AdvanceRequestForm::class);
     }
 
     public function indexAction() {
-        $advanceFormElement = new Select();
-        $advanceFormElement->setName("advance");
-        $advances = EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => 'E'], "ADVANCE_NAME", "ASC", NULL, FALSE, TRUE);
-        $advances1 = [-1 => "All"] + $advances;
-        $advanceFormElement->setValueOptions($advances1);
-        $advanceFormElement->setAttributes(["id" => "advanceId", "class" => "form-control"]);
-        $advanceFormElement->setLabel("Advance Type");
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $searchQuery = $request->getPost();
+                $rawList = $this->repository->getFilteredRecord($searchQuery);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
 
-        $advanceStatus = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected',
-            'C' => 'Cancelled'
-        ];
-        $advanceStatusFormElement = new Select();
-        $advanceStatusFormElement->setName("advanceStatus");
-        $advanceStatusFormElement->setValueOptions($advanceStatus);
-        $advanceStatusFormElement->setAttributes(["id" => "advanceRequestStatusId", "class" => "form-control"]);
-        $advanceStatusFormElement->setLabel("Status");
-
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'status', 'class' => 'form-control', 'label' => 'Status']);
         return Helper::addFlashMessagesToArray($this, [
-                    'advances' => $advanceFormElement,
-                    'advanceStatus' => $advanceStatusFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'status' => $statusSE,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
     public function viewAction() {
-        $this->initializeForm();
-        $advanceRequestRepository = new AdvanceRequestRepository($this->adapter);
-        $advanceApproveRepository = new AdvanceApproveRepository($this->adapter);
-
         $id = (int) $this->params()->fromRoute('id');
-
         if ($id === 0) {
             return $this->redirect()->toRoute("advanceStatus");
         }
-        $advanceRequest = new AdvanceRequest();
+
         $request = $this->getRequest();
+        $advanceRequestModel = new AdvanceRequestModel();
+        $advanceApproveRepository = new AdvanceApproveRepository($this->adapter);
 
-        $detail = $this->advanceApproveRepository->fetchById($id);
-        $status = $detail['STATUS'];
-        $employeeId = $detail['EMPLOYEE_ID'];
-        $approvedDT = $detail['APPROVED_DATE'];
+        $detail = $advanceApproveRepository->fetchById($id);
 
-        $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-        $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
-        $recommApprove = 0;
-        if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-            $recommApprove = 1;
-        }
-
-        $fullName = function($id) {
-            $empRepository = new EmployeeRepository($this->adapter);
-            $empDtl = $empRepository->fetchById($id);
-            return $empDtl['FULL_NAME'];
-        };
-
-        $employeeName = $fullName($detail['EMPLOYEE_ID']);
-        $authRecommender = ($status == 'RQ' || $status == 'C') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
-        $authApprover = ($status == 'RC' || $status == 'C' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $detail['APPROVER'] : $detail['APPROVED_BY'];
-
-        if (!$request->isPost()) {
-            $advanceRequest->exchangeArrayFromDB($detail);
-            $this->form->bind($advanceRequest);
-        } else {
+        if ($request->isPost()) {
             $getData = $request->getPost();
-            $reason = $getData->approvedRemarks;
             $action = $getData->submit;
 
-            $advanceRequest->approvedDate = Helper::getcurrentExpressionDate();
+            $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
+            $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
             if ($action == "Reject") {
-                $advanceRequest->status = "R";
+                $advanceRequestModel->status = "R";
                 $this->flashmessenger()->addMessage("Advance Request Rejected!!!");
             } else if ($action == "Approve") {
-                $advanceRequest->status = "AP";
+                $advanceRequestModel->status = "AP";
                 $this->flashmessenger()->addMessage("Advamce Request Approved");
             }
-            $advanceRequest->approvedBy = $this->employeeId;
-            $advanceRequest->approvedRemarks = $reason;
-            $this->advanceApproveRepository->edit($advanceRequest, $id);
+            $advanceRequestModel->recommendedBy = $this->employeeId;
+            $advanceRequestModel->recommendedRemarks = $getData->approvedRemarks;
+            $advanceRequestModel->approvedBy = $this->employeeId;
+            $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
 
+            $this->advancePaymentAdd($detail);
+            $advanceApproveRepository->edit($advanceRequestModel, $id);
+            
+            try {
+                    $advanceRequestModel->advanceRequestId = $id;
+                    HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                
             return $this->redirect()->toRoute("advanceStatus");
         }
+
+        $recommApprove = ($detail['RECOMMENDER_ID'] == $detail['APPROVER_ID']) ? 1 : 0;
+//
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
+//
+        $advanceRequestModel->exchangeArrayFromDB($detail);
+        $this->form->bind($advanceRequestModel);
+
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'employeeId' => $employeeId,
-                    'employeeName' => $employeeName,
-                    'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $fullName($authRecommender),
-                    'approver' => $fullName($authApprover),
-                    'approvedDT' => $detail['APPROVED_DATE'],
-                    'status' => $status,
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, Advance::TABLE_NAME, Advance::ADVANCE_ID, [Advance::ADVANCE_NAME], [Advance::STATUS => "E"], Advance::ADVANCE_ID, "ASC", NULL, FALSE, TRUE),
-                    'customRenderer' => Helper::renderCustomView(),
+                    'employeeName' => $detail['FULL_NAME'],
+                    'employeeId' => $detail['EMPLOYEE_ID'],
+                    'status' => $detail['STATUS'],
+                    'statusDetail' => $detail['STATUS_DETAIL'],
+                    'requestedDate' => $detail['REQUESTED_DATE'],
+                    'recommender' => $authRecommender,
+                    'approver' => $authApprover,
+                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'], AdvanceSetupModel::ADVANCE_ENAME, "ASC", " ", FALSE, TRUE),
+                    'advanceRequestData' => $detail,
                     'recommApprove' => $recommApprove
         ]);
+    }
+
+    public function advancePaymentAdd($details) {
+
+        $advancePaymentRepository = new AdvancePaymentRepository($this->adapter);
+
+        $advanceRequestId = $details['ADVANCE_REQUEST_ID'];
+//        $employeeId = $details['EMPLOYEE_ID'];
+        $requestedAmt = $details['REQUESTED_AMOUNT'];
+        $employeeSalary = $details['SALARY'];
+        $monthlyDeductionRate = $details['DEDUCTION_RATE'];
+//        $paymentMonths = $details['DEDUCTION_IN'];
+        $advanceDate = $details['DATE_OF_ADVANCE'];
+
+        $monthlyDedeuctionAmt = ($monthlyDeductionRate / 100) * $employeeSalary;
+        $monthCodeDetails = $advancePaymentRepository->getMonthCode($advanceDate);
+
+        $nepYear = $monthCodeDetails['YEAR'];
+        $nepMonth = $monthCodeDetails['MONTH_NO'];
+
+
+        $actualPyamentMonths = ceil($requestedAmt / $monthlyDedeuctionAmt);
+
+        $advancePayment = new AdvancePayment();
+        $advancePayment->advanceRequestId = $advanceRequestId;
+        $advancePayment->createdBy = $this->employeeId;
+        $advancePayment->status = 'PE';
+
+        for ($i = 1; $i <= $actualPyamentMonths; $i++) {
+            $paymentAmt;
+            ($requestedAmt > $monthlyDedeuctionAmt) ? $paymentAmt = $monthlyDedeuctionAmt : $paymentAmt = $requestedAmt;
+
+            $advancePayment->amount = $paymentAmt;
+            $advancePayment->nepYear = $nepYear;
+            $advancePayment->nepMonth = $nepMonth;
+
+            $requestedAmt = $requestedAmt - $monthlyDedeuctionAmt;
+            if ($nepMonth == 12) {
+                $nepYear = $nepYear + 1;
+                $nepMonth = 1;
+            } else {
+                $nepMonth = $nepMonth + 1;
+            }
+            $advancePaymentRepository->add($advancePayment);
+        }
+    }
+
+    public function paymentViewAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if ($id === 0) {
+            return $this->redirect()->toRoute("advance-request");
+        }
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $paymentRepository = new AdvancePaymentRepository($this->adapter);
+                $rawList = $paymentRepository->getPaymentStatus($id);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'id' => $id,
+                    'acl' => $this->acl
+        ]);
+    }
+
+    public function skipAdvanceAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $id = (int) $this->params()->fromRoute('id', 0);
+                $paymentRepository = new AdvancePaymentRepository($this->adapter);
+                $paymentRepository->skipAdvance($data['year'],$data['month'],$id,$this->employeeId);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
     }
 
 }

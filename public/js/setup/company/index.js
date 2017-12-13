@@ -1,46 +1,36 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        $("#companyTable").kendoGrid({
-            excel: {
-                fileName: "CompanyList.xlsx",
-                filterable: true,
-                allPages: true
-            },
-            dataSource: {
-                data: document.companyList,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-//                {field: "COMPANY_CODE", title: "Company Code",width:120},
-                {field: "COMPANY_NAME", title: "Company",width:400},
-                {title: "Action",width:110}
-            ]
-        });
-        $("#export").click(function (e) {
-            var grid = $("#companyTable").data("kendoGrid");
-            grid.saveAsExcel();
-        });
-        
-        app.searchTable('companyTable',['COMPANY_NAME']);
-        
-        app.pdfExport(
-                'companyTable',
-                {
-                    'COMPANY_NAME': 'Company'
-                }
-        );
-        
-        window.app.UIConfirmations();
+        var $table = $('#companyTable');
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:COMPANY_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:COMPANY_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
+        var action = editAction + deleteAction;
+        app.initializeKendoGrid($table, [
+            {field: "COMPANY_NAME", title: "Name"},
+            {field: "ADDRESS", title: "Address"},
+            {field: "COMPANY_ID", title: "Action", width: 120, template: action}
+        ]);
 
+        app.searchTable('companyTable', ["COMPANY_NAME", "ADDRESS"]);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, {
+                'COMPANY_NAME': 'Name',
+                'ADDRESS': 'Address',
+            }, 'Company List');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, {
+                'COMPANY_NAME': 'Name',
+                'ADDRESS': 'Address',
+            }, 'Company List');
+        });
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
     });
 })(window.jQuery);

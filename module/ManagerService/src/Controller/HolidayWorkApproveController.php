@@ -14,11 +14,13 @@ use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\HolidayRepository;
 use Setup\Repository\RecommendApproveRepository;
+use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class HolidayWorkApproveController extends AbstractActionController {
 
@@ -122,18 +124,10 @@ class HolidayWorkApproveController extends AbstractActionController {
         $approvedDT = $detail['APPROVED_DATE'];
 
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
-        $employeeName = $detail['FIRST_NAME'] . " " . $detail['MIDDLE_NAME'] . " " . $detail['LAST_NAME'];
-        $RECM_MN = ($detail['RECM_MN'] != null) ? " " . $detail['RECM_MN'] . " " : " ";
-        $recommender = $detail['RECM_FN'] . $RECM_MN . $detail['RECM_LN'];
-        $APRV_MN = ($detail['APRV_MN'] != null) ? " " . $detail['APRV_MN'] . " " : " ";
-        $approver = $detail['APRV_FN'] . $APRV_MN . $detail['APRV_LN'];
-        $MN1 = ($detail['MN1'] != null) ? " " . $detail['MN1'] . " " : " ";
-        $recommended_by = $detail['FN1'] . $MN1 . $detail['LN1'];
-        $MN2 = ($detail['MN2'] != null) ? " " . $detail['MN2'] . " " : " ";
-        $approved_by = $detail['FN2'] . $MN2 . $detail['LN2'];
-        $authRecommender = ($status == 'RQ') ? $recommender : $recommended_by;
-        $authApprover = ($status == 'RC' || $status == 'RQ' || ($status == 'R' && $approvedDT == null)) ? $approver : $approved_by;
-        $recommenderId = ($status == 'RQ') ? $detail['RECOMMENDER'] : $detail['RECOMMENDED_BY'];
+        $employeeName = $detail['FULL_NAME'];
+        $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
+        $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
+        $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
 
         if (!$request->isPost()) {
             $workOnHolidayModel->exchangeArrayFromDB($detail);
@@ -245,7 +239,7 @@ class HolidayWorkApproveController extends AbstractActionController {
         $holidayList = [];
         $holidayObjList = [];
         foreach ($holidayResult as $holidayRow) {
-            $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE'] . " to " . $holidayRow['END_DATE'] . ")";
+            $holidayList[$holidayRow['HOLIDAY_ID']] = $holidayRow['HOLIDAY_ENAME'] . " (" . $holidayRow['START_DATE_AD'] . " to " . $holidayRow['END_DATE_AD'] . ")";
             $holidayObjList[$holidayRow['HOLIDAY_ID']] = $holidayRow;
         }
         return ['holidayKVList' => $holidayList, 'holidayList' => $holidayObjList];
@@ -275,61 +269,55 @@ class HolidayWorkApproveController extends AbstractActionController {
             if ($postData == null) {
                 throw new Exception('no selected rows');
             } else {
-                $this->adapter->getDriver()->getConnection()->beginTransaction();
-                try {
+                foreach ($postData as $data) {
+                    $workOnHolidayModel = new WorkOnHoliday();
+                    $id = $data['id'];
+                    $role = $data['role'];
+                    $detail = $this->holidayWorkApproveRepository->fetchById($id);
 
-                    foreach ($postData as $data) {
-                        $workOnHolidayModel = new WorkOnHoliday();
-                        $id = $data['id'];
-                        $role = $data['role'];
-                        $detail = $this->holidayWorkApproveRepository->fetchById($id);
-
-                        if ($role == 2) {
-                            $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
-                            $workOnHolidayModel->recommendedBy = $this->employeeId;
-                            if ($action == "Reject") {
-                                $workOnHolidayModel->status = "R";
-                            } else if ($action == "Approve") {
-                                $workOnHolidayModel->status = "RC";
-                            }
-                            $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
+                    if ($role == 2) {
+                        $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
+                        $workOnHolidayModel->recommendedBy = $this->employeeId;
+                        if ($action == "Reject") {
+                            $workOnHolidayModel->status = "R";
+                        } else if ($action == "Approve") {
+                            $workOnHolidayModel->status = "RC";
+                        }
+                        $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
+                        try {
+                            $workOnHolidayModel->id = $id;
+                            HeadNotification::pushNotification(($workOnHolidayModel->status == 'RC') ? NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED : NotificationEvents::WORKONHOLIDAY_RECOMMEND_REJECTED, $workOnHolidayModel, $this->adapter, $this);
+                        } catch (Exception $e) {
+                            
+                        }
+                    } else if ($role == 3 || $role == 4) {
+                        $workOnHolidayModel->approvedDate = Helper::getcurrentExpressionDate();
+                        $workOnHolidayModel->approvedBy = $this->employeeId;
+                        if ($action == "Reject") {
+                            $workOnHolidayModel->status = "R";
+                        } else if ($action == "Approve") {
                             try {
-                                $workOnHolidayModel->id = $id;
-                                HeadNotification::pushNotification(($workOnHolidayModel->status == 'RC') ? NotificationEvents::WORKONHOLIDAY_RECOMMEND_ACCEPTED : NotificationEvents::WORKONHOLIDAY_RECOMMEND_REJECTED, $workOnHolidayModel, $this->adapter, $this);
-                            } catch (Exception $e) {
-                                
-                            }
-                        } else if ($role == 3 || $role == 4) {
-                            $workOnHolidayModel->approvedDate = Helper::getcurrentExpressionDate();
-                            $workOnHolidayModel->approvedBy = $this->employeeId;
-                            if ($action == "Reject") {
-                                $workOnHolidayModel->status = "R";
-                            } else if ($action == "Approve") {
                                 $this->wohAppAction($detail);
-                                $workOnHolidayModel->status = "AP";
-                            }
-                            if ($role == 4) {
-                                $workOnHolidayModel->recommendedBy = $this->employeeId;
-                                $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
-                            }
-                            $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
-                            try {
-                                $workOnHolidayModel->id = $id;
-                                HeadNotification::pushNotification(($workOnHolidayModel->status == 'AP') ? NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED : NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED, $workOnHolidayModel, $this->adapter, $this);
                             } catch (Exception $e) {
                                 
                             }
+                            $workOnHolidayModel->status = "AP";
+                        }
+                        if ($role == 4) {
+                            $workOnHolidayModel->recommendedBy = $this->employeeId;
+                            $workOnHolidayModel->recommendedDate = Helper::getcurrentExpressionDate();
+                        }
+                        $this->holidayWorkApproveRepository->edit($workOnHolidayModel, $id);
+                        try {
+                            $workOnHolidayModel->id = $id;
+                            HeadNotification::pushNotification(($workOnHolidayModel->status == 'AP') ? NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED : NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED, $workOnHolidayModel, $this->adapter, $this);
+                        } catch (Exception $e) {
+                            
                         }
                     }
-
-
-                    $this->adapter->getDriver()->getConnection()->commit();
-                } catch (Exception $ex) {
-                    $this->adapter->getDriver()->getConnection()->rollback();
                 }
             }
-            $listData = $this->getAllList();
-            return new CustomViewModel(['success' => true, 'data' => $listData]);
+            return new CustomViewModel(['success' => true, 'data' => null]);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
         }
@@ -337,62 +325,27 @@ class HolidayWorkApproveController extends AbstractActionController {
 
     public function getAllList() {
         $list = $this->holidayWorkApproveRepository->getAllRequest($this->employeeId);
-        $holidayWorkApprove = [];
-        $getValue = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 'RECOMMENDER';
-            } else if ($this->employeeId == $approver) {
-                return 'APPROVER';
-            }
-        };
-        $getStatusValue = function($status) {
-            if ($status == "RQ") {
-                return "Pending";
-            } else if ($status == 'RC') {
-                return "Recommended";
-            } else if ($status == "R") {
-                return "Rejected";
-            } else if ($status == "AP") {
-                return "Approved";
-            } else if ($status == "C") {
-                return "Cancelled";
-            }
-        };
-        $getRole = function($recommender, $approver) {
-            if ($this->employeeId == $recommender) {
-                return 2;
-            } else if ($this->employeeId == $approver) {
-                return 3;
-            }
-        };
-        foreach ($list as $row) {
-            $requestedEmployeeID = $row['EMPLOYEE_ID'];
-            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
-            $empRecommendApprove = $recommendApproveRepository->fetchById($requestedEmployeeID);
+        Helper::extractDbData($list);
+    }
 
-            $dataArray = [
-                'FULL_NAME' => $row['FULL_NAME'],
-                'FIRST_NAME' => $row['FIRST_NAME'],
-                'MIDDLE_NAME' => $row['MIDDLE_NAME'],
-                'LAST_NAME' => $row['LAST_NAME'],
-                'FROM_DATE' => $row['FROM_DATE'],
-                'TO_DATE' => $row['TO_DATE'],
-                'DURATION' => $row['DURATION'],
-                'REQUESTED_DATE' => $row['REQUESTED_DATE'],
-                'REMARKS' => $row['REMARKS'],
-                'HOLIDAY_ENAME' => $row['HOLIDAY_ENAME'],
-                'STATUS' => $getStatusValue($row['STATUS']),
-                'ID' => $row['ID'],
-                'YOUR_ROLE' => $getValue($row['RECOMMENDER'], $row['APPROVER']),
-                'ROLE' => $getRole($row['RECOMMENDER'], $row['APPROVER'])
-            ];
-            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
-                $dataArray['YOUR_ROLE'] = 'Recommender\Approver';
-                $dataArray['ROLE'] = 4;
-            }
-            array_push($holidayWorkApprove, $dataArray);
+    public function pullHoliayWorkRequestStatusListAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+
+            $holidayWorkStatusRepo = new WorkOnHolidayStatusRepository($this->adapter);
+            $result = $holidayWorkStatusRepo->getFilteredRecord($data, $data['recomApproveId']);
+
+            $recordList = Helper::extractDbData($result);
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => $recordList,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
-        return $holidayWorkApprove;
     }
 
 }

@@ -1,104 +1,48 @@
-(function ($, app) {
+(function ($) {
     'use strict';
     $(document).ready(function () {
-        $("#loanTable").kendoGrid({
-            dataSource: {
-                data: document.loans,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-//                {field: "LOAN_CODE", title: "Loan Code",width:80},
-                {field: "LOAN_NAME", title: "Loan",width:130},
-                {field: "COMPANY_NAME", title: "Company",width:110},
-                {field: "MIN_AMOUNT", title: "Amount Range",width:110},
-                {field: "INTEREST_RATE", title: "Interest Rate",width:110},
-                {field: "REPAYMENT_AMOUNT", title: "Repayment Amount",width:130},
-                {field: "REPAYMENT_PERIOD", title: "Repayment(In Month)",width:150},
-                {title: "Action",width:110}
-            ]
-        });
-        
-        app.searchTable('loanTable',['LOAN_NAME','COMPANY_NAME','MIN_AMOUNT','INTEREST_RATE','REPAYMENT_AMOUNT','REPAYMENT_PERIOD']);
-        
-        app.pdfExport(
-                'loanTable',
-                {
-                    'LOAN_NAME': 'Loan',
-                    'COMPANY_NAME': 'Company',
-                    'MIN_AMOUNT': 'Min Amount',
-                    'INTEREST_RATE': 'Intrest Rate',
-                    'REPAYMENT_AMOUNT': 'Repayment Amount',
-                    'REPAYMENT_PERIOD': 'Repayment Period'
-                }
-        );
-        
-        $("#export").click(function (e) {
-            var rows = [{
-                    cells: [
-                        {value: "Loan Name"},
-                        {value: "Amount Range"},
-                        {value: "Interest Rate"},
-                        {value: "Repayment Amount"},
-                        {value: "Repayment Period"},
-                        {value: "Remarks"}
-                    ]
-                }];
-            var dataSource = $("#loanTable").data("kendoGrid").dataSource;
-            var filteredDataSource = new kendo.data.DataSource({
-                data: dataSource.data(),
-                filter: dataSource.filter()
-            });
+        var $table = $('#loanTable');
+        var editAction = document.acl.ALLOW_UPDATE == 'Y' ? '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:LOAN_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>' : '';
+        var deleteAction = document.acl.ALLOW_DELETE == 'Y' ? '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:LOAN_ID#" style="height:17px;"><i class="fa fa-trash-o"></i></a>' : '';
+        var action = editAction + deleteAction;
+        app.initializeKendoGrid($table, [
+            {field: "LOAN_NAME", title: "Loan", width: 130},
+            {field: "COMPANY_NAME", title: "Company", width: 110},
+            {field: "MIN_AMOUNT", title: "Amount Range", width: 110},
+            {field: "INTEREST_RATE", title: "Interest Rate", width: 110},
+            {field: "REPAYMENT_AMOUNT", title: "Repayment Amount", width: 130},
+            {field: "REPAYMENT_PERIOD", title: "Repayment(In Month)", width: 150},
+            {field: "LOAN_ID", title: "Action", width: 120, template: action}
+        ]);
 
-            filteredDataSource.read();
-            var data = filteredDataSource.view();
-            
-            for (var i = 0; i < data.length; i++) {
-                var dataItem = data[i];
-                rows.push({
-                    cells: [
-                        {value: dataItem.LOAN_NAME},
-                        {value: dataItem.MIN_AMOUNT+"-"+dataItem.MAX_AMOUNT},
-                        {value: dataItem.INTEREST_RATE+"%"},
-                        {value: dataItem.REPAYMENT_AMOUNT},
-                        {value: dataItem.REPAYMENT_PERIOD},
-                        {value: dataItem.REMARKS}
-                    ]
-                });
-            }
-            excelExport(rows);
-            e.preventDefault();
+        app.searchTable('loanTable', ['LOAN_NAME', 'COMPANY_NAME', 'MIN_AMOUNT', 'INTEREST_RATE', 'REPAYMENT_AMOUNT', 'REPAYMENT_PERIOD']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, {
+                'LOAN_NAME': 'Loan',
+                'COMPANY_NAME': 'Company',
+                'MIN_AMOUNT': 'Min Amount',
+                'INTEREST_RATE': 'Intrest Rate',
+                'REPAYMENT_AMOUNT': 'Repayment Amount',
+                'REPAYMENT_PERIOD': 'Repayment Period'
+            }, 'LoanList');
         });
-        
-        function excelExport(rows) {
-            var workbook = new kendo.ooxml.Workbook({
-                sheets: [
-                    {
-                        columns: [
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true},
-                            {autoWidth: true}
-                        ],
-                        title: "Loan",
-                        rows: rows
-                    }
-                ]
-            });
-            kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "LoanList.xlsx"});
-        }
-        
-        window.app.UIConfirmations();
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, {
+                'LOAN_NAME': 'Loan',
+                'COMPANY_NAME': 'Company',
+                'MIN_AMOUNT': 'Min Amount',
+                'INTEREST_RATE': 'Intrest Rate',
+                'REPAYMENT_AMOUNT': 'Repayment Amount',
+                'REPAYMENT_PERIOD': 'Repayment Period'
+            }, 'LoanList');
+        });
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
     });
-})(window.jQuery, window.app);
+})(window.jQuery);
