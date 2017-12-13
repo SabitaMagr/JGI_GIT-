@@ -3,27 +3,16 @@
 namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Model\FiscalYear;
 use Exception;
 use Payroll\Form\Rules as RuleForm;
-use Payroll\Model\FlatValue;
-use Payroll\Model\MonthlyValue;
-use Payroll\Model\PayEmployeeSetup;
 use Payroll\Model\Rules as RulesModel;
 use Payroll\Repository\FlatValueRepository;
 use Payroll\Repository\MonthlyValueRepository;
-use Payroll\Repository\PayEmployeeRepo;
 use Payroll\Repository\RulesRepository;
-use Setup\Model\Gender;
-use Setup\Model\ServiceType;
-use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
-use Zend\View\Model\ViewModel;
 
 class Rules extends HrisController {
 

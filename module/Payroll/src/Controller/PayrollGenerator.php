@@ -2,15 +2,15 @@
 
 namespace Payroll\Controller;
 
-use Application\Helper\EntityHelper;
 use Application\Repository\RepositoryInterface;
+use Exception;
 use Payroll\Controller\SystemRuleProcessor;
 use Payroll\Controller\VariableProcessor;
-use Payroll\Model\PayEmployeeSetup;
 use Payroll\Model\Rules;
 use Payroll\Repository\FlatValueDetailRepo;
+use Payroll\Repository\FlatValueRepository;
 use Payroll\Repository\MonthlyValueDetailRepo;
-use Payroll\Repository\PayEmployeeRepo;
+use Payroll\Repository\MonthlyValueRepository;
 use Payroll\Repository\RulesRepository;
 
 class PayrollGenerator {
@@ -18,14 +18,16 @@ class PayrollGenerator {
     private $adapter;
     private $flatValueDetRepo;
     private $monthlyValueDetRepo;
-    private $payEmployeeRepo;
     private $ruleRepo;
     private $employeeId;
-    private $monthlyValues;
-    private $flatValues;
+    private $monthId = 0;
+    private $formattedFlatValueList;
+    private $formattedMonthlyvalueList;
+    private $formattedVariableList;
+    private $formattedSystemRuleList;
+    private $formattedReferencingRuleList;
     private $calculatedValue = 0;
     private $ruleDetailList = [];
-    private $monthId = 0;
 
     const VARIABLES = [
         "BASIC_SALARY",
@@ -57,29 +59,43 @@ class PayrollGenerator {
         $this->adapter = $adapter;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
         $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
-        $this->payEmployeeRepo = new PayEmployeeRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
+        $monthlyValueList = $this->getMonthlyValues();
+        $flatValuesList = $this->getFlatValues();
 
-        $this->monthlyValues = $this->getMonthlyValueList();
-        $this->flatValues = $this->getFlatValueList();
-        $this->sanitizeStringArray($this->monthlyValues);
-        $this->sanitizeStringArray($this->flatValues);
+        $this->formattedMonthlyvalueList = [];
+        foreach ($monthlyValueList as $monthlyValue) {
+            $this->formattedMonthlyvalueList[$monthlyValue['MTH_ID']] = $this->sanitizeString($monthlyValue['MTH_EDESC']);
+        }
+        $this->formattedFlatValueList = [];
+        foreach ($flatValuesList as $flatValue) {
+            $this->formattedFlatValueList[$flatValue['FLAT_ID']] = $this->sanitizeString($flatValue['FLAT_EDESC']);
+        }
+
+        $this->formattedVariableList = [];
+        foreach (self::VARIABLES as $variable) {
+            array_push($this->formattedVariableList, $variable);
+        }
+
+        $this->formattedSystemRuleList = [];
+        foreach (self::SYSTEM_RULE as $systemRule) {
+            array_push($this->formattedSystemRuleList, $systemRule);
+        }
     }
 
     public function generate($employeeId, $monthId) {
         $this->employeeId = $employeeId;
         $this->monthId = $monthId;
-        $payList = $this->payEmployeeRepo->fetchByEmployeeId($this->employeeId);
+        $payList = $this->ruleRepo->fetchAll();
 
         $ruleValueMap = [];
         $counter = 0;
         foreach ($payList as $ruleDetail) {
-            $ruleId = $ruleDetail[PayEmployeeSetup::PAY_ID];
-            $formula = $ruleDetail[RulesDetail::MNENONIC_NAME];
+            $ruleId = $ruleDetail[Rules::PAY_ID];
+            $formula = $ruleDetail[Rules::FORMULA];
             $operationType = $ruleDetail[Rules::PAY_TYPE_FLAG];
 
-            $ruleRepo = new RulesRepository($this->adapter);
-            $refRules = $ruleRepo->fetchReferencingRules($ruleId);
+            $refRules = $this->ruleRepo->fetchReferencingRules($ruleId);
 
             foreach ($this->monthlyValues as $monthlyKey => $monthlyValue) {
                 $formula = $this->convertConstantToValue($formula, $monthlyKey, $monthlyValue, $this->monthlyValueDetRepo);
@@ -121,36 +137,21 @@ class PayrollGenerator {
         return ["ruleValueKV" => $ruleValueMap, "calculatedValue" => $this->calculatedValue];
     }
 
-    private function getMonthlyValueList() {
-        $list = EntityHelper::getTableList($this->adapter, MonthlyValueModel::TABLE_NAME, [MonthlyValueModel::MTH_EDESC]);
-        $listWithOutKey = [];
-
-        foreach ($list as $item) {
-            array_push($listWithOutKey, $item[MonthlyValueModel::MTH_EDESC]);
-        }
-
-        return $listWithOutKey;
+    private function getMonthlyValues() {
+        $monthlyValueRepo = new MonthlyValueRepository($this->adapter);
+        $monthlyValueList = $monthlyValueRepo->fetchAll();
+        return Helper::extractDbData($monthlyValueList);
     }
 
-    private function getFlatValueList() {
-        $list = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_EDESC]);
-        $listWithOutKey = [];
-
-        foreach ($list as $item) {
-            array_push($listWithOutKey, $item[FlatValueModel::FLAT_EDESC]);
-        }
-
-        return $listWithOutKey;
+    private function getFlatValues() {
+        $flatValueRepo = new FlatValueRepository($this->adapter);
+        $flatValueList = $flatValueRepo->fetchAll();
+        return Helper::extractDbData($flatValueList);
     }
 
-    private function getPositionId($id) {
-        return EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["POSITION_ID"], ["EMPLOYEE_ID" => $id], null)[$id];
-    }
-
-    private function sanitizeStringArray(array &$stringArray) {
-        foreach ($stringArray as &$string) {
-            $string = $this->sanitizeString($string);
-        }
+    private function getReferencingRules($payId = null) {
+        $referencingruleList = $this->repository->fetchReferencingRules($payId);
+        return Helper::extractDbData($referencingruleList);
     }
 
     private function sanitizeString($input) {
@@ -159,20 +160,20 @@ class PayrollGenerator {
     }
 
     private function convertConstantToValue($rule, $key, $constant, RepositoryInterface $repository) {
-        if (strpos($rule, $this->wrapWithLargeBracket($constant)) !== false) {
-            return str_replace($this->wrapWithLargeBracket($constant), $this->generateValue($key, $repository), $rule);
+        if (strpos($rule, $constant) !== false) {
+            return str_replace($constant, $this->generateValue($key, $repository), $rule);
         } else {
             return $rule;
         }
     }
 
-    private function generateValue($constant, RepositoryInterface $repository) {
+    private function generateValue($key, RepositoryInterface $repository) {
         if ($repository instanceof MonthlyValueDetailRepo) {
-            $monthlyValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'mthId' => $constant]);
+            $monthlyValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'mthId' => $key]);
             $monthlyValTmp = (!isset($monthlyValTmp)) ? 0 : $monthlyValTmp;
             return $monthlyValTmp;
         } else if ($repository instanceof FlatValueDetailRepo) {
-            $flatValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'flatId' => $constant]);
+            $flatValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'flatId' => $key]);
             $flatValTmp = (isset($flatValTmp)) ? $flatValTmp : 0;
             return $flatValTmp;
         }
