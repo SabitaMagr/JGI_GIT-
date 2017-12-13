@@ -51,7 +51,7 @@ class FlatValue extends HrisController {
                 $flatValue->status = 'E';
 
                 $this->repository->add($flatValue);
-                $this->flashmessenger()->addMessage("Flat Value added Successfully!!");
+                $this->flashmessenger()->addMessage("Flat Value added Successfully.");
                 return $this->redirect()->toRoute("flatValue");
             }
         }
@@ -78,7 +78,7 @@ class FlatValue extends HrisController {
                 unset($flatValueModel->flatId);
                 unset($flatValueModel->status);
                 $this->repository->edit($flatValueModel, $id);
-                $this->flashmessenger()->addMessage("Flat Value updated successfully!!!");
+                $this->flashmessenger()->addMessage("Flat Value updated successfully.");
                 return $this->redirect()->toRoute("flatValue");
             }
         }

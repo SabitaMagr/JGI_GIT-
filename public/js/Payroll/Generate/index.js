@@ -64,21 +64,17 @@
         });
 
 
+        var employeeNameColumn = {field: "EMPLOYEE_NAME", title: "Employee", width: 150};
+        if (data.ruleList.length > 0) {
+            employeeNameColumn.locked = true;
+        }
         var columns = [
-            {field: "EMPLOYEE_NAME", title: "Employee", width: 150, locked: true},
+            employeeNameColumn
         ];
 
-        var addtion = {title: "Additions", columns: []};
-        var deduction = {title: "Deductions", columns: []};
         $.each(data.ruleList, function (key, value) {
-            if (value['PAY_TYPE_FLAG' ] == 'A') {
-                addtion.columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'], width: 150});
-            } else {
-                deduction.columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'], width: 150});
-            }
+            columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'], width: 150});
         });
-        columns.push(addtion);
-        columns.push(deduction);
         app.initializeKendoGrid($table, columns);
 
         $viewBtn.on('click', function () {
@@ -109,7 +105,7 @@
                     toDate: toDate
                 }).then(function (response) {
                     stage2(response.data);
-                }, function () {
+                }, function (error) {
 
                 });
             };
@@ -124,6 +120,7 @@
                 for (var i in employeeList) {
                     dataList.push({
                         stage: 2,
+                        sheetNo: sheetNo,
                         monthId: monthId,
                         year: year,
                         monthNo: monthNo,
@@ -137,9 +134,10 @@
                     var length = dataList.length;
                     var recursionFn = function (data) {
                         app.pullDataById(generateLink, data).then(function (response) {
+                            NProgress.set((counter + 1) / length);
                             counter++;
                             if (!response.success) {
-                                stage2Error(data);
+                                stage2Error(data, response.error);
                             }
                             if (counter >= length) {
                                 stage3();
@@ -150,11 +148,12 @@
                             stage2Error(data, error);
                         });
                     };
+                    NProgress.start();
                     recursionFn(dataList[counter]);
                 })(dataList);
             };
             var stage2Error = function (data, error) {
-
+                app.showMessage(error, 'error');
             };
             var stage3 = function () {
 

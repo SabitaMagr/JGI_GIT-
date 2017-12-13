@@ -12,11 +12,11 @@ class PositionMonthlyValue extends Model {
     const MONTH_ID = "MONTH_ID";
     const ASSIGNED_VALUE = "ASSIGNED_VALUE";
 
-    private $mthId;
-    private $positionId;
-    private $monthId;
-    private $assignedValue;
-    private $mappings = [
+    public $mthId;
+    public $positionId;
+    public $monthId;
+    public $assignedValue;
+    public $mappings = [
         'mthId' => self::MTH_ID,
         'positionId' => self::POSITION_ID,
         'monthId' => self::MONTH_ID,

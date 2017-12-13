@@ -53,7 +53,7 @@ class MonthlyValue extends HrisController {
                 $monthlyValue->createdDt = Helper::getcurrentExpressionDate();
                 $monthlyValue->status = 'E';
                 $this->repository->add($monthlyValue);
-                $this->flashmessenger()->addMessage("Monthly Value added Successfully!!");
+                $this->flashmessenger()->addMessage("Monthly Value added Successfully.");
                 return $this->redirect()->toRoute("monthlyValue");
             }
         }
@@ -80,7 +80,7 @@ class MonthlyValue extends HrisController {
                 unset($monthlyValueMode->mthId);
                 unset($monthlyValueMode->status);
                 $this->repository->edit($monthlyValueMode, $id);
-                $this->flashmessenger()->addMessage("Monthly Value updated successfully!!!");
+                $this->flashmessenger()->addMessage("Monthly Value updated successfully.");
                 return $this->redirect()->toRoute("monthlyValue");
             }
         }

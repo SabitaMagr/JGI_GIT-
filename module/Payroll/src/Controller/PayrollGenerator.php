@@ -2,6 +2,7 @@
 
 namespace Payroll\Controller;
 
+use Application\Helper\Helper;
 use Application\Repository\RepositoryInterface;
 use Exception;
 use Payroll\Controller\SystemRuleProcessor;
@@ -11,6 +12,7 @@ use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\FlatValueRepository;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\MonthlyValueRepository;
+use Payroll\Repository\PositionMonthlyValueRepo;
 use Payroll\Repository\RulesRepository;
 
 class PayrollGenerator {
@@ -18,6 +20,7 @@ class PayrollGenerator {
     private $adapter;
     private $flatValueDetRepo;
     private $monthlyValueDetRepo;
+    private $positionMonthlyValueRepo;
     private $ruleRepo;
     private $employeeId;
     private $monthId = 0;
@@ -59,27 +62,28 @@ class PayrollGenerator {
         $this->adapter = $adapter;
         $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
         $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
+        $this->positionMonthlyValueRepo = new PositionMonthlyValueRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
         $monthlyValueList = $this->getMonthlyValues();
         $flatValuesList = $this->getFlatValues();
 
         $this->formattedMonthlyvalueList = [];
         foreach ($monthlyValueList as $monthlyValue) {
-            $this->formattedMonthlyvalueList[$monthlyValue['MTH_ID']] = $this->sanitizeString($monthlyValue['MTH_EDESC']);
+            $this->formattedMonthlyvalueList[$monthlyValue['MTH_ID']] = "[M:{$this->sanitizeString($monthlyValue['MTH_EDESC'])}]";
         }
         $this->formattedFlatValueList = [];
         foreach ($flatValuesList as $flatValue) {
-            $this->formattedFlatValueList[$flatValue['FLAT_ID']] = $this->sanitizeString($flatValue['FLAT_EDESC']);
+            $this->formattedFlatValueList[$flatValue['FLAT_ID']] = "[F:{$this->sanitizeString($flatValue['FLAT_EDESC'])}]";
         }
 
         $this->formattedVariableList = [];
         foreach (self::VARIABLES as $variable) {
-            array_push($this->formattedVariableList, $variable);
+            $this->formattedVariableList[$variable] = "[V:{$variable}]";
         }
 
         $this->formattedSystemRuleList = [];
         foreach (self::SYSTEM_RULE as $systemRule) {
-            array_push($this->formattedSystemRuleList, $systemRule);
+            $this->formattedSystemRuleList[$systemRule] = "[S:{$systemRule}]";
         }
     }
 
@@ -95,22 +99,23 @@ class PayrollGenerator {
             $formula = $ruleDetail[Rules::FORMULA];
             $operationType = $ruleDetail[Rules::PAY_TYPE_FLAG];
 
+
             $refRules = $this->ruleRepo->fetchReferencingRules($ruleId);
 
-            foreach ($this->monthlyValues as $monthlyKey => $monthlyValue) {
-                $formula = $this->convertConstantToValue($formula, $monthlyKey, $monthlyValue, $this->monthlyValueDetRepo);
+            foreach ($this->formattedMonthlyvalueList as $monthlyKey => $monthlyValue) {
+                $formula = $this->convertMonthlyToValue($formula, $monthlyKey, $monthlyValue);
             }
 
-            foreach ($this->flatValues as $flatKey => $flatValue) {
-                $formula = $this->convertConstantToValue($formula, $flatKey, $flatValue, $this->flatValueDetRepo);
+            foreach ($this->formattedFlatValueList as $flatKey => $flatValue) {
+                $formula = $this->convertFlatToValue($formula, $flatKey, $flatValue);
             }
 
-            foreach (self::VARIABLES as $variable) {
-                $formula = $this->convertVariableToValue($formula, $variable);
+            foreach ($this->formattedVariableList as $key => $variable) {
+                $formula = $this->convertVariableToValue($formula, $key, $variable);
             }
 
-            foreach (self::SYSTEM_RULE as $systemRule) {
-                $formula = $this->convertSystemRuleToValue($formula, $systemRule);
+            foreach ($this->formattedSystemRuleList as $key => $systemRule) {
+                $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule);
             }
 
             $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
@@ -159,49 +164,41 @@ class PayrollGenerator {
         return strtoupper($processed);
     }
 
-    private function convertConstantToValue($rule, $key, $constant, RepositoryInterface $repository) {
+    private function convertFlatToValue($rule, $key, $constant) {
         if (strpos($rule, $constant) !== false) {
-            return str_replace($constant, $this->generateValue($key, $repository), $rule);
+            $flatValTmp = $this->flatValueDetRepo->fetchById(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'FLAT_ID' => $key]);
+            $flatVal = ($flatValTmp != null) && (isset($flatValTmp['FLAT_VALUE'])) ? $flatValTmp['FLAT_VALUE'] : 0;
+            return str_replace($constant, $flatVal, $rule);
         } else {
             return $rule;
         }
     }
 
-    private function generateValue($key, RepositoryInterface $repository) {
-        if ($repository instanceof MonthlyValueDetailRepo) {
-            $monthlyValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'mthId' => $key]);
-            $monthlyValTmp = (!isset($monthlyValTmp)) ? 0 : $monthlyValTmp;
-            return $monthlyValTmp;
-        } else if ($repository instanceof FlatValueDetailRepo) {
-            $flatValTmp = $repository->fetchById(['employeeId' => $this->employeeId, 'monthId' => $this->monthId, 'flatId' => $key]);
-            $flatValTmp = (isset($flatValTmp)) ? $flatValTmp : 0;
-            return $flatValTmp;
+    private function convertMonthlyToValue($rule, $key, $constant) {
+        if (strpos($rule, $constant) !== false) {
+            $monthlyValTmp = $this->positionMonthlyValueRepo->fetchById(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'MTH_ID' => $key]);
+            $monthlyVal = ($monthlyValTmp != null) && (isset($monthlyValTmp['ASSIGNED_VALUE'])) ? $monthlyValTmp['ASSIGNED_VALUE'] : 0;
+            return str_replace($constant, $monthlyVal, $rule);
+        } else {
+            return $rule;
         }
     }
 
-    private function convertVariableToValue($rule, $variable) {
-        if (strpos($rule, $this->wrapWithLargeBracket($variable)) !== false) {
+    private function convertVariableToValue($rule, $key, $variable) {
+        if (strpos($rule, $variable) !== false) {
             $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId);
-            $processedVariable = $variableProcessor->processVariable($variable);
-            if (is_string($processedVariable)) {
-                return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedVariable . "'", $rule);
-            } else {
-                return str_replace($this->wrapWithLargeBracket($variable), $processedVariable, $rule);
-            }
+            $processedVariable = $variableProcessor->processVariable($key);
+            return str_replace($variable, is_string($processedVariable) ? "'{$processedVariable}'" : $processedVariable, $rule);
         } else {
             return $rule;
         }
     }
 
-    private function convertSystemRuleToValue($rule, $variable) {
-        if (strpos($rule, $this->wrapWithLargeBracket($variable)) !== false) {
+    private function convertSystemRuleToValue($rule, $key, $variable) {
+        if (strpos($rule, $variable) !== false) {
             $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->calculatedValue, $this->ruleDetailList, $this->monthId);
-            $processedSystemRule = $systemRuleProcessor->processSystemRule($variable);
-            if (is_string($processedSystemRule)) {
-                return str_replace($this->wrapWithLargeBracket($variable), "'" . $processedSystemRule . "'", $rule);
-            } else {
-                return str_replace($this->wrapWithLargeBracket($variable), $processedSystemRule, $rule);
-            }
+            $processedSystemRule = $systemRuleProcessor->processSystemRule($key);
+            return str_replace($variable, is_string($processedSystemRule) ? "'{$processedSystemRule}'" : $processedSystemRule, $rule);
         } else {
             return $rule;
         }
@@ -209,46 +206,24 @@ class PayrollGenerator {
 
     private function convertReferencingRuleToValue($rule, $refRules) {
         foreach ($refRules as $refRule) {
-            $payEdesc = $this->sanitizeString($refRule['PAY_EDESC']);
-            if (strpos($rule, $this->wrapWithSmallBracket($payEdesc)) !== false) {
-                $processedRefRules = 0;
-                foreach ($this->ruleDetailList as $ruleDetail) {
-                    if ($ruleDetail['rule']['PAY_ID'] == $refRule['PAY_ID']) {
-                        if (!isset($ruleDetail['ruleValue'])) {
-                            throw new Exception("Referencing Rule not set.");
-                        }
-
-                        $processedRefRules = $ruleDetail['ruleValue'];
-                    }
-                }
-                if (is_string($processedRefRules)) {
-                    $rule = str_replace($payEdesc, "'" . $processedRefRules . "'", $rule);
-                } else {
-                    $rule = str_replace($payEdesc, $processedRefRules, $rule);
-                }
+            $payEdesc = "[R:{$this->sanitizeString($refRule['PAY_EDESC'])}]";
+            $payId = $refRule['PAY_ID'];
+            if (strpos($rule, $payEdesc) !== false) {
+                $value = $this->getReferencingRuleValue($payId);
+                $rule = str_replace($payEdesc, is_string($value) ? "'{$value}'" : $value, $rule);
             }
         }
         return $rule;
     }
 
-    private function wrapWithLargeBracket($input) {
-        return "[" . $input . "]";
-    }
-
-    private function unwrapWithLargeBracket($input) {
-        $temp = str_replace("[", "", $input);
-        $temp = str_replace("]", "", $temp);
-        return $temp;
-    }
-
-    private function wrapWithSmallBracket($input) {
-        return "(" . $input . ")";
-    }
-
-    private function unwrapWithSmallBracket($input) {
-        $temp = str_replace("(", "", $input);
-        $temp = str_replace(")", "", $temp);
-        return $temp;
+    private function getReferencingRuleValue($payId) {
+        $payValue = 0;
+        foreach ($this->ruleDetailList as $ruleDetail) {
+            if ($ruleDetail['rule']['PAY_ID'] == $payId) {
+                $payValue = $ruleDetail['ruleValue'];
+            }
+        }
+        return $payValue;
     }
 
 }

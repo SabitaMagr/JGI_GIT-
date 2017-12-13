@@ -17,6 +17,21 @@ class PositionMonthlyValueRepo {
         $this->gateway = new TableGateway(PositionMonthlyValue::TABLE_NAME, $adapter);
     }
 
+    public function fetchById($id) {
+        $sql = "SELECT PMV.ASSIGNED_VALUE
+                FROM HRIS_POSITION_MONTHLY_VALUE PMV
+                JOIN HRIS_EMPLOYEES E
+                ON(PMV.POSITION_ID = E.POSITION_ID)
+                WHERE PMV.MTH_ID   ={$id['MTH_ID']}
+                AND PMV.MONTH_ID   ={$id['MONTH_ID']}
+                AND E.EMPLOYEE_ID  = {$id['EMPLOYEE_ID']}
+                ";
+
+        $statement = $this->adapter->query($sql);
+        $rawResult = $statement->execute();
+        return $rawResult->current();
+    }
+
     public function getPositionMonthlyValue($monthId) {
         $sql = "
             SELECT *

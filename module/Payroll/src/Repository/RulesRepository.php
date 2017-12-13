@@ -33,6 +33,7 @@ class RulesRepository implements RepositoryInterface {
         $query = "SELECT PAY_ID,
                   PAY_CODE,
                   PAY_EDESC,
+                  PAY_TYPE_FLAG,
                   (
                   CASE
                     WHEN PAY_TYPE_FLAG ='A'

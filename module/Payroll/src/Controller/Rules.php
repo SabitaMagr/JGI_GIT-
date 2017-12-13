@@ -97,12 +97,10 @@ class Rules extends HrisController {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $ruleModel->exchangeArrayFromForm($this->form->getData());
-                $ruleModel->payId = ((int) Helper::getMaxId($this->adapter, RulesModel::TABLE_NAME, RulesModel::PAY_ID)) + 1;
-                $ruleModel->createdDt = Helper::getcurrentExpressionDate();
-                $ruleModel->createdBy = $this->employeeId;
-                $ruleModel->status = 'E';
+                $ruleModel->modifiedDt = Helper::getcurrentExpressionDate();
+                $ruleModel->modifiedBy = $this->employeeId;
 
-                $this->repository->add($ruleModel);
+                $this->repository->edit($ruleModel, $id);
 
                 $this->flashmessenger()->addMessage("Rule successfully edited.");
                 return $this->redirect()->toRoute("rules");

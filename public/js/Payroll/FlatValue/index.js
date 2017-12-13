@@ -31,10 +31,10 @@
         };
 
         $('#excelExport').on('click', function () {
-            app.excelExport($table, map, 'Flat List');
+            app.excelExport($table, map, 'Flat Value List');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, map, 'Flat List');
+            app.exportToPDF($table, map, 'Flat Value List');
         });
 
 

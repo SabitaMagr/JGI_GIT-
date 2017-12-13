@@ -49,7 +49,7 @@ class SalarySheetDetailRepo implements RepositoryInterface {
                       PAY_ID,
                       VAL
                     FROM HRIS_SALARY_SHEET_DETAIL
-                    WHERE SHEET_NO                =6
+                    WHERE SHEET_NO                ={$sheetId}
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
                   ) P
                 JOIN HRIS_EMPLOYEES E

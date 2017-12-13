@@ -32,7 +32,7 @@ class Rules {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"100"}})
      * @Annotation\Options({"label":"Pay LDesc"})
