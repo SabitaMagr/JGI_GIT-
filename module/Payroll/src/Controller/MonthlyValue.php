@@ -4,7 +4,6 @@ namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
-use Application\Helper\ConstraintHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\FiscalYear;
@@ -14,9 +13,11 @@ use Payroll\Form\MonthlyValue as MonthlyValueForm;
 use Payroll\Model\MonthlyValue as MonthlyValueModel;
 use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\MonthlyValueRepository;
+use Payroll\Repository\PositionMonthlyValueRepo;
 use Setup\Model\Position;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 
 class MonthlyValue extends HrisController {
 
@@ -27,18 +28,18 @@ class MonthlyValue extends HrisController {
     }
 
     public function indexAction() {
-        $constraint = ConstraintHelper::CONSTRAINTS['YN'];
-        $monthlyValueList = $this->repository->fetchAll();
-        $montlyValues = [];
-        foreach ($monthlyValueList as $monthlyValueRow) {
-            $showAtRule = $constraint[$monthlyValueRow['SHOW_AT_RULE']];
-            $rowRecord = $monthlyValueRow->getArrayCopy();
-            $new_row = array_merge($rowRecord, ['SHOW_AT_RULE' => $showAtRule]);
-            array_push($montlyValues, $new_row);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $rawList = $this->repository->fetchAll();
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'monthlyValues' => $montlyValues
-        ]);
+
+        return $this->stickFlashMessagesTo(['acl' => $this->acl]);
     }
 
     public function addAction() {
@@ -56,11 +57,10 @@ class MonthlyValue extends HrisController {
                 return $this->redirect()->toRoute("monthlyValue");
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'customRenderer' => Helper::renderCustomView()
-                        ]
-        );
+        return [
+            'form' => $this->form,
+            'customRenderer' => Helper::renderCustomView()
+        ];
     }
 
     public function editAction() {
@@ -84,11 +84,11 @@ class MonthlyValue extends HrisController {
                 return $this->redirect()->toRoute("monthlyValue");
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'customRenderer' => Helper::renderCustomView()
-        ]);
+        return [
+            'form' => $this->form,
+            'id' => $id,
+            'customRenderer' => Helper::renderCustomView()
+        ];
     }
 
     public function deleteAction() {
@@ -173,7 +173,7 @@ class MonthlyValue extends HrisController {
             $postedData = $request->getPost();
             $monthId = $postedData['monthId'];
 
-            $detailRepo = new MonthlyValueDetailRepo($this->adapter);
+            $detailRepo = new PositionMonthlyValueRepo($this->adapter);
             $result = $detailRepo->getPositionMonthlyValue($monthId);
 
             return new CustomViewModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
@@ -194,7 +194,7 @@ class MonthlyValue extends HrisController {
             $mthId = $postedData['mthId'];
             $assignedValue = $postedData['assignedValue'];
 
-            $detailRepo = new MonthlyValueDetailRepo($this->adapter);
+            $detailRepo = new PositionMonthlyValueRepo($this->adapter);
             $detailRepo->setPositionMonthlyValue($monthId, $positionId, $mthId, $assignedValue);
 
             return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);

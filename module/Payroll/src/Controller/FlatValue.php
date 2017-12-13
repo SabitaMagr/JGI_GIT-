@@ -2,55 +2,44 @@
 
 namespace Payroll\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
-use Application\Helper\ConstraintHelper;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\FiscalYear;
-use Application\Model\Months;
 use Exception;
 use Payroll\Form\FlatValue as FlatValueForm;
 use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\FlatValueRepository;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class FlatValue extends AbstractActionController {
+class FlatValue extends HrisController {
 
-    private $adapter;
-    private $repository;
-    private $form;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new FlatValueRepository($adapter);
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $flatValueForm = new FlatValueForm();
-        $this->form = $builder->createForm($flatValueForm);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(FlatValueRepository::class);
+        $this->initializeForm(FlatValueForm::class);
     }
 
     public function indexAction() {
-        $constraint = ConstraintHelper::CONSTRAINTS['YN'];
-        $flatValueList = $this->repository->fetchAll();
-        $flatValues = [];
-        foreach ($flatValueList as $flatValueRow) {
-            $showAtRule = $constraint[$flatValueRow['SHOW_AT_RULE']];
-            $rowRecord = $flatValueRow->getArrayCopy();
-            $new_row = array_merge($rowRecord, ['SHOW_AT_RULE' => $showAtRule]);
-            array_push($flatValues, $new_row);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $rawList = $this->repository->fetchAll();
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'flatValues' => $flatValues
-        ]);
+
+        return $this->stickFlashMessagesTo(['acl' => $this->acl]);
     }
 
     public function addAction() {
-        $this->initializeForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
@@ -66,16 +55,14 @@ class FlatValue extends AbstractActionController {
                 return $this->redirect()->toRoute("flatValue");
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'customRenderer' => Helper::renderCustomView()
-                        ]
-        );
+        return [
+            'form' => $this->form,
+            'customRenderer' => Helper::renderCustomView()
+        ];
     }
 
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $flatValueModel = new FlatValueModel();
@@ -95,11 +82,11 @@ class FlatValue extends AbstractActionController {
                 return $this->redirect()->toRoute("flatValue");
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'customRenderer' => Helper::renderCustomView()
-        ]);
+        return [
+            'form' => $this->form,
+            'id' => $id,
+            'customRenderer' => Helper::renderCustomView()
+        ];
     }
 
     public function deleteAction() {

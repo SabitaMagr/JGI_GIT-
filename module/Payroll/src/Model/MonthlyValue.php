@@ -14,6 +14,7 @@ class MonthlyValue extends Model {
     CONST STATUS = "STATUS";
     CONST CREATED_DT = "CREATED_DT";
     CONST MODIFIED_DT = "MODIFIED_DT";
+    CONST REMARKS = "REMARKS";
 
     public $mthId;
     public $mthCode;
@@ -22,6 +23,7 @@ class MonthlyValue extends Model {
     public $status;
     public $createdDt;
     public $modifiedDt;
+    public $remarks;
     public $mappings = [
         'mthId' => self::MTH_ID,
         'mthCode' => self::MTH_CODE,
@@ -29,7 +31,8 @@ class MonthlyValue extends Model {
         'mthLdesc' => self::MTH_LDESC,
         'status' => self::STATUS,
         'createdDt' => self::CREATED_DT,
-        'modifiedDt' => self::MODIFIED_DT
+        'modifiedDt' => self::MODIFIED_DT,
+        'remarks' => self::REMARKS,
     ];
 
 }

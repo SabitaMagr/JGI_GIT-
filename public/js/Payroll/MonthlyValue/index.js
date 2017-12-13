@@ -1,60 +1,47 @@
 (function ($) {
     'use strict';
-    $(document).ready(function () {    
-       
-        $("#monthlyValueTable").kendoGrid({
-            excel: {
-                fileName: "MonthlyValueList.xlsx",
-                filterable: true,
-                allPages: true
+    $(document).ready(function () {
+        var $table = $('#table');
+
+        var actiontemplateConfig = {
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': ["MTH_ID"],
+                'url': document.editLink
             },
-            dataSource: {
-                data: document.monthlyValues,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            dataBound:gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-                {field: "MTH_EDESC", title: "EDesc"},
-                {field: "MTH_LDESC", title: "NDesc"},
-                {field: "SHOW_AT_RULE", title: "Show At Rule"},
-                {field: "SH_INDEX_NO", title: "Index No"},
-                {title: "Action"}
-            ]
-        });  
-        
-        app.searchTable('monthlyValueTable',['MTH_EDESC','MTH_LDESC','SHOW_AT_RULE','SH_INDEX_NO']);
-        
-        app.pdfExport(
-                'monthlyValueTable',
-                {
-                    'MTH_EDESC': 'Month Desc in English',
-                    'MTH_LDESC': 'Month Desc in Nepali',
-                    'SHOW_AT_RULE': 'Show At Rule',
-                    'SH_INDEX_NO': 'Index No'
-                });
-        
-        
-        function gridDataBound(e) {
-            var grid = e.sender;
-            if (grid.dataSource.total() == 0) {
-                var colCount = grid.columns.length;
-                $(e.sender.wrapper)
-                        .find('tbody')
-                        .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': ["MTH_ID"],
+                'url': document.deleteLink
             }
         };
-        $("#export").click(function (e) {
-            var grid = $("#monthlyValueTable").data("kendoGrid");
-            grid.saveAsExcel();
+        app.initializeKendoGrid($table, [
+            {field: "MTH_CODE", title: "Flat Code"},
+            {field: "MTH_EDESC", title: "Flat Title"},
+            {field: "REMARKS", title: "Remarks"},
+            {field: "MTH_ID", title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
+        ]);
+
+        app.searchTable($table, ["MTH_CODE", "MTH_EDESC", "REMARKS"]);
+        var map = {
+            "MTH_ID": "Flat Id",
+            "MTH_CODE": "Flat Code",
+            "MTH_EDESC": "Flat Title",
+            "REMARKS": "Remarks",
+        };
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, map, 'Monthly Value List');
         });
-    });   
-})(window.jQuery, window.app);
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, map, 'Monthly Value List');
+        });
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
+    });
+})(window.jQuery);

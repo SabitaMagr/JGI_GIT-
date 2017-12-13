@@ -1,57 +1,47 @@
 (function ($) {
     'use strict';
-    $(document).ready(function () {    
-       console.log(document.flatValues);
-        $("#flatValueTable").kendoGrid({
-            excel: {
-                fileName: "FlatValueList.xlsx",
-                filterable: true,
-                allPages: true
+    $(document).ready(function () {
+        var $table = $('#table');
+
+        var actiontemplateConfig = {
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': ["FLAT_ID"],
+                'url': document.editLink
             },
-            dataSource: {
-                data: document.flatValues,
-                pageSize: 20
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            dataBound:gridDataBound,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-                {field: "FLAT_EDESC", title: "EDesc"},
-                {field: "FLAT_LDESC", title: "LDesc"},
-                {field: "SHOW_AT_RULE", title: "Show At Rule"},
-                {title: "Action"}
-            ]
-        }); 
-        
-        app.searchTable('flatValueTable',['FLAT_EDESC','FLAT_LDESC','SHOW_AT_RULE']);
-        
-        app.pdfExport(
-                'flatValueTable',
-                {
-                    'FLAT_EDESC': 'Flat Desc in English',
-                    'FLAT_LDESC': 'Flat Desc in Nepali',
-                    'SHOW_AT_RULE': 'Show At Rule'
-                });
-        
-        function gridDataBound(e) {
-            var grid = e.sender;
-            if (grid.dataSource.total() == 0) {
-                var colCount = grid.columns.length;
-                $(e.sender.wrapper)
-                        .find('tbody')
-                        .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': ["FLAT_ID"],
+                'url': document.deleteLink
             }
         };
-        $("#export").click(function (e) {
-            var grid = $("#flatValueTable").data("kendoGrid");
-            grid.saveAsExcel();
+        app.initializeKendoGrid($table, [
+            {field: "FLAT_CODE", title: "Flat Code"},
+            {field: "FLAT_EDESC", title: "Flat Title"},
+            {field: "REMARKS", title: "Remarks"},
+            {field: "FLAT_ID", title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
+        ]);
+
+        app.searchTable($table, ["FLAT_CODE", "FLAT_EDESC", "REMARKS"]);
+        var map = {
+            "FLAT_ID": "Flat Id",
+            "FLAT_CODE": "Flat Code",
+            "FLAT_EDESC": "Flat Title",
+            "REMARKS": "Remarks",
+        };
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, map, 'Flat List');
         });
-    });   
-})(window.jQuery, window.app);
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, map, 'Flat List');
+        });
+
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
+        });
+    });
+})(window.jQuery);
