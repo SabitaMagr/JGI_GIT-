@@ -40,10 +40,10 @@
         ];
         var map = {
             'FULL_NAME': 'Name',
-            'REQUESTED_DT': 'Req.Date(AD)',
-            'REQUESTED_DT_N': 'Req.Date(BS)',
-            'ATTENDANCE_DT': 'AttenDate(AD)',
-            'ATTENDANCE_DT_N': 'AttenDate(BS)',
+            'REQUESTED_DT_AD': 'Req.Date(AD)',
+            'REQUESTED_DT_BS': 'Req.Date(BS)',
+            'ATTENDANCE_DT_AD': 'AttenDate(AD)',
+            'ATTENDANCE_DT_BS': 'AttenDate(BS)',
             'IN_TIME': 'In Time',
             'OUT_TIME': 'Out Time',
             'TOTAL_HOUR': 'Total Hrs',
