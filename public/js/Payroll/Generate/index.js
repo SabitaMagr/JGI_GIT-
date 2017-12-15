@@ -86,7 +86,22 @@
         ];
 
         $.each(data.ruleList, function (key, value) {
-            columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'], width: 150});
+            var signFn = function ($type) {
+                var sign = "";
+                switch ($type) {
+                    case "A":
+                        sign = "+";
+                        break;
+                    case "D":
+                        sign = "-";
+                        break;
+                    case "V":
+                        sign = ".";
+                        break;
+                }
+                return sign;
+            };
+            columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")", width: 150});
         });
         app.initializeKendoGrid($table, columns);
 
