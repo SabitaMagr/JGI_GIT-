@@ -69,7 +69,6 @@ class Rules {
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Formula"})
      * @Annotation\Attributes({ "id":"formula","class":"form-control"})
      */

@@ -10,7 +10,6 @@
                 app.showMessage('Formula is Required.', 'error');
                 return false;
             }
-            $formula.val();
             return true;
         });
     });

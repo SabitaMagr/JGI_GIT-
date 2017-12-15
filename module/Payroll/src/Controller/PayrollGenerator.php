@@ -3,8 +3,6 @@
 namespace Payroll\Controller;
 
 use Application\Helper\Helper;
-use Application\Repository\RepositoryInterface;
-use Exception;
 use Payroll\Controller\SystemRuleProcessor;
 use Payroll\Controller\VariableProcessor;
 use Payroll\Model\Rules;
@@ -29,7 +27,6 @@ class PayrollGenerator {
     private $formattedVariableList;
     private $formattedSystemRuleList;
     private $formattedReferencingRuleList;
-    private $calculatedValue = 0;
     private $ruleDetailList = [];
 
     const VARIABLES = [
@@ -52,10 +49,7 @@ class PayrollGenerator {
         "IS_TEMPORARY"
     ];
     const SYSTEM_RULE = [
-        "CUR_MTH_ID",
-        "MTH_RESULT",
-        "YR_RESULT",
-        "CUR_MTH_LAST_DAY",
+        "TOTAL_ANNUAL_AMOUNT"
     ];
 
     public function __construct($adapter) {
@@ -121,25 +115,12 @@ class PayrollGenerator {
             $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
 
             $ruleValue = eval("return {$processedformula} ;");
-
             array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleDetail]);
-
-            switch ($operationType) {
-                case 'A':
-                    $this->calculatedValue = $this->calculatedValue + $ruleValue;
-                    break;
-                case 'D':
-                    $this->calculatedValue = $this->calculatedValue - $ruleValue;
-                    break;
-                case 'V':
-                    break;
-            }
-
             $ruleValueMap[$ruleId] = $ruleValue;
             $counter++;
         }
 
-        return ["ruleValueKV" => $ruleValueMap, "calculatedValue" => $this->calculatedValue];
+        return ["ruleValueKV" => $ruleValueMap];
     }
 
     private function getMonthlyValues() {
@@ -196,7 +177,7 @@ class PayrollGenerator {
 
     private function convertSystemRuleToValue($rule, $key, $variable) {
         if (strpos($rule, $variable) !== false) {
-            $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->calculatedValue, $this->ruleDetailList, $this->monthId);
+            $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->ruleDetailList, $this->monthId);
             $processedSystemRule = $systemRuleProcessor->processSystemRule($key);
             return str_replace($variable, is_string($processedSystemRule) ? "'{$processedSystemRule}'" : $processedSystemRule, $rule);
         } else {

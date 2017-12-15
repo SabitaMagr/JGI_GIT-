@@ -45,8 +45,18 @@ class Generate extends HrisController {
         $data['salarySheetList'] = Helper::extractDbData($this->salarySheetRepo->fetchAll());
         $links['viewLink'] = $this->url()->fromRoute('generate', ['action' => 'viewSalarySheet']);
         $links['generateLink'] = $this->url()->fromRoute('generate', ['action' => 'generateSalarySheet']);
+        $links['getSalarySheetListLink'] = $this->url()->fromRoute('generate', ['action' => 'getSalarySheetList']);
         $data['links'] = $links;
         return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
+    }
+
+    public function getSalarySheetListAction() {
+        try {
+            $list = Helper::extractDbData($this->salarySheetRepo->fetchAll());
+            return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
+        }
     }
 
     public function viewSalarySheetAction() {
