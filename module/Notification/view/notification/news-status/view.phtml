@@ -1,0 +1,40 @@
+<?php
+$this->headScript()->appendFile($this->basePath('js/setup/employee/view.js'));
+?>
+
+
+<?php
+//print_r($newsDetails);
+//print_r($newsFileDetails);
+
+?>
+<div>
+    <h1>Messages</h1>
+    <div class="row">
+        <div class="col-md-offset-1">
+        <label><b>DATE:</b></label><?=$newsDetails['NEWS_DATE']?></br>
+        <label><b>Title:</b></label><?=$newsDetails['NEWS_TITLE']?></br>
+        <label><b>Description:</b></label><?=$newsDetails['NEWS_EDESC']?>
+        </div>
+    </div>
+    <h2>Attachments</h2>
+    <div class="row">
+        <div class="col-md-6">
+        <table class="table">
+            <tr>
+                <td>SN</td>
+                <td></td>
+            </tr>
+        <?php $i=1; foreach($newsFileDetails as $fileData){  ?>
+            <tr>
+                <td><?=$i?></td>
+                <td><a href="<?=$this->basePath()?>/uploads/news/<?=$fileData['FILE_PATH']?>"><?=$fileData['FILE_NAME']?></a></td>
+            </tr>
+        
+        <?php $i++;} ?>
+            </table>
+    </div>
+    </div>
+        
+    
+</div>

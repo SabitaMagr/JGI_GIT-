@@ -85,7 +85,8 @@ class NewsController extends AbstractActionController {
                 }
                 $this->repository->add($newsModel);
                 $this->flashmessenger()->addMessage("News Successfully added!!!");
-                return $this->redirect()->toRoute("news");
+//                return $this->redirect()->toRoute("news");
+                return $this->redirect()->toRoute('news', ['action' => 'edit', 'id' => $newsModel->newsId]);
             }
         }
 
@@ -115,6 +116,10 @@ class NewsController extends AbstractActionController {
                 $newsModel->exchangeArrayFromForm($this->form->getData());
                 $newsModel->modifiedBy = $this->employeeId;
                 $newsModel->modifiedDt = Helper::getcurrentExpressionDate();
+                ($newsModel->companyId == -1) ? $newsModel->companyId = NULL : NUll;
+                ($newsModel->branchId == -1) ? $newsModel->branchId = NULL : NUll;
+                ($newsModel->departmentId == -1) ? $newsModel->departmentId = NULL : NULL;
+                ($newsModel->designationId == -1) ? $newsModel->designationId = NULL : NUll;
                 $this->repository->edit($newsModel, $id);
                 $this->flashmessenger()->addMessage("News Successfully Updated!!!");
                 return $this->redirect()->toRoute("news");
@@ -127,10 +132,7 @@ class NewsController extends AbstractActionController {
                     'form' => $this->form,
                     'id' => $id,
                     'newsTypeValue' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, NewsTypeModel::TABLE_NAME, NewsTypeModel::NEWS_TYPE_ID, [NewsTypeModel::NEWS_TYPE_DESC], ["STATUS" => "E"], "NEWS_TYPE_DESC", "ASC", null, true, true),
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-                    'branch' => $departmentRepo->fetchAllBranchAndCompany(),
-                    'designation' => $this->repository->fetchAllDesignationAndCompany(),
-                    'department' => $departmentRepo->fetchAllBranchAndDepartment()
+                    'searchValues' => ApplicationEntityHelper::getSearchData($this->adapter),
         ]);
     }
 
@@ -142,24 +144,6 @@ class NewsController extends AbstractActionController {
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("News Successfully Deleted!!!");
         return $this->redirect()->toRoute("news");
-    }
-
-    public function allNewsTypeListAction() {
-        $id = $this->params()->fromRoute('id');
-         $request = $this->getRequest();
-        if ($request->isPost()) {
-            try {
-                $result = $this->repository->allNewsTypeWise($this->employeeId,$id);
-                $list = Helper::extractDbData($result);
-                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
-            } catch (Exception $e) {
-                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-            }
-        }
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'acl' => $this->acl
-        ]);
     }
 
     public function fileUploadAction() {
@@ -217,6 +201,30 @@ class NewsController extends AbstractActionController {
             }
 
             return new JsonModel(['success' => true, 'data' => $return, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+    
+    public function deleteFileAction(){
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $id=$data['id'];
+            $newsfileRepo = new NewsFileRepository($this->adapter);
+            $newsFiles = $newsfileRepo->delete($id);
+            return new JsonModel(['success' => true, 'data' => $newsFiles, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function pullNewsFileAction() {
+        try {
+            $id = $this->params()->fromRoute('id');
+            $newsfileRepo = new NewsFileRepository($this->adapter);
+            $newsFiles = $newsfileRepo->fetchAllNewsFiles($id);
+            return new JsonModel(['success' => true, 'data' => $newsFiles, 'message' => null]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }

@@ -13,9 +13,11 @@ use Zend\Db\TableGateway\TableGateway;
 class NewsFileRepository implements RepositoryInterface {
 
     private $tableGateway;
+    private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway('HRIS_NEWS_FILE', $adapter);
+        $this->adapter=$adapter;
     }
 
     public function add(Model $model) {
@@ -49,7 +51,14 @@ class NewsFileRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->tableGateway->delete(['FILE_CODE' => $id]);
+        $this->tableGateway->delete(['NEWS_FILE_ID' => $id]);
+    }
+
+    public function fetchAllNewsFiles($id) {
+        $sql = "SELECT * FROM HRIS_NEWS_FILE WHERE NEWS_ID=$id ";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }

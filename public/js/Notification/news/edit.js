@@ -3,15 +3,51 @@
     $(document).ready(function () {
         $('select').select2();
         app.datePickerWithNepali("newsDate", "nepaliDate");
+        
+        //to change edit values
+        $('#companyId').val(document.companyEditVal).trigger('change.select2');
+        $('#branchId').val(document.branchEditVal).trigger('change.select2');
+        $('#departmentId').val(document.departmentEditVal).trigger('change.select2');
+        $('#designationId').val(document.designationEditVal).trigger('change.select2');
 
         var myDropzone;
-        
+        var $fileListTable = $('#fileDetailsTbl');
+
+        var fileDetails = function () {
+            window.app.pullDataById(document.pullNewsFile, {
+            }).then(function (success) {
+                $fileListTable.find("tr:not(:first)").remove();
+                $.each(success.data, function (index, value) {
+                    console.log(value);
+                    $fileListTable.append("<tr><td>" + value.FILE_NAME + "</td><td><button class=' btn btn-danger deleteFile' type='button' data-id=" + value.NEWS_FILE_ID + ">DELETE</button></td><tr>");
+                });
+
+            }, function (failure) {
+            });
+        }
+
+        fileDetails();
+
+
+        $fileListTable.on("click", "td .deleteFile", function () {
+            var selectedDeleteBtnId = $(this).attr('data-id');
+            window.app.pullDataById(document.deleteFile, {
+                 id: selectedDeleteBtnId
+            }).then(function (success) {
+                fileDetails();
+            }, function (failure) {
+            });
+
+        });
+
+
+
         var fileData = {
-                    newsTypeId: null,
-                    filePath: null,
-                    editMode: false,
-                    fileName: null
-                };
+            newsTypeId: null,
+            filePath: null,
+            editMode: false,
+            fileName: null
+        };
 
         Dropzone.autoDiscover = false;
 
@@ -36,24 +72,23 @@
             } else {
                 $('#uploadErr').hide();
             }
+            $('#documentUploadModel').modal('hide');
             myDropzone.processQueue();
-            
-        myDropzone.on("success", function (file, success) {
-            console.log(success);
+            myDropzone.on("success", function (file, success) {
+                console.log(success);
 //            console.log("Upload Image Response ", success);
-            if (success.success) {
-                imageUpload(success.data);
-            }
-        });
-        
-        myDropzone.on("complete", function(file) {
-              myDropzone.removeAllFiles()
-//              myDropzone.removeFile(file);
+                if (success.success) {
+                    imageUpload(success.data);
+                }
             });
-        
+
+            myDropzone.on("complete", function (file) {
+                location.reload();
+            });
+
         });
-        
-        
+
+
 
         $('#uploadCancelBtn').on('click', function () {
             $('#documentUploadModel').modal('hide');

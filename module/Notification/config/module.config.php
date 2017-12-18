@@ -63,6 +63,20 @@ return [
                     ],
                 ],
             ],
+            'news-status' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/news/status[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\NewsStatusController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
@@ -70,7 +84,8 @@ return [
             Controller\NotificationController::class => \Application\Controller\ControllerFactory::class,
             Controller\EmailController::class => \Application\Controller\ControllerFactory::class,
             Controller\NewsController::class => \Application\Controller\ControllerFactory::class,
-            Controller\NewsTypeController::class => \Application\Controller\ControllerFactory::class
+            Controller\NewsTypeController::class => \Application\Controller\ControllerFactory::class,
+            Controller\NewsStatusController::class => \Application\Controller\ControllerFactory::class
         ],
     ],
     'navigation' => [

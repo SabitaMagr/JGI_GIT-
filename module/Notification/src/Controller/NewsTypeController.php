@@ -31,7 +31,6 @@ class NewsTypeController extends HrisController {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-
         return Helper::addFlashMessagesToArray($this, [
                     'acl' => $this->acl
         ]);

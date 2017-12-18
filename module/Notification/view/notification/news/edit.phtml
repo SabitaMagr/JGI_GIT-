@@ -8,8 +8,9 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/Notification/news/edit.js'));
-$this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
+$this->headScript()->appendFile($this->basePath('js/search.js'))
+        ->appendFile($this->basePath('js/Notification/news/edit.js'))
+        ->appendFile($this->basePath('dropzone/dropzone.min.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -31,31 +32,26 @@ $newsLdesc = $form->get('newsLdesc');
 
 $remarks = $form->get('remarks');
 
-$companyId = $form->get('companyId');
-$companyId->setValueOptions($company);
-
-$branchId = $form->get('branchId');
-
-$designationId = $form->get('designationId');
-
-$departmentId = $form->get('departmentId');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
+
+//print_r($form->get('companyId')->getValue());
+//die();
 
 $form->prepare();
 ?>
 
 <script>
-    document.uploadUrl = '<?=$this->url('news', ['action' => 'fileUpload']); ?>';
-    document.pushNewsFileLink = '<?php echo $this->url('news', ['action' => 'pushNewsFile' ,'id'=>$id]); ?>';
-    document.branches =<?php echo json_encode($branch); ?>;
-    document.designation =<?php echo json_encode($designation); ?>;
-    document.department =<?php echo json_encode($department); ?>;
-
-    document.selectedBranchId = '<?php echo $branchId->getValue(); ?>';
-    document.selectedDepartmentId = '<?php echo $departmentId->getValue(); ?>';
-    document.selectedDesignationId = '<?php echo $designationId->getValue(); ?>';
+    document.companyEditVal='<?php echo ($form->get('companyId')->getValue())?$form->get('companyId')->getValue():-1;?>';
+    document.branchEditVal='<?php echo ($form->get('branchId')->getValue())?$form->get('branchId')->getValue():-1;?>';
+    document.departmentEditVal='<?php echo ($form->get('departmentId')->getValue())?$form->get('departmentId')->getValue():-1;?>';
+    document.designationEditVal='<?php echo ($form->get('designationId')->getValue())?$form->get('designationId')->getValue():-1;?>';
+    document.deleteFile = '<?= $this->url('news', ['action' => 'deleteFile']); ?>';
+    document.pullNewsFile = '<?= $this->url('news', ['action' => 'pullNewsFile', 'id' => $id]); ?>';
+    document.uploadUrl = '<?= $this->url('news', ['action' => 'fileUpload']); ?>';
+    document.pushNewsFileLink = '<?php echo $this->url('news', ['action' => 'pushNewsFile', 'id' => $id]); ?>';
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
 </script>
 
 <div class="page-bar">
@@ -148,86 +144,81 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
 
-                <div class=" row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <?php print $this->formLabel($companyId); ?>
-                            <?php print $this->formElement($companyId); ?>
-                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <?php print $this->formLabel($branchId); ?>
-                            <?php print $this->formElement($branchId); ?>
-                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-3">
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($departmentId); ?>
-                            <?php print $this->formElement($departmentId); ?>
-                            <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-3">
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($designationId); ?>
-                            <?php print $this->formElement($designationId); ?>
-                            <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>
                     <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                 </div>
-                
-                <div class="row">
-                <div class=" col-md-offset-6 col-md-6 form-group">
-                    <table class="table">
-                        <tbody>
-<!--                            <tr>
-                                <td>
-                                    <label>
-                                    </label>
-                                </td>
-                                <td>
-                                    <label>
-                                    </label>
 
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger" >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>-->
-                            <tr >
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                    <button id="addDocument" type="button" class="btn btn-link">
-                                        Add
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    
-                    
+
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label>Company</label>
+                        <select  class="form-control" name="companyId" id="companyId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Branch</label>
+                        <select  class="form-control" name="branchId" id="branchId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Department</label>
+                        <select  class="form-control" name="departmentId" id="departmentId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Designation</label>
+                        <select  class="form-control" name="designationId" id="designationId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Employee</label>
+                        <select multiple class="form-control" name="employee[]" id="employeeId">
+                        </select>
+                    </div>
                 </div>
+                
+                
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label>Position</label>
+                        <select multiple class="form-control" name="position" id="positionId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>service Type</label>
+                        <select multiple class="form-control" name="serviceType" id="serviceTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Service Event Type</label>
+                        <select multiple class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Employee Type</label>
+                        <select multiple class="form-control" name="employeeType" id="employeeTypeId">
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class=" col-md-6 form-group">
+                        <table id="fileDetailsTbl" class="table">
+                            <tr>
+                                <th>Document</th>
+                                <th>Action</th>
+                            </tr>
+                        </table>
+                    </div>
+                        <div class="col-md-3">
+                            <button id="addDocument" type="button" class="btn btn-primary">
+                                Add
+                            </button>
+                        </div>
                 </div>
 
 
@@ -246,39 +237,39 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
 </div>
-    
-    
-    
-      <!--bootstrap modal-->
-    <div id="documentUploadModel" class="modal fade" role="dialog">
-  <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Document Upload</h4>
-      </div>
-      <div class="modal-body">
-        
-          <div class="modal-body" id="modal-body">
-        <div class="row">
-        <div class="col-sm-12">
-            <div id="dropZoneContainer"  class="dropzone">
+
+
+<!--bootstrap modal-->
+<div id="documentUploadModel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Document Upload</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="modal-body" id="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="dropZoneContainer"  class="dropzone">
+                            </div>
+                            <div id="uploadErr">Please upload Image.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
         </div>
-            <div id="uploadErr">Please upload Image.</div>
+        <div class="modal-footer">
+            <button id='uploadSubmitBtn' class="btn btn-primary" type="button" >OK</button>
+            <button id='uploadCancelBtn' class="btn btn-warning" type="button" >Cancel</button>
+            <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
         </div>
-        </div>
-        </div>
-        </div>
-          
-          
-          
-      </div>
-      <div class="modal-footer">
-        <button id='uploadSubmitBtn' class="btn btn-primary" type="button" >OK</button>
-        <button id='uploadCancelBtn' class="btn btn-warning" type="button" >Cancel</button>
-        <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
-      </div>
     </div>
-  </div>
+</div>
