@@ -1,0 +1,7 @@
+ CASE  
+    WHEN (la.requested_dt<trunc(sysdate-32) AND la.status='R') THEN 'BOMRS'
+    END as reject_status,
+
+SELECT * FROM 
+
+) where reject_status is null;

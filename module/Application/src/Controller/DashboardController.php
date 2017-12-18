@@ -44,6 +44,7 @@ class DashboardController extends AbstractActionController {
             'todoList' => $this->getTodoList(),
             "newEmployees" => $dashboardRepo->fetchJoinedEmployees(),
             "leftEmployees" => $dashboardRepo->fetchLeftEmployees(),
+            "employeeNews"=>$dashboardRepo->fetchAllNews($this->employeeId)
         ];
         $view = new ViewModel(Helper::addFlashMessagesToArray($this, $data));
         $view->setTemplate("dashboard/employee");

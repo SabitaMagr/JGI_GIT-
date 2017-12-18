@@ -780,4 +780,65 @@ class DashboardRepository implements RepositoryInterface {
     /*
      * END FOR MANAGER DASHBOARD FUNCTIONS
      */
+
+    public function fetchAllNews($employeeId) {
+        $sql = "select * from HRIS_NEWS_TYPE ORDER BY NEWS_TYPE_ID";
+        $statement = $this->adapter->query($sql);
+        $newsTypeResult = $statement->execute();
+
+        $returnData = [];
+        foreach ($newsTypeResult as $data) {
+            $tempNewsData = $this->allNewsTypeWise($data['NEWS_TYPE_ID'], $employeeId);
+            $data['news'] = $tempNewsData;
+            array_push($returnData, $data);
+        }
+
+        return $returnData;
+    }
+
+    public function allNewsTypeWise($typeId, $employeeId) {
+//        $sql="select * from hris_news where news_type={$typeId}";
+        $sql = "SELECT * FROM (SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE
+FROM HRIS_NEWS N 
+WHERE N.STATUS='E' AND N.NEWS_TYPE={$typeId} AND {$employeeId} IN (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)
+UNION
+SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE
+                    FROM HRIS_NEWS N,(SELECT COMPANY_ID,BRANCH_ID,DEPARTMENT_ID, DESIGNATION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID ={$employeeId}) E
+                    WHERE  N.STATUS = 'E' AND N.NEWS_TYPE={$typeId}
+                    AND (N.COMPANY_ID =
+                      CASE
+                        WHEN N.COMPANY_ID IS NOT NULL
+                        THEN E.COMPANY_ID
+                      END
+                    OR N.COMPANY_ID  IS NULL)
+                    AND ( N.BRANCH_ID =
+                      CASE
+                        WHEN N.BRANCH_ID IS NOT NULL
+                        THEN E.BRANCH_ID
+                      END
+                    OR N.BRANCH_ID      IS NULL)
+                    AND (N.DEPARTMENT_ID =
+                      CASE
+                        WHEN N.DEPARTMENT_ID IS NOT NULL
+                        THEN E.DEPARTMENT_ID
+                      END
+                    OR N.DEPARTMENT_ID   IS NULL)
+                    AND (N.DESIGNATION_ID =
+                      CASE
+                        WHEN N.DESIGNATION_ID IS NOT NULL
+                        THEN E.DESIGNATION_ID
+                      END
+                    OR N.DESIGNATION_ID IS NULL)
+                    AND (N.DESIGNATION_ID =
+                      CASE
+                        WHEN N.DESIGNATION_ID IS NOT NULL
+                        THEN E.DESIGNATION_ID
+                      END
+                    OR N.DESIGNATION_ID IS NULL)
+                    AND N.NEWS_ID NOT IN (SELECT NEWS_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)) ORDER BY NEWS_DATE DESC";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
 }

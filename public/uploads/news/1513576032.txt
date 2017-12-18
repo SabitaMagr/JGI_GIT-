@@ -1,0 +1,9 @@
+
+select * from tbl_transaction where user_id=30;
+
+update tbl_transaction set received_amount="NULL",payment_status="PENDING",payment_date="NULL" WHERE user_id=30 
+
+
+update registration set lock_primary='N',lock_guest_spouse='N' where member_id=30;
+
+update member_dtl set lock_guest_spouse='N' where member_id=30

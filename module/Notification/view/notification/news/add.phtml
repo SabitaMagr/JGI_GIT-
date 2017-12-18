@@ -6,7 +6,8 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/Notification/news/add.js'));
+$this->headScript()->appendFile($this->basePath('js/search.js'))
+        ->appendFile($this->basePath('js/Notification/news/add.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -28,14 +29,6 @@ $newsLdesc = $form->get('newsLdesc');
 
 $remarks = $form->get('remarks');
 
-$companyId = $form->get('companyId');
-$companyId->setValueOptions($company);
-
-$branchId = $form->get('branchId');
-
-$designationId = $form->get('designationId');
-
-$departmentId = $form->get('departmentId');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -44,9 +37,7 @@ $form->prepare();
 ?>
 
 <script>
-    document.branches =<?php echo json_encode($branch); ?>;
-    document.designation =<?php echo json_encode($designation); ?>;
-    document.department =<?php echo json_encode($department); ?>;
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
 </script>
 
 <div class="page-bar">
@@ -140,43 +131,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
 
-                <div class=" row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <?php print $this->formLabel($companyId); ?>
-                            <?php print $this->formElement($companyId); ?>
-                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <?php print $this->formLabel($branchId); ?>
-                            <?php print $this->formElement($branchId); ?>
-                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-3">
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($departmentId); ?>
-                            <?php print $this->formElement($departmentId); ?>
-                            <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-3">
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($designationId); ?>
-                            <?php print $this->formElement($designationId); ?>
-                            <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
@@ -185,17 +139,66 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
 
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label>Company</label>
+                        <select  class="form-control" name="companyId" id="companyId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Branch</label>
+                        <select  class="form-control" name="branchId" id="branchId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Department</label>
+                        <select  class="form-control" name="departmentId" id="departmentId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Designation</label>
+                        <select  class="form-control" name="designationId" id="designationId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Position</label>
+                        <select multiple class="form-control" name="position" id="positionId">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-sm-2">
+                        <label>service Type</label>
+                        <select multiple class="form-control" name="serviceType" id="serviceTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Service Event Type</label>
+                        <select multiple class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Employee Type</label>
+                        <select multiple class="form-control" name="employeeType" id="employeeTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Employee</label>
+                        <select multiple class="form-control" name="employee[]" id="employeeId">
+                        </select>
+                    </div>
+                </div>
 
 
 
+                <div>
+                    <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                    ?>
+                </div>
 
-
-
-
-                <?php
-                print $this->formSubmit($submit);
-                print $this->form()->closeTag();
-                ?>
             </div>
         </div>
     </div>
