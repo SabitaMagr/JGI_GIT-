@@ -54,7 +54,7 @@ class RulesRepository implements RepositoryInterface {
                   REMARKS,
                   STATUS
                 FROM HRIS_PAY_SETUP
-                WHERE STATUS ='E'";
+                WHERE STATUS ='E' ORDER BY PRIORITY_INDEX";
 
         $statement = $this->adapter->query($query);
         $result = $statement->execute();

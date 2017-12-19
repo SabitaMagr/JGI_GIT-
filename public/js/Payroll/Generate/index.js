@@ -1,10 +1,13 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+
         var data = document.data;
         var salarySheetList = data['salarySheetList'];
         var monthList = data['monthList'];
         var generateLink = data['links']['generateLink'];
+        var getSalarySheetListLink = data['links']['getSalarySheetListLink'];
 //        
         var selectedMonth = {};
 //
@@ -12,9 +15,14 @@
         var $month = $('#monthId');
         var $table = $('#table');
         var $fromDate = $('#fromDate');
+        var $nepaliFromDate = $('#nepaliFromDate');
         var $toDate = $('#toDate');
+        var $nepaliToDate = $('#nepaliToDate');
         var $viewBtn = $('#viewBtn');
         var $generateBtn = $('#generateBtn');
+
+        $fiscalYear.select2();
+        $month.select2();
 
         $viewBtn.hide();
         $generateBtn.hide();
@@ -31,8 +39,7 @@
             }
             app.populateSelect($month, filteredMonths, "MONTH_ID", "MONTH_EDESC", "Select Month");
         });
-        $month.on('change', function () {
-            var value = $(this).val();
+        var monthChangeAction = function (value) {
             for (var i in monthList) {
                 if (monthList[i]['MONTH_ID'] == value) {
                     selectedMonth = monthList[i];
@@ -43,7 +50,9 @@
             for (var i in salarySheetList) {
                 if (salarySheetList[i]['MONTH_ID'] == value) {
                     $fromDate.val(salarySheetList[i]['START_DATE']);
+                    $nepaliFromDate.val(nepaliDatePickerExt.fromEnglishToNepali(salarySheetList[i]['START_DATE']));
                     $toDate.val(salarySheetList[i]['END_DATE']);
+                    $nepaliToDate.val(nepaliDatePickerExt.fromEnglishToNepali(salarySheetList[i]['END_DATE']));
                     $viewBtn.attr('sheet-no', salarySheetList[i]['SHEET_NO']);
                     $viewBtn.show();
                     $generateBtn.hide();
@@ -57,10 +66,14 @@
                 $generateBtn.show();
 
                 $fromDate.val(selectedMonth['FROM_DATE']);
+                $nepaliFromDate.val(nepaliDatePickerExt.fromEnglishToNepali(selectedMonth['FROM_DATE']));
                 $toDate.val(selectedMonth['TO_DATE']);
+                $nepaliToDate.val(nepaliDatePickerExt.fromEnglishToNepali(selectedMonth['TO_DATE']));
             }
-
-
+        };
+        $month.on('change', function () {
+            var value = $(this).val();
+            monthChangeAction(value);
         });
 
 
@@ -156,7 +169,12 @@
                 app.showMessage(error, 'error');
             };
             var stage3 = function () {
+                app.serverRequest(getSalarySheetListLink, {}).then(function (response) {
+                    salarySheetList = response.data;
+                    monthChangeAction($month.val());
+                }, function (error) {
 
+                });
             };
 
         };
