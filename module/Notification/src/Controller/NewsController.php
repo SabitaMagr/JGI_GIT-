@@ -104,7 +104,8 @@ class NewsController extends AbstractActionController {
             $this->redirect()->toRoute('news');
         }
         $this->initializeForm();
-
+        $selectedEmployees = $this->repository->getNewsEmployees($id);
+        
         $request = $this->getRequest();
         $newsModel = new NewsModel();
         if (!$request->isPost()) {
@@ -116,10 +117,19 @@ class NewsController extends AbstractActionController {
                 $newsModel->exchangeArrayFromForm($this->form->getData());
                 $newsModel->modifiedBy = $this->employeeId;
                 $newsModel->modifiedDt = Helper::getcurrentExpressionDate();
-                ($newsModel->companyId == -1) ? $newsModel->companyId = NULL : NUll;
-                ($newsModel->branchId == -1) ? $newsModel->branchId = NULL : NUll;
-                ($newsModel->departmentId == -1) ? $newsModel->departmentId = NULL : NULL;
-                ($newsModel->designationId == -1) ? $newsModel->designationId = NULL : NUll;
+                $newsEmployeeRepo = new NewsEmployee($this->adapter);
+                $newsEmployeeRepo->delete($id);
+                
+                if ($request->getPost()['employee']) {
+                    $employees = $request->getPost()['employee'];
+                    $newsEmpModel = new NewsEmployeeModel();
+                    $newsEmpModel->newsId = $id;
+                    foreach ($employees as $emp) {
+                        $newsEmpModel->employeeId = $emp;
+                        $newsEmployeeRepo->add($newsEmpModel);
+                    }
+                }
+
                 $this->repository->edit($newsModel, $id);
                 $this->flashmessenger()->addMessage("News Successfully Updated!!!");
                 return $this->redirect()->toRoute("news");
@@ -133,6 +143,7 @@ class NewsController extends AbstractActionController {
                     'id' => $id,
                     'newsTypeValue' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, NewsTypeModel::TABLE_NAME, NewsTypeModel::NEWS_TYPE_ID, [NewsTypeModel::NEWS_TYPE_DESC], ["STATUS" => "E"], "NEWS_TYPE_DESC", "ASC", null, true, true),
                     'searchValues' => ApplicationEntityHelper::getSearchData($this->adapter),
+                    'selectedEmployees' => ($selectedEmployees)?$selectedEmployees[EMPLOYEE_ID]:''
         ]);
     }
 
@@ -205,12 +216,12 @@ class NewsController extends AbstractActionController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
-    
-    public function deleteFileAction(){
+
+    public function deleteFileAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $id=$data['id'];
+            $id = $data['id'];
             $newsfileRepo = new NewsFileRepository($this->adapter);
             $newsFiles = $newsfileRepo->delete($id);
             return new JsonModel(['success' => true, 'data' => $newsFiles, 'message' => null]);

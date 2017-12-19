@@ -3,12 +3,15 @@
     $(document).ready(function () {
         $('select').select2();
         app.datePickerWithNepali("newsDate", "nepaliDate");
-        
+        app.datePickerWithNepali("newsExpiryDate", "nepaliDateExpiry");        
         //to change edit values
         $('#companyId').val(document.companyEditVal).trigger('change.select2');
         $('#branchId').val(document.branchEditVal).trigger('change.select2');
         $('#departmentId').val(document.departmentEditVal).trigger('change.select2');
         $('#designationId').val(document.designationEditVal).trigger('change.select2');
+        
+        var employeeDataArray=document.employeeEditVal.split(",");
+        $("#employeeId").val(employeeDataArray).trigger('change');
 
         var myDropzone;
         var $fileListTable = $('#fileDetailsTbl');

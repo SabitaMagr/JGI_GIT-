@@ -6,7 +6,7 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
-        ->appendFile($this->basePath('js/Notification/news/all-news-type-list.js'));
+        ->appendFile($this->basePath('js/Notification/news-status/all-news-type-list.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -16,9 +16,12 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.viewLink='<?=$this->url('news', ['action' => 'view'])?>';
-    document.acl =<?php echo json_encode($acl); ?>;
+    document.viewLink='<?=$this->url('news-status',['action' => 'view'])?>';
 </script>
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\news-status')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 
 <div class="margin-top-20">
     <div class="portlet light bg-inverse">

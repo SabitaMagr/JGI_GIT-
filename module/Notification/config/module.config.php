@@ -165,6 +165,28 @@ return [
                 ]
             ]
         ],
+        'news-status' => [
+                [
+                'label' => 'News Status',
+                'route' => 'news-status',
+            ],
+                [
+                'label' => 'News Status',
+                'route' => 'news-status',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'news-status',
+                        'action' => 'allNewsTypeList',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'news-status',
+                        'action' => 'view',
+                    ],
+                ]
+            ]
+        ],
     ],
     'view_manager' => [
         'template_path_stack' => [

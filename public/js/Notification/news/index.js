@@ -20,24 +20,22 @@
             rowTemplate: kendo.template($("#rowTemplate").html()),
             columns: [
                 {field: "NEWS_DATE", title: "News Date",width:80},
-                {field: "NEWS_TYPE", title: "News Type",width:120},
+                {field: "NEWS_TYPE_DESC", title: "News Type",width:120},
                 {field: "NEWS_TITLE", title: "News Title",width:120},
                 {field: "NEWS_EDESC", title: "News",width:120},
-                {field: "COMPANY_NAME", title: "Company",width:120},
                 {title: "Action",width:100}
             ],
         });
         
-        app.searchTable('newsTable',['NEWS_DATE','NEWS_TYPE','NEWS_TITLE','NEWS_EDESC','COMPANY_NAME']);
+        app.searchTable('newsTable',['NEWS_DATE','NEWS_TYPE_DESC','NEWS_TITLE','NEWS_EDESC']);
         
         app.pdfExport(
                 'newsTable',
                 {
                     'NEWS_DATE': 'NewsDate',
-                    'NEWS_TYPE': 'Type',
+                    'NEWS_TYPE_DESC': 'Type',
                     'NEWS_TITLE': 'Title',
                     'NEWS_EDESC': 'Desc',
-                    'COMPANY_NAME': 'Company'
                 });
         
         $("#export").click(function (e) {

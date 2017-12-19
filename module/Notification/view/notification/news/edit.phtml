@@ -20,6 +20,7 @@ $form->setAttribute('action', $this->url('news', ['action' => 'edit', 'id' => $i
 
 
 $newsDate = $form->get('newsDate');
+$newsExpiryDate = $form->get('newsExpiryDate');
 
 $newsType = $form->get('newsType');
 $newsType->setValueOptions($newsTypeValue);
@@ -47,6 +48,7 @@ $form->prepare();
     document.branchEditVal='<?php echo ($form->get('branchId')->getValue())?$form->get('branchId')->getValue():-1;?>';
     document.departmentEditVal='<?php echo ($form->get('departmentId')->getValue())?$form->get('departmentId')->getValue():-1;?>';
     document.designationEditVal='<?php echo ($form->get('designationId')->getValue())?$form->get('designationId')->getValue():-1;?>';
+    document.employeeEditVal='<?=$selectedEmployees?>';
     document.deleteFile = '<?= $this->url('news', ['action' => 'deleteFile']); ?>';
     document.pullNewsFile = '<?= $this->url('news', ['action' => 'pullNewsFile', 'id' => $id]); ?>';
     document.uploadUrl = '<?= $this->url('news', ['action' => 'fileUpload']); ?>';
@@ -137,12 +139,31 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($newsEdesc); ?>
                     <?php print $this->formElementErrors()->render($newsEdesc, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($newsLdesc); ?>
-                    <?php print $this->formElement($newsLdesc); ?>
-                    <?php print $this->formElementErrors()->render($newsLdesc, ['class' => 'help-block']); ?>
-                </div>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($newsExpiryDate); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                    <?php print $this->formElement($newsExpiryDate); ?>
+                                    <?php print $this->formElementErrors()->render($newsExpiryDate, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliDateExpiry">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliDateExpiry" id="nepaliDateExpiry"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>  
 
+                       </div>
+                </div>
 
 
                 <div class="form-group">

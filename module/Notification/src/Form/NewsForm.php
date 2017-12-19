@@ -39,7 +39,7 @@ class NewsForm {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"News In English"})
-     * @Annotation\Attributes({ "id":"newsEdesc", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"newsEdesc", "class":"form-control form-reason" })
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"3000"}})
      */
     public $newsEdesc;
@@ -105,5 +105,14 @@ class NewsForm {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Expiry Date"})
+     * @Annotation\Attributes({"id":"newsExpiryDate","class":"form-control"})
+     */
+    public $newsExpiryDate;
 
 }

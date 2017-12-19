@@ -7,6 +7,7 @@ use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Notification\Model\NewsModel;
+use Notification\Model\NewsTypeModel;
 use Setup\Model\Company;
 use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
@@ -33,7 +34,12 @@ class NewsRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
+        
         $data = $model->getArrayCopyForDB();
+        ($data[NewsModel::COMPANY_ID]==-1) ? $data[NewsModel::COMPANY_ID] = NULL : NUll;
+        ($data[NewsModel::BRANCH_ID] == -1) ? $data[NewsModel::BRANCH_ID] = NULL : NUll;
+        ($data[NewsModel::DEPARTMENT_ID] == -1) ? $data[NewsModel::DEPARTMENT_ID] = NULL : NULL;
+        ($data[NewsModel::DESIGNATION_ID] == -1) ? $data[NewsModel::DESIGNATION_ID] = NULL : NUll;
         unset($data[NewsModel::CREATED_BY]);
         unset($data[NewsModel::CREATED_DT]);
         unset($data[NewsModel::STATUS]);
@@ -46,6 +52,7 @@ class NewsRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
         $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=N." . NewsModel::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'LEFT');
+        $select->join(['NT' => NewsTypeModel::TABLE_NAME], "NT." . NewsTypeModel::NEWS_TYPE_ID . "=N." . NewsModel::NEWS_TYPE, array('NEWS_TYPE_ID', 'NEWS_TYPE_DESC'), 'LEFT');
         $select->where(["N." . NewsModel::STATUS => 'E']);
         $select->order(["N." . NewsModel::NEWS_DATE => Select::ORDER_DESCENDING]);
 
@@ -60,7 +67,7 @@ class NewsRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
         $select->where(["N." . NewsModel::NEWS_ID => $id]);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), ['newsDate'], NULL, 'N'), false);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), ['newsDate','newsExpiryDate'], NULL, 'N'), false);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -116,11 +123,11 @@ class NewsRepository implements RepositoryInterface {
     
     public function allNewsTypeWise($typeId, $employeeId) {
 //        $sql="select * from hris_news where news_type={$typeId}";
-        $sql = "SELECT AA.*,BB.FILE_PATH,CC.FILE_NAME FROM (SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC
+        $sql = "SELECT AA.*,BB.FILE_PATH,CC.FILE_NAME FROM (SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC,N.NEWS_EXPIRY_DT,N.STATUS
 FROM HRIS_NEWS N 
 WHERE N.STATUS='E' AND N.NEWS_TYPE={$typeId} AND {$employeeId} IN (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)
 UNION
-SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC
+SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC,N.NEWS_EXPIRY_DT,N.STATUS
                     FROM HRIS_NEWS N,(SELECT COMPANY_ID,BRANCH_ID,DEPARTMENT_ID, DESIGNATION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID ={$employeeId}) E
                     WHERE  N.STATUS = 'E' AND N.NEWS_TYPE={$typeId}
                     AND (N.COMPANY_ID =
@@ -159,10 +166,19 @@ SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC
                     GROUP BY NEWS_ID) BB on (BB.NEWS_ID=AA.NEWS_ID)
                     LEFT JOIN (SELECT NEWS_ID, LISTAGG(FILE_NAME, ',') WITHIN GROUP (ORDER BY FILE_NAME) AS FILE_NAME
                     FROM   HRIS_NEWS_FILE
-                  GROUP BY NEWS_ID) CC ON (CC.NEWS_ID=AA.NEWS_ID) ORDER BY NEWS_DATE DESC";
+                  GROUP BY NEWS_ID) CC ON (CC.NEWS_ID=AA.NEWS_ID) WHERE STATUS='E' AND NEWS_DATE<=TRUNC(SYSDATE) AND NEWS_EXPIRY_DT>=TRUNC(SYSDATE) ORDER BY NEWS_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
+    }
+    
+    public function getNewsEmployees($newsId){
+        $sql="SELECT NEWS_ID, LISTAGG(EMPLOYEE_ID, ',') WITHIN GROUP (ORDER BY EMPLOYEE_ID) AS EMPLOYEE_ID
+                    FROM HRIS_NEWS_EMPLOYEE WHERE NEWS_ID=$newsId 
+                    GROUP BY NEWS_ID";
+        $statement=$this->adapter->query($sql);
+        $result=$statement->execute();
+        return $result->current();
     }
 
 }

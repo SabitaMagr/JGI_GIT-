@@ -1,22 +1,11 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
+        
+        console.log(document.viewLink);
         var $table = $('#table');
-//        var actiontemplateConfig = {
-//            update: {
-//                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
-//                'params': ["NEWS_TYPE_ID"],
-//                'url': document.editLink
-//            },
-//            delete: {
-//                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
-//                'params': ["NEWS_TYPE_ID"],
-//                'url': document.deleteLink
-//            }
-//        };
 
-//var $attachmentTemplate='<span>#:FILE_PATH #</span>';
-var $attachmentTemplate='<span>#:FILE_NAME#</span>';
+//var $attachmentTemplate='<span>#:FILE_NAME#</span>';
         var columns = [
             {field: "NEWS_TITLE", title: "Title", width: 150},
             {field: "NEWS_EDESC", title: "Desc", width: 150},
@@ -29,7 +18,7 @@ var $attachmentTemplate='<span>#:FILE_NAME#</span>';
             'NEWS_TITLE': 'NEWS_TITLE',
             'NEWS_EDESC': 'Desc'
         }
-        app.initializeKendoGrid($table, columns, "News Type  List.xlsx");
+        app.initializeKendoGrid($table, columns, "News List.xlsx");
 
         app.searchTable($table, ['NEWS_TITLE','NEWS_EDESC']);
 
@@ -43,9 +32,6 @@ var $attachmentTemplate='<span>#:FILE_NAME#</span>';
 
         app.pullDataById("", {}).then(function (response) {
             console.log(response.data);
-//            $.each(string.split(','), function(){
-//  alert(this)
-//})
             app.renderKendoGrid($table, response.data);
         }, function (error) {
 

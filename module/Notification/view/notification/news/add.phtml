@@ -17,6 +17,7 @@ $form->setAttribute('action', $this->url('news', ['action' => 'add']));
 
 
 $newsDate = $form->get('newsDate');
+$newsExpiryDate = $form->get('newsExpiryDate');
 
 $newsType = $form->get('newsType');
 $newsType->setValueOptions($newsTypeValue);
@@ -124,10 +125,30 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($newsEdesc); ?>
                     <?php print $this->formElementErrors()->render($newsEdesc, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($newsLdesc); ?>
-                    <?php print $this->formElement($newsLdesc); ?>
-                    <?php print $this->formElementErrors()->render($newsLdesc, ['class' => 'help-block']); ?>
+                
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($newsExpiryDate); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                    <?php print $this->formElement($newsExpiryDate); ?>
+                                    <?php print $this->formElementErrors()->render($newsExpiryDate, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliDateExpiry">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliDateExpiry" id="nepaliDateExpiry"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>  
+
+                       </div>
                 </div>
 
 

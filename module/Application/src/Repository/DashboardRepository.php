@@ -798,11 +798,11 @@ class DashboardRepository implements RepositoryInterface {
 
     public function allNewsTypeWise($typeId, $employeeId) {
 //        $sql="select * from hris_news where news_type={$typeId}";
-        $sql = "SELECT * FROM (SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE
+        $sql = "SELECT * FROM (SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EXPIRY_DT,N.STATUS
 FROM HRIS_NEWS N 
 WHERE N.STATUS='E' AND N.NEWS_TYPE={$typeId} AND {$employeeId} IN (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)
 UNION
-SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE
+SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EXPIRY_DT,N.STATUS
                     FROM HRIS_NEWS N,(SELECT COMPANY_ID,BRANCH_ID,DEPARTMENT_ID, DESIGNATION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID ={$employeeId}) E
                     WHERE  N.STATUS = 'E' AND N.NEWS_TYPE={$typeId}
                     AND (N.COMPANY_ID =
@@ -835,8 +835,8 @@ SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE
                         THEN E.DESIGNATION_ID
                       END
                     OR N.DESIGNATION_ID IS NULL)
-                    AND N.NEWS_ID NOT IN (SELECT NEWS_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)) ORDER BY NEWS_DATE DESC";
-        $statement = $this->adapter->query($sql);
+                    AND N.NEWS_ID NOT IN (SELECT NEWS_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)) WHERE STATUS='E' AND NEWS_DATE<=TRUNC(SYSDATE) AND NEWS_EXPIRY_DT>=TRUNC(SYSDATE) ORDER BY NEWS_DATE DESC";
+                    $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }

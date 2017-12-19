@@ -25,6 +25,7 @@ class NewsModel extends Model {
     const APPROVED_BY = 'APPROVED_BY';
     const APPROVED_DT = 'APPROVED_DT';
     const STATUS = 'STATUS';
+    const NEWS_EXPIRY_DT = 'NEWS_EXPIRY_DT';
 
     public $newsId;
     public $newsDate;
@@ -44,6 +45,7 @@ class NewsModel extends Model {
     public $approvedBy;
     public $approvedDt;
     public $status;
+    public $newsExpiryDate;
 
     public $mappings = [
     'newsId' => self::NEWS_ID,
@@ -64,5 +66,6 @@ class NewsModel extends Model {
     'approvedBy' => self::APPROVED_BY,
     'approvedDt' => self::APPROVED_DT,
     'status' => self::STATUS,
+    'newsExpiryDate'=>self::NEWS_EXPIRY_DT
     ];
 }

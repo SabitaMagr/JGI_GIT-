@@ -25,7 +25,7 @@ class NewsEmployee implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+        $this->tableGateway->delete(['NEWS_ID' => $id]);
     }
 
     public function edit(Model $model, $id) {
@@ -39,5 +39,5 @@ class NewsEmployee implements RepositoryInterface {
     public function fetchById($id) {
         
     }
-
+    
 }
