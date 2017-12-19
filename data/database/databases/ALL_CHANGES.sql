@@ -1122,7 +1122,7 @@ CREATED_BY,
 MODIFIED_BY,
 IS_VISIBLE) 
 values 
-('nto1',339,'News Type',9,'News Type','news-type','E',TRUNC(SYSDATE),null,'fa fa-pencil','index',15,1000382,null,'Y');
+('nto1',select max(menu_id)+1 from hris_menus,'News Type',9,'News Type','news-type','E',TRUNC(SYSDATE),null,'fa fa-pencil','index',15,1000382,null,'Y');
 
 
 -- drop TWO constaInt in hris news for news_type ONLY
