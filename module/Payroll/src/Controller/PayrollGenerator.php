@@ -206,5 +206,34 @@ class PayrollGenerator {
         }
         return $payValue;
     }
+    
+//    $calculateTax = function($annualAmount, $maritalStatus) {
+//            $tax = 0;
+//            switch ($maritalStatus) {
+//                case 1:
+//                    if ($annualAmount <= 400000) {
+//                        $tax = $annualAmount * 0.01;
+//                    } else if ($annualAmount <= 500000) {
+//                        $tax = 400000 * 0.01 + ($annualAmount - 400000) * 0.15;
+//                    } else if ($annualAmount <= 2500000) {
+//                        $tax = 400000 * 0.01 + 100000 * 0.15 + ($annualAmount - 500000) * 0.25;
+//                    } else if ($annualAmount > 2500000) {
+//                        $tax = 400000 * 0.01 + 100000 * 0.15 + 2000000 * 0.25 + ($annualAmount - 2500000) * 0.40;
+//                    }
+//                    break;
+//                case 0:
+//                    if ($annualAmount <= 350000) {
+//                        $tax = $annualAmount * 0.01;
+//                    } else if ($annualAmount <= 450000) {
+//                        $tax = 350000 * 0.01 + ($annualAmount - 350000) * 0.15;
+//                    } else if ($annualAmount <= 2500000) {
+//                        $tax = 350000 * 0.01 + 100000 * 0.15 + ($annualAmount - 450000) * 0.25;
+//                    } else if ($annualAmount > 2500000) {
+//                        $tax = 350000 * 0.01 + 100000 * 0.15 + 2050000 * 0.25 + ($annualAmount - 2500000) * 0.40;
+//                    }
+//                    break;
+//            }
+//            return $tax;
+//        };
 
 }

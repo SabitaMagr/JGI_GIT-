@@ -538,46 +538,8 @@ DROP CONSTRAINT EMP_EMAIL_OFF_UN;
 --
 ALTER TABLE HRIS_EMPLOYEES
 DROP CONSTRAINT EMP_EMAIL_PER_UN;
->>>>>>> master
 
 
-INSERT
-INTO HRIS_MENUS
-  (
-    MENU_CODE,
-    MENU_ID,
-    MENU_NAME,
-    PARENT_MENU,
-    MENU_DESCRIPTION,
-    ROUTE,
-    STATUS,
-    CREATED_DT,
-    MODIFIED_DT,
-    ICON_CLASS,
-    ACTION,
-    MENU_INDEX,
-    CREATED_BY,
-    MODIFIED_BY,
-    IS_VISIBLE
-  )
-  VALUES
-  (
-  NULL,
-    (SELECT MAX(MENU_ID+1) FROM HRIS_MENUS),
-    'EMPLOYEE',
-    5,
-    NULL,
-    'employeeManager',
-    'E',
-      TRUNC(SYSDATE),
-    NULL,
-    'fa fa-pencil',
-    'index',
-    20,
-    NULL,
-    NULL,
-    'Y'
-    );
 
 INSERT
 INTO HRIS_MENUS

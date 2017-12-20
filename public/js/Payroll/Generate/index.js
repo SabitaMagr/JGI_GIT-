@@ -77,6 +77,7 @@
         });
 
 
+        var exportMap = {"EMPLOYEE_NAME": "Employee"};
         var employeeNameColumn = {field: "EMPLOYEE_NAME", title: "Employee", width: 150};
         if (data.ruleList.length > 0) {
             employeeNameColumn.locked = true;
@@ -102,6 +103,7 @@
                 return sign;
             };
             columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")", width: 150});
+            exportMap["P_" + value['PAY_ID']] = value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")";
         });
         app.initializeKendoGrid($table, columns);
 
@@ -193,6 +195,15 @@
             };
 
         };
+
+
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, exportMap, 'Salary Sheet');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, exportMap, 'Salary Sheet');
+        });
 
     });
 })(window.jQuery, window.app);
