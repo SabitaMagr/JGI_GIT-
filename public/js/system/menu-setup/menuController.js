@@ -121,7 +121,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
             menuId: menuId
         }).then(function (success) {
             $scope.$apply(function () {
-                var newData = success.menuData;
+                var newData = success.data;
                 $('#editForm').css('display', 'none');
                 $('#rolePanel').css('display', 'none');
                 $scope.menuDtl.menuName = "";
@@ -130,7 +130,7 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                 $("#tree_3").jstree(true).settings.core.data = newData;
                 $("#tree_3").jstree(true).refresh();
 
-                window.toastr.success(success.data, "Notifications");
+                window.toastr.success(success.message, "Notifications");
             });
         }, function (failure) {
             console.log(failure);
