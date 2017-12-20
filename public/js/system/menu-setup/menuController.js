@@ -175,17 +175,10 @@ angularApp.controller('menuUpdateController', function ($scope, $uibModal, $log,
                                 $("#tree_3").jstree(true).settings.core.data = newData;
                                 $("#tree_3").jstree(true).refresh();
 
-                                // $uibModalInstance.dismiss('cancel');
                                 if (success.data != "") {
                                     window.toastr.success(success.data, "Notifications");
                                     $uibModalInstance.close('cancel');
                                 }
-//                                if (success.menuIndexErr != "") {
-//                                    $scope.menuIndexErr = success.menuIndexErr;
-//                                } else {
-//                                $scope.menuIndexErr = null;
-//                                }
-
                             });
                         }, function (failure) {
                             App.unblockUI("#hris-page-content");
