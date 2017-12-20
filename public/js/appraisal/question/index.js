@@ -120,6 +120,7 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AppraisalQuestionList.xlsx"});
         }
+        window.app.UIConfirmations();
     });
 })(window.jQuery);
 

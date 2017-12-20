@@ -95,5 +95,6 @@
             });
             kendo.saveAs({dataURI: workbook.toDataURL(), fileName: "AppraisalDefaultRatingList.xlsx"});
         }
+        window.app.UIConfirmations();
     });
 })(window.jQuery);

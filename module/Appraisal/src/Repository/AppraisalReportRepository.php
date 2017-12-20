@@ -82,6 +82,7 @@ FROM
     APS.APPRAISER_OVERALL_RATING                 AS APPRAISER_OVERALL_RATING,
     APS.REVIEWER_AGREE                           AS REVIEWER_AGREE,
     APS.APPRAISEE_AGREE                          AS APPRAISEE_AGREE,
+    APS.SUPER_REVIEWER_AGREE                     AS SUPER_REVIEWER_AGREE,
     APS.APPRAISED_BY                             AS APPRAISED_BY,
     APS.REVIEWED_BY                              AS REVIEWED_BY,
     APS.DEFAULT_RATING                           AS DEFAULT_RATING,
@@ -147,10 +148,10 @@ WHERE SQ.STAGE_ID=AA.CURRENT_STAGE_ID AND AQ.STATUS='E' AND SQ.STATUS='E' " . $u
       ) OR AKPI.SNO IS NULL)
   ";
         if ($reportType != null && $reportType == "appraisalEvaluation") {
-            $sql .= " AND ( AA.APPRAISER_ID  =" . $userId . " OR AA.ALT_APPRAISER_ID =" . $userId . " ) ";
+            $sql .= " AND ( AA.APPRAISER_ID  =" . $userId . " OR AA.ALT_APPRAISER_ID =" . $userId . " )";
         }
         if ($reportType != null && $reportType == "appraisalReview") {
-            $sql .= " AND ( AA.REVIEWER_ID  =" . $userId . " OR AA.ALT_REVIEWER_ID =" . $userId . " ) ";
+            $sql .= " AND ( AA.REVIEWER_ID  =" . $userId . " OR AA.ALT_REVIEWER_ID =" . $userId . " )";
         }
         if ($reportType != null && $reportType == "appraisalFinalReview") {
             $sql .= " AND AA.SUPER_REVIEWER_ID  =" . $userId;
@@ -208,7 +209,7 @@ AND KPI_ANS_NUM>0)
 OR ANSWER_NUM  >0 " . $userQuestionNum . ")
 ";
         $statement = $this->adapter->query($sql);
-//        print_r($statement->getSql()); die();
+//      print "<pre>";  print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result;
     }

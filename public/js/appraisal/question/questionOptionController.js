@@ -17,14 +17,12 @@ angular.module('hris', [])
                 answerType: '',
                 headingId: '',
                 orderNo: '',
-                appraiseeFlag: 'N',
-                appraiserFlag: 'N',
-                reviewerFlag: 'N',
-                hrFlag:'N',
-                appraiseeRating: 'N',
-                appraiserRating: 'N',
-                reviewerRating: 'N',
-                hrRating:'N',
+                appraiseeFlag: 'Y',
+                appraiserFlag: 'Y',
+                reviewerFlag: 'Y',
+                appraiseeRating: 'Y',
+                appraiserRating: 'Y',
+                reviewerRating: 'Y',
                 minValue: '',
                 maxValue: '',
                 remarks: ''
@@ -51,11 +49,9 @@ angular.module('hris', [])
                            $scope.question.appraiseeFlag = questionDetail.APPRAISEE_FLAG;
                            $scope.question.appraiserFlag = questionDetail.APPRAISER_FLAG;
                            $scope.question.reviewerFlag = questionDetail.REVIEWER_FLAG;
-                           $scope.question.hrFlag = questionDetail.HR_FLAG;
                            $scope.question.appraiseeRating = questionDetail.APPRAISEE_RATING;
                            $scope.question.reviewerRating = questionDetail.REVIEWER_RATING;
                            $scope.question.appraiserRating = questionDetail.APPRAISER_RATING;
-                           $scope.question.hrRating = questionDetail.HR_RATING;
                            $scope.question.minValue = parseInt(questionDetail.MIN_VALUE);
                            $scope.question.maxValue = parseInt(questionDetail.MAX_VALUE);
                            $scope.question.remarks = questionDetail.REMARKS;

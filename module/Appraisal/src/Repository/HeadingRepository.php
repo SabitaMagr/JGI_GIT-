@@ -64,7 +64,7 @@ class HeadingRepository implements RepositoryInterface{
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Heading::class,
-                null,null,null,null,null,"AH"),false);
+                [Heading::HEADING_EDESC,Heading::HEADING_NDESC],null,null,null,null,"AH"),false);
         $select->from(['AH' => "HRIS_APPRAISAL_HEADING"])
                 ->join(['AT' => 'HRIS_APPRAISAL_TYPE'], 'AT.APPRAISAL_TYPE_ID=AH.APPRAISAL_TYPE_ID', ["APPRAISAL_TYPE_EDESC"=>new Expression("INITCAP(AT.APPRAISAL_TYPE_EDESC)")], "left");
         

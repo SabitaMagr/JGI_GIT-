@@ -17,7 +17,6 @@ $this->headScript()
 
 <script>
     document.appraisals =<?= json_encode($list) ?>;
-    document.viewLink ='<?= $this->url("performanceAppraisal", ["action" => "view"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\performanceAppraisal')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -68,7 +67,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 	</div>
     
     
-<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
+    <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
         <td>    
         #: (APPRAISAL_EDESC == null) ? '-' : APPRAISAL_EDESC #
@@ -88,16 +87,16 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <td>
         # if(ALLOW_ADD){ #
         <a class="btn-edit"
-        /#:APPRAISAL_ID#" style="height:17px;">
+        href="<?= $this->url("performanceAppraisal", ["action" => "view"]); ?>/#:APPRAISAL_ID#" style="height:17px;">
         <i class="fa fa-search-plus"></i>
         </a>
         # }else if(ALLOW_EDIT){ #
         <a class="btn-edit"
-       /#:APPRAISAL_ID#" title="view" style="height:17px;">
+        href="<?= $this->url("performanceAppraisal", ["action" => "view"]); ?>/#:APPRAISAL_ID#" title="view" style="height:17px;">
         <i class="fa fa-search-plus"></i>
         </a>
         #} #
         </td>
         </tr>
-    </script>-->
+    </script>
 </div>
