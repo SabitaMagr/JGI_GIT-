@@ -1,4 +1,5 @@
 <?php
+
 namespace Appraisal\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -11,48 +12,49 @@ use Application\Helper\Helper;
 use Appraisal\Model\Stage;
 use Setup\Repository\EmployeeRepository;
 
-class StageController extends AbstractActionController{
+class StageController extends AbstractActionController {
+
     private $repository;
     private $form;
     private $adapter;
     private $employeeId;
     private $userId;
-    
-    public function __construct(AdapterInterface $adapter){
+
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->repository = new StageRepository($adapter);
         $authService = new AuthenticationService();
         $this->employeeId = $authService->getStorage()->read()['employee_id'];
         $this->userId = $authService->getStorage()->read()['user_id'];
     }
-    
-    public function initializeForm(){
+
+    public function initializeForm() {
         $form = new StageForm();
         $builder = new AnnotationBuilder();
         $this->form = $builder->createForm($form);
     }
-    
+
     public function indexAction() {
         $result = $this->repository->fetchAll();
         $list = [];
-        foreach($result as $row){
+        foreach ($result as $row) {
             array_push($list, $row);
         }
         //print_r($list); die();
         return Helper::addFlashMessagesToArray($this, [
-            "stages"=>$list
+                    "stages" => $list
         ]);
     }
-    
-    public function addAction(){
+
+    public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
-        
-        if($request->isPost()){
+
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
-            if($this->form->isValid()){
+            if ($this->form->isValid()) {
                 $stage = new Stage();
                 $stage->exchangeArrayFromForm($this->form->getData());
                 $stage->createdDate = Helper::getcurrentExpressionDate();
@@ -68,25 +70,25 @@ class StageController extends AbstractActionController{
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form'=>$this->form
+                    'form' => $this->form
         ]);
     }
-    
-    public function editAction(){
+
+    public function editAction() {
         $id = $this->params()->fromRoute('id');
-        if($id==0){
+        if ($id == 0) {
             $this->redirect()->toRoute('stage');
         }
         $this->initializeForm();
-        
+
         $request = $this->getRequest();
-        $stage= new Stage();
-        if(!$request->isPost()){
+        $stage = new Stage();
+        if (!$request->isPost()) {
             $stage->exchangeArrayFromDB($this->repository->fetchById($id));
             $this->form->bind($stage);
-        }else{
+        } else {
             $this->form->setData($request->getPost());
-            if($this->form->isValid()){
+            if ($this->form->isValid()) {
                 $stage->exchangeArrayFromForm($this->form->getData());
                 $stage->modifiedDate = Helper::getcurrentExpressionDate();
                 $stage->modifiedBy = $this->employeeId;
@@ -96,17 +98,19 @@ class StageController extends AbstractActionController{
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form'=>$this->form,
-            'id'=>$id,
+                    'form' => $this->form,
+                    'id' => $id,
         ]);
     }
-    public function deleteAction(){
+
+    public function deleteAction() {
         $id = $this->params()->fromRoute('id');
-        if($id==0){
+        if ($id == 0) {
             $this->redirect()->toRoute('stage');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Appraisal Stage Successfully Deleted!!!");
         return $this->redirect()->toRoute("stage");
     }
+
 }

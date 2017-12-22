@@ -32,6 +32,9 @@ class LeaveMasterRepository implements RepositoryInterface {
         unset($array[LeaveMaster::LEAVE_ID]);
         unset($array[LeaveMaster::CREATED_DT]);
         unset($array[LeaveMaster::STATUS]);
+        if (!array_key_exists(LeaveMaster::DEFAULT_DAYS, $array)) {
+            $array[LeaveMaster::DEFAULT_DAYS] = 0;
+        }
         $this->tableGateway->update($array, [LeaveMaster::LEAVE_ID => $id]);
     }
 
@@ -64,7 +67,6 @@ class LeaveMasterRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-//    	$this->tableGateway->delete(['SHIFT_ID'=>$id]);
         $this->tableGateway->update([LeaveMaster::STATUS => 'D'], [LeaveMaster::LEAVE_ID => $id]);
     }
 

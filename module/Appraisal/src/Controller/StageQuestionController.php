@@ -27,7 +27,7 @@ class StageQuestionController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postData = $request->getPost();
-            switch($postData->action){
+            switch ($postData->action) {
                 case "getAssignedStagList":
                     $responseData = $this->getAssignedStagList($postData->data);
                     break;
@@ -53,46 +53,46 @@ class StageQuestionController extends AbstractActionController {
             ]);
         }
     }
-    public function getAssignedStagList($data){
+
+    public function getAssignedStagList($data) {
         $questionId = $data['questionId'];
         $stageRepo = new StageRepository($this->adapter);
         $stageResult = $stageRepo->fetchAll();
         $stageList = [];
-        
+
         $questionRepo = new QuestionRepository($this->adapter);
         $stageQuestionRepo = new StageQuestionRepository($this->adapter);
         $assignedStageList = [];
-        if(strpos($questionId, "H")!==false){
-            $headingId = trim($questionId,"H");
-            $questionList = $questionRepo->fetchByHeadingId((int)$headingId);
-            foreach($questionList as $questionRow){
-                $result = $stageQuestionRepo->fetchByQuestionId((int)$questionRow['QUESTION_ID']);
-                if($result){
-                    foreach($result as $row){
+        if (strpos($questionId, "H") !== false) {
+            $headingId = trim($questionId, "H");
+            $questionList = $questionRepo->fetchByHeadingId((int) $headingId);
+            foreach ($questionList as $questionRow) {
+                $result = $stageQuestionRepo->fetchByQuestionId((int) $questionRow['QUESTION_ID']);
+                if ($result) {
+                    foreach ($result as $row) {
                         array_push($assignedStageList, [
-                            'STAGE_ID'=>$row['STAGE_ID']
+                            'STAGE_ID' => $row['STAGE_ID']
                         ]);
                     }
                 }
             }
-            
-        }else{
-            $result = $stageQuestionRepo->fetchByQuestionId((int)$questionId);
-                if($result){
-                    foreach($result as $row){
-                        array_push($assignedStageList, [
-                            'STAGE_ID'=>$row['STAGE_ID']
-                        ]);
-                    }
+        } else {
+            $result = $stageQuestionRepo->fetchByQuestionId((int) $questionId);
+            if ($result) {
+                foreach ($result as $row) {
+                    array_push($assignedStageList, [
+                        'STAGE_ID' => $row['STAGE_ID']
+                    ]);
                 }
+            }
         }
-        $newArrayList =  array_unique($assignedStageList,SORT_REGULAR);
+        $newArrayList = array_unique($assignedStageList, SORT_REGULAR);
         foreach ($stageResult as $stageRow) {
             array_push($stageList, $stageRow);
         }
-        return ["success"=>true,"data"=>[
-            'stageList'=>$stageList,
-            'assignedStageList'=>$newArrayList
+        return ["success" => true, "data" => [
+                'stageList' => $stageList,
+                'assignedStageList' => $newArrayList
         ]];
     }
 
@@ -139,40 +139,42 @@ class StageQuestionController extends AbstractActionController {
             return ["success" => false];
         }
     }
-    public function stageAssign($data){
+
+    public function stageAssign($data) {
         $stageQuestionModel = new StageQuestion();
         $stageQuestionRepo = new StageQuestionRepository($this->adapter);
         $questionRepo = new QuestionRepository($this->adapter);
-        $stageId = (int)$data['stageId'];
+        $stageId = (int) $data['stageId'];
         $questionId = $data['questionId'];
         $checked = $data['checked'];
-        
-        if(strpos($questionId, "H")!==false){
-            $headingId = trim($questionId,"H");
-            $questionList = $questionRepo->fetchByHeadingId((int)$headingId);
-        }else{
-            $questionList = array(["QUESTION_ID"=>$questionId]);
+
+        if (strpos($questionId, "H") !== false) {
+            $headingId = trim($questionId, "H");
+            $questionList = $questionRepo->fetchByHeadingId((int) $headingId);
+        } else {
+            $questionList = array(["QUESTION_ID" => $questionId]);
         }
-        if($checked=="true"){
-            foreach($questionList as $questionRow){
-                $result = $stageQuestionRepo->fetchByQuestionStageId((int)$questionRow['QUESTION_ID'],$stageId);
-                if($result){
-                    $stageQuestionRepo->updateDetail((int)$questionRow['QUESTION_ID'], $stageId);
-                }else{
+        if ($checked == "true") {
+            foreach ($questionList as $questionRow) {
+                $result = $stageQuestionRepo->fetchByQuestionStageId((int) $questionRow['QUESTION_ID'], $stageId);
+                if ($result) {
+                    $stageQuestionRepo->updateDetail((int) $questionRow['QUESTION_ID'], $stageId);
+                } else {
                     $stageQuestionModel->stageId = $stageId;
-                    $stageQuestionModel->questionId = (int)$questionRow['QUESTION_ID'];
+                    $stageQuestionModel->questionId = (int) $questionRow['QUESTION_ID'];
                     $stageQuestionModel->status = 'E';
                     $stageQuestionModel->createdDate = Helper::getcurrentExpressionDate();
                     $stageQuestionRepo->add($stageQuestionModel);
                 }
             }
             $msg = "Stage successfully assigned";
-        }else if($checked=="false"){
-            foreach($questionList as $questionRow){
-                $stageQuestionRepo->deleteAll((int)$questionRow['QUESTION_ID'],$stageId);
+        } else if ($checked == "false") {
+            foreach ($questionList as $questionRow) {
+                $stageQuestionRepo->deleteAll((int) $questionRow['QUESTION_ID'], $stageId);
             }
             $msg = "Stage assigned list successfully removed";
         }
-        return $responseData = ["success"=>true,"data"=>["msg"=>$msg]];
+        return $responseData = ["success" => true, "data" => ["msg" => $msg]];
     }
+
 }

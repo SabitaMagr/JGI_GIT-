@@ -64,6 +64,31 @@ class AppraisalFinalReview extends AbstractActionController {
         ]);
     }
 
+    public function monthlyAction() {
+        $appraisalFormElement = new Select();
+        $appraisalFormElement->setName("Appraisal");
+        $appraisals = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC", NULL, FALSE, TRUE);
+        $appraisals1 = [-1 => "All Type"] + $appraisals;
+        $appraisalFormElement->setValueOptions($appraisals1);
+        $appraisalFormElement->setAttributes(["id" => "appraisalId", "class" => "form-control"]);
+        $appraisalFormElement->setLabel("Appraisal");
+
+        $appraisalStageFormElement = new Select();
+        $appraisalStageFormElement->setName("Appraisal");
+        $appraisalStages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::STAGE_EDESC, "ASC", NULL, FALSE, TRUE);
+        $appraisalStages1 = [-1 => "All Stage"] + $appraisalStages;
+        $appraisalStageFormElement->setValueOptions($appraisalStages1);
+        $appraisalStageFormElement->setAttributes(["id" => "appraisalStageId", "class" => "form-control"]);
+        $appraisalStageFormElement->setLabel("Appraisal Stage");
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'appraisals' => $appraisalFormElement,
+                    'appraisalStages' => $appraisalStageFormElement,
+                    'userId' => $this->employeeId,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
+    }
+
     public function viewAction() {
         $request = $this->getRequest();
         $appraisalId = $this->params()->fromRoute('appraisalId');

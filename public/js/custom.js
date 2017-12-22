@@ -1229,6 +1229,19 @@ window.app = (function ($, toastr, App) {
             if (typeof config === "undefined")
                 throw {message: "no config provided"};
 
+            var viewLink = "";
+            if (typeof config.view !== 'undefined') {
+                var iParams = config.update['params'];
+                var url = config.update['url'];
+                for (var i in iParams) {
+                    url += `/#: ${iParams[i]} #`;
+                }
+                var viewLink = `
+                <a class="btn-edit" title="View" href="${url}" style="height:17px;">
+                    <i class="fa fa-search-plus"></i>
+                </a>`;
+            }
+
             var editLink = "";
             if (config.update['ALLOW_UPDATE'] === "Y") {
                 var iParams = config.update['params'];
@@ -1254,7 +1267,7 @@ window.app = (function ($, toastr, App) {
                 </a>`;
             }
 
-            var template = editLink + deleteLink;
+            var template = viewLink + editLink + deleteLink;
             return template;
         } catch (e) {
             console.log("error", e.message);
