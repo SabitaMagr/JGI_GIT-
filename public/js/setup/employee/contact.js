@@ -15,14 +15,17 @@
             {field: "EMPLOYEE_CODE", title: "Code", template: '<td>#: (EMPLOYEE_CODE == null) ? ' - ' : EMPLOYEE_CODE #</td>'},
             {field: "FULL_NAME", title: "Full Name"},
             {field: "MOBILE_NO", title: "Mobile No"},
-            {field: "BIRTH_DATE", title: "Birth Date"},
-            {field: "COMPANY_NAME", title: "Company"},
+           // {field: "BIRTH_DATE", title: "Birth Date"},
+            //{field: "COMPANY_NAME", title: "Company"},
             {field: "BRANCH_NAME", title: "Branch"},
             {field: "DEPARTMENT_NAME", title: "Department"},
             {field: "DESIGNATION_TITLE", title: "Designation"},
-            {field: "EMPLOYEE_ID", title: "Action", template: action}
+             {field:"TELEPHONE_NO",title:"Telephone"},
+            {field:"EXTENSION_NO",title:"Extention No"},
+             {field:"EMAIL_OFFICIAL",title:"Email Official"},
+           // {field: "EMPLOYEE_ID", title: "Action", template: action}
         ]);
-        app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], false);
+        app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO','BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE','TELEPHONE_NO','EMAIL_OFFICIAL'], false);
 
         var map = {
             'EMPLOYEE_CODE': 'Employee Code',
