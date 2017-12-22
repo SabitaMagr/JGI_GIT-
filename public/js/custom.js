@@ -796,7 +796,7 @@ window.app = (function ($, toastr, App) {
         return Math.floor(days);
     }
 
-    var searchTable = function (kendoId, searchFields, Hidden) {
+    var searchTable = function (kendoId, searchFields, isHidden) {
         var $kendoId = null;
         if (kendoId instanceof jQuery) {
             $kendoId = kendoId;
@@ -812,10 +812,8 @@ window.app = (function ($, toastr, App) {
 
         $searchHtml.insertBefore($kendoId);
 
-        if (typeof Hidden !== "undefined") {
-            if(Hidden==true){
+        if (typeof isHidden !== "undefined" && isHidden) {
             $("#searchFieldDiv").hide();
-            }
         }
         $("#kendoSearchField").keyup(function () {
             var val = $(this).val();
