@@ -813,7 +813,9 @@ window.app = (function ($, toastr, App) {
         $searchHtml.insertBefore($kendoId);
 
         if (typeof Hidden !== "undefined") {
+            if(Hidden==true){
             $("#searchFieldDiv").hide();
+            }
         }
         $("#kendoSearchField").keyup(function () {
             var val = $(this).val();

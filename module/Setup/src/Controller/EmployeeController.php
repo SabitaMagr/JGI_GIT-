@@ -71,6 +71,13 @@ class EmployeeController extends HrisController {
         ]);
     }
 
+     public function contactAction() {
+        return $this->stickFlashMessagesTo([
+                    'searchValues' => ApplicationHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+        ]);
+    }
     public function initializeMultipleForm() {
         $builder = new AnnotationBuilder();
         $formTabOne = new HrEmployeesFormTabOne();

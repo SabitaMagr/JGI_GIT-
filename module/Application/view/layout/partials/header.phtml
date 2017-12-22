@@ -102,6 +102,10 @@
                                 <a class=""  href="#" id="passwordChangeMenu">
                                     <i class="icon-user"></i> Change Password </a>
                             </li>
+                            <li>
+                                <a href="<?php echo $this->url('employee', ['action' => 'contact']); ?>">
+                                    <i class="icon-key"></i>Address Book </a>
+                            </li>
                             <?php if ($allowRegisterAttendance) { ?>
                                 <li>
                                     <a href="<?php echo $this->url('registerAttendance', ['action' => 'checkout']); ?>">
