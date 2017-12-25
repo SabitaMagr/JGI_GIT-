@@ -64,20 +64,19 @@ class AppraisalReportRepository implements RepositoryInterface {
                 INITCAP(TO_CHAR(A.START_DATE,'DD-MON-YYYY')) AS START_DATE,
                 INITCAP(TO_CHAR(A.END_DATE,'DD-MON-YYYY'))   AS END_DATE,
                 AA.APPRAISER_ID                              AS APPRAISER_ID,
-                APP.FULL_NAME                                AS APPRAISER_NAME,
+                    APR.FULL_NAME                                AS APPRAISER_NAME,
                 AA.ALT_REVIEWER_ID                           AS ALT_REVIEWER_ID,
-                AREV.FULL_NAME                               AS ALT_REVIEWER_NAME,
+                    AREV.FULL_NAME                               AS ALT_REVIEWER_NAME,
                 AA.REVIEWER_ID                               AS REVIEWER_ID,
-                REV.FULL_NAME                                AS REVIEWER_NAME,
+                    REV.FULL_NAME                                AS REVIEWER_NAME,
                 AA.ALT_APPRAISER_ID                          AS ALT_APPRAISER_ID,
-                AAPP.FULL_NAME                               AS ALT_APPRAISER_NAME,
+                    AREV.FULL_NAME                               AS ALT_APPRAISER_NAME,
                 AA.CURRENT_STAGE_ID                          AS CURRENT_STAGE_ID,
                 APS.ANNUAL_RATING_KPI                        AS ANNUAL_RATING_KPI,
                 APS.ANNUAL_RATING_COMPETENCY                 AS ANNUAL_RATING_COMPETENCY,
                 APS.APPRAISER_OVERALL_RATING                 AS APPRAISER_OVERALL_RATING,
                 APS.REVIEWER_AGREE                           AS REVIEWER_AGREE,
                 APS.APPRAISEE_AGREE                          AS APPRAISEE_AGREE,
-                (CASE WHEN APS.APPRAISEE_AGREE ='Y' THEN 'Yes' ELSE 'No' END) AS APPRAISEE_AGREE_DETAIL,
                 APS.SUPER_REVIEWER_AGREE                     AS SUPER_REVIEWER_AGREE,
                 APS.APPRAISED_BY                             AS APPRAISED_BY,
                 APS.REVIEWED_BY                              AS REVIEWED_BY,
@@ -123,14 +122,6 @@ class AppraisalReportRepository implements RepositoryInterface {
               AND APS.EMPLOYEE_ID=AA.EMPLOYEE_ID
               INNER JOIN HRIS_EMPLOYEES E
               ON E.EMPLOYEE_ID=AA.EMPLOYEE_ID
-              INNER JOIN HRIS_EMPLOYEES APP
-              ON APP.EMPLOYEE_ID= AA.APPRAISER_ID
-              INNER JOIN HRIS_EMPLOYEES AAPP
-              ON AAPP.EMPLOYEE_ID=AA.ALT_APPRAISER_ID
-              INNER JOIN HRIS_EMPLOYEES REV
-              ON REV.EMPLOYEE_ID=AA.REVIEWER_ID
-              INNER JOIN HRIS_EMPLOYEES AREV
-              ON AREV.EMPLOYEE_ID = AA.ALT_REVIEWER_ID
               INNER JOIN HRIS_APPRAISAL_TYPE T
               ON T.APPRAISAL_TYPE_ID=A.APPRAISAL_TYPE_ID
               INNER JOIN HRIS_APPRAISAL_STAGE S
@@ -138,8 +129,14 @@ class AppraisalReportRepository implements RepositoryInterface {
               LEFT JOIN HRIS_APPRAISAL_KPI AKPI
               ON APS.APPRAISAL_ID  =AKPI.APPRAISAL_ID
               AND APS.EMPLOYEE_ID  =AKPI.EMPLOYEE_ID
-              INNER JOIN HRIS_APPRAISAL_TYPE AT
-              ON A.APPRAISAL_TYPE_ID = AT.APPRAISAL_TYPE_ID
+              LEFT JOIN HRIS_EMPLOYEES APR
+              ON APR.EMPLOYEE_ID = AA.APPRAISAL_ID
+              LEFT JOIN HRIS_EMPLOYEES AAPR
+              ON AAPR.EMPLOYEE_ID = AA.ALT_APPRAISER_ID
+              LEFT JOIN HRIS_EMPLOYEES REV
+              ON REV.EMPLOYEE_ID = AA.REVIEWER_ID
+              LEFT JOIN HRIS_EMPLOYEES AREV
+              ON AREV.EMPLOYEE_ID = AA.ALT_REVIEWER_ID
               WHERE AA.STATUS      ='E'
               AND E.STATUS         ='E'
               AND T.STATUS         ='E'
@@ -149,7 +146,7 @@ class AppraisalReportRepository implements RepositoryInterface {
                   WHERE KPI.EMPLOYEE_ID = APS.EMPLOYEE_ID
                   AND KPI.APPRAISAL_ID  = APS.APPRAISAL_ID
                   ) OR AKPI.SNO IS NULL)
-              AND AT.DURATION_TYPE ='{$durationType}'
+              AND T.DURATION_TYPE = '{$durationType}'
   ";
         if ($reportType != null && $reportType == "appraisalEvaluation") {
             $sql .= " AND ( AA.APPRAISER_ID  =" . $userId . " OR AA.ALT_APPRAISER_ID =" . $userId . " )";
@@ -213,9 +210,6 @@ class AppraisalReportRepository implements RepositoryInterface {
             OR ANSWER_NUM  >0 " . $userQuestionNum . ")
 ";
         $statement = $this->adapter->query($sql);
-        print "<pre>";
-        print($sql);
-        exit;
         $result = $statement->execute();
         return $result;
     }
