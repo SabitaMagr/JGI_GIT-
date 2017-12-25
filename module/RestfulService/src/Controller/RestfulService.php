@@ -8,7 +8,6 @@ use Application\Helper\Helper;
 use Application\Repository\MonthRepository;
 use Appraisal\Model\AppraisalStatus;
 use Appraisal\Repository\AppraisalAssignRepository;
-use Appraisal\Repository\AppraisalReportRepository;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Repository\HeadingRepository;
 use Appraisal\Repository\QuestionRepository;
