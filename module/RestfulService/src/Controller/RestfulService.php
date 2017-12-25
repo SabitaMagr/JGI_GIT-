@@ -112,9 +112,6 @@ class RestfulService extends AbstractRestfulController {
                     case "updateCurUserPwd";
                         $responseData = $this->updateCurUserPwd($postedData->data);
                         break;
-                    case "pullAppraisalViewList":
-                        $responseData = $this->pullAppraisalViewList($postedData->data);
-                        break;
                     case "headingList":
                         $responseData = $this->headingList();
                         break;
@@ -615,60 +612,6 @@ class RestfulService extends AbstractRestfulController {
         return [
             'success' => "true",
 //            "data" => $updateResult
-        ];
-    }
-
-    public function pullAppraisalViewList($data) {
-        $appraisalStatusRepo = new AppraisalReportRepository($this->adapter);
-
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
-        $employeeId = $data['employeeId'];
-        $companyId = $data['companyId'];
-        $branchId = $data['branchId'];
-        $departmentId = $data['departmentId'];
-        $designationId = $data['designationId'];
-        $positionId = $data['positionId'];
-        $serviceTypeId = $data['serviceTypeId'];
-        $serviceEventTypeId = $data['serviceEventTypeId'];
-        $appraisalId = $data['appraisalId'];
-        $appraisalStageId = $data['appraisalStageId'];
-        $userId = $data['userId'];
-        $reportType = $data['reportType'];
-
-        $result = $appraisalStatusRepo->fetchFilterdData($fromDate, $toDate, $employeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $appraisalId, $appraisalStageId, $reportType, $userId);
-        $list = [];
-        $fullName = function($id) {
-            if ($id != null) {
-                $empRepository = new EmployeeRepository($this->adapter);
-                $empDtl = $empRepository->fetchById($id);
-                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
-            } else {
-                return "";
-            }
-        };
-        $getValue = function($val) {
-            if ($val != null) {
-                if ($val == 'Y')
-                    return 'Yes';
-                else if ($val == 'N')
-                    return 'No';
-            }else {
-                return "";
-            }
-        };
-        foreach ($result as $row) {
-            $row['APPRAISER_NAME'] = $fullName($row['APPRAISER_ID']);
-            $row['ALT_APPRAISER_NAME'] = $fullName($row['ALT_APPRAISER_ID']);
-            $row['REVIEWER_NAME'] = $fullName($row['REVIEWER_ID']);
-            $row['ALT_REVIEWER_NAME'] = $fullName($row['ALT_REVIEWER_ID']);
-            $row['APPRAISEE_AGREE'] = $getValue($row['APPRAISEE_AGREE']);
-            array_push($list, $row);
-        }
-        return [
-            "success" => true,
-            'data' => $list
         ];
     }
 

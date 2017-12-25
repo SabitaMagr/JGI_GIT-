@@ -40,7 +40,6 @@ class StageController extends AbstractActionController {
         foreach ($result as $row) {
             array_push($list, $row);
         }
-        //print_r($list); die();
         return Helper::addFlashMessagesToArray($this, [
                     "stages" => $list
         ]);
