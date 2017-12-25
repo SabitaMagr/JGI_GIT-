@@ -33,62 +33,62 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
-<?=
-$assignedAppraisalDetail['APPRAISAL_EDESC'];
-?>
+                    <?=
+                    $assignedAppraisalDetail['APPRAISAL_EDESC'];
+                    ?>
                 </div>
                 <div class="btn-group pull-right open" style="margin-top:1%">
 
                 </div>
             </div>
-<?php
-print $this->partial('appraisal/layout/employee-detail.phtml');
-?>
+            <?php
+            print $this->partial('appraisal/layout/employee-detail.phtml');
+            ?>
             <div class="portlet-body" style="padding-top:1px; padding:4px 10px!important;">
                 <h5 id="headingForPanel" style="font-weight:600">Performance Evaluation</h5>
                 <div class="portlet-body">
                     <div class="tabbable-line menusetuptab margin-bottom-10" style="padding-top:0px">
                         <ul class="nav nav-tabs" id="tabList">
-<?php if ($assignedAppraisalDetail['KPI_SETTING'] == 'Y') { ?>
+                            <?php if ($assignedAppraisalDetail['KPI_SETTING'] == 'Y') { ?>
                                 <li class="active">
                                     <a href="#portlet_tab2_KPI" data-toggle="tab"> KPI </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                             <?php if ($assignedAppraisalDetail['COMPETENCIES_SETTING'] == 'Y') { ?>
                                 <li>
                                     <a href="#portlet_tab2_COM" data-toggle="tab"> Competencies </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                             <?php if (count($questionTemplate) > 0) { ?>
                                 <li class="<?= (($assignedAppraisalDetail['KPI_SETTING'] == 'N') && ($assignedAppraisalDetail['COMPETENCIES_SETTING'] == 'N') && ($tab == 1)) ? 'active' : '' ?>">
                                     <a href="#portlet_tab2_1" data-toggle="tab"> Appraisee's Evaluation </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                             <?php if (count($appraiserQuestionTemplate) > 0 && $appraiserAvailableAnswer == true) { ?>
                                 <li class="<?= ($tab == 2 || (count($questionTemplate) == 0 && $assignedAppraisalDetail['KPI_SETTING'] == 'N')) ? "active" : ""; ?>">
                                     <a href="#portlet_tab2_2" data-toggle="tab"> Appraiser's Evaluation </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                             <?php if (count($reviewerQuestionTemplate) > 0 && $reviewerAvailableAnswer == true && $assignedAppraisalDetail['DEFAULT_RATING'] != 'Y') { ?>
                                 <li class="<?= ($tab == 3) ? "active" : ""; ?>">
                                     <a href="#portlet_tab2_3" data-toggle="tab"> Reviewer's Evaluation </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                             <?php if ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE'] != null && $assignedAppraisalDetail['DEFAULT_RATING'] != 'Y') { ?>
                                 <li class="<?= ($tab == 5) ? "active" : ""; ?>">
                                     <a href="#portlet_tab2_5" data-toggle="tab">Super Reviewer's Evaluation </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                             <?php if (count($appraiseeQuestionTemplate) > 0 && $appraiseeAvailableAnswer == true) { ?>
                                 <li class="">
                                     <a href="#portlet_tab2_4" data-toggle="tab"> Appraisee's Feedback </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                             <?php if (($assignedAppraisalDetail['STAGE_ID'] == 9 || $assignedAppraisalDetail['HR_FEEDBACK'] != null)) { ?>
                                 <li class="<?= ($tab == 6) ? "active" : ""; ?>">
                                     <a href="#portlet_tab2_6" data-toggle="tab">HR Feedback </a>
                                 </li>
-<?php } ?>
+                            <?php } ?>
                         </ul>
                     </div>
                     <div class="tab-content margin-top-5" id="tabContent">
@@ -96,9 +96,9 @@ print $this->partial('appraisal/layout/employee-detail.phtml');
                         <input type="hidden" value="<?= $assignedAppraisalDetail['APPRAISAL_ID']; ?>" name="appraisalId" id="appraisalId"/>
                         <input type='hidden' value="<?= $assignedAppraisalDetail['STAGE_ID']; ?>" id="currentStageId" />
 
-<?php
-print $this->partial('tab/kpi.phtml');
-?>
+                        <?php
+                        print $this->partial('tab/kpi.phtml');
+                        ?>
                         <?php
                         print $this->partial('tab/competencies.phtml');
                         ?>
@@ -125,10 +125,10 @@ print $this->partial('tab/kpi.phtml');
             </div>
         </div>
     </div>
-<?php if (in_array($assignedAppraisalDetail['STAGE_ID'], ['2', '9', '4'])) { ?>
+    <?php if (in_array($assignedAppraisalDetail['STAGE_ID'], ['2', '9', '4'])) { ?>
         <div class="col-md-12" style="text-align:center;">
             <a class="btn btn-success print" ng-click="printDiv('printableArea');"> Print</a>
         </div>
-<?php } ?>
+    <?php } ?>
 </div>
 
