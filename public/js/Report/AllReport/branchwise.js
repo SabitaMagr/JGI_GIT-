@@ -1,8 +1,8 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        var $tableContainer = $("#departmentMonthReport");
-        var extractDetailData = function (rawData, departmentId) {
+        var $tableContainer = $("#report");
+        var extractDetailData = function (rawData, branchId) {
             var data = {};
             var column = {};
 
@@ -34,7 +34,7 @@
                     column[rawData[i].MONTH_ID] = {
                         field: temp,
                         title: rawData[i].MONTH_EDESC,
-                        template: '<div data="#: ' + temp + ' #" class="btn-group widget-btn-list custom-btn-group ' + departmentId + '">' +
+                        template: '<div data="#: ' + temp + ' #" class="btn-group widget-btn-list custom-btn-group ' + branchId + '">' +
                                 '<a class="btn  widget-btn custom-btn-present totalbtn"></a>' +
                                 '<a class="btn  widget-btn custom-btn-absent totalbtn"></a>' +
                                 '<a class="btn widget-btn custom-btn-leave totalbtn"></a>' +
@@ -78,6 +78,7 @@
                 var presentDays = parseFloat(data['IS_PRESENT']);
                 var absentDays = parseFloat(data['IS_ABSENT']);
                 var leaveDays = parseFloat(data['ON_LEAVE']);
+
                 $present.html(data['IS_PRESENT']);
                 $absent.html( data['IS_ABSENT']);
                 $leave.html(data['ON_LEAVE']);
@@ -89,38 +90,24 @@
                 $leave.attr('title',Number((leaveDays * 100 / total).toFixed(1))) ;
             });
 
-
         };
         var firstTime = true;
-        var initializeReport = function (departmentId) {
-            if (firstTime) {
-                App.blockUI({target: "#hris-page-content"});
-
-            } else {
-                App.blockUI({target: "#departmentMonthReport"});
-            }
-            app.pullDataById(document.wsDepartmentWise, {departmentId: departmentId}).then(function (response) {
-                if (firstTime) {
-                    App.unblockUI("#hris-page-content");
-                    firstTime = false;
-                } else {
-                    App.unblockUI("#departmentMonthReport");
-                }
-                console.log('departmentWiseEmployeeMonthlyR', response);
-                var extractedDetailData = extractDetailData(response.data, departmentId);
-                console.log('extractedDetailData', extractedDetailData);
-//                $tableContainer.remove();
+        var initializeReport = function (branchId) {
+            App.blockUI({target: "#hris-page-content"});
+            app.pullDataById(document.wsBranchWise, {branchId: branchId}).then(function (response) {
+                App.unblockUI("#hris-page-content");
+                var extractedDetailData = extractDetailData(response.data, branchId);
                 $tableContainer.kendoGrid({
                     dataSource: {
                         data: extractedDetailData.rows,
-                        pageSize: 20
+                        pageSize: 500
                     },
                     scrollable: false,
                     sortable: false,
                     pageable: false,
                     columns: extractedDetailData.cols
                 });
-                displayDataInBtnGroup('.custom-btn-group.' + departmentId);
+                displayDataInBtnGroup('.custom-btn-group.' + branchId);
 
 
             }, function (error) {
@@ -135,7 +122,7 @@
         };
 
         $('select').select2();
-        var $departmentList = $('#departmentList');
+        var branchList = $('#branchList');
         var $generateReport = $('#generateReport');
 
         var populateList = function ($element, list, id, value, defaultMessage, selectedId) {
@@ -152,20 +139,20 @@
 
         var comBraDepList = document.comBraDepList;
 
-        populateList($departmentList, comBraDepList['DEPARTMENT_LIST'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', "Select Department");
+        populateList(branchList, comBraDepList['BRANCH_LIST'], 'BRANCH_ID', 'BRANCH_NAME', "Select Branch");
 
         $generateReport.on('click', function () {
-            var departmentId = $departmentList.val();
-            if (departmentId == -1) {
-                app.errorMessage("No Department Selected", "Notification");
+            var branchId = branchList.val();
+            if (branchId == -1) {
+                app.errorMessage("No Branch Selected", "Notification");
             } else {
-                initializeReport(departmentId);
+                initializeReport(branchId);
             }
         });
-        var departmentId = document.departmentId;
-        if (departmentId != 0) {
-            initializeReport(departmentId);
-            $departmentList.val(departmentId);
+        var branchId = document.branchId;
+        if (branchId != 0) {
+            initializeReport(branchId);
+            branchList.val(branchId);
         }
     });
 })(window.jQuery, window.app);

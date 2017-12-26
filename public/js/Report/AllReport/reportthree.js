@@ -135,16 +135,17 @@
                 var absentDays = parseFloat(data['IS_ABSENT']);
                 var leaveDays = parseFloat(data['ON_LEAVE']);
 
+                $present.html(data['IS_PRESENT']);
+                $absent.html( data['IS_ABSENT']);
+                $leave.html(data['ON_LEAVE']);
+
                 var total = presentDays + absentDays + leaveDays;
 
-                $present.attr('title', data['IS_PRESENT']);
-                $absent.attr('title', data['IS_ABSENT']);
-                $leave.attr('title', data['ON_LEAVE']);
-
-                $present.html(Number((presentDays * 100 / total).toFixed(1)));
-                $absent.html(Number((absentDays * 100 / total).toFixed(1)));
-                $leave.html(Number((leaveDays * 100 / total).toFixed(1)));
+                $present.attr('title',Number((presentDays * 100 / total).toFixed(1)) );
+                $absent.attr('title',Number((absentDays * 100 / total).toFixed(1)));
+                $leave.attr('title',Number((leaveDays * 100 / total).toFixed(1))) ;
             });
+
         };
         var firstTime = true;
         var initializeReport = function (monthId, departmentId) {
