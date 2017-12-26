@@ -61,7 +61,6 @@
 
         $('#addDocument').on('click', function () {
             $('#uploadErr').hide();
-            console.log(document.uploadUrl);
             $('#documentUploadModel').modal('show');
             myDropzone = new Dropzone("#dropZoneContainer", {
                 url: document.uploadUrl,
@@ -82,14 +81,13 @@
             $('#documentUploadModel').modal('hide');
             myDropzone.processQueue();
             myDropzone.on("success", function (file, success) {
-                console.log(success);
                 if (success.success) {
                     imageUpload(success.data);
                 }
             });
 
             myDropzone.on("complete", function (file) {
-                location.reload();
+//                location.reload();
             });
 
         });

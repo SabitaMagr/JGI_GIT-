@@ -189,9 +189,10 @@ class NewsController extends AbstractActionController {
                 $unique = Helper::generateUniqueName();
                 $newFileName = $unique . "." . $ext;
                 $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/news/" . $newFileName);
-                if ($success) {
-                    $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
+                if (!$success) {
+                    throw new Exception("Upload unsuccessful.");
                 }
+                $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
             }
         } catch (Exception $e) {
             $responseData = [

@@ -116,50 +116,44 @@ class NewsRepository implements RepositoryInterface {
     }
 
     public function allNewsTypeWise($typeId, $employeeId) {
-        $sql = "SELECT AA.*,BB.FILE_PATH,CC.FILE_NAME FROM (SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC,N.NEWS_EXPIRY_DT,N.STATUS
-FROM HRIS_NEWS N 
-WHERE N.STATUS='E' AND N.NEWS_TYPE={$typeId} AND {$employeeId} IN (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)
-UNION
-SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC,N.NEWS_EXPIRY_DT,N.STATUS
-                    FROM HRIS_NEWS N,(SELECT COMPANY_ID,BRANCH_ID,DEPARTMENT_ID, DESIGNATION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID ={$employeeId}) E
-                    WHERE  N.STATUS = 'E' AND N.NEWS_TYPE={$typeId}
-                    AND (N.COMPANY_ID =
-                      CASE
-                        WHEN N.COMPANY_ID IS NOT NULL
-                        THEN E.COMPANY_ID
-                      END
-                    OR N.COMPANY_ID  IS NULL)
-                    AND ( N.BRANCH_ID =
-                      CASE
-                        WHEN N.BRANCH_ID IS NOT NULL
-                        THEN E.BRANCH_ID
-                      END
-                    OR N.BRANCH_ID      IS NULL)
-                    AND (N.DEPARTMENT_ID =
-                      CASE
-                        WHEN N.DEPARTMENT_ID IS NOT NULL
-                        THEN E.DEPARTMENT_ID
-                      END
-                    OR N.DEPARTMENT_ID   IS NULL)
-                    AND (N.DESIGNATION_ID =
-                      CASE
-                        WHEN N.DESIGNATION_ID IS NOT NULL
-                        THEN E.DESIGNATION_ID
-                      END
-                    OR N.DESIGNATION_ID IS NULL)
-                    AND (N.DESIGNATION_ID =
-                      CASE
-                        WHEN N.DESIGNATION_ID IS NOT NULL
-                        THEN E.DESIGNATION_ID
-                      END
-                    OR N.DESIGNATION_ID IS NULL)
-                    AND N.NEWS_ID NOT IN (SELECT NEWS_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)) AA 
-                    left join (SELECT NEWS_ID, LISTAGG(FILE_PATH, ',') WITHIN GROUP (ORDER BY FILE_PATH) AS FILE_PATH
-                    FROM   HRIS_NEWS_FILE
-                    GROUP BY NEWS_ID) BB on (BB.NEWS_ID=AA.NEWS_ID)
-                    LEFT JOIN (SELECT NEWS_ID, LISTAGG(FILE_NAME, ',') WITHIN GROUP (ORDER BY FILE_NAME) AS FILE_NAME
-                    FROM   HRIS_NEWS_FILE
-                  GROUP BY NEWS_ID) CC ON (CC.NEWS_ID=AA.NEWS_ID) WHERE STATUS='E' AND NEWS_DATE<=TRUNC(SYSDATE) AND NEWS_EXPIRY_DT>=TRUNC(SYSDATE) ORDER BY NEWS_DATE DESC";
+        $sql = "SELECT AA.*,
+                  BB.FILE_PATH,
+                  CC.FILE_NAME
+                FROM
+                  (SELECT N.NEWS_ID,
+                    N.NEWS_DATE,
+                    N.NEWS_TYPE,
+                    N.NEWS_TITLE,
+                    N.NEWS_EDESC,
+                    N.NEWS_EXPIRY_DT,
+                    N.STATUS
+                  FROM HRIS_NEWS N
+                  WHERE N.STATUS     ='E'
+                  AND N.NEWS_TYPE    ={$typeId}
+                  AND {$employeeId} IN
+                    (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID
+                    )
+                  ) AA
+                LEFT JOIN
+                  (SELECT NEWS_ID,
+                    LISTAGG(FILE_PATH, ',') WITHIN GROUP (
+                  ORDER BY FILE_PATH) AS FILE_PATH
+                  FROM HRIS_NEWS_FILE
+                  GROUP BY NEWS_ID
+                  ) BB
+                ON (BB.NEWS_ID=AA.NEWS_ID)
+                LEFT JOIN
+                  (SELECT NEWS_ID,
+                    LISTAGG(FILE_NAME, ',') WITHIN GROUP (
+                  ORDER BY FILE_NAME) AS FILE_NAME
+                  FROM HRIS_NEWS_FILE
+                  GROUP BY NEWS_ID
+                  ) CC
+                ON (CC.NEWS_ID     =AA.NEWS_ID)
+                WHERE STATUS       ='E'
+                AND NEWS_DATE     <=TRUNC(SYSDATE)
+                AND NEWS_EXPIRY_DT>=TRUNC(SYSDATE)
+                ORDER BY NEWS_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
@@ -172,6 +166,7 @@ SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC,N.NEWS_EXPIRY
             $item['NEWS_ID'] = $newsId;
             $newsAssignGateway->insert($item);
         }
+        EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_NEWS_TO_PROC({$newsId}); END;");
     }
 
     public function getAssignedToList(int $newsId) {
