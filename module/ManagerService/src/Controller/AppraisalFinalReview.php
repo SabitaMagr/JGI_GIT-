@@ -208,7 +208,12 @@ class AppraisalFinalReview extends HrisController {
                 HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $assignedAppraisalDetail['REVIEWER_ID'], 'USER_TYPE' => "REVIEWER"]);
                 HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $assignedAppraisalDetail['APPRAISER_ID'], 'USER_TYPE' => "APPRAISER"]);
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                $this->redirect()->toRoute("appraisal-final-review");
+                $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
+                if ($appraisalDurationType != null) {
+                    $this->redirect()->toRoute("appraisal-final-review", ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index']);
+                } else {
+                    $this->redirect()->toRoute("appraisal-final-review");
+                }
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
                 $this->flashmessenger()->addMessage($e->getMessage());

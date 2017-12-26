@@ -204,7 +204,12 @@ class PerformanceAppraisal extends AbstractActionController {
                     }
                 }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                $this->redirect()->toRoute("performanceAppraisal");
+                $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
+                if ($appraisalDurationType != null) {
+                    $this->redirect()->toRoute("performanceAppraisal", ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index']);
+                } else {
+                    $this->redirect()->toRoute("performanceAppraisal");
+                }
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
                 $this->flashmessenger()->addMessage($e->getMessage());

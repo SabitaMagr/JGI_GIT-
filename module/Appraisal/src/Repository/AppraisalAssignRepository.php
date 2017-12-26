@@ -2,21 +2,21 @@
 
 namespace Appraisal\Repository;
 
-use Appraisal\Model\AppraisalAssign;
-use Appraisal\Model\Setup;
-use Setup\Model\HrEmployees;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
-use Zend\Db\Sql\Expression;
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
-use Appraisal\Model\Type;
-use Appraisal\Model\Stage;
+use Appraisal\Model\AppraisalAssign;
 use Appraisal\Model\AppraisalStatus;
+use Appraisal\Model\Setup;
+use Appraisal\Model\Stage;
+use Appraisal\Model\Type;
 use Setup\Model\Designation;
+use Setup\Model\HrEmployees;
 use Setup\Model\Position;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
+use Zend\Db\TableGateway\TableGateway;
 
 class AppraisalAssignRepository implements RepositoryInterface {
 
@@ -205,7 +205,6 @@ AND
   OR E2.RETIRED_FLAG IS NULL)))"
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         return $result->current();
     }
@@ -217,6 +216,15 @@ AND
             $empCase = [AppraisalAssign::EMPLOYEE_ID => $employeeId];
         }
         $this->tableGateway->update([AppraisalAssign::CURRENT_STAGE_ID => $stageId], array_merge([AppraisalAssign::APPRAISAL_ID => $appraisalId, AppraisalAssign::STATUS => 'E'], $empCase));
+    }
+
+    public function getDurationType($appraisalId) {
+        $sql = "SELECT T.DURATION_TYPE
+                FROM HRIS_APPRAISAL_SETUP S
+                JOIN HRIS_APPRAISAL_TYPE T
+                ON (S.APPRAISAL_TYPE_ID = T.APPRAISAL_TYPE_ID) WHERE S.APPRAISAL_ID= {$appraisalId}";
+        $rowset = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $rowset->current();
     }
 
 }

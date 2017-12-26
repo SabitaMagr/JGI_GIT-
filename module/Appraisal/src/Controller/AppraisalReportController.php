@@ -208,7 +208,12 @@ class AppraisalReportController extends HrisController {
                 HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $assignedAppraisalDetail['APPRAISER_ID'], 'USER_TYPE' => "APPRAISER"]);
 
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                $this->redirect()->toRoute("appraisalReport");
+                $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
+                if ($appraisalDurationType != null) {
+                    $this->redirect()->toRoute("appraisalReport", ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index']);
+                } else {
+                    $this->redirect()->toRoute("appraisalReport");
+                }
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
                 $this->flashmessenger()->addMessage($e->getMessage());
