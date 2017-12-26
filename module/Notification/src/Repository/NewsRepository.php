@@ -34,12 +34,7 @@ class NewsRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        
         $data = $model->getArrayCopyForDB();
-        ($data[NewsModel::COMPANY_ID]==-1) ? $data[NewsModel::COMPANY_ID] = NULL : NUll;
-        ($data[NewsModel::BRANCH_ID] == -1) ? $data[NewsModel::BRANCH_ID] = NULL : NUll;
-        ($data[NewsModel::DEPARTMENT_ID] == -1) ? $data[NewsModel::DEPARTMENT_ID] = NULL : NULL;
-        ($data[NewsModel::DESIGNATION_ID] == -1) ? $data[NewsModel::DESIGNATION_ID] = NULL : NUll;
         unset($data[NewsModel::CREATED_BY]);
         unset($data[NewsModel::CREATED_DT]);
         unset($data[NewsModel::STATUS]);
@@ -47,11 +42,10 @@ class NewsRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        
-         $sql = new Sql($this->adapter);
+
+        $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=N." . NewsModel::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'LEFT');
         $select->join(['NT' => NewsTypeModel::TABLE_NAME], "NT." . NewsTypeModel::NEWS_TYPE_ID . "=N." . NewsModel::NEWS_TYPE, array('NEWS_TYPE_ID', 'NEWS_TYPE_DESC'), 'LEFT');
         $select->where(["N." . NewsModel::STATUS => 'E']);
         $select->order(["N." . NewsModel::NEWS_DATE => Select::ORDER_DESCENDING]);
@@ -67,7 +61,7 @@ class NewsRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
         $select->where(["N." . NewsModel::NEWS_ID => $id]);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), ['newsDate','newsExpiryDate'], NULL, 'N'), false);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), ['newsDate', 'newsExpiryDate'], NULL, 'N'), false);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -120,9 +114,8 @@ class NewsRepository implements RepositoryInterface {
         );
         return $rawResult;
     }
-    
+
     public function allNewsTypeWise($typeId, $employeeId) {
-//        $sql="select * from hris_news where news_type={$typeId}";
         $sql = "SELECT AA.*,BB.FILE_PATH,CC.FILE_NAME FROM (SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC,N.NEWS_EXPIRY_DT,N.STATUS
 FROM HRIS_NEWS N 
 WHERE N.STATUS='E' AND N.NEWS_TYPE={$typeId} AND {$employeeId} IN (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID)
@@ -171,14 +164,67 @@ SELECT N.NEWS_ID,N.NEWS_DATE,N.NEWS_TYPE,N.NEWS_TITLE,N.NEWS_EDESC,N.NEWS_EXPIRY
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
-    
-    public function getNewsEmployees($newsId){
-        $sql="SELECT NEWS_ID, LISTAGG(EMPLOYEE_ID, ',') WITHIN GROUP (ORDER BY EMPLOYEE_ID) AS EMPLOYEE_ID
-                    FROM HRIS_NEWS_EMPLOYEE WHERE NEWS_ID=$newsId 
-                    GROUP BY NEWS_ID";
-        $statement=$this->adapter->query($sql);
-        $result=$statement->execute();
-        return $result->current();
+
+    public function newsAssign(int $newsId, array $assignedTo) {
+        $newsAssignGateway = new TableGateway("HRIS_NEWS_TO", $this->adapter);
+        $newsAssignGateway->delete(["NEWS_ID" => $newsId]);
+        foreach ($assignedTo as $item) {
+            $item['NEWS_ID'] = $newsId;
+            $newsAssignGateway->insert($item);
+        }
+    }
+
+    public function getAssignedToList(int $newsId) {
+        $newsAssignGateway = new TableGateway("HRIS_NEWS_TO", $this->adapter);
+        $newsToList = $newsAssignGateway->select(['NEWS_ID' => $newsId]);
+
+        $return = [
+            'companyId' => [],
+            'branchId' => [],
+            'departmentId' => [],
+            'designationId' => [],
+            'positionId' => [],
+            'serviceTypeId' => [],
+            'serviceEventTypeId' => [],
+            'employeeType' => [],
+            'employeeId' => [],
+            'genderId' => [],
+        ];
+
+
+        foreach ($newsToList as $newsTo) {
+            if ($newsTo['COMPANY_ID'] != NULL) {
+                array_push($return['companyId'], $newsTo['COMPANY_ID']);
+            }
+            if ($newsTo['BRANCH_ID'] != NULL) {
+                array_push($return['branchId'], $newsTo['BRANCH_ID']);
+            }
+            if ($newsTo['DEPARTMENT_ID'] != NULL) {
+                array_push($return['departmentId'], $newsTo['DEPARTMENT_ID']);
+            }
+            if ($newsTo['DESIGNATION_ID'] != NULL) {
+                array_push($return['designationId'], $newsTo['DESIGNATION_ID']);
+            }
+            if ($newsTo['POSITION_ID'] != NULL) {
+                array_push($return['positionId'], $newsTo['POSITION_ID']);
+            }
+            if ($newsTo['SERVICE_TYPE_ID'] != NULL) {
+                array_push($return['serviceTypeId'], $newsTo['SERVICE_TYPE_ID']);
+            }
+            if ($newsTo['SERVICE_EVENT_TYPE_ID'] != NULL) {
+                array_push($return['serviceEventTypeId'], $newsTo['SERVICE_EVENT_TYPE_ID']);
+            }
+            if ($newsTo['EMPLOYEE_TYPE'] != NULL) {
+                array_push($return['employeeType'], $newsTo['EMPLOYEE_TYPE']);
+            }
+            if ($newsTo['EMPLOYEE_ID'] != NULL) {
+                array_push($return['employeeId'], $newsTo['EMPLOYEE_ID']);
+            }
+            if ($newsTo['GENDER_ID'] != NULL) {
+                array_push($return['genderId'], $newsTo['GENDER_ID']);
+            }
+        }
+        return $return;
     }
 
 }

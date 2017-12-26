@@ -17,7 +17,7 @@ class NewsFileRepository implements RepositoryInterface {
 
     public function __construct(AdapterInterface $adapter) {
         $this->tableGateway = new TableGateway('HRIS_NEWS_FILE', $adapter);
-        $this->adapter=$adapter;
+        $this->adapter = $adapter;
     }
 
     public function add(Model $model) {

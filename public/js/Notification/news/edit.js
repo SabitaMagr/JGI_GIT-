@@ -3,15 +3,19 @@
     $(document).ready(function () {
         $('select').select2();
         app.datePickerWithNepali("newsDate", "nepaliDate");
-        app.datePickerWithNepali("newsExpiryDate", "nepaliDateExpiry");        
+        app.datePickerWithNepali("newsExpiryDate", "nepaliDateExpiry");
         //to change edit values
-        $('#companyId').val(document.companyEditVal).trigger('change.select2');
-        $('#branchId').val(document.branchEditVal).trigger('change.select2');
-        $('#departmentId').val(document.departmentEditVal).trigger('change.select2');
-        $('#designationId').val(document.designationEditVal).trigger('change.select2');
-        
-        var employeeDataArray=document.employeeEditVal.split(",");
-        $("#employeeId").val(employeeDataArray).trigger('change');
+        $('#companyId').val(document.newsToList['companyId']).trigger('change.select2');
+        $('#branchId').val(document.newsToList['branchId']).trigger('change.select2');
+        $('#departmentId').val(document.newsToList['departmentId']).trigger('change.select2');
+        $('#designationId').val(document.newsToList['designationId']).trigger('change.select2');
+        $('#positionId').val(document.newsToList['positionId']).trigger('change.select2');
+        $('#serviceTypeId').val(document.newsToList['serviceTypeId']).trigger('change.select2');
+        $('#serviceEventTypeId').val(document.newsToList['serviceEventTypeId']).trigger('change.select2');
+        $('#employeeType').val(document.newsToList['employeeType']).trigger('change.select2');
+        $('#employeeId').val(document.newsToList['employeeId']).trigger('change.select2');
+        $('#genderId').val(document.newsToList['genderId']).trigger('change.select2');
+
 
         var myDropzone;
         var $fileListTable = $('#fileDetailsTbl');
@@ -35,7 +39,7 @@
         $fileListTable.on("click", "td .deleteFile", function () {
             var selectedDeleteBtnId = $(this).attr('data-id');
             window.app.pullDataById(document.deleteFile, {
-                 id: selectedDeleteBtnId
+                id: selectedDeleteBtnId
             }).then(function (success) {
                 fileDetails();
             }, function (failure) {
@@ -79,7 +83,6 @@
             myDropzone.processQueue();
             myDropzone.on("success", function (file, success) {
                 console.log(success);
-//            console.log("Upload Image Response ", success);
                 if (success.success) {
                     imageUpload(success.data);
                 }
@@ -98,7 +101,6 @@
         });
 
         var imageUpload = function (data) {
-            console.log(data);
             window.app.pullDataById(document.pushNewsFileLink, {
                 'newsTypeId': null,
                 'filePath': data.fileName,

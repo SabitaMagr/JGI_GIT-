@@ -6,15 +6,11 @@ use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use Notification\Form\NewsForm;
-use Notification\Model\NewsEmployeeModel;
 use Notification\Model\NewsFile;
 use Notification\Model\NewsModel;
 use Notification\Model\NewsTypeModel;
-use Notification\Repository\NewsEmployee;
 use Notification\Repository\NewsFileRepository;
 use Notification\Repository\NewsRepository;
-use Setup\Model\Company;
-use Setup\Repository\DepartmentRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
@@ -52,13 +48,11 @@ class NewsController extends AbstractActionController {
 
     public function addAction() {
         $this->initializeForm();
-//        $employeeRepo = new EmployeeRepository($this->adapter);
-//        $employeeDetail = $employeeRepo->fetchById($this->employeeId);
         $request = $this->getRequest();
 
-        $departmentRepo = new DepartmentRepository($this->adapter);
         if ($request->isPost()) {
-            $this->form->setData($request->getPost());
+            $postData = $request->getPost();
+            $this->form->setData($postData);
             if ($this->form->isValid()) {
                 $newsModel = new NewsModel();
                 $newsModel->exchangeArrayFromForm($this->form->getData());
@@ -68,24 +62,10 @@ class NewsController extends AbstractActionController {
                 $newsModel->createdDt = Helper::getcurrentExpressionDate();
                 $newsModel->approvedDt = Helper::getcurrentExpressionDate();
                 $newsModel->status = 'E';
-                ($newsModel->companyId == -1) ? $newsModel->companyId = NULL : NUll;
-                ($newsModel->branchId == -1) ? $newsModel->branchId = NULL : NUll;
-                ($newsModel->departmentId == -1) ? $newsModel->departmentId = NULL : NULL;
-                ($newsModel->designationId == -1) ? $newsModel->designationId = NULL : NUll;
 
-                if ($request->getPost()['employee']) {
-                    $employees = $request->getPost()['employee'];
-                    $newsEmpModel = new NewsEmployeeModel();
-                    $newsEmployeeRepo = new NewsEmployee($this->adapter);
-                    $newsEmpModel->newsId = $newsModel->newsId;
-                    foreach ($employees as $emp) {
-                        $newsEmpModel->employeeId = $emp;
-                        $newsEmployeeRepo->add($newsEmpModel);
-                    }
-                }
                 $this->repository->add($newsModel);
+                $this->assignTo($newsModel->newsId, $postData);
                 $this->flashmessenger()->addMessage("News Successfully added!!!");
-//                return $this->redirect()->toRoute("news");
                 return $this->redirect()->toRoute('news', ['action' => 'edit', 'id' => $newsModel->newsId]);
             }
         }
@@ -98,52 +78,93 @@ class NewsController extends AbstractActionController {
         ]);
     }
 
+    private function assignTo($newsId, $postData) {
+        $assignNewsTo = [];
+        if (isset($postData['company'])) {
+            foreach ($postData['company'] as $item) {
+                array_push($assignNewsTo, ['COMPANY_ID' => $item]);
+            }
+        }
+        if (isset($postData['branch'])) {
+            foreach ($postData['branch'] as $item) {
+                array_push($assignNewsTo, ['BRANCH_ID' => $item]);
+            }
+        }
+        if (isset($postData['department'])) {
+            foreach ($postData['department'] as $item) {
+                array_push($assignNewsTo, ['DEPARTMENT_ID' => $item]);
+            }
+        }
+        if (isset($postData['designation'])) {
+            foreach ($postData['designation'] as $item) {
+                array_push($assignNewsTo, ['DESIGNATION_ID' => $item]);
+            }
+        }
+        if (isset($postData['position'])) {
+            foreach ($postData['position'] as $item) {
+                array_push($assignNewsTo, ['POSITION_ID' => $item]);
+            }
+        }
+        if (isset($postData['serviceType'])) {
+            foreach ($postData['serviceType'] as $item) {
+                array_push($assignNewsTo, ['SERVICE_TYPE_ID' => $item]);
+            }
+        }
+        if (isset($postData['serviceEventType'])) {
+            foreach ($postData['serviceEventType'] as $item) {
+                array_push($assignNewsTo, ['SERVICE_EVENT_TYPE_ID' => $item]);
+            }
+        }
+        if (isset($postData['employeeType'])) {
+            foreach ($postData['employeeType'] as $item) {
+                array_push($assignNewsTo, ['EMPLOYEE_TYPE' => $item]);
+            }
+        }
+        if (isset($postData['gender'])) {
+            foreach ($postData['gender'] as $item) {
+                array_push($assignNewsTo, ['GENDER_ID' => $item]);
+            }
+        }
+        if (isset($postData['employee'])) {
+            foreach ($postData['employee'] as $item) {
+                array_push($assignNewsTo, ['EMPLOYEE_ID' => $item]);
+            }
+        }
+        $this->repository->newsAssign($newsId, $assignNewsTo);
+    }
+
     public function editAction() {
         $id = $this->params()->fromRoute('id');
         if ($id == 0) {
             $this->redirect()->toRoute('news');
         }
         $this->initializeForm();
-        $selectedEmployees = $this->repository->getNewsEmployees($id);
-        
+
         $request = $this->getRequest();
         $newsModel = new NewsModel();
-        if (!$request->isPost()) {
-            $newsModel->exchangeArrayFromDB($this->repository->fetchById($id));
-            $this->form->bind($newsModel);
-        } else {
-            $this->form->setData($request->getPost());
+        if ($request->isPost()) {
+            $postData = $request->getPost();
+            $this->form->setData($postData);
             if ($this->form->isValid()) {
                 $newsModel->exchangeArrayFromForm($this->form->getData());
                 $newsModel->modifiedBy = $this->employeeId;
                 $newsModel->modifiedDt = Helper::getcurrentExpressionDate();
-                $newsEmployeeRepo = new NewsEmployee($this->adapter);
-                $newsEmployeeRepo->delete($id);
-                
-                if ($request->getPost()['employee']) {
-                    $employees = $request->getPost()['employee'];
-                    $newsEmpModel = new NewsEmployeeModel();
-                    $newsEmpModel->newsId = $id;
-                    foreach ($employees as $emp) {
-                        $newsEmpModel->employeeId = $emp;
-                        $newsEmployeeRepo->add($newsEmpModel);
-                    }
-                }
 
                 $this->repository->edit($newsModel, $id);
+                $this->assignTo($id, $postData);
                 $this->flashmessenger()->addMessage("News Successfully Updated!!!");
                 return $this->redirect()->toRoute("news");
             }
         }
-
-        $departmentRepo = new DepartmentRepository($this->adapter);
-
+        $newsModel->exchangeArrayFromDB($this->repository->fetchById($id));
+        $this->form->bind($newsModel);
+        $newsToList = $this->repository->getAssignedToList($id);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
                     'newsTypeValue' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, NewsTypeModel::TABLE_NAME, NewsTypeModel::NEWS_TYPE_ID, [NewsTypeModel::NEWS_TYPE_DESC], ["STATUS" => "E"], "NEWS_TYPE_DESC", "ASC", null, true, true),
                     'searchValues' => ApplicationEntityHelper::getSearchData($this->adapter),
-                    'selectedEmployees' => ($selectedEmployees)?$selectedEmployees[EMPLOYEE_ID]:''
+                    'newsToList' => $newsToList
         ]);
     }
 

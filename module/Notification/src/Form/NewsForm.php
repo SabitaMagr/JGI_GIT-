@@ -65,47 +65,11 @@ class NewsForm {
     public $remarks;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
-     * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
-     */
-    public $companyId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
-     * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
-     */
-    public $branchId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation"})
-     * @Annotation\Attributes({ "id":"designationId","class":"form-control"})
-     */
-    public $designationId;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Department"})
-     * @Annotation\Attributes({ "id":"departmentId","class":"form-control"})
-     */
-    public $departmentId;
-
-    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)

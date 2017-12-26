@@ -44,20 +44,6 @@ $form->prepare();
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\news')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
 <div class="row margin-top-20">
     <div class="col-sm-12">
@@ -125,7 +111,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($newsEdesc); ?>
                     <?php print $this->formElementErrors()->render($newsEdesc, ['class' => 'help-block']); ?>
                 </div>
-                
+
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="row">
@@ -148,7 +134,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>     
                         </div>  
 
-                       </div>
+                    </div>
                 </div>
 
 
@@ -160,53 +146,57 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
 
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-2">
                         <label>Company</label>
-                        <select  class="form-control" name="companyId" id="companyId">
+                        <select multiple class="form-control" name="company[]" id="companyId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Branch</label>
-                        <select  class="form-control" name="branchId" id="branchId">
+                        <select multiple class="form-control" name="branch[]" id="branchId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Department</label>
-                        <select  class="form-control" name="departmentId" id="departmentId">
+                        <select multiple class="form-control" name="department[]" id="departmentId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Designation</label>
-                        <select  class="form-control" name="designationId" id="designationId">
+                        <select multiple class="form-control" name="designation[]" id="designationId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Position</label>
+                        <select multiple class="form-control" name="position[]" id="positionId">
                         </select>
                     </div>
                 </div>
-
-                <div class="row form-group">
+                <div class="row margin-top-10">
                     <div class="col-sm-2">
-                        <label>Position</label>
-                        <select multiple class="form-control" name="position" id="positionId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <label>service Type</label>
-                        <select multiple class="form-control" name="serviceType" id="serviceTypeId">
+                        <label>Service Type</label>
+                        <select multiple class="form-control" name="serviceType[]" id="serviceTypeId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Service Event Type</label>
-                        <select multiple class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                        <select multiple class="form-control" name="serviceEventType[]" id="serviceEventTypeId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Employee Type</label>
-                        <select multiple class="form-control" name="employeeType" id="employeeTypeId">
+                        <select multiple class="form-control" name="employeeType[]" id="employeeTypeId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Employee</label>
                         <select multiple class="form-control" name="employee[]" id="employeeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Gender</label>
+                        <select multiple class="form-control" name="gender[]" id="genderId">
                         </select>
                     </div>
                 </div>

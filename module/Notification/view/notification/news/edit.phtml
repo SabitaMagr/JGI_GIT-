@@ -37,23 +37,17 @@ $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-//print_r($form->get('companyId')->getValue());
-//die();
 
 $form->prepare();
 ?>
 
 <script>
-    document.companyEditVal='<?php echo ($form->get('companyId')->getValue())?$form->get('companyId')->getValue():-1;?>';
-    document.branchEditVal='<?php echo ($form->get('branchId')->getValue())?$form->get('branchId')->getValue():-1;?>';
-    document.departmentEditVal='<?php echo ($form->get('departmentId')->getValue())?$form->get('departmentId')->getValue():-1;?>';
-    document.designationEditVal='<?php echo ($form->get('designationId')->getValue())?$form->get('designationId')->getValue():-1;?>';
-    document.employeeEditVal='<?=$selectedEmployees?>';
     document.deleteFile = '<?= $this->url('news', ['action' => 'deleteFile']); ?>';
     document.pullNewsFile = '<?= $this->url('news', ['action' => 'pullNewsFile', 'id' => $id]); ?>';
     document.uploadUrl = '<?= $this->url('news', ['action' => 'fileUpload']); ?>';
     document.pushNewsFileLink = '<?php echo $this->url('news', ['action' => 'pushNewsFile', 'id' => $id]); ?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.newsToList =<?php echo json_encode($newsToList); ?>
 </script>
 
 <div class="page-bar">
@@ -123,7 +117,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
                     <div class="col-sm-4">
-
                         <div class="form-group">
                             <?php print $this->formLabel($newsTitle); ?>
                             <span class="required" aria-required="true">*</span>
@@ -139,7 +132,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($newsEdesc); ?>
                     <?php print $this->formElementErrors()->render($newsEdesc, ['class' => 'help-block']); ?>
                 </div>
-                
+
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="row">
@@ -162,7 +155,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>     
                         </div>  
 
-                       </div>
+                    </div>
                 </div>
 
 
@@ -173,49 +166,47 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
 
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-2">
                         <label>Company</label>
-                        <select  class="form-control" name="companyId" id="companyId">
+                        <select multiple class="form-control" name="company[]" id="companyId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Branch</label>
-                        <select  class="form-control" name="branchId" id="branchId">
+                        <select multiple class="form-control" name="branch[]" id="branchId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Department</label>
-                        <select  class="form-control" name="departmentId" id="departmentId">
+                        <select multiple class="form-control" name="department[]" id="departmentId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Designation</label>
-                        <select  class="form-control" name="designationId" id="designationId">
+                        <select multiple class="form-control" name="designation[]" id="designationId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Position</label>
+                        <select multiple class="form-control" name="position[]" id="positionId">
                         </select>
                     </div>
                 </div>
-                
-                
-                <div class="row form-group">
+                <div class="row margin-top-10">
                     <div class="col-sm-2">
-                        <label>Position</label>
-                        <select multiple class="form-control" name="position" id="positionId">
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <label>service Type</label>
-                        <select multiple class="form-control" name="serviceType" id="serviceTypeId">
+                        <label>Service Type</label>
+                        <select multiple class="form-control" name="serviceType[]" id="serviceTypeId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Service Event Type</label>
-                        <select multiple class="form-control" name="serviceEventType" id="serviceEventTypeId">
+                        <select multiple class="form-control" name="serviceEventType[]" id="serviceEventTypeId">
                         </select>
                     </div>
                     <div class="col-sm-2">
                         <label>Employee Type</label>
-                        <select multiple class="form-control" name="employeeType" id="employeeTypeId">
+                        <select multiple class="form-control" name="employeeType[]" id="employeeTypeId">
                         </select>
                     </div>
                     <div class="col-sm-2">
@@ -223,8 +214,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <select multiple class="form-control" name="employee[]" id="employeeId">
                         </select>
                     </div>
+                    <div class="col-sm-2">
+                        <label>Gender</label>
+                        <select multiple class="form-control" name="gender[]" id="genderId">
+                        </select>
+                    </div>
                 </div>
-
 
                 <div class="row">
                     <div class=" col-md-6 form-group">
@@ -235,11 +230,11 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </tr>
                         </table>
                     </div>
-                        <div class="col-md-3">
-                            <button id="addDocument" type="button" class="btn btn-primary">
-                                Add
-                            </button>
-                        </div>
+                    <div class="col-md-3">
+                        <button id="addDocument" type="button" class="btn btn-primary">
+                            Add
+                        </button>
+                    </div>
                 </div>
 
 
