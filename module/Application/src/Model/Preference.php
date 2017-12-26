@@ -11,5 +11,6 @@ class Preference {
     public $accountLockTrySecond = 3600;
     public $forcePasswordRenew = false;
     public $forcePasswordRenewDay = 45;
+    public $showAddressBook = true;
 
 }

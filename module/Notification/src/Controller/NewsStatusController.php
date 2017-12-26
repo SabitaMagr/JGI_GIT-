@@ -24,6 +24,7 @@ class NewsStatusController extends AbstractActionController {
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
     }
+
     public function viewAction() {
         $id = $this->params()->fromRoute('id');
 

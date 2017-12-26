@@ -26,7 +26,6 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
-use Notification\Controller\NewsController;
 
 class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterface {
 
@@ -72,6 +71,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             Controller\ApiController::class . "-employee",
             Controller\ApiController::class . "-setup",
             AuthController::class . '-changePwd',
+            \Setup\Controller\EmployeeController::class . '-contact',
         ];
         $app = $event->getApplication();
         $auth = $app->getServiceManager()->get('AuthService');
@@ -105,7 +105,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
             $menus = $identity['menus'];
             $allowFlag = false;
-            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService', 'registerAttendance','news-status'];
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService', 'registerAttendance', 'news-status'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }

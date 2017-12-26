@@ -100,16 +100,18 @@
 
                             <li>
                                 <a class=""  href="#" id="passwordChangeMenu">
-                                    <i class="icon-user"></i> Change Password </a>
+                                    <i class="icon-lock"></i> Change Password </a>
                             </li>
-                            <li>
-                                <a href="<?php echo $this->url('employee', ['action' => 'contact']); ?>">
-                                    <i class="icon-key"></i>Address Book </a>
-                            </li>
+                            <?php if ($showAddressBook): ?>
+                                <li>
+                                    <a href="<?php echo $this->url('employee', ['action' => 'contact']); ?>">
+                                        <i class="icon-magnifier"></i>Address Book </a>
+                                </li>
+                            <?php endif; ?>
                             <?php if ($allowRegisterAttendance) { ?>
                                 <li>
                                     <a href="<?php echo $this->url('registerAttendance', ['action' => 'checkout']); ?>">
-                                        <i class="icon-key"></i>Check <?= ($registerAttendance == 'OUT') ? 'Out' : 'In' ?> </a>
+                                        <i class="icon-login"></i>Check <?= ($registerAttendance == 'OUT') ? 'Out' : 'In' ?> </a>
                                 </li>
                             <?php } ?>
                             <li>

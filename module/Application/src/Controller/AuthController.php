@@ -162,7 +162,8 @@ class AuthController extends AbstractActionController {
                         "menus" => $menus,
                         'register_attendance' => $attendanceType,
                         'allow_register_attendance' => $allowRegisterAttendance,
-                        'acl' => (array) $acl
+                        'acl' => (array) $acl,
+                        'preference' => (array) $preference
                     ]);
 
 
