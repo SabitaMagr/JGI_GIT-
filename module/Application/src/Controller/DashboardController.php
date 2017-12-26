@@ -23,6 +23,7 @@ class DashboardController extends AbstractActionController {
     private $userId;
     private $employeeId;
     private $auth;
+    private $noticeType;
 
     public function __construct(ContainerInterface $container) {
         $this->container = $container;
@@ -32,6 +33,7 @@ class DashboardController extends AbstractActionController {
 
         $this->auth = new AuthenticationService();
         $this->employeeId = $this->auth->getStorage()->read()['employee_id'];
+        $this->noticeType = $this->auth->getStorage()->read()['preference']['noticeType'];
     }
 
     public function indexAction() {
@@ -44,7 +46,8 @@ class DashboardController extends AbstractActionController {
             'todoList' => $this->getTodoList(),
             "newEmployees" => $dashboardRepo->fetchJoinedEmployees(),
             "leftEmployees" => $dashboardRepo->fetchLeftEmployees(),
-            "employeeNews"=>$dashboardRepo->fetchAllNews($this->employeeId)
+            "employeeNews" => $dashboardRepo->fetchAllNews($this->employeeId),
+            "noticeType" => $this->noticeType
         ];
         $view = new ViewModel(Helper::addFlashMessagesToArray($this, $data));
         $view->setTemplate("dashboard/employee");

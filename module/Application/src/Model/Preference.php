@@ -12,5 +12,6 @@ class Preference {
     public $forcePasswordRenew = false;
     public $forcePasswordRenewDay = 45;
     public $showAddressBook = true;
+    public $noticeType = 'M'; //['S','M']
 
 }

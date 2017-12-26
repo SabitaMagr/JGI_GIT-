@@ -135,28 +135,21 @@ class DashboardRepository implements RepositoryInterface {
     }
 
     public function fetchEmployeeNotice($employeeId = null) {
-        if ($employeeId == null) {
-            $sql = "SELECT N.NEWS_ID,
-                      N.NEWS_DATE,
-                      TO_CHAR(N.NEWS_DATE, 'DD') NEWS_DAY,
-                      TO_CHAR(N.NEWS_DATE, 'Mon YYYY') NEWS_MONTH_YEAR,
-                      N.NEWS_TITLE,
-                      N.NEWS_EDESC
-                    FROM HRIS_NEWS N
-                    WHERE ( N.NEWS_DATE   > TRUNC(SYSDATE) - 1 ) AND N.STATUS = 'Y'";
-        } else {
-            $sql = "SELECT N.NEWS_ID,
-                      N.NEWS_DATE,
-                      TO_CHAR(N.NEWS_DATE, 'DD') NEWS_DAY,
-                      TO_CHAR(N.NEWS_DATE, 'Mon YYYY') NEWS_MONTH_YEAR,
-                      N.NEWS_TITLE,
-                      N.NEWS_EDESC
-                    FROM HRIS_NEWS N,(SELECT COMPANY_ID,BRANCH_ID,DEPARTMENT_ID, DESIGNATION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID ={$employeeId}) E
-                    WHERE ( N.NEWS_DATE   > TRUNC(SYSDATE) - 1 ) 
-                    AND N.STATUS = 'Y'
-                    ORDER BY N.NEWS_DATE ASC";
+        $where = "";
+        if ($employeeId != null) {
+            $where = "AND {$employeeId} IN (SELECT EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE WHERE NEWS_ID = N.NEWS_ID)";
         }
-
+        $sql = "SELECT N.NEWS_ID,
+                      N.NEWS_DATE,
+                      TO_CHAR(N.NEWS_DATE, 'DD') NEWS_DAY,
+                      TO_CHAR(N.NEWS_DATE, 'Mon YYYY') NEWS_MONTH_YEAR,
+                      N.NEWS_TITLE,
+                      N.NEWS_EDESC
+                    FROM HRIS_NEWS N   
+                    WHERE ( TRUNC(SYSDATE) BETWEEN TRUNC(NEWS_DATE) AND TRUNC(NEWS_EXPIRY_DT) ) 
+                    AND N.STATUS = 'E'
+                    {$where}
+                    ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
 

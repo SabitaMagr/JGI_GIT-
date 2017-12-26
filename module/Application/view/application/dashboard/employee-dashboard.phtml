@@ -173,42 +173,44 @@ $missPunchUrl = $this->url('myattendance', ['action' => 'index', 'id' => 8]);
 </div>
 
 <!--news panel start-->
-<div class="row">
-    <?php foreach ($employeeNews as $newsType) : ?>
-        <div class="col-sm-6 col-md-3 col-lg-3">
-            <div class="panel panel-green custompanel">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="hugo"> <?= $newsType['NEWS_TYPE_DESC']; ?> </div>
+<?php if ($noticeType == 'M'): ?>
+    <div class="row">
+        <?php foreach ($employeeNews as $newsType) : ?>
+            <div class="col-sm-6 col-md-3 col-lg-3">
+                <div class="panel panel-green custompanel">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="hugo"> <?= $newsType['NEWS_TYPE_DESC']; ?> </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Slider News Goes Here -->
-                <div class="notification">
-                    <ul class="list-group fixed-height panel-group">
+                    <!-- Slider News Goes Here -->
+                    <div class="notification">
+                        <ul class="list-group fixed-height panel-group">
 
-                        <?php
-                        foreach ($newsType['news'] as $newsData) {
-                            ?>
-                            <li class="list-group-item"> <a href="<?= $this->url('news-status', ['action' => 'view', 'id' => $newsData['NEWS_ID']]) ?>"><?= $newsData['NEWS_TITLE'] ?></a></li>
                             <?php
-                        }
-                        ?>
-                    </ul>                            
-                </div>
-                <a href="<?= $this->url('news-status', ['action' => 'allNewsTypeList', 'id' => $newsType['NEWS_TYPE_ID']]); ?>">
-                    <div class="panel-footer">
-                        <span class="pull-left"> View Details</span>
-                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                        <div class="clearfix"></div>
-
+                            foreach ($newsType['news'] as $newsData) {
+                                ?>
+                                <li class="list-group-item"> <a href="<?= $this->url('news-status', ['action' => 'view', 'id' => $newsData['NEWS_ID']]) ?>"><?= $newsData['NEWS_TITLE'] ?></a></li>
+                                <?php
+                            }
+                            ?>
+                        </ul>                            
                     </div>
-                </a>
+                    <a href="<?= $this->url('news-status', ['action' => 'allNewsTypeList', 'id' => $newsType['NEWS_TYPE_ID']]); ?>">
+                        <div class="panel-footer">
+                            <span class="pull-left"> View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+
+                        </div>
+                    </a>
+                </div>
             </div>
-        </div>
-    <?php endforeach; ?>
-</div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
 <!--news panel end-->
 
 
@@ -275,57 +277,59 @@ $missPunchUrl = $this->url('myattendance', ['action' => 'index', 'id' => 8]);
 
 <div class="row">
     <div class="col-md-6">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="profile-content">
-                    <div class="row">
-                        <div class="col-md-12 noticeboard">
-                            <div class="portlet-body">
-                                <div class="portlet light boxborder">
-                                    <div class="portlet-title tabbable-line">
-                                        <div class="caption caption-md">
-                                            <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
-                                            <span class="caption-subject font-green-sharp bold">Notice Board</span>
+        <?php if ($noticeType == 'S'): ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="profile-content">
+                        <div class="row">
+                            <div class="col-md-12 noticeboard">
+                                <div class="portlet-body">
+                                    <div class="portlet light boxborder">
+                                        <div class="portlet-title tabbable-line">
+                                            <div class="caption caption-md">
+                                                <i class="fa fa-newspaper-o font-green-sharp" aria-hidden="true"></i>
+                                                <span class="caption-subject font-green-sharp bold">Notice Board</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="noticeboard-list row">
-                                        <ul>
-                                            <?php if (count($employeeNotice) > 0) : ?>
-                                                <?php foreach ($employeeNotice as $notice) : ?>
+                                        <div class="noticeboard-list row">
+                                            <ul>
+                                                <?php if (count($employeeNotice) > 0) : ?>
+                                                    <?php foreach ($employeeNotice as $notice) : ?>
+                                                        <li style="width:100%;">
+                                                            <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
+                                                                <span><?php print $notice['NEWS_DAY']; ?></span><br>
+                                                                <?php print $notice['NEWS_MONTH_YEAR']; ?>
+                                                            </div>
+                                                            <div class="notice-details col-xs-8 col-sm-10 col-md-10">
+                                                                <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
+                                                                <p><?php print $notice['NEWS_EDESC']; ?></p>
+                                                            </div>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                <?php else : ?>
                                                     <li style="width:100%;">
                                                         <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
-                                                            <span><?php print $notice['NEWS_DAY']; ?></span><br>
-                                                            <?php print $notice['NEWS_MONTH_YEAR']; ?>
+                                                            <span><?php print date('d'); ?></span><br>
+                                                            <?php print date('M Y'); ?>
                                                         </div>
                                                         <div class="notice-details col-xs-8 col-sm-10 col-md-10">
-                                                            <h5 class="title-color caption-subject  bold"><?php print $notice['NEWS_TITLE']; ?></h5>
-                                                            <p><?php print $notice['NEWS_EDESC']; ?></p>
+                                                            <h5 class="title-color caption-subject  bold">No notice found</h5>
+                                                            <p>Notice will be display when new notice is published</p>
                                                         </div>
                                                     </li>
-                                                <?php endforeach; ?>
-                                            <?php else : ?>
-                                                <li style="width:100%;">
-                                                    <div class="calendardate-box col-xs-4 col-sm-2 col-md-2">
-                                                        <span><?php print date('d'); ?></span><br>
-                                                        <?php print date('M Y'); ?>
-                                                    </div>
-                                                    <div class="notice-details col-xs-8 col-sm-10 col-md-10">
-                                                        <h5 class="title-color caption-subject  bold">No notice found</h5>
-                                                        <p>Notice will be display when new notice is published</p>
-                                                    </div>
-                                                </li>
-                                            <?php endif; ?>
-                                        </ul>
+                                                <?php endif; ?>
+                                            </ul>
+                                        </div>
+                                        <!--END TABS-->
                                     </div>
-                                    <!--END TABS-->
                                 </div>
                             </div>
+                            <!-- END PORTLET -->
                         </div>
-                        <!-- END PORTLET -->
                     </div>
                 </div>
             </div>
-        </div>
+        <?php endif; ?>
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <div id="lobilist">
