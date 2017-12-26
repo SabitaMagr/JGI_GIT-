@@ -3,10 +3,6 @@
     $(document).ready(function () {
         var $table = $('#employeeList');
 
-        var viewAction = '<a class="btn-edit" title="View" href="' + document.viewLink + '/#:EMPLOYEE_ID#" style="height:17px;"><i class="fa fa-search-plus"></i></a> ';
-        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:EMPLOYEE_ID#" style="height:17px;"> <i class="fa fa-edit"></i></a>';
-        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
-        var action = viewAction + editAction + deleteAction;
         var actiontemplateConfig = {
             view: {
                 'params': ["EMPLOYEE_ID"],

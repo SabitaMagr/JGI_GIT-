@@ -238,16 +238,30 @@ if ($this->messages) {
     document.urlSubmitExperience = '<?= $this->url('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
     document.urlSubmitTraining = '<?= $this->url('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 9]) ?>';
     document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
-    document.urlEmployeeList = '<?= $this->url("subordinate", ["action" => "index"]) ?>';
+    document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';
     document.currentTab = '<?= $tab ?>';
     document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>';
     document.fileTypes = <?= json_encode($filetypes); ?>;
     document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
     document.employeeId =<?= $id ?>;
     document.address =<?php echo json_encode($address); ?>;
-    document.urlSetupComplete = '<?php echo $this->url('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';</script>
+    document.urlSetupComplete = '<?php echo $this->url('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';
+    document.pullAcademicDetailLink = '<?php echo $this->url('subordinate', ['action' => 'pullAcademicDetail']); ?>';
+    document.pullExperienceDetailLink = '<?php echo $this->url('subordinate', ['action' => 'pullExperienceDetail']); ?>';
+    document.pullTrainingDetailLink = '<?php echo $this->url('subordinate', ['action' => 'pullTrainingDetail']); ?>';
+    document.submitQualificationDtlLink = '<?php echo $this->url('subordinate', ['action' => 'submitQualificationDtl']); ?>';
+    document.submitExperienceDtlLink = '<?php echo $this->url('subordinate', ['action' => 'submitExperienceDtl']); ?>';
+    document.submitTrainingDtlLink = '<?php echo $this->url('subordinate', ['action' => 'submitTrainingDtl']); ?>';
+    document.deleteQualificationDtlLink = '<?php echo $this->url('subordinate', ['action' => 'deleteQualificationDtl']); ?>';
+    document.deleteExperienceDtlLink = '<?php echo $this->url('subordinate', ['action' => 'deleteExperienceDtl']); ?>';
+    document.deleteTrainingDtlLink = '<?php echo $this->url('subordinate', ['action' => 'deleteTrainingDtl']); ?>';
+    document.pullEmployeeFileLink = '<?php echo $this->url('subordinate', ['action' => 'pullEmployeeFile']); ?>';
+    document.pushEmployeeProfileLink = '<?php echo $this->url('subordinate', ['action' => 'pushEmployeeProfile']); ?>';
+    document.pushEmployeeDocumentLink = '<?php echo $this->url('subordinate', ['action' => 'pushEmployeeDocument']); ?>';
+    document.pullEmployeeFileByEmpIdLink = '<?php echo $this->url('subordinate', ['action' => 'pullEmployeeFileByEmpId']); ?>';
+    document.dropEmployeeFileLink = '<?php echo $this->url('subordinate', ['action' => 'dropEmployeeFile']); ?>';</script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\subordinate')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <div id="quaConId" ng-app="hris" ng-controller="qualificationController">
     <div id="rootwizard" class="tabbable-custom">
