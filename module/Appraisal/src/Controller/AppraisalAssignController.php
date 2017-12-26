@@ -11,7 +11,6 @@ use Appraisal\Model\Stage;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Appraisal\Repository\AppraisalReportRepository;
 use Appraisal\Repository\SetupRepository;
-use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
 use Setup\Model\Branch;
@@ -165,27 +164,8 @@ class AppraisalAssignController extends AbstractActionController {
                 $employeeRow['APPRAISAL_EDESC'] = "";
             }
             $employeeRow['CURRENT_STAGE_NAME'] = $assignList['STAGE_EDESC'];
-
-            if ($assignList['IS_EXECUTIVE'] == 'Y') {
-                $employeeRow['EXECUTIVE'] = "Yes";
-//                $employeeRow['SUBORDINATES'] = [
-//                    $assignList['SUBORDINATE_1'],
-//                    $assignList['SUBORDINATE_2'],
-//                    $assignList['SUBORDINATE_3'],
-//                    $assignList['SUBORDINATE_4'],
-//                    $assignList['SUBORDINATE_5']
-//                ];
-            } else if ($assignList['IS_EXECUTIVE'] == 'N') {
-                $employeeRow['EXECUTIVE'] = "No";
-            } else {
-                $employeeRow['EXECUTIVE'] = "";
-            }
-                $employeeRow['SUBORDINATES'] = [];
-
             array_push($employeeList, $employeeRow);
         }
-//        print "<pre>";
-//        print_r($employeeList); die();
         return [
             "success" => true,
             "data" => $employeeList
@@ -219,7 +199,6 @@ class AppraisalAssignController extends AbstractActionController {
     }
 
     public function assignAppraisal($data) {
-        $error = "";
         $employeeId = (int) $data['employeeId'];
         $reviewerId = (int) $data['reviewerId'];
         $appraiserId = (int) $data['appraiserId'];
@@ -228,26 +207,6 @@ class AppraisalAssignController extends AbstractActionController {
         $altReviewerId = (int) $data['altReviewerId'];
         $superReviewerId = (int) $data['superReviewerId'];
         $stageId = (int) $data['stageId'];
-        $executiveEmployee = $data['executive'];
-        $subordinate = $data['subordinate'];
-
-        $subordinate1 = null;
-        $subordinate2 = null;
-        $subordinate3 = null;
-        $subordinate4 = null;
-        $subordinate5 = null;
-
-
-        if ($executiveEmployee == 'Y' && $subordinate) {
-            $i = 1;
-            foreach ($subordinate as $sub) {
-                $tempString = 'subordinate' . $i;
-                $$tempString = $sub;
-                $i++;
-            }
-        }
-
-
         $appraisalRepo = new SetupRepository($this->adapter);
         $appraisalDtl = $appraisalRepo->fetchById($appraisalId);
 
@@ -294,6 +253,7 @@ class AppraisalAssignController extends AbstractActionController {
         } else {
             $altAppraiserIdNew = $altAppraiserId;
         }
+//        print_r($superReviewerIdNew); die();
         $appraisalAssign = new AppraisalAssign();
         $employeePreDtl = $this->repository->getDetailByEmpAppraisalId($employeeId, $appraisalId);
         $appraisalReportRepo = new AppraisalReportRepository($this->adapter);
@@ -313,12 +273,6 @@ class AppraisalAssignController extends AbstractActionController {
             $appraisalAssign->branchId = $employeeDetail['BRANCH_ID'];
             $appraisalAssign->currentStageId = ($stageId == null) ? $appraisalDtl['CURRENT_STAGE_ID'] : $stageId;
             $appraisalAssign->status = 'E';
-            $appraisalAssign->isExecutive = $executiveEmployee;
-            $appraisalAssign->subordinate1 = $subordinate1;
-            $appraisalAssign->subordinate2 = $subordinate2;
-            $appraisalAssign->subordinate3 = $subordinate3;
-            $appraisalAssign->subordinate4 = $subordinate4;
-            $appraisalAssign->subordinate5 = $subordinate5;
             $this->repository->add($appraisalAssign);
         } else if ($employeePreDtl != null) {
             $id = $employeePreDtl['EMPLOYEE_ID'];
@@ -332,29 +286,18 @@ class AppraisalAssignController extends AbstractActionController {
             $appraisalAssign->modifiedBy = $this->employeeId;
             $appraisalAssign->currentStageId = ($stageId == null) ? null : $stageId;
             $appraisalAssign->status = 'E';
-            $appraisalAssign->isExecutive = $executiveEmployee;
-            $appraisalAssign->subordinate1 = $subordinate1;
-            $appraisalAssign->subordinate2 = $subordinate2;
-            $appraisalAssign->subordinate3 = $subordinate3;
-            $appraisalAssign->subordinate4 = $subordinate4;
-            $appraisalAssign->subordinate5 = $subordinate5;
             $this->repository->edit($appraisalAssign, [$employeeId, $appraisalId]);
         }
         $appraisalAssign->appraisalId = $appraisalId;
         $appraisalAssign->createdBy = $this->employeeId;
         if ($appraiserQuestionNum > 0 && $appraiserIdNew != null && $appraiserIdNew != "") {
-            try {
-                HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this);
-            } catch (Exception $e) {
-                $error = $e->getMessage();
-            }
+            HeadNotification::pushNotification(NotificationEvents::MONTHLY_APPRAISAL_ASSIGNED, $appraisalAssign, $this->adapter, $this);
         }
         return [
             "success" => true,
             "data" => [
                 'CURRENT_STAGE_NAME' => $appraisalDtl['STAGE_EDESC']
-            ],
-            "error" => $error
+            ]
         ];
     }
 

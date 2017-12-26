@@ -226,6 +226,77 @@ EOT;
         return Helper::extractDbData($result);
     }
 
+    public function branchWiseEmployeeMonthReport($branchId) {
+        $sql = <<<EOT
+                SELECT J.*,
+                  JE.FIRST_NAME AS FIRST_NAME,
+                    JE.MIDDLE_NAME AS MIDDLE_NAME,
+                    JE.LAST_NAME AS LAST_NAME,
+                    CONCAT(CONCAT(CONCAT(JE.FIRST_NAME,' '),CONCAT(JE.MIDDLE_NAME, '')),JE.LAST_NAME) AS FULL_NAME,
+                  JM.MONTH_EDESC
+                FROM
+                  (SELECT I.EMPLOYEE_ID,
+                    I.MONTH_ID ,
+                    SUM(I.ON_LEAVE)    AS ON_LEAVE,
+                    SUM (I.IS_PRESENT) AS IS_PRESENT,
+                    SUM(I.IS_ABSENT)   AS IS_ABSENT
+                  FROM
+                    (SELECT E.EMPLOYEE_ID AS EMPLOYEE_ID,
+                      (SELECT M.MONTH_ID
+                      FROM HRIS_MONTH_CODE M
+                      WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                      ) AS MONTH_ID,
+                      (
+                  CASE 
+                    WHEN AD.DAYOFF_FLAG ='N'
+                    AND AD.HOLIDAY_ID  IS NULL
+                    AND AD.TRAINING_ID IS NULL
+                    AND AD.TRAVEL_ID   IS NULL
+                    AND AD.IN_TIME     IS NULL
+                    AND AD.LEAVE_ID IS NOT NULL
+                    THEN 1
+                    ELSE 0
+                  END) AS ON_LEAVE,
+                      (
+                  CASE
+                    WHEN AD.DAYOFF_FLAG ='N'
+                    AND AD.LEAVE_ID    IS NULL
+                    AND AD.HOLIDAY_ID  IS NULL
+                    AND AD.TRAINING_ID IS NULL
+                    AND AD.TRAVEL_ID   IS NULL
+                    AND AD.IN_TIME     IS NOT NULL
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_PRESENT,
+                     (
+                  CASE
+                    WHEN AD.DAYOFF_FLAG ='N'
+                    AND AD.LEAVE_ID   IS NULL
+                    AND AD.HOLIDAY_ID  IS NULL
+                    AND AD.TRAINING_ID IS NULL
+                    AND AD.TRAVEL_ID   IS NULL
+                    AND AD.IN_TIME     IS NULL
+                    THEN 1
+                    ELSE 0
+                  END) AS IS_ABSENT
+                    FROM HRIS_ATTENDANCE_DETAIL AD
+                    JOIN HRIS_EMPLOYEES E
+                    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
+                    WHERE E.BRANCH_ID=$branchId
+                    ) I
+                  GROUP BY I.EMPLOYEE_ID,
+                    I.MONTH_ID
+                  ) J
+                JOIN HRIS_EMPLOYEES JE
+                ON (J.EMPLOYEE_ID = JE.EMPLOYEE_ID)
+                JOIN HRIS_MONTH_CODE JM
+                ON (J.MONTH_ID = JM.MONTH_ID)
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
     public function departmentMonthReport() {
         $sql = <<<EOT
             SELECT J.*,
@@ -882,8 +953,8 @@ EOT;
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Months::class, NULL, [Months::FROM_DATE, Months::TO_DATE], NULL, NULL, NULL, 'M', true), false);
         $select->from(['M' => Months::TABLE_NAME])
                 ->join(['FY' => FiscalYear::TABLE_NAME], 'FY.' . FiscalYear::FISCAL_YEAR_ID . '=M.' . Months::FISCAL_YEAR_ID, ["MONTH_NAME" => new Expression('CONCAT(FY.FISCAL_YEAR_NAME,M.MONTH_EDESC)')], "left");
-        $select->where(["M.STATUS='E'", "FY.STATUS='E'","TRUNC(SYSDATE)>M.FROM_DATE"]);
-        $select->order("M." . Months::FROM_DATE." DESC");
+        $select->where(["M.STATUS='E'", "FY.STATUS='E'", "TRUNC(SYSDATE)>M.FROM_DATE"]);
+        $select->order("M." . Months::FROM_DATE . " DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
 
         $result = $statement->execute();

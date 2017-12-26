@@ -14,11 +14,9 @@ class Question extends Model{
     const APPRAISER_FLAG = "APPRAISER_FLAG";
     const APPRAISEE_FLAG = "APPRAISEE_FLAG";
     const REVIEWER_FLAG = "REVIEWER_FLAG";
-    const HR_FLAG = "HR_FLAG";
     const APPRAISEE_RATING = "APPRAISEE_RATING";
     const REVIEWER_RATING = "REVIEWER_RATING";
     const APPRAISER_RATING = "APPRAISER_RATING";
-    const HR_RATING = "HR_RATING";
     const MAX_VALUE = "MAX_VALUE";
     const MIN_VALUE = "MIN_VALUE";
     const ORDER_NO = "ORDER_NO";
@@ -44,11 +42,9 @@ class Question extends Model{
     public $appraiseeFlag;
     public $appraiserFlag;
     public $reviewerFlag;
-    public $hrFlag;
     public $appraiseeRating;
     public $appraiserRating;
     public $reviewerRating;
-    public $hrRating;
     public $maxValue;
     public $minValue;
     public $orderNo;
@@ -75,11 +71,9 @@ class Question extends Model{
         'appraiseeFlag'=>self::APPRAISEE_FLAG,
         'appraiserFlag'=>self::APPRAISER_FLAG,
         'reviewerFlag'=>self::REVIEWER_FLAG,
-        'hrFlag'=>self::HR_FLAG,
         'appraiseeRating'=>self::APPRAISEE_RATING,
         'appraiserRating'=>self::APPRAISER_RATING,
         'reviewerRating'=>self::REVIEWER_RATING,
-        'hrRating'=>self::HR_RATING,
         'minValue'=>self::MIN_VALUE,
         'maxValue'=>self::MAX_VALUE,
         'answerType'=>self::ANSWER_TYPE,

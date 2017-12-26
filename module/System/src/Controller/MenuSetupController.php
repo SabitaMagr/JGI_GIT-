@@ -7,7 +7,6 @@ use Application\Helper\Helper;
 use Exception;
 use System\Form\MenuSetupForm;
 use System\Model\MenuSetup;
-use System\Model\RolePermission;
 use System\Repository\MenuSetupRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
@@ -70,79 +69,6 @@ class MenuSetupController extends AbstractActionController {
                     "list" => $list,
                     "roleList" => $roleList
         ]);
-    }
-
-    public function addAction() {
-        $request = $this->getRequest();
-        $this->initializeForm();
-
-        $menuList = EntityHelper::getTableKVList($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID, [MenuSetup::MENU_NAME], [MenuSetup::STATUS => "E"]);
-        $menuList[-1] = "None";
-        ksort($menuList);
-
-        if ($request->isPost()) {
-            $menuSetup = new MenuSetup();
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $menuSetup->exchangeArrayFromForm($this->form->getData());
-                $menuSetup->menuId = ((int) Helper::getMaxId($this->adapter, MenuSetup::TABLE_NAME, MenuSetup::MENU_ID)) + 1;
-                $menuSetup->createdDt = Helper::getcurrentExpressionDate();
-                $menuSetup->createdBy = $this->employeeId;
-                $menuSetup->status = 'E';
-                $this->repository->add($menuSetup);
-
-                $this->flashmessenger()->addMessage("Menu Successfully Added!!!");
-                return $this->redirect()->toRoute("menusetup");
-            }
-        }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'menuList' => $menuList
-        ]);
-    }
-
-    public function editAction() {
-        $id = (int) $this->params()->fromRoute("id");
-        $this->initializeForm();
-        $request = $this->getRequest();
-
-        $menuList = $this->repository->getMenuList($id);
-
-        $menuSetup = new MenuSetup();
-        if (!$request->isPost()) {
-            $detail = $this->repository->fetchById($id)->getArrayCopy();
-            $menuSetup->exchangeArrayFromDB($detail);
-            $this->form->bind($menuSetup);
-        } else {
-            $this->form->setData($request->getPost());
-            if ($this->form->isValid()) {
-                $menuSetup->exchangeArrayFromForm($this->form->getData());
-                $menuSetup->modifiedDt = Helper::getcurrentExpressionDate();
-                $menuSetup->modifiedBy = $this->employeeId;
-                unset($menuSetup->createdDt);
-                unset($menuSetup->menuId);
-                unset($menuSetup->status);
-                $this->repository->edit($menuSetup, $id);
-                $this->flashmessenger()->addMessage("Menu Successfully Updated!!!");
-                return $this->redirect()->toRoute("menusetup");
-            }
-        }
-        return Helper::addFlashMessagesToArray($this, [
-                    'id' => $id,
-                    'form' => $this->form,
-                    'menuList' => $menuList
-        ]);
-    }
-
-    public function deleteAction() {
-        $id = (int) $this->params()->fromRoute("id");
-
-        if (!$id) {
-            return $this->redirect()->toRoute('menusetup');
-        }
-        $this->repository->delete($id);
-        $this->flashmessenger()->addMessage("Menu Successfully Deleted!!!");
-        return $this->redirect()->toRoute('menusetup');
     }
 
     public function menuAction() {
@@ -233,6 +159,24 @@ class MenuSetupController extends AbstractActionController {
                 "data" => $data,
                 "menuData" => $menuData,
                 "menuIndexErr" => $menuIndexErr
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function menuDeleteAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $menuId = $data['menuId'];
+            $this->repository->delete($menuId);
+            return new JsonModel([
+                "success" => true,
+                "data" => $this->menu(),
+                "message" => "Menu deleted successfully.",
+                "error" => null
             ]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);

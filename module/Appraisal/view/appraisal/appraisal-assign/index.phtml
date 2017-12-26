@@ -73,9 +73,9 @@ $this->headScript()
                     <div class="col-sm-4 col-lg-offset-4">
                         <label height="45"></label>
                         <button id="reset" class="btn default btn-sm pull-right">
-                            Reset
-                            <i class="fa fa-refresh"></i>
-                        </button>
+                        Reset
+                        <i class="fa fa-refresh"></i>
+                    </button>
                         <button ng-click="view()" id="viewEmployees" class="btn btn-default btn-sm pull-right">
                             Search
                             <i class="fa fa-search"></i>
@@ -107,13 +107,10 @@ $this->headScript()
                             Alt. Reviewer Assigned
                         </th>
                         <th>
+                            Super Reviewer Assigned
+                        </th>
+                        <th>
                             Current Stage
-                        </th>
-                        <th>
-                            Supervisor
-                        </th>
-                        <th>
-                            Subordinates
                         </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -149,13 +146,10 @@ $this->headScript()
                             <span ng-bind="employee.ALT_REVIEWER_NAME"></span>
                         </td>
                         <td>                       
+                            <span ng-bind="employee.SUPER_REVIEWER_NAME"></span>
+                        </td>
+                        <td>                       
                             <span ng-bind="employee.CURRENT_STAGE_NAME"></span>
-                        </td>
-                        <td>                       
-                            <span ng-bind="employee.EXECUTIVE"></span>
-                        </td>
-                        <td>                       
-                            <span ng-bind="employee.SUBORDINATES"></span>
                         </td>
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -242,12 +236,28 @@ $this->headScript()
                 </div>
             </div>
             <div class="col-sm-3">
+                <label for="superReviewerId" style="width:100%;">Super Reviewer</label>
+                <div class="row">
+                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                        <select name="superReviewerId" required="required" id="superReviewerId" class="form-control" ng-options="superReviewer.name for superReviewer in superReviewerOptions track by superReviewer.id" ng-model="superReviewerSelected">
+                        </select>   
+                    </div>
+                    <div class="col-md-3 rlPadding reviewerWrap" style="padding:0px 0px !important;">
+                        <a class="btn-edit" href="javascript::" ng-click="open('S2')" style="height:22px; padding: 0px 7px !important;">
+                            <i class="fa fa-search" style="height:17px;"></i>
+                        </a>
+                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                            <input class="" ng-model="superReviewerAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="superReviewerAssign"/>
+                            <span></span>
+                        </label>
+                    </div>  
+                </div>
                 <label for="stageId" style="width:100%; margin-top:2%;">Current Stage</label>
                 <div class="row">
                     <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
                         <select name="stageId" required="required" id="stageId" class="form-control" >
-                            <?php foreach ($stages as $key => $value) { ?>
-                                <option value="<?= $key; ?>"><?= $value; ?></option>
+                            <?php foreach($stages as $key=>$value){ ?>
+                            <option value="<?= $key; ?>"><?= $value; ?></option>
                             <?php } ?>
                         </select>   
                     </div>
@@ -261,51 +271,7 @@ $this->headScript()
                         </label>
                     </div>  
                 </div>
-
-                <label for="isExecutive" style="width:100%; margin-top:2%;">Supervisor Level</label>
-                <div class="row" >
-                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">    
-
-                        <div class="md-radio-inline">
-                            <div class="md-radio">
-                                <input  type="radio" value="Y" name="executive" id="executiveYes" class="md-radiobtn radioButton" ng-click="checkSupervisor()">
-                                <label for="executiveYes">
-                                    <span></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span> Yes
-                                </label>
-                            </div>
-                            <div class="md-radio">
-                                <input checked="checked" type="radio" value="N" name="executive" id="executiveNo" class="md-radiobtn radioButton" ng-click="checkSupervisor()">
-                                <label for="executiveNo">
-                                    <span></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span> No
-                                </label>
-                            </div>                           
-                        </div>
-
-                    </div>
-                    <div class="col-md-3 rlPadding reviewerWrap" style="padding:0px 0px !important;">
-                    </div>  
-                </div>
             </div>
-            
-            <div class="col-sm-3"  ng-show="SupervisorDiv">
-                <label for="isExecutive" style="width:100%; margin-top:2%;">Suborrdinte Employees</label>
-                
-                <div class="row">
-                    <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
-                        <select name="subordinate1" required="required" id="subordinate1" class="form-control" ng-options="subordinate.name for subordinate in subordinateOptions track by subordinate.id" ng-model="subordinate1">
-                        </select>   
-                    </div>
-                </div>
-                
-                
-                
-            </div>
-            
-            
             <div class="col-sm-2 " id="assignBtnWrap" ng-show="showHideAssignBtn">
                 <label height="45"></label>
                 <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search mt-ladda-btn ladda-button mt-progress-demo">
@@ -325,31 +291,31 @@ $this->headScript()
             <div class="modal-body"> 
             <div class="row">
             <div class="col-sm-4">
-            <label for="branchId">Company</label>
-            <select class="form-control" name="company" id="recomCompanyId">
-            </select>
+                <label for="branchId">Company</label>
+                <select class="form-control" name="company" id="recomCompanyId">
+                </select>
             </div>
             <div class="col-sm-4">
-            <label for="branchId">Branch</label>
-            <select class="form-control" name="branchId" id="recomBranchId">
-            </select>
+                <label for="branchId">Branch</label>
+                <select class="form-control" name="branchId" id="recomBranchId">
+                </select>
             </div>
             <div class="col-sm-4">
-            <label for="branchId">Department</label>
-            <select class="form-control" name="department" id="recomDepartmentId">
-            </select>
+                <label for="branchId">Department</label>
+                <select class="form-control" name="department" id="recomDepartmentId">
+                </select>
             </div>
             </div>
             <div class="row" style="margin-top:10px;">
             <div class="col-sm-4">
-            <label for="branchId">Designation</label>
-            <select class="form-control" name="designation" id="recomDesignationId">
-            </select>
+                <label for="branchId">Designation</label>
+                <select class="form-control" name="designation" id="recomDesignationId">
+                </select>
             </div>
             <div class="col-sm-4">
-            <label for="branchId">Employee</label>
-            <select class="form-control" name="employee" id="recomEmployeeId">
-            </select>
+                <label for="branchId">Employee</label>
+                <select class="form-control" name="employee" id="recomEmployeeId">
+                </select>
             </div>
             </div>
             <div class="row">                   

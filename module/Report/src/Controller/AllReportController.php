@@ -7,6 +7,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use Report\Repository\ReportRepository;
+use Setup\Model\Branch;
 use Setup\Model\Department;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Element\Select;
@@ -37,6 +38,16 @@ class AllReportController extends AbstractActionController {
                         'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
                     ],
                     'departmentId' => $departmentId
+        ]);
+    }
+
+    public function branchWiseAction() {
+        $branchId = (int) $this->params()->fromRoute('id1');
+        return Helper::addFlashMessagesToArray($this, [
+                    'comBraDepList' => [
+                        'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME], [Branch::STATUS => "E"])
+                    ],
+                    'branchId' => $branchId
         ]);
     }
 
@@ -142,6 +153,26 @@ class AllReportController extends AbstractActionController {
                     throw new Exception("parameter departmentId is required");
                 }
                 $reportData = $this->reportRepo->departmentWiseEmployeeMonthReport($departmentId);
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function branchWiseMonthReportAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $branchId = $postedData['branchId'];
+                if (!isset($branchId)) {
+                    throw new Exception("parameter branchId is required");
+                }
+                $reportData = $this->reportRepo->branchWiseEmployeeMonthReport($branchId);
                 return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");

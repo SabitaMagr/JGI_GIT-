@@ -1,41 +1,45 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        $("#appraisalTypeTable").kendoGrid({
-            excel: {
-                fileName: "AppraisalTypeList.xlsx",
-                filterable: true,
-                allPages: true
+        var $table = $('#table');
+        var actiontemplateConfig = {
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': ["APPRAISAL_TYPE_ID"],
+                'url': document.editLink
             },
-            dataSource: {
-                data: document.types,
-                page: 1,
-            },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: true,
-            rowTemplate: kendo.template($("#rowTemplate").html()),
-            columns: [
-                {field: "APPRAISAL_TYPE_EDESC", title: "Appraisal(in Eng.)",width:180},
-                {field: "APPRAISAL_TYPE_NDESC", title: "Appraisal(in Nep.)",width:180},
-                {title: "Action",width:100}
-            ],
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': ["APPRAISAL_TYPE_ID"],
+                'url': document.deleteLink
+            }
+        };
+        var columns = [
+            {field: "APPRAISAL_TYPE_CODE", title: "Code", width: 150},
+            {field: "APPRAISAL_TYPE_EDESC", title: "Name", width: 150},
+            {field: "DURATION_TYPE_DETAIL", title: "Duration Type", width: 150},
+            {field: ["APPRAISAL_TYPE_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
+        ];
+        var map = {
+            'APPRAISAL_TYPE_CODE': 'Code',
+            'APPRAISAL_TYPE_EDESC': 'Name',
+            'DURATION_TYPE_DETAIL': 'Duration Type',
+        }
+        app.initializeKendoGrid($table, columns);
+
+        app.searchTable($table, ['APPRAISAL_TYPE_EDESC']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, map, 'Appraisal Type List.xlsx');
         });
-        
-        app.searchTable('appraisalTypeTable',['APPRAISAL_TYPE_EDESC','APPRAISAL_TYPE_NDESC','SERVICE_TYPE_NAME']);
-        
-        app.pdfExport(
-                'appraisalTypeTable',
-                {
-                    'APPRAISAL_TYPE_EDESC': 'Appraisal Type in Eng',
-                    'APPRAISAL_TYPE_NDESC': 'Appraisal Type in Nep',
-                });
-        
-        $("#export").click(function (e) {
-            var grid = $("#appraisalTypeTable").data("kendoGrid");
-            grid.saveAsExcel();
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, map, 'Appraisal Type List.pdf');
+        });
+
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
+
         });
     });
 })(window.jQuery);
