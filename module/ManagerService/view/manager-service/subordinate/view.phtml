@@ -140,13 +140,15 @@ if ($this->messages) {
     <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
 </div>
 <div id="quaConId">   
-    <div class="row esetup" style="margin-top:10px;">
-        <div class="col-md-12" style="">
-            <a class="btn btn-success pull-right" href="<?= $this->url("subordinate", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
-                <i class="fa fa-edit"></i>
-            </a>
-        </div>   
-    </div>    
+    <?php if ($acl['ALLOW_UPDATE'] == 'Y'): ?>
+        <div class="row esetup" style="margin-top:10px;">
+            <div class="col-md-12" style="">
+                <a class="btn btn-success pull-right" href="<?= $this->url("subordinate", ["action" => "edit"]) ?>/<?php echo $id; ?>/1"> Edit
+                    <i class="fa fa-edit"></i>
+                </a>
+            </div>
+        </div>    
+    <?php endif; ?>
     <div id="rootwizard" class="tabbable-custom">
         <div class="personal-info">     
             <p><i class="fa fa-user ticon" aria-hidden="true"></i>

@@ -13,6 +13,7 @@ $this->headScript()
     document.viewLink = '<?= $this->url("subordinate", ["action" => "view"]) ?>';
     document.editLink = '<?= $this->url("subordinate", ["action" => "edit"]) ?>';
     document.deleteLink = '<?= $this->url("subordinate", ["action" => "delete"]) ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\subordinate')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

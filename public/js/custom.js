@@ -1231,8 +1231,8 @@ window.app = (function ($, toastr, App) {
 
             var viewLink = "";
             if (typeof config.view !== 'undefined') {
-                var iParams = config.update['params'];
-                var url = config.update['url'];
+                var iParams = config.view['params'];
+                var url = config.view['url'];
                 for (var i in iParams) {
                     url += `/#: ${iParams[i]} #`;
                 }
