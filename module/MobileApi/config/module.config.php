@@ -15,7 +15,7 @@ return [
             'api-auth' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/api/auth[/:action[/:id]]',
+                    'route' => '/mobile/api/auth[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -29,7 +29,7 @@ return [
             'api-leave' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/api/leave[/:action[/:id]]',
+                    'route' => '/mobile/api/leave[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -43,7 +43,7 @@ return [
             'api-employee' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/api/employee[/:action[/:id]]',
+                    'route' => '/mobile/api/employee[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -57,7 +57,7 @@ return [
             'api-notification' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/api/notification[/:action[/:id]]',
+                    'route' => '/mobile/api/notification[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
