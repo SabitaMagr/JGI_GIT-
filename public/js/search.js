@@ -106,8 +106,27 @@
                     }
                 });
                 return values;
+            },
+            reset: function () {
+                $.each(this.ids, function (key, value) {
+                    if (typeof value !== "undefined") {
+                        $('#' + value).val(-1).change();
+                    }
+                });
+                if (this.resetEvent !== null) {
+                    this.resetEvent();
+                }
+            },
+            resetEvent: null,
+            registerResetEvent: function (fn) {
+                this.resetEvent = fn;
             }
         };
+        (function () {
+            $('.hris-reset-btn').on('click', function () {
+                document.searchManager.reset();
+            });
+        })();
 
         /*
          * Search javascript code starts here
@@ -309,14 +328,6 @@
         };
         changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId");
 
-        $("#reset").on("click", function () {
-            changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId");
-            if (typeof document.ids !== "undefined") {
-                $.each(document.ids, function (key, value) {
-                    $("#" + key).val(value).change();
-                });
-            }
-        });
         /* setup change events */
 
 

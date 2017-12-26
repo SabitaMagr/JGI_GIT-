@@ -71,13 +71,14 @@ class EmployeeController extends HrisController {
         ]);
     }
 
-     public function contactAction() {
+    public function contactAction() {
         return $this->stickFlashMessagesTo([
                     'searchValues' => ApplicationHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
         ]);
     }
+
     public function initializeMultipleForm() {
         $builder = new AnnotationBuilder();
         $formTabOne = new HrEmployeesFormTabOne();
@@ -432,7 +433,8 @@ class EmployeeController extends HrisController {
                     'empTrainingList' => $empTrainingList,
                     'jobHistoryList' => $jobHistoryList,
                     "employeeFile" => $employeeFile,
-                    "assetDetails" => $assetDetails
+                    "assetDetails" => $assetDetails,
+                    'acl' => $this->acl,
         ]);
     }
 

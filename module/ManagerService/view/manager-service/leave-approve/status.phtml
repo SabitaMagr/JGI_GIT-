@@ -21,7 +21,6 @@ $this->headScript()
 
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.ids =<?php echo json_encode(["leaveId" => -1, "leaveRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("leaveapprove", ["action" => "view"]) ?>';
     document.pullLeaveRequestStatusListLink = '<?= $this->url("leaveapprove", ["action" => "pullLeaveRequestStatusList"]) ?>';

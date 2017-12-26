@@ -1,11 +1,10 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        window.app.UIConfirmations();
         $('select').select2();
- });
+    });
 })(window.jQuery, window.app);
-  
+
 angular.module('hris', ['ui.bootstrap'])
         .controller('appraisalAssignController', function ($scope, $uibModal, $log, $document) {
             $scope.employeeList = [];
@@ -33,10 +32,10 @@ angular.module('hris', ['ui.bootstrap'])
                         departmentId: departmentId,
                         designationId: designationId,
                         employeeId: employeeId,
-                        appraisalId:appraisalId,
-                        companyId:companyId,
-                        serviceTypeId:serviceTypeId,
-                        positionId:positionId
+                        appraisalId: appraisalId,
+                        companyId: companyId,
+                        serviceTypeId: serviceTypeId,
+                        positionId: positionId
                     }
                 }).then(function (success) {
                     App.unblockUI("#hris-page-content");
@@ -54,7 +53,7 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
             var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-            if(parseInt(employeeIdFromParam)>0){
+            if (parseInt(employeeIdFromParam) > 0) {
                 angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
                 $scope.view();
             }
@@ -82,10 +81,10 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.appraiserSelected = $scope.appraiserOptions[0]
             $scope.reviewerOptions = document.employeeList;
             $scope.reviewerSelected = $scope.reviewerOptions[0];
-            
+
             var test = [];
-            jQuery.merge(test,document.employeeList);
-            test.unshift({'id':'-1','name':'none'});
+            jQuery.merge(test, document.employeeList);
+            test.unshift({'id': '-1', 'name': 'none'});
             $scope.altAppraiserOptions = test;
             $scope.altAppraiserSelected = $scope.altAppraiserOptions[0]
             $scope.altReviewerOptions = test;
@@ -107,12 +106,12 @@ angular.module('hris', ['ui.bootstrap'])
                             $scope.role = 'Reviewer';
                         } else if (parseInt(type) == 3) {
                             $scope.role = 'Appraiser';
-                        }else if(type == 'A2'){
-                            $scope.role='Alternativce Reviewer';
-                        }else if(type=='A3'){
-                            $scope.role='Alternative Appraiser';
-                        }else if(type=='S2'){
-                            $scope.role=='Super Reviewer';
+                        } else if (type == 'A2') {
+                            $scope.role = 'Alternativce Reviewer';
+                        } else if (type == 'A3') {
+                            $scope.role = 'Alternative Appraiser';
+                        } else if (type == 'S2') {
+                            $scope.role == 'Super Reviewer';
                         }
                         $scope.cancel = function () {
                             $uibModalInstance.dismiss('cancel');
@@ -129,8 +128,8 @@ angular.module('hris', ['ui.bootstrap'])
                                     branchId: branchId,
                                     departmentId: departmentId,
                                     designationId: designationId,
-                                    companyId:companyId,
-                                    employeeId:employeeId
+                                    companyId: companyId,
+                                    employeeId: employeeId
                                 }
                             }).then(function (success) {
                                 console.log("Employee list for success", success.data);
@@ -155,16 +154,16 @@ angular.module('hris', ['ui.bootstrap'])
                         $scope.appraiserSelected = $scope.appraiserOptions[0];
                         $scope.appraiserAssign = true;
                         $scope.showHideAssignBtn = true;
-                    }else if (type === 'A2') { //for alternate reviewer
-                        selectedItem.unshift({'id':'-1','name':'none'});
+                    } else if (type === 'A2') { //for alternate reviewer
+                        selectedItem.unshift({'id': '-1', 'name': 'none'});
                         $scope.altReviewerOptions = selectedItem;
                         $scope.altReviewerSelected = $scope.altReviewerOptions[0];
                     } else if (type === 'A3') { //for alternate appraiser
-                        selectedItem.unshift({'id':'-1','name':'none'});
+                        selectedItem.unshift({'id': '-1', 'name': 'none'});
                         $scope.altAppraiserOptions = selectedItem;
                         $scope.altAppraiserSelected = $scope.altAppraiserOptions[0];
                     } else if (type === 'S2') { //for super reviewer
-                        selectedItem.unshift({'id':'-1','name':'none'});
+                        selectedItem.unshift({'id': '-1', 'name': 'none'});
                         $scope.superReviewerOptions = selectedItem;
                         $scope.superReviewerSelected = $scope.superReviewerOptions[0];
                     }
@@ -178,7 +177,7 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
             $scope.checkReportingHierarchy = function () {
-                if ($scope.reviewerAssign || $scope.appraiserAssign || $scope.altAppraiserAssign || $scope.altReviewerAssign||$scope.superReviewerAssign||$scope.stageAssign) {
+                if ($scope.reviewerAssign || $scope.appraiserAssign || $scope.altAppraiserAssign || $scope.altReviewerAssign || $scope.superReviewerAssign || $scope.stageAssign) {
                     $scope.showHideAssignBtn = true;
                 } else {
                     $scope.showHideAssignBtn = false;
@@ -188,32 +187,32 @@ angular.module('hris', ['ui.bootstrap'])
                 var reviewerElement = angular.element(document.getElementById('reviewerId'));
                 var reviewerId = reviewerElement.val();
                 var reviewerName = document.getElementById('reviewerId').options[document.getElementById('reviewerId').selectedIndex].text;
-                
+
                 var appraiserElement = angular.element(document.getElementById('appraiserId'));
                 var appraiserId = appraiserElement.val();
                 var appraiserName = document.getElementById('appraiserId').options[document.getElementById('appraiserId').selectedIndex].text;
-               
+
                 var appraisalElement = angular.element(document.getElementById('appraisalId'));
                 var appraisalId = appraisalElement.val();
                 var appraisalName = document.getElementById('appraisalId').options[document.getElementById('appraisalId').selectedIndex].text;
-                
+
                 var altAppraiserElement = angular.element(document.getElementById('altAppraiserId'));
                 var altAppraiserId = altAppraiserElement.val();
                 var altAppraiserName = document.getElementById('altAppraiserId').options[document.getElementById('altAppraiserId').selectedIndex].text;
-               
+
                 var altReviewerElement = angular.element(document.getElementById('altReviewerId'));
                 var altReviewerId = altReviewerElement.val();
                 var altReviewerName = document.getElementById('altReviewerId').options[document.getElementById('altReviewerId').selectedIndex].text;
                 console.log(appraiserId);
-                
+
                 var superReviewerElement = angular.element(document.getElementById('superReviewerId'));
                 var superReviewerId = superReviewerElement.val();
                 var superReviewerName = document.getElementById('superReviewerId').options[document.getElementById('superReviewerId').selectedIndex].text;
-                
+
                 var stageElement = angular.element(document.getElementById('stageId'));
                 var stageId = stageElement.val();
                 var stageName = document.getElementById('stageId').options[document.getElementById('stageId').selectedIndex].text;
-                
+
                 var errorFlagR = false;
                 if ($scope.reviewerAssign) {
                     if (reviewerId == "?") {
@@ -244,10 +243,10 @@ angular.module('hris', ['ui.bootstrap'])
 
                 if (!errorFlagR && !errorFlagA) {
                     App.blockUI({target: "#hris-page-content"});
-                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName,stageId,stageName);
+                    submitRecord(reviewerId, reviewerName, appraiserId, appraiserName, appraisalId, appraisalName, altAppraiserName, altAppraiserId, altReviewerName, altReviewerId, superReviewerId, superReviewerName, stageId, stageName);
                 }
             };
-            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName,appraisalId,appraisalName,altAppraiserName,altAppraiserId,altReviewerName,altReviewerId,superReviewerId,superReviewerName,stageId,stageName) {
+            var submitRecord = function (reviewerId, reviewerName, appraiserId, appraiserName, appraisalId, appraisalName, altAppraiserName, altAppraiserId, altReviewerName, altReviewerId, superReviewerId, superReviewerName, stageId, stageName) {
                 var promises = [];
 
                 if (!$scope.reviewerAssign) {
@@ -255,15 +254,15 @@ angular.module('hris', ['ui.bootstrap'])
                 } else {
                     var reviewerId1 = reviewerId;
                 }
-                
+
                 if (!$scope.altReviewerAssign) {
-                    var altReviewerId1=null;
+                    var altReviewerId1 = null;
                 } else {
                     var altReviewerId1 = altReviewerId;
                 }
-                
+
                 if (!$scope.superReviewerAssign) {
-                    var superReviewerId1=null;
+                    var superReviewerId1 = null;
                 } else {
                     var superReviewerId1 = superReviewerId;
                 }
@@ -273,19 +272,19 @@ angular.module('hris', ['ui.bootstrap'])
                 } else {
                     var appraiserId1 = appraiserId;
                 }
-                
+
                 if (!$scope.altAppraiserAssign) {
                     var altAppraiserId1 = null;
                 } else {
                     var altAppraiserId1 = altAppraiserId;
                 }
-                
+
                 if (!$scope.stageAssign) {
                     var stageId1 = null;
                 } else {
                     var stageId1 = stageId;
                 }
-                
+
                 for (var index in $scope.employeeList) {
                     if ($scope.employeeList[index].checked) {
                         promises.push(window.app.pullDataById(document.url, {
@@ -295,10 +294,10 @@ angular.module('hris', ['ui.bootstrap'])
                                 reviewerId: reviewerId1,
                                 appraiserId: appraiserId1,
                                 appraisalId: appraisalId,
-                                altAppraiserId:altAppraiserId1,
-                                altReviewerId:altReviewerId1,
-                                superReviewerId:superReviewerId1,
-                                stageId:stageId1
+                                altAppraiserId: altAppraiserId1,
+                                altReviewerId: altReviewerId1,
+                                superReviewerId: superReviewerId1,
+                                stageId: stageId1
                             }
                         }));
                     }
@@ -314,7 +313,7 @@ angular.module('hris', ['ui.bootstrap'])
                                     } else {
                                         var reviewerNameNew = reviewerName;
                                     }
-                                    
+
                                     $scope.employeeList[index].REVIEWER_NAME = reviewerNameNew;
                                     $scope.employeeList[index].APPRAISAL_EDESC = appraisalName;
                                 }
@@ -322,16 +321,16 @@ angular.module('hris', ['ui.bootstrap'])
                                     if ($scope.employeeList[index].EMPLOYEE_ID == altReviewerId) {
                                         var altReviewerNameNew = null;
                                     } else {
-                                        var altReviewerNameNew = (altReviewerName=="none")?"":altReviewerName;
+                                        var altReviewerNameNew = (altReviewerName == "none") ? "" : altReviewerName;
                                     }
                                     $scope.employeeList[index].ALT_REVIEWER_NAME = altReviewerNameNew;
                                 }
-                                
+
                                 if ($scope.superReviewerAssign) {
                                     if ($scope.employeeList[index].EMPLOYEE_ID == superReviewerId) {
                                         var superReviewerNameNew = null;
                                     } else {
-                                        var superReviewerNameNew = (superReviewerName=="none")?"":superReviewerName;
+                                        var superReviewerNameNew = (superReviewerName == "none") ? "" : superReviewerName;
                                     }
                                     $scope.employeeList[index].SUPER_REVIEWER_NAME = superReviewerNameNew;
                                 }
@@ -349,7 +348,7 @@ angular.module('hris', ['ui.bootstrap'])
                                     if ($scope.employeeList[index].EMPLOYEE_ID == altAppraiserId) {
                                         var altAppraiserNameNew = null;
                                     } else {
-                                        var altAppraiserNameNew = (altAppraiserName=='none')?"":altAppraiserName;
+                                        var altAppraiserNameNew = (altAppraiserName == 'none') ? "" : altAppraiserName;
                                     }
                                     $scope.employeeList[index].ALT_APPRAISER_NAME = altAppraiserNameNew;
                                 }
@@ -360,8 +359,8 @@ angular.module('hris', ['ui.bootstrap'])
                                         var stageNameNew = stageName;
                                     }
                                     $scope.employeeList[index].CURRENT_STAGE_NAME = stageNameNew;
-                                }else if($scope.employeeList[index].CURRENT_STAGE_NAME==null){
-                                    $scope.employeeList[index].CURRENT_STAGE_NAME = success[0].data.CURRENT_STAGE_NAME; 
+                                } else if ($scope.employeeList[index].CURRENT_STAGE_NAME == null) {
+                                    $scope.employeeList[index].CURRENT_STAGE_NAME = success[0].data.CURRENT_STAGE_NAME;
                                 }
                                 console.log(success[0].data.CURRENT_STAGE_NAME);
                             }

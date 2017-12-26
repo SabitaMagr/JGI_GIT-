@@ -46,6 +46,5 @@
             var grid = $("#appraisalSetupTable").data("kendoGrid");
             grid.saveAsExcel();
         });
-        window.app.UIConfirmations();
     });
 })(window.jQuery);

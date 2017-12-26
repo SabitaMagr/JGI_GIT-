@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
@@ -36,18 +37,13 @@ use Setup\Repository\RecommendApproveRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
 
-class Subordinate extends AbstractActionController {
+class Subordinate extends HrisController {
 
-    private $adapter;
     private $config;
-    private $repo;
-    private $sessionArray;
-    private $repository;
     private $employeeFileRepo;
     private $jobHistoryRepo;
-    private $form;
+    private $subordinateRepo;
     private $formOne;
     private $formTwo;
     private $formThree;
@@ -55,36 +51,32 @@ class Subordinate extends AbstractActionController {
     private $formSix;
     private $formSeven;
     private $formEight;
-    private $loggedIdEmployeeId;
 
-    public function __construct(AdapterInterface $adapter, ConfigInterface $config, StorageInterface $storage) {
-        $this->adapter = $adapter;
-        $this->config = $config;
-
-        $this->repo = new SubordinateRepo($adapter);
-        $this->sessionArray = $storage->read();
-
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage, ConfigInterface $config) {
+        parent::__construct($adapter, $storage);
         $this->repository = new EmployeeRepository($adapter);
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
+        $this->subordinateRepo = new SubordinateRepo($this->adapter);
         $this->jobHistoryRepo = new JobHistoryRepository($this->adapter);
-
-        $this->loggedIdEmployeeId = $this->sessionArray['employee_id'];
+        $this->config = $config;
     }
 
     public function indexAction() {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $employeeList = $this->repo->fetchSubordinates($this->sessionArray['employee_id']);
+                $employeeList = $this->subordinateRepo->fetchSubordinates($this->employeeId);
                 return new CustomViewModel(['success' => true, 'data' => $employeeList, 'error' => '']);
             } catch (Exception $e) {
                 return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return Helper::addFlashMessagesToArray($this, []);
+        return $this->stickFlashMessagesTo([
+                    'acl' => $this->acl,
+        ]);
     }
 
-    public function initializeForm() {
+    public function initializeMultipleForm() {
         $builder = new AnnotationBuilder();
         $formTabOne = new HrEmployeesFormTabOne();
         $formTabTwo = new HrEmployeesFormTabTwo();
@@ -128,7 +120,7 @@ class Subordinate extends AbstractActionController {
         }
 
 
-        $this->initializeForm();
+        $this->initializeMultipleForm();
         $request = $this->getRequest();
 
         $formOneModel = new HrEmployeesFormTabOne();
@@ -167,11 +159,11 @@ class Subordinate extends AbstractActionController {
                         if ($id == 0) {
                             $id = ((int) Helper::getMaxId($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID")) + 1;
                             $formOneModel->employeeId = $id;
-                            $formOneModel->createdBy = $this->loggedIdEmployeeId;
+                            $formOneModel->createdBy = $this->employeeId;
                             $formOneModel->createdDt = Helper::getcurrentExpressionDate();
                             $this->repository->add($formOneModel);
                         } else {
-                            $formOneModel->modifiedBy = $this->loggedIdEmployeeId;
+                            $formOneModel->modifiedBy = $this->employeeId;
                             $formOneModel->modifiedDt = Helper::getcurrentExpressionDate();
                             $this->repository->edit($formOneModel, $id);
                         }
@@ -186,7 +178,7 @@ class Subordinate extends AbstractActionController {
                         $formTwoModel->famSpouseBirthDate = Helper::getExpressionDate($formTwoModel->famSpouseBirthDate);
                         $formTwoModel->famSpouseWeddingAnniversary = Helper::getExpressionDate($formTwoModel->famSpouseWeddingAnniversary);
 
-                        $formTwoModel->modifiedBy = $this->loggedIdEmployeeId;
+                        $formTwoModel->modifiedBy = $this->employeeId;
                         $formTwoModel->modifiedDt = Helper::getcurrentExpressionDate();
                         $this->repository->edit($formTwoModel, $id);
                         return $this->redirect()->toRoute('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 3]);
@@ -199,7 +191,7 @@ class Subordinate extends AbstractActionController {
                         $formThreeModel->idDrivingLicenseExpiry = Helper::getExpressionDate($formThreeModel->idDrivingLicenseExpiry);
                         $formThreeModel->idCitizenshipIssueDate = Helper::getExpressionDate($formThreeModel->idCitizenshipIssueDate);
                         $formThreeModel->idPassportExpiry = Helper::getExpressionDate($formThreeModel->idPassportExpiry);
-                        $formThreeModel->modifiedBy = $this->loggedIdEmployeeId;
+                        $formThreeModel->modifiedBy = $this->employeeId;
                         $formThreeModel->modifiedDt = Helper::getcurrentExpressionDate();
                         $this->repository->edit($formThreeModel, $id);
                         return $this->redirect()->toRoute('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 4]);
@@ -209,7 +201,7 @@ class Subordinate extends AbstractActionController {
                     $this->formFour->setData($postData);
                     if ($this->formFour->isValid()) {
                         $formFourModel->exchangeArrayFromForm($this->formFour->getData());
-                        $formFourModel->modifiedBy = $this->loggedIdEmployeeId;
+                        $formFourModel->modifiedBy = $this->employeeId;
                         $formFourModel->modifiedDt = Helper::getcurrentExpressionDate();
                         $this->repository->edit($formFourModel, $id);
                         /*
@@ -230,17 +222,17 @@ class Subordinate extends AbstractActionController {
                             if ($shiftId != $getEmpShiftDtl['SHIFT_ID']) {
                                 $shiftAssignClone->status = 'D';
                                 $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
-                                $shiftAssignClone->modifiedBy = $this->loggedIdEmployeeId;
+                                $shiftAssignClone->modifiedBy = $this->employeeId;
                                 $shiftAssignRepo->edit($shiftAssignClone, [$id, $getEmpShiftDtl['SHIFT_ID']]);
 
                                 $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
-                                $shiftAssign->createdBy = $this->loggedIdEmployeeId;
+                                $shiftAssign->createdBy = $this->employeeId;
                                 $shiftAssign->status = 'E';
                                 $shiftAssignRepo->add($shiftAssign);
                             }
                         } else {
                             $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
-                            $shiftAssign->createdBy = $this->loggedIdEmployeeId;
+                            $shiftAssign->createdBy = $this->employeeId;
                             $shiftAssign->status = 'E';
                             $shiftAssignRepo->add($shiftAssign);
                         }
@@ -339,7 +331,7 @@ class Subordinate extends AbstractActionController {
             'PER' => 'Percentage'
         );
 
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'tab' => $tab,
                     "id" => $id,
                     'formOne' => $this->formOne,
@@ -375,7 +367,8 @@ class Subordinate extends AbstractActionController {
                     'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
                     'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-                    'customRender' => Helper::renderCustomView()
+                    'customRender' => Helper::renderCustomView(),
+                    'acl' => $this->acl
         ]);
     }
 
@@ -385,7 +378,7 @@ class Subordinate extends AbstractActionController {
             return $this->redirect()->toRoute('employee', ['action' => 'index']);
         }
 
-        $this->initializeForm();
+        $this->initializeMultipleForm();
         $empQualificationRepo = new EmployeeQualificationRepository($this->adapter);
         $empExperienceRepo = new EmployeeExperienceRepository($this->adapter);
         $empTrainingRepo = new EmployeeTrainingRepository($this->adapter);
@@ -417,7 +410,7 @@ class Subordinate extends AbstractActionController {
         $assetDetails = $assetRepo->fetchAssetByEmployee($id);
 
 
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'formOne' => $this->formOne,
                     'formTwo' => $this->formTwo,
                     'formThree' => $this->formThree,
@@ -438,7 +431,8 @@ class Subordinate extends AbstractActionController {
                     'empTrainingList' => $empTrainingList,
                     'jobHistoryList' => $jobHistoryList,
                     "employeeFile" => $employeeFile,
-                    "assetDetails" => $assetDetails
+                    "assetDetails" => $assetDetails,
+                    'acl' => $this->acl
         ]);
     }
 

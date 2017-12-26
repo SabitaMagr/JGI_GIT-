@@ -796,7 +796,7 @@ window.app = (function ($, toastr, App) {
         return Math.floor(days);
     }
 
-    var searchTable = function (kendoId, searchFields, Hidden) {
+    var searchTable = function (kendoId, searchFields, isHidden) {
         var $kendoId = null;
         if (kendoId instanceof jQuery) {
             $kendoId = kendoId;
@@ -812,10 +812,8 @@ window.app = (function ($, toastr, App) {
 
         $searchHtml.insertBefore($kendoId);
 
-        if (typeof Hidden !== "undefined") {
-            if(Hidden==true){
+        if (typeof isHidden !== "undefined" && isHidden) {
             $("#searchFieldDiv").hide();
-            }
         }
         $("#kendoSearchField").keyup(function () {
             var val = $(this).val();
@@ -1231,6 +1229,19 @@ window.app = (function ($, toastr, App) {
             if (typeof config === "undefined")
                 throw {message: "no config provided"};
 
+            var viewLink = "";
+            if (typeof config.view !== 'undefined') {
+                var iParams = config.view['params'];
+                var url = config.view['url'];
+                for (var i in iParams) {
+                    url += `/#: ${iParams[i]} #`;
+                }
+                var viewLink = `
+                <a class="btn-edit" title="View" href="${url}" style="height:17px;">
+                    <i class="fa fa-search-plus"></i>
+                </a>`;
+            }
+
             var editLink = "";
             if (config.update['ALLOW_UPDATE'] === "Y") {
                 var iParams = config.update['params'];
@@ -1256,7 +1267,7 @@ window.app = (function ($, toastr, App) {
                 </a>`;
             }
 
-            var template = editLink + deleteLink;
+            var template = viewLink + editLink + deleteLink;
             return template;
         } catch (e) {
             console.log("error", e.message);

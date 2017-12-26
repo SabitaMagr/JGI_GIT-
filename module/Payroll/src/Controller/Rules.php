@@ -122,4 +122,16 @@ class Rules extends HrisController {
         ];
     }
 
+    public function deleteAction() {
+        $request = $this->getRequest();
+        $id = (int) $this->params()->fromRoute("id");
+        if ($id === 0) {
+            return $this->redirect()->toRoute('rules');
+        }
+        $this->repository->delete($id);
+
+        $this->flashmessenger()->addMessage("Rule successfully deleted.");
+        return $this->redirect()->toRoute("rules");
+    }
+
 }

@@ -8,7 +8,6 @@ use Application\Helper\Helper;
 use Application\Repository\MonthRepository;
 use Appraisal\Model\AppraisalStatus;
 use Appraisal\Repository\AppraisalAssignRepository;
-use Appraisal\Repository\AppraisalReportRepository;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Repository\HeadingRepository;
 use Appraisal\Repository\QuestionRepository;
@@ -21,9 +20,11 @@ use SelfService\Repository\AppraisalCompetenciesRepo;
 use SelfService\Repository\AppraisalKPIRepository;
 use ServiceQuestion\Repository\EmpServiceQuestionDtlRepo;
 use Setup\Repository\EmployeeRepository;
+use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\ServiceQuestionRepository;
 use System\Repository\MenuSetupRepository;
 use System\Repository\UserSetupRepository;
+use Travel\Repository\TravelStatusRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Adapter\Driver\ResultInterface;
@@ -110,9 +111,6 @@ class RestfulService extends AbstractRestfulController {
                     case "updateCurUserPwd";
                         $responseData = $this->updateCurUserPwd($postedData->data);
                         break;
-                    case "pullAppraisalViewList":
-                        $responseData = $this->pullAppraisalViewList($postedData->data);
-                        break;
                     case "headingList":
                         $responseData = $this->headingList();
                         break;
@@ -121,6 +119,9 @@ class RestfulService extends AbstractRestfulController {
                         break;
                     case "pullEmployeeDetailById":
                         $responseData = $this->pullEmployeeDetailById($postedData->data);
+                        break;
+                    case "pullTravelRequestStatusList":
+                        $responseData = $this->pullTravelRequestStatusList($postedData->data);
                         break;
                     default:
                         throw new Exception("action not found");
@@ -613,57 +614,99 @@ class RestfulService extends AbstractRestfulController {
         ];
     }
 
-    public function pullAppraisalViewList($data) {
-        $appraisalStatusRepo = new AppraisalReportRepository($this->adapter);
+    public function pullTravelRequestStatusList($data) {
+        $travelStatusRepository = new TravelStatusRepository($this->adapter);
+        if (key_exists('recomApproveId', $data)) {
+            $recomApproveId = $data['recomApproveId'];
+        } else {
+            $recomApproveId = null;
+        }
+        $result = $travelStatusRepository->getFilteredRecord($data, $recomApproveId);
 
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
-        $employeeId = $data['employeeId'];
-        $companyId = $data['companyId'];
-        $branchId = $data['branchId'];
-        $departmentId = $data['departmentId'];
-        $designationId = $data['designationId'];
-        $positionId = $data['positionId'];
-        $serviceTypeId = $data['serviceTypeId'];
-        $serviceEventTypeId = $data['serviceEventTypeId'];
-        $appraisalId = $data['appraisalId'];
-        $appraisalStageId = $data['appraisalStageId'];
-        $userId = $data['userId'];
-        $reportType = $data['reportType'];
-
-        $result = $appraisalStatusRepo->fetchFilterdData($fromDate, $toDate, $employeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $appraisalId, $appraisalStageId, $reportType, $userId);
-        $list = [];
+        $recordList = [];
+        $getRoleDtl = function($recommender, $approver, $recomApproveId) {
+            if ($recomApproveId == $recommender) {
+                return 'RECOMMENDER';
+            } else if ($recomApproveId == $approver) {
+                return 'APPROVER';
+            } else {
+                return null;
+            }
+        };
+        $getRole = function($recommender, $approver, $recomApproveId) {
+            if ($recomApproveId == $recommender) {
+                return 2;
+            } else if ($recomApproveId == $approver) {
+                return 3;
+            } else {
+                return null;
+            }
+        };
         $fullName = function($id) {
-            if ($id != null) {
-                $empRepository = new EmployeeRepository($this->adapter);
-                $empDtl = $empRepository->fetchById($id);
-                $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
-                return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+            $empRepository = new EmployeeRepository($this->adapter);
+            $empDtl = $empRepository->fetchById($id);
+            $empMiddleName = ($empDtl['MIDDLE_NAME'] != null) ? " " . $empDtl['MIDDLE_NAME'] . " " : " ";
+            return $empDtl['FIRST_NAME'] . $empMiddleName . $empDtl['LAST_NAME'];
+        };
+
+        $getValue = function($status) {
+            if ($status == "RQ") {
+                return "Pending";
+            } else if ($status == 'RC') {
+                return "Recommended";
+            } else if ($status == "R") {
+                return "Rejected";
+            } else if ($status == "AP") {
+                return "Approved";
+            } else if ($status == "C") {
+                return "Cancelled";
+            }
+        };
+        $getRequestType = function($requestType) {
+            if ($requestType == 'ad') {
+                return "Advance";
+            } else if ($requestType == 'ep') {
+                return "Expense";
             } else {
                 return "";
             }
         };
-        $getValue = function($val) {
-            if ($val != null) {
-                if ($val == 'Y')
-                    return 'Yes';
-                else if ($val == 'N')
-                    return 'No';
-            }else {
-                return "";
-            }
-        };
+
         foreach ($result as $row) {
-            $row['APPRAISER_NAME'] = $fullName($row['APPRAISER_ID']);
-            $row['ALT_APPRAISER_NAME'] = $fullName($row['ALT_APPRAISER_ID']);
-            $row['REVIEWER_NAME'] = $fullName($row['REVIEWER_ID']);
-            $row['ALT_REVIEWER_NAME'] = $fullName($row['ALT_REVIEWER_ID']);
-            $row['APPRAISEE_AGREE'] = $getValue($row['APPRAISEE_AGREE']);
-            array_push($list, $row);
+            $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
+            $empRecommendApprove = $recommendApproveRepository->fetchById($row['EMPLOYEE_ID']);
+
+            $status = $getValue($row['STATUS']);
+            $statusId = $row['STATUS'];
+            $approvedDT = $row['APPROVED_DATE'];
+
+            $authRecommender = ($statusId == 'RQ' || $statusId == 'C') ? $row['RECOMMENDER'] : $row['RECOMMENDED_BY'];
+            $authApprover = ($statusId == 'RC' || $statusId == 'RQ' || $statusId == 'C' || ($statusId == 'R' && $approvedDT == null)) ? $row['APPROVER'] : $row['APPROVED_BY'];
+
+            $roleID = $getRole($authRecommender, $authApprover, $recomApproveId);
+            $recommenderName = $fullName($authRecommender);
+            $approverName = $fullName($authApprover);
+
+            $role = [
+                'APPROVER_NAME' => $approverName,
+                'RECOMMENDER_NAME' => $recommenderName,
+                'YOUR_ROLE' => $getRoleDtl($authRecommender, $authApprover, $recomApproveId),
+                'ROLE' => $roleID
+            ];
+            if ($empRecommendApprove['RECOMMEND_BY'] == $empRecommendApprove['APPROVED_BY']) {
+                $role['YOUR_ROLE'] = 'Recommender\Approver';
+                $role['ROLE'] = 4;
+            }
+            $new_row = array_merge($row, ['STATUS' => $status, 'REQUESTED_TYPE' => $getRequestType($row['REQUESTED_TYPE'])]);
+            $final_record = array_merge($new_row, $role);
+            array_push($recordList, $final_record);
         }
+
         return [
-            "success" => true,
-            'data' => $list
+            "success" => "true",
+            "data" => $recordList,
+            "num" => count($recordList),
+            "recomApproveId" => $recomApproveId
         ];
     }
 

@@ -1,58 +1,48 @@
 <?php
+
 namespace Appraisal\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Controller\HrisController;
 use Application\Helper\Helper;
+use Appraisal\Form\TypeForm;
 use Appraisal\Model\Type;
 use Appraisal\Repository\TypeRepository;
-use Appraisal\Form\TypeForm;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Authentication\AuthenticationService;
-use Setup\Model\ServiceType;
-use Application\Helper\EntityHelper;
+use Exception;
 use Setup\Repository\EmployeeRepository;
+use Zend\Authentication\Storage\StorageInterface;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 
-class TypeController extends AbstractActionController{
-    private $repository;
-    private $adapter;
-    private $form;
-    private $userId;
-    private $employeeId;
-            
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository =  new TypeRepository($adapter);
-        
-        $authService = new AuthenticationService();
-        $this->employeeId = $authService->getStorage()->read()['employee_id'];
-        $this->userId = $authService->getStorage()->read()['user_id'];
+class TypeController extends HrisController {
+
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(TypeRepository::class);
+        $this->initializeForm(TypeForm::class);
     }
-    
-    public function initializeForm(){
-        $typeForm = new TypeForm();
-        $builder = new AnnotationBuilder();
-        if (!$this->form) {
-            $this->form = $builder->createForm($typeForm);
-        }
-    }
-    
+
     public function indexAction() {
-        $list = $this->repository->fetchAll();
-        $result = [];
-        foreach($list as $data){
-            array_push($result, $data);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $list = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['list'=>$result]);
+        return Helper::addFlashMessagesToArray($this, [
+                    'acl' => $this->acl
+        ]);
     }
-    
-    public function addAction(){
-        $this->initializeForm();
+
+    public function addAction() {
         $employeeRepo = new EmployeeRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchById($this->employeeId);
-        
+
         $request = $this->getRequest();
-        if($request->isPost()){
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $type = new Type();
@@ -69,27 +59,25 @@ class TypeController extends AbstractActionController{
                 return $this->redirect()->toRoute("type");
             }
         }
-        return Helper::addFlashMessagesToArray($this, 
-                [
-                    'form'=>$this->form
-                ]);
-        
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'customRenderer' => Helper::renderCustomView()
+        ]);
     }
-    public function editAction(){
+
+    public function editAction() {
         $id = $this->params()->fromRoute('id');
-        if($id==0){
+        if ($id == 0) {
             $this->redirect()->toRoute('type');
         }
-        $this->initializeForm();
-        
         $request = $this->getRequest();
-        $type= new Type();
-        if(!$request->isPost()){
+        $type = new Type();
+        if (!$request->isPost()) {
             $type->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($type);
-        }else{
+        } else {
             $this->form->setData($request->getPost());
-            if($this->form->isValid()){
+            if ($this->form->isValid()) {
                 $type->exchangeArrayFromForm($this->form->getData());
                 $type->modifiedDate = Helper::getcurrentExpressionDate();
                 $type->modifiedBy = $this->employeeId;
@@ -99,17 +87,20 @@ class TypeController extends AbstractActionController{
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form'=>$this->form,
-            'id'=>$id
+                    'form' => $this->form,
+                    'id' => $id,
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
-    public function deleteAction(){
+
+    public function deleteAction() {
         $id = $this->params()->fromRoute('id');
-        if($id==0){
+        if ($id == 0) {
             $this->redirect()->toRoute('type');
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Appraisal Type Successfully Deleted!!!");
         return $this->redirect()->toRoute("type");
     }
+
 }

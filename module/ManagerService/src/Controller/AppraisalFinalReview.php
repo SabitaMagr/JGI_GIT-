@@ -2,6 +2,7 @@
 
 namespace ManagerService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\AppraisalHelper;
 use Application\Helper\CustomFormElement;
 use Application\Helper\EntityHelper;
@@ -13,6 +14,7 @@ use Appraisal\Model\Setup;
 use Appraisal\Model\Stage;
 use Appraisal\Repository\AppraisalAnswerRepository;
 use Appraisal\Repository\AppraisalAssignRepository;
+use Appraisal\Repository\AppraisalReportRepository;
 use Appraisal\Repository\AppraisalStatusRepository;
 use Appraisal\Repository\HeadingRepository;
 use ManagerService\Repository\AppraisalReviewRepository;
@@ -22,46 +24,80 @@ use SelfService\Repository\AppraisalCompetenciesRepo;
 use SelfService\Repository\AppraisalKPIRepository;
 use Setup\Repository\EmployeeRepository;
 use TheSeer\Tokenizer\Exception;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class AppraisalFinalReview extends AbstractActionController {
+class AppraisalFinalReview extends HrisController {
 
-    private $employeeId;
-    private $repository;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-        $this->repository = new AppraisalReviewRepository($adapter);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(AppraisalReviewRepository::class);
     }
 
     public function indexAction() {
-        $appraisalFormElement = new Select();
-        $appraisalFormElement->setName("Appraisal");
-        $appraisals = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC", NULL, FALSE, TRUE);
-        $appraisals1 = [-1 => "All Type"] + $appraisals;
-        $appraisalFormElement->setValueOptions($appraisals1);
-        $appraisalFormElement->setAttributes(["id" => "appraisalId", "class" => "form-control"]);
-        $appraisalFormElement->setLabel("Appraisal");
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $data['isMonthly'] = false;
+                return $this->pullAppraisalViewList($data);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        $appraisalList = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC", NULL, [-1 => "All Type"], TRUE);
+        $appraisalSE = $this->getSelectElement(['name' => 'Appraisal', 'id' => 'appraisalId', 'class' => 'form-control', 'label' => 'Appraisal'], $appraisalList);
 
-        $appraisalStageFormElement = new Select();
-        $appraisalStageFormElement->setName("Appraisal");
-        $appraisalStages = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::STAGE_EDESC, "ASC", NULL, FALSE, TRUE);
-        $appraisalStages1 = [-1 => "All Stage"] + $appraisalStages;
-        $appraisalStageFormElement->setValueOptions($appraisalStages1);
-        $appraisalStageFormElement->setAttributes(["id" => "appraisalStageId", "class" => "form-control"]);
-        $appraisalStageFormElement->setLabel("Appraisal Stage");
 
-        return Helper::addFlashMessagesToArray($this, [
-                    'appraisals' => $appraisalFormElement,
-                    'appraisalStages' => $appraisalStageFormElement,
+        $appraisalStageList = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::STAGE_EDESC, "ASC", NULL, [-1 => "All Stage"], TRUE);
+        $appraisalStageSE = $this->getSelectElement(['name' => 'Appraisal Stage', 'id' => 'appraisalStageId', 'class' => 'form-control', 'label' => 'Appraisal Stage'], $appraisalStageList);
+
+        return $this->stickFlashMessagesTo([
+                    'appraisals' => $appraisalSE,
+                    'appraisalStages' => $appraisalStageSE,
                     'userId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
+    }
+
+    public function monthlyAction() {
+        $appraisalList = EntityHelper::getTableKVListWithSortOption($this->adapter, Setup::TABLE_NAME, Setup::APPRAISAL_ID, [Setup::APPRAISAL_EDESC], [Setup::STATUS => 'E'], Setup::APPRAISAL_EDESC, "ASC", NULL, [-1 => "All Type"], TRUE);
+        $appraisalSE = $this->getSelectElement(['name' => 'Appraisal', 'id' => 'appraisalId', 'class' => 'form-control', 'label' => 'Appraisal'], $appraisalList);
+
+
+        $appraisalStageList = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::STAGE_EDESC], [Stage::STATUS => 'E'], Stage::STAGE_EDESC, "ASC", NULL, [-1 => "All Stage"], TRUE);
+        $appraisalStageSE = $this->getSelectElement(['name' => 'Appraisal Stage', 'id' => 'appraisalStageId', 'class' => 'form-control', 'label' => 'Appraisal Stage'], $appraisalStageList);
+
+        return $this->stickFlashMessagesTo([
+                    'appraisals' => $appraisalSE,
+                    'appraisalStages' => $appraisalStageSE,
+                    'userId' => $this->employeeId,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
+    }
+
+    public function pullAppraisalViewList($data) {
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $appraisalId = $data['appraisalId'];
+        $appraisalStageId = $data['appraisalStageId'];
+        $userId = $data['userId'];
+        $reportType = $data['reportType'];
+        $isMonthly = $data['durationType'] == 'M';
+
+        $appraisalStatusRepo = new AppraisalReportRepository($this->adapter);
+        $result = $appraisalStatusRepo->fetchFilterdData($fromDate, $toDate, $employeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $appraisalId, $appraisalStageId, $reportType, $userId, $isMonthly);
+        $list = Helper::extractDbData($result);
+        return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
     }
 
     public function viewAction() {

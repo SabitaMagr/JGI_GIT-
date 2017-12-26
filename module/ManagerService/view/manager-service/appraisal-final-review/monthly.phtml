@@ -12,16 +12,16 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
         ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/appraisal/report/index.js'));
+        ->appendFile($this->basePath('js/manager-service/appraisal-final-review/index.js'));
 ?>
 
 
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.viewLink = '<?php echo $this->url("appraisalReport", ["action" => "view"]); ?>';
+    document.viewLink = '<?php echo $this->url("appraisal-final-review", ["action" => "view"]); ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\appraisalReport')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\appraisal-final-review')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -40,8 +40,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <div class="margin-top-20">
     <input type="hidden" value="<?= $userId; ?>" id="userId" />
-    <input type="hidden" value="hrReport" id="reportType" />
-    <input type="hidden" value="A" id="durationType" />
+    <input type="hidden" value="appraisalFinalReview" id="reportType" />
+    <input type="hidden" value="M" id="durationType" />
     <div class="portlet light bg-inverse">
         <div class="portlet-title">
             <div class="caption">
