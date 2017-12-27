@@ -26,7 +26,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <script>
-    document.listurl = '<?= $this->url("performanceAppraisal", ["action" => "index"]) ?>';
+    document.listurl = '<?php echo $listUrl; ?>';
 </script>
 <div class="row margin-top-20">
     <div class="col-md-12" ng-app="hris">

@@ -118,6 +118,11 @@ class AppraisalEvaluation extends HrisController {
         $employeeId = $this->params()->fromRoute('employeeId');
         $tab = $this->params()->fromRoute('tab');
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
+        $action = null;
+        if ($appraisalDurationType != null) {
+            $action = ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index'];
+        }
         $appraisalAnswerRepo = new AppraisalAnswerRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
@@ -247,13 +252,7 @@ class AppraisalEvaluation extends HrisController {
                         HeadNotification::pushNotification(NotificationEvents::APPRAISAL_EVALUATION, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $assignedAppraisalDetail['REVIEWER_ID'], 'USER_TYPE' => "REVIEWER"]);
 
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-
-                        $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
-                        if ($appraisalDurationType != null) {
-                            $this->redirect()->toRoute("appraisal-evaluation", ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index']);
-                        } else {
-                            $this->redirect()->toRoute("appraisal-evaluation");
-                        }
+                        $this->redirect()->toRoute("appraisal-evaluation", $action);
                         break;
                 }
             } catch (Exception $e) {
@@ -286,7 +285,8 @@ class AppraisalEvaluation extends HrisController {
                     'keyAchievementDtlNum' => $keyAchievementDtlNum,
                     'appraiserRatingDtlNum' => $appraiserRatingDtlNum,
                     'appCompetenciesRatingDtlNum' => $appCompetenciesRatingDtlNum,
-                    'defaultRatingDtl' => $defaultRatingDtl
+                    'defaultRatingDtl' => $defaultRatingDtl,
+                    'listUrl' => $this->url()->fromRoute('appraisal-evaluation', $action)
         ]);
     }
 

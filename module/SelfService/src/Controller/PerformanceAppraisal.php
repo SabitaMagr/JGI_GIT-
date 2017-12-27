@@ -76,6 +76,11 @@ class PerformanceAppraisal extends AbstractActionController {
         $request = $this->getRequest();
         $appraisalId = $this->params()->fromRoute('appraisalId');
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
+        $action = null;
+        if ($appraisalDurationType != null) {
+            $action = ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index'];
+        }
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
         $employeeDetail = $employeeRepo->fetchForProfileById($this->employeeId);
@@ -204,12 +209,7 @@ class PerformanceAppraisal extends AbstractActionController {
                     }
                 }
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
-                if ($appraisalDurationType != null) {
-                    $this->redirect()->toRoute("performanceAppraisal", ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index']);
-                } else {
-                    $this->redirect()->toRoute("performanceAppraisal");
-                }
+                $this->redirect()->toRoute("performanceAppraisal", $action);
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
                 $this->flashmessenger()->addMessage($e->getMessage());
@@ -221,6 +221,7 @@ class PerformanceAppraisal extends AbstractActionController {
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($this->employeeId, $appraisalId)['NUM'];
         $appraiserRatingDtlNum = $appraisalKPI->countAppraiserRatingDtl($this->employeeId, $appraisalId)['NUM'];
         $appCompetenciesRatingDtlNum = $appraisalCompetencies->countCompetenciesRatingDtl($this->employeeId, $appraisalId)['NUM'];
+
         return Helper::addFlashMessagesToArray($this, [
                     'assignedAppraisalDetail' => $assignedAppraisalDetail,
                     'employeeDetail' => $employeeDetail,
@@ -239,7 +240,8 @@ class PerformanceAppraisal extends AbstractActionController {
                     'keyAchievementDtlNum' => $keyAchievementDtlNum,
                     'appraiserRatingDtlNum' => $appraiserRatingDtlNum,
                     'appCompetenciesRatingDtlNum' => $appCompetenciesRatingDtlNum,
-                    'defaultRatingDtl' => $defaultRatingDtl
+                    'defaultRatingDtl' => $defaultRatingDtl,
+                    'listUrl' => $this->url()->fromRoute('performanceAppraisal', $action)
         ]);
     }
 

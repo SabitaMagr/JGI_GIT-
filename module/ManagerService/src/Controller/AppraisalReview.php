@@ -106,6 +106,11 @@ class AppraisalReview extends HrisController {
         $employeeId = $this->params()->fromRoute('employeeId');
         $tab = $this->params()->fromRoute('tab');
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
+        $action = null;
+        if ($appraisalDurationType != null) {
+            $action = ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index'];
+        }
         $appraisalAnswerRepo = new AppraisalAnswerRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
@@ -257,12 +262,7 @@ class AppraisalReview extends HrisController {
                         }
                         HeadNotification::pushNotification(NotificationEvents::APPRAISAL_REVIEW, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $assignedAppraisalDetail['APPRAISER_ID'], 'USER_TYPE' => "APPRAISER"]);
                         $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                        $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
-                        if ($appraisalDurationType != null) {
-                            $this->redirect()->toRoute("appraisal-review", ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index']);
-                        } else {
-                            $this->redirect()->toRoute("appraisal-review");
-                        }
+                        $this->redirect()->toRoute("appraisal-review", $action);
                         break;
                 }
             } catch (Exception $e) {
@@ -280,6 +280,7 @@ class AppraisalReview extends HrisController {
         $returnData['appraiserRatingDtlNum'] = $appraiserRatingDtlNum;
         $returnData['appCompetenciesRatingDtlNum'] = $appCompetenciesRatingDtlNum;
         $returnData['defaultRatingDtl'] = $defaultRatingDtl;
+        $returnData['listUrl'] = $this->url()->fromRoute("appraisal-review", $action);
         return Helper::addFlashMessagesToArray($this, $returnData);
     }
 
