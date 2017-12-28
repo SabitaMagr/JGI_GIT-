@@ -8,7 +8,6 @@ use Application\Helper\Helper;
 use Exception;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
-use Setup\Model\HrEmployees;
 use Setup\Model\Training;
 use Setup\Repository\EmployeeRepository;
 use Training\Form\TrainingAssignForm;
@@ -16,7 +15,6 @@ use Training\Model\TrainingAssign;
 use Training\Repository\TrainingAssignRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Element\Select;
 use Zend\View\Model\JsonModel;
 
 class TrainingAssignController extends HrisController {

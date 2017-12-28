@@ -79,10 +79,10 @@
         </span>`;
 
         var appraiseeAgree = `
-        <span id="#if(APPRAISEE_AGREE=='Yes'){ #green#}else{#red#}#">  
-            #if(APPRAISEE_AGREE=='Yes'){   #
+        <span id="#if(APPRAISEE_AGREE=='Y'){ #green#}else{#red#}#">  
+            #if(APPRAISEE_AGREE=='Y'){   #
             #= "&\\#10004;" #
-            # }else if(APPRAISEE_AGREE=='No'){ #
+            # }else if(APPRAISEE_AGREE=='N'){ #
             #= "&\\#10006;" #
             # }else{#-#}#
         </span>`;

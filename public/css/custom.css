@@ -2372,3 +2372,38 @@ div#ndp-nepali-box{
   text-overflow: ellipsis;
 
 }
+
+
+/*custom news panel start*/
+
+
+  
+    .fixed-height
+    {
+        max-height:120px;
+        overflow:auto;
+        min-height:120px;
+        margin-bottom:0px !important;
+    }
+    .custompanel .list-group.panel-group li:before
+    {
+        content:"";
+    }
+.panel-green .panel-heading
+{
+    background-color:#2F9E1E;
+}
+.custompanel .hugo {
+    font-size: 17px;
+    color:#fff;
+}
+.custompanel .panel-heading{
+    padding:5px 15px;
+}
+.custompanel .list-group-item a
+{
+    color:#666;
+}
+
+
+/*custom news panel end*/

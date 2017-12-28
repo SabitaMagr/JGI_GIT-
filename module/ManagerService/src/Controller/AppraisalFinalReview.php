@@ -106,6 +106,11 @@ class AppraisalFinalReview extends HrisController {
         $employeeId = $this->params()->fromRoute('employeeId');
         $tab = $this->params()->fromRoute('tab');
         $appraisalAssignRepo = new AppraisalAssignRepository($this->adapter);
+        $appraisalDurationType = (array) $appraisalAssignRepo->getDurationType($appraisalId);
+        $action = null;
+        if ($appraisalDurationType != null) {
+            $action = ['action' => $appraisalDurationType['DURATION_TYPE'] == 'M' ? 'monthly' : 'index'];
+        }
         $appraisalAnswerRepo = new AppraisalAnswerRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
@@ -208,7 +213,7 @@ class AppraisalFinalReview extends HrisController {
                 HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $assignedAppraisalDetail['REVIEWER_ID'], 'USER_TYPE' => "REVIEWER"]);
                 HeadNotification::pushNotification(NotificationEvents::APPRAISAL_FINAL_REVIEW, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $assignedAppraisalDetail['APPRAISER_ID'], 'USER_TYPE' => "APPRAISER"]);
                 $this->flashmessenger()->addMessage("Appraisal Successfully Submitted!!");
-                $this->redirect()->toRoute("appraisal-final-review");
+                $this->redirect()->toRoute("appraisal-final-review", $action);
             } catch (Exception $e) {
                 $this->flashmessenger()->addMessage("Appraisal Submit Failed!!");
                 $this->flashmessenger()->addMessage($e->getMessage());
@@ -224,6 +229,7 @@ class AppraisalFinalReview extends HrisController {
         $returnData['appraiserRatingDtlNum'] = $appraiserRatingDtlNum;
         $returnData['appCompetenciesRatingDtlNum'] = $appCompetenciesRatingDtlNum;
         $returnData['defaultRatingDtl'] = $defaultRatingDtl;
+        $returnData['listUrl'] = $this->url()->fromRoute("appraisal-final-review", $action);
         return Helper::addFlashMessagesToArray($this, $returnData);
     }
 

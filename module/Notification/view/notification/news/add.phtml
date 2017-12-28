@@ -6,7 +6,8 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/Notification/news/add.js'));
+$this->headScript()->appendFile($this->basePath('js/search.js'))
+        ->appendFile($this->basePath('js/Notification/news/add.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -16,6 +17,7 @@ $form->setAttribute('action', $this->url('news', ['action' => 'add']));
 
 
 $newsDate = $form->get('newsDate');
+$newsExpiryDate = $form->get('newsExpiryDate');
 
 $newsType = $form->get('newsType');
 $newsType->setValueOptions($newsTypeValue);
@@ -28,14 +30,6 @@ $newsLdesc = $form->get('newsLdesc');
 
 $remarks = $form->get('remarks');
 
-$companyId = $form->get('companyId');
-$companyId->setValueOptions($company);
-
-$branchId = $form->get('branchId');
-
-$designationId = $form->get('designationId');
-
-$departmentId = $form->get('departmentId');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -44,28 +38,12 @@ $form->prepare();
 ?>
 
 <script>
-    document.branches =<?php echo json_encode($branch); ?>;
-    document.designation =<?php echo json_encode($designation); ?>;
-    document.department =<?php echo json_encode($department); ?>;
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
 </script>
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\news')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
 <div class="row margin-top-20">
     <div class="col-sm-12">
@@ -133,50 +111,33 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($newsEdesc); ?>
                     <?php print $this->formElementErrors()->render($newsEdesc, ['class' => 'help-block']); ?>
                 </div>
-                <div class="form-group">
-                    <?php print $this->formLabel($newsLdesc); ?>
-                    <?php print $this->formElement($newsLdesc); ?>
-                    <?php print $this->formElementErrors()->render($newsLdesc, ['class' => 'help-block']); ?>
-                </div>
-
 
                 <div class=" row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <?php print $this->formLabel($companyId); ?>
-                            <?php print $this->formElement($companyId); ?>
-                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($newsExpiryDate); ?>
+                                    <span class="required" aria-required="true">*</span>
+                                    <?php print $this->formElement($newsExpiryDate); ?>
+                                    <?php print $this->formElementErrors()->render($newsExpiryDate, ['class' => 'help-block']); ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliDateExpiry">&nbsp;</label>
+                                    <div class="input-group">
+                                        <input type="text" name="nepaliDateExpiry" id="nepaliDateExpiry"
+                                               class="form-control" value="">
+                                    </div>
+                                </div>
+                            </div>     
+                        </div>  
 
-
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <?php print $this->formLabel($branchId); ?>
-                            <?php print $this->formElement($branchId); ?>
-                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-
-                    <div class="col-sm-3">
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($departmentId); ?>
-                            <?php print $this->formElement($departmentId); ?>
-                            <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-3">
-
-                        <div class="form-group">
-                            <?php print $this->formLabel($designationId); ?>
-                            <?php print $this->formElement($designationId); ?>
-                            <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block']); ?>
-                        </div>
                     </div>
                 </div>
+
+
 
                 <div class="form-group">
                     <?php print $this->formLabel($remarks); ?>
@@ -185,17 +146,70 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
 
 
+                <div class="row">
+                    <div class="col-sm-2">
+                        <label>Company</label>
+                        <select multiple class="form-control" name="company[]" id="companyId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Branch</label>
+                        <select multiple class="form-control" name="branch[]" id="branchId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Department</label>
+                        <select multiple class="form-control" name="department[]" id="departmentId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Designation</label>
+                        <select multiple class="form-control" name="designation[]" id="designationId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Position</label>
+                        <select multiple class="form-control" name="position[]" id="positionId">
+                        </select>
+                    </div>
+                </div>
+                <div class="row margin-top-10">
+                    <div class="col-sm-2">
+                        <label>Service Type</label>
+                        <select multiple class="form-control" name="serviceType[]" id="serviceTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Service Event Type</label>
+                        <select multiple class="form-control" name="serviceEventType[]" id="serviceEventTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Employee Type</label>
+                        <select multiple class="form-control" name="employeeType[]" id="employeeTypeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Employee</label>
+                        <select multiple class="form-control" name="employee[]" id="employeeId">
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Gender</label>
+                        <select multiple class="form-control" name="gender[]" id="genderId">
+                        </select>
+                    </div>
+                </div>
 
 
 
+                <div>
+                    <?php
+                    print $this->formSubmit($submit);
+                    print $this->form()->closeTag();
+                    ?>
+                </div>
 
-
-
-
-                <?php
-                print $this->formSubmit($submit);
-                print $this->form()->closeTag();
-                ?>
             </div>
         </div>
     </div>

@@ -7,10 +7,22 @@
         var $employeeTable = $('#employeeTable');
         var $search = $('#search');
 
-        var viewAction = '<a class="btn-edit" title="View" href="' + document.viewLink + '/#:EMPLOYEE_ID#/1" style="height:17px;"><i class="fa fa-search-plus"></i></a> ';
-        var editAction = '<a class="btn-edit" title="Edit" href="' + document.editLink + '/#:EMPLOYEE_ID#/1" style="height:17px;"> <i class="fa fa-edit"></i></a>';
-        var deleteAction = '<a class="confirmation btn-delete" title="Delete" href="' + document.deleteLink + '/#:EMPLOYEE_ID#" id="bs_#:EMPLOYEE_ID #" style="height:17px;"><i class="fa fa-trash-o"></i></a>';
-        var action = viewAction + editAction + deleteAction;
+        var actiontemplateConfig = {
+            view: {
+                'params': ["EMPLOYEE_ID"],
+                'url': document.viewLink
+            },
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': ["EMPLOYEE_ID"],
+                'url': document.editLink
+            },
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': ["EMPLOYEE_ID"],
+                'url': document.deleteLink
+            }
+        };
         app.initializeKendoGrid($employeeTable, [
             {field: "EMPLOYEE_CODE", title: "Code", template: '<td>#: (EMPLOYEE_CODE == null) ? ' - ' : EMPLOYEE_CODE #</td>'},
             {field: "FULL_NAME", title: "Full Name"},
@@ -20,7 +32,7 @@
             {field: "BRANCH_NAME", title: "Branch"},
             {field: "DEPARTMENT_NAME", title: "Department"},
             {field: "DESIGNATION_TITLE", title: "Designation"},
-            {field: "EMPLOYEE_ID", title: "Action", template: action}
+            {field: "EMPLOYEE_ID", title: "Action", template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], false);
 

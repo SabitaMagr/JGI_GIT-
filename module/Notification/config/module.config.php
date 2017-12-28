@@ -49,13 +49,43 @@ return [
                     ],
                 ],
             ],
+            'news-type' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/news/type[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\NewsTypeController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'news-status' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/news/status[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\NewsStatusController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
         'factories' => [
             Controller\NotificationController::class => \Application\Controller\ControllerFactory::class,
             Controller\EmailController::class => \Application\Controller\ControllerFactory::class,
-            Controller\NewsController::class => \Application\Controller\ControllerFactory::class
+            Controller\NewsController::class => \Application\Controller\ControllerFactory::class,
+            Controller\NewsTypeController::class => \Application\Controller\ControllerFactory::class,
+            Controller\NewsStatusController::class => \Application\Controller\ControllerFactory::class
         ],
     ],
     'navigation' => [
@@ -105,6 +135,55 @@ return [
                         'route' => 'news',
                         'action' => 'edit',
                     ]
+                ]
+            ]
+        ],
+        'news-type' => [
+                [
+                'label' => 'News Type',
+                'route' => 'news-type',
+            ],
+                [
+                'label' => 'News Type',
+                'route' => 'news-type',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'news-type',
+                        'action' => 'index',
+                    ],
+                        [
+                        'label' => 'Add',
+                        'route' => 'news-type',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'news-type',
+                        'action' => 'edit',
+                    ]
+                ]
+            ]
+        ],
+        'news-status' => [
+                [
+                'label' => 'News Status',
+                'route' => 'news-status',
+            ],
+                [
+                'label' => 'News Status',
+                'route' => 'news-status',
+                'pages' => [
+                        [
+                        'label' => 'List',
+                        'route' => 'news-status',
+                        'action' => 'allNewsTypeList',
+                    ],
+                        [
+                        'label' => 'View',
+                        'route' => 'news-status',
+                        'action' => 'view',
+                    ],
                 ]
             ]
         ],

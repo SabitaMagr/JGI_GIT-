@@ -7,6 +7,7 @@ use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Notification\Model\NewsModel;
+use Notification\Model\NewsTypeModel;
 use Setup\Model\Company;
 use Setup\Model\Designation;
 use Zend\Db\Adapter\AdapterInterface;
@@ -41,11 +42,11 @@ class NewsRepository implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        
-         $sql = new Sql($this->adapter);
+
+        $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=N." . NewsModel::COMPANY_ID, array('COMPANY_ID', 'COMPANY_NAME'), 'inner');
+        $select->join(['NT' => NewsTypeModel::TABLE_NAME], "NT." . NewsTypeModel::NEWS_TYPE_ID . "=N." . NewsModel::NEWS_TYPE, array('NEWS_TYPE_ID', 'NEWS_TYPE_DESC'), 'LEFT');
         $select->where(["N." . NewsModel::STATUS => 'E']);
         $select->order(["N." . NewsModel::NEWS_DATE => Select::ORDER_DESCENDING]);
 
@@ -60,7 +61,7 @@ class NewsRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(['N' => NewsModel::TABLE_NAME]);
         $select->where(["N." . NewsModel::NEWS_ID => $id]);
-        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), ['newsDate'], NULL, 'N'), false);
+        $select->columns(Helper::convertColumnDateFormat($this->adapter, new NewsModel(), ['newsDate', 'newsExpiryDate'], NULL, 'N'), false);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -112,6 +113,113 @@ class NewsRepository implements RepositoryInterface {
         AND N.NEWS_DATE=$date"
         );
         return $rawResult;
+    }
+
+    public function allNewsTypeWise($typeId, $employeeId) {
+        $sql = "SELECT AA.*,
+                  BB.FILE_PATH,
+                  CC.FILE_NAME
+                FROM
+                  (SELECT N.NEWS_ID,
+                    N.NEWS_DATE,
+                    N.NEWS_TYPE,
+                    N.NEWS_TITLE,
+                    N.NEWS_EDESC,
+                    N.NEWS_EXPIRY_DT,
+                    N.STATUS
+                  FROM HRIS_NEWS N
+                  WHERE N.STATUS     ='E'
+                  AND N.NEWS_TYPE    ={$typeId}
+                  AND {$employeeId} IN
+                    (SELECT NE.EMPLOYEE_ID FROM HRIS_NEWS_EMPLOYEE NE WHERE NE.NEWS_ID=N.NEWS_ID
+                    )
+                  ) AA
+                LEFT JOIN
+                  (SELECT NEWS_ID,
+                    LISTAGG(FILE_PATH, ',') WITHIN GROUP (
+                  ORDER BY FILE_PATH) AS FILE_PATH
+                  FROM HRIS_NEWS_FILE
+                  GROUP BY NEWS_ID
+                  ) BB
+                ON (BB.NEWS_ID=AA.NEWS_ID)
+                LEFT JOIN
+                  (SELECT NEWS_ID,
+                    LISTAGG(FILE_NAME, ',') WITHIN GROUP (
+                  ORDER BY FILE_NAME) AS FILE_NAME
+                  FROM HRIS_NEWS_FILE
+                  GROUP BY NEWS_ID
+                  ) CC
+                ON (CC.NEWS_ID     =AA.NEWS_ID)
+                WHERE STATUS       ='E'
+                AND NEWS_DATE     <=TRUNC(SYSDATE)
+                AND NEWS_EXPIRY_DT>=TRUNC(SYSDATE)
+                ORDER BY NEWS_DATE DESC";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function newsAssign(int $newsId, array $assignedTo) {
+        $newsAssignGateway = new TableGateway("HRIS_NEWS_TO", $this->adapter);
+        $newsAssignGateway->delete(["NEWS_ID" => $newsId]);
+        foreach ($assignedTo as $item) {
+            $item['NEWS_ID'] = $newsId;
+            $newsAssignGateway->insert($item);
+        }
+        EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_NEWS_TO_PROC({$newsId}); END;");
+    }
+
+    public function getAssignedToList(int $newsId) {
+        $newsAssignGateway = new TableGateway("HRIS_NEWS_TO", $this->adapter);
+        $newsToList = $newsAssignGateway->select(['NEWS_ID' => $newsId]);
+
+        $return = [
+            'companyId' => [],
+            'branchId' => [],
+            'departmentId' => [],
+            'designationId' => [],
+            'positionId' => [],
+            'serviceTypeId' => [],
+            'serviceEventTypeId' => [],
+            'employeeType' => [],
+            'employeeId' => [],
+            'genderId' => [],
+        ];
+
+
+        foreach ($newsToList as $newsTo) {
+            if ($newsTo['COMPANY_ID'] != NULL) {
+                array_push($return['companyId'], $newsTo['COMPANY_ID']);
+            }
+            if ($newsTo['BRANCH_ID'] != NULL) {
+                array_push($return['branchId'], $newsTo['BRANCH_ID']);
+            }
+            if ($newsTo['DEPARTMENT_ID'] != NULL) {
+                array_push($return['departmentId'], $newsTo['DEPARTMENT_ID']);
+            }
+            if ($newsTo['DESIGNATION_ID'] != NULL) {
+                array_push($return['designationId'], $newsTo['DESIGNATION_ID']);
+            }
+            if ($newsTo['POSITION_ID'] != NULL) {
+                array_push($return['positionId'], $newsTo['POSITION_ID']);
+            }
+            if ($newsTo['SERVICE_TYPE_ID'] != NULL) {
+                array_push($return['serviceTypeId'], $newsTo['SERVICE_TYPE_ID']);
+            }
+            if ($newsTo['SERVICE_EVENT_TYPE_ID'] != NULL) {
+                array_push($return['serviceEventTypeId'], $newsTo['SERVICE_EVENT_TYPE_ID']);
+            }
+            if ($newsTo['EMPLOYEE_TYPE'] != NULL) {
+                array_push($return['employeeType'], $newsTo['EMPLOYEE_TYPE']);
+            }
+            if ($newsTo['EMPLOYEE_ID'] != NULL) {
+                array_push($return['employeeId'], $newsTo['EMPLOYEE_ID']);
+            }
+            if ($newsTo['GENDER_ID'] != NULL) {
+                array_push($return['genderId'], $newsTo['GENDER_ID']);
+            }
+        }
+        return $return;
     }
 
 }

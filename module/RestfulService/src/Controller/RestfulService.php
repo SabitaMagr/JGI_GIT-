@@ -610,7 +610,6 @@ class RestfulService extends AbstractRestfulController {
         $updateResult = $userrepo->updateByEmpId($this->loggedIdEmployeeId, $encryptedPwd);
         return [
             'success' => "true",
-//            "data" => $updateResult
         ];
     }
 
