@@ -1,0 +1,145 @@
+<?php
+//$this->headScript()->appendFile($this->basePath('js/setup/branch/add.js'));
+
+$formCode = $form->get('formCode');
+$formCode->setValueOptions([1 => 'TestOne', 2 => "TestTwo"]);
+
+$allowSystemAttendance = $form->get('allowSystemAttendance');
+$needApprovalForLateCheckIn = $form->get('needApprovalForLateCheckIn');
+$allowAccountLock = $form->get('allowAccountLock');
+$accountLockTryNumber = $form->get('accountLockTryNumber');
+$accountLockTrySecond = $form->get('accountLockTrySecond');
+$forcePasswordRenew = $form->get('forcePasswordRenew');
+$forcePasswordRenewDay = $form->get('forcePasswordRenewDay');
+$showAddressBook = $form->get('showAddressBook');
+$noticeType = $form->get('noticeType');
+
+$submit = $form->get('submit');
+
+$form->setAttribute('action', $this->url('system-setting', ['action' => 'index']));
+$form->prepare();
+?>
+<?php if ($this->messages): ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php endif; ?>
+<?php
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\system-setting')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<div class="row margin-top-30">
+    <div class="col-sm-12">
+        <div class="portlet box custom-box">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-edit"></i>
+                    Update
+                </div>
+                <div class="actions">
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <?php print $this->form()->openTag($form); ?>
+                <div class=" row">
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($allowSystemAttendance); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($allowSystemAttendance); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($allowSystemAttendance, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($needApprovalForLateCheckIn); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($needApprovalForLateCheckIn); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($needApprovalForLateCheckIn, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($allowAccountLock); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($allowAccountLock); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($allowAccountLock, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($accountLockTryNumber); ?>
+                            <?php print $this->formElement($accountLockTryNumber); ?>
+                            <?php print $this->formElementErrors()->render($accountLockTryNumber, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($accountLockTrySecond); ?>
+                            <?php print $this->formElement($accountLockTrySecond); ?>
+                            <?php print $this->formElementErrors()->render($accountLockTrySecond, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($forcePasswordRenew); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($forcePasswordRenew); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($forcePasswordRenew, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($forcePasswordRenewDay); ?>
+                            <?php print $this->formElement($forcePasswordRenewDay); ?>
+                            <?php print $this->formElementErrors()->render($forcePasswordRenewDay, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($showAddressBook); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($showAddressBook); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($showAddressBook, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($noticeType); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($noticeType); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($noticeType, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($formCode); ?>
+                            <?php print $this->formElement($formCode); ?>
+                            <?php print $this->formElementErrors()->render($formCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <?php print $this->formSubmit($submit); ?>
+                </div>
+
+                <?php print $this->form()->closeTag(); ?>
+            </div>
+        </div>
+    </div>
+</div>

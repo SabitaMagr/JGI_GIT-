@@ -130,7 +130,7 @@ class AuthController extends AbstractActionController {
                     $preference = new Preference();
                     $allowRegisterAttendance = false;
                     $attendanceType = "IN";
-                    if ($preference->allowSystemAttendance) {
+                    if ($preference->allowSystemAttendance == 'Y') {
                         $employeeId = $resultRow->EMPLOYEE_ID;
                         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
@@ -211,10 +211,10 @@ class AuthController extends AbstractActionController {
 
     public function checkPasswordExpire($userName) {
         $preference = new Preference();
-        if (!$preference->forcePasswordRenew) {
+        if (!($preference->forcePasswordRenew == 'Y')) {
             return false;
         }
-        $maxPasswordDays = $preference->forcePasswordRenewDay;
+        $maxPasswordDays = $preference->forcePasswordRenewDay || 0;
         $loginRepo = new LoginRepository($this->adapter);
         $result = $loginRepo->checkPasswordExpire($userName);
         $createdDays = $result['CREATED_DAYS'];
@@ -270,7 +270,7 @@ class AuthController extends AbstractActionController {
 
     public function checkIfAccountLocked($account) {
         $preference = new Preference();
-        if (!$preference->allowAccountLock) {
+        if (!($preference->allowAccountLock == 'Y')) {
             return false;
         }
         if ($account->IS_LOCKED == 'Y') {
@@ -285,11 +285,11 @@ class AuthController extends AbstractActionController {
 
     public function allowLoginFor($cookie_name, $tryCount, $withIn) {
         $preference = new Preference();
-        if (!$preference->allowAccountLock) {
+        if (!($preference->allowAccountLock == 'Y')) {
             return;
         }
-        $tryCount = $preference->accountLockTryNumber;
-        $withIn = $preference->accountLockTrySecond;
+        $tryCount = $preference->accountLockTryNumber || 0;
+        $withIn = $preference->accountLockTrySecond || 0;
         $loginRepo = new LoginRepository($this->adapter);
         $userValid = $loginRepo->fetchByUserName($cookie_name);
         if ($userValid && ($userValid->IS_LOCKED == 'Y')) {

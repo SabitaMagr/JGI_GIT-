@@ -127,6 +127,20 @@ return [
                     ]
                 ]
             ],
+            'system-setting' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/setting[/:action[/:id]]',
+                    'constraint' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\SystemSetting::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ],
     ],
     'navigation' => [
@@ -298,6 +312,23 @@ return [
                     ],
                 ],
             ],
+        ],
+        'system-setting' => [
+            [
+                'label' => "Setting",
+                'route' => "system-setting"
+            ],
+            [
+                'label' => "Setting",
+                'route' => "system-setting",
+                'pages' => [
+                    [
+                        'label' => 'Setting',
+                        'route' => 'system-setting',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
@@ -309,7 +340,8 @@ return [
             SettingController::class => ControllerFactory::class,
             AttendanceDeviceController::class => ControllerFactory::class,
             PreferenceSetup::class => ControllerFactory::class,
-            Controller\MenuReport::class => ControllerFactory::class
+            Controller\MenuReport::class => ControllerFactory::class,
+            Controller\SystemSetting::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [

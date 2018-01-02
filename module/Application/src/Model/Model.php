@@ -14,7 +14,6 @@ class Model {
     }
 
     public function exchangeArrayFromDB(array $data) {
-
         foreach ($this->mappings as $key => $value) {
             $this->{$key} = !empty($data[$value]) ? $data[$value] : null;
         }
