@@ -8,6 +8,7 @@ class CompulsoryOvertime extends Model {
 
     const TABLE_NAME = "HRIS_COMPULSORY_OVERTIME";
     const COMPULSORY_OVERTIME_ID = "COMPULSORY_OVERTIME_ID";
+    const COMPULSORY_OT_DESC = "COMPULSORY_OT_DESC";
     const LATE_OVERTIME_HR = "LATE_OVERTIME_HR";
     const EARLY_OVERTIME_HR = "EARLY_OVERTIME_HR";
     const START_DATE = "START_DATE";
@@ -19,6 +20,7 @@ class CompulsoryOvertime extends Model {
     const STATUS = "STATUS";
 
     public $compulsoryOvertimeId;
+    public $compulsoryOtDesc;
     public $lateOvertimeHr;
     public $earlyOvertimeHr;
     public $startDate;
@@ -30,6 +32,7 @@ class CompulsoryOvertime extends Model {
     public $status;
     public $mappings = [
         'compulsoryOvertimeId' => self::COMPULSORY_OVERTIME_ID,
+        'compulsoryOtDesc' => self::COMPULSORY_OT_DESC,
         'earlyOvertimeHr' => self::EARLY_OVERTIME_HR,
         'lateOvertimeHr' => self::LATE_OVERTIME_HR,
         'startDate' => self::START_DATE,
