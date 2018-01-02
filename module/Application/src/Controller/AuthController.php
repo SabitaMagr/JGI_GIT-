@@ -14,6 +14,7 @@ use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Setup\Repository\EmployeeRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
+use System\Repository\SystemSettingRepository;
 use Zend\Authentication\AuthenticationService;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\EventManager\EventManagerInterface;
@@ -27,11 +28,16 @@ class AuthController extends AbstractActionController {
     protected $storage;
     protected $authservice;
     protected $adapter;
+    protected $preference;
 
     public function __construct(AuthenticationService $authService, AdapterInterface $adapter) {
         $this->authservice = $authService;
         $this->storage = $authService->getStorage();
         $this->adapter = $adapter;
+
+        $preferenceRepo = new SystemSettingRepository($adapter);
+        $this->preference = new Preference();
+        $this->preference->exchangeArrayFromDB($preferenceRepo->fetch());
     }
 
     public function setEventManager(EventManagerInterface $events) {
@@ -127,10 +133,9 @@ class AuthController extends AbstractActionController {
                     if ($isLocked) {
                         return $isLocked;
                     }
-                    $preference = new Preference();
                     $allowRegisterAttendance = false;
                     $attendanceType = "IN";
-                    if ($preference->allowSystemAttendance == 'Y') {
+                    if ($this->preference->allowSystemAttendance == 'Y') {
                         $employeeId = $resultRow->EMPLOYEE_ID;
                         $attendanceDetailRepo = new AttendanceDetailRepository($this->adapter);
                         $todayAttendance = $attendanceDetailRepo->fetchByEmpIdAttendanceDT($employeeId, 'TRUNC(SYSDATE)');
@@ -163,7 +168,7 @@ class AuthController extends AbstractActionController {
                         'register_attendance' => $attendanceType,
                         'allow_register_attendance' => $allowRegisterAttendance,
                         'acl' => (array) $acl,
-                        'preference' => (array) $preference
+                        'preference' => (array) $this->preference
                     ]);
 
 
@@ -210,11 +215,10 @@ class AuthController extends AbstractActionController {
     }
 
     public function checkPasswordExpire($userName) {
-        $preference = new Preference();
-        if (!($preference->forcePasswordRenew == 'Y')) {
+        if (!($this->preference->forcePasswordRenew == 'Y')) {
             return false;
         }
-        $maxPasswordDays = $preference->forcePasswordRenewDay || 0;
+        $maxPasswordDays = $this->preference->forcePasswordRenewDay || 0;
         $loginRepo = new LoginRepository($this->adapter);
         $result = $loginRepo->checkPasswordExpire($userName);
         $createdDays = $result['CREATED_DAYS'];
@@ -269,8 +273,7 @@ class AuthController extends AbstractActionController {
     }
 
     public function checkIfAccountLocked($account) {
-        $preference = new Preference();
-        if (!($preference->allowAccountLock == 'Y')) {
+        if (!($this->preference->allowAccountLock == 'Y')) {
             return false;
         }
         if ($account->IS_LOCKED == 'Y') {
@@ -284,12 +287,11 @@ class AuthController extends AbstractActionController {
     }
 
     public function allowLoginFor($cookie_name, $tryCount, $withIn) {
-        $preference = new Preference();
-        if (!($preference->allowAccountLock == 'Y')) {
+        if (!($this->preference->allowAccountLock == 'Y')) {
             return;
         }
-        $tryCount = $preference->accountLockTryNumber || 0;
-        $withIn = $preference->accountLockTrySecond || 0;
+        $tryCount = $this->preference->accountLockTryNumber || 0;
+        $withIn = $this->preference->accountLockTrySecond || 0;
         $loginRepo = new LoginRepository($this->adapter);
         $userValid = $loginRepo->fetchByUserName($cookie_name);
         if ($userValid && ($userValid->IS_LOCKED == 'Y')) {
