@@ -121,8 +121,8 @@
                 $wizard.find('.progress-bar').css({
                     width: $percent + '%'
                 });
-                if(index==1){
-                     $('select').select2();
+                if (index == 1) {
+                    $('select').select2();
                 }
                 if (index === 2) {
                     $startDateLabel.html(compulsorySetup.startDate);
