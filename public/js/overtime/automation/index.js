@@ -1,43 +1,84 @@
-(function ($, app) {
+(function ($) {
     'use strict';
     $(document).ready(function () {
-        var $table = $("#overtimeAutomationTable");
-        var $rowTemplate = $("#rowTemplate");
-        var data = document.compulsoryOTList;
-        $table.kendoGrid({
-            dataSource: {
-                data: data,
-                pageSize: 20
+        var $table = $('#table');
+        var actiontemplateConfig = {
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': ["COMPULSORY_OVERTIME_ID"],
+                'url': document.editLink
             },
-            height: 450,
-            scrollable: true,
-            sortable: true,
-            filterable: true,
-            pageable: {
-                input: true,
-                numeric: false
-            },
-            rowTemplate: kendo.template($rowTemplate.html()),
-            columns: [
-                {field: "EARLY_OVERTIME_HR", title: "Early Overtime Hour", width: 150},
-                {field: "LATE_OVERTIME_HR", title: "Late Overtime Hour", width: 150},
-                {field: "START_DATE", title: "Start Date", width: 150},
-                {field: "END_DATE", title: "End Date", width: 150},
-                {title: "Action", width: 80}
-            ]
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': ["COMPULSORY_OVERTIME_ID"],
+                'url': document.deleteLink
+            }
+        };
+        var columns = [
+            {field: "COMPULSORY_OT_DESC", title: "Description", width: 150},
+            {field: "START_DATE", title: "From Date", width: 150},
+            {field: "END_DATE", title: "To Date", width: 150},
+            {field: "EARLY_OVERTIME_HR", title: "Early OT Hour", width: 150},
+            {field: "LATE_OVERTIME_HR", title: "Late OT Hour", width: 150},
+            {field: ["COMPULSORY_OVERTIME_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
+        ];
+        var map = {
+            'COMPULSORY_OT_DESC': 'Description',
+            'START_DATE': 'From Date',
+            'END_DATE': 'To Date',
+            'EARLY_OVERTIME_HR': 'Early OT Hour',
+            'LATE_OVERTIME_HR': 'Late OT Hour',
+        }
+        app.initializeKendoGrid($table, columns, detailInit);
+
+        app.searchTable($table, ['COMPULSORY_OT_DESC']);
+
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, map, 'OT List.xlsx');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, map, 'OT List.pdf');
         });
 
+        app.pullDataById("", {}).then(function (response) {
+            app.renderKendoGrid($table, response.data);
+        }, function (error) {
 
-        app.pdfExport(
-                'overtimeAutomationTable',
-                {
-                    'EARLY_OVERTIME_HR': 'Early Overtime Hour',
-                    'LATE_OVERTIME_HR': 'Late Overtime Hour',
-                    'START_DATE': 'Start Date',
-                    'END_DATE': 'End Date'
-                }
-        );
+        });
 
-
+        function detailInit(e) {
+            app.serverRequest(document.assignListLink, {
+                compulsoryOvertimeId: e.data.COMPULSORY_OVERTIME_ID,
+            }).then(function (success) {
+                $("<div/>", {
+                    class: "",
+                    css: {
+                        float: "left",
+                        padding: "0px",
+                    }
+                }).appendTo(e.detailCell).kendoGrid({
+                    toolbar: ["excel"],
+                    excel: {
+                        fileName: (e.data.COMPULSORY_OT_DESC || "Desc undefined") + ".xlsx"
+                    },
+                    dataSource: {
+                        data: success.data,
+                        pageSize: 10,
+                    },
+                    scrollable: false,
+                    sortable: false,
+                    pageable: false,
+                    columns:
+                            [
+                                {field: "EMPLOYEE_NAME", title: "Employee"},
+                                {field: "COMPANY_NAME", title: "Company"},
+                                {field: "BRANCH_NAME", title: "Branch"},
+                                {field: "DEPARTMENT_NAME", title: "Department"},
+                            ]
+                }).data("kendoGrid");
+            }, function (failure) {
+                console.log(failure);
+            });
+        }
     });
-})(window.jQuery, window.app);
+})(window.jQuery);
