@@ -2,7 +2,9 @@
 
 namespace Customer\Model;
 
-class CustContractWeekdays {
+use Application\Model\Model;
+
+class CustContractWeekdays extends Model  {
 
     CONST TABLE_NAME = "HRIS_CUST_CONTRACT_WEEKDAYS";
     CONST CONTRACT_ID = "CONTRACT_ID";

@@ -9,7 +9,7 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
-$this->headScript()->appendFile($this->basePath('js/customer/customer-contract/add.js'));
+$this->headScript()->appendFile($this->basePath('js/customer/customer-contract/edit.js'));
 ?>
 <?php
 $customerId = $form->get('customerId');
@@ -29,6 +29,12 @@ $form->prepare();
 
 $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THR', 'FRI', 'SAT');
 ?>
+
+<script>
+  document.workingCycleEditVal='<?=$workingCycle->getValue()?>';
+  document.contractDetails=<?= json_encode($contractDetails)?>;
+</script>
+
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
