@@ -70,3 +70,84 @@ CREATE TABLE HRIS_CUST_CONTRACT_EMP
     OLD_EMPLOYEE_ID NUMBER(7,0),
     CONSTRAINT CUSTOMER_CONTRACT_EMPLOYEES_FK FOREIGN KEY(CONTRACT_ID) REFERENCES HRIS_CUSTOMER_CONTRACT(CONTRACT_ID)
   );
+
+
+--menu insert quries
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'customer',
+NULL,
+'javascript::',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+(select max(menu_index)+1 from hris_menus where parent_menu is null),
+'Y'
+);
+
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'customer Setup',
+342,
+'customer-setup',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+(select nvl(max(menu_index),0)+1 from hris_menus where parent_menu=342),
+'Y'
+);
+
+
+select * from hris_menus;
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'customer Contract',
+342,
+'customer-contract',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+(select nvl(max(menu_index),0)+1 from hris_menus where parent_menu=342),
+'Y'
+);

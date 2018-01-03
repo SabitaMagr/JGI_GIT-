@@ -26,6 +26,8 @@ $submit = $form->get('submit');
 
 $form->setAttribute('action', $this->url('customer-contract', ['action' => 'add']));
 $form->prepare();
+
+$wekkArr = array('SUN', 'MON', 'TUE', 'WED', 'THR', 'FRI', 'SAT');
 ?>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -157,6 +159,78 @@ $form->prepare();
                             <?php print $this->formElement($remarks); ?>
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                         </div>
+                    </div>
+                </div>
+
+
+                <div class="row" id="monthWise">
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>SUN</th>
+                                <th>MON</th>
+                                <th>TUE</th>
+                                <th>WED</th>
+                                <th>THR</th>
+                                <th>FRI</th>
+                                <th>SAT</th>
+                            </tr>
+
+                            <tr>
+                                <?php
+                                foreach ($wekkArr as $weekData) {
+                                    ?>
+                                    <td>
+                                        <div class="th-inner ">
+                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                <input id="<?= $weekData ?>" name="<?= $weekData ?>" class="" type="checkbox"/>
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div class="fht-cell" style="width: 46px;"></div>
+                                    </td>
+                                    <?php
+                                }
+                                ?>
+                            </tr>
+
+                        </table>
+
+                    </div>
+                </div>
+
+
+                <div class="row" id="dateWise">
+                    <div class="col-md-6">
+
+                        <table class="table table-bordered" id="tblContractDates">
+                            <tbody>
+                                <tr>
+                                    <td>Dates</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="text" class="contractDates" name="contractDates[]" ></td>
+                                    <td>
+                                        <div class="th-inner ">
+                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                <input class='chkBoxContractDates' type="checkbox"/>
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div class="fht-cell" style="width: 46px;"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <a id="addContractdate" class="addDate btn btn-icon-only default pull-right">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                        <a id="delContractdate" class="btn btn-icon-only default pull-right">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+
                     </div>
                 </div>
 

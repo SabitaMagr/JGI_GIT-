@@ -8,6 +8,7 @@
         var $outTime = $('#outTime');
         var $workingHours = $('#workingHours');
         app.addComboTimePicker($inTime, $outTime, $workingHours);
+        app.addDatePicker($('.contractDates'));
 
         $form.on('submit', function () {
             if ($inTime.val() == '') {
@@ -26,5 +27,51 @@
                 return false;
             }
         });
+
+        $('#addContractdate').on('click', function () {
+            var appendValues = "<tr>"
+                    + "<td><input type='text' class='contractDates' name='contractDates[]'></td>"
+                    + "<td>"
+                    + "<div class='th-inner '>"
+                    + "<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
+                    + "<input class='chkBoxContractDates' type='checkbox'/>"
+                    + "<span></span>"
+                    + "</label>"
+                    + "</div>"
+                    + "</td>"
+                    + "</tr>";
+
+            $('#tblContractDates tbody').append(appendValues);
+            $('#tblContractDates tbody').find('.contractDates:last').datepicker({
+                format: 'dd-M-yyyy',
+                todayHighlight: true,
+                autoclose: true,
+                setDate: new Date()
+            });
+        });
+
+
+        $('#delContractdate').on('click', function () {
+            $('#tblContractDates .chkBoxContractDates:checked').each(function () {
+                $(this).parents("tr").remove()
+            });
+        });
+
+
+
+        var checkCycleType = function () {
+            var selectedVal = $('input[name=workingCycle]:checked').val();
+            console.log(selectedVal);
+            (selectedVal == 'W') ? $('#monthWise').show() : $('#monthWise').hide();
+            (selectedVal == 'R') ? $('#dateWise').show() : $('#dateWise').hide();
+        }
+
+        $("input[name=workingCycle]").on("change", function () {
+            checkCycleType();
+        });
+
+        checkCycleType();
+
+
     });
 })(window.jQuery, window.app);

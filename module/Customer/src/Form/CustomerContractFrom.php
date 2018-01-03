@@ -68,7 +68,7 @@ class CustomerContractFrom {
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"W":"Weekly","M":"Monthly","R":"Randomly"},"label":"Working Cycle"})
+     * @Annotation\Options({"value_options":{"W":"Weekly","R":"Randomly"},"label":"Working Cycle"})
      * @Annotation\Required(false)
      * @Annotation\Attributes({ "id":"workingCycle"})
      */

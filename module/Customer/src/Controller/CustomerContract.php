@@ -67,6 +67,11 @@ class CustomerContract extends AbstractActionController {
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
+                
+                echo '<pre>';
+                print_r($request->getPost());
+                die();
+                
                 $customerContract = new CustomerContractModel();
                 $customerContract->exchangeArrayFromForm($form->getData());
                 $customerContract->contractId = ((int) Helper::getMaxId($this->adapter, CustomerContractModel::TABLE_NAME, CustomerContractModel::CUSTOMER_ID)) + 1;
