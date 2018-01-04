@@ -34,6 +34,7 @@ class AttendanceDeviceController extends AbstractActionController {
         $list = $this->repository->fetchAll();
         $attendanceDevice = [];
         foreach ($list as $row) {
+            $row['PING_STATUS']=$this->pingAddress($row['DEVICE_IP']);
             array_push($attendanceDevice, $row);
         }
         return Helper::addFlashMessagesToArray($this, ['attendanceDevice' => $attendanceDevice]);
@@ -103,6 +104,22 @@ class AttendanceDeviceController extends AbstractActionController {
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Attendnace Device Successfully Deleted!!!");
         return $this->redirect()->toRoute('AttendanceDevice');
+    }
+    
+    function pingAddress($ip) {
+        $output = shell_exec('ping -n 1 ' . $ip);
+        if (strpos($output, 'Destination host unreachable') !== false) {
+            $result="Destination host unreachable";
+        } elseif (strpos($output, 'Request timed out') !== false) {
+            $result="Request timed out";
+        } elseif (strpos($output, 'Expired') !== false) {
+            $result="Expired in Transit";
+        } elseif (strpos($output, 'data') !== false) {
+            $result="ONLINE";
+        } else {
+            $result="Unknown Error";
+        }
+        return $result;
     }
 
 }
