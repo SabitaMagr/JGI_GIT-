@@ -552,7 +552,7 @@ INTO HRIS_MENUS
     NULL,
     'fa fa-pencil',
     'index',
-    15,1000382,
+    15,NULL,
     NULL,
     'Y'
   );
