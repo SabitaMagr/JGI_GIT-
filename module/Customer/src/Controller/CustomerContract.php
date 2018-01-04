@@ -76,16 +76,16 @@ class CustomerContract extends AbstractActionController {
                 $customerContract->outTime = Helper::getExpressionTime($customerContract->outTime);
                 $customerContract->workingHours = Helper::hoursToMinutes($customerContract->workingHours);
                 $customerContract->createdBy = $this->employeeId;
-                
+
                 $this->repository->add($customerContract);
 
-            //if the working cycle is weekdays
+                //if the working cycle is weekdays
                 if ($customerContract->workingCycle == 'W') {
                     $custContractWeekdaysModel = new \Customer\Model\CustContractWeekdays();
                     $custContractWeekdaysRepo = new \Customer\Repository\CustContractWeekdaysRepo($this->adapter);
                     $custContractWeekdaysModel->contractId = $customerContract->contractId;
 
-                    $weekArr = array('SUN' => 1, 'MON' => 2, 'TUE' => 3, 'WED' => 4, 'THU' => 6, 'FRI' => 6, 'SAT' => 7);
+                    $weekArr = array('SUN' => 1, 'MON' => 2, 'TUE' => 3, 'WED' => 4, 'THU' => 5, 'FRI' => 6, 'SAT' => 7);
                     foreach ($weekArr as $key => $value) {
                         if ($request->getPost($key) == 'YES') {
                             $custContractWeekdaysModel->weekday = $value;
@@ -94,7 +94,7 @@ class CustomerContract extends AbstractActionController {
                     }
                 }
 
-            //if the working cycle is ramdom dates
+                //if the working cycle is ramdom dates
                 if ($customerContract->workingCycle == 'R') {
                     $contractDates = $request->getPost('contractDates');
                     print_r($contractDates);
@@ -106,7 +106,7 @@ class CustomerContract extends AbstractActionController {
                         if ($dates != null) {
                             echo $dates;
                             $custContractDatesModel->manualDate = Helper::getExpressionDate($dates);
-                        $custContractDatesRepo->add($custContractDatesModel);
+                            $custContractDatesRepo->add($custContractDatesModel);
                         }
                     }
                 }
@@ -121,68 +121,106 @@ class CustomerContract extends AbstractActionController {
             'customRenderer' => Helper::renderCustomView(),
         ]);
     }
-    
-    public function editAction(){
+
+    public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute("customer-contract");
         }
         $form = $this->getForm();
-        
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-            $customerContract = new CustomerContractModel();
-            $customerContract->exchangeArrayFromForm($form->getData());
-            
-            $customerContract->inTime = Helper::getExpressionTime($customerContract->inTime);
-            $customerContract->outTime = Helper::getExpressionTime($customerContract->outTime);
-            $customerContract->workingHours = Helper::hoursToMinutes($customerContract->workingHours);
-            $customerContract->modifiedBy = $this->employeeId;
-            $customerContract->modifiedDt = Helper::getCurrentDate();
+                $customerContract = new CustomerContractModel();
+                $customerContract->exchangeArrayFromForm($form->getData());
+
+                $customerContract->inTime = Helper::getExpressionTime($customerContract->inTime);
+                $customerContract->outTime = Helper::getExpressionTime($customerContract->outTime);
+                $customerContract->workingHours = Helper::hoursToMinutes($customerContract->workingHours);
+                $customerContract->modifiedBy = $this->employeeId;
+                $customerContract->modifiedDt = Helper::getCurrentDate();
                 
-            
-            echo '<Pre>';
-            print_r($customerContract);
-            
-            
-            
+
                 
-            die();
+                $this->repository->edit($customerContract, $id);
+
+                $custContractWeekdaysRepo = new \Customer\Repository\CustContractWeekdaysRepo($this->adapter);
+                $custContractDatesRepo = new \Customer\Repository\CustContractDatesRepo($this->adapter);
+                
+                
+                $custContractWeekdaysRepo->delete($id);
+                $custContractDatesRepo->delete($id);
+
+                //if the working cycle is weekdays
+                if ($customerContract->workingCycle == 'W') {
+                    $custContractWeekdaysModel = new \Customer\Model\CustContractWeekdays();
+                    $custContractWeekdaysModel->contractId = $id;
+
+                    $weekArr = array('SUN' => 1, 'MON' => 2, 'TUE' => 3, 'WED' => 4, 'THU' => 5, 'FRI' => 6, 'SAT' => 7);
+                    foreach ($weekArr as $key => $value) {
+                        if ($request->getPost($key) == 'YES') {
+                            $custContractWeekdaysModel->weekday = $value;
+                            $custContractWeekdaysRepo->add($custContractWeekdaysModel);
+                        }
+                    }
+                }
+
+                //if the working cycle is ramdom dates
+                if ($customerContract->workingCycle == 'R') {
+                    $contractDates = $request->getPost('contractDates');
+                    print_r($contractDates);
+                    $custContractDatesModel = new \Customer\Model\CustContractDates();
+                    $custContractDatesModel->contractId = $id;
+
+                    foreach ($contractDates as $dates) {
+                        if ($dates != null) {
+                            echo $dates;
+                            $custContractDatesModel->manualDate = Helper::getExpressionDate($dates);
+                            $custContractDatesRepo->add($custContractDatesModel);
+                        }
+                    }
+                }
+                
+                $this->flashmessenger()->addMessage("Customer Contract updated successfully.");
+                return $this->redirect()->toRoute("customer-contract");
+
+
+
+
             }
-            
         }
-        
-        
-        
-        
+
+
+
+
         $customerIdElement = $form->get('customerId');
         $customerIdElement->setValueOptions(EntityHelper::getTableKVList($this->adapter, Customer::TABLE_NAME, Customer::CUSTOMER_ID, [Customer::CUSTOMER_ENAME], [Customer::STATUS => EntityHelper::STATUS_ENABLED], null, true));
         $customerContract = new CustomerContractModel();
         $detail = $this->repository->fetchById($id)->getArrayCopy();
-        
+
         $contractDetails;
-        
-        if($detail['WORKING_CYCLE']=='W'){
+
+        if ($detail['WORKING_CYCLE'] == 'W') {
             $custContractWeekdaysRepo = new \Customer\Repository\CustContractWeekdaysRepo($this->adapter);
-            $contractDetails=$custContractWeekdaysRepo->fetchById($id);
+            $contractDetails = $custContractWeekdaysRepo->fetchById($id);
         }
-        
-        if($detail['WORKING_CYCLE']=='R'){
+
+        if ($detail['WORKING_CYCLE'] == 'R') {
             $custContractDatesRepo = new \Customer\Repository\CustContractDatesRepo($this->adapter);
-            $contractDetails=$custContractDatesRepo->fetchById($id);
+            $contractDetails = $custContractDatesRepo->fetchById($id);
         }
-        
+
         $customerContract->exchangeArrayFromDB($detail);
         $form->bind($customerContract);
-        
-        
+
+
         return new ViewModel([
             'form' => $form,
             'id' => $id,
             'customRenderer' => Helper::renderCustomView(),
-            'contractDetails'=> $contractDetails
+            'contractDetails' => $contractDetails
         ]);
     }
 

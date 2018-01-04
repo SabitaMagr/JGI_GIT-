@@ -24,7 +24,7 @@ class CustContractDatesRepo implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+        $this->gateway->delete([CustContractDates::CONTRACT_ID=>$id]);
     }
 
     public function edit(Model $model, $id) {

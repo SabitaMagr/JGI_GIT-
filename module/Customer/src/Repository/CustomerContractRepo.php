@@ -29,7 +29,7 @@ class CustomerContractRepo implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        $this->gateway->update($model->getArrayCopyForDB(), [CustomerContract::CUSTOMER_ID => $id]);
+        $this->gateway->update($model->getArrayCopyForDB(), [CustomerContract::CONTRACT_ID => $id]);
     }
 
     public function fetchAll() {

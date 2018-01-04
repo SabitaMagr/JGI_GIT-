@@ -25,7 +25,7 @@ class CustContractWeekdaysRepo implements RepositoryInterface {
     }
 
     public function delete($id) {
-        
+        $this->gateway->delete([CustContractWeekdays::CONTRACT_ID=>$id]);
     }
 
     public function edit(Model $model, $id) {
