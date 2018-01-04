@@ -2,13 +2,11 @@
 
 namespace Customer\Repository;
 
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\CustContractDates;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
 
 class CustContractDatesRepo implements RepositoryInterface {
@@ -38,12 +36,10 @@ class CustContractDatesRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rawResult = $this->gateway->select(function(Select $select)use($id) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustContractDates::class), false);
-            $select->where([CustContractDates::CONTRACT_ID => $id]);
-            $select->order([CustContractDates::MANUAL_DATE => Select::ORDER_ASCENDING]);
-        });
-        return $rawResult->toArray();
+        $sql="select CONTRACT_ID,TO_CHAR(MANUAL_DATE, 'DD/MM/YYYY') AS MANUAL_DATE from HRIS_CUST_CONTRACT_DATES WHERE CONTRACT_ID=$id";
+        $statement = $this->adapter->query($sql);
+        $result= $statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }

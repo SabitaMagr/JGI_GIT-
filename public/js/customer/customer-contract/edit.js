@@ -67,6 +67,7 @@
 
         $("input[name=workingCycle]").on("change", function () {
             checkCycleType();
+            populateEditVal();
         });
 
         checkCycleType();
@@ -74,18 +75,29 @@
 
 
         function populateEditVal() {
-            console.log(document.workingCycleEditVal);
-            console.log(document.contractDetails);
+            var workingCycleVal = $('input[name=workingCycle]:checked').val();
+            console.log(workingCycleVal);
+//            console.log(document.workingCycleEditVal);
+//            console.log(document.contractDetails);
 
-            if (document.workingCycleEditVal == 'W') {
+            if (document.workingCycleEditVal == 'W' && workingCycleVal=='W') {
+                var weekArr = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+                $.each(document.contractDetails[0], function (index, value) {
+                    if (weekArr.includes(index)) {
+                        if (value > 0) {
+                            $('#'+index).prop('checked', true);
+                        }
+                    }
+                });
+
 
             }
 
-            if (document.workingCycleEditVal == 'R') {
+            if (document.workingCycleEditVal == 'R' && workingCycleVal=='R') {
                 $("#tblContractDates tbody").find("tr:gt(0)").remove();
 
                 $.each(document.contractDetails, function (index, value) {
-                    console.log(value.MANUAL_DATE);
                     var appendValues = "<tr>"
                             + "<td><input type='text' class='contractDates' name='contractDates[]'></td>"
                             + "<td>"
@@ -104,8 +116,8 @@
                         todayHighlight: true,
                         autoclose: true
                     });
-                    
-                    $('#tblContractDates tbody').find('.contractDates:last').datepicker("update", '01/10/2014');
+
+                    $('#tblContractDates tbody').find('.contractDates:last').datepicker("update", value.MANUAL_DATE);
 
                 });
             }

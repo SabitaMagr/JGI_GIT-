@@ -85,7 +85,7 @@ class CustomerContract extends AbstractActionController {
                     $custContractWeekdaysRepo = new \Customer\Repository\CustContractWeekdaysRepo($this->adapter);
                     $custContractWeekdaysModel->contractId = $customerContract->contractId;
 
-                    $weekArr = array('SUN' => 1, 'MON' => 2, 'TUE' => 3, 'WED' => 4, 'THR' => 6, 'FRI' => 6, 'SAT' => 7);
+                    $weekArr = array('SUN' => 1, 'MON' => 2, 'TUE' => 3, 'WED' => 4, 'THU' => 6, 'FRI' => 6, 'SAT' => 7);
                     foreach ($weekArr as $key => $value) {
                         if ($request->getPost($key) == 'YES') {
                             $custContractWeekdaysModel->weekday = $value;
@@ -125,9 +125,34 @@ class CustomerContract extends AbstractActionController {
     public function editAction(){
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
-            return $this->redirect()->toRoute("holidaysetup");
+            return $this->redirect()->toRoute("customer-contract");
         }
         $form = $this->getForm();
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+            $customerContract = new CustomerContractModel();
+            $customerContract->exchangeArrayFromForm($form->getData());
+            
+            $customerContract->inTime = Helper::getExpressionTime($customerContract->inTime);
+            $customerContract->outTime = Helper::getExpressionTime($customerContract->outTime);
+            $customerContract->workingHours = Helper::hoursToMinutes($customerContract->workingHours);
+            $customerContract->modifiedBy = $this->employeeId;
+            $customerContract->modifiedDt = Helper::getCurrentDate();
+                
+            
+            echo '<Pre>';
+            print_r($customerContract);
+            
+            
+            
+                
+            die();
+            }
+            
+        }
         
         
         
@@ -155,6 +180,7 @@ class CustomerContract extends AbstractActionController {
         
         return new ViewModel([
             'form' => $form,
+            'id' => $id,
             'customRenderer' => Helper::renderCustomView(),
             'contractDetails'=> $contractDetails
         ]);

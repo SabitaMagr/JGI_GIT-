@@ -24,10 +24,10 @@ $chargeRate = $form->get('chargeRate');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 
-$form->setAttribute('action', $this->url('customer-contract', ['action' => 'add']));
+$form->setAttribute('action', $this->url('customer-contract', ['action' => 'edit','id'=>$id]));
 $form->prepare();
 
-$weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THR', 'FRI', 'SAT');
+$weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
 ?>
 
 <script>
