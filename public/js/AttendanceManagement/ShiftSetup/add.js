@@ -9,12 +9,14 @@
         var $halfTime = $('#halfTime');
         var $graceStartTime = $('#graceStartTime');
         var $graceEndTime = $('#graceEndTime');
+        var $halfDayInTime = $('#halfDayInTime');
+        var $halfDayOutTime = $('#halfDayOutTime');
         var $lateIn = $('#lateIn');
         var $earlyOut = $('#earlyOut');
         var $actualWorkingHr = $('#actualWorkingHr');
         var $totalWorkingHr = $('#totalWorkingHr');
 
-        app.addComboTimePicker($startTime, $endTime, $halfDayEndTime, $halfTime, $graceStartTime, $graceEndTime, $lateIn, $earlyOut, $totalWorkingHr, $actualWorkingHr);
+        app.addComboTimePicker($startTime, $endTime, $halfDayEndTime, $halfTime, $graceStartTime, $graceEndTime, $lateIn, $earlyOut, $totalWorkingHr, $actualWorkingHr, $halfDayInTime, $halfDayOutTime);
 
 
         var $form = $('#shiftSetup-form');

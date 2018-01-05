@@ -230,7 +230,7 @@ class ShiftForm {
      * @Annotation\Attributes({ "id":"totalWorkingHr", "data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })
      */
     public $totalWorkingHr;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
@@ -248,5 +248,23 @@ class ShiftForm {
      * @Annotation\Attributes({ "id":"graceEndTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
      */
     public $graceEndTime;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Halfday In Time"})
+     * @Annotation\Attributes({ "id":"halfDayInTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
+     */
+    public $halfDayInTime;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Halfday Out Time"})
+     * @Annotation\Attributes({ "id":"halfDayOutTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
+     */
+    public $halfDayOutTime;
 
 }
