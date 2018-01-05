@@ -143,7 +143,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
                   A.LATE_STATUS                                    AS LATE_STATUS,
                   COM.COMPANY_NAME                                 AS COMPANY_NAME,
-                  COM.DEPARTMENT_NAME                              AS DEPARTMENT_NAME,
+                  DEP.DEPARTMENT_NAME                              AS DEPARTMENT_NAME,
                   INITCAP(E.FULL_NAME)                             AS EMPLOYEE_NAME,
                   H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
                   L.LEAVE_ENAME                                    AS LEAVE_ENAME,
