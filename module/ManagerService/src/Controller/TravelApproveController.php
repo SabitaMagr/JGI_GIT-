@@ -210,7 +210,6 @@ class TravelApproveController extends HrisController {
             } else {
                 $this->adapter->getDriver()->getConnection()->beginTransaction();
                 try {
-
                     foreach ($postData as $data) {
                         $travelRequestModel = new TravelRequest();
                         $id = $data['id'];
