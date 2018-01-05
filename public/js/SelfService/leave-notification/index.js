@@ -39,7 +39,7 @@
                         template: "<span>#: (TO_DATE_BS == null) ? '-' : TO_DATE_BS #</span>"}
                 ]},
             {field: "NO_OF_DAYS", title: "Duration"},
-            {field: "STATUS", title: "Overall Status"},
+            {field: "STATUS_DETAIL", title: "Overall Status"},
             {field: "SUB_APPROVED_FLAG", title: "Approved"},
             {field: ["ID"], title: "Action", template: action}
         ]);
@@ -61,7 +61,7 @@
             'TO_DATE_AD': 'To Date(AD)',
             'TO_DATE_BS': 'To Date(BS)',
             'NO_OF_DAYS': 'No Days',
-            'STATUS': 'Overall Status',
+            'STATUS_DETAIL': 'Overall Status',
             'REMARKS': 'Remarks',
             'RECOMMENDER_NAME': 'Recommender',
             'APPROVER_NAME': 'Approver',
