@@ -144,7 +144,6 @@ class ShiftSetup extends AbstractActionController {
                 $shift->lateIn = Helper::hoursToMinutes($shift->lateIn);
                 $shift->earlyOut = Helper::hoursToMinutes($shift->earlyOut);
 
-
                 $this->repository->edit($shift, $id);
                 $this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
                 return $this->redirect()->toRoute("shiftsetup");
