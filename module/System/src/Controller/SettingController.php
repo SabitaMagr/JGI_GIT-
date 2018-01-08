@@ -41,8 +41,4 @@ class SettingController extends AbstractActionController {
         return new CustomViewModel(['success' => $successFlag]);
     }
 
-    public function testAction() {
-        shell_exec(Helper::SH_DIR . "/" . "test.sh");
-    }
-
 }

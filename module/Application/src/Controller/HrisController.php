@@ -66,4 +66,12 @@ class HrisController extends AbstractActionController {
         return $selectFE;
     }
 
+    protected function listValueToKV($list, $key, $value) {
+        $output = [];
+        foreach ($list as $item) {
+            $output[$item[$key]] = $item[$value];
+        }
+        return $output;
+    }
+
 }

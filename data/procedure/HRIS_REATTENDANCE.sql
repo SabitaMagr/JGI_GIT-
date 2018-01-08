@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_REATTENDANCE(
+create or replace PROCEDURE HRIS_REATTENDANCE(
     P_FROM_ATTENDANCE_DT HRIS_ATTENDANCE.ATTENDANCE_DT%TYPE,
     P_EMPLOYEE_ID HRIS_ATTENDANCE.EMPLOYEE_ID%TYPE:=NULL )
 AS
@@ -27,7 +27,7 @@ AS
   V_ADJUSTED_END_TIME HRIS_SHIFT_ADJUSTMENT.END_TIME%TYPE    :=NULL;
   --
   V_LATE_COUNT NUMBER;
-  V_SHIFT_ID NUMBER;
+  V_SHIFT_ID   NUMBER;
 BEGIN
   FOR i IN 0..V_DATE_DIFF
   LOOP
@@ -73,16 +73,17 @@ BEGIN
       V_HALFDAY_PERIOD :=employee.HALFDAY_PERIOD;
       V_GRACE_PERIOD   :=employee.GRACE_PERIOD;
       V_TWO_DAY_SHIFT  := employee.TWO_DAY_SHIFT;
-      V_SHIFT_ID := employee.SHIFT_ID;
-      --
-      DBMS_OUTPUT.PUT_LINE('INITIAL LATE_STATUS :'||V_LATE_STATUS);
+      V_SHIFT_ID       := employee.SHIFT_ID;
       --
       DELETE
       FROM HRIS_ATTENDANCE_DETAIL
       WHERE ATTENDANCE_DT= TRUNC(employee.ATTENDANCE_DT)
       AND EMPLOYEE_ID    = employee.EMPLOYEE_ID ;
       --
-      V_SHIFT_ID:=HRIS_BEST_CASE_SHIFT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT));
+      V_SHIFT_ID    :=HRIS_BEST_CASE_SHIFT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT));
+      IF(V_SHIFT_ID IS NULL)THEN
+        V_SHIFT_ID  :=employee.SHIFT_ID;
+      END IF;
       HRIS_PRELOAD_ATTENDANCE(employee.ATTENDANCE_DT,employee.EMPLOYEE_ID,V_SHIFT_ID);
       --
       IF V_TWO_DAY_SHIFT ='E' THEN
@@ -121,14 +122,14 @@ BEGIN
             (
             CASE
               WHEN V_HALFDAY_PERIOD ='F'
-              THEN S.START_TIME
-              ELSE S.HALF_DAY_END_TIME
+              THEN S.HALF_DAY_IN_TIME
+              ELSE S.START_TIME
             END )+((1/1440)*NVL(S.LATE_IN,0)),
             (
             CASE
               WHEN V_HALFDAY_PERIOD ='F'
-              THEN S.HALF_DAY_END_TIME
-              ELSE S.END_TIME
+              THEN S.END_TIME
+              ELSE S.HALF_DAY_OUT_TIME
             END ) -((1/1440)*NVL(S.EARLY_OUT,0))
           INTO V_LATE_IN,
             V_EARLY_OUT,

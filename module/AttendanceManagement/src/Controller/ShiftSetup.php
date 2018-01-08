@@ -75,6 +75,8 @@ class ShiftSetup extends AbstractActionController {
                 $shift->status = 'E';
                 $shift->graceStartTime = Helper::getExpressionTime($shift->graceStartTime);
                 $shift->graceEndTime = Helper::getExpressionTime($shift->graceEndTime);
+                $shift->halfDayInTime = Helper::getExpressionTime($shift->halfDayInTime);
+                $shift->halfDayOutTime = Helper::getExpressionTime($shift->halfDayOutTime);
 
                 $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
                 $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);
@@ -134,11 +136,13 @@ class ShiftSetup extends AbstractActionController {
                 $shift->graceStartTime = Helper::getExpressionTime($shift->graceStartTime);
                 $shift->graceEndTime = Helper::getExpressionTime($shift->graceEndTime);
 
+                $shift->halfDayInTime = Helper::getExpressionTime($shift->halfDayInTime);
+                $shift->halfDayOutTime = Helper::getExpressionTime($shift->halfDayOutTime);
+
                 $shift->actualWorkingHr = Helper::hoursToMinutes($shift->actualWorkingHr);
                 $shift->totalWorkingHr = Helper::hoursToMinutes($shift->totalWorkingHr);
                 $shift->lateIn = Helper::hoursToMinutes($shift->lateIn);
                 $shift->earlyOut = Helper::hoursToMinutes($shift->earlyOut);
-
 
                 $this->repository->edit($shift, $id);
                 $this->flashmessenger()->addMessage("Shift Successfuly Updated!!!");
