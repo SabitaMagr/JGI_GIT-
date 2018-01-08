@@ -311,7 +311,7 @@ return [
             'payslip-previous' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/payslip-previous[/:action[/:id]]',
+                    'route' => '/selfservice/payslip-previous[/:action[/:id[/:mcode]]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
