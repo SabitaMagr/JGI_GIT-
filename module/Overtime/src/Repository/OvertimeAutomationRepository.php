@@ -3,7 +3,6 @@
 namespace Overtime\Repository;
 
 use Application\Helper\EntityHelper;
-use Application\Helper\Helper;
 use Overtime\Model\CompulsoryOvertime;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
@@ -29,6 +28,7 @@ class OvertimeAutomationRepository {
                                 CompulsoryOvertime::EARLY_OVERTIME_HR,
                                 CompulsoryOvertime::LATE_OVERTIME_HR
                             ]), false);
+                    $select->where([CompulsoryOvertime::STATUS => EntityHelper::STATUS_ENABLED]);
                 });
     }
 
@@ -157,6 +157,15 @@ class OvertimeAutomationRepository {
         }
 
         return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    public function delete($id) {
+        $sql = "
+            BEGIN
+              HRIS_COMPULSORY_OT_CANCEL({$id});
+            END;";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
     }
 
 }

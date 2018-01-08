@@ -85,4 +85,14 @@ class OvertimeAutomation extends HrisController {
         }
     }
 
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
+        if (!$id) {
+            return $this->redirect()->toRoute('overtimeAutomation');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("Compulsory OT successfully deleted.");
+        return $this->redirect()->toRoute('overtimeAutomation');
+    }
+
 }
