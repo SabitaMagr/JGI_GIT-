@@ -23,6 +23,7 @@
             columns: [
                 {field: "DEVICE_NAME", title: "Device",width:200},
                 {field: "DEVICE_IP", title: "Device IP",width:200},
+                {field: "PING_STATUS", title: "Ping Status",width:200},
                 {field: "DEVICE_LOCATION", title: "Device Location",width:200},
                 {field: "ISACTIVE", title: "Active",width:200},
                     {title: "Action",width:100}

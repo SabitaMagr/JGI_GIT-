@@ -13,6 +13,7 @@ use SelfService\Controller\LoanRequest;
 use SelfService\Controller\MyAttendance;
 use SelfService\Controller\OvertimeRequest;
 use SelfService\Controller\PaySlip;
+use SelfService\Controller\PaySlipPrevious;
 use SelfService\Controller\PerformanceAppraisal;
 use SelfService\Controller\Profile;
 use SelfService\Controller\Service;
@@ -303,6 +304,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Birthday::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'payslip-previous' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/payslip-previous[/:action[/:id[/:mcode]]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PaySlipPrevious::class,
                         'action' => 'index',
                     ]
                 ],
@@ -866,6 +881,7 @@ return [
             OvertimeRequest::class => ControllerFactory::class,
             SubordinatesReview::class => ControllerFactory::class,
             Birthday::class => ControllerFactory::class,
+            PaySlipPrevious::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

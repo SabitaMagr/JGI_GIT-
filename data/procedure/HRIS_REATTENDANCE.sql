@@ -75,9 +75,6 @@ BEGIN
       V_TWO_DAY_SHIFT  := employee.TWO_DAY_SHIFT;
       V_SHIFT_ID       := employee.SHIFT_ID;
       --
-      DBMS_OUTPUT.PUT_LINE('INITIAL LATE_STATUS :'||V_LATE_STATUS);
-      DBMS_OUTPUT.PUT_LINE('EMPLOYEE_ID:'||employee.EMPLOYEE_ID||' SHIFT_ID:'||V_SHIFT_ID);
-      --
       DELETE
       FROM HRIS_ATTENDANCE_DETAIL
       WHERE ATTENDANCE_DT= TRUNC(employee.ATTENDANCE_DT)
@@ -87,7 +84,6 @@ BEGIN
       IF(V_SHIFT_ID IS NULL)THEN
         V_SHIFT_ID  :=employee.SHIFT_ID;
       END IF;
-      DBMS_OUTPUT.PUT_LINE('BEST SHIFT ID:'||V_SHIFT_ID);
       HRIS_PRELOAD_ATTENDANCE(employee.ATTENDANCE_DT,employee.EMPLOYEE_ID,V_SHIFT_ID);
       --
       IF V_TWO_DAY_SHIFT ='E' THEN
@@ -126,14 +122,14 @@ BEGIN
             (
             CASE
               WHEN V_HALFDAY_PERIOD ='F'
-              THEN S.START_TIME
-              ELSE S.HALF_DAY_END_TIME
+              THEN S.HALF_DAY_IN_TIME
+              ELSE S.START_TIME
             END )+((1/1440)*NVL(S.LATE_IN,0)),
             (
             CASE
               WHEN V_HALFDAY_PERIOD ='F'
-              THEN S.HALF_DAY_END_TIME
-              ELSE S.END_TIME
+              THEN S.END_TIME
+              ELSE S.HALF_DAY_OUT_TIME
             END ) -((1/1440)*NVL(S.EARLY_OUT,0))
           INTO V_LATE_IN,
             V_EARLY_OUT,
