@@ -39,7 +39,7 @@
                 employeeList = employeeListWithDate;
             }
             app.bulkServerRequest('', employeeList, function () {
-                app.showMessage("Reattendnace Successful.");
+                app.showMessage("Reattendance Successful.");
             }, function (data, error) {
                 app.showMessage(error, 'error');
             });
