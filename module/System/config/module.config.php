@@ -141,6 +141,20 @@ return [
                     ]
                 ]
             ],
+            'system-utility' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/system/utility[/:action[/:id]]',
+                    'constraint' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\SystemUtility::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ],
     ],
     'navigation' => [
@@ -329,6 +343,23 @@ return [
                     ],
                 ],
             ],
+        ],
+        'system-utility' => [
+            [
+                'label' => "Utility",
+                'route' => "system-utility"
+            ],
+            [
+                'label' => "Utility",
+                'route' => "system-utility",
+                'pages' => [
+                    [
+                        'label' => 'Re Attendnace',
+                        'route' => 'system-utility',
+                        'action' => 'reAttendance',
+                    ],
+                ],
+            ],
         ]
     ],
     'controllers' => [
@@ -341,7 +372,9 @@ return [
             AttendanceDeviceController::class => ControllerFactory::class,
             PreferenceSetup::class => ControllerFactory::class,
             Controller\MenuReport::class => ControllerFactory::class,
-            Controller\SystemSetting::class => ControllerFactory::class
+            Controller\SystemSetting::class => ControllerFactory::class,
+            Controller\SystemUtility::class => ControllerFactory::class
+            
         ],
     ],
     'view_manager' => [
