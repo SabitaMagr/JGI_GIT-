@@ -37,27 +37,8 @@ class TravelApproveRepository implements RepositoryInterface {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [TravelRequest::TRAVEL_ID => $id]);
         EntityHelper::rawQueryResult($this->adapter, "
-                DECLARE
-                  V_FROM_DATE HRIS_EMPLOYEE_TRAVEL_REQUEST.FROM_DATE%TYPE;
-                  V_EMPLOYEE_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.EMPLOYEE_ID%TYPE;
-                  V_STATUS HRIS_EMPLOYEE_TRAVEL_REQUEST.STATUS%TYPE;
-                  V_TRAVEL_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.TRAVEL_ID%TYPE:= {$id};
                 BEGIN
-                  SELECT FROM_DATE ,
-                    EMPLOYEE_ID,
-                    STATUS
-                  INTO V_FROM_DATE,
-                    V_EMPLOYEE_ID,
-                    V_STATUS
-                  FROM HRIS_EMPLOYEE_TRAVEL_REQUEST
-                  WHERE TRAVEL_ID =V_TRAVEL_ID;
-                  --
-                  IF V_STATUS IN ('AP','C') AND V_FROM_DATE <TRUNC(SYSDATE) THEN
-                    HRIS_REATTENDANCE(V_FROM_DATE,V_EMPLOYEE_ID);
-                  END IF;
-                EXCEPTION
-                WHEN NO_DATA_FOUND THEN
-                  DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| V_TRAVEL_ID);
+                    HRIS_TRAVEL_REQUEST_PROC({$id},'N');
                 END;
 ");
     }
