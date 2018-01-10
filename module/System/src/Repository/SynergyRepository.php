@@ -21,7 +21,7 @@ class SynergyRepository extends HrisRepository {
         if (!$this->linkedWithSynergy) {
             return [];
         }
-        $sql = "SELECT * FROM FORM_SETUP WHERE GROUP_SKU_FLAG = 'I'";
+        $sql = "SELECT * FROM FORM_SETUP WHERE GROUP_SKU_FLAG = 'I' AND COMPANY_CODE = '07' ORDER BY FORM_EDESC";
         return $this->rawQuery($sql);
     }
 
@@ -29,7 +29,7 @@ class SynergyRepository extends HrisRepository {
         if (!$this->linkedWithSynergy) {
             return [];
         }
-        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP";
+        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP ORDER BY ACC_EDESC";
         return $this->rawQuery($sql);
     }
 
