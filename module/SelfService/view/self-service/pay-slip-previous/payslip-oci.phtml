@@ -1,19 +1,7 @@
 <?php
-$db_host = "localhost";
-$db_user = "root";
-$db_password = "";
-$database = "neohrisrecover";
-
-
-$connect = mysqli_connect($db_host, $db_user, $db_password, $database) or die("couldn't connect!!! to database");
-
-$employeeQuery = mysqli_query($connect, "SELECT * FROM EMPLOYEE_MASTER_SETUP WHERE OFFICIAL_CODE='$employeeCode'");
-$employeeDetail = mysqli_fetch_array($employeeQuery);
-$id = $employeeDetail['employee_code'];
+$id = $employeeCode;
 
 function getMonthcode($currentMonth) {
-
-
     if ($currentMonth == '1') {
         return '9';
     } elseif
@@ -53,15 +41,7 @@ function getMonthcode($currentMonth) {
     }
 }
 
-if (!isset($_POST['mcode'])) {
-//    $monthCode=getMonthcode($currentMonth);
-    $monthCode = "";
-} else if ($_POST['mcode'] == '') {
-    //$monthCode=getMonthcode($currentMonth);
-    $monthCode = "";
-} else {
-    $monthCode = $_POST['mcode'];
-}
+$monthCode = ((!isset($_POST['mcode'])) || ($_POST['mcode'] == '')) ? '' : $_POST['mcode'];
 ?>
 
 
@@ -163,22 +143,16 @@ if (!isset($_POST['mcode'])) {
 </div>
 <?php
 
-function Period($connect) {
+function Period() {
     $sql = "SELECT PERIOD_DT_CODE as mcode,DT_EDESC as mname  FROM HR_PERIOD_DETAIL ORDER BY to_number(PERIOD_DT_CODE)";
-    $recs = array();
-    $result = mysqli_query($connect, $sql);
-    if ($result) {
-        while ($row = mysqli_fetch_array($result)) {
-            $recs[] = $row;
-        }
-    }
-    return $recs;
+    return $queryToList($sql);
 }
 
 $statuses = Period($connect);
 
 function getMonthName($id) {
-    $months = array('1' => 'Shrawan',
+    $months = array(
+        '1' => 'Shrawan',
         '2' => 'Bhadra',
         '3' => 'Ashwin',
         '4' => 'Kartik',
@@ -196,23 +170,7 @@ function getMonthName($id) {
 ?>
 
 <?php
-if (isset($_POST['mcode'])) {
-    $sql = "SELECT A.SHEET_NO, A.SAL_SHEET_CODE, B.EMPLOYEE_CODE,get_employee_name(B.EMPLOYEE_CODE) as employee_name ,
-                B.BASIC_SALARY, B.BASIC_PERIOD,C.official_code,
-                     B.CALC_BASIC, B.GRADE_CODE, B.MARITAL_STATUS, B.PRESENT_DAYS, B.WORK_DAYS,A.PERIOD_DT_CODE, 
-                     B.OVERTIME_HOURS, B.LEAVE_WITH_PAY_DAYS, B.LEAVE_WITHOUT_PAY_DAYS, B.GROSS_AMOUNT,
-                     B.NET_AMOUNT, B.EREMARKS, B.NREMARKS, B.HOLIDAYS, B.ABSENT_DAYS, B.HOLIDAYS,B.DEPARTMENT_CODE,
-                     (SELECT department_name from department_master_setup where department_master_setup.department_code=B.DEPARTMENT_CODE) as department_name,
-                     (SELECT grade_name from grade_master_setup where grade_master_setup.grade_code=B.GRADE_CODE) as grade_name,
-                     (SELECT DT_EDESC from HR_PERIOD_DETAIL where HR_PERIOD_DETAIL.PERIOD_DT_CODE=A.PERIOD_DT_CODE) as MONTH
-            FROM HR_SALARY_SHEET A , HR_SALARY_SHEET_DETAIL B,employee_master_setup C
-            WHERE B.EMPLOYEE_CODE = '$id' 
-            and  c.employee_code=b.employee_code
-            AND a.SALARY_TYPE = 0 
-            AND A.PERIOD_DT_CODE = '$_POST[mcode]'
-            AND A.SHEET_NO = B.SHEET_NO";
-} else {
-    $sql = "SELECT A.SHEET_NO, A.SAL_SHEET_CODE, B.EMPLOYEE_CODE,get_employee_name(B.EMPLOYEE_CODE) as employee_name ,
+$sql = "SELECT A.SHEET_NO, A.SAL_SHEET_CODE, B.EMPLOYEE_CODE,get_employee_name(B.EMPLOYEE_CODE) as employee_name ,
                     B.BASIC_SALARY, B.BASIC_PERIOD,C.official_code,
                      B.CALC_BASIC, B.GRADE_CODE, B.MARITAL_STATUS, B.PRESENT_DAYS, B.WORK_DAYS,A.PERIOD_DT_CODE, 
                      B.OVERTIME_HOURS, B.LEAVE_WITH_PAY_DAYS, B.LEAVE_WITHOUT_PAY_DAYS, B.GROSS_AMOUNT,
@@ -226,10 +184,8 @@ if (isset($_POST['mcode'])) {
                     AND a.SALARY_TYPE = 0 
                     AND A.PERIOD_DT_CODE = '$monthCode'
                AND A.SHEET_NO = B.SHEET_NO";
-}
-// var_dump($sql); exit;
-$row = mysqli_query($connect, $sql);
-$res = mysqli_fetch_assoc($row);
+$resList = getAssoArray($connect, $sql);
+$res = sizeof($resList) > 0 ? $resList[0] : null;
 ?>
 <div class="panel panel-default margin-top-20">
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
@@ -245,15 +201,16 @@ $res = mysqli_fetch_assoc($row);
                             <td><select name="mcode" class="form-data" style="width:100px;padding-top:3px;">
                                     <option value="">Select</option>
                                     <?php foreach ($statuses as $month) { ?>
-                                        <option value="<?php echo $month['mcode']; ?>" <?php
-                                        if (isset($_POST['mcode'])) {
-                                            if ($_POST['mcode'] == $month['mcode']) {
-                                                echo "selected";
-                                            }
+                                        <option value="<?php echo $month['MCODE']; ?>" <?php
+                                    if (isset($_POST['mcode'])) {
+                                        if ($_POST['mcode'] == $month['MCODE']) {
+                                            echo "selected";
                                         }
-                                        ?> > <?php echo $month['mname']; ?></option>
-                                            <?php }
-                                            ?>
+                                    }
+                                        ?> > 
+                                                <?php echo $month['MNAME']; ?>
+                                        </option>
+                                    <?php } ?>
                                 </select>
                             </td>
                         </tr>
@@ -366,13 +323,13 @@ $res = mysqli_fetch_assoc($row);
                                         <td> <?php echo $counter++; ?></td>   
                                         <td> <?php echo $branch['pay_edesc']; ?></td>
                                         <td> <span style="float:right;padding-right:5px;"><?php
-                                                echo number_format($branch['amount'], 2, '.', ',');
-                                                if (!isset($branch['amount'])) {
-                                                    $branch['amount'] = 0;
-                                                }
+                                    echo number_format($branch['amount'], 2, '.', ',');
+                                    if (!isset($branch['amount'])) {
+                                        $branch['amount'] = 0;
+                                    }
 
-                                                $sum1 += $branch['amount'];
-                                                ?></span></td>
+                                    $sum1 += $branch['amount'];
+                                            ?></span></td>
                                         </tr>
 
                                     <?php } ?>
@@ -426,9 +383,9 @@ $res = mysqli_fetch_assoc($row);
                                         <td> <?php echo $counter++; ?></td>   
                                         <td> <?php echo $branch['pay_edesc']; ?></td>
                                         <td> <span style="float:right;padding-right:5px;"><?php
-                                                echo number_format($branch['amount'], 2, '.', ',');
-                                                $sum += $branch['amount'];
-                                                ?></span></td>
+                                    echo number_format($branch['amount'], 2, '.', ',');
+                                    $sum += $branch['amount'];
+                                            ?></span></td>
                                         </tr>
                                     <?php } ?>
                                     </hr>

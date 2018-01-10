@@ -19,6 +19,7 @@ class Preference extends Model {
     public $crAccCode = null;
     public $excessCrAccCode = null;
     public $lessDrAccCode = null;
+    public $oldPayslipType = 'N';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -35,6 +36,7 @@ class Preference extends Model {
     CONST CR_ACC_CODE = "CR_ACC_CODE";
     CONST EXCESS_CR_ACC_CODE = "EXCESS_CR_ACC_CODE";
     CONST LESS_DR_ACC_CODE = "LESS_DR_ACC_CODE";
+    CONST OLD_PAYSLIP_TYPE = "OLD_PAYSLIP_TYPE";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -51,7 +53,8 @@ class Preference extends Model {
         'drAccCode' => self::DR_ACC_CODE,
         'crAccCode' => self::CR_ACC_CODE,
         'excessCrAccCode' => self::EXCESS_CR_ACC_CODE,
-        'lessDrAccCode  ' => self::LESS_DR_ACC_CODE,
+        'lessDrAccCode' => self::LESS_DR_ACC_CODE,
+        'oldPayslipType' => self::OLD_PAYSLIP_TYPE,
     ];
 
 }
