@@ -858,6 +858,28 @@ return [
                 ],
             ],
         ],
+        'payslip-previous' => [
+            [
+                'label' => 'Payslip-previous',
+                'route' => 'payslip-previous',
+            ],
+            [
+                'label' => 'Payslip-previous',
+                'route' => 'payslip-previous',
+                'pages' => [
+                    [
+                        'label' => 'Taxsheet',
+                        'route' => 'payslip-previous',
+                        'action' => 'taxsheet',
+                    ],
+                    [
+                        'label' => 'Payslip',
+                        'route' => 'payslip-previous',
+                        'action' => 'payslip',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -885,6 +907,14 @@ return [
         ],
     ],
     'view_manager' => [
+        'template_map' => [
+            'mysql/payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/payslip.phtml',
+            'mysql/print-payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/print-payslip.phtml',
+            'mysql/taxsheet' => __DIR__ . '/../view/self-service/pay-slip-previous/taxsheet.phtml',
+            'oracle/payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/payslip-oci.phtml',
+            'oracle/print-payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/print-payslip-oci.phtml',
+            'oracle/taxsheet' => __DIR__ . '/../view/self-service/pay-slip-previous/taxsheet-oci.phtml',
+        ],
         'template_path_stack' => [
             __DIR__ . '/../view',
         ]

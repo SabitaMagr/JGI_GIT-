@@ -17,6 +17,7 @@ $drAccCode = $form->get('drAccCode');
 $crAccCode = $form->get('crAccCode');
 $excessCrAccCode = $form->get('excessCrAccCode');
 $lessDrAccCode = $form->get('lessDrAccCode');
+$oldPayslipType = $form->get('oldPayslipType');
 
 $submit = $form->get('submit');
 
@@ -173,6 +174,15 @@ if ($this->messages) {
                             <?php print $this->formElement($lessDrAccCode); ?>
                             <?php print $this->formElementErrors()->render($lessDrAccCode, ['class' => 'help-block error']); ?>
                         </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($oldPayslipType); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($oldPayslipType); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($oldPayslipType, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
                 <div class="">
