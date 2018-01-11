@@ -623,3 +623,31 @@ ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD SERVICE_TYPE_ID VARCHAR2(4000 BYTE);
 ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD EMPLOYEE_TYPE   VARCHAR2(4000 BYTE);
 ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD GENDER_ID       VARCHAR2(4000 BYTE);
 ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD EMPLOYEE_ID     VARCHAR2(4000 BYTE);
+
+
+
+insert into hris_menus
+(
+menu_id,
+MENU_NAME,
+PARENT_MENU,
+route,
+status,
+created_dt,
+icon_class,
+action,
+menu_index,
+is_visible
+)values
+(
+(select max(menu_id)+1 from hris_menus),
+'Branch Wise Daily',
+148,
+'allreport',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'branchWiseDaily',
+(select max(MENU_INDEX)+1 from hris_menus where parent_menu=148),
+'Y'
+);

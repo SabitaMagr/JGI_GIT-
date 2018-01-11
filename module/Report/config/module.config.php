@@ -69,6 +69,16 @@ return[
                         'route' => 'allreport',
                         'action' => 'HireAndFireReport',
                     ],
+                    [
+                        'label' => 'Branch Wise',
+                        'route' => 'allreport',
+                        'action' => 'branchWise',
+                    ],
+                    [
+                        'label' => 'Branch Wise Daily',
+                        'route' => 'allreport',
+                        'action' => 'branchWiseDaily',
+                    ],
                 ],
             ],
         ],
