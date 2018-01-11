@@ -29,7 +29,7 @@ class SynergyRepository extends HrisRepository {
         if (!$this->linkedWithSynergy) {
             return [];
         }
-        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP ORDER BY ACC_EDESC";
+        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP WHERE COMPANY_CODE = '07' ORDER BY ACC_EDESC";
         return $this->rawQuery($sql);
     }
 
