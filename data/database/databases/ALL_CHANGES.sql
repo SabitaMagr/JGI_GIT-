@@ -625,6 +625,34 @@ ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD GENDER_ID       VARCHAR2(4000 BYTE);
 ALTER TABLE HRIS_LEAVE_MASTER_SETUP ADD EMPLOYEE_ID     VARCHAR2(4000 BYTE);
 
 
+
+insert into hris_menus
+(
+menu_id,
+MENU_NAME,
+PARENT_MENU,
+route,
+status,
+created_dt,
+icon_class,
+action,
+menu_index,
+is_visible
+)values
+(
+(select max(menu_id)+1 from hris_menus),
+'Branch Wise Daily',
+148,
+'allreport',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'branchWiseDaily',
+(select max(MENU_INDEX)+1 from hris_menus where parent_menu=148),
+'Y'
+);
+
+
 ALTER TABLE HRIS_COMPANY ADD LINK_TRAVEL_TO_SYNERGY CHAR(1 BYTE) CHECK(LINK_TRAVEL_TO_SYNERGY IN ('Y','N'));
 ALTER TABLE HRIS_COMPANY ADD DR_ACC_CODE            VARCHAR2(255 BYTE);
 ALTER TABLE HRIS_COMPANY ADD CR_ACC_CODE            VARCHAR2(255 BYTE);
@@ -633,3 +661,5 @@ ALTER TABLE HRIS_COMPANY ADD LESS_DR_ACC_CODE       VARCHAR2(255 BYTE);
 ALTER TABLE HRIS_COMPANY ADD FORM_CODE              VARCHAR2(255 BYTE);
 
 ALTER TABLE HRIS_ROLES MODIFY (CONTROL VARCHAR2(2 BYTE));
+
+
