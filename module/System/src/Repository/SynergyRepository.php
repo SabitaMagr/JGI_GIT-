@@ -17,19 +17,21 @@ class SynergyRepository extends HrisRepository {
         $this->linkedWithSynergy = $this->checkIfTableExists(self::FORM_SETUP);
     }
 
-    public function getFormList() {
+    public function getFormList($companyCode = null) {
         if (!$this->linkedWithSynergy) {
             return [];
         }
-        $sql = "SELECT * FROM FORM_SETUP WHERE GROUP_SKU_FLAG = 'I'";
+        $condition = $companyCode != null ? " AND COMPANY_CODE = {$companyCode}" : "";
+        $sql = "SELECT * FROM FORM_SETUP WHERE GROUP_SKU_FLAG = 'I'" . $condition;
         return $this->rawQuery($sql);
     }
 
-    public function getAccountList() {
+    public function getAccountList($companyCode = null) {
         if (!$this->linkedWithSynergy) {
             return [];
         }
-        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP";
+        $condition = $companyCode != null ? " AND COMPANY_CODE = {$companyCode}" : "";
+        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP WHERE 1=1 " . $condition;
         return $this->rawQuery($sql);
     }
 

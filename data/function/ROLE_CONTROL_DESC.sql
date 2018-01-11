@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION ROLE_CONTROL_DESC(
+CREATE OR REPLACE FUNCTION "ROLE_CONTROL_DESC"(
     P_FLAG HRIS_ROLES.CONTROL%TYPE)
   RETURN VARCHAR2
 IS
@@ -13,6 +13,14 @@ BEGIN
       'Company Specific'
     WHEN 'U'THEN
       'User Specific'
+    WHEN 'B'THEN
+      'Branch Specific'
+    WHEN 'DP'THEN
+      'Department Specific'
+    WHEN 'DS'THEN
+      'Designation Specific'
+    WHEN 'P'THEN
+      'Position Specific'
     END);
   RETURN V_FLAG_DESC;
-END; 
+END;

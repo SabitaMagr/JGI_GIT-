@@ -1,7 +1,6 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-
         $("select").select2();
         app.datePickerWithNepali('fromDate', 'nepalifromDate');
 
@@ -9,8 +8,6 @@
         var $submitBtn = $('#btn-reAttendnace');
 
         app.populateSelect($employeeId, document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', '---', '');
-
-
         $submitBtn.on('click', function () {
             var selectedDate = $('#fromDate').val();
             if (!selectedDate) {
@@ -41,17 +38,11 @@
                 });
                 employeeList = employeeListWithDate;
             }
-            app.bulkServerRequest(document.reAttendanceLink, employeeList, function () {
-                app.showMessage("reattendnace Sucessfull.");
+            app.bulkServerRequest('', employeeList, function () {
+                app.showMessage("Reattendance Successful.");
             }, function (data, error) {
                 app.showMessage(error, 'error');
             });
-
-
-
         });
-
-
-
     });
 })(window.jQuery, window.app);

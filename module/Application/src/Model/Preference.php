@@ -13,12 +13,7 @@ class Preference extends Model {
     public $forcePasswordRenewDay = 45;
     public $showAddressBook = 'Y';
     public $noticeType = 'M'; //['S','M']
-    public $linkTravelToSynergy = 'N';
-    public $formCode = null;
-    public $drAccCode = null;
-    public $crAccCode = null;
-    public $excessCrAccCode = null;
-    public $lessDrAccCode = null;
+    public $oldPayslipType = 'N';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -29,12 +24,7 @@ class Preference extends Model {
     CONST FORCE_PASSWORD_RENEW_DAY = "FORCE_PASSWORD_RENEW_DAY";
     CONST SHOW_ADDRESS_BOOK = "SHOW_ADDRESS_BOOK";
     CONST NOTICE_TYPE = "NOTICE_TYPE";
-    CONST FORM_CODE = "FORM_CODE";
-    CONST LINK_TRAVEL_TO_SYNERGY = "LINK_TRAVEL_TO_SYNERGY";
-    CONST DR_ACC_CODE = "DR_ACC_CODE";
-    CONST CR_ACC_CODE = "CR_ACC_CODE";
-    CONST EXCESS_CR_ACC_CODE = "EXCESS_CR_ACC_CODE";
-    CONST LESS_DR_ACC_CODE = "LESS_DR_ACC_CODE";
+    CONST OLD_PAYSLIP_TYPE = "OLD_PAYSLIP_TYPE";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -46,12 +36,7 @@ class Preference extends Model {
         'forcePasswordRenewDay' => self::FORCE_PASSWORD_RENEW_DAY,
         'showAddressBook' => self::SHOW_ADDRESS_BOOK,
         'noticeType' => self::NOTICE_TYPE,
-        'linkTravelToSynergy' => self::LINK_TRAVEL_TO_SYNERGY,
-        'formCode' => self::FORM_CODE,
-        'drAccCode' => self::DR_ACC_CODE,
-        'crAccCode' => self::CR_ACC_CODE,
-        'excessCrAccCode' => self::EXCESS_CR_ACC_CODE,
-        'lessDrAccCode  ' => self::LESS_DR_ACC_CODE,
+        'oldPayslipType' => self::OLD_PAYSLIP_TYPE,
     ];
 
 }
