@@ -143,12 +143,9 @@ $monthCode = ((!isset($_POST['mcode'])) || ($_POST['mcode'] == '')) ? '' : $_POS
 </div>
 <?php
 
-function Period() {
-    $sql = "SELECT PERIOD_DT_CODE as mcode,DT_EDESC as mname  FROM HR_PERIOD_DETAIL ORDER BY to_number(PERIOD_DT_CODE)";
-    return $queryToList($sql);
-}
 
-$statuses = Period($connect);
+
+$statuses = $periodList;
 
 function getMonthName($id) {
     $months = array(
@@ -202,13 +199,13 @@ $res = sizeof($resList) > 0 ? $resList[0] : null;
                                     <option value="">Select</option>
                                     <?php foreach ($statuses as $month) { ?>
                                         <option value="<?php echo $month['MCODE']; ?>" <?php
-                                    if (isset($_POST['mcode'])) {
-                                        if ($_POST['mcode'] == $month['MCODE']) {
-                                            echo "selected";
+                                        if (isset($_POST['mcode'])) {
+                                            if ($_POST['mcode'] == $month['MCODE']) {
+                                                echo "selected";
+                                            }
                                         }
-                                    }
                                         ?> > 
-                                                <?php echo $month['MNAME']; ?>
+                                                    <?php echo $month['MNAME']; ?>
                                         </option>
                                     <?php } ?>
                                 </select>
@@ -323,13 +320,13 @@ $res = sizeof($resList) > 0 ? $resList[0] : null;
                                         <td> <?php echo $counter++; ?></td>   
                                         <td> <?php echo $branch['pay_edesc']; ?></td>
                                         <td> <span style="float:right;padding-right:5px;"><?php
-                                    echo number_format($branch['amount'], 2, '.', ',');
-                                    if (!isset($branch['amount'])) {
-                                        $branch['amount'] = 0;
-                                    }
+                                                echo number_format($branch['amount'], 2, '.', ',');
+                                                if (!isset($branch['amount'])) {
+                                                    $branch['amount'] = 0;
+                                                }
 
-                                    $sum1 += $branch['amount'];
-                                            ?></span></td>
+                                                $sum1 += $branch['amount'];
+                                                ?></span></td>
                                         </tr>
 
                                     <?php } ?>
@@ -383,9 +380,9 @@ $res = sizeof($resList) > 0 ? $resList[0] : null;
                                         <td> <?php echo $counter++; ?></td>   
                                         <td> <?php echo $branch['pay_edesc']; ?></td>
                                         <td> <span style="float:right;padding-right:5px;"><?php
-                                    echo number_format($branch['amount'], 2, '.', ',');
-                                    $sum += $branch['amount'];
-                                            ?></span></td>
+                                                echo number_format($branch['amount'], 2, '.', ',');
+                                                $sum += $branch['amount'];
+                                                ?></span></td>
                                         </tr>
                                     <?php } ?>
                                     </hr>
