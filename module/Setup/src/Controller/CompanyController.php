@@ -2,6 +2,7 @@
 
 namespace Setup\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\ACLHelper;
 use Application\Helper\Helper;
@@ -11,35 +12,22 @@ use Setup\Model\Company;
 use Setup\Model\EmployeeFile as EmployeeFile2;
 use Setup\Repository\CompanyRepository;
 use Setup\Repository\EmployeeFile;
+use System\Repository\SynergyRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use function Zend\Filter\File\move_uploaded_file;
 
-class CompanyController extends AbstractActionController {
+class CompanyController extends HrisController {
 
-    private $repository;
-    private $form;
-    private $adapter;
-    private $employeeId;
-    private $storageData;
-    private $acl;
+    private $synergyRepo;
 
-    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->adapter = $adapter;
-        $this->repository = new CompanyRepository($adapter);
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
-        $this->acl = $this->storageData['acl'];
-    }
-
-    public function initializeForm() {
-        $companyForm = new CompanyForm();
-        $builder = new AnnotationBuilder();
-        if (!$this->form) {
-            $this->form = $builder->createForm($companyForm);
-        }
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(CompanyRepository::class);
+        $this->initializeForm(CompanyForm::class);
+        $this->synergyRepo = new SynergyRepository($adapter);
     }
 
     public function indexAction() {
@@ -48,17 +36,15 @@ class CompanyController extends AbstractActionController {
             try {
                 $result = $this->repository->fetchAll();
                 $companyList = Helper::extractDbData($result);
-                return new CustomViewModel(['success' => true, 'data' => $companyList, 'error' => '']);
+                return new JsonModel(['success' => true, 'data' => $companyList, 'error' => '']);
             } catch (Exception $e) {
-                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
         return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
     public function addAction() {
-        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
-        $this->initializeForm();
         $request = $this->getRequest();
         $imageData = null;
         if ($request->isPost()) {
@@ -73,7 +59,7 @@ class CompanyController extends AbstractActionController {
                 $company->logo = $postedData['logo'];
                 $company->status = 'E';
                 $this->repository->add($company);
-                $this->flashmessenger()->addMessage("Company Successfully added!!!");
+                $this->flashmessenger()->addMessage("Company Successfully added.");
                 return $this->redirect()->toRoute("company");
             } else {
                 $imageData = $this->getFileInfo($this->adapter, $postedData['logo']);
@@ -110,12 +96,11 @@ class CompanyController extends AbstractActionController {
     }
 
     public function editAction() {
-        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('company');
         }
-        $this->initializeForm();
+        $this->prepareForm();
         $request = $this->getRequest();
 
         $company = new Company();
@@ -142,9 +127,27 @@ class CompanyController extends AbstractActionController {
                         $this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'imageData' => $imageData
+                    'imageData' => $imageData,
+                    'customRenderer' => Helper::renderCustomView(),
                         ]
         );
+    }
+
+    private function prepareForm() {
+        $formCode = $this->form->get('formCode');
+        $drAccCode = $this->form->get('drAccCode');
+        $crAccCode = $this->form->get('crAccCode');
+        $excessCrAccCode = $this->form->get('excessCrAccCode');
+        $lessDrAccCode = $this->form->get('lessDrAccCode');
+
+        $formCodeList = $this->synergyRepo->getFormList();
+        $accCodeList = $this->synergyRepo->getAccountList();
+        $formCode->setValueOptions($this->listValueToKV($formCodeList, "FORM_CODE", "FORM_EDESC"));
+
+        $drAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
+        $crAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
+        $excessCrAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
+        $lessDrAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
     }
 
     public function deleteAction() {

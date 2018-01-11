@@ -73,52 +73,7 @@ class SystemSettingForm {
      */
     public $noticeType;
 
-    /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Link Travel To Synergy"})
-     * @Annotation\Attributes({ "id":"linkTravelToSynergy"})
-     */
-    public $linkTravelToSynergy;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Form Code"})
-     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
-     */
-    public $formCode;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Dr Account Code"})
-     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
-     */
-    public $drAccCode;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Cr Account Code"})
-     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
-     */
-    public $crAccCode;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Excess Cr Account Code"})
-     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
-     */
-    public $excessCrAccCode;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Less Dr Account Code"})
-     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
-     */
-    public $lessDrAccCode;
+    
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
