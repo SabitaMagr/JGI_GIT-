@@ -104,7 +104,7 @@ class RegisterAttendanceController extends AbstractActionController {
                     $employeeId = $resultRow->EMPLOYEE_ID;
                     $attendanceRepo = new AttendanceRepository($this->adapter);
                     $preference = new Preference();
-                    if (isset($postData['checkInRemarks']) && $preference->needApprovalForLateCheckIn) {
+                    if (isset($postData['checkInRemarks']) && ($preference->needApprovalForLateCheckIn == 'Y')) {
                         $this->attendanceRequest($postData, $employeeId);
                         $this->getAuthService()->clearIdentity();
                         return $this->redirect()->toRoute('login');

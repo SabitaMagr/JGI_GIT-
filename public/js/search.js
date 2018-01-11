@@ -322,6 +322,22 @@
                         $company.val(employeeDetail['COMPANY_ID']);
                         $company.prop('disabled', true);
                         break;
+                    case 'B':
+                        $branch.val(employeeDetail['BRANCH_ID']);
+                        $branch.prop('disabled', true);
+                        break;
+                    case 'DS':
+                        $designation.val(employeeDetail['DESIGNATION_ID']);
+                        $designation.prop('disabled', true);
+                        break;
+                    case 'DP':
+                        $department.val(employeeDetail['DEPARTMENT_ID']);
+                        $department.prop('disabled', true);
+                        break;
+                    case 'P':
+                        $position.val(employeeDetail['POSITION_ID']);
+                        $position.prop('disabled', true);
+                        break;
                 }
             }
 

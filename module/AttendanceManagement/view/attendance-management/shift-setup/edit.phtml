@@ -61,6 +61,10 @@ $totalWorkingHr = $form->get('totalWorkingHr');
 $graceStartTime = $form->get('graceStartTime');
 $graceEndTime = $form->get('graceEndTime');
 
+$halfDayInTime = $form->get('halfDayInTime');
+$halfDayOutTime = $form->get('halfDayOutTime');
+
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 ?>
@@ -259,8 +263,26 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                             <?php print $this->formElementErrors()->render($graceEndTime, ['class' => 'help-block error']) ?>
                         </div>
-
-
+                    </div>
+                </div>
+                <div class="row"> 
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <?php print $this->formLabel($halfDayInTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($halfDayInTime) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($halfDayInTime, ['class' => 'help-block error']) ?>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group required">
+                            <?php print $this->formLabel($halfDayOutTime) ?>
+                            <div class="input-group dropdown-select">
+                                <?php print $this->formElement($halfDayOutTime) ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($halfDayOutTime, ['class' => 'help-block error']) ?>
                     </div>
                 </div>
 

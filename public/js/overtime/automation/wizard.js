@@ -8,6 +8,7 @@
 
         var $wizard = $('#wizard');
         var $setupForm = $('#setup-form');
+        var $compulsoryOtDesc = $('#compulsoryOtDesc');
         var $startDate = $('#startDate');
         var $endDate = $('#endDate');
         var $earlyOvertimeHour = $('#earlyOvertimeHour');
@@ -16,7 +17,7 @@
         app.addComboTimePicker($earlyOvertimeHour, $lateOvertimeHour);
         app.startEndDatePickerWithNepali('nepaliStartDate', 'startDate', 'nepaliEndDate', 'endDate', null, true);
 
-        var compulsorySetup = {compulsoryOvertimeId: null, startDate: null, endDate: null, earlyOvertimeHour: null, lateOvertimeHour: null};
+        var compulsorySetup = {compulsoryOvertimeId: null, compulsoryOtDesc: null, startDate: null, endDate: null, earlyOvertimeHour: null, lateOvertimeHour: null};
 
         var assignList = [];
 
@@ -24,6 +25,7 @@
         var $table = $('#employeeTable');
         var $checkAll = $('#checkAll');
 
+        var $compulsoryOtDescLabel = $('#compulsoryOtDescLabel');
         var $startDateLabel = $('#startDateLabel');
         var $endDateLabel = $('#endDateLabel');
         var $earlyOvertimeHourLabel = $('#earlyOvertimeHourLabel');
@@ -84,6 +86,7 @@
                                 nextFlag = false;
                             }
 
+                            compulsorySetup['compulsoryOtDesc'] = $compulsoryOtDesc.val();
                             compulsorySetup['startDate'] = $startDate.val();
                             compulsorySetup['endDate'] = $endDate.val();
                             compulsorySetup['earlyOvertimeHour'] = $earlyOvertimeHour.val();
@@ -96,6 +99,7 @@
                         break;
                     case 2:
                         if (assignList.length === 0) {
+                            app.showMessage('Atleast one person should be assigned to continue.', 'info');
                             nextFlag = false;
                         }
                         break;
@@ -121,15 +125,16 @@
                 $wizard.find('.progress-bar').css({
                     width: $percent + '%'
                 });
-                if(index==1){
-                     $('select').select2();
+                if (index == 1) {
+                    $('select').select2();
                 }
                 if (index === 2) {
+                    $compulsoryOtDescLabel.html(compulsorySetup.compulsoryOtDesc);
                     $startDateLabel.html(compulsorySetup.startDate);
                     $endDateLabel.html(compulsorySetup.endDate);
                     $earlyOvertimeHourLabel.html(compulsorySetup.earlyOvertimeHour);
                     $lateOvertimeHourLabel.html(compulsorySetup.lateOvertimeHour);
-
+                    $assignedEmployeeList.html('');
                     $.each(assignList, function (key, item) {
                         var employee = document.searchManager.getEmployeeById(item);
                         $assignedEmployeeList.append('<div class="col-sm-2"><div class="alert alert-info alert-dismissable">' +
@@ -161,9 +166,9 @@
 
         if (document.editData != null) {
             var otSetup = document.editData['compulsoryOTSetup'];
-            compulsorySetup = {compulsoryOvertimeId: otSetup['COMPULSORY_OVERTIME_ID'], earlyOvertimeHour: otSetup['EARLY_OVERTIME_HR'], lateOvertimeHour: otSetup['LATE_OVERTIME_HR'], startDate: otSetup['START_DATE'], endDate: otSetup['END_DATE']};
+            compulsorySetup = {compulsoryOvertimeId: otSetup['COMPULSORY_OVERTIME_ID'], compulsoryOtDesc: otSetup['COMPULSORY_OT_DESC'], earlyOvertimeHour: otSetup['EARLY_OVERTIME_HR'], lateOvertimeHour: otSetup['LATE_OVERTIME_HR'], startDate: otSetup['START_DATE'], endDate: otSetup['END_DATE']};
             assignList = document.editData['assignedEmployees'];
-
+            $compulsoryOtDesc.val(compulsorySetup['compulsoryOtDesc']);
             $startDate.val(compulsorySetup['startDate']);
             $endDate.val(compulsorySetup['endDate']);
             $earlyOvertimeHour.combodate('setValue', compulsorySetup['earlyOvertimeHour']);

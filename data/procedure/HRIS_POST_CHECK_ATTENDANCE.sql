@@ -2,155 +2,73 @@ create or replace PROCEDURE HRIS_POST_CHECK_ATTENDANCE(
     P_ATTENDANCE_DT DATE ,
     P_EMPLOYEE_ID   NUMBER:=NULL)
 AS
-  V_LATE_STATUS HRIS_ATTENDANCE_DETAIL.LATE_STATUS%TYPE;
-  V_OVERALL_STATUS HRIS_ATTENDANCE_DETAIL.OVERALL_STATUS%TYPE;
-  V_FROM_DATE  DATE;
-  V_TO_DATE    DATE;
-  V_LATE_COUNT NUMBER;
-  --
-  V_PREV_IN_TIME HRIS_ATTENDANCE_DETAIL.IN_TIME%TYPE;
-  V_PREV_OUT_TIME HRIS_ATTENDANCE_DETAIL.OUT_TIME%TYPE;
-  V_PREV_LATE_STATUS HRIS_ATTENDANCE_DETAIL.LATE_STATUS%TYPE;
-  V_PREV_OVERALL_STATUS HRIS_ATTENDANCE_DETAIL.OVERALL_STATUS%TYPE;
-  V_PREV_LATE_COUNT NUMBER;
+  V_ATTENDANCE_DT DATE;
 BEGIN
+  V_ATTENDANCE_DT :=TRUNC(P_ATTENDANCE_DT);
   --
-  BEGIN
-    SELECT FROM_DATE,
-      TO_DATE
-    INTO V_FROM_DATE,
-      V_TO_DATE
-    FROM HRIS_MONTH_CODE
-    WHERE TRUNC(P_ATTENDANCE_DT) BETWEEN TRUNC(FROM_DATE) AND TRUNC(TO_DATE);
-  EXCEPTION
-  WHEN NO_DATA_FOUND THEN
-    RAISE_APPLICATION_ERROR(-20344, 'NO MONTH_CODE FOUND FOR THE DATE');
-  END;
+  HRIS_REATTENDANCE(V_ATTENDANCE_DT,P_EMPLOYEE_ID);
   --
-  FOR attendance IN
-  (SELECT         *
-  FROM HRIS_ATTENDANCE_DETAIL
-  WHERE ATTENDANCE_DT= P_ATTENDANCE_DT
-  AND (EMPLOYEE_ID   =
-    CASE
-      WHEN P_EMPLOYEE_ID IS NOT NULL
-      THEN P_EMPLOYEE_ID
-    END
-  OR P_EMPLOYEE_ID IS NULL)
-  )
-  LOOP
-    IF (attendance.TWO_DAY_SHIFT ='E') THEN
-      --    TWO_DAY_SHIFT
-      SELECT IN_TIME,
-        OUT_TIME,
-        LATE_STATUS,
-        OVERALL_STATUS
-      INTO V_PREV_IN_TIME,
-        V_PREV_OUT_TIME,
-        V_PREV_LATE_STATUS,
-        V_PREV_OVERALL_STATUS
-      FROM HRIS_ATTENDANCE_DETAIL
-      WHERE EMPLOYEE_ID       =attendance.EMPLOYEE_ID
-      AND ATTENDANCE_DT       =TRUNC(attendance.ATTENDANCE_DT-1);
-      IF V_PREV_IN_TIME      IS NOT NULL AND V_PREV_OUT_TIME IS NULL THEN
-        IF V_PREV_LATE_STATUS ='L' THEN
-          V_PREV_LATE_STATUS := 'Y';
-        ELSE
-          V_PREV_LATE_STATUS := 'X';
-        END IF;
-      END IF;
-      SELECT COUNT(*)
-      INTO V_PREV_LATE_COUNT
-      FROM HRIS_ATTENDANCE_DETAIL
-      WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
-      AND (ATTENDANCE_DT BETWEEN V_FROM_DATE AND TRUNC(P_ATTENDANCE_DT-1) )
-      AND OVERALL_STATUS                                             IN ('PR','LA')
-      AND LATE_STATUS                                                IN ('E','L','Y') ;
-      IF V_PREV_LATE_STATUS                                          IN ('E','L','Y') THEN
-        V_PREV_LATE_COUNT       := V_PREV_LATE_COUNT                        +1;
-        IF V_PREV_LATE_COUNT    != 0 AND MOD(V_PREV_LATE_COUNT,4)=0 THEN
-          V_PREV_OVERALL_STATUS := 'LA';
-        END IF;
-      END IF;
-      --
-      IF V_PREV_LATE_STATUS   ='B' AND V_PREV_OVERALL_STATUS='PR' THEN
-        V_PREV_OVERALL_STATUS:='BA';
-      END IF;
-      UPDATE HRIS_ATTENDANCE_DETAIL
-      SET LATE_STATUS   = V_PREV_LATE_STATUS,
-        OVERALL_STATUS  =V_PREV_OVERALL_STATUS
-      WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
-      AND ATTENDANCE_DT = TRUNC(attendance.ATTENDANCE_DT-1);
-      --    END FOR TWO_DAY_SHIFT
-      NULL;
-    ELSE
-      --   NORMAL SHIFT
-      V_LATE_STATUS              :=attendance.LATE_STATUS;
-      V_OVERALL_STATUS           :=attendance.OVERALL_STATUS;
-      IF attendance.IN_TIME      IS NOT NULL AND attendance.OUT_TIME IS NULL THEN
-        IF attendance.LATE_STATUS ='L' THEN
-          V_LATE_STATUS          := 'Y';
-        ELSE
-          V_LATE_STATUS := 'X';
-        END IF;
-      END IF;
-      --
-      SELECT COUNT(*)
-      INTO V_LATE_COUNT
-      FROM HRIS_ATTENDANCE_DETAIL
-      WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
-      AND (ATTENDANCE_DT BETWEEN V_FROM_DATE AND P_ATTENDANCE_DT )
-      AND OVERALL_STATUS           IN ('PR','LA')
-      AND LATE_STATUS              IN ('E','L','Y') ;
-      IF V_LATE_STATUS             IN ('E','L','Y') THEN
-        V_LATE_COUNT       := V_LATE_COUNT+1;
-        IF V_LATE_COUNT    != 0 AND MOD(V_LATE_COUNT,4)=0 THEN
-          V_OVERALL_STATUS := 'LA';
-        END IF;
-      END IF;
-      --
-      IF V_LATE_STATUS   ='B' AND V_OVERALL_STATUS='PR' THEN
-        V_OVERALL_STATUS:='BA';
-      END IF;
-      UPDATE HRIS_ATTENDANCE_DETAIL
-      SET LATE_STATUS   = V_LATE_STATUS,
-        OVERALL_STATUS  =V_OVERALL_STATUS
-      WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
-      AND ATTENDANCE_DT = attendance.ATTENDANCE_DT;
-      --
-      IF TRUNC(P_ATTENDANCE_DT) = TRUNC(SYSDATE) THEN
-        DECLARE
-          V_ID HRIS_EMPLOYEE_WORK_DAYOFF.ID%TYPE;
-        BEGIN
-          SELECT ID
-          INTO V_ID
-          FROM HRIS_EMPLOYEE_WORK_DAYOFF
-          WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
-          AND TO_DATE       = P_ATTENDANCE_DT
-          AND STATUS        ='AP'
-          AND ROWNUM        =1;
-          --
-          HRIS_WOD_REWARD(V_ID);
-        EXCEPTION
-        WHEN NO_DATA_FOUND THEN
-          DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
-        END;
+  --
+  IF V_ATTENDANCE_DT = TRUNC(SYSDATE) THEN
+    --
+    HRIS_COMPULSORY_OT_PROC(V_ATTENDANCE_DT);
+    --
+    FOR attendance IN
+    (SELECT         *
+    FROM HRIS_ATTENDANCE_DETAIL
+    WHERE ATTENDANCE_DT= V_ATTENDANCE_DT
+    AND (EMPLOYEE_ID   =
+      CASE
+        WHEN P_EMPLOYEE_ID IS NOT NULL
+        THEN P_EMPLOYEE_ID
+      END
+    OR P_EMPLOYEE_ID IS NULL)
+    )
+    LOOP
+      -- check if wod is present for every employee
+      DECLARE
+        V_ID HRIS_EMPLOYEE_WORK_DAYOFF.ID%TYPE;
+      BEGIN
+        SELECT ID
+        INTO V_ID
+        FROM HRIS_EMPLOYEE_WORK_DAYOFF
+        WHERE EMPLOYEE_ID = attendance.EMPLOYEE_ID
+        AND TO_DATE       = V_ATTENDANCE_DT-(
+          CASE
+            WHEN (attendance.TWO_DAY_SHIFT ='E')
+            THEN 1
+            ELSE 0
+          END)
+        AND STATUS ='AP'
+        AND ROWNUM =1;
         --
-        DECLARE
-          V_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE;
-        BEGIN
-          SELECT ID
-          INTO V_ID
-          FROM HRIS_EMPLOYEE_WORK_HOLIDAY
-          WHERE EMPLOYEE_ID =attendance.EMPLOYEE_ID
-          AND TO_DATE       = P_ATTENDANCE_DT
-          AND STATUS        = 'AP'
-          AND ROWNUM        =1;
-          --
-          HRIS_WOH_REWARD(V_ID);
-        END;
-      END IF;
-      --   END FOR NORMAL_SHIFT
-    END IF;
-  END LOOP;
+        HRIS_WOD_REWARD(V_ID);
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
+      END;
+      -- check if woh is present for every employee
+      DECLARE
+        V_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE;
+      BEGIN
+        SELECT ID
+        INTO V_ID
+        FROM HRIS_EMPLOYEE_WORK_HOLIDAY
+        WHERE EMPLOYEE_ID =attendance.EMPLOYEE_ID
+        AND TO_DATE       = V_ATTENDANCE_DT-(
+          CASE
+            WHEN (attendance.TWO_DAY_SHIFT ='E')
+            THEN 1
+            ELSE 0
+          END)
+        AND STATUS = 'AP'
+        AND ROWNUM =1;
+        --
+        HRIS_WOH_REWARD(V_ID);
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
+      END;
+    END LOOP;
+  END IF;
 END;

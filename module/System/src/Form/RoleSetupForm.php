@@ -22,7 +22,7 @@ class RoleSetupForm {
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"F":"Full","C":"Company Specific","U":"User Specific"},"label":"Control"})
+     * @Annotation\Options({"value_options":{"F":"Full","C":"Company Specific","B":"Branch Specific","DS":"Designation Specific","DP":"Department Specific","P":"Position Specific","U":"User Specific"},"label":"Control"})
      * @Annotation\Required(false)
      * @Annotation\Attributes({ "id":"control"})
      */

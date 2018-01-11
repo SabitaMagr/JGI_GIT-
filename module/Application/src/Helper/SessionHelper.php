@@ -29,7 +29,7 @@ class SessionHelper {
             $event->getViewModel()->setVariable("companyLogoUrl", isset($companyFilePath) ? $companyFilePath : $config['default-profile-picture']);
             $event->getViewModel()->setVariable("registerAttendance", $registerAttendance);
             $event->getViewModel()->setVariable("allowRegisterAttendance", $allowRegisterAttendance);
-            $event->getViewModel()->setVariable("showAddressBook", $storage['preference']['showAddressBook']);
+            $event->getViewModel()->setVariable("showAddressBook", $storage['preference']['showAddressBook'] == 'Y');
         }
     }
 
