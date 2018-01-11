@@ -17,7 +17,6 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use function Zend\Filter\File\move_uploaded_file;
 
 class CompanyController extends HrisController {
 
@@ -140,8 +139,8 @@ class CompanyController extends HrisController {
         $excessCrAccCode = $this->form->get('excessCrAccCode');
         $lessDrAccCode = $this->form->get('lessDrAccCode');
 
-        $formCodeList = $this->synergyRepo->getFormList();
-        $accCodeList = $this->synergyRepo->getAccountList();
+        $formCodeList = $this->synergyRepo->getFormList($this->storageData['company_detail']['COMPANY_CODE']);
+        $accCodeList = $this->synergyRepo->getAccountList($this->storageData['company_detail']['COMPANY_CODE']);
         $formCode->setValueOptions($this->listValueToKV($formCodeList, "FORM_CODE", "FORM_EDESC"));
 
         $drAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));

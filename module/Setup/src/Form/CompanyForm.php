@@ -3,13 +3,22 @@
 namespace Setup\Form;
 
 use Zend\Form\Annotation;
-use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Company")
  */
 class CompanyForm {
+
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}}) 
+     * @Annotation\Options({"label":"Code"})
+     * @Annotation\Attributes({ "id":"companyCode", "class":"form-control" })
+     */
+    public $companyCode;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
