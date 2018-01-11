@@ -20,6 +20,12 @@ class Company extends Model {
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
     const LOGO = "LOGO";
+    CONST LINK_TRAVEL_TO_SYNERGY = "LINK_TRAVEL_TO_SYNERGY";
+    CONST FORM_CODE = "FORM_CODE";
+    CONST DR_ACC_CODE = "DR_ACC_CODE";
+    CONST CR_ACC_CODE = "CR_ACC_CODE";
+    CONST EXCESS_CR_ACC_CODE = "EXCESS_CR_ACC_CODE";
+    CONST LESS_DR_ACC_CODE = "LESS_DR_ACC_CODE";
 
     public $companyId;
     public $companyCode;
@@ -34,6 +40,12 @@ class Company extends Model {
     public $createdBy;
     public $modifiedBy;
     public $logo;
+    public $linkTravelToSynergy = 'N';
+    public $formCode = null;
+    public $drAccCode = null;   
+    public $crAccCode = null;
+    public $excessCrAccCode = null;
+    public $lessDrAccCode = null;
     public $mappings = [
         'companyId' => self::COMPANY_ID,
         'companyCode' => self::COMPANY_CODE,
@@ -47,7 +59,13 @@ class Company extends Model {
         'status' => self::STATUS,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
-        'logo' => self::LOGO
+        'logo' => self::LOGO,
+        'linkTravelToSynergy' => self::LINK_TRAVEL_TO_SYNERGY,
+        'formCode' => self::FORM_CODE,
+        'drAccCode' => self::DR_ACC_CODE,
+        'crAccCode' => self::CR_ACC_CODE,
+        'excessCrAccCode' => self::EXCESS_CR_ACC_CODE,
+        'lessDrAccCode' => self::LESS_DR_ACC_CODE,
     ];
 
 }

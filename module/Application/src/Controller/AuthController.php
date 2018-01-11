@@ -147,6 +147,9 @@ class AuthController extends AbstractActionController {
                     $employeeRepo = new EmployeeRepository($this->adapter);
                     $employeeDetail = $employeeRepo->employeeDetailSession($resultRow->EMPLOYEE_ID);
 
+                    $companyRepo = new \Setup\Repository\CompanyRepository($this->adapter);
+                    $companyDetail = $companyRepo->fetchById($employeeDetail['COMPANY_ID']);
+
                     $monthRepo = new MonthRepository($this->adapter);
                     $fiscalYear = $monthRepo->getCurrentFiscalYear();
 
@@ -168,7 +171,8 @@ class AuthController extends AbstractActionController {
                         'register_attendance' => $attendanceType,
                         'allow_register_attendance' => $allowRegisterAttendance,
                         'acl' => (array) $acl,
-                        'preference' => (array) $this->preference
+                        'preference' => (array) $this->preference,
+                        'company_detail' => $companyDetail
                     ]);
 
 
