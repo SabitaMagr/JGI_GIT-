@@ -142,9 +142,6 @@ $monthCode = ((!isset($_POST['mcode'])) || ($_POST['mcode'] == '')) ? '' : $_POS
     <?= $this->navigation('Zend\Navigation\payslip-previous')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
-
-
-
 $statuses = $periodList;
 
 function getMonthName($id) {
@@ -221,12 +218,7 @@ $res = sizeof($resList) > 0 ? $resList[0] : null;
             <table class="table" style="width:800px;margin-bottom:0px ">
                 <tr>
                     <?php
-                    $emp_rec = "SELECT e.employee_code,e.department_code,e.branch_code,e.marital_status,e.official_code,e.employee_name,
-                                d.department_name,b.branch_name
-                         from employee_master_setup e,department_master_setup d,branch_master_setup b
-                         where b.branch_code=e.branch_code
-                         and    d.department_code=e.department_code
-                         and    e.employee_code='$id'";
+                    $emp_rec = "";
                     $row = mysqli_query($connect, $emp_rec);
                     $result = mysqli_fetch_assoc($row);
                     $employee = strtolower($result['employee_name']);
