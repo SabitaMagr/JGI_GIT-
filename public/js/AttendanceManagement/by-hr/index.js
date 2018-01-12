@@ -60,6 +60,8 @@ angular.module('hris', [])
                     template: "<input type='checkbox' id='#:ID#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
                     width: 80
                 },
+                {field: "COMPANY_NAME", title: "Company"},
+                {field: "DEPARTMENT_NAME", title: "Department"},
                 {field: "EMPLOYEE_NAME", title: "Employee", template: "<span>#: (EMPLOYEE_NAME == null) ? '-' : EMPLOYEE_NAME # </span>"},
                 {title: "Attendance Date",
                     columns: [
@@ -80,6 +82,8 @@ angular.module('hris', [])
                     ]}
             ];
             var exportMap = {
+                'COMPANY_NAME': ' Company',
+                'DEPARTMENT_NAME': ' Department',
                 'EMPLOYEE_NAME': ' Name',
                 'ATTENDANCE_DT': 'Attendance Date(AD)',
                 'ATTENDANCE_DT_N': 'Attendance Date(BS)',
@@ -89,9 +93,9 @@ angular.module('hris', [])
                 'OUT_REMARKS': 'Out Remarks',
                 'TOTAL_HOUR': 'Total Hour',
                 'STATUS': 'Status',
-                'SHIFT_ENAME':'Shift Name',
-                'START_TIME':'Start Time',
-                'END_TIME':'End Time'
+                'SHIFT_ENAME': 'Shift Name',
+                'START_TIME': 'Start Time',
+                'END_TIME': 'End Time'
             };
             window.app.initializeKendoGrid($grid, columns, detailInit);
             window.app.searchTable("attendanceByHrTable", ['EMPLOYEE_NAME']);

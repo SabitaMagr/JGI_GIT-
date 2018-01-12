@@ -38,7 +38,7 @@ class TravelRequest extends HrisController {
                 $data['employeeId'] = $this->employeeId;
                 $data['requestedType'] = 'ad';
                 $rawList = $this->repository->getFilteredRecords($data);
-                $list = Helper::extractDbData($rawList);
+                $list = iterator_to_array($rawList, false);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -133,7 +133,7 @@ class TravelRequest extends HrisController {
                 $data['employeeId'] = $this->employeeId;
                 $data['requestedType'] = 'ep';
                 $rawList = $this->repository->getFilteredRecords($data);
-                $list = Helper::extractDbData($rawList);
+                $list = iterator_to_array($rawList, false);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

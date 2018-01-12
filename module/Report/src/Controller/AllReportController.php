@@ -308,4 +308,46 @@ class AllReportController extends AbstractActionController {
         }
     }
 
+    public function branchWiseDailyAction() {
+        $monthId = (int) $this->params()->fromRoute('id1');
+        $branchId = (int) $this->params()->fromRoute('id2');
+        $monthList = $this->reportRepo->getMonthList();
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'comBraList' => [
+                        'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
+                    ],
+                    'monthList' => $monthList,
+                    'monthId' => $monthId,
+                    'branchId' => $branchId
+        ]);
+    }
+    
+    public function branchWiseDailyReportAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                
+                $branchId = $postedData['branchId'];
+                if (!isset($branchId)) {
+                    throw new Exception("parameter branchId is required");
+                }
+                $monthId = $postedData['monthId'];
+                if (!isset($monthId)) {
+                    throw new Exception("parameter monthId is required");
+                }
+
+                $reportData = $this->reportRepo->branchWiseDailyReport($monthId, $branchId);
+                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
+    
+
 }

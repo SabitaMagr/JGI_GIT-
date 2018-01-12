@@ -63,14 +63,16 @@ print $this->form()->openTag($form);
         print $this->formSubmit($submit);
         ?>
     </div>
-    <div class="pull-right" <?php if(!$preference->allowSystemAttendance){ echo 'style="display:none;"'; } ?>>
+    <div class="pull-right" <?php if(!($preference->allowSystemAttendance == 'Y')) {
+            echo 'style="display:none;"';
+        } ?>>
         <a href="<?= $this->url('registerAttendance') ?>" id="forget-password" class="forget-password">Register Attendance </a>
     </div>
 </div>
 <div class="form-actions ">
     <div class="pull-left">
         <label class="rememberme check">
-            <?php print $this->formElement($rememberme); ?>
+<?php print $this->formElement($rememberme); ?>
             Remember me </label>
     </div>
     <div class="pull-right forget-password-block">

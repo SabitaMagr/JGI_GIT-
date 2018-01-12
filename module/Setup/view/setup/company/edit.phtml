@@ -10,10 +10,17 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'company-form');
 
 $companyName = $form->get('companyName');
+$companyCode = $form->get('companyCode');
 $address = $form->get('address');
 $telephone = $form->get('telephone');
 $fax = $form->get('fax');
 $swift = $form->get('swift');
+$linkTravelToSynergy = $form->get('linkTravelToSynergy');
+$formCode = $form->get('formCode');
+$drAccCode = $form->get('drAccCode');
+$crAccCode = $form->get('crAccCode');
+$excessCrAccCode = $form->get('excessCrAccCode');
+$lessDrAccCode = $form->get('lessDrAccCode');
 
 //custom validatin message
 if (key($telephone->getMessages()) == "regexNotMatch") {
@@ -75,6 +82,15 @@ $form->prepare();
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group required ">
+                            <?php print $this->formLabel($companyCode); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($companyCode); ?>
+                            <?php print $this->formElementErrors()->render($companyCode, ['class' => 'help-block']); ?>
+                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group required ">
                             <?php print $this->formLabel($companyName); ?>
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($companyName); ?>
@@ -82,8 +98,6 @@ $form->prepare();
                             <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                     </div>
-
-
                     <div class="col-sm-4">
                         <div class="form-group required ">
                             <?php print $this->formLabel($address); ?>
@@ -92,7 +106,7 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    
+
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($telephone); ?>
@@ -100,9 +114,6 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($telephone, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
-
-                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($fax); ?>
@@ -117,6 +128,50 @@ $form->prepare();
                             <?php print $this->formLabel($swift); ?>
                             <?php print $this->formElement($swift); ?>
                             <?php print $this->formElementErrors()->render($swift, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($linkTravelToSynergy); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($linkTravelToSynergy); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($linkTravelToSynergy, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($formCode); ?>
+                            <?php print $this->formElement($formCode); ?>
+                            <?php print $this->formElementErrors()->render($formCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($drAccCode); ?>
+                            <?php print $this->formElement($drAccCode); ?>
+                            <?php print $this->formElementErrors()->render($drAccCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($crAccCode); ?>
+                            <?php print $this->formElement($crAccCode); ?>
+                            <?php print $this->formElementErrors()->render($crAccCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($excessCrAccCode); ?>
+                            <?php print $this->formElement($excessCrAccCode); ?>
+                            <?php print $this->formElementErrors()->render($excessCrAccCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($lessDrAccCode); ?>
+                            <?php print $this->formElement($lessDrAccCode); ?>
+                            <?php print $this->formElementErrors()->render($lessDrAccCode, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>

@@ -13,6 +13,7 @@ use SelfService\Controller\LoanRequest;
 use SelfService\Controller\MyAttendance;
 use SelfService\Controller\OvertimeRequest;
 use SelfService\Controller\PaySlip;
+use SelfService\Controller\PaySlipPrevious;
 use SelfService\Controller\PerformanceAppraisal;
 use SelfService\Controller\Profile;
 use SelfService\Controller\Service;
@@ -303,6 +304,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => Birthday::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
+            'payslip-previous' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/selfservice/payslip-previous[/:action[/:id[/:mcode]]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => PaySlipPrevious::class,
                         'action' => 'index',
                     ]
                 ],
@@ -843,6 +858,28 @@ return [
                 ],
             ],
         ],
+        'payslip-previous' => [
+            [
+                'label' => 'Payslip-previous',
+                'route' => 'payslip-previous',
+            ],
+            [
+                'label' => 'Payslip-previous',
+                'route' => 'payslip-previous',
+                'pages' => [
+                    [
+                        'label' => 'Taxsheet',
+                        'route' => 'payslip-previous',
+                        'action' => 'taxsheet',
+                    ],
+                    [
+                        'label' => 'Payslip',
+                        'route' => 'payslip-previous',
+                        'action' => 'payslip',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -866,9 +903,18 @@ return [
             OvertimeRequest::class => ControllerFactory::class,
             SubordinatesReview::class => ControllerFactory::class,
             Birthday::class => ControllerFactory::class,
+            PaySlipPrevious::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
+        'template_map' => [
+            'mysql/payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/payslip.phtml',
+            'mysql/print-payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/print-payslip.phtml',
+            'mysql/taxsheet' => __DIR__ . '/../view/self-service/pay-slip-previous/taxsheet.phtml',
+            'oracle/payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/payslip-oci.phtml',
+            'oracle/print-payslip' => __DIR__ . '/../view/self-service/pay-slip-previous/print-payslip-oci.phtml',
+            'oracle/taxsheet' => __DIR__ . '/../view/self-service/pay-slip-previous/taxsheet-oci.phtml',
+        ],
         'template_path_stack' => [
             __DIR__ . '/../view',
         ]

@@ -56,6 +56,7 @@ class LeaveSubstituteRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY')) AS APPROVED_DT"),
             new Expression("INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT"),
             new Expression("LA.STATUS AS STATUS"),
+            new Expression("LEAVE_STATUS_DESC(LA.STATUS) AS STATUS_DETAIL"),
             new Expression("LA.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
             new Expression("LA.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("LA.REMARKS AS REMARKS"),

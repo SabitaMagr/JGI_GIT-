@@ -3,13 +3,22 @@
 namespace Setup\Form;
 
 use Zend\Form\Annotation;
-use Setup\Model\Model;
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("Company")
  */
 class CompanyForm {
+
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}}) 
+     * @Annotation\Options({"label":"Code"})
+     * @Annotation\Attributes({ "id":"companyCode", "class":"form-control" })
+     */
+    public $companyCode;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
@@ -55,6 +64,53 @@ class CompanyForm {
      * @Annotation\Attributes({ "id":"form-swift", "class":"form-web form-control"})
      */
     public $swift;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Link Travel To Synergy"})
+     * @Annotation\Attributes({ "id":"linkTravelToSynergy"})
+     */
+    public $linkTravelToSynergy;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Form Code"})
+     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
+     */
+    public $formCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Dr Account Code"})
+     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
+     */
+    public $drAccCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Cr Account Code"})
+     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
+     */
+    public $crAccCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Excess Cr Account Code"})
+     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
+     */
+    public $excessCrAccCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Less Dr Account Code"})
+     * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
+     */
+    public $lessDrAccCode;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

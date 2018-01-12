@@ -40,6 +40,8 @@ class ShiftSetup extends Model {
     const COMPANY_ID = "COMPANY_ID";
     const GRACE_START_TIME = "GRACE_START_TIME";
     const GRACE_END_TIME = "GRACE_END_TIME";
+    const HALF_DAY_IN_TIME = "HALF_DAY_IN_TIME";
+    const HALF_DAY_OUT_TIME = "HALF_DAY_OUT_TIME";
 
     public $shiftId;
     public $shiftCode;
@@ -74,7 +76,8 @@ class ShiftSetup extends Model {
     public $companyId;
     public $graceStartTime;
     public $graceEndTime;
-    
+    public $halfDayInTime;
+    public $halfDayOutTime;
     public $mappings = [
         'shiftId' => self::SHIFT_ID,
         'shiftCode' => self::SHIFT_CODE,
@@ -108,7 +111,9 @@ class ShiftSetup extends Model {
         'actualWorkingHr' => self::ACTUAL_WORKING_HR,
         'companyId' => self::COMPANY_ID,
         'graceStartTime' => self::GRACE_START_TIME,
-        'graceEndTime' => self::GRACE_END_TIME
+        'graceEndTime' => self::GRACE_END_TIME,
+        'halfDayInTime' => self::HALF_DAY_IN_TIME,
+        'halfDayOutTime' => self::HALF_DAY_OUT_TIME,
     ];
 
 }
