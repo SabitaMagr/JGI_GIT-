@@ -73,14 +73,19 @@ class SystemSettingForm {
      */
     public $noticeType;
 
-    
-
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Options({"value_options":{"O":"Oracle","M":"Mysql","N":"None"},"label":"Old Payslip Type"})
      * @Annotation\Attributes({ "id":"oldPayslipType"})
      */
     public $oldPayslipType;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Options({"label":"Late Penalty Leave Deduction"})
+     * @Annotation\Attributes({ "id":"latePenaltyLeaveDeduction", "class":" form-control","min":"0"})
+     */
+    public $latePenaltyLeaveDeduction;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

@@ -5,6 +5,7 @@ namespace System\Repository;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use System\Model\UserSetup;
+use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Select;
@@ -29,7 +30,7 @@ class UserSetupRepository implements RepositoryInterface {
         $this->tableGateway->update($model->getArrayCopyForDB(), [UserSetup::USER_ID => $id]);
     }
 
-    public function fetchAll() {
+    public function fetchAll(): Traversable {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([
@@ -48,9 +49,55 @@ class UserSetupRepository implements RepositoryInterface {
 
         $select->order(['C.COMPANY_NAME' => Select::ORDER_ASCENDING, 'R.ROLE_NAME' => Select::ORDER_ASCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
+        return $statement->execute();
+    }
 
-        return $result;
+    public function fetchFiltered($filter = null): array {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns([
+            new Expression("STATUS_DESC(US.STATUS) AS STATUS"),
+            new Expression("US.USER_ID AS USER_ID"),
+            new Expression("US.USER_NAME AS USER_NAME"),
+            new Expression("FN_DECRYPT_PASSWORD(US.PASSWORD) AS PASSWORD"),
+            new Expression("US.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("US.ROLE_ID AS ROLE_ID"),
+                ], true);
+
+        $select->from(['US' => UserSetup::TABLE_NAME])
+                ->join(['R' => 'HRIS_ROLES'], "R.ROLE_ID=US.ROLE_ID", ['ROLE_NAME'])
+                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")], Select::JOIN_LEFT)
+                ->join(['C' => "HRIS_COMPANY"], "C.COMPANY_ID=E.COMPANY_ID", ['COMPANY_NAME' => new Expression("INITCAP(C.COMPANY_NAME)")], Select::JOIN_LEFT);
+
+        if (isset($filter['companyId']) && $filter['companyId'] != -1) {
+            $select->where(["E.COMPANY_ID" => $filter['companyId']]);
+        }
+        if (isset($filter['branchId']) && $filter['branchId'] != -1) {
+            $select->where(["E.BRANCH_ID" => $filter['branchId']]);
+        }
+        if (isset($filter['departmentId']) && $filter['departmentId'] != -1) {
+            $select->where(["E.DEPARTMENT_ID" => $filter['departmentId']]);
+        }
+        if (isset($filter['designationId']) && $filter['designationId'] != -1) {
+            $select->where(["E.DESIGNATION_ID" => $filter['designationId']]);
+        }
+        if (isset($filter['positionId']) && $filter['positionId'] != -1) {
+            $select->where(["E.POSITION_ID" => $filter['positionId']]);
+        }
+        if (isset($filter['serviceTypeId']) && $filter['serviceTypeId'] != -1) {
+            $select->where(["E.SERVICE_TYPE_ID" => $filter['serviceTypeId']]);
+        }
+        if (isset($filter['employeeType']) && $filter['employeeType'] != -1) {
+            $select->where(["E.EMPLOYEE_TYPE" => "'{$filter['employeeType']}'"]);
+        }
+        if (isset($filter['employeeId']) && $filter['employeeId'] != -1) {
+            $select->where(["E.EMPLOYEE_ID" => $filter['employeeId']]);
+        }
+
+        $select->order(['C.COMPANY_NAME' => Select::ORDER_ASCENDING, 'R.ROLE_NAME' => Select::ORDER_ASCENDING]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return iterator_to_array($result, false);
     }
 
     //to get the employee list for select option
