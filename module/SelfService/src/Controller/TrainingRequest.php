@@ -54,10 +54,8 @@ class TrainingRequest extends HrisController {
             $this->form->setData($postData);
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
-                if ($postData['companyList'] === 1) {
-                    $model->trainingId = $postData['trainingId'];
-                    $model->remarks = $postData['remarks'];
-                    $model->description = $postData['description'];
+                if ($postData['trainingId'] == -1) {
+                    $model->trainingId = null;
                 }
                 $model->requestId = ((int) Helper::getMaxId($this->adapter, TrainingRequestModel::TABLE_NAME, TrainingRequestModel::REQUEST_ID)) + 1;
                 $model->employeeId = $this->employeeId;
@@ -77,7 +75,8 @@ class TrainingRequest extends HrisController {
         $trainings = $this->getTrainingList($this->employeeId);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'trainingList' => $trainings['trainingList']
+                    'trainingList' => $trainings['trainingList'],
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
@@ -117,6 +116,7 @@ class TrainingRequest extends HrisController {
             $trainingResult = $trainingRepo->selectAll($employeeId);
             $trainingList = [];
             $allTrainings = [];
+            $trainingList[-1] = "---";
             foreach ($trainingResult as $trainingRow) {
                 $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
                 $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;

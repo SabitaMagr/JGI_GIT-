@@ -1094,7 +1094,10 @@ window.app = (function ($, toastr, App) {
 
     var lockField = function (flag, fields) {
         $.each(fields, function (k, v) {
-            var $v = $('#' + v);
+            var $v = v;
+            if (!(v instanceof jQuery)) {
+                $v = $('#' + $v);
+            }
             if ($v.prev().is('div')) {
                 $v.css('pointer-events', 'none');
             } else {

@@ -1,109 +1,54 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $('select#form-trainingType').select2();
-        app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-startDate', 'nepaliEndDate1', 'form-endDate', function (fromDate, toDate) {
+        var $employeeId = $('#employeeId');
+        var $trainingId = $("#trainingId");
+        var $title = $("#title");
+        var $trainingType = $("#trainingType");
+        var $startDate = $("#startDate");
+        var $endDate = $("#endDate");
+        var $nepaliStartDate = $("#nepaliStartDate");
+        var $nepaliEndDate = $("#nepaliEndDate");
+        var $duration = $("#duration");
+
+        $('select').select2();
+        app.startEndDatePickerWithNepali('nepaliStartDate', 'startDate', 'nepaliEndDate', 'endDate', function (fromDate, toDate) {
             if (fromDate <= toDate) {
                 var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                 var diffDays = Math.abs((fromDate.getTime() - toDate.getTime()) / (oneDay));
                 var newValue = diffDays + 1;
-                $("#form-duration").val(newValue);
+                $duration.val(newValue);
             }
         });
-
-        var employeeId = $('#employeeId').val();
-        window.app.floatingProfile.setDataFromRemote(employeeId);
-
-        var $trainingId = $("#form-trainingId");
-        var $title = $("#form-title");
-        var $startDate = $("#form-startDate");
-        var $endDate = $("#form-endDate");
-        var $duration = $("#form-duration");
-        var $trainingType = $("#form-trainingType");
-        var $nepaliStartDate = $("#nepaliStartDate1");
-        var $nepaliEndDate = $("#nepaliEndDate1");
-
-        const TRAINING_NAME = "TRAINING_NAME";
-        const START_DATE = "START_DATE";
-        const END_DATE = "END_DATE";
-        const DURATION = "DURATION";
-        const TRAINING_TYPE = "TRAINING_TYPE";
 
         var trainingChange = function ($this) {
             if (typeof document.trainingList === 'undefined' || document.trainingList === null || document.trainingList.length === 0) {
                 return;
             }
             var training = document.trainingList[$this.val()];
-            if (training == null) {
-                return;
-            }
-            var title = training[TRAINING_NAME];
-            var startDate = app.getSystemDate(training[START_DATE]);
-            var endDate = app.getSystemDate(training[END_DATE]);
-            var duration = training[DURATION];
-            var trainingType = training[TRAINING_TYPE];
+            var startDate = (training == null) ? '' : app.getSystemDate(training["START_DATE"]);
+            var endDate = (training == null) ? '' : app.getSystemDate(training["END_DATE"]);
+
+            $title.val((training == null) ? '' : training["TRAINING_NAME"]);
             $startDate.datepicker('setStartDate', startDate);
             $startDate.datepicker('setEndDate', endDate);
+            $startDate.datepicker('setDate', startDate);
             $endDate.datepicker('setStartDate', startDate);
             $endDate.datepicker('setEndDate', endDate);
-            $startDate.datepicker('setDate', startDate);
             $endDate.datepicker('setDate', endDate);
-            $duration.val(duration);
-            $trainingType.val(trainingType).change();
+            $duration.val((training == null) ? '' : training["DURATION"]);
+            $trainingType.val((training == null) ? '' : training["TRAINING_TYPE"]).trigger('change.select2');
+            $(`input[type='radio'][name='isWithinCompany'][value='${(training == null) ? '' : training["IS_WITHIN_COMPANY"]}']`).prop('checked', true);
+            app.lockField((training != null), [$title, $startDate, $endDate, $duration, $trainingType, $("input[name='isWithinCompany']")]);
         };
 
         $trainingId.on('change', function () {
             trainingChange($(this));
         });
-
-
-        var companyCheckChange = function (val) {
-            var checked = val.is(":checked");
-            if (checked !== true) {
-                $title.show();
-                $title.attr("required", true);
-                $trainingId.select2('destroy');
-                $trainingId.hide();
-                $trainingType.val('CP').change();
-                $duration.val("");
-                $startDate.val("");
-                $endDate.val("");
-                $nepaliStartDate.val("");
-                $nepaliEndDate.val("");
-
-                $trainingType.attr('disabled', false);
-                $startDate.attr('disabled', false);
-                $endDate.attr('disabled', false);
-                $nepaliStartDate.attr('disabled', false);
-                $nepaliEndDate.attr('disabled', false);
-
-                $startDate.datepicker('setStartDate', "");
-                $startDate.datepicker('setEndDate', "");
-                $endDate.datepicker('setStartDate', "");
-                $endDate.datepicker('setEndDate', "");
-
-                $startDate.datepicker('setDate', "");
-                $endDate.datepicker('setDate', "");
-
-            } else if (checked !== false) {
-                $title.attr("required", false);
-                $title.hide();
-                $trainingId.select2();
-                $trainingId.show();
-                trainingChange($trainingId);
-                $trainingType.attr('disabled', true);
-                $startDate.attr('disabled', true);
-                $endDate.attr('disabled', true);
-            }
-        }
-
-        $("#companyList").on("change", function () {
-            companyCheckChange($(this));
-        });
-        companyCheckChange($("#companyList"));
-        app.setLoadingOnSubmit("trainingRequest-form");
-        $('form').bind('submit', function () {
-            $(this).find(':disabled').removeAttr('disabled');
+        app.floatingProfile.setDataFromRemote($employeeId.val());
+        app.setLoadingOnSubmit("TrainingRequest", function () {
+            app.lockField(false, [$title, $startDate, $endDate, $duration, $trainingType, $("input[name='isWithinCompany']")]);
+            return true;
         });
     });
 })(window.jQuery, window.app);

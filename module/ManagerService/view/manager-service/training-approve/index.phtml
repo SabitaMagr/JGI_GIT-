@@ -1,24 +1,13 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
-
-
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/manager-service/training-approve/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
+        ->appendFile($this->basePath('js/manager-service/training-approve/index.js'));
 ?>
-
-<script>
-    document.deleteURL = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.trainingApprove =<?php echo json_encode($trainingApprove) ?>;
-    document.viewLink = '<?= $this->url("trainingApprove", ["action" => "view"]) ?>';
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\trainingApprove')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -37,15 +26,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 
-<script>
-    document.approveRejectUrl = '<?php echo $this->url('trainingApprove', ['action' => 'batchApproveReject']); ?>';
-</script>    
 
+<script>
+    document.viewLink = '<?= $this->url("trainingApprove", ["action" => "view"]) ?>';
+    document.approveRejectUrl = '<?php echo $this->url('trainingApprove', ['action' => 'batchApproveReject']); ?>';
+</script>
 
 <div class="margin-top-20">
-
     <div class="portlet light bg-inverse">
-
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -58,20 +46,25 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id="export">
-                                <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        <li>
+                            <a href="javascript:;" id="excelExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to Excel 
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-excel-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-
-
-        <div id="trainingApproveTable">
+        <div id="table">
         </div>
-
         <div style="display: none;" class="row margin-top-20" id="acceptRejectDiv" >
             <div class="col-sm-2 ">
                 <button id="btnReject" class="btn btn-danger btnApproveReject">Reject</button>
@@ -80,42 +73,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <button id="btnApprove" class="btn btn-info btnApproveReject pull-right">Approve</button>
             </div>
         </div>
+
     </div>
-<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
-    <tr>
-    <td>
-    <input type='checkbox' id='#:REQUEST_ID#' role-id='#:ROLE#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:REQUEST_ID#'></label>    
-    </td>
-    <td>
-    #: (FULL_NAME == null) ? ' ' : FULL_NAME #
-    </td>
-    <td>
-    #: (TITLE == null) ? '-' : TITLE #
-    </td>
-    <td>
-    #: (REQUESTED_DATE == null) ? '-' : REQUESTED_DATE #
-    </td>
-    <td>
-    #: (START_DATE == null) ? '-' : START_DATE #
-    </td>
-    <td>
-    #: (END_DATE == null) ? '-' : END_DATE #
-    </td>
-    <td>
-    #: (DURATION == null) ? '-' : DURATION #
-    </td>
-    <td>
-    #: (TRAINING_TYPE == null) ? '-' : TRAINING_TYPE #
-    </td>
-    <td>
-    #: (YOUR_ROLE == null) ? '-' : YOUR_ROLE #
-    </td>
-    <td>
-    <a class="btn-edit"
-    href=" `+ document.viewLink +` /#:REQUEST_ID #/#:ROLE #" style="height:17px;" title="view">
-    <i class="fa fa-search-plus"></i></a>
-    </a>
-    </td>
-    </tr>
-</script>-->
 </div>
