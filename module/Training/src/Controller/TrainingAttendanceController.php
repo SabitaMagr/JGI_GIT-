@@ -4,7 +4,7 @@ namespace Training\Controller;
 
 use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
-use Training\Model\TrainingAttendance;
+use Exception;
 use Training\Repository\TrainingAttendanceRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;

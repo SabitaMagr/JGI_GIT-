@@ -33,17 +33,19 @@
             if (typeof document.trainingList === 'undefined' || document.trainingList === null || document.trainingList.length === 0) {
                 return;
             }
-            var title = document.trainingList[$this.val()][TRAINING_NAME];
-            var startDate = app.getSystemDate(document.trainingList[$this.val()][START_DATE]);
-            var endDate = app.getSystemDate(document.trainingList[$this.val()][END_DATE]);
-            var duration = document.trainingList[$this.val()][DURATION];
-            var trainingType = document.trainingList[$this.val()][TRAINING_TYPE];
+            var training = document.trainingList[$this.val()];
+            if (training == null) {
+                return;
+            }
+            var title = training[TRAINING_NAME];
+            var startDate = app.getSystemDate(training[START_DATE]);
+            var endDate = app.getSystemDate(training[END_DATE]);
+            var duration = training[DURATION];
+            var trainingType = training[TRAINING_TYPE];
             $startDate.datepicker('setStartDate', startDate);
             $startDate.datepicker('setEndDate', endDate);
             $endDate.datepicker('setStartDate', startDate);
             $endDate.datepicker('setEndDate', endDate);
-
-
             $startDate.datepicker('setDate', startDate);
             $endDate.datepicker('setDate', endDate);
             $duration.val(duration);

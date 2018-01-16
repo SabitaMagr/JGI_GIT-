@@ -1,14 +1,18 @@
 <?php
+
+use Application\Helper\Helper;
+use Zend\Mvc\Controller\AbstractActionController;
+
 namespace Training\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Application\Helper\Helper;
+class TrainingApplyController extends AbstractActionController {
 
-class TrainingApplyController extends AbstractActionController{
     public function __construct() {
+        
     }
-    
+
     public function indexAction() {
-        return Helper::addFlashMessagesToArray($this, ['list'=>'list']);
+        return Helper::addFlashMessagesToArray($this, ['list' => 'list']);
     }
+
 }

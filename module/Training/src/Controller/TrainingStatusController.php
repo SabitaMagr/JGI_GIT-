@@ -8,8 +8,6 @@ use Exception;
 use ManagerService\Repository\TrainingApproveRepository;
 use SelfService\Form\TrainingRequestForm;
 use SelfService\Model\TrainingRequest;
-use Setup\Repository\EmployeeRepository;
-use Setup\Repository\RecommendApproveRepository;
 use Setup\Repository\TrainingRepository;
 use Training\Repository\TrainingStatusRepository;
 use Zend\Authentication\AuthenticationService;
