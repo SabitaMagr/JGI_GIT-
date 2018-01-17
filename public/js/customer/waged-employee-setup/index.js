@@ -16,13 +16,21 @@
         };
         var columns = [
             {field: "FULL_NAME", title: "Name", width: 150},
+            {field: "GENDER_NAME", title: "Gender", width: 150},
+            {field: "BLOOD_GROUP_CODE", title: "Blood Group", width: 150},
+            {field: "MOBILE_NO", title: "Mobile", width: 150},
+            {field: "TELEPHONE_NO", title: "Telephone", width: 150},
             {field: ["EMPLOYEE_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ];
         var map = {
             'Employee': 'FULL_NAME',
+            'Gender': 'GENDER_NAME',
+            'Blood Group': 'BLOOD_GROUP_CODE',
+            'Mobile': 'MOBILE_NO',
+            'Telephone': 'TELEPHONE_NO',
         }
         app.initializeKendoGrid($table, columns);
-        
+
         app.pullDataById("", {}).then(function (response) {
             console.log(response.data);
             app.renderKendoGrid($table, response.data);
@@ -33,4 +41,4 @@
 
 
     });
-})(window.jQuery,window.app);
+})(window.jQuery, window.app);

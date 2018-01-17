@@ -3,7 +3,6 @@
     $(document).ready(function () {
         $('select').select2();
 
-//        var address = document.address || {};
         var addrPermZoneId = $('#addrPermZoneId');
         var addrPermDistrictId = $('#addrPermDistrictId');
         var addrTempZoneId = $('#addrTempZoneId');
@@ -16,7 +15,7 @@
                 return;
             }
             app.pullDataById(document.urlDistrict, {id: zoneId}).then(function (data) {
-                app.populateSelectElement(addrPermDistrictId, data);
+                app.populateSelectElement(addrPermDistrictId, data, document.addressValues.perDisValue);
             }, function (error) {
                 console.log("url=>" + document.urlDistrict, error);
             });
@@ -28,7 +27,7 @@
                 return;
             }
             app.pullDataById(document.urlDistrict, {id: zoneId}).then(function (data) {
-                app.populateSelectElement(addrTempDistrictId, data);
+                app.populateSelectElement(addrTempDistrictId, data, document.addressValues.tempDisValue);
             }, function (error) {
                 console.log("url=>" + document.urlDistrict, error);
             });
@@ -44,10 +43,12 @@
             var $this = $(this);
             onChangeTempZone($this.val());
         });
-        
-        
-//        onChangePermZone(null);
-//        onChangeTempZone(null);
+
+
+        if (document.editPage) {
+            onChangePermZone(document.addressValues.perZoneValue);
+            onChangeTempZone(document.addressValues.tempZoneValue);
+        }
 
 
     });

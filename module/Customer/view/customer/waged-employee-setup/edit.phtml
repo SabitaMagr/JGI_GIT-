@@ -35,18 +35,19 @@ $form->setAttribute('action', $this->url('customer-waged-employee', ['action' =>
 $form->prepare();
 
 
-$perZoneValue=$addrPermZoneId->g;
-//$perDisValue;
-//$tempZoneValue;
-//$tempDisValue;
-echo $perZoneValue;
-die();
+$addressValues['perZoneValue']=$addrPermZoneId->getValue();
+$addressValues['perDisValue']=$addrPermDistrictId->getValue();
+$addressValues['tempZoneValue']=$addrTempZoneId->getValue();
+$addressValues['tempDisValue']=$addrTempDistrictId->getValue();
+//print_r($addressValues);
+//die();
 
 ?>
 
 <script>
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
-    document.distrucnt = '<?= $this->url("webService", ["action" => "district"]) ?>';
+    document.addressValues = <?= json_encode($addressValues)?>;
+    document.editPage = true;
 </script>
 
 <div class="page-bar">

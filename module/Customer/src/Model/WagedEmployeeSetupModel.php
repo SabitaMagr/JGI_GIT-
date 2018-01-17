@@ -120,7 +120,7 @@ class WagedEmployeeSetupModel extends Model {
         'addrPermZoneId' => self::ADDR_PERM_ZONE_ID,
         'addrPermDistrictId' => self::ADDR_PERM_DISTRICT_ID,
         'addrTempZoneId' => self::ADDR_TEMP_ZONE_ID,
-        'addrTempDistrictId' => self::ADDR_PERM_DISTRICT_ID,
+        'addrTempDistrictId' => self::ADDR_TEMP_DISTRICT_ID,
         'status' => self::STATUS,
         'createdBy' => self::CREATED_BY,
         'createdDt' => self::CREATED_DT,

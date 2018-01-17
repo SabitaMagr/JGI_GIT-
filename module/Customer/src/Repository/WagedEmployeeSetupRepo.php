@@ -6,7 +6,9 @@ use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\WagedEmployeeSetupModel;
+use Setup\Model\Gender;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -42,6 +44,7 @@ class WagedEmployeeSetupRepo implements RepositoryInterface {
         $select->columns($columns, false);
 
         $select->from(['WE' => WagedEmployeeSetupModel::TABLE_NAME])
+                ->join(['G' => Gender::TABLE_NAME], "WE." . WagedEmployeeSetupModel::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME' => new Expression('INITCAP(G.GENDER_NAME)')], 'left')
                 ->join(['BG' => "HRIS_BLOOD_GROUPS"], "WE." . WagedEmployeeSetupModel::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left');
 
         $select->where([
