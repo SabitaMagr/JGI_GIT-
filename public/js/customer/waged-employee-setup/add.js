@@ -1,0 +1,54 @@
+(function ($, app) {
+    'use strict';
+    $(document).ready(function () {
+        $('select').select2();
+
+//        var address = document.address || {};
+        var addrPermZoneId = $('#addrPermZoneId');
+        var addrPermDistrictId = $('#addrPermDistrictId');
+        var addrTempZoneId = $('#addrTempZoneId');
+        var addrTempDistrictId = $('#addrTempDistrictId');
+
+
+        var onChangePermZone = function (zoneId) {
+            if (zoneId == null) {
+                app.populateSelectElement(addrPermDistrictId, []);
+                return;
+            }
+            app.pullDataById(document.urlDistrict, {id: zoneId}).then(function (data) {
+                app.populateSelectElement(addrPermDistrictId, data);
+            }, function (error) {
+                console.log("url=>" + document.urlDistrict, error);
+            });
+        };
+
+        var onChangeTempZone = function (zoneId) {
+            if (zoneId == null) {
+                app.populateSelectElement(addrTempDistrictId, []);
+                return;
+            }
+            app.pullDataById(document.urlDistrict, {id: zoneId}).then(function (data) {
+                app.populateSelectElement(addrTempDistrictId, data);
+            }, function (error) {
+                console.log("url=>" + document.urlDistrict, error);
+            });
+        };
+
+
+        addrPermZoneId.on('change', function () {
+            var $this = $(this);
+            onChangePermZone($this.val());
+        });
+
+        addrTempZoneId.on('change', function () {
+            var $this = $(this);
+            onChangeTempZone($this.val());
+        });
+        
+        
+//        onChangePermZone(null);
+//        onChangeTempZone(null);
+
+
+    });
+})(window.jQuery, window.app);

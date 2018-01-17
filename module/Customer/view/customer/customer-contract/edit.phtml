@@ -31,8 +31,10 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
 ?>
 
 <script>
+  document.employeeList =<?=json_encode($employeeList);?>;
   document.workingCycleEditVal='<?=$workingCycle->getValue()?>';
   document.contractDetails=<?= json_encode($contractDetails)?>;
+  document.contractEmpDetails=<?= json_encode($contractEmpDetails)?>;
 </script>
 
 <div class="page-bar">
@@ -239,6 +241,50 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
 
                     </div>
                 </div>
+                
+                
+                
+                <div class="row margin-top-20">
+                    <div class="col-md-8">
+                        
+                        <table class="table table-bordered" id="tblContractEmp">
+                            <tbody>
+                                <tr>
+                                    <td>Employee</td>
+                                    <td>Start Dates</td>
+                                    <td>End Dates</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><select name="employee[]" class="employees"></select></td>
+                                    <td><input type="text" class="contractEmpStartDate" name="contractEmpStartDate[]"></td>
+                                    <td><input type="text" class="contractEmpEndDate" name="contractEmpEndDate[]"></td>
+                                    <td>
+                                        <div class="th-inner ">
+                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                                <input class='chkBoxContractEmp' type="checkbox"/>
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                        <div class="fht-cell" style="width: 46px;"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <a id="addContractEmp" class=" btn btn-icon-only default pull-right">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                        <a id="delContractEmp" class="btn btn-icon-only default pull-right">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                        
+                        
+                    </div>
+                    
+                </div>
+                
+                
 
                 <?php
                 print $this->formSubmit($submit);

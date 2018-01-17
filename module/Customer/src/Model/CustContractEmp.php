@@ -2,7 +2,9 @@
 
 namespace Customer\Model;
 
-class CustContractEmp {
+use Application\Model\Model;
+
+class CustContractEmp extends Model {
 
     CONST TABLE_NAME = "HRIS_CUST_CONTRACT_EMP";
     CONST CONTRACT_ID = "CONTRACT_ID";
