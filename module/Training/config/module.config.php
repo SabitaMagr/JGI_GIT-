@@ -4,10 +4,9 @@ namespace Training;
 
 use Application\Controller\ControllerFactory;
 use Training\Controller\TrainingAssignController;
-use Training\Controller\TrainingStatusController;
-use Training\Controller\TrainingApplyController;
-use Zend\Router\Http\Segment;
 use Training\Controller\TrainingAttendanceController;
+use Training\Controller\TrainingStatusController;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
@@ -37,20 +36,6 @@ return [
                     'defaults' => [
                         'controller' => TrainingStatusController::class,
                         'action' => 'index'
-                    ],
-                ],
-            ],
-            'trainingApply' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/training/trainingApply[/:action[/:id]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => TrainingApplyController::class,
-                        'action' => 'add'
                     ],
                 ],
             ],
@@ -125,23 +110,6 @@ return [
                 ]
             ]
         ],
-        'trainingApply' => [
-            [
-                'label' => "Training Request",
-                'route' => "trainingApply"
-            ],
-            [
-                'label' => "Training Request",
-                'route' => "trainingApply",
-                'pages' => [
-                    [
-                        'label' => 'Add',
-                        'route' => 'trainingApply',
-                        'action' => 'add',
-                    ],
-                ],
-            ],
-        ],
         'trainingAtt' => [
             [
                 'label' => "Training",
@@ -169,7 +137,6 @@ return [
         'factories' => [
             Controller\TrainingAssignController::class => ControllerFactory::class,
             Controller\TrainingStatusController::class => ControllerFactory::class,
-            Controller\TrainingApplyController::class => ControllerFactory::class,
             Controller\TrainingAttendanceController::class => ControllerFactory::class,
         ],
     ],
