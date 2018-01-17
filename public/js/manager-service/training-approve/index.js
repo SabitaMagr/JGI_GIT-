@@ -106,7 +106,11 @@
             var row = $(this).closest("tr");
             var grid = $table.data("kendoGrid");
             var dataItem = grid.dataItem(row);
-            selectItems[dataItem['ID']].checked = checked;
+            if (selectItems[dataItem['REQUEST_ID']] === undefined) {
+                selectItems[dataItem['REQUEST_ID']] = {'checked': checked, 'role': dataItem['ROLE']};
+            } else {
+                selectItems[dataItem['REQUEST_ID']]['checked'] = checked;
+            }
             if (checked) {
                 row.addClass("k-state-selected");
                 $bulkBtnContainer.show();
@@ -132,19 +136,13 @@
             var selectedValues = [];
             for (var i in selectItems) {
                 if (selectItems[i].checked) {
-                    selectedValues.push({id: i, role: selectItems[i]['role']});
+                    selectedValues.push({id: i, role: selectItems[i]['role'], btnAction: btnId});
                 }
             }
-
-            App.blockUI({target: "#hris-page-content"});
-            app.pullDataById(
-                    document.approveRejectUrl,
-                    {data: selectedValues, btnAction: btnId}
-            ).then(function (success) {
-                App.unblockUI("#hris-page-content");
+            app.bulkServerRequest(document.approveRejectUrl, selectedValues, function () {
                 window.location.reload(true);
-            }, function (failure) {
-                App.unblockUI("#hris-page-content");
+            }, function (data, error) {
+
             });
         });
 

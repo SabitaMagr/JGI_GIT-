@@ -40,7 +40,7 @@ class TrainingRequestForm {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Type"})
-     * @Annotation\Attributes({ "id":"trainingType","class":"form-control form-trainingType"})
+     * @Annotation\Attributes({ "id":"trainingType","class":"form-control"})
      */
     public $trainingType;
 
@@ -49,7 +49,7 @@ class TrainingRequestForm {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Start Date"})
-     * @Annotation\Attributes({ "id":"startDate", "class":"form-startDate form-control" })
+     * @Annotation\Attributes({ "id":"startDate", "class":"form-control" })
      */
     public $startDate;
 
@@ -58,7 +58,7 @@ class TrainingRequestForm {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "id":"endDate", "class":"form-endDate form-control" })
+     * @Annotation\Attributes({ "id":"endDate", "class":"form-control" })
      */
     public $endDate;
 
@@ -66,7 +66,7 @@ class TrainingRequestForm {
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required(true)
      * @Annotation\Options({"label":"Duration"})
-     * @Annotation\Attributes({ "id":"duration","readonly":"readonly", "class":"form-duration form-control","step":"0.01" })
+     * @Annotation\Attributes({ "id":"duration","readonly":"readonly", "class":"form-control","step":"0.01" })
      */
     public $duration;
 
@@ -75,7 +75,7 @@ class TrainingRequestForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Description"})
-     * @Annotation\Attributes({"id":"description","class":"form-description form-control","style":"height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"description","class":"form-control","style":"height: 50px; font-size:12px"})
      */
     public $description;
 
@@ -84,7 +84,7 @@ class TrainingRequestForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
-     * @Annotation\Attributes({"id":"remarks","class":"form-remarks form-control","style":"height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"remarks","class":"form-control","style":"height: 50px; font-size:12px"})
      */
     public $remarks;
 
@@ -92,8 +92,8 @@ class TrainingRequestForm {
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Reason for action"})
-     * @Annotation\Attributes({"id":"recommendedRemarks","class":"form-reason form-control","style":"height: 50px; font-size:12px"})
+     * @Annotation\Options({"label":"Recommender Remarks"})
+     * @Annotation\Attributes({"id":"recommendedRemarks","class":"form-control","style":"height: 50px; font-size:12px"})
      */
     public $recommendedRemarks;
 
@@ -101,8 +101,8 @@ class TrainingRequestForm {
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Reason for action"})
-     * @Annotation\Attributes({"id":"form-approvedRemarks","class":"form-reason form-control","style":"height: 50px; font-size:12px"})
+     * @Annotation\Options({"label":"Approver Remarks"})
+     * @Annotation\Attributes({"id":"form-approvedRemarks","class":"form-control","style":"height: 50px; font-size:12px"})
      */
     public $approvedRemarks;
 

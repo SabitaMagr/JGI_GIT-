@@ -83,34 +83,10 @@ class TrainingApproveRepository {
         return $result->current();
     }
 
-    public function getAllFiltered($search) {
-        $condition = "";
-        if (isset($search['fromDate']) && $search['fromDate'] != null) {
-            $condition .= " AND TR.FROM_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
-        }
-        if (isset($search['fromDate']) && $search['toDate'] != null) {
-            $condition .= " AND TR.TO_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
-        }
-
-
-        if (isset($search['status']) && $search['status'] != null && $search['status'] != -1) {
-            if (gettype($search['status']) === 'array') {
-                $csv = "";
-                for ($i = 0; $i < sizeof($search['status']); $i++) {
-                    if ($i == 0) {
-                        $csv = "'{$search['status'][$i]}'";
-                    } else {
-                        $csv .= ",'{$search['status'][$i]}'";
-                    }
-                }
-                $condition .= "AND TR.STATUS IN ({$csv})";
-            } else {
-                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
-            }
-        }
-
+    public function getPendingList($search) {
         $sql = "SELECT TR.REQUEST_ID,
                   TR.EMPLOYEE_ID,
+                  E.FULL_NAME                                            AS FULL_NAME,
                   INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
                   BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_BS,
                   TR.APPROVED_BY,
@@ -163,12 +139,17 @@ class TrainingApproveRepository {
                     THEN BS_DATE(TR.END_DATE)
                     ELSE BS_DATE(T.END_DATE)
                   END)                                                            AS END_DATE_BS,
+                  TR.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
+                  RE.FULL_NAME                                                    AS RECOMMENDED_BY_NAME,
                   INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
+                  TR.APPROVED_BY                                                  AS APPROVED_BY,
+                  AE.FULL_NAME                                                    AS APPROVED_BY_NAME,
                   INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
                   INITCAP(TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY'))               AS MODIFIED_DATE,
-                  INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
-                  RA.RECOMMEND_BY                                                 AS RECOMMENDER,
-                  RA.APPROVED_BY                                                  AS APPROVER,
+                  RAR.EMPLOYEE_ID                                                 AS RECOMMENDER_ID,
+                  RAR.FULL_NAME                                                   AS RECOMMENDER_NAME,
+                  RAA.EMPLOYEE_ID                                                 AS APPROVER_ID,
+                  RAA.FULL_NAME                                                   AS APPROVER_NAME,
                   TR.STATUS                                                       AS STATUS ,
                   LEAVE_STATUS_DESC(TR.STATUS)                                    AS STATUS_DETAIL ,
                   REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
@@ -178,13 +159,255 @@ class TrainingApproveRepository {
                 ON T.TRAINING_ID=TR.TRAINING_ID
                 LEFT JOIN HRIS_EMPLOYEES E
                 ON E.EMPLOYEE_ID=TR.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES RE
+                ON(RE.EMPLOYEE_ID =TR.RECOMMENDED_BY)
+                LEFT JOIN HRIS_EMPLOYEES AE
+                ON (AE.EMPLOYEE_ID =TR.APPROVED_BY)
                 LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
                 ON E.EMPLOYEE_ID =RA.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES RAR
+                ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES RAA
+                ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID = RA.RECOMMEND_BY
                 OR U.EMPLOYEE_ID =RA.APPROVED_BY)
                 WHERE 1          =1
-                AND U.EMPLOYEE_ID={$search['employeeId']} {$condition}";
+                AND ((RA.RECOMMEND_BY= U.EMPLOYEE_ID AND TR.STATUS='RQ') OR (RA.APPROVED_BY= U.EMPLOYEE_ID AND TR.STATUS='RC') )
+                AND U.EMPLOYEE_ID={$search['userId']}";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    public function getAllList($search) {
+        $condition = "";
+        if (isset($search['fromDate']) && $search['fromDate'] != null) {
+            $condition .= " AND TR.START_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+        }
+        if (isset($search['fromDate']) && $search['toDate'] != null) {
+            $condition .= " AND TR.END_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+        }
+
+
+        if (isset($search['status']) && $search['status'] != null && $search['status'] != -1) {
+            if (gettype($search['status']) === 'array') {
+                $csv = "";
+                for ($i = 0; $i < sizeof($search['status']); $i++) {
+                    if ($i == 0) {
+                        $csv = "'{$search['status'][$i]}'";
+                    } else {
+                        $csv .= ",'{$search['status'][$i]}'";
+                    }
+                }
+                $condition .= "AND TR.STATUS IN ({$csv})";
+            } else {
+                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
+            }
+        }
+
+        $sql = "SELECT TR.REQUEST_ID,
+                  TR.EMPLOYEE_ID,
+                  E.FULL_NAME                                            AS FULL_NAME,
+                  INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                  BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_BS,
+                  TR.APPROVED_BY,
+                  TR.RECOMMENDED_BY,
+                  TR.REMARKS,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN TR.DURATION
+                    ELSE T.DURATION
+                  END) AS DURATION ,
+                  TR.DESCRIPTION,
+                  INITCAP(
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN TR.TITLE
+                    ELSE T.TRAINING_NAME
+                  END) AS TITLE,
+                  TR.STATUS,
+                  TR.TRAINING_ID,
+                  TRAINING_TYPE_DESC(
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN TR.TRAINING_TYPE
+                    ELSE T.TRAINING_TYPE
+                  END) AS TRAINING_TYPE,
+                  TR.RECOMMENDED_REMARKS,
+                  TR.APPROVED_REMARKS,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN INITCAP(TO_CHAR(TR.START_DATE, 'DD-MON-YYYY'))
+                    ELSE INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))
+                  END) AS START_DATE,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN BS_DATE(TR.START_DATE)
+                    ELSE BS_DATE(T.START_DATE)
+                  END) AS START_DATE_BS,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN INITCAP(TO_CHAR(TR.END_DATE, 'DD-MON-YYYY'))
+                    ELSE INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))
+                  END) AS END_DATE,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN BS_DATE(TR.END_DATE)
+                    ELSE BS_DATE(T.END_DATE)
+                  END)                                                            AS END_DATE_BS,
+                  TR.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
+                  RE.FULL_NAME                                                    AS RECOMMENDED_BY_NAME,
+                  INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
+                  TR.APPROVED_BY                                                  AS APPROVED_BY,
+                  AE.FULL_NAME                                                    AS APPROVED_BY_NAME,
+                  INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+                  INITCAP(TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY'))               AS MODIFIED_DATE,
+                  RAR.EMPLOYEE_ID                                                 AS RECOMMENDER_ID,
+                  RAR.FULL_NAME                                                   AS RECOMMENDER_NAME,
+                  RAA.EMPLOYEE_ID                                                 AS APPROVER_ID,
+                  RAA.FULL_NAME                                                   AS APPROVER_NAME,
+                  TR.STATUS                                                       AS STATUS ,
+                  LEAVE_STATUS_DESC(TR.STATUS)                                    AS STATUS_DETAIL ,
+                  REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
+                  REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
+                FROM HRIS_EMPLOYEE_TRAINING_REQUEST TR
+                LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
+                ON T.TRAINING_ID=TR.TRAINING_ID
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON E.EMPLOYEE_ID=TR.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES RE
+                ON(RE.EMPLOYEE_ID =TR.RECOMMENDED_BY)
+                LEFT JOIN HRIS_EMPLOYEES AE
+                ON (AE.EMPLOYEE_ID =TR.APPROVED_BY)
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
+                ON E.EMPLOYEE_ID =RA.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES RAR
+                ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES RAA
+                ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES U
+                ON(U.EMPLOYEE_ID = RA.RECOMMEND_BY
+                OR U.EMPLOYEE_ID =RA.APPROVED_BY)
+                WHERE 1          =1
+                AND U.EMPLOYEE_ID={$search['userId']} {$condition}";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    public function getListAdmin($search) {
+        $condition = "";
+        if (isset($search['fromDate']) && $search['fromDate'] != null) {
+            $condition .= " AND TR.START_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
+        }
+        if (isset($search['fromDate']) && $search['toDate'] != null) {
+            $condition .= " AND TR.END_DATE<=TO_DATE('{$search['toDate']}','DD-MM-YYYY') ";
+        }
+
+
+        if (isset($search['status']) && $search['status'] != null && $search['status'] != -1) {
+            if (gettype($search['status']) === 'array') {
+                $csv = "";
+                for ($i = 0; $i < sizeof($search['status']); $i++) {
+                    if ($i == 0) {
+                        $csv = "'{$search['status'][$i]}'";
+                    } else {
+                        $csv .= ",'{$search['status'][$i]}'";
+                    }
+                }
+                $condition .= "AND TR.STATUS IN ({$csv})";
+            } else {
+                $condition .= "AND TR.STATUS IN ('{$search['status']}')";
+            }
+        }
+
+        $sql = "SELECT TR.REQUEST_ID,
+                  TR.EMPLOYEE_ID,
+                  E.FULL_NAME                                            AS FULL_NAME,
+                  INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
+                  BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_BS,
+                  TR.APPROVED_BY,
+                  TR.RECOMMENDED_BY,
+                  TR.REMARKS,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN TR.DURATION
+                    ELSE T.DURATION
+                  END) AS DURATION ,
+                  TR.DESCRIPTION,
+                  INITCAP(
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN TR.TITLE
+                    ELSE T.TRAINING_NAME
+                  END) AS TITLE,
+                  TR.STATUS,
+                  TR.TRAINING_ID,
+                  TRAINING_TYPE_DESC(
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN TR.TRAINING_TYPE
+                    ELSE T.TRAINING_TYPE
+                  END) AS TRAINING_TYPE,
+                  TR.RECOMMENDED_REMARKS,
+                  TR.APPROVED_REMARKS,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN INITCAP(TO_CHAR(TR.START_DATE, 'DD-MON-YYYY'))
+                    ELSE INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))
+                  END) AS START_DATE,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN BS_DATE(TR.START_DATE)
+                    ELSE BS_DATE(T.START_DATE)
+                  END) AS START_DATE_BS,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN INITCAP(TO_CHAR(TR.END_DATE, 'DD-MON-YYYY'))
+                    ELSE INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))
+                  END) AS END_DATE,
+                  (
+                  CASE
+                    WHEN TR.TRAINING_ID IS NULL
+                    THEN BS_DATE(TR.END_DATE)
+                    ELSE BS_DATE(T.END_DATE)
+                  END)                                                            AS END_DATE_BS,
+                  TR.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
+                  RE.FULL_NAME                                                    AS RECOMMENDED_BY_NAME,
+                  INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
+                  TR.APPROVED_BY                                                  AS APPROVED_BY,
+                  AE.FULL_NAME                                                    AS APPROVED_BY_NAME,
+                  INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+                  INITCAP(TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY'))               AS MODIFIED_DATE,
+                  RAR.EMPLOYEE_ID                                                 AS RECOMMENDER_ID,
+                  RAR.FULL_NAME                                                   AS RECOMMENDER_NAME,
+                  RAA.EMPLOYEE_ID                                                 AS APPROVER_ID,
+                  RAA.FULL_NAME                                                   AS APPROVER_NAME,
+                  TR.STATUS                                                       AS STATUS ,
+                  LEAVE_STATUS_DESC(TR.STATUS)                                    AS STATUS_DETAIL 
+                FROM HRIS_EMPLOYEE_TRAINING_REQUEST TR
+                LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
+                ON T.TRAINING_ID=TR.TRAINING_ID
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON E.EMPLOYEE_ID=TR.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES RE
+                ON(RE.EMPLOYEE_ID =TR.RECOMMENDED_BY)
+                LEFT JOIN HRIS_EMPLOYEES AE
+                ON (AE.EMPLOYEE_ID =TR.APPROVED_BY)
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
+                ON E.EMPLOYEE_ID =RA.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES RAR
+                ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
+                LEFT JOIN HRIS_EMPLOYEES RAA
+                ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
+                WHERE 1          =1
+                {$condition}";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 

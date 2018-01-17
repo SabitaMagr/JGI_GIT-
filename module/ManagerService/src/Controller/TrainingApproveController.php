@@ -3,7 +3,6 @@
 namespace ManagerService\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -15,7 +14,6 @@ use SelfService\Model\TrainingRequest;
 use Setup\Repository\TrainingRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Element\Select;
 use Zend\View\Model\JsonModel;
 
 class TrainingApproveController extends HrisController {
@@ -30,9 +28,8 @@ class TrainingApproveController extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $search['employeeId'] = $this->employeeId;
-                $search['status'] = ['RQ', 'RC'];
-                $rawList = $this->repository->getAllFiltered($search);
+                $search['userId'] = $this->employeeId;
+                $rawList = $this->repository->getPendingList($search);
                 $list = Helper::extractDbData($rawList);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
@@ -88,6 +85,8 @@ class TrainingApproveController extends HrisController {
                     $trainingRequestModel->recommendedBy = $this->employeeId;
                     $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
                 }
+                $this->repository->edit($trainingRequestModel, $id);
+                $trainingRequestModel->requestId = $id;
                 try {
                     HeadNotification::pushNotification(($trainingRequestModel->status == 'AP') ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED, $trainingRequestModel, $this->adapter, $this);
                 } catch (Exception $e) {
@@ -98,18 +97,12 @@ class TrainingApproveController extends HrisController {
         }
         $trainingRequestModel->exchangeArrayFromDB($detail);
         $this->form->bind($trainingRequestModel);
-        $trainings = $this->getTrainingList($detail['EMPLOYEE_ID']);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'requestedDate' => $detail['REQUESTED_DATE'],
                     'role' => $role,
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'employeeId' => $this->employeeId,
-                    'trainingIdSelected' => $detail['TRAINING_ID'],
-                    'trainings' => $trainings["trainingKVList"],
-                    'trainingTypes' => $trainingTypes,
+                    'detail' => $detail,
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
@@ -118,9 +111,9 @@ class TrainingApproveController extends HrisController {
         if ($request->isPost()) {
             try {
                 $searchQuery = $request->getPost();
-                $searchQuery['employeeId'] = $this->employeeId;
-                $rawList = $this->repository->getAllFiltered((array) $searchQuery);
-                $list = Helper::extractDbData($rawList);
+                $searchQuery['userId'] = $this->employeeId;
+                $rawList = $this->repository->getAllList((array) $searchQuery);
+                $list = iterator_to_array($rawList, false);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -137,78 +130,37 @@ class TrainingApproveController extends HrisController {
     public function batchApproveRejectAction() {
         $request = $this->getRequest();
         try {
-            if (!$request->ispost()) {
-                throw new Exception('the request is not post');
-            }
-            $action;
-            $postData = $request->getPost()['data'];
-            $postBtnAction = $request->getPost()['btnAction'];
-            if ($postBtnAction == 'btnApprove') {
-                $action = 'Approve';
-            } elseif ($postBtnAction == 'btnReject') {
-                $action = 'Reject';
-            } else {
-                throw new Exception('no action defined');
-            }
-
-            if ($postData == null) {
-                throw new Exception('no selected rows');
-            } else {
-                $this->adapter->getDriver()->getConnection()->beginTransaction();
-                try {
-
-                    foreach ($postData as $data) {
-                        $id = $data['id'];
-                        $role = $data['role'];
-                        $trainingRequestModel = new TrainingRequest();
-//                        $detail = $this->trainingApproveRepository->fetchById($id);
-
-                        if ($role == 2) {
-                            $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                            $trainingRequestModel->recommendedBy = $this->employeeId;
-                            if ($action == "Reject") {
-                                $trainingRequestModel->status = "R";
-                            } else if ($action == "Approve") {
-                                $trainingRequestModel->status = "RC";
-                            }
-                            $this->repository->edit($trainingRequestModel, $id);
-                            $trainingRequestModel->requestId = $id;
-                            try {
-                                HeadNotification::pushNotification(($trainingRequestModel->status == 'RC') ? NotificationEvents::TRAINING_RECOMMEND_ACCEPTED : NotificationEvents::TRAINING_RECOMMEND_REJECTED, $trainingRequestModel, $this->adapter, $this);
-                            } catch (Exception $e) {
-                                
-                            }
-                        } else if ($role == 3 || $role == 4) {
-                            $trainingRequestModel->approvedDate = Helper::getcurrentExpressionDate();
-                            $trainingRequestModel->approvedBy = $this->employeeId;
-                            if ($action == "Reject") {
-                                $trainingRequestModel->status = "R";
-                            } else if ($action == "Approve") {
-                                $trainingRequestModel->status = "AP";
-                            }
-                            if ($role == 4) {
-                                $trainingRequestModel->recommendedBy = $this->employeeId;
-                                $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                            }
-                            $this->repository->edit($trainingRequestModel, $id);
-                            $trainingRequestModel->requestId = $id;
-                            try {
-                                HeadNotification::pushNotification(($trainingRequestModel->status == 'AP') ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED, $trainingRequestModel, $this->adapter, $this);
-                            } catch (Exception $e) {
-                                
-                            }
-                        }
-                    }
-                    $this->adapter->getDriver()->getConnection()->commit();
-                } catch (Exception $ex) {
-                    $this->adapter->getDriver()->getConnection()->rollback();
-                }
-            }
-            $listData = $this->getAllList();
-            return new CustomViewModel(['success' => true, 'data' => $listData]);
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['role'], $postData['btnAction'] == "btnApprove");
+            return new JsonModel(['success' => true, 'data' => null]);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
         }
+    }
+
+    private function makeDecision($id, $role, $approve) {
+        $notificationEvent = null;
+        $model = new TrainingRequest();
+        $model->requestId = $id;
+        switch ($role) {
+            case 2:
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+                $model->status = $approve ? "RC" : "R";
+                $notificationEvent = $approve ? NotificationEvents::TRAINING_RECOMMEND_ACCEPTED : NotificationEvents::TRAINING_RECOMMEND_REJECTED;
+                break;
+            case 4:
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+            case 3:
+                $model->approvedDate = Helper::getcurrentExpressionDate();
+                $model->approvedBy = $this->employeeId;
+                $model->status = $approve ? "AP" : "R";
+                $notificationEvent = $approve ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED;
+                break;
+        }
+        $this->repository->edit($model, $id);
+        HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
     }
 
     private $trainingList = null;
