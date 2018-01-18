@@ -53,46 +53,7 @@ class TrainingApproveController extends HrisController {
         if ($request->isPost()) {
             $getData = $request->getPost();
             $action = $getData->submit;
-            if ($role == 2) {
-                $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                $trainingRequestModel->recommendedBy = $this->employeeId;
-                if ($action == "Reject") {
-                    $trainingRequestModel->status = "R";
-                    $this->flashmessenger()->addMessage("Training Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $trainingRequestModel->status = "RC";
-                    $this->flashmessenger()->addMessage("Training Request Approved!!!");
-                }
-                $trainingRequestModel->recommendedRemarks = $getData->recommendedRemarks;
-                $this->repository->edit($trainingRequestModel, $id);
-                $trainingRequestModel->requestId = $id;
-                try {
-                    HeadNotification::pushNotification(($trainingRequestModel->status == 'RC') ? NotificationEvents::TRAINING_RECOMMEND_ACCEPTED : NotificationEvents::TRAINING_RECOMMEND_REJECTED, $trainingRequestModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            } else if ($role == 3 || $role == 4) {
-                $trainingRequestModel->approvedDate = Helper::getcurrentExpressionDate();
-                $trainingRequestModel->approvedBy = $this->employeeId;
-                if ($action == "Reject") {
-                    $trainingRequestModel->status = "R";
-                    $this->flashmessenger()->addMessage("Training Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $trainingRequestModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Training Request Approved");
-                }
-                if ($role == 4) {
-                    $trainingRequestModel->recommendedBy = $this->employeeId;
-                    $trainingRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                }
-                $this->repository->edit($trainingRequestModel, $id);
-                $trainingRequestModel->requestId = $id;
-                try {
-                    HeadNotification::pushNotification(($trainingRequestModel->status == 'AP') ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED, $trainingRequestModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            }
+            $this->makeDecision($id, $role, $action == 'Approve', true);
             return $this->redirect()->toRoute("trainingApprove");
         }
         $trainingRequestModel->exchangeArrayFromDB($detail);
@@ -138,8 +99,9 @@ class TrainingApproveController extends HrisController {
         }
     }
 
-    private function makeDecision($id, $role, $approve) {
+    private function makeDecision($id, $role, $approve, $enableFlashNotification = false) {
         $notificationEvent = null;
+        $message = null;
         $model = new TrainingRequest();
         $model->requestId = $id;
         switch ($role) {
@@ -147,6 +109,7 @@ class TrainingApproveController extends HrisController {
                 $model->recommendedDate = Helper::getcurrentExpressionDate();
                 $model->recommendedBy = $this->employeeId;
                 $model->status = $approve ? "RC" : "R";
+                $message = $approve ? "Training Request Recommended" : "Training Request Rejected";
                 $notificationEvent = $approve ? NotificationEvents::TRAINING_RECOMMEND_ACCEPTED : NotificationEvents::TRAINING_RECOMMEND_REJECTED;
                 break;
             case 4:
@@ -156,10 +119,14 @@ class TrainingApproveController extends HrisController {
                 $model->approvedDate = Helper::getcurrentExpressionDate();
                 $model->approvedBy = $this->employeeId;
                 $model->status = $approve ? "AP" : "R";
+                $message = $approve ? "Training Request Approved" : "Training Request Rejected";
                 $notificationEvent = $approve ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED;
                 break;
         }
         $this->repository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
         HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
     }
 

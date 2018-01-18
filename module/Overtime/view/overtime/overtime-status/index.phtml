@@ -1,7 +1,4 @@
 <?php
-/**
- * Load Javascript files here
- */
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
@@ -20,11 +17,10 @@ $this->headScript()
 ?>
 
 <script>
-    document.ids =<?php echo json_encode(["requestStatusId" => -1, "fromDate1" => "", "nepaliFromDate" => "", "toDate1" => "", "nepaliToDate" => ""]) ?>;
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("overtimeStatus", ["action" => "view"]) ?>';
-    document.pullOvertimeRequestStatusListLink = '<?= $this->url("overtimeStatus", ["action" => "pullOvertimeRequestStatusList"]) ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\overtimeStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -155,7 +151,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 </div>
 
 <div class="margin-top-20">  
-
     <div id="overtimeRequestStatusTable">
     </div>
 </div>

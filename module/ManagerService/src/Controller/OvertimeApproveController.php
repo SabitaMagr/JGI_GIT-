@@ -2,54 +2,45 @@
 
 namespace ManagerService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
-use ManagerService\Repository\OvertimeApproveRepository;
 use Notification\Controller\HeadNotification;
 use Notification\Model\NotificationEvents;
-use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Form\OvertimeRequestForm;
 use SelfService\Model\Overtime;
 use SelfService\Repository\OvertimeDetailRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class OvertimeApproveController extends AbstractActionController {
+class OvertimeApproveController extends HrisController {
 
-    private $overtimeApproveRepository;
     private $overtimeDetailRepository;
-    private $employeeId;
-    private $adapter;
-    private $form;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->overtimeApproveRepository = new OvertimeApproveRepository($adapter);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(\Overtime\Repository\OvertimeStatusRepository::class);
+        $this->initializeForm(OvertimeRequestForm::class);
         $this->overtimeDetailRepository = new OvertimeDetailRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new OvertimeRequestForm();
-        $this->form = $builder->createForm($form);
     }
 
     public function indexAction() {
-        $overtimeRequest = $this->getAllList();
-        return Helper::addFlashMessagesToArray($this, ['overtimeRequest' => $overtimeRequest, 'id' => $this->employeeId]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $list = $this->getAllList();
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return $this->stickFlashMessagesTo([]);
     }
 
     public function viewAction() {
-        $this->initializeForm();
-
         $id = (int) $this->params()->fromRoute('id');
         $role = $this->params()->fromRoute('role');
 
@@ -59,7 +50,7 @@ class OvertimeApproveController extends AbstractActionController {
         $overtimeModel = new Overtime();
         $request = $this->getRequest();
 
-        $detail = $this->overtimeApproveRepository->fetchById($id);
+        $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $approvedDT = $detail['APPROVED_DATE'];
 
@@ -73,56 +64,14 @@ class OvertimeApproveController extends AbstractActionController {
         foreach ($overtimeDetailResult as $overtimeDetailRow) {
             array_push($overtimeDetails, $overtimeDetailRow);
         }
-        if (!$request->isPost()) {
-            $overtimeModel->exchangeArrayFromDB($detail);
-            $this->form->bind($overtimeModel);
-        } else {
+        if ($request->isPost()) {
             $getData = $request->getPost();
             $action = $getData->submit;
-
-            if ($role == 2) {
-                $overtimeModel->recommendedDate = Helper::getcurrentExpressionDate();
-                $overtimeModel->recommendedBy = $this->employeeId;
-                if ($action == "Reject") {
-                    $overtimeModel->status = "R";
-                    $this->flashmessenger()->addMessage("Overtime Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $overtimeModel->status = "RC";
-                    $this->flashmessenger()->addMessage("Overtime Request Approved!!!");
-                }
-                $overtimeModel->recommendedRemarks = $getData->recommendedRemarks;
-                $this->overtimeApproveRepository->edit($overtimeModel, $id);
-                try {
-                    $overtimeModel->overtimeId = $id;
-                    HeadNotification::pushNotification(($overtimeModel->status == 'RC') ? NotificationEvents::OVERTIME_RECOMMEND_ACCEPTED : NotificationEvents::OVERTIME_RECOMMEND_REJECTED, $overtimeModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            } else if ($role == 3 || $role == 4) {
-                $overtimeModel->approvedDate = Helper::getcurrentExpressionDate();
-                $overtimeModel->approvedBy = $this->employeeId;
-                if ($action == "Reject") {
-                    $overtimeModel->status = "R";
-                    $this->flashmessenger()->addMessage("Overtime Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $overtimeModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Overtime Request Approved");
-                }
-                if ($role == 4) {
-                    $overtimeModel->recommendedBy = $this->employeeId;
-                    $overtimeModel->recommendedDate = Helper::getcurrentExpressionDate();
-                }
-                $overtimeModel->approvedRemarks = $getData->approvedRemarks;
-                $this->overtimeApproveRepository->edit($overtimeModel, $id);
-                try {
-                    $overtimeModel->overtimeId = $id;
-                    HeadNotification::pushNotification(($overtimeModel->status == 'AP') ? NotificationEvents::OVERTIME_APPROVE_ACCEPTED : NotificationEvents::OVERTIME_APPROVE_REJECTED, $overtimeModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            }
+            $this->makeDecision($id, $role, $action == 'Approve', true);
             return $this->redirect()->toRoute("overtimeApprove");
         }
+        $overtimeModel->exchangeArrayFromDB($detail);
+        $this->form->bind($overtimeModel);
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
@@ -142,21 +91,26 @@ class OvertimeApproveController extends AbstractActionController {
     }
 
     public function statusAction() {
-        $status = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected'
-        ];
-        $statusFormElement = new Select();
-        $statusFormElement->setName("status");
-        $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "requestStatusId", "class" => "form-control"]);
-        $statusFormElement->setLabel("Status");
-
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $result = $this->repository->getFilteredRecord($data, $data['recomApproveId']);
+                $recordList = [];
+                foreach ($result as $row) {
+                    $overtimeDetailResult = $this->overtimeDetailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
+                    $overtimeDetails = Helper::extractDbData($overtimeDetailResult);
+                    $row['DETAILS'] = $overtimeDetails;
+                    array_push($recordList, $row);
+                }
+                return new JsonModel(["success" => "true", "data" => $recordList]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'requestStatusId', 'class' => 'form-control', 'label' => 'Status']);
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusFormElement,
+                    'status' => $statusSE,
                     'recomApproveId' => $this->employeeId,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
@@ -165,74 +119,47 @@ class OvertimeApproveController extends AbstractActionController {
     public function batchApproveRejectAction() {
         $request = $this->getRequest();
         try {
-            if (!$request->ispost()) {
-                throw new Exception('the request is not post');
-            }
-            $action;
-            $postData = $request->getPost()['data'];
-            $postBtnAction = $request->getPost()['btnAction'];
-            if ($postBtnAction == 'btnApprove') {
-                $action = 'Approve';
-            } elseif ($postBtnAction == 'btnReject') {
-                $action = 'Reject';
-            } else {
-                throw new Exception('no action defined');
-            }
-
-            if ($postData == null) {
-                throw new Exception('no selected rows');
-            } else {
-                foreach ($postData as $data) {
-                    $overtimeModel = new Overtime();
-                    $id = $data['id'];
-                    $role = $data['role'];
-
-                    if ($role == 2) {
-                        $overtimeModel->recommendedDate = Helper::getcurrentExpressionDate();
-                        $overtimeModel->recommendedBy = $this->employeeId;
-                        if ($action == "Reject") {
-                            $overtimeModel->status = "R";
-                        } else if ($action == "Approve") {
-                            $overtimeModel->status = "RC";
-                        }
-                        $this->overtimeApproveRepository->edit($overtimeModel, $id);
-                        try {
-                            $overtimeModel->overtimeId = $id;
-                            HeadNotification::pushNotification(($overtimeModel->status == 'RC') ? NotificationEvents::OVERTIME_RECOMMEND_ACCEPTED : NotificationEvents::OVERTIME_RECOMMEND_REJECTED, $overtimeModel, $this->adapter, $this);
-                        } catch (Exception $e) {
-                            $this->flashmessenger()->addMessage($e->getMessage());
-                        }
-                    } else if ($role == 3 || $role == 4) {
-                        $overtimeModel->approvedDate = Helper::getcurrentExpressionDate();
-                        $overtimeModel->approvedBy = $this->employeeId;
-                        if ($action == "Reject") {
-                            $overtimeModel->status = "R";
-                        } else if ($action == "Approve") {
-                            $overtimeModel->status = "AP";
-                        }
-                        if ($role == 4) {
-                            $overtimeModel->recommendedBy = $this->employeeId;
-                            $overtimeModel->recommendedDate = Helper::getcurrentExpressionDate();
-                        }
-                        $this->overtimeApproveRepository->edit($overtimeModel, $id);
-                        try {
-                            $overtimeModel->overtimeId = $id;
-                            HeadNotification::pushNotification(($overtimeModel->status == 'AP') ? NotificationEvents::OVERTIME_APPROVE_ACCEPTED : NotificationEvents::OVERTIME_APPROVE_REJECTED, $overtimeModel, $this->adapter, $this);
-                        } catch (Exception $e) {
-                            $this->flashmessenger()->addMessage($e->getMessage());
-                        }
-                    }
-                }
-            }
-            $listData = $this->getAllList();
-            return new CustomViewModel(['success' => true, 'data' => $listData]);
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['role'], $postData['btnAction'] == "btnApprove");
+            return new JsonModel(['success' => true, 'data' => null]);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
         }
     }
 
+    private function makeDecision($id, $role, $approve, $enableFlashNotification = false) {
+        $notificationEvent = null;
+        $message = null;
+        $model = new Overtime();
+        $model->overtimeId = $id;
+        switch ($role) {
+            case 2:
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+                $model->status = $approve ? "RC" : "R";
+                $message = $approve ? "Overtime Request Recommended" : "Overtime Request Rejected";
+                $notificationEvent = $approve ? NotificationEvents::OVERTIME_RECOMMEND_ACCEPTED : NotificationEvents::OVERTIME_RECOMMEND_REJECTED;
+                break;
+            case 4:
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+            case 3:
+                $model->approvedDate = Helper::getcurrentExpressionDate();
+                $model->approvedBy = $this->employeeId;
+                $model->status = $approve ? "AP" : "R";
+                $message = $approve ? "Overtime Request Approved" : "Overtime Request Rejected";
+                $notificationEvent = $approve ? NotificationEvents::OVERTIME_APPROVE_ACCEPTED : NotificationEvents::OVERTIME_APPROVE_REJECTED;
+                break;
+        }
+        $this->repository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+    }
+
     public function getAllList() {
-        $list = $this->overtimeApproveRepository->getAllRequest($this->employeeId);
+        $list = $this->repository->getAllRequest($this->employeeId);
         $overtimeRequest = [];
         foreach ($list as $row) {
             $overtimeDetailResult = $this->overtimeDetailRepository->fetchByOvertimeId($row['OVERTIME_ID']);
@@ -244,33 +171,6 @@ class OvertimeApproveController extends AbstractActionController {
             array_push($overtimeRequest, $row);
         }
         return $overtimeRequest;
-    }
-
-    public function pullOvertimeRequestStatusListAction() {
-        try {
-            $request = $this->getRequest();
-            $data = $request->getPost();
-            $overtimeStatusRepo = new OvertimeStatusRepository($this->adapter);
-            $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
-            $result = $overtimeStatusRepo->getFilteredRecord($data, $data['recomApproveId']);
-
-            $recordList = [];
-
-            foreach ($result as $row) {
-                $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
-                $overtimeDetails = Helper::extractDbData($overtimeDetailResult);
-                $row['DETAILS'] = $overtimeDetails;
-                array_push($recordList, $row);
-            }
-
-
-            return new JsonModel([
-                "success" => "true",
-                "data" => $recordList,
-            ]);
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
-        }
     }
 
 }
