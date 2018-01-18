@@ -322,8 +322,8 @@ print $this->form()->closeTag();
         </div>
         <div class="dateDtl">
             <ul>
-                <li>TECF No:<?= $detail['TRAVEL_CODE']; ?></li>
-                <li>Date: <?php print_r($todayDate); ?></li>
+                <li>TECF No:<?php echo $detail['TRAVEL_CODE']; ?></li>
+                <li>Date: <?php echo $detail['REQUESTED_DATE'] ?></li>
             </ul>
         </div>
     </div>
@@ -460,7 +460,7 @@ print $this->form()->closeTag();
                     Advance taken for travel in Rs. <?= $detail['REQUESTED_AMOUNT'] ?> expenses incured during travel in Rs. <?= $totalAmount; ?>
                     Balance amount after expenses Rs. <?php echo $balance; ?>
                 </li>
-                <li>Total Expenses(in words): <?= $totalExpenseInWord; ?> </li>
+                <li>Total Expenses(in words): <?= $totalExpenseInWords; ?> </li>
             </ul>
         </div>
     </div>
