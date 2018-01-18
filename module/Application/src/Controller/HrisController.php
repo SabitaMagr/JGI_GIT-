@@ -74,4 +74,20 @@ class HrisController extends AbstractActionController {
         return $output;
     }
 
+    protected function getACLFilter() {
+        $filter = [];
+        switch ($this->acl['CONTROL']) {
+            case 'C':
+                $filter['companyId'] = $this->storageData['employee_detail']['COMPANY_ID'];
+                break;
+            case 'B':
+                $filter['branchId'] = $this->storageData['employee_detail']['BRANCH_ID'];
+                break;
+            case 'U':
+                $filter['employeeId'] = $this->storageData['employee_detail']['EMPLOYEE_ID'];
+                break;
+        }
+        return $filter;
+    }
+
 }

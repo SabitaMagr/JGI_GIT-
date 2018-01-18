@@ -14,6 +14,7 @@ class PaySlipPrevious extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
+        $this->initializeRepository(\SelfService\Repository\PayslipPreviousRepository::class);
         $this->viewType = $this->storageData['preference']['oldPayslipType'];
 
         $this->queryToList = function($sql) {
@@ -41,7 +42,7 @@ class PaySlipPrevious extends HrisController {
                         [
                             'employeeId' => $this->employeeId,
                             'employeeCode' => $this->storageData['employee_detail']['EMPLOYEE_CODE'],
-                            'queryToList' => $this->queryToList
+                            'periodList' => $this->repository->getPeriodList()
         ]));
         $view->setTemplate($template);
         return $view;

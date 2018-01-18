@@ -17,7 +17,7 @@ return [
    'username' => 'HRIS_TEST',
     'password' => 'HRIS_TEST',
         // 'username' => 'HRIS_DEMO',
-       //  'password' => 'HRIS_DEMO',
+        // 'password' => 'HRIS_DEMO',
         
 //        'username' => 'HRIS_TRAVEL',
 //        'password' => 'HRIS_TRAVEL',
