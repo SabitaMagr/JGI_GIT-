@@ -12,46 +12,44 @@ class TrainingForm {
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Training Name"})
-     * @Annotation\Attributes({ "id":"form-trainingName", "class":"form-trainingName form-control" })
+     * @Annotation\Attributes({ "id":"trainingName", "class":"form-control" })
      */
     public $trainingName;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Type"})
-     * @Annotation\Attributes({ "id":"trainingType","class":"form-control form-trainingType"})
+     * @Annotation\Attributes({ "id":"trainingType","class":"form-control"})
      */
     public $trainingType;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Institute Name"})
-     * @Annotation\Attributes({ "id":"instituteId","class":"form-control form-instituteId"})
+     * @Annotation\Attributes({ "id":"instituteId","class":"form-control"})
      */
     public $instituteId;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Start Date"})
-     * @Annotation\Attributes({ "id":"startDate", "class":"form-startDate form-control" })
+     * @Annotation\Attributes({ "id":"startDate", "class":"form-control" })
      */
     public $startDate;
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"End Date"})
-     * @Annotation\Attributes({ "id":"endDate", "class":"form-endDate form-control" })
+     * @Annotation\Attributes({ "id":"endDate", "class":"form-control" })
      */
     public $endDate;
 
@@ -59,8 +57,8 @@ class TrainingForm {
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(true)
-     * @Annotation\Options({"label":"Duration(in hour)"})
-     * @Annotation\Attributes({ "id":"form-duration","min":"0","step":"0.01", "class":"form-duration form-control" })
+     * @Annotation\Options({"label":"Duration"})
+     * @Annotation\Attributes({ "id":"duration","class":"form-control" })
      */
     public $duration;
 
@@ -69,7 +67,7 @@ class TrainingForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Instructor Name"})
-     * @Annotation\Attributes({ "id":"form-instructorName", "class":"form-instructorName form-control" })
+     * @Annotation\Attributes({ "id":"instructorName", "class":"form-control" })
      */
     public $instructorName;
 
@@ -78,7 +76,7 @@ class TrainingForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
-     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"remarks","class":"form-control","style":"height: 50px; font-size:12px"})
      */
     public $remarks;
 
@@ -90,8 +88,7 @@ class TrainingForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
      * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
      */

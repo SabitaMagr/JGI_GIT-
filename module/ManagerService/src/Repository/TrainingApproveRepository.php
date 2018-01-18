@@ -233,7 +233,7 @@ class TrainingApproveRepository extends HrisRepository {
         return $this->rawQuery($sql);
     }
 
-    public function getAllList($search) {
+    public function getAllList($search): array {
         $condition = "";
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
             $condition .= " AND TR.START_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";

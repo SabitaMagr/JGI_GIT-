@@ -3,38 +3,18 @@
 namespace Application\Repository;
 
 use Application\Helper\Helper;
-use Application\Model\Model;
 use Zend\Authentication\AuthenticationService;
+use Zend\Db\Adapter\AdapterInterface;
 
-class DashboardRepository implements RepositoryInterface {
+class DashboardRepository {
 
     private $adapter;
     private $fiscalYr;
 
-    public function __construct(\Zend\Db\Adapter\AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $auth = new AuthenticationService();
         $this->fiscalYr = $auth->getStorage()->read()['fiscal_year'];
-    }
-
-    public function add(Model $model) {
-        
-    }
-
-    public function delete($id) {
-        
-    }
-
-    public function edit(Model $model, $id) {
-        
-    }
-
-    public function fetchById($id) {
-        
-    }
-
-    public function fetchAll() {
-        
     }
 
     /*
@@ -266,7 +246,7 @@ class DashboardRepository implements RepositoryInterface {
                       ||')'
                     WHEN ATN.OVERALL_STATUS ='TN'
                     THEN 'On Training ('
-                      ||TMS.TRAINING_NAME
+                      ||(CASE WHEN ATN.TRAINING_TYPE = 'A' THEN TMS.TRAINING_NAME ELSE ETN.TITLE END)
                       ||')'
                     WHEN ATN.OVERALL_STATUS ='WD'
                     THEN 'Work On Dayoff'
@@ -286,7 +266,7 @@ class DashboardRepository implements RepositoryInterface {
                       ||LATE_STATUS_DESC(ATN.LATE_STATUS)
                     WHEN ATN.OVERALL_STATUS ='TP'
                     THEN 'Present ('
-                      ||TMS.TRAINING_NAME
+                      || TMS.TRAINING_NAME
                       ||')'
                       ||LATE_STATUS_DESC(ATN.LATE_STATUS)
                     WHEN ATN.OVERALL_STATUS ='PR'
@@ -306,7 +286,9 @@ class DashboardRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP HMS
                 ON HMS.HOLIDAY_ID = ATN.HOLIDAY_ID
                 LEFT JOIN HRIS_TRAINING_MASTER_SETUP TMS
-                ON TMS.TRAINING_ID = ATN.TRAINING_ID
+                ON (TMS.TRAINING_ID = ATN.TRAINING_ID AND ATN.TRAINING_TYPE='A')
+                LEFT JOIN HRIS_EMPLOYEE_TRAINING_REQUEST ETN
+                ON (ETN.REQUEST_ID=ATN.TRAINING_ID AND ATN.TRAINING_TYPE ='R')
                 LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST ETR
                 ON ETR.TRAVEL_ID = ATN.TRAVEL_ID
                 WHERE 1          = 1

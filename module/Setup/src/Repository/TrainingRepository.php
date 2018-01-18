@@ -33,6 +33,9 @@ class TrainingRepository implements RepositoryInterface {
         if (!$temp['INSTITUTE_ID']) {
             $temp['INSTITUTE_ID'] = null;
         }
+        if (!$temp['COMPANY_ID']) {
+            $temp['COMPANY_ID'] = null;
+        }
         $this->tableGateway->update($temp, [Training::TRAINING_ID => $id]);
     }
 

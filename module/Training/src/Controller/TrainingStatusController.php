@@ -28,8 +28,7 @@ class TrainingStatusController extends HrisController {
         if ($request->isPost()) {
             try {
                 $searchQuery = $request->getPost();
-                $rawList = $this->repository->getListAdmin((array) $searchQuery);
-                $list = iterator_to_array($rawList, false);
+                $list = $this->repository->getListAdmin((array) $searchQuery);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

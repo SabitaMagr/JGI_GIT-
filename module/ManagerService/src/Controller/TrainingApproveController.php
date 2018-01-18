@@ -51,9 +51,9 @@ class TrainingApproveController extends HrisController {
 
         $detail = $this->repository->fetchById($id);
         if ($request->isPost()) {
-            $getData = $request->getPost();
-            $action = $getData->submit;
-            $this->makeDecision($id, $role, $action == 'Approve', true);
+            $postedData = (array) $request->getPost();
+            $action = $postedData['submit'];
+            $this->makeDecision($id, $role, $action == 'Approve', $postedData[$role == 2 ? 'recommendedRemarks' : 'approvedRemarks'], true);
             return $this->redirect()->toRoute("trainingApprove");
         }
         $trainingRequestModel->exchangeArrayFromDB($detail);
@@ -99,13 +99,14 @@ class TrainingApproveController extends HrisController {
         }
     }
 
-    private function makeDecision($id, $role, $approve, $enableFlashNotification = false) {
+    private function makeDecision($id, $role, $approve, $remarks = null, $enableFlashNotification = false) {
         $notificationEvent = null;
         $message = null;
         $model = new TrainingRequest();
         $model->requestId = $id;
         switch ($role) {
             case 2:
+                $model->recommendedRemarks = $remarks;
                 $model->recommendedDate = Helper::getcurrentExpressionDate();
                 $model->recommendedBy = $this->employeeId;
                 $model->status = $approve ? "RC" : "R";
@@ -116,6 +117,7 @@ class TrainingApproveController extends HrisController {
                 $model->recommendedDate = Helper::getcurrentExpressionDate();
                 $model->recommendedBy = $this->employeeId;
             case 3:
+                $model->approvedRemarks = $remarks;
                 $model->approvedDate = Helper::getcurrentExpressionDate();
                 $model->approvedBy = $this->employeeId;
                 $model->status = $approve ? "AP" : "R";
@@ -127,7 +129,11 @@ class TrainingApproveController extends HrisController {
         if ($enableFlashNotification) {
             $this->flashmessenger()->addMessage($message);
         }
-        HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (\Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
     }
 
     private $trainingList = null;

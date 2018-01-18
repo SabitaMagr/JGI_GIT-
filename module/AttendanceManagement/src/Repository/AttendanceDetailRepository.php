@@ -167,7 +167,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                       ||')'
                     WHEN A.OVERALL_STATUS ='TN'
                     THEN 'On Training ('
-                      ||T.TRAINING_NAME
+                      || (CASE WHEN A.TRAINING_TYPE = 'A' THEN T.TRAINING_NAME ELSE ETN.TITLE END)
                       ||')'
                     WHEN A.OVERALL_STATUS ='WD'
                     THEN 'Work On Dayoff'
@@ -215,7 +215,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON A.LEAVE_ID=L.LEAVE_ID
                 LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
-                ON A.TRAINING_ID=T.TRAINING_ID
+                ON (A.TRAINING_ID=T.TRAINING_ID AND A.TRAINING_TYPE='A')
+                LEFT JOIN HRIS_EMPLOYEE_TRAINING_REQUEST ETN
+                ON (ETN.REQUEST_ID=A.TRAINING_ID AND A.TRAINING_TYPE ='R')
                 LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TVL
                 ON A.TRAVEL_ID      =TVL.TRAVEL_ID
                 LEFT JOIN HRIS_SHIFTS S
@@ -359,7 +361,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                       ||')'
                     WHEN A.OVERALL_STATUS ='TN'
                     THEN 'On Training('
-                      ||T.TRAINING_NAME
+                      || (CASE WHEN A.TRAINING_TYPE = 'A' THEN T.TRAINING_NAME ELSE ETN.TITLE END)
                       ||')'
                     WHEN A.OVERALL_STATUS ='WD'
                     THEN 'Work On Dayoff'
@@ -399,7 +401,9 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON A.LEAVE_ID=L.LEAVE_ID
                 LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
-                ON A.TRAINING_ID=T.TRAINING_ID
+                ON (A.TRAINING_ID=T.TRAINING_ID AND A.TRAINING_TYPE='A')
+                LEFT JOIN HRIS_EMPLOYEE_TRAINING_REQUEST ETN
+                ON (ETN.REQUEST_ID=A.TRAINING_ID AND A.TRAINING_TYPE ='R')
                 LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TVL
                 ON A.TRAVEL_ID      =TVL.TRAVEL_ID
                 WHERE 1=1

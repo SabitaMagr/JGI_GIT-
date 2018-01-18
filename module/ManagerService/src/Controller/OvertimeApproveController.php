@@ -65,9 +65,9 @@ class OvertimeApproveController extends HrisController {
             array_push($overtimeDetails, $overtimeDetailRow);
         }
         if ($request->isPost()) {
-            $getData = $request->getPost();
-            $action = $getData->submit;
-            $this->makeDecision($id, $role, $action == 'Approve', true);
+            $postedData = (array) $request->getPost();
+            $action = $postedData['submit'];
+            $this->makeDecision($id, $role, $action == 'Approve', $postedData[$role == 2 ? 'recommendedRemarks' : 'approvedRemarks'], true);
             return $this->redirect()->toRoute("overtimeApprove");
         }
         $overtimeModel->exchangeArrayFromDB($detail);
@@ -127,13 +127,14 @@ class OvertimeApproveController extends HrisController {
         }
     }
 
-    private function makeDecision($id, $role, $approve, $enableFlashNotification = false) {
+    private function makeDecision($id, $role, $approve, $remarks = null, $enableFlashNotification = false) {
         $notificationEvent = null;
         $message = null;
         $model = new Overtime();
         $model->overtimeId = $id;
         switch ($role) {
             case 2:
+                $model->recommendedRemarks = $remarks;
                 $model->recommendedDate = Helper::getcurrentExpressionDate();
                 $model->recommendedBy = $this->employeeId;
                 $model->status = $approve ? "RC" : "R";
@@ -144,6 +145,7 @@ class OvertimeApproveController extends HrisController {
                 $model->recommendedDate = Helper::getcurrentExpressionDate();
                 $model->recommendedBy = $this->employeeId;
             case 3:
+                $model->approvedRemarks = $remarks;
                 $model->approvedDate = Helper::getcurrentExpressionDate();
                 $model->approvedBy = $this->employeeId;
                 $model->status = $approve ? "AP" : "R";
@@ -155,7 +157,11 @@ class OvertimeApproveController extends HrisController {
         if ($enableFlashNotification) {
             $this->flashmessenger()->addMessage($message);
         }
-        HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
     }
 
     public function getAllList() {

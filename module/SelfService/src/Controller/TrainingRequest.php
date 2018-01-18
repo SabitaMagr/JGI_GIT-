@@ -62,12 +62,12 @@ class TrainingRequest extends HrisController {
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
                 $this->repository->add($model);
+                $this->flashmessenger()->addMessage("Training Request Successfully added!!!");
                 try {
                     HeadNotification::pushNotification(NotificationEvents::TRAINING_APPLIED, $model, $this->adapter, $this);
                 } catch (Exception $e) {
                     $this->flashmessenger()->addMessage($e->getMessage());
                 }
-                $this->flashmessenger()->addMessage("Training Request Successfully added!!!");
                 return $this->redirect()->toRoute("trainingRequest");
             }
         }
