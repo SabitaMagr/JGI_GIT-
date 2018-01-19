@@ -4,14 +4,17 @@ namespace ManagerService\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
+use Exception;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Model\WorkOnHoliday;
+use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class HolidayWorkApproveRepository implements RepositoryInterface {
+class HolidayWorkApproveRepository {
 
     private $tableGateway;
     private $adapter;
@@ -21,25 +24,9 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
         $this->tableGateway = new TableGateway(WorkOnHoliday::TABLE_NAME, $adapter);
     }
 
-    public function add(Model $model) {
-        
-    }
-
-    public function delete($id) {
-        
-    }
-
-    public function getAllWidStatus($id, $status) {
-        
-    }
-
     public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [WorkOnHoliday::ID => $id]);
-    }
-
-    public function fetchAll() {
-        
     }
 
     public function fetchById($id) {
@@ -50,11 +37,18 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
             new Expression("WH.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("WH.HOLIDAY_ID AS HOLIDAY_ID"),
             new Expression("INITCAP(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
+            new Expression("INITCAP(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_AD"),
+            new Expression("BS_DATE(TO_CHAR(WH.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_BS"),
             new Expression("INITCAP(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
+            new Expression("INITCAP(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE_AD"),
+            new Expression("BS_DATE(WH.FROM_DATE) AS FROM_DATE_BS"),
             new Expression("INITCAP(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
+            new Expression("INITCAP(TO_CHAR(WH.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE_AD"),
+            new Expression("BS_DATE(WH.TO_DATE) AS TO_DATE_BS"),
             new Expression("WH.DURATION AS DURATION"),
             new Expression("WH.REMARKS AS REMARKS"),
             new Expression("WH.STATUS AS STATUS"),
+            new Expression("LEAVE_STATUS_DESC(WH.STATUS)                     AS STATUS_DETAIL"),
             new Expression("WH.RECOMMENDED_BY AS RECOMMENDED_BY"),
             new Expression("INITCAP(TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE"),
             new Expression("WH.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS"),
@@ -65,22 +59,21 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['WH' => WorkOnHoliday::TABLE_NAME])
+                ->join(['H' => "HRIS_HOLIDAY_MASTER_SETUP"], "H.HOLIDAY_ID=WH.HOLIDAY_ID", ["HOLIDAY_ENAME"], "left")
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=WH.EMPLOYEE_ID", ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
                 ->join(['E1' => "HRIS_EMPLOYEES"], "E1.EMPLOYEE_ID=WH.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E1.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=WH.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=WH.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
                 ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
-        $select->where([
-            "WH.ID=" . $id
-        ]);
+        $select->where(["WH.ID=" . $id]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();
     }
 
-    public function getAllRequest($id = null, $status = null) {
+    public function getAllRequest($id = null): Traversable {
         $sql = "SELECT 
                     WH.ID,
                     WH.EMPLOYEE_ID,
@@ -100,16 +93,14 @@ class HolidayWorkApproveRepository implements RepositoryInterface {
                     INITCAP(TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
                     INITCAP(TO_CHAR(WH.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE,
                     INITCAP(TO_CHAR(WH.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE,
-                    INITCAP(E.FIRST_NAME) AS FIRST_NAME,
-                    INITCAP(E.MIDDLE_NAME) AS MIDDLE_NAME,
-                    INITCAP(E.LAST_NAME) AS LAST_NAME,
                     INITCAP(E.FULL_NAME) AS FULL_NAME,
                     INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
                     INITCAP(H.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
                     H.HOLIDAY_CODE,
                     RA.RECOMMEND_BY as RECOMMENDER,
                     RA.APPROVED_BY AS APPROVER,
-                    LEAVE_STATUS_DESC(WH.STATUS)                     AS STATUS,
+                    WH.STATUS                                        AS STATUS,
+                    LEAVE_STATUS_DESC(WH.STATUS)                     AS STATUS_DETAIL,
                     REC_APP_ROLE({$id},RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
                     REC_APP_ROLE_NAME({$id},RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                     FROM HRIS_EMPLOYEE_WORK_HOLIDAY WH

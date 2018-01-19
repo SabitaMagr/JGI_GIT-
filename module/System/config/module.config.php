@@ -74,7 +74,7 @@ return [
             'user-setting' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/system/setting[/:action[/:id]]',
+                    'route' => '/system/user-setting[/:action[/:id]]',
                     'constraint' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -374,7 +374,6 @@ return [
             Controller\MenuReport::class => ControllerFactory::class,
             Controller\SystemSetting::class => ControllerFactory::class,
             Controller\SystemUtility::class => ControllerFactory::class
-            
         ],
     ],
     'view_manager' => [

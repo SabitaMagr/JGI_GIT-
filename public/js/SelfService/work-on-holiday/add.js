@@ -10,7 +10,7 @@
                 $("#duration").val(newValue);
             }
         });
-        var $holidayId = $('#form-holidayId');
+        var $holidayId = $('#holidayId');
         var $fromDate = $("#fromDate");
         var $toDate = $("#toDate");
 
@@ -43,7 +43,7 @@
         window.app.floatingProfile.setDataFromRemote(employeeId);
 
         holidayChange($holidayId);
-        app.setLoadingOnSubmit("workOnHoliday-form");
+        app.setLoadingOnSubmit("WorkOnHoliday");
     });
 })(window.jQuery, window.app);
 
