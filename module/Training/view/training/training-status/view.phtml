@@ -1,75 +1,45 @@
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
- 
+
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/SelfService/training-request/datepick.js'))
-        ->appendFile($this->basePath('js/manager-service/training-approve/view.js'));
-
-$form->setAttribute('role', 'form');
-$form->setAttribute('id', 'trainingRequest-form');
-
-$trainingId = $form->get('trainingId');
-$trainingId->setValueOptions($trainings);
-$trainingId->setAttributes(["disabled" => "disabled"]);
+$title = $form->get('title');
+$title->setAttributes(["disabled" => "disabled"]);
+$trainingType = $form->get('trainingType');
+$trainingType->setValueOptions([$detail['TRAINING_TYPE'] => $detail['TRAINING_TYPE_DETAIL']]);
+$trainingType->setAttributes(["disabled" => "disabled"]);
+$description = $form->get('description');
+$description->setAttributes(["disabled" => "disabled"]);
 $startDate = $form->get('startDate');
 $startDate->setAttributes(["disabled" => "disabled"]);
 $endDate = $form->get('endDate');
 $endDate->setAttributes(["disabled" => "disabled"]);
 $duration = $form->get('duration');
 $duration->setAttributes(["disabled" => "disabled"]);
-$title = $form->get('title');
-$title->setAttributes(["disabled" => "disabled"]);
-$trainingType = $form->get('trainingType');
-$trainingType->setValueOptions($trainingTypes);
-$trainingType->setAttributes(["disabled" => "disabled"]);
-$description = $form->get('description');
-$description->setAttributes(["disabled" => "disabled"]);
 $remarks = $form->get('remarks');
 $remarks->setAttributes(["disabled" => "disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(['required' => 'true']);
-
-
-$submit = $form->get('submit');
-$submit->setAttribute('value', 'Approve');
-$submit->setAttribute('id','approve');
-
-$form->setAttribute('action', $this->url('trainingStatus', ['action' => 'view', 'id' => $id]));
-
+$isWithinCompany = $form->get('isWithinCompany');
+$isWithinCompany->setAttributes(['disabled' => 'disabled']);
+$showBtns = false;
+if (in_array($detail['STATUS'], ['RQ', 'RC'])) {
+    $approvedRemarks->setAttributes(['required' => 'true']);
+    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
+    $showBtns = true;
+} else {
+    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
+    $approvedRemarks->setAttributes(['disabled' => 'disabled']);
+}
 
 $form->prepare();
 ?>
-<script>
-//    document.holidayList =<?php
-//json_encode($holidayObjList) 
-//
-?>;
-    document.trainingList =<?= json_encode($trainingList) ?>;
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\trainingStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
@@ -82,87 +52,61 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
             <div class="portlet-body">
-                <?php
-                print $this->form()->openTag($form);
-                ?>
+                <?php print $this->form()->openTag($form); ?>
                 <div class="border-bottom">
-
                     <div class="form-group">
                         <div class="row div-font-11">
                             <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
-                                        <td>
-                                            Employee Name
-                                        </td>
+                                        <td> Employee Name</td>
                                         <td width="15">:</td>
-                                        <td>
-                                            <?php echo $employeeName; ?>
-                                        </td>
+                                        <td> <?php echo $detail['FULL_NAME']; ?> </td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
-                                        <td>
-                                            Requested Date
-                                        </td>
+                                        <td> Recommender</td>
                                         <td width="15">:</td>
-                                        <td>
-                                            <?php echo $requestedDt; ?>
-                                        </td>
+                                        <td> <?php echo $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME']; ?> </td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="col-sm-4">
                                 <table>
                                     <tr height="30">
-                                        <td>
-                                            Recommender
-                                        </td>
+                                        <td> Approver</td>
                                         <td width="15">:</td>
-                                        <td>
-                                            <?php echo $recommender; ?>
-                                        </td>
+                                        <td> <?php echo $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME']; ?> </td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="col-sm-4">
-                                <table>  
+                                <table>
                                     <tr height="30">
-                                        <td>
-                                            Approver
-                                        </td>
+                                        <td> Your Role </td>
                                         <td width="15">:</td>
-                                        <td>
-                                            <?php echo $approver; ?>
-                                        </td>
+                                        <td> Admin </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-sm-4">
+                                <table>
+                                    <tr height="30">
+                                        <td>  Requested Date </td>
+                                        <td width="15">:</td>
+                                        <td> <?php echo $detail['REQUESTED_DATE_AD']; ?> | <?php echo $detail['REQUESTED_DATE_BS']; ?></td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="col-md-4">
                                 <table>  
                                     <tr height="30">
-                                        <td>
-                                            Status
-                                        </td>
+                                        <td> Status </td>
                                         <td width="15">:</td>
-                                        <td>
-                                            <?php
-                                            if ($status == 'RQ') {
-                                                echo "Pending";
-                                            } else if ($status == 'RC') {
-                                                echo "Recommended";
-                                            } else if ($status == 'AP') {
-                                                echo "Approved";
-                                            } else if ($status == "R") {
-                                                echo "Rejected";
-                                            } else if ($status == "C") {
-                                                echo "Cancelled";
-                                            }
-                                            ?>
-                                        </td>
+                                        <td>  <?php echo $detail['STATUS_DETAIL']; ?> </td>
                                     </tr>
                                 </table>
                             </div>
@@ -171,94 +115,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <div class=" row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <?php print $this->formLabel($trainingId); ?>
-                                <span class="required" aria-required="true">*</span>
-                                <span> 
-                                    [ list by setup
-                                    <input type="hidden" name="companyList" value="0"/>
-                                    <?php
-                                    if ($trainingIdSelected != 0) {
-                                        $checked = "checked";
-                                    } else {
-                                        $checked = "";
-                                    }
-                                    ?>
-                                    <input type="checkbox" name="companyList" <?php echo $checked; ?> value="1" id="companyList"/>
-                                    ]</span>
-                                <?php
-                                if ($trainingIdSelected != 0) {
-                                    print $this->formElement($trainingId);
-                                } else if ($trainingIdSelected == 0) {
-                                    print $this->formElement($title);
-                                }
-                                ?>
-                                <?php print $this->formElementErrors()->render($trainingId, ['class' => 'help-block']); ?>
+                                <?php print $this->formLabel($title); ?>
+                                <?php print $this->formElement($title); ?>
                                 <?php print $this->formElementErrors()->render($title, ['class' => 'help-block']); ?>
-                            </div>               
+                            </div> 
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($trainingType); ?>
-                                <span class="required" aria-required="true">*</span>
                                 <?php print $this->formElement($trainingType); ?>
                                 <?php print $this->formElementErrors()->render($trainingType, ['class' => 'help-block']); ?>
                             </div> 
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                                        <?php print $this->formLabel($startDate) ?>
-                                        <span class="required" aria-required="true">*</span>
-                                        <?php print $this->formElement($startDate) ?>
-                                    </div>
-                                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-                                </div>     
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="nepaliStartDate">&nbsp;</label>
-                                        <div class="input-group">
-                                            <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                                   class="form-control" value="" disabled="disabled">
-                                        </div>
-                                    </div>
-                                </div>     
-                            </div>  
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                                        <?php print $this->formLabel($endDate) ?>
-                                        <span class="required" aria-required="true">*</span>
-                                        <?php print $this->formElement($endDate) ?>
-                                        <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
-                                    </div>
-                                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
-                                </div>     
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="nepaliEndDate">&nbsp;</label>
-                                        <div class="input-group">
-                                            <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                                   class="form-control" value="" disabled="disabled">
-                                        </div>
-                                    </div>
-                                </div>     
-                            </div>  
-
-                        </div>
-                        <div class="col-sm-4">
-                            <div
-                                class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
-                                    <?php print $this->formLabel($duration); ?>
-                                    <?php print $this->formElement($duration); ?>
-                                <span id="errorMsg" style="font-size:11px; color:red;"></span>
-                            </div>
-                            <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
                         </div>
                         <div class="col-sm-4">
                             <div class="form-group">
@@ -267,9 +134,59 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $this->formElementErrors()->render($description, ['class' => 'help-block']); ?>
                             </div>
                         </div>
-                    </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group required">
+                                        <?php print $this->formLabel($startDate) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($startDate) ?>
+                                        <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                    </div>
+                                </div>     
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliStartDate">&nbsp;</label>
+                                        <input type="text" name="nepaliStartDate" id="nepaliStartDate" class="form-control" value="">
+                                    </div>
+                                </div>     
+                            </div>        
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div  class="form-group required">
+                                        <?php print $this->formLabel($endDate) ?>
+                                        <span class="required" aria-required="true">*</span>
+                                        <?php print $this->formElement($endDate) ?>
+                                        <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
+                                    </div>
+                                </div>     
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="nepaliEndDate">&nbsp;</label>
+                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate" class="form-control" value="" disabled="disabled">
+                                    </div>
+                                </div>     
+                            </div>        
+                        </div>
+                        <div class="col-sm-4">
+                            <div   class="form-group required">
+                                <?php print $this->formLabel($duration); ?>
+                                <?php print $this->formElement($duration); ?>
+                                <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                            </div>
+                        </div>
+                        <div class=" col-sm-4 ">
+                            <div class="form-group padding-0">
+                                <?php print $this->formLabel($isWithinCompany); ?>
+                                <div class="md-radio-inline">
+                                    <?php $customRenderer($isWithinCompany); ?>
+                                </div>
+                                <?php print $this->formElementErrors()->render($isWithinCompany, ['class' => 'help-block error']); ?>
+                            </div>
+                        </div>
 
-                    <div class=" row">
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($remarks); ?>
@@ -279,31 +196,29 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                 </div>
-                <?php
-                if (($status == 'RC' || $status == 'AP' || $status == 'R') && $recommApprove == 0) {
-                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
-                    ?>
-                    <div class="form-group padding-0">
-                        <label>Reason for action [From Recommender]</label>
-                        <?php print $this->formElement($recommendedRemarks); ?>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($recommendedRemarks); ?>
+                            <?php print $this->formElement($recommendedRemarks); ?>
+                            <?php print $this->formElementErrors()->render($recommendedRemarks, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
-                    <?php
-                }
-                if ($status == 'RC' || $status == 'RQ' || $status == 'AP' || ($status == 'R' && $approvedDT != null)) {
-                    ?>
-                    <div class="form-group padding-0">
-                        <?php print $this->formLabel($approvedRemarks); ?>
-                        <?php print $this->formElement($approvedRemarks); ?>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($approvedRemarks); ?>
+                            <?php print $this->formElement($approvedRemarks); ?>
+                            <?php print $this->formElementErrors()->render($approvedRemarks, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
-                <?php } ?>
-
-                <?php if ($status == 'RQ' || $status == 'RC') { ?>
-                    <?php print $this->formSubmit($submit); ?>
-                    <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
-                <?php } ?>
-                <?php
-                print $this->form()->closeTag();
-                ?>
+                    <div class="col-sm-12">
+                        <?php if ($showBtns): ?>
+                            <input type="submit" name="submit" class="btn btn-info pull-right" value="Approve">
+                            <input type="submit" name="submit" class="btn btn-danger pull-left" value="Reject">
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php print $this->form()->closeTag(); ?>
             </div>
         </div>
     </div>

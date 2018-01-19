@@ -12,6 +12,7 @@ $forcePasswordRenewDay = $form->get('forcePasswordRenewDay');
 $showAddressBook = $form->get('showAddressBook');
 $noticeType = $form->get('noticeType');
 $oldPayslipType = $form->get('oldPayslipType');
+$latePenaltyLeaveDeduction = $form->get('latePenaltyLeaveDeduction');
 
 $submit = $form->get('submit');
 
@@ -133,6 +134,13 @@ if ($this->messages) {
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($oldPayslipType, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($latePenaltyLeaveDeduction); ?>
+                            <?php print $this->formElement($latePenaltyLeaveDeduction); ?>
+                            <?php print $this->formElementErrors()->render($latePenaltyLeaveDeduction, ['class' => 'help-block error']); ?>
+                        </div>
                     </div>
                 </div>
                 <div class="">

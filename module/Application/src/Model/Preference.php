@@ -14,6 +14,7 @@ class Preference extends Model {
     public $showAddressBook = 'Y';
     public $noticeType = 'M'; //['S','M']
     public $oldPayslipType = 'N';
+    public $latePenaltyLeaveDeduction = 0.5;
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -25,6 +26,7 @@ class Preference extends Model {
     CONST SHOW_ADDRESS_BOOK = "SHOW_ADDRESS_BOOK";
     CONST NOTICE_TYPE = "NOTICE_TYPE";
     CONST OLD_PAYSLIP_TYPE = "OLD_PAYSLIP_TYPE";
+    CONST LATE_PENALTY_LEAVE_DEDUCTION = "LATE_PENALTY_LEAVE_DEDUCTION";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -37,6 +39,7 @@ class Preference extends Model {
         'showAddressBook' => self::SHOW_ADDRESS_BOOK,
         'noticeType' => self::NOTICE_TYPE,
         'oldPayslipType' => self::OLD_PAYSLIP_TYPE,
+        'latePenaltyLeaveDeduction' => self::LATE_PENALTY_LEAVE_DEDUCTION,
     ];
 
 }

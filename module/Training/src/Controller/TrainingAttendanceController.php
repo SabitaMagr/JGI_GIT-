@@ -4,10 +4,11 @@ namespace Training\Controller;
 
 use Application\Custom\CustomViewModel;
 use Application\Helper\Helper;
-use Training\Model\TrainingAttendance;
+use Exception;
 use Training\Repository\TrainingAttendanceRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class TrainingAttendanceController extends AbstractActionController {
 
@@ -20,8 +21,17 @@ class TrainingAttendanceController extends AbstractActionController {
     }
 
     public function indexAction() {
-        $list = $this->repository->fetchAll();
-        return Helper::addFlashMessagesToArray($this, ['list' => $list]);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $result = $this->repository->fetchAll();
+                $companyList = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $companyList, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
     public function attendanceAction() {

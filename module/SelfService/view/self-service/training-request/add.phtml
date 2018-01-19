@@ -8,53 +8,25 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('js/SelfService/training-request/add.js'));
 
-$form->setAttribute('role', 'form');
-$form->setAttribute('id', 'trainingRequest-form');
-
 $trainingId = $form->get('trainingId');
-$trainingId->setValueOptions($trainings);
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $duration = $form->get('duration');
 $title = $form->get('title');
 $trainingType = $form->get('trainingType');
-$trainingType->setValueOptions($trainingTypes);
 $description = $form->get('description');
 $remarks = $form->get('remarks');
-
+$isWithinCompany = $form->get('isWithinCompany');
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'SUBMIT');
-
 $form->setAttribute('action', $this->url('trainingRequest', ['action' => 'add']));
-
-
 $form->prepare();
 ?>
 <script>
-//    document.holidayList =<?php
-//json_encode($holidayObjList) 
-//
-?>;
     document.trainingList =<?= json_encode($trainingList) ?>;
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\trainingRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
@@ -67,29 +39,24 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
             <div class="portlet-body">
-                <div class="form-group">
-                        <input type="hidden" id="employeeId" value="<?php echo $employeeId; ?>"/>
-                    </div>
-                
-                <?php
-                print $this->form()->openTag($form);
-                ?>
-
+                <?php print $this->form()->openTag($form); ?>
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($trainingId); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <span> 
-                                [ list by setup
-                                <input type="hidden" name="companyList" value="0"/>
-                                <input type="checkbox" name="companyList" checked="checked" value="1" id="companyList"/>
-                                ]</span>
                             <?php print $this->formElement($trainingId); ?>
-                            <?php print $this->formElement($title); ?>
                             <?php print $this->formElementErrors()->render($trainingId, ['class' => 'help-block']); ?>
+                        </div> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($title); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($title); ?>
                             <?php print $this->formElementErrors()->render($title, ['class' => 'help-block']); ?>
-                        </div>               
+                        </div> 
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">
@@ -100,76 +67,65 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div> 
                     </div>
                     <div class="col-sm-4">
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div
-                                    class="form-group required  <?= empty($startDate->getMessages()) ? "" : "error" ?>">
-                                        <?php print $this->formLabel($startDate) ?>
-                                    <span class="required" aria-required="true">*</span>
-                                    <?php print $this->formElement($startDate) ?>
-                                </div>
-                                <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
-                            </div>     
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="nepaliStartDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliStartDate" id="nepaliStartDate1"
-                                               class="form-control" value="" disabled="disabled">
-                                    </div>
-                                </div>
-                            </div>     
-                        </div>        
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div
-                                    class="form-group required <?= empty($endDate->getMessages()) ? "" : "error" ?>">
-                                        <?php print $this->formLabel($endDate) ?>
-                                    <span class="required" aria-required="true">*</span>
-                                    <?php print $this->formElement($endDate) ?>
-                                    <span id="errorMsgDate" style="font-size:11px; color:red;"></span>
-                                </div>
-                                <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
-                            </div>     
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="nepaliEndDate">&nbsp;</label>
-                                    <div class="input-group">
-                                        <input type="text" name="nepaliEndDate" id="nepaliEndDate1"
-                                               class="form-control" value="" disabled="disabled">
-                                    </div>
-                                </div>
-                            </div>     
-                        </div>        
-
-
-                    </div>
-                    <div class="col-sm-4">
-                        <div
-                            class="form-group required <?= empty($duration->getMessages()) ? "" : "error" ?>">
-                                <?php print $this->formLabel($duration); ?>
-                                <?php print $this->formElement($duration); ?>
-                            <span id="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                        <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
-                    </div>
-                    <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($description); ?>
                             <?php print $this->formElement($description); ?>
                             <?php print $this->formElementErrors()->render($description, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group required">
+                                    <?php print $this->formLabel($startDate) ?>
+                                    <span class="required" aria-required="true">*</span>
+                                    <?php print $this->formElement($startDate) ?>
+                                    <?php print $this->formElementErrors()->render($startDate, ['class' => 'help-block error']) ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliStartDate">&nbsp;</label>
+                                    <input type="text" name="nepaliStartDate" id="nepaliStartDate" class="form-control" value="">
+                                </div>
+                            </div>     
+                        </div>        
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div  class="form-group required">
+                                    <?php print $this->formLabel($endDate) ?>
+                                    <span class="required" aria-required="true">*</span>
+                                    <?php print $this->formElement($endDate) ?>
+                                    <?php print $this->formElementErrors()->render($endDate, ['class' => 'help-block error']) ?>
+                                </div>
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepaliEndDate">&nbsp;</label>
+                                    <input type="text" name="nepaliEndDate" id="nepaliEndDate" class="form-control" value="" disabled="disabled">
+                                </div>
+                            </div>     
+                        </div>        
+                    </div>
+                    <div class="col-sm-4">
+                        <div   class="form-group required">
+                            <?php print $this->formLabel($duration); ?>
+                            <?php print $this->formElement($duration); ?>
+                            <?php print $this->formElementErrors()->render($duration, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($isWithinCompany); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($isWithinCompany); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($isWithinCompany, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
 
-                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
@@ -178,7 +134,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
                 </div>
-
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

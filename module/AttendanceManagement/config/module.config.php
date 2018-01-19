@@ -304,6 +304,11 @@ return [
                         'route' => 'penalty',
                         'action' => 'index',
                     ],
+                    [
+                        'label' => 'Self',
+                        'route' => 'penalty',
+                        'action' => 'self',
+                    ],
                 ],
             ],
         ],

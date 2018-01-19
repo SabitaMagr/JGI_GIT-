@@ -6,7 +6,6 @@ use Application\Controller\HrisController;
 use Application\Helper\Helper;
 use Application\Model\Preference;
 use System\Form\SystemSettingForm;
-use System\Repository\SynergyRepository;
 use System\Repository\SystemSettingRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -43,7 +42,5 @@ class SystemSetting extends HrisController {
                     'customRenderer' => Helper::renderCustomView(),
         ]);
     }
-
-
 
 }

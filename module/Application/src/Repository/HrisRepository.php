@@ -2,6 +2,7 @@
 
 namespace Application\Repository;
 
+use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -17,10 +18,10 @@ class HrisRepository {
         }
     }
 
-    protected function rawQuery($sql) {
+    protected function rawQuery($sql): array {
         $statement = $this->adapter->query($sql);
         $iterator = $statement->execute();
-        return iterator_to_array($iterator);
+        return iterator_to_array($iterator, false);
     }
 
     protected function checkIfTableExists($tableName): bool {

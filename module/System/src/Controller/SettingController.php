@@ -3,7 +3,6 @@
 namespace System\Controller;
 
 use Application\Custom\CustomViewModel;
-use Application\Helper\Helper;
 use Interop\Container\ContainerInterface;
 use System\Model\Setting;
 use System\Repository\SettingRepository;
