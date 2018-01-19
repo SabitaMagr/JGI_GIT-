@@ -20,6 +20,10 @@ use Setup\Form\HrEmployeesFormTabSeven;
 use Setup\Form\HrEmployeesFormTabSix;
 use Setup\Form\HrEmployeesFormTabThree;
 use Setup\Form\HrEmployeesFormTabTwo;
+use Setup\Model\AcademicCourse;
+use Setup\Model\AcademicDegree;
+use Setup\Model\AcademicProgram;
+use Setup\Model\AcademicUniversity;
 use Setup\Model\EmployeeExperience;
 use Setup\Model\EmployeeFile as EmployeeFileModel;
 use Setup\Model\EmployeeQualification;
@@ -333,7 +337,8 @@ class EmployeeController extends HrisController {
             'GPA' => "GPA",
             'PER' => 'Percentage'
         );
-
+        $programKVList = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC", null, false, true);
+        $programSE = $this->getSelectElement(['name' => 'academicProgramId', 'id' => 'academicProgramId', 'label' => "Academic Program", 'class' => 'form-control'], $programKVList);
         return Helper::addFlashMessagesToArray($this, [
                     'tab' => $tab,
                     "id" => $id,
@@ -358,7 +363,7 @@ class EmployeeController extends HrisController {
                     'branches' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true, true),
                     'academicDegree' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E'], "ACADEMIC_DEGREE_NAME", "ASC", null, false, true),
                     'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC", null, false, true),
-                    'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC", null, false, true),
+                    'academicProgram' => $programKVList,
                     'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC", null, false, true),
                     'rankTypes' => $rankTypes,
                     'profilePictureId' => $profilePictureId,
@@ -370,7 +375,8 @@ class EmployeeController extends HrisController {
                     'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
                     'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-                    'customRender' => Helper::renderCustomView()
+                    'customRender' => Helper::renderCustomView(),
+                    'programSE' => $programSE
         ]);
     }
 
@@ -931,6 +937,88 @@ class EmployeeController extends HrisController {
 
 
             return new JsonModel(['success' => true, 'data' => $employeeList, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function addDegreeAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $academicDegree = new AcademicDegree();
+            $academicDegree->academicDegreeId = ((int) Helper::getMaxId($this->adapter, AcademicDegree::TABLE_NAME, AcademicDegree::ACADEMIC_DEGREE_ID)) + 1;
+            $academicDegree->academicDegreeName = $data['academicDegreeName'];
+            $academicDegree->weight = $data['weight'];
+            $academicDegree->remarks = $data['remarks'];
+            $academicDegree->createdDt = Helper::getcurrentExpressionDate();
+            $academicDegree->createdBy = $this->employeeId;
+            $academicDegree->status = 'E';
+            $degreeRepo = new AcademicDegreeRepository($this->adapter);
+            $degreeRepo->add($academicDegree);
+
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Academic Degree Successfully added."]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function addUniversityAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $academicUniversity = new AcademicUniversity();
+            $academicUniversity->academicUniversityId = ((int) Helper::getMaxId($this->adapter, AcademicUniversity::TABLE_NAME, AcademicUniversity::ACADEMIC_UNIVERSITY_ID)) + 1;
+            $academicUniversity->academicUniversityName = $data['academicUniversityName'];
+            $academicUniversity->remarks = $data['remarks'];
+            $academicUniversity->createdDt = Helper::getcurrentExpressionDate();
+            $academicUniversity->createdBy = $this->employeeId;
+            $academicUniversity->status = 'E';
+            $universityRepo = new AcademicUniversityRepository($this->adapter);
+            $universityRepo->add($academicUniversity);
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Academic University Successfully added."]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function addProgramAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $academicProgram = new AcademicProgram();
+            $academicProgram->academicProgramName = $data['academicProgramName'];
+            $academicProgram->remarks = $data['remarks'];
+            $academicProgram->academicProgramId = ((int) Helper::getMaxId($this->adapter, AcademicProgram::TABLE_NAME, AcademicProgram::ACADEMIC_PROGRAM_ID)) + 1;
+            $academicProgram->createdDt = Helper::getcurrentExpressionDate();
+            $academicProgram->createdBy = $this->employeeId;
+            $academicProgram->status = 'E';
+            $programRepo = new AcademicProgramRepository($this->adapter);
+            $programRepo->add($academicProgram);
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Academic Program Successfully added."]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function addCourseAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $academicCourse = new AcademicCourse();
+            $academicCourse->academicProgramId = $data['academicProgramId'];
+            $academicCourse->academicCourseName = $data['academicCourseName'];
+            $academicCourse->remarks = $data['remarks'];
+            $academicCourse->academicCourseId = ((int) Helper::getMaxId($this->adapter, AcademicCourse::TABLE_NAME, AcademicCourse::ACADEMIC_COURSE_ID)) + 1;
+            $academicCourse->createdDt = Helper::getcurrentExpressionDate();
+            $academicCourse->createdBy = $this->employeeId;
+            $academicCourse->status = 'E';
+            $courseRepo = new AcademicCourseRepository($this->adapter);
+            $courseRepo->add($academicCourse);
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Academic Course Successfully added."]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
