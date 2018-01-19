@@ -14,9 +14,12 @@ use Setup\Controller\DesignationController;
 use Setup\Controller\EmpCurrentPostingController;
 use Setup\Controller\EmployeeController;
 use Setup\Controller\ExperienceController;
+use Setup\Controller\FunctionalLevelsController;
+use Setup\Controller\FunctionalTypesController;
 use Setup\Controller\InstituteController;
 use Setup\Controller\JobHistoryController;
 use Setup\Controller\LoanController;
+use Setup\Controller\LocationController;
 use Setup\Controller\PositionController;
 use Setup\Controller\RecommendApproveController;
 use Setup\Controller\ServiceEventTypeController;
@@ -314,6 +317,36 @@ return [
                         'action' => 'index',
                     ]
                 ],
+            ],
+            'location' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/setup/location[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => LocationController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'functionalTypes' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/setup/functionalTypes[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => FunctionalTypesController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'functionalLevels' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/setup/functionalLevels[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => FunctionalLevelsController::class,
+                        'action' => 'index'
+                    ]
+                ]
             ],
         ]
     ],
@@ -868,6 +901,87 @@ return [
                 ]
             ]
         ],
+        'location' => [
+            [
+                'label' => 'Location',
+                'route' => 'location',
+            ],
+            [
+                'label' => 'Location',
+                'route' => 'location',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'location',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'location',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'location',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+        'functionalTypes' => [
+            [
+                'label' => 'FunctionalTypes',
+                'route' => 'functionalTypes',
+            ],
+            [
+                'label' => 'FunctionalTypes',
+                'route' => 'functionalTypes',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'location',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'location',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'location',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
+            'functionalLevels' => [
+            [
+                'label' => 'FunctionalLevels',
+                'route' => 'functionalLevels',
+            ],
+            [
+                'label' => 'FunctionalLevels',
+                'route' => 'functionalLevels',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'functionalLevels',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'functionalLevels',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'functionalLevels',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -891,7 +1005,10 @@ return [
             LoanController::class => ControllerFactory::class,
             InstituteController::class => ControllerFactory::class,
             ExperienceController::class => ControllerFactory::class,
-            ServiceQuestionController::class => ControllerFactory::class
+            ServiceQuestionController::class => ControllerFactory::class,
+            LocationController::class => ControllerFactory::class,
+            FunctionalTypesController::class => ControllerFactory::class,
+            FunctionalLevelsController::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
