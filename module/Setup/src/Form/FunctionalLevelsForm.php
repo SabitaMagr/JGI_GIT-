@@ -16,9 +16,9 @@ class FunctionalLevelsForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Functional Level No"})
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"1","max":255}})
-     * @Annotation\Attributes({ "id":"functionalLevelsCode", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"functionalLevelNo", "class":"form-control" })
      */
-    public $functionalLevelCode;
+    public $functionalLevelNo;
 
     /**
      * @Type("Zend\Form\Element\Text")
@@ -26,7 +26,7 @@ class FunctionalLevelsForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Functional Level Edesc"})
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"1","max":255}})
-     * @Annotation\Attributes({ "id":"functionalLevelsEdesc", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"functionalLevelEdesc", "class":"form-control" })
      */
     public $functionalLevelEdesc;
 
@@ -36,7 +36,7 @@ class FunctionalLevelsForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Functional Level Ldesc"})
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"1","max":255}})
-     * @Annotation\Attributes({ "id":"functionalLevelsLdesc", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"functionalLevelLdesc", "class":"form-control" })
      */
     public $functionalLevelLdesc;
 

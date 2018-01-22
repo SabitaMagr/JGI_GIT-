@@ -4,7 +4,7 @@ $this->headScript()->appendFile($this->basePath('js/setup/functionalLevels/add.j
 <?php
 $functionalLevelEdesc = $form->get("functionalLevelEdesc");
 $functionalLevelLdesc = $form->get("functionalLevelLdesc");
-$functionalLevelCode = $form->get("functionalLevelCode");
+$functionalLevelCode = $form->get("functionalLevelNo");
 $submit = $form->get("submit");
 $form->setAttribute('action', $this->url('functionalLevels', ['action' => 'edit', 'id' => $id]));
 $form->prepare();
