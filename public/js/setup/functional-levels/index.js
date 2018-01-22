@@ -15,13 +15,13 @@
             }
         };
         app.initializeKendoGrid($table, [
-            {field: "FUNCTIONAL_LEVEL_CODE", title: "Functional Levels No", width: 200},
+            {field: "FUNCTIONAL_LEVEL_NO", title: "Functional Levels No", width: 200},
             {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Levels Name", width: 200},
             {field: "FUNCTIONAL_LEVEL_ID", title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
         app.searchTable('functionalLevelsTable', ['FUNCTIONAL_LEVEL_EDESC']);
         var map = {
-           FUNCTIONAL_LEVEL_CODE:'Functional Levels No',FUNCTIONAL_LEVEL_EDESC: 'Functional Levels Name'
+            FUNCTIONAL_LEVEL_NO: 'Functional Levels No', FUNCTIONAL_LEVEL_EDESC: 'Functional Levels Name'
         };
         $('#excelExport').on('click', function () {
             app.excelExport($table, map, 'Functional Levels List');

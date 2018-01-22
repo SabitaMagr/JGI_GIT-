@@ -1,8 +1,8 @@
 <?php
+
 namespace Setup\Model;
 
 use Application\Model\Model;
-
 
 class FunctionalLevels extends Model {
 
@@ -12,19 +12,21 @@ class FunctionalLevels extends Model {
     const FUNCTIONAL_LEVEL_EDESC = "FUNCTIONAL_LEVEL_EDESC";
     const FUNCTIONAL_LEVEL_LDESC = "FUNCTIONAL_LEVEL_LDESC";
     const FUNCTIONAL_TYPE_ID = "FUNCTIONAL_TYPE_ID";
+    const STATUS = "STATUS";
 
-    public $functionalLevelsId;
-    public $functionalLevelsCode;
-    public $functionalLevelsEdesc;
-    public $functionalLevelsLdesc;
-    public $functionalTypesId;
-    
+    public $functionalLevelId;
+    public $functionalLevelCode;
+    public $functionalLevelEdesc;
+    public $functionalLevelLdesc;
+    public $functionalTypeId;
+    public $status;
     public $mappings = [
-        '$functionalLevelsId' => self::FUNCTIONAL_LEVEL_ID,
-        '$functionalLevelsCode' => self::FUNCTIONAL_LEVEL_CODE,
-        '$functionalLevelsEdesc' => self::FUNCTIONAL_LEVEL_EDESC,
-        '$functionalLevelsLdesc' => self::FUNCTIONAL_LEVEL_LDESC,
-        '$functionalTypesId' => self::FUNCTIONAL_TYPE_ID,
+        'functionalLevelId' => self::FUNCTIONAL_LEVEL_ID,
+        'functionalLevelCode' => self::FUNCTIONAL_LEVEL_CODE,
+        'functionalLevelEdesc' => self::FUNCTIONAL_LEVEL_EDESC,
+        'functionalLevelLdesc' => self::FUNCTIONAL_LEVEL_LDESC,
+        'functionalTypeId' => self::FUNCTIONAL_TYPE_ID,
+        'status' => self::STATUS,
     ];
 
 }

@@ -98,6 +98,33 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Attributes({ "id":"employeeType","class":"form-control"})
      */
     public $employeeType;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Location Name"})
+     * @Annotation\Attributes({ "id":"locationId","class":"form-control"})
+     */
+    public $locationId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Functional Type Name"})
+     * @Annotation\Attributes({ "id":"functionalTypeId","class":"form-control"})
+     */
+    public $functionalTypeId;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Functional Level Name"})
+     * @Annotation\Attributes({ "id":"functionalLevelId","class":"form-control"})
+     */
+    public $functionalLevelId;
     public $modifiedBy;
     public $modifiedDt;
     public $mappings = [
@@ -112,7 +139,10 @@ class HrEmployeesFormTabFour extends Model {
         'employeeType' => 'EMPLOYEE_TYPE',
         'modifiedBy' => 'MODIFIED_BY',
         'modifiedDt' => 'MODIFIED_DT',
-        'isHR' => 'IS_HR'
+        'isHR' => 'IS_HR',
+        'locationId' => 'LOCATION_ID',
+        'functionalTypeId' => 'FUNCTIONAL_TYPE_ID',
+        'functionalLevelId' => 'FUNCTIONAL_LEVEL_ID',
     ];
 
 }

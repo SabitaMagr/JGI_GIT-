@@ -14,8 +14,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-
-
 class FunctionalLevelsController extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
@@ -40,7 +38,6 @@ class FunctionalLevelsController extends HrisController {
         ]);
     }
 
-
     public function addAction() {
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -50,9 +47,9 @@ class FunctionalLevelsController extends HrisController {
                 $functionalLevels->exchangeArrayFromForm($this->form->getData());
                 $functionalLevels->createdDt = Helper::getcurrentExpressionDate();
                 $functionalLevels->createdBy = $this->employeeId;
-                $functionalLevels->functionalLevelsId = ((int) Helper::getMaxId($this->adapter, "HRIS_FUNCTIONAL_LEVELS", "FUNCTIONAL_LEVEL_ID")) + 1;
+                $functionalLevels->functionalLevelId = ((int) Helper::getMaxId($this->adapter, "HRIS_FUNCTIONAL_LEVELS", "FUNCTIONAL_LEVEL_ID")) + 1;
                 $functionalLevels->status = 'E';
-                
+
                 $this->repository->add($functionalLevels);
                 $this->flashmessenger()->addMessage("Functional Levels Successfully added.");
                 return $this->redirect()->toRoute("functionalLevels");
@@ -65,14 +62,14 @@ class FunctionalLevelsController extends HrisController {
     }
 
     public function editAction() {
-        
+
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute('functionalLevels');
         }
-     //   $this->prepareForm($id);
-        
-        
+        //   $this->prepareForm($id);
+
+
         $request = $this->getRequest();
         $functionalLevels = new FunctionalLevels();
         if ($request->isPost()) {
@@ -82,7 +79,7 @@ class FunctionalLevelsController extends HrisController {
                 $functionalLevels->exchangeArrayFromForm($this->form->getData());
                 $functionalLevels->modifiedDt = Helper::getcurrentExpressionDate();
                 $functionalLevels->modifiedBy = $this->employeeId;
-                
+
                 $this->repository->edit($functionalLevels, $id);
 
                 $this->flashmessenger()->addMessage("Functional Levels Successfully Updated.");

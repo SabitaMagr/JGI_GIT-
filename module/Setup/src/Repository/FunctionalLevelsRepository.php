@@ -25,7 +25,7 @@ class FunctionalLevelsRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(["D" => FunctionalLevels::TABLE_NAME])
-                ->join(["T" => FunctionalTypes::TABLE_NAME], "D." . FunctionalLevels::TABLE_NAME . "=" . "T." . FunctionalTypes::TABLE_NAME, [FunctionalTypes::FUNCTIONAL_TYPE_EDESC]);
+                ->join(["T" => FunctionalTypes::TABLE_NAME], "D." . FunctionalLevels::FUNCTIONAL_TYPE_ID . "=" . "T." . FunctionalTypes::FUNCTIONAL_TYPE_ID, [FunctionalTypes::FUNCTIONAL_TYPE_EDESC], Select::JOIN_LEFT);
         $select->order(["D." . FunctionalLevels::FUNCTIONAL_LEVEL_ID => Select::ORDER_ASCENDING]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

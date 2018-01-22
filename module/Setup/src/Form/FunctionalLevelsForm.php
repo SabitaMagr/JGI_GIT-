@@ -1,14 +1,15 @@
 <?php
+
 namespace Setup\Form;
 
 use Zend\Form\Annotation;
-
 
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("functionalLevels")
  */
 class FunctionalLevelsForm {
+
     /**
      * @Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -17,7 +18,7 @@ class FunctionalLevelsForm {
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"1","max":255}})
      * @Annotation\Attributes({ "id":"functionalLevelsCode", "class":"form-control" })
      */
-    public $functionalLevelsCode;
+    public $functionalLevelCode;
 
     /**
      * @Type("Zend\Form\Element\Text")
@@ -27,11 +28,9 @@ class FunctionalLevelsForm {
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"1","max":255}})
      * @Annotation\Attributes({ "id":"functionalLevelsEdesc", "class":"form-control" })
      */
-    public $functionalLevelsEdesc;
-    
-    
-    
-     /**
+    public $functionalLevelEdesc;
+
+    /**
      * @Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -39,9 +38,8 @@ class FunctionalLevelsForm {
      * @Annotation\Validator({"name":"StringLength", "options":{"min":"1","max":255}})
      * @Annotation\Attributes({ "id":"functionalLevelsLdesc", "class":"form-control" })
      */
-    public $functionalLevelsLdesc;
+    public $functionalLevelLdesc;
 
-    
     /**
      * @Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
