@@ -77,12 +77,9 @@
             q['fromDate'] = $('#fromDate').val();
             q['toDate'] = $('#toDate').val();
             q['recomApproveId'] = $('#recomApproveId').val();
-            App.blockUI({target: "#hris-page-content"});
-            window.app.pullDataById(document.pullOvertimeRequestStatusListLink, q).then(function (success) {
-                App.unblockUI("#hris-page-content");
+            app.serverRequest("", q).then(function (success) {
                 app.renderKendoGrid($tableContainer, success.data);
             }, function (failure) {
-                App.unblockUI("#hris-page-content");
             });
         });
 

@@ -753,28 +753,12 @@ class HeadNotification {
         $request->exchangeArrayFromDB($trainingRequestDetail);
 
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
-
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], TrainingReqNotificationModel::class, $adapter);
 
-        if ($trainingRequestDetail['TRAINING_ID'] != 0) {
-            $trainingRequestDetail['START_DATE'] = $trainingRequestDetail['T_START_DATE'];
-            $trainingRequestDetail['END_DATE'] = $trainingRequestDetail['T_END_DATE'];
-            $trainingRequestDetail['DURATION'] = $trainingRequestDetail['T_DURATION'];
-            $trainingRequestDetail['TRAINING_TYPE'] = $trainingRequestDetail['T_TRAINING_TYPE'];
-            $trainingRequestDetail['TITLE'] = $trainingRequestDetail['TRAINING_NAME'];
-        }
-        $getValueComType = function($trainingTypeId) {
-            if ($trainingTypeId == 'CC') {
-                return 'Company Contribution';
-            } else if ($trainingTypeId == 'CP') {
-                return 'Company Personal';
-            }
-        };
-
-        $notification->trainingType = $getValueComType($trainingRequestDetail['TRAINING_TYPE']);
+        $notification->trainingType = $trainingRequestDetail['TRAINING_TYPE_DETAIL'];
         $notification->trainingName = $trainingRequestDetail['TITLE'];
         $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
-        $notification->instructorName = $trainingRequestDetail['INSTRUCTOR_NAME'];
+        $notification->instructorName = $trainingRequestDetail['TRAINING_INSTRUCTOR_NAME'];
         $notification->fromDate = $trainingRequestDetail['START_DATE'];
         $notification->toDate = $trainingRequestDetail['END_DATE'];
         $notification->duration = $trainingRequestDetail['DURATION'];
@@ -801,24 +785,10 @@ class HeadNotification {
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], TrainingReqNotificationModel::class, $adapter);
 
-        if ($trainingRequestDetail['TRAINING_ID'] != 0) {
-            $trainingRequestDetail['START_DATE'] = $trainingRequestDetail['T_START_DATE'];
-            $trainingRequestDetail['END_DATE'] = $trainingRequestDetail['T_END_DATE'];
-            $trainingRequestDetail['DURATION'] = $trainingRequestDetail['T_DURATION'];
-            $trainingRequestDetail['TRAINING_TYPE'] = $trainingRequestDetail['T_TRAINING_TYPE'];
-            $trainingRequestDetail['TITLE'] = $trainingRequestDetail['TRAINING_NAME'];
-        }
-        $getValueComType = function($trainingTypeId) {
-            if ($trainingTypeId == 'CC') {
-                return 'Company Contribution';
-            } else if ($trainingTypeId == 'CP') {
-                return 'Company Personal';
-            }
-        };
-        $notification->trainingType = $getValueComType($trainingRequestDetail['TRAINING_TYPE']);
+        $notification->trainingType = $trainingRequestDetail['TRAINING_TYPE_DETAIL'];
         $notification->trainingName = $trainingRequestDetail['TITLE'];
         $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
-        $notification->instructorName = $trainingRequestDetail['INSTRUCTOR_NAME'];
+        $notification->instructorName = $trainingRequestDetail['TRAINING_INSTRUCTOR_NAME'];
         $notification->fromDate = $trainingRequestDetail['START_DATE'];
         $notification->toDate = $trainingRequestDetail['END_DATE'];
         $notification->duration = $trainingRequestDetail['DURATION'];

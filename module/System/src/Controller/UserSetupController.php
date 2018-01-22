@@ -2,6 +2,7 @@
 
 namespace System\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -10,53 +11,33 @@ use System\Model\UserSetup;
 use System\Repository\UserSetupRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class UserSetupController extends AbstractActionController {
-
-    private $form;
-    private $repository;
-    private $adapter;
-    private $employeeId;
-    private $storageData;
-    private $acl;
+class UserSetupController extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->repository = new UserSetupRepository($adapter);
-        $this->adapter = $adapter;
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
-        $this->acl = $this->storageData['acl'];
-    }
-
-    public function initializeForm() {
-        $roleSetupForm = new UserSetupForm();
-        $builder = new AnnotationBuilder();
-        $this->form = $builder->createForm($roleSetupForm);
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(UserSetupRepository::class);
+        $this->initializeForm(UserSetupForm::class);
     }
 
     public function indexAction() {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $result = $this->repository->fetchAll();
-                $list = Helper::extractDbData($result);
+                $list = $this->repository->fetchFiltered($this->getACLFilter());
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'acl' => $this->acl
         ]);
     }
 
     public function addAction() {
         $request = $this->getRequest();
-        $this->initializeForm();
-
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
@@ -75,7 +56,7 @@ class UserSetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("usersetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'form' => $this->form,
                     'employeeList' => $this->repository->getEmployeeList(),
                     'roleList' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ROLES", "ROLE_ID", ["ROLE_NAME"], ["STATUS" => "E"], "ROLE_NAME", "ASC", null, false, true),
@@ -85,7 +66,6 @@ class UserSetupController extends AbstractActionController {
 
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
-        $this->initializeForm();
         $request = $this->getRequest();
 
         $userSetup = new UserSetup();
@@ -106,7 +86,7 @@ class UserSetupController extends AbstractActionController {
         $userSetup->exchangeArrayFromDB($detail);
         $this->form->bind($userSetup);
 
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'form' => $this->form,
                     'id' => $id,
                     'passwordDtl' => $detail['PASSWORD'],

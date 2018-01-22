@@ -2,11 +2,11 @@
 
 namespace Overtime\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Repository\AttendanceRepository;
 use Exception;
-use ManagerService\Repository\OvertimeApproveRepository;
 use Overtime\Repository\OvertimeStatusRepository;
 use SelfService\Form\OvertimeRequestForm;
 use SelfService\Model\Overtime;
@@ -15,53 +15,44 @@ use SelfService\Repository\OvertimeDetailRepository;
 use SelfService\Repository\OvertimeRepository;
 use Setup\Repository\EmployeeRepository;
 use System\Repository\PreferenceSetupRepo;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class OvertimeStatus extends AbstractActionController {
+class OvertimeStatus extends HrisController {
 
-    private $adapter;
-    private $overtimeApproveRepository;
-    private $overtimeStatusRepository;
-    private $form;
-    private $employeeId;
+    private $detailRepo;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->overtimeApproveRepository = new OvertimeApproveRepository($adapter);
-        $this->overtimeStatusRepository = new OvertimeStatusRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new OvertimeRequestForm();
-        $this->form = $builder->createForm($form);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(OvertimeStatusRepository::class);
+        $this->detailRepo = new OvertimeDetailRepository($this->adapter);
+        $this->initializeForm(OvertimeRequestForm::class);
     }
 
     public function indexAction() {
-        $status = [
-            '-1' => 'All',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected',
-            'C' => 'Cancelled'
-        ];
-        $statusFormElement = new Select();
-        $statusFormElement->setName("status");
-        $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "requestStatusId", "class" => "form-control"]);
-        $statusFormElement->setLabel("Status");
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusFormElement,
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $result = $this->repository->getOTRequestList($data);
+                $recordList = [];
+                foreach ($result as $row) {
+                    $overtimeDetailResult = $this->detailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
+                    $row['DETAILS'] = Helper::extractDbData($overtimeDetailResult);
+                    array_push($recordList, $row);
+                }
+                return new JsonModel(["success" => "true", "data" => $recordList]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "requestStatusId", "class" => "form-control", 'label' => 'Status']);
+        return $this->stickFlashMessagesTo([
+                    'status' => $statusSE,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
@@ -76,7 +67,7 @@ class OvertimeStatus extends AbstractActionController {
         $overtimeModel = new Overtime();
         $request = $this->getRequest();
 
-        $detail = $this->overtimeApproveRepository->fetchById($id);
+        $detail = $this->repository->fetchById($id);
         $status = $detail['STATUS'];
         $employeeId = $detail['EMPLOYEE_ID'];
 
@@ -105,12 +96,11 @@ class OvertimeStatus extends AbstractActionController {
             }
             $overtimeModel->approvedBy = $this->employeeId;
             $overtimeModel->approvedRemarks = $reason;
-            $this->overtimeApproveRepository->edit($overtimeModel, $id);
+            $this->repository->edit($overtimeModel, $id);
 
             return $this->redirect()->toRoute("overtimeStatus");
         }
-        $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
-        $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($detail['OVERTIME_ID']);
+        $overtimeDetailResult = $this->detailRepo->fetchByOvertimeId($detail['OVERTIME_ID']);
         $overtimeDetails = [];
         foreach ($overtimeDetailResult as $overtimeDetailRow) {
             array_push($overtimeDetails, $overtimeDetailRow);
@@ -233,32 +223,6 @@ class OvertimeStatus extends AbstractActionController {
             }
         }
         $this->redirect()->toRoute('overtimeStatus');
-    }
-
-    public function pullOvertimeRequestStatusListAction() {
-        try {
-            $request = $this->getRequest();
-            $data = $request->getPost();
-
-
-            $overtimeStatusRepo = new OvertimeStatusRepository($this->adapter);
-            $overtimeDetailRepo = new OvertimeDetailRepository($this->adapter);
-            $result = $overtimeStatusRepo->getOTRequestList($data);
-            $recordList = [];
-            foreach ($result as $row) {
-                $overtimeDetailResult = $overtimeDetailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
-                $row['DETAILS'] = Helper::extractDbData($overtimeDetailResult);
-                array_push($recordList, $row);
-            }
-
-
-            return new JsonModel([
-                "success" => "true",
-                "data" => $recordList,
-            ]);
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
-        }
     }
 
 }
