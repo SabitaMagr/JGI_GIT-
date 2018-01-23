@@ -23,7 +23,6 @@ class LeaveMaster extends Model {
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
     const PAID = "PAID";
-    const COMPANY_ID = "COMPANY_ID";
     const MAX_ACCUMULATE_DAYS = "MAX_ACCUMULATE_DAYS";
     const IS_SUBSTITUTE = "IS_SUBSTITUTE";
     const ALLOW_GRACE_LEAVE = "ALLOW_GRACE_LEAVE";
@@ -32,6 +31,15 @@ class LeaveMaster extends Model {
     const ASSIGN_ON_EMPLOYEE_SETUP = "ASSIGN_ON_EMPLOYEE_SETUP";
     const IS_PRODATA_BASIS = "IS_PRODATA_BASIS";
     const ENABLE_SUBSTITUTE = "ENABLE_SUBSTITUTE";
+    const COMPANY_ID = "COMPANY_ID";
+    const BRANCH_ID = "BRANCH_ID";
+    const DEPARTMENT_ID = "DEPARTMENT_ID";
+    const DESIGNATION_ID = "DESIGNATION_ID";
+    const POSITION_ID = "POSITION_ID";
+    const SERVICE_TYPE_ID = "SERVICE_TYPE_ID";
+    const EMPLOYEE_TYPE = "EMPLOYEE_TYPE";
+    const GENDER_ID = "GENDER_ID";
+    const EMPLOYEE_ID = "EMPLOYEE_ID";
 
     public $leaveId;
     public $leaveCode;
@@ -49,7 +57,6 @@ class LeaveMaster extends Model {
     public $createdBy;
     public $modifiedBy;
     public $paid;
-    public $companyId;
     public $maxAccumulateDays;
     public $isSubstitute;
     public $allowGraceLeave;
@@ -58,6 +65,15 @@ class LeaveMaster extends Model {
     public $assignOnEmployeeSetup;
     public $isProdataBasis;
     public $enableSubstitute;
+    public $companyId;
+    public $branchId;
+    public $departmentId;
+    public $designationId;
+    public $positionId;
+    public $serviceTypeId;
+    public $employeeType;
+    public $genderId;
+    public $employeeId;
     public $mappings = [
         'leaveId' => self::LEAVE_ID,
         'leaveCode' => self::LEAVE_CODE,
@@ -75,7 +91,6 @@ class LeaveMaster extends Model {
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,
         'paid' => self::PAID,
-        'companyId' => self::COMPANY_ID,
         'maxAccumulateDays' => self::MAX_ACCUMULATE_DAYS,
         'isSubstitute' => self::IS_SUBSTITUTE,
         'allowGraceLeave' => self::ALLOW_GRACE_LEAVE,
@@ -84,6 +99,15 @@ class LeaveMaster extends Model {
         'assignOnEmployeeSetup' => self::ASSIGN_ON_EMPLOYEE_SETUP,
         'isProdataBasis' => self::IS_PRODATA_BASIS,
         'enableSubstitute' => self::ENABLE_SUBSTITUTE,
+        'companyId' => self::COMPANY_ID,
+        'branchId' => self::BRANCH_ID,
+        'departmentId' => self::DEPARTMENT_ID,
+        'designationId' => self::DESIGNATION_ID,
+        'positionId' => self::POSITION_ID,
+        'serviceTypeId' => self::SERVICE_TYPE_ID,
+        'employeeType' => self::EMPLOYEE_TYPE,
+        'genderId' => self::GENDER_ID,
+        'employeeId' => self::EMPLOYEE_ID,
     ];
 
 }

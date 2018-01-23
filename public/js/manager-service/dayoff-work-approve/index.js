@@ -125,15 +125,12 @@
                 }
             }
 
-            App.blockUI({target: "#hris-page-content"});
-            app.pullDataById(
+            app.serverRequest(
                     document.approveRejectUrl,
                     {data: selectedValues, btnAction: btnId}
             ).then(function (success) {
-                App.unblockUI("#hris-page-content");
                 window.location.reload(true);
             }, function (failure) {
-                App.unblockUI("#hris-page-content");
             });
         });
 

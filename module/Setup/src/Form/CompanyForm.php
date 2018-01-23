@@ -113,6 +113,14 @@ class CompanyForm {
     public $lessDrAccCode;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Equal Cr Account Code"})
+     * @Annotation\Attributes({ "id":"equalCrAccCode","class":"form-control"})
+     */
+    public $equalCrAccCode;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */

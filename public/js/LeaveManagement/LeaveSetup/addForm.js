@@ -16,5 +16,9 @@
         });
         window.app.checkUniqueConstraints("leaveCode", formId, tableName, "LEAVE_CODE", checkColumnName, selfId);
         window.app.checkUniqueConstraints("leaveLname", formId, tableName, "LEAVE_LNAME", checkColumnName, selfId);
+
+        if (document.searchSelectedValues !== undefined) {
+            document.searchManager.setSearchValues(document.searchSelectedValues);
+        }
     });
 })(window.jQuery, window.app);

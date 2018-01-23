@@ -100,21 +100,6 @@ class LeaveMasterForm {
     public $remarks;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Submit")
-     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
-     */
-    public $submit;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
-     * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
-     */
-    public $companyId;
-
-    /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Grace Leave"})
@@ -168,5 +153,11 @@ class LeaveMasterForm {
      * @Annotation\Attributes({ "id":"enableSubstitute","value":"N"})
      */
     public $enableSubstitute;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Submit")
+     * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
+     */
+    public $submit;
 
 }

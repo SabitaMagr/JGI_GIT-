@@ -6,6 +6,9 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use AttendanceManagement\Model\AttendanceDetail;
+use AttendanceManagement\Model\ShiftAssign;
+use AttendanceManagement\Model\ShiftSetup;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
@@ -14,17 +17,17 @@ use Setup\Model\EmployeeFile;
 use Setup\Model\Gender;
 use Setup\Model\HrEmployees;
 use Setup\Model\Position;
+use Setup\Model\RecommendApprove;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use AttendanceManagement\Model\ShiftAssign;
-use AttendanceManagement\Model\ShiftSetup;
 use Zend\Db\TableGateway\TableGateway;
-use AttendanceManagement\Model\AttendanceDetail;
-use Setup\Model\RecommendApprove;
+use Setup\Model\Location;
+use Setup\Model\FunctionalTypes;
+use Setup\Model\FunctionalLevels;
 
 class EmployeeRepository implements RepositoryInterface {
 
@@ -276,6 +279,9 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P1." . Position::POSITION_ID, ['APP_POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)'), 'LEVEL_NO' => 'LEVEL_NO'], 'left')
                 ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['APP_SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['APP_SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left')
+                ->join(['LOC' => Location::TABLE_NAME], "E." . HrEmployees::LOCATION_ID . "=LOC." . Location::LOCATION_ID, [Location::LOCATION_EDESC], 'left')
+                ->join(['FUNT' => FunctionalTypes::TABLE_NAME], "E." . HrEmployees::FUNCTIONAL_TYPE_ID . "=FUNT." . FunctionalTypes::FUNCTIONAL_TYPE_ID, [FunctionalTypes::FUNCTIONAL_TYPE_EDESC, FunctionalTypes::FUNCTIONAL_TYPE_CODE], 'left')
+                ->join(['FUNL' => FunctionalLevels::TABLE_NAME], "E." . HrEmployees::FUNCTIONAL_LEVEL_ID . "=FUNL." . FunctionalLevels::FUNCTIONAL_LEVEL_ID, [FunctionalLevels::FUNCTIONAL_LEVEL_EDESC, FunctionalLevels::FUNCTIONAL_LEVEL_NO], 'left')
         ;
 
         $select->where(["E.STATUS='E'"]);
@@ -650,6 +656,14 @@ class EmployeeRepository implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
+    }
+
+    public function setupEmployee($id) {
+        $sql = "BEGIN
+                  HRIS_EMPLOYEE_SETUP_PROC({$id});
+                END;";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
     }
 
 }
