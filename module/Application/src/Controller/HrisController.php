@@ -2,11 +2,13 @@
 
 namespace Application\Controller;
 
+use Application\Helper\Helper;
 use ReflectionClass;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
+use Zend\Http\Request;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class HrisController extends AbstractActionController {
@@ -88,6 +90,17 @@ class HrisController extends AbstractActionController {
                 break;
         }
         return $filter;
+    }
+
+    protected function uploadFile(Request $request) {
+        $files = $request->getFiles()->toArray();
+        if (sizeof($files) > 0) {
+            $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
+            $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
+            $unique = Helper::generateUniqueName();
+            $newFileName = $unique . "." . $ext;
+            $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/" . $newFileName);
+        }
     }
 
 }
