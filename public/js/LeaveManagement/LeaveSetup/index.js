@@ -7,7 +7,6 @@
         var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
             {field: "LEAVE_ENAME", title: "Leave"},
-            {field: "COMPANY_NAME", title: "Company"},
             {field: "ALLOW_HALFDAY", title: "Allow Halfday"},
             {field: "DEFAULT_DAYS", title: "Default Days"},
             {field: "CARRY_FORWARD", title: "Carry Forward"},
@@ -16,32 +15,22 @@
             {field: "LEAVE_ID", title: "Action", width: 120, template: action}
         ]);
 
-        app.searchTable('leaveTable', ['LEAVE_ENAME', 'COMPANY_NAME', 'ALLOW_HALFDAY', 'DEFAULT_DAYS', 'CARRY_FORWARD', 'CASHABLE', 'PAID']);
+        app.searchTable('leaveTable', ['LEAVE_ENAME', 'ALLOW_HALFDAY', 'DEFAULT_DAYS', 'CARRY_FORWARD', 'CASHABLE', 'PAID']);
 
+        var map = {
+            'LEAVE_ENAME': 'Leave',
+            'ALLOW_HALFDAY': 'Allow Halfday',
+            'DEFAULT_DAYS': 'Default Days',
+            'CARRY_FORWARD': 'Carry Forward',
+            'CASHABLE': 'Cashable',
+            'PAID': 'Paid'
+        };
         $('#excelExport').on('click', function () {
-            app.excelExport($table, {
-                'LEAVE_ENAME': 'Leave',
-                'COMPANY_NAME': 'Company',
-                'ALLOW_HALFDAY': 'Allow Halfday',
-                'DEFAULT_DAYS': 'Default Days',
-                'CARRY_FORWARD': 'Carry Forward',
-                'CASHABLE': 'Cashable',
-                'PAID': 'Paid'
-            }, 'LeaveList');
+            app.excelExport($table, map, 'LeaveList');
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, {
-                'LEAVE_ENAME': 'Leave',
-                'COMPANY_NAME': 'Company',
-                'ALLOW_HALFDAY': 'Allow Halfday',
-                'DEFAULT_DAYS': 'Default Days',
-                'CARRY_FORWARD': 'Carry Forward',
-                'CASHABLE': 'Cashable',
-                'PAID': 'Paid'
-            }, 'LeaveList');
+            app.exportToPDF($table, map, 'LeaveList');
         });
-
-
         app.pullDataById("", {}).then(function (response) {
             app.renderKendoGrid($table, response.data);
         }, function (error) {

@@ -253,7 +253,7 @@ if ($this->messages) {
     document.profilePictureId =<?= ($profilePictureId == null) ? -1 : $profilePictureId ?>;
     document.employeeId =<?= $id ?>;
     document.address =<?php echo json_encode($address); ?>;
-    document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]); ?>';
+    document.urlSetupComplete = '<?php echo $this->url('employee', ['action' => 'setupEmployee', 'id' => $id]); ?>';
     document.pullAcademicDetailLink = '<?php echo $this->url('employee', ['action' => 'pullAcademicDetail']); ?>';
     document.pullExperienceDetailLink = '<?php echo $this->url('employee', ['action' => 'pullExperienceDetail']); ?>';
     document.pullTrainingDetailLink = '<?php echo $this->url('employee', ['action' => 'pullTrainingDetail']); ?>';
@@ -1934,63 +1934,24 @@ if ($this->messages) {
                     </div>
                 </div>
             </div>
-            <div class="tab-pane aditional" id="tab9">
-                <div class="col-md-offset-2 col-xs-offset-0 col-xs-12 col-sm-offset-0 col-sm-12 col-md-8 margin gapspaceing">
-                    <div class="identification-infomation">  
-                        <p><i class="fa fa-plus-circle ticon" aria-hidden="true"></i>
-                            Additional Infomation</p>
-                        <div class="row clearfix e-setup">
-                            <div class="col-md-12">
-                                <div id="rolePanel">
-                                    <ul id="roleList">
-                                        <li>
-                                            Leave Assign
-                                            <a href="<?php echo $this->url("leaveassign", ["action" => "assign", "eid" => $id]) ?>">
-                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            Training Assign
-                                            <a href="<?php echo $this->url("trainingAssign", ["action" => "assign", "employeeId" => $id]) ?>">
-                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            Appraisal Assign
-                                            <a href="<?php echo $this->url("appraisalAssign", ["action" => "index", "id" => $id]) ?>">
-                                                <i class="fa fa-arrow-circle-right pull-right" aria-hidden="true" style="font-size:20px; line-height:20px!important;"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php print $this->partial('tabs/tab_9.phtml'); ?>
 
             <div class="padding-20">
                 <ul class="pager wizard">
                     <li class="next">
-                        <button
-                            class="btn btn-default pull-right">
+                        <button class="btn btn-default pull-right">
                             <span>Save & Continue</span>
                             <i class="fa fa-arrow-right iconcolor" aria-hidden="true"></i>
                         </button>
                     </li>
                     <li class="next finish hidden">
-                        <button id="finishBtn"
-                                class="btn btn-default pull-right"
-                                type="button">
-
+                        <button id="finishBtn" class="btn btn-default pull-right" type="button">
                             <span>Finish</span>
                             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         </button>
                     </li>
                     <li class="previous first hidden">
-                        <button class="btn btn-default btn-cons btn-animated from-left fa fa-cog pull-right"
-                                type="button">
-
+                        <button class="btn btn-default btn-cons btn-animated from-left fa fa-cog pull-right"  type="button">
                             <span>First</span>
                         </button>
                     </li>

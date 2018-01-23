@@ -120,6 +120,13 @@
             resetEvent: null,
             registerResetEvent: function (fn) {
                 this.resetEvent = fn;
+            },
+            setSearchValues: function (values) {
+                $.each(this.ids, function (key, value) {
+                    if (typeof values[value] !== "undefined") {
+                        $('#' + value).val(values[value]).trigger('change.select2');
+                    }
+                });
             }
         };
         (function () {
@@ -240,7 +247,7 @@
                 }
                 var employeeList = search(document.searchValues['employee'], searchParams);
                 document.searchManager.setEmployee(employeeList);
-                populateList($employee, employeeList, 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
+                populateList($employee, employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'All Employee');
             };
             /* setup functions */
 
@@ -252,7 +259,7 @@
             populateList($position, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', 'All Position');
             populateList($serviceType, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'All Service Type');
             populateList($serviceEventType, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'Working');
-            populateList($employee, document.searchValues['employee'], 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
+            populateList($employee, document.searchValues['employee'], 'EMPLOYEE_ID', 'FULL_NAME', 'All Employee');
 
             document.searchManager.setCompany(document.searchValues['company']);
             document.searchManager.setBranch(document.searchValues['branch']);

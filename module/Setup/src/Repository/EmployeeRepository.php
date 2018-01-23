@@ -658,4 +658,12 @@ class EmployeeRepository implements RepositoryInterface {
         return $result->current();
     }
 
+    public function setupEmployee($id) {
+        $sql = "BEGIN
+                  HRIS_EMPLOYEE_SETUP_PROC({$id});
+                END;";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
+    }
+
 }
