@@ -107,5 +107,15 @@ class CustomerContractFrom {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Contract Name"})
+     * @Annotation\Attributes({ "id":"contractName", "class":"form-control" })
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
+     */
+    public $contractName;
 
 }

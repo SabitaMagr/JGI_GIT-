@@ -23,6 +23,7 @@ $chargeType = $form->get('chargeType');
 $chargeRate = $form->get('chargeRate');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
+$contractName = $form->get('contractName');
 
 $form->setAttribute('action', $this->url('customer-contract', ['action' => 'add']));
 $form->prepare();
@@ -57,6 +58,14 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
                             <?php print $this->formLabel($customerId); ?>
                             <?php print $this->formElement($customerId); ?>
                             <?php print $this->formElementErrors()->render($customerId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($contractName); ?>
+                            <?php print $this->formElement($contractName); ?>
+                            <?php print $this->formElementErrors()->render($contractName, ['class' => 'help-block']); ?>
                         </div>
                     </div>
 
@@ -240,46 +249,7 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
                 
                 
                 
-                
-                <div class="row margin-top-20">
-                    <div class="col-md-8">
-                        
-                        <table class="table table-bordered" id="tblContractEmp">
-                            <tbody>
-                                <tr>
-                                    <td>Employee</td>
-                                    <td>Start Dates</td>
-                                    <td>End Dates</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><select name="employee[]" class="employees"></select></td>
-                                    <td><input type="text" class="contractEmpStartDate" name="contractEmpStartDate[]"></td>
-                                    <td><input type="text" class="contractEmpEndDate" name="contractEmpEndDate[]"></td>
-                                    <td>
-                                        <div class="th-inner ">
-                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                <input class='chkBoxContractEmp' type="checkbox"/>
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="fht-cell" style="width: 46px;"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <a id="addContractEmp" class=" btn btn-icon-only default pull-right">
-                            <i class="fa fa-plus"></i>
-                        </a>
-                        <a id="delContractEmp" class="btn btn-icon-only default pull-right">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-                        
-                        
-                    </div>
-                    
-                </div>
+ 
 
                 <?php
                 print $this->formSubmit($submit);

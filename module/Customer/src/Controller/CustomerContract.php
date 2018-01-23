@@ -69,7 +69,7 @@ class CustomerContract extends AbstractActionController {
             $form->setData($request->getPost());
             if ($form->isValid()) {
 
-                
+
                 $customerContract = new CustomerContractModel();
                 $customerContract->exchangeArrayFromForm($form->getData());
                 $customerContract->contractId = ((int) Helper::getMaxId($this->adapter, CustomerContractModel::TABLE_NAME, CustomerContractModel::CONTRACT_ID)) + 1;
@@ -79,34 +79,11 @@ class CustomerContract extends AbstractActionController {
                 $customerContract->createdBy = $this->employeeId;
 
                 $this->repository->add($customerContract);
-                
-                
-//                to add employees assigned to contract
-                $employees = $request->getPost('employee');
 
-                if ($employees) {
-                    $employeesStartDate = $request->getPost('contractEmpStartDate');
-                    $employeesEndDate = $request->getPost('contractEmpEndDate');
-                    $i = 0;
-                    $custEmployeeModel = new \Customer\Model\CustContractEmp();
-                    $custEmployeeRepo = new \Customer\Repository\CustContractEmpRepo($this->adapter);
-                    $custEmployeeModel->contractId = $customerContract->contractId;
-                    $custEmployeeModel->assignedDate = Helper::getCurrentDate();
 
-                    foreach ($employees as $employeeDetails) {
-                        if ($employeeDetails > 0) {
-                            if ($employeeDetails && $employeesStartDate[$i] && $employeesEndDate[$i]) {
-                                $custEmployeeModel->employeeId = $employeeDetails;
-                                $custEmployeeModel->startDate = $employeesStartDate[$i];
-                                $custEmployeeModel->endDate = $employeesEndDate[$i];
-                                $custEmployeeRepo->add($custEmployeeModel);
-                            }
-                        }
-                        $i++;
-                    }
-                }
 
-                
+
+
                 //if the working cycle is weekdays
                 if ($customerContract->workingCycle == 'W') {
                     $custContractWeekdaysModel = new \Customer\Model\CustContractWeekdays();
@@ -125,7 +102,6 @@ class CustomerContract extends AbstractActionController {
                 //if the working cycle is ramdom dates
                 if ($customerContract->workingCycle == 'R') {
                     $contractDates = $request->getPost('contractDates');
-                    print_r($contractDates);
                     $custContractDatesModel = new \Customer\Model\CustContractDates();
                     $custContractDatesRepo = new \Customer\Repository\CustContractDatesRepo($this->adapter);
                     $custContractDatesModel->contractId = $customerContract->contractId;
@@ -139,6 +115,9 @@ class CustomerContract extends AbstractActionController {
                     }
                 }
 
+                EntityHelper::rawQueryResult($this->adapter, "BEGIN
+                    HRIS_ATTD_BETWEEN_DATES({$customerContract->contractId});
+                        END;");
 
                 $this->flashmessenger()->addMessage("Customer Contract added successfully.");
                 return $this->redirect()->toRoute("customer-contract");
@@ -157,9 +136,9 @@ class CustomerContract extends AbstractActionController {
             return $this->redirect()->toRoute("customer-contract");
         }
         $form = $this->getForm();
-        
+
         $custEmployeeRepo = new \Customer\Repository\CustContractEmpRepo($this->adapter);
-        $custEmployeeDetails=$custEmployeeRepo->fetchById($id);
+        $custEmployeeDetails = $custEmployeeRepo->fetchById($id);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -184,34 +163,10 @@ class CustomerContract extends AbstractActionController {
 
                 $custContractWeekdaysRepo->delete($id);
                 $custContractDatesRepo->delete($id);
-                $custEmployeeRepo->delete($id);
-                
-                    
-//                to add employees assigned to contract
-                $employees = $request->getPost('employee');
 
-                if ($employees) {
-                    $employeesStartDate = $request->getPost('contractEmpStartDate');
-                    $employeesEndDate = $request->getPost('contractEmpEndDate');
-                    $i = 0;
-                    $custEmployeeModel = new \Customer\Model\CustContractEmp();
-                    $custEmployeeModel->contractId = $id;
-                    $custEmployeeModel->assignedDate = Helper::getCurrentDate();
 
-                    foreach ($employees as $employeeDetails) {
-                        if ($employeeDetails > 0) {
-                            if ($employeeDetails && $employeesStartDate[$i] && $employeesEndDate[$i]) {
-                                $custEmployeeModel->employeeId = $employeeDetails;
-                                $custEmployeeModel->startDate = $employeesStartDate[$i];
-                                $custEmployeeModel->endDate = $employeesEndDate[$i];
-                                $custEmployeeRepo->add($custEmployeeModel);
-                            }
-                        }
-                        $i++;
-                    }
-                }
-                
-                
+
+
 
                 //if the working cycle is weekdays
                 if ($customerContract->workingCycle == 'W') {
@@ -242,14 +197,22 @@ class CustomerContract extends AbstractActionController {
                         }
                     }
                 }
+                
+                EntityHelper::rawQueryResult($this->adapter, "BEGIN
+                    HRIS_ATTD_BETWEEN_DATES({$id});
+                        END;");
+
+
+
+
 
                 $this->flashmessenger()->addMessage("Customer Contract updated successfully.");
                 return $this->redirect()->toRoute("customer-contract");
             }
         }
 
-        
-        
+
+
 
         $customerIdElement = $form->get('customerId');
         $customerIdElement->setValueOptions(EntityHelper::getTableKVList($this->adapter, Customer::TABLE_NAME, Customer::CUSTOMER_ID, [Customer::CUSTOMER_ENAME], [Customer::STATUS => EntityHelper::STATUS_ENABLED], null, true));

@@ -205,3 +205,67 @@ TRUNC(SYSDATE),
 (select nvl(max(menu_index),0)+1 from hris_menus where parent_menu=342),
 'Y'
 );
+
+alter table HRIS_CUSTOMER_CONTRACT
+add CONTRACT_NAME VARCHAR2(255);
+
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Contract Attendance',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null),
+'contract-attendance',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+(select nvl(max(menu_index),0)+1 from hris_menus where parent_menu=(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null)),
+'Y'
+);
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Contract Employees Assign',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null),
+'contract-employees',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+(select nvl(max(menu_index),0)+1 from hris_menus where parent_menu=(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null)),
+'Y'
+);
+
+
+CREATE TABLE HRIS_CUST_CONTRACT_ATTENDANCE(
+CONTRACT_ID NUMBER(7,0) NOT NULL,
+ATTENDANCE_DT DATE NOT NULL,
+IN_TIME TIMESTAMP,
+OUT_TIME TIMESTAMP,
+TOTAL_HOUR FLOAT(126),
+EMPLOYEE_ID NUMBER(7,0)
+);

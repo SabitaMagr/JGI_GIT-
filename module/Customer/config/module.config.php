@@ -3,6 +3,8 @@
 namespace Customer;
 
 use Application\Controller\ControllerFactory;
+use Customer\Controller\ContractAttendance;
+use Customer\Controller\ContractEmployees;
 use Customer\Controller\CustomerContract;
 use Customer\Controller\CustomerSetup;
 use Customer\Controller\WagedEmployeeSetup;
@@ -49,6 +51,34 @@ return [
                     ],
                     'defaults' => [
                         'controller' => WagedEmployeeSetup::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'contract-attendance' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/customer/contract/attendance[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => ContractAttendance::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'contract-employees' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/customer/contract/employees[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => ContractEmployees::class,
                         'action' => 'index'
                     ],
                 ],
@@ -143,6 +173,8 @@ return [
             CustomerSetup::class => ControllerFactory::class,
             CustomerContract::class => ControllerFactory::class,
             WagedEmployeeSetup::class => ControllerFactory::class,
+            ContractAttendance::class => ControllerFactory::class,
+            ContractEmployees::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

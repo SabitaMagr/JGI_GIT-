@@ -15,25 +15,27 @@
             }
         };
         var columns = [
-            {field: "CUSTOMER_ENAME", title: "Customer"},
-            {title: "From", columns: [
-                    {field: "START_DATE_AD", title: "AD"},
-                    {field: "START_DATE_BS", title: "BS"},
+            {field: "CONTRACT_NAME", title: "Contract" ,width:"100px"},
+            {field: "CUSTOMER_ENAME", title: "Customer" ,width:"120px"},
+            {title: "From Date", columns: [
+                    {field: "START_DATE_AD", title: "AD" ,width:"80px"},
+                    {field: "START_DATE_BS", title: "BS" ,width:"80px"},
                 ]},
-            {title: "To", columns: [
-                    {field: "END_DATE_AD", title: "AD"},
-                    {field: "END_DATE_BS", title: "BS"},
+            {title: "To Date", columns: [
+                    {field: "END_DATE_AD", title: "AD" ,width:"80px"},
+                    {field: "END_DATE_BS", title: "BS" ,width:"80px"},
                 ]},
-            {field: "IN_TIME", title: "In Time"},
-            {field: "OUT_TIME", title: "Out Time"},
-            {field: "WORKING_HOURS", title: "Hours"},
-            {field: "WORKING_CYCLE", title: "Cycle"},
-            {field: "CHARGE_TYPE", title: "Charge Type"},
-            {field: "CHARGE_RATE", title: "Charge Rate"},
+            {field: "IN_TIME", title: "In Time" ,width:"100px"},
+            {field: "OUT_TIME", title: "Out Time" ,width:"100px"},
+            {field: "WORKING_HOURS", title: "Hours" ,width:"90px"},
+            {field: "WORKING_CYCLE", title: "Cycle" ,width:"90px"},
+            {field: "CHARGE_TYPE", title: "Charge Type" ,width:"120px"},
+            {field: "CHARGE_RATE", title: "Charge Rate" ,width:"120px"},
             {field: "REMARKS", title: "Remarks"},
-            {field: ["CONTRACT_ID"], title: "Action", template: app.genKendoActionTemplate(actiontemplateConfig)}
+            {field: ["CONTRACT_ID"], width:"90px" ,title: "Action", template: app.genKendoActionTemplate(actiontemplateConfig)}
         ];
         var map = {
+            'CONTRACT_NAME': 'Contract',
             'CUSTOMER_ENAME': 'Customer Name',
             'START_DATE_AD': 'From (AD)',
             'START_DATE_BS': 'From (BS)',
@@ -49,7 +51,7 @@
         }
         app.initializeKendoGrid($table, columns);
 
-        app.searchTable($table, ['CUSTOMER_ENAME']);
+        app.searchTable($table, ['CONTRACT_NAME','CUSTOMER_ENAME']);
 
         $('#excelExport').on('click', function () {
             app.excelExport($table, map, 'Customer Contract List.xlsx');
@@ -59,6 +61,7 @@
         });
 
         app.pullDataById("", {}).then(function (response) {
+            console.log(response);
             app.renderKendoGrid($table, response.data);
         }, function (error) {
 

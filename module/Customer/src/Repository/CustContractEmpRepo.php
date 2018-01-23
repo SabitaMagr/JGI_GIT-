@@ -5,6 +5,7 @@ namespace Customer\Repository;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Customer\Model\ContractAttendanceModel;
 use Customer\Model\CustContractEmp;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
@@ -47,5 +48,14 @@ class CustContractEmpRepo implements RepositoryInterface {
         return Helper::extractDbData($result);
         
     }
-
+    
+    
+    public function updateEmployeeAttendance(Model $model, $updateArray) {
+        $tempArray = $model->getArrayCopyForDB();
+        
+        $custmomerAttendanceGateway = new TableGateway(ContractAttendanceModel::TABLE_NAME, $this->adapter);
+        $custmomerAttendanceGateway->update($tempArray, $updateArray);
+    }
+    
+    
 }

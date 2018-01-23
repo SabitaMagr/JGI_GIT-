@@ -33,7 +33,7 @@ class CustomerContractRepo implements RepositoryInterface {
     }
 
     public function fetchAll() {
-        $sql = "SELECT CC.CONTRACT_ID AS CONTRACT_ID,
+        $sql = "SELECT CC.CONTRACT_ID AS CONTRACT_ID,CC.CONTRACT_NAME AS CONTRACT_NAME,
                   C.CUSTOMER_ENAME,
                   TO_CHAR(CC.START_DATE,'DD-MON-YYYY') AS START_DATE_AD,
                   BS_DATE(CC.START_DATE)               AS START_DATE_BS,
