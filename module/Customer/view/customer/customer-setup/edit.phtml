@@ -2,9 +2,7 @@
 $this->headScript()->appendFile($this->basePath('js/customer/customer-setup/edit.js'));
 ?>
 <?php
-$customerCode = $form->get('customerCode');
 $customerEname = $form->get('customerEname');
-$customerLname = $form->get('customerLname');
 $address = $form->get('address');
 $phoneNo = $form->get('phoneNo');
 $contactPersonName = $form->get('contactPersonName');
@@ -33,13 +31,6 @@ $form->prepare();
                 <?php print $this->form()->openTag($form); ?>
 
                 <div class=" row">
-                    <div class="col-sm-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($customerCode); ?>
-                            <?php print $this->formElement($customerCode); ?>
-                            <?php print $this->formElementErrors()->render($customerCode, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
@@ -47,13 +38,6 @@ $form->prepare();
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($customerEname); ?>
                             <?php print $this->formElementErrors()->render($customerEname, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($customerLname); ?>
-                            <?php print $this->formElement($customerLname); ?>
-                            <?php print $this->formElementErrors()->render($customerLname, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">

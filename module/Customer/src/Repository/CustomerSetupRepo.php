@@ -47,12 +47,13 @@ class CustomerSetupRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rawResult = $this->gateway->select(function(Select $select) {
+        $rawResult = $this->gateway->select(function(Select $select)use($id) {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Customer::class, [
                         Customer::CUSTOMER_ENAME,
                         Customer::CUSTOMER_LNAME,
                         Customer::CONTACT_PERSON_NAME,
                     ]), false);
+            $select->where([Customer::CUSTOMER_ID => $id]);
             $select->where([Customer::STATUS => EntityHelper::STATUS_ENABLED]);
             $select->order([Customer::CUSTOMER_ENAME => Select::ORDER_ASCENDING]);
         });
