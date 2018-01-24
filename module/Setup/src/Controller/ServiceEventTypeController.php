@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: root
- * Date: 11/9/16
- * Time: 5:02 PM
- */
+
 namespace Setup\Controller;
 
 use Application\Helper\Helper;
@@ -15,21 +10,18 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class ServiceEventTypeController extends AbstractActionController
-{
+class ServiceEventTypeController extends AbstractActionController {
 
     private $repository;
     private $form;
     private $adapter;
 
-    function __construct(AdapterInterface $adapter)
-    {
-        $this->adapter=$adapter;
+    function __construct(AdapterInterface $adapter) {
+        $this->adapter = $adapter;
         $this->repository = new ServiceEventTypeRepository($adapter);
     }
 
-    private function initializeForm()
-    {
+    private function initializeForm() {
         $serviceEventTypeForm = new ServiceEventTypeForm();
         $builder = new AnnotationBuilder();
         if (!$this->form) {
@@ -37,18 +29,16 @@ class ServiceEventTypeController extends AbstractActionController
         }
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $serviceEventTypeList = $this->repository->fetchActiveRecord();
-        $serviceEventTypes =[];
-        foreach($serviceEventTypeList as $serviceEventTypeRow){
+        $serviceEventTypes = [];
+        foreach ($serviceEventTypeList as $serviceEventTypeRow) {
             array_push($serviceEventTypes, $serviceEventTypeRow);
         }
         return Helper::addFlashMessagesToArray($this, ['serviceEventTypes' => $serviceEventTypes]);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
 
         $this->initializeForm();
         $request = $this->getRequest();
@@ -58,37 +48,34 @@ class ServiceEventTypeController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 try {
-                    $serviceEventType=new ServiceEventType();
+                    $serviceEventType = new ServiceEventType();
                     $serviceEventType->exchangeArrayFromForm($this->form->getData());
-                    $serviceEventType->serviceEventTypeId=((int) Helper::getMaxId($this->adapter,ServiceEventType::TABLE_NAME,ServiceEventType::SERVICE_EVENT_TYPE_ID))+1;
-                    $serviceEventType->createdDt=Helper::getcurrentExpressionDate();
+                    $serviceEventType->serviceEventTypeId = ((int) Helper::getMaxId($this->adapter, ServiceEventType::TABLE_NAME, ServiceEventType::SERVICE_EVENT_TYPE_ID)) + 1;
+                    $serviceEventType->createdDt = Helper::getcurrentExpressionDate();
                     $serviceEventType->status = 'E';
                     $this->repository->add($serviceEventType);
 
                     $this->flashmessenger()->addMessage("Service Event Type Successfully Added!!!");
                     return $this->redirect()->toRoute("serviceEventType");
                 } catch (Exception $e) {
-
+                    
                 }
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-            'form' => $this->form,
-            'messages' => $this->flashmessenger()->getMessages()
+                    'form' => $this->form,
+                    'messages' => $this->flashmessenger()->getMessages()
         ]);
     }
 
-
-    public function editAction()
-    {
-
-        $id = (int)$this->params()->fromRoute("id");
+    public function editAction() {
+        $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute();
         }
         $this->initializeForm();
         $request = $this->getRequest();
-        $serviceEventType=new ServiceEventType();
+        $serviceEventType = new ServiceEventType();
         if (!$request->isPost()) {
             $serviceEventType->exchangeArrayFromDb($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($serviceEventType);
@@ -97,7 +84,7 @@ class ServiceEventTypeController extends AbstractActionController
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $serviceEventType->exchangeArrayFromForm($this->form->getData());
-                $serviceEventType->modifiedDt=Helper::getcurrentExpressionDate();
+                $serviceEventType->modifiedDt = Helper::getcurrentExpressionDate();
 
                 $this->repository->edit($serviceEventType, $id);
                 $this->flashmessenger()->addMessage("Service Event Type Successfully Updated!!!");
@@ -107,9 +94,8 @@ class ServiceEventTypeController extends AbstractActionController
         return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
     }
 
-    public function deleteAction()
-    {
-        $id = (int)$this->params()->fromRoute("id");
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute("id");
 
         if (!$id) {
             return $this->redirect()->toRoute('serviceEventType');
@@ -118,4 +104,5 @@ class ServiceEventTypeController extends AbstractActionController
         $this->flashmessenger()->addMessage("Service Event Type Successfully Deleted!!!");
         return $this->redirect()->toRoute('serviceEventType');
     }
+
 }

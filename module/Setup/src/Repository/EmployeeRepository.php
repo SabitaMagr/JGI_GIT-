@@ -666,4 +666,12 @@ class EmployeeRepository implements RepositoryInterface {
         $statement->execute();
     }
 
+    public function updateJobHistory($employeeId) {
+        $sql = "BEGIN
+                  HRIS_UPDATE_JOB_HISTORY({$employeeId});
+                END;";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
+    }
+
 }

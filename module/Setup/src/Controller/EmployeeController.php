@@ -7,7 +7,6 @@ use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
 use Asset\Repository\IssueRepository;
-use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
 use Exception;
@@ -96,6 +95,28 @@ class EmployeeController extends HrisController {
 
         if (!$this->formOne) {
             $this->formOne = $builder->createForm($formTabOne);
+            $genderId = $this->formOne->get('genderId');
+            $bloodGroupId = $this->formOne->get('bloodGroupId');
+            $religionId = $this->formOne->get('religionId');
+            $addrPermZoneId = $this->formOne->get('addrPermZoneId');
+            $addrTempZoneId = $this->formOne->get('addrTempZoneId');
+            $companyId = $this->formOne->get('companyId');
+            $countryId = $this->formOne->get('countryId');
+
+            $genderList = ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Gender::TABLE_NAME, \Setup\Model\Gender::GENDER_ID, [\Setup\Model\Gender::GENDER_NAME], null, null, true);
+            $bloodGroupList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_BLOOD_GROUPS', 'BLOOD_GROUP_ID', ['BLOOD_GROUP_CODE'], NULL, NULL, TRUE);
+            $zoneList = ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Zones::TABLE_NAME, \Setup\Model\Zones::ZONE_ID, [\Setup\Model\Zones::ZONE_NAME], null, null, true);
+            $religionList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_RELIGIONS', 'RELIGION_ID', ['RELIGION_NAME'], null, null, true);
+            $companyList = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true);
+            $countryList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_COUNTRIES', 'COUNTRY_ID', ['COUNTRY_NAME'], null, null, true);
+
+            $genderId->setValueOptions($genderList);
+            $bloodGroupId->setValueOptions($bloodGroupList);
+            $religionId->setValueOptions($religionList);
+            $addrPermZoneId->setValueOptions($zoneList);
+            $addrTempZoneId->setValueOptions($zoneList);
+            $companyId->setValueOptions($companyList);
+            $countryId->setValueOptions($countryList);
         }
         if (!$this->formTwo) {
             $this->formTwo = $builder->createForm($formTabTwo);
@@ -140,13 +161,11 @@ class EmployeeController extends HrisController {
         $recommApproverRepo = new RecommendApproveRepository($this->adapter);
         $employeeData = null;
         $profilePictureId = null;
-        $getEmpShiftDtl = null;
-        $employeePreDtl = null;
+        $recAppDetail = null;
         if ($id != 0) {
             $employeeData = (array) $this->repository->fetchById($id);
             $profilePictureId = $employeeData[HrEmployees::PROFILE_PICTURE_ID];
-            $getEmpShiftDtl = $shiftAssignRepo->fetchByEmployeeId($id);
-            $employeePreDtl = $recommApproverRepo->fetchById($id);
+            $recAppDetail = $recommApproverRepo->fetchById($id);
         }
         $address = [];
         if ($request->isPost()) {
@@ -211,42 +230,7 @@ class EmployeeController extends HrisController {
                         $formFourModel->modifiedBy = $this->employeeId;
                         $formFourModel->modifiedDt = Helper::getcurrentExpressionDate();
                         $this->repository->edit($formFourModel, $id);
-                        /*
-                         * Shift Assign part
-                         */
-                        $shiftId = $postData->shift;
-                        $shiftAssign = new ShiftAssign();
-                        $shiftAssign->employeeId = $id;
-                        $shiftAssign->shiftId = $shiftId;
-
-                        if ($getEmpShiftDtl != null) {
-                            $shiftAssignClone = clone $shiftAssign;
-
-                            unset($shiftAssignClone->employeeId);
-                            unset($shiftAssignClone->shiftId);
-                            unset($shiftAssignClone->createdDt);
-
-                            if ($shiftId != $getEmpShiftDtl['SHIFT_ID']) {
-                                $shiftAssignClone->status = 'D';
-                                $shiftAssignClone->modifiedDt = Helper::getcurrentExpressionDate();
-                                $shiftAssignClone->modifiedBy = $this->employeeId;
-                                $shiftAssignRepo->edit($shiftAssignClone, [$id, $getEmpShiftDtl['SHIFT_ID']]);
-
-                                $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
-                                $shiftAssign->createdBy = $this->employeeId;
-                                $shiftAssign->status = 'E';
-                                $shiftAssignRepo->add($shiftAssign);
-                            }
-                        } else {
-                            $shiftAssign->createdDt = Helper::getcurrentExpressionDate();
-                            $shiftAssign->createdBy = $this->employeeId;
-                            $shiftAssign->status = 'E';
-                            $shiftAssignRepo->add($shiftAssign);
-                        }
-                        /*
-                         * 
-                         */
-
+                        $this->repository->updateJobHistory($id);
                         /*
                          * Recommender Approver Assign part 
                          */
@@ -254,20 +238,15 @@ class EmployeeController extends HrisController {
                         $approverId = $postData->approver;
 
                         $recommendApprove = new RecommendApprove();
-                        if ($employeePreDtl == null) {
-                            $recommendApprove->employeeId = $id;
-                            $recommendApprove->recommendBy = $recommenderId;
-                            $recommendApprove->approvedBy = $approverId;
+                        $recommendApprove->employeeId = $id;
+                        $recommendApprove->recommendBy = $recommenderId;
+                        $recommendApprove->approvedBy = $approverId;
+                        if ($recAppDetail == null) {
                             $recommendApprove->createdDt = Helper::getcurrentExpressionDate();
                             $recommendApprove->status = 'E';
                             $recommApproverRepo->add($recommendApprove);
-                        } else if ($employeePreDtl != null) {
-                            $id = $employeePreDtl['EMPLOYEE_ID'];
-                            $recommendApprove->employeeId = $id;
-                            $recommendApprove->recommendBy = $recommenderId;
-                            $recommendApprove->approvedBy = $approverId;
+                        } else {
                             $recommendApprove->modifiedDt = Helper::getcurrentExpressionDate();
-                            $recommendApprove->status = 'E';
                             $recommApproverRepo->edit($recommendApprove, $id);
                         }
                         /*
@@ -349,12 +328,6 @@ class EmployeeController extends HrisController {
                     'formSix' => $this->formSix,
                     'formSeven' => $this->formSeven,
                     'formEight' => $this->formEight,
-                    "bloodGroups" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_BLOOD_GROUPS', 'BLOOD_GROUP_ID', ['BLOOD_GROUP_CODE'], NULL, NULL, TRUE),
-                    "genders" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Gender::TABLE_NAME, \Setup\Model\Gender::GENDER_ID, [\Setup\Model\Gender::GENDER_NAME], null, null, true),
-                    "zones" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Zones::TABLE_NAME, \Setup\Model\Zones::ZONE_ID, [\Setup\Model\Zones::ZONE_NAME], null, null, true),
-                    "religions" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_RELIGIONS', 'RELIGION_ID', ['RELIGION_NAME'], null, null, true),
-                    "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-                    "countries" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_COUNTRIES', 'COUNTRY_ID', ['COUNTRY_NAME'], null, null, true),
                     'filetypes' => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_FILE_TYPE', 'FILETYPE_CODE', ['NAME']),
                     'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
                     'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
@@ -371,9 +344,8 @@ class EmployeeController extends HrisController {
                     'rankTypes' => $rankTypes,
                     'profilePictureId' => $profilePictureId,
                     'address' => $address,
-                    'shiftId' => ($getEmpShiftDtl != null) ? $getEmpShiftDtl['SHIFT_ID'] : 0,
-                    'recommenderId' => ($employeePreDtl != null) ? $employeePreDtl['RECOMMEND_BY'] : 0,
-                    'approverId' => ($employeePreDtl != null) ? $employeePreDtl['APPROVED_BY'] : 0,
+                    'recommenderId' => ($recAppDetail != null) ? $recAppDetail['RECOMMEND_BY'] : 0,
+                    'approverId' => ($recAppDetail != null) ? $recAppDetail['APPROVED_BY'] : 0,
                     'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC", null, false, true),
                     'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
