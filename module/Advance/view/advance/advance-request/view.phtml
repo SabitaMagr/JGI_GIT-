@@ -57,7 +57,7 @@ $approvedRemarks->setAttributes(["disabled" => "disabled"]);
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
-$form->setAttribute('action', $this->url('advanceRequest', ['action' => 'add']));
+$form->setAttribute('action', $this->url('advance-request', ['action' => 'add']));
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
