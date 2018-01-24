@@ -7,6 +7,8 @@
             {field: "LEAVE_ENAME", title: "Leave Name"},
             {field: "TOTAL_DAYS", title: "Total Days"},
             {field: "LEAVE_TAKEN", title: "Leave taken"},
+            {field: "LEAVE_DEDUCTED", title: "Leave Deducted"},
+            {field: "LEAVE_ADDED", title: "Leave Added"},
             {field: "BALANCE", title: "Available Days"}
         ]);
 
@@ -24,6 +26,8 @@
             'LEAVE_ENAME': 'Leave',
             'TOTAL_DAYS': 'Total Days',
             'LEAVE_TAKEN': 'Leave Taken',
+            'LEAVE_DEDUCTED': 'Leave Deducted',
+            'LEAVE_ADDED': 'Leave Added',
             'BALANCE': 'Available Days'
         };
         $('#excelExport').on('click', function () {

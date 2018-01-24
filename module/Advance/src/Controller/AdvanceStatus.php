@@ -121,11 +121,9 @@ class AdvanceStatus extends HrisController {
         $advancePaymentRepository = new AdvancePaymentRepository($this->adapter);
 
         $advanceRequestId = $details['ADVANCE_REQUEST_ID'];
-//        $employeeId = $details['EMPLOYEE_ID'];
         $requestedAmt = $details['REQUESTED_AMOUNT'];
         $employeeSalary = $details['SALARY'];
         $monthlyDeductionRate = $details['DEDUCTION_RATE'];
-//        $paymentMonths = $details['DEDUCTION_IN'];
         $advanceDate = $details['DATE_OF_ADVANCE'];
 
         $monthlyDedeuctionAmt = ($monthlyDeductionRate / 100) * $employeeSalary;

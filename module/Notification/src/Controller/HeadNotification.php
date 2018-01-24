@@ -317,13 +317,10 @@ class HeadNotification {
         $notification->requestedAmount = $request->requestedAmount;
         $notification->deductionRate = $request->deductionRate;
         $notification->deductionIn = $request->deductionIn;
-        $notification->status = $status;
-
 
         $notification->route = json_encode(["route" => "advance-approve", "action" => "view", "id" => $request->advanceRequestId, "role" => $roleAndId['role']]);
         $title = "Advance Request";
         $desc = "Advance Request Applied";
-
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 6, $adapter, $url);
     }
@@ -1394,8 +1391,8 @@ class HeadNotification {
                 self::advanceApplied($model, $adapter, $url, self::RECOMMENDER);
                 break;
             case NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED:
-                self::advanceRecommend($model, $adapter, $url, self::ACCEPTED);
                 self::advanceApplied($model, $adapter, $url, self::APPROVER);
+                self::advanceRecommend($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::ADVANCE_RECOMMEND_REJECTED:
                 self::advanceRecommend($model, $adapter, $url, self::REJECTED);

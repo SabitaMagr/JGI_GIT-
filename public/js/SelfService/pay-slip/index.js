@@ -1,6 +1,6 @@
 (function ($, app) {
     $('#export').on("click", function () {
-        app.exportDomToPdf('paySlip', document.cssUrl);
+        app.exportDomToPdf2('paySlip');
     });
 
 })(window.jQuery, window.app);

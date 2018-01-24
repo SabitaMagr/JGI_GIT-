@@ -3,7 +3,6 @@
 namespace SelfService\Controller;
 
 use Application\Controller\HrisController;
-use Application\Helper\Helper;
 use Exception;
 use SelfService\Repository\LeaveRepository;
 use Zend\Authentication\Storage\StorageInterface;
@@ -23,7 +22,7 @@ class Leave extends HrisController {
         if ($request->isPost()) {
             try {
                 $leaveList = $this->repository->selectAll($this->employeeId);
-                $leaves = Helper::extractDbData($leaveList);
+                $leaves = iterator_to_array($leaveList, false);
                 return new JsonModel(['success' => true, 'data' => $leaves, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

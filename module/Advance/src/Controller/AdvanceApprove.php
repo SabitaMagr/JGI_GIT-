@@ -54,54 +54,9 @@ class AdvanceApprove extends HrisController {
         $detail = $this->repository->fetchById($id);
 
         if ($request->isPost()) {
-            $getData = $request->getPost();
-            $action = $getData->submit;
-
-            if ($role == 2) {
-                $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                $advanceRequestModel->recommendedBy = (int) $this->employeeId;
-                if ($action == "Reject") {
-                    $advanceRequestModel->status = "R";
-                    $this->flashmessenger()->addMessage("Advance Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $advanceRequestModel->status = "RC";
-                    $this->flashmessenger()->addMessage("Advance Request Approved!!!");
-                }
-                $advanceRequestModel->recommendedRemarks = $getData->recommendedRemarks;
-                $this->repository->edit($advanceRequestModel, $id);
-
-                try {
-                    $advanceRequestModel->advanceRequestId = $id;
-                    HeadNotification::pushNotification(($advanceRequestModel->status == 'RC') ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED, $advanceRequestModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            } else if ($role == 3 || $role == 4) {
-                $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
-                $advanceRequestModel->approvedBy = (int) $this->employeeId;
-                if ($action == "Reject") {
-                    $advanceRequestModel->status = "R";
-                    $this->flashmessenger()->addMessage("Advance Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $advanceRequestModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Advance Request Approved");
-                }
-                if ($role == 4) {
-                    $advanceRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                    $advanceRequestModel->recommendedBy = (int) $this->employeeId;
-                }
-                $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
-
-
-                $this->advancePaymentAdd($detail);
-                $this->repository->edit($advanceRequestModel, $id);
-                try {
-                    $advanceRequestModel->advanceRequestId = $id;
-                    HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            }
+            $postedData = (array) $request->getPost();
+            $action = $postedData['submit'];
+            $this->makeDecision($id, $role, $action == 'Approve', $postedData[$role == 2 ? 'recommendedRemarks' : 'approvedRemarks'], true);
             return $this->redirect()->toRoute("advance-approve");
         }
 
@@ -123,8 +78,45 @@ class AdvanceApprove extends HrisController {
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
                     'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'], AdvanceSetupModel::ADVANCE_ENAME, "ASC", " ", FALSE, TRUE),
-                    'advanceRequestData' => $detail
+                    'detail' => $detail
         ]);
+    }
+
+    private function makeDecision($id, $role, $approve, $remarks = null, $enableFlashNotification = false) {
+        $notificationEvent = null;
+        $message = null;
+        $model = new AdvanceRequestModel();
+        $model->advanceRequestId = $id;
+        switch ($role) {
+            case 2:
+                $model->recommendedRemarks = $remarks;
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+                $model->status = $approve ? "RC" : "R";
+                $message = $approve ? "Advance Request Recommended" : "Advance Request Rejected";
+                $notificationEvent = $approve ? NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED : NotificationEvents::ADVANCE_RECOMMEND_REJECTED;
+                break;
+            case 4:
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+            case 3:
+                $model->approvedRemarks = $remarks;
+                $model->approvedDate = Helper::getcurrentExpressionDate();
+                $model->approvedBy = $this->employeeId;
+                $model->status = $approve ? "AP" : "R";
+                $message = $approve ? "Advance Request Approved" : "Advance Request Rejected";
+                $notificationEvent = $approve ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED;
+                break;
+        }
+        $this->repository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
     }
 
     public function batchApproveRejectAction() {
