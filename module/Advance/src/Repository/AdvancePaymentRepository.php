@@ -2,7 +2,7 @@
 
 namespace Advance\Repository;
 
-use Advance\model\AdvancePayment;
+use Advance\Model\AdvancePayment;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;

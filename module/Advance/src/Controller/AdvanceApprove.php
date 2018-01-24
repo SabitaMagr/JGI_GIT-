@@ -3,9 +3,9 @@
 namespace Advance\Controller;
 
 use Advance\Form\AdvanceRequestForm;
-use Advance\model\AdvancePayment;
-use Advance\model\AdvanceRequestModel;
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvancePayment;
+use Advance\Model\AdvanceRequestModel;
+use Advance\Model\AdvanceSetupModel;
 use Advance\Repository\AdvanceApproveRepository;
 use Advance\Repository\AdvancePaymentRepository;
 use Application\Controller\HrisController;

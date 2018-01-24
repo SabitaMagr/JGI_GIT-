@@ -3,7 +3,7 @@
 namespace Advance\Controller;
 
 use Advance\Form\AdvanceSetupForm;
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvanceSetupModel;
 use Advance\Repository\AdvanceSetupRepository;
 use Application\Helper\Helper;
 use Exception;
@@ -69,7 +69,7 @@ class AdvanceSetup extends AbstractActionController {
 //                die();
                 $advanceSetupModel = new AdvanceSetupModel();
                 $advanceSetupModel->exchangeArrayFromForm($form->getData());
-                $advanceSetupModel->status="E";
+                $advanceSetupModel->status = "E";
                 $advanceSetupModel->advanceId = ((int) Helper::getMaxId($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID)) + 1;
                 $advanceSetupModel->createdBy = $this->employeeId;
                 $this->repository->add($advanceSetupModel);

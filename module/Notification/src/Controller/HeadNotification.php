@@ -2,7 +2,7 @@
 
 namespace Notification\Controller;
 
-use Advance\model\AdvanceRequestModel;
+use Advance\Model\AdvanceRequestModel;
 use Advance\Repository\AdvanceRequestRepository;
 use Application\Helper\EmailHelper;
 use Application\Helper\Helper;

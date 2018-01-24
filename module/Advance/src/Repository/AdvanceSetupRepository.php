@@ -2,7 +2,7 @@
 
 namespace Advance\Repository;
 
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvanceSetupModel;
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;

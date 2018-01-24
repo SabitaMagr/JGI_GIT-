@@ -2,8 +2,8 @@
 
 namespace Advance\Repository;
 
-use Advance\model\AdvanceRequestModel;
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvanceRequestModel;
+use Advance\Model\AdvanceSetupModel;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -267,7 +267,5 @@ class AdvanceApproveRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
-
-    
 
 }
