@@ -71,6 +71,10 @@ class SalarySheet {
         return Helper::extractDbData($this->salarySheetDetailRepo->fetchSalarySheetDetail($sheetId));
     }
 
+    public function viewSalarySheetEmp($monthId, $employeeId) {
+        return $this->salarySheetDetailRepo->fetchSalarySheetEmp($monthId, $employeeId)->current();
+    }
+
     public function checkIfGenerated(int $monthId) {
         $salarySheets = $this->salarySheetRepo->fetchByIds([SalarySheetModel::MONTH_ID => $monthId]);
         if ($salarySheets->count() > 0) {

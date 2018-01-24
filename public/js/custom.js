@@ -1342,6 +1342,33 @@ window.app = (function ($, toastr, App) {
         });
     };
 
+    var setDropZone = function ($fileId, $dropZone, url) {
+        var dropZone = $dropZone.dropzone({
+            url: url,
+            maxFiles: 1,
+            acceptedFiles: 'image/*',
+            autoProcessQueue: true,
+            addRemoveLinks: true,
+            init: function () {
+                this.on('success', function (file, response) {
+                    if (response.success) {
+                        $fileId.val(response.data.fileId);
+                    }
+                });
+            }
+        });
+        if ($fileId.val() != '') {
+            serverRequest(document.getFileDetailLink, {fileId: $fileId.val()}).then(function (response) {
+                if (response.success) {
+                    var $ul = $('<ul class="list-group"></ul>');
+                    var $li = $('<li class="list-group-item">' + response.data['FILE_NAME'] + '</li>');
+                    $ul.append($li);
+                    $ul.insertBefore($dropZone);
+                }
+            });
+        }
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1379,8 +1406,7 @@ window.app = (function ($, toastr, App) {
         getDateRangeBetween: getDateRangeBetween,
         exportDomToPdf: exportDomToPdf,
         serverRequest: serverRequest,
-        bulkServerRequest: bulkServerRequest
-
-
+        bulkServerRequest: bulkServerRequest,
+        setDropZone: setDropZone
     };
 })(window.jQuery, window.toastr, window.App);

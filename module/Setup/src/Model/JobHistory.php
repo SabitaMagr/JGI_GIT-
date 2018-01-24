@@ -27,6 +27,7 @@ class JobHistory extends Model {
     const RETIRED_FLAG = "RETIRED_FLAG";
     const DISABLED_FLAG = "DISABLED_FLAG";
     const EVENT_DATE = "EVENT_DATE";
+    const FILE_ID = "FILE_ID";
 
     public $jobHistoryId;
     public $employeeId;
@@ -48,6 +49,7 @@ class JobHistory extends Model {
     public $retiredFlag;
     public $disabledFlag;
     public $eventDate;
+    public $fileId;
     public $mappings = [
         'jobHistoryId' => self::JOB_HISTORY_ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -69,6 +71,7 @@ class JobHistory extends Model {
         'retiredFlag' => self::RETIRED_FLAG,
         'disabledFlag' => self::DISABLED_FLAG,
         'eventDate' => self::EVENT_DATE,
+        'fileId' => self::FILE_ID,
     ];
 
 }

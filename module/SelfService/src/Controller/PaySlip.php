@@ -2,6 +2,7 @@
 
 namespace SelfService\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -12,30 +13,18 @@ use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetRepo;
 use Setup\Model\HrEmployees;
 use Setup\Repository\EmployeeRepository;
-use Zend\Authentication\AuthenticationService;
-use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class PaySlip extends AbstractActionController {
-
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-    }
+class PaySlip extends HrisController {
 
     public function indexAction() {
         $rulesRepo = new RulesRepository($this->adapter);
         $rulesRaw = $rulesRepo->fetchAll();
         $rules = Helper::extractDbData($rulesRaw);
 
-
-        $auth = new AuthenticationService();
-        $employeeId = $auth->getStorage()->read()['employee_id'];
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'rules' => $rules,
-                    'employeeId' => $employeeId
+                    'employeeId' => $this->employeeId
         ]);
     }
 
@@ -43,8 +32,6 @@ class PaySlip extends AbstractActionController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-
-
             $employeeId = null;
             $joinDate = null;
             if (isset($data['employeeId'])) {
@@ -69,24 +56,18 @@ class PaySlip extends AbstractActionController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-
-
             $monthId = $data['month'];
-            $auth = new AuthenticationService();
-            $employeeId = $auth->getStorage()->read()['employee_id'];
-
             $salarySheetController = new SalarySheet($this->adapter);
             if ($salarySheetController->checkIfGenerated($monthId)) {
-                $employeeList['EMPLOYEE_ID'] = $employeeId;
-                $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
-                $results = $results[$employeeId];
+                $employeeList['EMPLOYEE_ID'] = $this->employeeId;
+                $results = $salarySheetController->viewSalarySheetEmp($monthId, $this->employeeId);
             }
 
             $employeeRepo = new EmployeeRepository($this->adapter);
-            $employee = $employeeRepo->fetchForProfileById($employeeId);
+            $employee = $employeeRepo->fetchForProfileById($this->employeeId);
             $results['employeeDetail'] = $employee;
 
-            $variableProcessor = new VariableProcessor($this->adapter, $employeeId, $monthId);
+            $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $monthId);
             $absentDays = $variableProcessor->processVariable(PayrollGenerator::VARIABLES[2]);
             $results["absentDays"] = $absentDays;
 

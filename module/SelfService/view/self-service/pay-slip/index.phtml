@@ -17,20 +17,6 @@ $this->headScript()
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\payslip')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 
 <div ng-app="hris" ng-controller="paySlipController">
     <div class="row margin-top-10">
@@ -164,7 +150,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <tr ng-repeat="rule in rules" ng-show="rule.PAY_TYPE_FLAG == 'A'"> 
                                                 <td ng-bind="rule.PAY_EDESC">
                                                 </td>
-                                                <td ng-bind="paySlip.ruleValueKV[rule.PAY_ID]">
+                                                <td ng-bind="paySlip['P_' + rule.PAY_ID]">
 
                                                 </td>
                                             </tr>
@@ -182,7 +168,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                             <tr ng-repeat="rule in rules" ng-show="rule.PAY_TYPE_FLAG == 'D'"> 
                                                 <td ng-bind="rule.PAY_EDESC">
                                                 </td>
-                                                <td ng-bind="paySlip.ruleValueKV[rule.PAY_ID]">
+                                                <td ng-bind="paySlip['P_' + rule.PAY_ID]">
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="table-responsive">
+                                    <table class="table customTable">
+                                        <caption>
+                                            Calculations
+                                        </caption>
+                                        <tbody>
+                                            <tr ng-repeat="rule in rules" ng-show="rule.PAY_TYPE_FLAG == 'V'"> 
+                                                <td ng-bind="rule.PAY_EDESC">
+                                                </td>
+                                                <td ng-bind="paySlip['P_' + rule.PAY_ID]">
 
                                                 </td>
                                             </tr>

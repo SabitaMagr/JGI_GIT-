@@ -2,7 +2,6 @@
 
 namespace Application\Repository;
 
-use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 

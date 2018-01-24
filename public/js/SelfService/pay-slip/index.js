@@ -1,16 +1,5 @@
 (function ($, app) {
     $('#export').on("click", function () {
-//        html2canvas($("#paySlip"), {
-//            onrendered: function (canvas) {
-//                console.log("canvas", canvas);
-//                var imgData = canvas.toDataURL("image/jpeg", 1.0);
-//                var pdf = new jsPDF();
-//
-//                pdf.addImage(imgData, 'JPEG', 15, 40, 180, 160);
-//                pdf.save("download.pdf");
-//
-//            }
-//        });
         app.exportDomToPdf('paySlip', document.cssUrl);
     });
 
@@ -46,6 +35,7 @@ angular.module('hris', [])
                 }).then(function (success) {
                     $scope.$apply(function () {
                         $scope.paySlip = success.data;
+                        console.log('payslip', $scope.paySlip);
                     });
                 }, function (failure) {
                 });

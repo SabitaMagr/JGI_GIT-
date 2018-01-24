@@ -25,7 +25,8 @@ class SystemRuleProcessor {
         $this->monthId = $monthId;
         $this->month = new Months();
         $this->month->exchangeArrayFromDB((array) $monthRepo->fetchByMonthId($monthId));
-        $this->multiplicationFactor = 13 - $this->month->fiscalYearMonthNo;
+//        $this->multiplicationFactor = 13 - $this->month->fiscalYearMonthNo;
+        $this->multiplicationFactor = 12;
     }
 
     public function processSystemRule($systemRule) {
