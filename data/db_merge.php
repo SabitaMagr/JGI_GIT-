@@ -9,7 +9,8 @@ foreach ($dirList as $dir) {
     foreach ($scanned_directory as $filename) {
         $file = $dir . "/" . $filename;
         if (is_file($file)) {
-            $fileDataAll .= file_get_contents($file);
+            $fileDataAll .= file_get_contents($file)."/
+            ";
         }
     }
 }
