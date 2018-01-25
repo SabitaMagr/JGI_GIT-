@@ -286,12 +286,6 @@ class EmployeeRepository implements RepositoryInterface {
 
         $select->where(["E.STATUS='E'"]);
 
-        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
-            $select->where(["E.RETIRED_FLAG='Y'"]);
-        } else {
-            $select->where(["E.RETIRED_FLAG='N'"]);
-        }
-
         if ($employeeTypeId != null && $employeeTypeId != -1) {
             $select->where([
                 "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"

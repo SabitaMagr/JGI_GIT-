@@ -120,7 +120,7 @@
 
         $search.on('click', function () {
             var data = document.searchManager.getSearchValues();
-            app.pullDataById(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
+            app.serverRequest(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($employeeTable, response.data);
                 } else {

@@ -22,7 +22,12 @@ class LeaveRepository extends HrisRepository {
                   LMS.LEAVE_ENAME,
                   LA.TOTAL_DAYS,
                   LA.BALANCE,
-                  (SELECT SUM(ELR.NO_OF_DAYS)
+                  (SELECT SUM(ELR.NO_OF_DAYS/(
+                    CASE
+                      WHEN ELR.HALF_DAY IN ('F','S')
+                      THEN 2
+                      ELSE 1
+                    END))
                   FROM HRIS_EMPLOYEE_LEAVE_REQUEST ELR
                   WHERE ELR.LEAVE_ID =LA.LEAVE_ID
                   AND ELR.EMPLOYEE_ID=LA.EMPLOYEE_ID

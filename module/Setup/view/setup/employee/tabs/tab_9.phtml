@@ -29,25 +29,6 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-6">
-                        <div class="row bottomgap">
-                            <div class="form-group">
-                                <div class="col-xs-6 col-sm-6 col-md-6 rightalign-4">
-                                    <label> Shift </label>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 cgap-4">
-                                    <select required="required" name="shift">
-                                        <?php
-                                        foreach ($shifts as $shiftKey => $shiftValue) {
-                                            $shiftSelected = ($shiftId == $shiftKey) ? "selected" : "";
-                                            ?>
-                                            <option  value="<?php echo $shiftKey; ?>" <?php echo $shiftSelected; ?>><?php echo $shiftValue; ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
