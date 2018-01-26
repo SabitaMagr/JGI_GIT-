@@ -14,13 +14,13 @@
             selfId = 0;
         }
         window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
-            if ($logo.val() === "") {
-                app.errorMessage("No company logo is set.");
-                return false;
-            } else {
+//            if ($logo.val() === "") {
+//                app.errorMessage("No company logo is set.");
+//                return false;
+//            } else {
                 App.blockUI({target: "#hris-page-content"});
                 return true;
-            }
+//            }
         });
         window.app.checkUniqueConstraints("form-companyCode", formId, tableName, "COMPANY_CODE", checkColumnName, selfId);
 
