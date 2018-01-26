@@ -4,14 +4,14 @@ $this->headLink()
 
 $this->headScript()->appendFile($this->basePath('assets/pages/scripts/ui-modals.min.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/jobHistorySearch.js'));
+        ->appendFile($this->basePath('js/search.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-master/ui-bootstrap-tpls-2.2.0.min.js'));
 $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/assignController.js'));
 $this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
 ?>
 
 <script>
-    document.ids=<?php echo json_encode(["leaveId"=>1,"genderId"=>-1]) ?>;
+    document.ids =<?php echo json_encode(["leaveId" => 1, "genderId" => -1]) ?>;
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.excelUploadUrl = '<?= $this->url('leaveassign', ["action" => "import"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
@@ -116,7 +116,8 @@ $genderFormElement->setAttribute("ng-model", "genderId");
                         <th>Leave</th>
                         <th>Job Title</th>
                         <th>Branch</th>
-                        <th>Days</th>
+                        <th>Total Days</th>
+                        <th>Balance</th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
                                 <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -146,7 +147,10 @@ $genderFormElement->setAttribute("ng-model", "genderId");
                         <td ng-bind="item.BRANCH_NAME">
                         </td>
                         <td>
-                            <input class="form-control input-sm" id="balance" style="width: 100px;" type="number" min="0" ng-model="item.BALANCE"/>
+                            <input class="form-control input-sm" id="totalDays" style="width: 100px;" type="number" min="0" ng-model="item.TOTAL_DAYS"/>
+                        </td>
+                        <td>
+                            <input class="form-control input-sm" disabled="disabled" id="balance" style="width: 100px;" type="number" min="0" ng-model="item.BALANCE"/>
                         </td>
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">

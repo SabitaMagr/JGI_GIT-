@@ -18,7 +18,7 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.daysForAllChange = function (days) {
                 for (var i = 0; i < $scope.leaveList.length; i++) {
                     if ($scope.leaveList[i].checked) {
-                        $scope.leaveList[i].BALANCE = days;
+                        $scope.leaveList[i].TOTAL_DAYS = days;
                     }
                 }
             };
@@ -42,7 +42,7 @@ angular.module('hris', ['ui.bootstrap'])
                             data: {
                                 leaveId: $scope.leaveList[index].LEAVE_ID,
                                 employeeId: $scope.leaveList[index].EMPLOYEE_ID,
-                                balance: $scope.leaveList[index].BALANCE,
+                                balance: $scope.leaveList[index].TOTAL_DAYS,
                                 leave: leaveId
                             }
                         }));
@@ -51,7 +51,7 @@ angular.module('hris', ['ui.bootstrap'])
                 Promise.all(promises).then(function (success) {
                     console.log(success);
                     $scope.$apply(function () {
-                        $scope.view(); 
+                        $scope.view();
                     });
                     App.unblockUI("#hris-page-content");
                     window.toastr.success("Leave assigned successfully", "Notifications");
@@ -86,9 +86,9 @@ angular.module('hris', ['ui.bootstrap'])
                         genderId: genderId,
                         designationId: designationId,
                         serviceTypeId: serviceTypeId,
-                        employeeId:employeeId,
-                        companyId:companyId,
-                        positionId:positionId,
+                        employeeId: employeeId,
+                        companyId: companyId,
+                        positionId: positionId,
                         employeeTypeId: employeeTypeId
                     }
                 }).then(function (success) {
@@ -107,7 +107,7 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
             var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
-            if(parseInt(employeeIdFromParam)>0){
+            if (parseInt(employeeIdFromParam) > 0) {
                 angular.element(document.getElementById('employeeId')).val(employeeIdFromParam).change();
                 $scope.view();
             }
