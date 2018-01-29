@@ -88,7 +88,12 @@ class AttendanceApproveRepository extends HrisRepository {
             new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS")
                 ], true);
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'A.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")], "left");
+                ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=A.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=A.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+                ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=A.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
+                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=A.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
         $select->where([AttendanceRequestModel::ID => $id]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

@@ -5,13 +5,11 @@ namespace AttendanceManagement\Controller;
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use AttendanceManagement\Model\AttendanceDetail;
-use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use Exception;
+use ManagerService\Repository\AttendanceApproveRepository;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
-use SelfService\Repository\AttendanceRequestRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -41,7 +39,7 @@ class AttendanceStatus extends HrisController {
         if ($id === 0) {
             return $this->redirect()->toRoute("attendancestatus");
         }
-        $attendanceRequestRepository = new AttendanceRequestRepository($this->adapter);
+        $attendanceRequestRepository = new AttendanceApproveRepository($this->adapter);
         $detail = $attendanceRequestRepository->fetchById($id);
 
         $model = new AttendanceRequestModel();
@@ -50,9 +48,6 @@ class AttendanceStatus extends HrisController {
 
         $status = $detail['STATUS'];
         $authApprover = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
-
-        $attendanceDetail = new AttendanceDetail();
-        $attendanceRepository = new AttendanceDetailRepository($this->adapter);
 
         try {
             if (!$request->isPost()) {
@@ -67,24 +62,6 @@ class AttendanceStatus extends HrisController {
 
                 if ($action == "Approve") {
                     $model->status = "AP";
-                    $empAttDtl = $attendanceRepository->getDtlWidEmpIdDate($employeeId, $detail['ATTENDANCE_DT']);
-                    if ($empAttDtl == null) {
-                        $tempDate = $detail['ATTENDANCE_DT'];
-                        throw new Exception("Attendance of employee with employeeId :$employeeId on $tempDate is not found.");
-                    }
-
-                    $attendanceDetail->inTime = Helper::getExpressionTime($detail['IN_TIME']);
-                    $attendanceDetail->inRemarks = $detail['IN_REMARKS'];
-                    $attendanceDetail->outTime = Helper::getExpressionTime($detail['OUT_TIME']);
-                    $attendanceDetail->outRemarks = $detail['OUT_REMARKS'];
-                    $attendanceDetail->totalHour = $detail['TOTAL_HOUR'];
-
-
-                    $attendanceRepository->editWith($attendanceDetail, [
-                        AttendanceDetail::EMPLOYEE_ID => $employeeId,
-                        AttendanceDetail::ATTENDANCE_DT => Helper::getExpressionDate($detail['ATTENDANCE_DT'])
-                    ]);
-
                     $this->flashmessenger()->addMessage("Attendance Request Approved!!!");
                 } else if ($action == "Reject") {
                     $model->status = "R";
