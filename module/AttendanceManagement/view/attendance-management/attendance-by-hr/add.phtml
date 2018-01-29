@@ -18,13 +18,10 @@ $form->setAttribute('class', 'attendanceByHr-form');
 $employeeId = $form->get('employeeId');
 $attendanceDt = $form->get('attendanceDt');
 $inTime = $form->get('inTime');
-$inTime->setValue("10:00 AM");
 $outTime = $form->get('outTime');
-$outTime->setValue("5:00 PM");
 $inRemarks = $form->get('inRemarks');
 $outRemarks = $form->get('outRemarks');
 $totalHour = $form->get('totalHour');
-$totalHour->setValue("7.0");
 $totalHour->setAttributes(['readonly' => "readonly"]);
 
 $employeeId->setValueOptions($employees);
@@ -87,7 +84,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <div class="form-group <?= empty($attendanceDt->getMessages()) ? "" : "error" ?>">
                                     <?php print $this->formLabel($attendanceDt); ?>
                                     <span class="required" aria-required="true">*</span>
-                                        <?php print $this->formElement($attendanceDt); ?>
+                                    <?php print $this->formElement($attendanceDt); ?>
                                 </div>
                                 <?php print $this->formElementErrors()->render($attendanceDt, ['class' => 'help-block error']); ?>
                             </div>     

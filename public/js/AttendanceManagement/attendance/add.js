@@ -27,7 +27,7 @@
 
         var totalHour = function () {
             var inTime = $('#inTime').val();
-            
+
             var tim_i = new Date("01/01/2007 " + $('#inTime').val());
             var tim_o = new Date("01/01/2007 " + $('#outTime').val());
             console.log(inTime);
@@ -48,7 +48,13 @@
         $employeeId.on("change", function (e) {
             app.floatingProfile.setDataFromRemote($(e.target).val());
         });
-        app.setLoadingOnSubmit("attendanceByHr");
+        app.setLoadingOnSubmit("attendanceByHr", function () {
+            if ($('#inTime').val() == '' && $('#outTime').val() == '') {
+                app.showMessage('Both Intime and Outtime are not set.', 'error');
+                return false;
+            }
+            return true;
+        });
     });
 })(window.jQuery, window.app);
 

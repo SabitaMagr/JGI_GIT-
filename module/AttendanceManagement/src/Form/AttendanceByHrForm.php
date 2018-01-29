@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: punam
- * Date: 9/14/16
- * Time: 4:18 PM
- */
+
 namespace AttendanceManagement\Form;
 
 use Zend\Form\Annotation;
@@ -12,9 +7,9 @@ use Zend\Form\Annotation;
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("attendanceByHr")
-     */
-class AttendanceByHrForm
-{
+ */
+class AttendanceByHrForm {
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
@@ -35,7 +30,7 @@ class AttendanceByHrForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"In Time"})
      * @Annotation\Attributes({ "id":"inTime",  "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"  })
@@ -44,7 +39,7 @@ class AttendanceByHrForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Out Time"})
      * @Annotation\Attributes({ "id":"outTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"  })
@@ -83,4 +78,5 @@ class AttendanceByHrForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+
 }

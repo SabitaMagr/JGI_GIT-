@@ -20,7 +20,25 @@ CREATE OR REPLACE TRIGGER HRIS_ATTENDANCE_TRG AFTER
   BEGIN
     --
     IF TRUNC(:new.ATTENDANCE_DT) < TRUNC(SYSDATE) THEN
-      HRIS_REATTENDANCE (:new.ATTENDANCE_DT);
+      INSERT
+      INTO HRIS_JOBS
+        (
+          JOB_ID,
+          WHAT,
+          EXECUTED
+        )
+        VALUES
+        (
+          (SELECT NVL(MAX(JOB_ID),0)+1 FROM HRIS_JOBS
+          )
+          ,
+          'BEGIN HRIS_REATTENDANCE(TO_DATE('''
+          ||TRUNC(:new.ATTENDANCE_DT)
+          ||''',''DD-MON-YY''),'
+          ||:new.EMPLOYEE_ID
+          ||'); END;',
+          'N'
+        );
       RETURN;
     END IF;
     --
