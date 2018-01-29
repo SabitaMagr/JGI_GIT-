@@ -1,19 +1,22 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: punam
  * Date: 10/6/16
  * Time: 3:06 PM
  */
+
 namespace SelfService\Form;
 
 use Zend\Form\Annotation;
+
 /**
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("attendanceByHr")
  */
-class AttendanceRequestForm
-{
+class AttendanceRequestForm {
+
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
@@ -25,7 +28,7 @@ class AttendanceRequestForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"In Time"})
      * @Annotation\Attributes({ "id":"inTime",  "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"  })
@@ -34,7 +37,7 @@ class AttendanceRequestForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Out Time"})
      * @Annotation\Attributes({ "id":"outTime",  "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"  })
@@ -67,8 +70,8 @@ class AttendanceRequestForm
      * @Annotation\Attributes({ "id":"totalHour", "class":"form-control" })
      */
     public $totalHour;
-    
-     /**
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
@@ -91,4 +94,5 @@ class AttendanceRequestForm
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+
 }
