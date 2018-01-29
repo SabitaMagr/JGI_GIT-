@@ -1,7 +1,4 @@
 <?php
-//$this->headScript()->appendFile($this->basePath('js/setup/branch/add.js'));
-
-
 $allowSystemAttendance = $form->get('allowSystemAttendance');
 $needApprovalForLateCheckIn = $form->get('needApprovalForLateCheckIn');
 $allowAccountLock = $form->get('allowAccountLock');
@@ -13,6 +10,9 @@ $showAddressBook = $form->get('showAddressBook');
 $noticeType = $form->get('noticeType');
 $oldPayslipType = $form->get('oldPayslipType');
 $latePenaltyLeaveDeduction = $form->get('latePenaltyLeaveDeduction');
+$enablePrevMthLeaveReq = $form->get('enablePrevMthLeaveReq');
+$includeDayoffAsLeave = $form->get('includeDayoffAsLeave');
+$includeHolidayAsLeave = $form->get('includeHolidayAsLeave');
 
 $submit = $form->get('submit');
 
@@ -141,6 +141,33 @@ if ($this->messages) {
                             <?php print $this->formElement($latePenaltyLeaveDeduction); ?>
                             <?php print $this->formElementErrors()->render($latePenaltyLeaveDeduction, ['class' => 'help-block error']); ?>
                         </div>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($enablePrevMthLeaveReq); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($enablePrevMthLeaveReq); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($enablePrevMthLeaveReq, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($includeDayoffAsLeave); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includeDayoffAsLeave); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($includeDayoffAsLeave, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($includeHolidayAsLeave); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includeHolidayAsLeave); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($includeHolidayAsLeave, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
                 <div class="">

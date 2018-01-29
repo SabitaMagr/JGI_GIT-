@@ -88,6 +88,27 @@ class SystemSettingForm {
     public $latePenaltyLeaveDeduction;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Enable Previous Month Leave Request"})
+     * @Annotation\Attributes({ "id":"enablePrevMthLeaveReq"})
+     */
+    public $enablePrevMthLeaveReq;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Dayoff As Leave"})
+     * @Annotation\Attributes({ "id":"includeDayoffAsLeave"})
+     */
+    public $includeDayoffAsLeave;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Holiday As Leave"})
+     * @Annotation\Attributes({ "id":"includeHolidayAsLeave"})
+     */
+    public $includeHolidayAsLeave;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success","id":"btnSubmit"})
      */

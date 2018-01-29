@@ -15,6 +15,9 @@ class Preference extends Model {
     public $noticeType = 'M'; //['S','M']
     public $oldPayslipType = 'N';
     public $latePenaltyLeaveDeduction = 0.5;
+    public $enablePrevMthLeaveReq = 'Y';
+    public $includeDayoffAsLeave = 'Y';
+    public $includeHolidayAsLeave = 'Y';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -27,6 +30,9 @@ class Preference extends Model {
     CONST NOTICE_TYPE = "NOTICE_TYPE";
     CONST OLD_PAYSLIP_TYPE = "OLD_PAYSLIP_TYPE";
     CONST LATE_PENALTY_LEAVE_DEDUCTION = "LATE_PENALTY_LEAVE_DEDUCTION";
+    CONST ENABLE_PREV_MTH_LEAVE_REQ = "ENABLE_PREV_MTH_LEAVE_REQ";
+    CONST INCLUDE_DAYOFF_AS_LEAVE = "INCLUDE_DAYOFF_AS_LEAVE";
+    CONST INCLUDE_HOLIDAY_AS_LEAVE = "INCLUDE_HOLIDAY_AS_LEAVE";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -40,6 +46,9 @@ class Preference extends Model {
         'noticeType' => self::NOTICE_TYPE,
         'oldPayslipType' => self::OLD_PAYSLIP_TYPE,
         'latePenaltyLeaveDeduction' => self::LATE_PENALTY_LEAVE_DEDUCTION,
+        'enablePrevMthLeaveReq' => self::ENABLE_PREV_MTH_LEAVE_REQ,
+        'includeDayoffAsLeave' => self::INCLUDE_DAYOFF_AS_LEAVE,
+        'includeHolidayAsLeave' => self::INCLUDE_HOLIDAY_AS_LEAVE,
     ];
 
 }
