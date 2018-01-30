@@ -1,12 +1,14 @@
-CREATE OR REPLACE PROCEDURE HRIS_EMPLOYEE_SETUP_PROC(
+create or replace PROCEDURE HRIS_EMPLOYEE_SETUP_PROC(
     P_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE)
 AS
   V_JOIN_DATE HRIS_EMPLOYEES.JOIN_DATE%TYPE;
   V_FISCAL_YEAR_ID HRIS_FISCAL_YEARS.FISCAL_YEAR_ID%TYPE;
   V_MONTH_ID HRIS_MONTH_CODE.MONTH_ID%TYPE;
   V_CURRENT_MONTH_COUNT NUMBER;
-  V_IS_EMP_IN           CHAR(1 BYTE);
-  V_PRODATA_DAYS        NUMBER;
+  V_FISCAL_YEAR_MONTH_NO HRIS_MONTH_CODE.FISCAL_YEAR_MONTH_NO%TYPE;
+  V_IS_EMP_IN    CHAR(1 BYTE);
+  V_PRODATA_DAYS NUMBER;
+  V_COUNT        NUMBER;
 BEGIN
   BEGIN
     SELECT JOIN_DATE
@@ -21,10 +23,12 @@ BEGIN
   BEGIN
     SELECT FISCAL_YEAR_ID,
       MONTH_ID,
-      MONTH_NO
+      MONTH_NO,
+      FISCAL_YEAR_MONTH_NO
     INTO V_FISCAL_YEAR_ID,
       V_MONTH_ID,
-      V_CURRENT_MONTH_COUNT
+      V_CURRENT_MONTH_COUNT,
+      V_FISCAL_YEAR_MONTH_NO
     FROM HRIS_MONTH_CODE
     WHERE TRUNC(V_JOIN_DATE) BETWEEN FROM_DATE AND TO_DATE;
   EXCEPTION
@@ -36,7 +40,8 @@ BEGIN
     FOR leave IN
     (SELECT LEAVE_ID,
       DEFAULT_DAYS,
-      IS_PRODATA_BASIS
+      IS_PRODATA_BASIS,
+      IS_MONTHLY
     FROM HRIS_LEAVE_MASTER_SETUP
     WHERE STATUS                 ='E'
     AND ASSIGN_ON_EMPLOYEE_SETUP ='Y'
@@ -46,31 +51,75 @@ BEGIN
       IF V_IS_EMP_IN !='Y' THEN
         CONTINUE;
       END IF;
+      IF (leave.IS_MONTHLY ='Y') THEN
+        FOR M_NO IN V_FISCAL_YEAR_MONTH_NO..12
+        LOOP
+          SELECT COUNT(*)
+          INTO V_COUNT
+          FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
+          WHERE EMPLOYEE_ID       =P_EMPLOYEE_ID
+          AND LEAVE_ID            = leave.LEAVE_ID
+          AND FISCAL_YEAR_MONTH_NO=M_NO ;
+          IF ( V_COUNT            =0 )THEN
+            INSERT
+            INTO HRIS_EMPLOYEE_LEAVE_ASSIGN
+              (
+                EMPLOYEE_ID,
+                LEAVE_ID,
+                PREVIOUS_YEAR_BAL,
+                TOTAL_DAYS,
+                BALANCE,
+                FISCAL_YEAR,
+                FISCAL_YEAR_MONTH_NO,
+                CREATED_DT
+              )
+              VALUES
+              (
+                P_EMPLOYEE_ID,
+                leave.LEAVE_ID,
+                0,
+                leave.DEFAULT_DAYS,
+                leave.DEFAULT_DAYS,
+                V_FISCAL_YEAR_ID,
+                M_NO,
+                TRUNC(SYSDATE)
+              );
+          END IF;
+        END LOOP;
+        CONTINUE;
+      END IF;
       V_PRODATA_DAYS           := leave.DEFAULT_DAYS;
       IF leave.IS_PRODATA_BASIS = 'Y' THEN
         V_PRODATA_DAYS         :=ROUND(leave.DEFAULT_DAYS*((13-V_CURRENT_MONTH_COUNT)/12));
       END IF;
-      INSERT
-      INTO HRIS_EMPLOYEE_LEAVE_ASSIGN
-        (
-          EMPLOYEE_ID,
-          LEAVE_ID,
-          PREVIOUS_YEAR_BAL,
-          TOTAL_DAYS,
-          BALANCE,
-          FISCAL_YEAR,
-          CREATED_DT
-        )
-        VALUES
-        (
-          P_EMPLOYEE_ID,
-          leave.LEAVE_ID,
-          0,
-          V_PRODATA_DAYS,
-          V_PRODATA_DAYS,
-          V_FISCAL_YEAR_ID,
-          TRUNC(SYSDATE)
-        );
+      SELECT COUNT(*)
+      INTO V_COUNT
+      FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
+      WHERE EMPLOYEE_ID =P_EMPLOYEE_ID
+      AND LEAVE_ID      = leave.LEAVE_ID;
+      IF ( V_COUNT      =0 )THEN
+        INSERT
+        INTO HRIS_EMPLOYEE_LEAVE_ASSIGN
+          (
+            EMPLOYEE_ID,
+            LEAVE_ID,
+            PREVIOUS_YEAR_BAL,
+            TOTAL_DAYS,
+            BALANCE,
+            FISCAL_YEAR,
+            CREATED_DT
+          )
+          VALUES
+          (
+            P_EMPLOYEE_ID,
+            leave.LEAVE_ID,
+            0,
+            V_PRODATA_DAYS,
+            V_PRODATA_DAYS,
+            V_FISCAL_YEAR_ID,
+            TRUNC(SYSDATE)
+          );
+      END IF;
     END LOOP;
   END;
   BEGIN
@@ -82,17 +131,11 @@ BEGIN
       AND START_DATE                >=TRUNC(V_JOIN_DATE)
     )
     LOOP
-      INSERT
-      INTO HRIS_EMPLOYEE_HOLIDAY
-        (
-          EMPLOYEE_ID,
-          HOLIDAY_ID
-        )
-        VALUES
-        (
-          P_EMPLOYEE_ID,
-          holiday.HOLIDAY_ID
-        );
+      HRIS_HOLIDAY_ASSIGN_AUTO
+      (
+        holiday.HOLIDAY_ID,P_EMPLOYEE_ID
+      )
+      ;
     END LOOP;
   END;
 END;
