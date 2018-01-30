@@ -16,13 +16,13 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.editLink = '<?= $this->url("customer-waged-employee", ["action" => "edit"]); ?>';
-    document.deleteLink = '<?= $this->url("customer-waged-employee", ["action" => "delete"]); ?>';
+    document.editLink = '<?= $this->url("service-employee", ["action" => "edit"]); ?>';
+    document.deleteLink = '<?= $this->url("service-employee", ["action" => "delete"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\customer-waged-employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\service-employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 
@@ -35,7 +35,7 @@ $this->headScript()
             </div>
             <div class="actions">
                 <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
-                    <a href="<?= $this->url('customer-waged-employee', ['action' => 'add']) ?>" class="btn default btn-sm">
+                    <a href="<?= $this->url('service-employee', ['action' => 'add']) ?>" class="btn default btn-sm">
                         <i class="fa fa-plus-square icon-black"></i>
                         New 
                     </a>

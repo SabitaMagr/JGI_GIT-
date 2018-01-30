@@ -9,7 +9,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("WagedEmployeeSetupForm")
  */
 
-class WagedEmployeeSetupForm {
+class ServiceEmployeeSetupForm {
     
     public $employeeId;
     
@@ -120,20 +120,20 @@ class WagedEmployeeSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship No"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"50"}})
-     * @Annotation\Attributes({ "id":"idCitizenshipNo", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"citizenshipNo", "class":"form-control" })
      */
     
-       public $idCitizenshipNo;
+       public $citizenshipNo;
        
        /**
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship Issue Date"})
-     * @Annotation\Attributes({"class":"form-control","id":"idCitizenshipIssueDate" })
+     * @Annotation\Attributes({"class":"form-control","id":"citizenshipIssueDate" })
      */
     
-      public  $idCitizenshipIssueDate;
+      public  $citizenshipIssueDate;
       
       
       /**
@@ -141,55 +141,114 @@ class WagedEmployeeSetupForm {
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Citizenship Issue Place"})
-     * @Annotation\Attributes({ "id":"idCitizenshipIssuePlace", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"citizenshipIssuePlace", "class":"form-control" })
      */
     
-      public  $idCitizenshipIssuePlace;
+      public  $citizenshipIssuePlace;
       
        /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Per Zone"})
-     * @Annotation\Attributes({ "id":"addrPermZoneId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Permanent Zone"})
+     * @Annotation\Attributes({ "id":"permanentZoneId","class":"form-control"})
      */
     
-      public  $addrPermZoneId;
+      public  $permanentZoneId;
       
       /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":" Per District"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":" Permanent District"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"addrPermDistrictId","class":"form-control"})
+     * @Annotation\Attributes({ "id":"permanentDistrictId","class":"form-control"})
      */
     
-       public $addrPermDistrictId;
+       public $permanentDistrictId;
        
        /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":" Temp Zone"})
-     * @Annotation\Attributes({ "id":"addrTempZoneId","class":"form-control"})
+     * @Annotation\Attributes({ "id":"temporaryZoneId","class":"form-control"})
      */
     
-      public  $addrTempZoneId;
+      public  $temporaryZoneId;
       
       /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":" Temp District"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"addrTempDistrictId","class":"form-control"})
+     * @Annotation\Attributes({ "id":"temporaryDistrictId","class":"form-control"})
      */
     
-       public $addrTempDistrictId;
+       public $temporaryDistrictId;
        
        /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Employee Type","value_options":{"P":"Part Time","F":"Full Time"}})
+     * @Annotation\Attributes({ "id":"employeeType","class":"form-control"})
+     */
+    public $employeeType;
+    
+     /**
+     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Account No"})
+     * @Annotation\Attributes({ "id":"accountNo", "class":"form-control" })
+     */
+    public $accountNo;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
+     * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
+     */
+    public $branchId;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Department"})
+     * @Annotation\Attributes({ "id":"$departmentId","class":"form-control"})
+     */
+    public $departmentId;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Designation"})
+     * @Annotation\Attributes({ "id":"designationId","class":"form-control"})
+     */
+    public $designationId;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Position"})
+     * @Annotation\Attributes({ "id":"positionId","class":"form-control"})
+     */
+    public $positionId;
+    
+    
+    
+    
     
 }

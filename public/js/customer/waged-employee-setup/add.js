@@ -2,13 +2,15 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
+        
+         app.addDatePicker($('#citizenshipIssueDate'));
 
-        var addrPermZoneId = $('#addrPermZoneId');
-        var addrPermDistrictId = $('#addrPermDistrictId');
-        var addrTempZoneId = $('#addrTempZoneId');
-        var addrTempDistrictId = $('#addrTempDistrictId');
-
-
+        var addrPermZoneId = $('#permanentZoneId');
+        var addrPermDistrictId = $('#permanentDistrictId');
+        var addrTempZoneId = $('#temporaryZoneId');
+        var addrTempDistrictId = $('#temporaryDistrictId');
+        
+        
         var onChangePermZone = function (zoneId) {
             if (zoneId == null) {
                 app.populateSelectElement(addrPermDistrictId, []);

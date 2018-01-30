@@ -14,13 +14,24 @@ $bloodGroupId = $form->get('bloodGroupId');
 $telephoneNo = $form->get('telephoneNo');
 $mobileNo = $form->get('mobileNo');
 $email = $form->get('email');
-$idCitizenshipNo = $form->get('idCitizenshipNo');
-$idCitizenshipIssueDate = $form->get('idCitizenshipIssueDate');
-$idCitizenshipIssuePlace = $form->get('idCitizenshipIssuePlace');
-$addrPermZoneId = $form->get('addrPermZoneId');
-$addrPermDistrictId = $form->get('addrPermDistrictId');
-$addrTempZoneId = $form->get('addrTempZoneId');
-$addrTempDistrictId = $form->get('addrTempDistrictId');
+$idCitizenshipNo = $form->get('citizenshipNo');
+$idCitizenshipIssueDate = $form->get('citizenshipIssueDate');
+$idCitizenshipIssuePlace = $form->get('citizenshipIssuePlace');
+$addrPermZoneId = $form->get('permanentZoneId');
+$addrPermDistrictId = $form->get('permanentDistrictId');
+$addrTempZoneId = $form->get('temporaryZoneId');
+$addrTempDistrictId = $form->get('temporaryDistrictId');
+
+
+$employeeType = $form->get('employeeType');
+$branchId = $form->get('branchId');
+$departmentId = $form->get('departmentId');
+$designationId = $form->get('designationId');
+$positionId = $form->get('positionId');
+$accountNo = $form->get('accountNo');
+
+
+
 
 $genderId->setOptions(["value_options" => $genders]);
 $bloodGroupId->setOptions(["value_options" => $bloodGroups]);
@@ -28,26 +39,29 @@ $addrPermZoneId->setOptions(["value_options" => $zones]);
 $addrTempZoneId->setOptions(["value_options" => $zones]);
 
 
+$branchId->setValueOptions($branches);
+$departmentId->setValueOptions($departments);
+$designationId->setValueOptions($designations);
+$positionId->setValueOptions($positions);
+
+
+
+$addressValues['perZoneValue']='';
+$addressValues['perDisValue']='';
+$addressValues['tempZoneValue']='';
+$addressValues['tempDisValue']=='';
+
 
 $submit = $form->get('submit');
 
-$form->setAttribute('action', $this->url('customer-waged-employee', ['action' => 'edit', "id" => $id]));
+$form->setAttribute('action', $this->url('service-employee', ['action' => 'add']));
 $form->prepare();
 
-
-$addressValues['perZoneValue']=$addrPermZoneId->getValue();
-$addressValues['perDisValue']=$addrPermDistrictId->getValue();
-$addressValues['tempZoneValue']=$addrTempZoneId->getValue();
-$addressValues['tempDisValue']=$addrTempDistrictId->getValue();
-//print_r($addressValues);
-//die();
-
 ?>
-
 <script>
     document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
     document.addressValues = <?= json_encode($addressValues)?>;
-    document.editPage = true;
+    document.editPage = false;
 </script>
 
 <div class="page-bar">
@@ -70,7 +84,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
 
                 <div class=" row">
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($firstName); ?>
                             <?php print $this->formElement($firstName); ?>
@@ -78,7 +92,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($middleName); ?>
                             <?php print $this->formElement($middleName); ?>
@@ -86,7 +100,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($lastName); ?>
                             <?php print $this->formElement($lastName); ?>
@@ -94,7 +108,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($genderId); ?>
                             <?php print $this->formElement($genderId); ?>
@@ -102,7 +116,15 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($employeeType); ?>
+                            <?php print $this->formElement($employeeType); ?>
+                            <?php print $this->formElementErrors()->render($employeeType, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($bloodGroupId); ?>
                             <?php print $this->formElement($bloodGroupId); ?>
@@ -110,7 +132,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($telephoneNo); ?>
                             <?php print $this->formElement($telephoneNo); ?>
@@ -118,7 +140,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($mobileNo); ?>
                             <?php print $this->formElement($mobileNo); ?>
@@ -126,7 +148,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($email); ?>
                             <?php print $this->formElement($email); ?>
@@ -134,7 +156,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($idCitizenshipNo); ?>
                             <?php print $this->formElement($idCitizenshipNo); ?>
@@ -142,7 +164,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($idCitizenshipIssueDate); ?>
                             <?php print $this->formElement($idCitizenshipIssueDate); ?>
@@ -150,7 +172,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($idCitizenshipIssuePlace); ?>
                             <?php print $this->formElement($idCitizenshipIssuePlace); ?>
@@ -158,7 +180,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($addrPermZoneId); ?>
                             <?php print $this->formElement($addrPermZoneId); ?>
@@ -166,7 +188,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
                     
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($addrPermDistrictId); ?>
                             <?php print $this->formElement($addrPermDistrictId); ?>
@@ -174,7 +196,7 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($addrTempZoneId); ?>
                             <?php print $this->formElement($addrTempZoneId); ?>
@@ -183,11 +205,53 @@ $addressValues['tempDisValue']=$addrTempDistrictId->getValue();
                     </div>
 
                     
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
                         <div class="form-group">
                             <?php print $this->formLabel($addrTempDistrictId); ?>
                             <?php print $this->formElement($addrTempDistrictId); ?>
                             <?php print $this->formElementErrors()->render($addrTempDistrictId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($branchId); ?>
+                            <?php print $this->formElement($branchId); ?>
+                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($departmentId); ?>
+                            <?php print $this->formElement($departmentId); ?>
+                            <?php print $this->formElementErrors()->render($departmentId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($designationId); ?>
+                            <?php print $this->formElement($designationId); ?>
+                            <?php print $this->formElementErrors()->render($designationId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($positionId); ?>
+                            <?php print $this->formElement($positionId); ?>
+                            <?php print $this->formElementErrors()->render($positionId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-3" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($accountNo); ?>
+                            <?php print $this->formElement($accountNo); ?>
+                            <?php print $this->formElementErrors()->render($accountNo, ['class' => 'help-block']); ?>
                         </div>
                     </div>
 

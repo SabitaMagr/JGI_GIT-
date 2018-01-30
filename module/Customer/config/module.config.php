@@ -7,7 +7,7 @@ use Customer\Controller\ContractAttendance;
 use Customer\Controller\ContractEmployees;
 use Customer\Controller\CustomerContract;
 use Customer\Controller\CustomerSetup;
-use Customer\Controller\WagedEmployeeSetup;
+use Customer\Controller\ServiceEmployeeSetup;
 use Zend\Router\Http\Segment;
 
 return [
@@ -41,16 +41,16 @@ return [
                     ],
                 ],
             ],
-            'customer-waged-employee' => [
+            'service-employee' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/customer/waged/employee[/:action[/:id]]',
+                    'route' => '/customer/service/employee[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => WagedEmployeeSetup::class,
+                        'controller' => ServiceEmployeeSetup::class,
                         'action' => 'index'
                     ],
                 ],
@@ -140,28 +140,28 @@ return [
                 ],
             ],
         ],
-        'customer-waged-employee' => [
+        'service-employee' => [
             [
                 'label' => "Waged Employee",
-                'route' => "customer-waged-employee"
+                'route' => "service-employee"
             ],
             [
                 'label' => "Waged Employee",
-                'route' => "customer-waged-employee",
+                'route' => "service-employee",
                 'pages' => [
                     [
                         'label' => 'List',
-                        'route' => 'customer-waged-employee',
+                        'route' => 'service-employee',
                         'action' => 'index',
                     ],
                     [
                         'label' => 'Add',
-                        'route' => 'customer-waged-employee',
+                        'route' => 'service-employee',
                         'action' => 'add',
                     ],
                     [
                         'label' => 'Edit',
-                        'route' => 'customer-waged-employee',
+                        'route' => 'service-employee',
                         'action' => 'edit',
                     ],
                 ],
@@ -172,7 +172,7 @@ return [
         'factories' => [
             CustomerSetup::class => ControllerFactory::class,
             CustomerContract::class => ControllerFactory::class,
-            WagedEmployeeSetup::class => ControllerFactory::class,
+            ServiceEmployeeSetup::class => ControllerFactory::class,
             ContractAttendance::class => ControllerFactory::class,
             ContractEmployees::class => ControllerFactory::class,
         ],
