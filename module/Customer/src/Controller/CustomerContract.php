@@ -115,9 +115,9 @@ class CustomerContract extends AbstractActionController {
                     }
                 }
 
-                EntityHelper::rawQueryResult($this->adapter, "BEGIN
-                    HRIS_ATTD_BETWEEN_DATES({$customerContract->contractId});
-                        END;");
+//                EntityHelper::rawQueryResult($this->adapter, "BEGIN
+//                    HRIS_ATTD_BETWEEN_DATES({$customerContract->contractId});
+//                        END;");
 
                 $this->flashmessenger()->addMessage("Customer Contract added successfully.");
                 return $this->redirect()->toRoute("customer-contract");

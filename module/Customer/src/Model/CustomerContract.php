@@ -11,9 +11,6 @@ class CustomerContract extends Model {
     CONST CUSTOMER_ID = "CUSTOMER_ID";
     CONST START_DATE = "START_DATE";
     CONST END_DATE = "END_DATE";
-    CONST IN_TIME = "IN_TIME";
-    CONST OUT_TIME = "OUT_TIME";
-    CONST WORKING_HOURS = "WORKING_HOURS";
     CONST WORKING_CYCLE = "WORKING_CYCLE";
     CONST CHARGE_TYPE = "CHARGE_TYPE";
     CONST CHARGE_RATE = "CHARGE_RATE";
@@ -29,9 +26,6 @@ class CustomerContract extends Model {
     public $customerId;
     public $startDate;
     public $endDate;
-    public $inTime;
-    public $outTime;
-    public $workingHours;
     public $workingCycle;
     public $chargeType;
     public $chargeRate;
@@ -47,9 +41,6 @@ class CustomerContract extends Model {
         'customerId' => self::CUSTOMER_ID,
         'startDate' => self::START_DATE,
         'endDate' => self::END_DATE,
-        'inTime' => self::IN_TIME,
-        'outTime' => self::OUT_TIME,
-        'workingHours' => self::WORKING_HOURS,
         'workingCycle' => self::WORKING_CYCLE,
         'chargeType' => self::CHARGE_TYPE,
         'chargeRate' => self::CHARGE_RATE,

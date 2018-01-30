@@ -39,9 +39,6 @@ class CustomerContractRepo implements RepositoryInterface {
                   BS_DATE(CC.START_DATE)               AS START_DATE_BS,
                   TO_CHAR(CC.END_DATE,'DD-MON-YYYY')   AS END_DATE_AD,
                   BS_DATE(CC.END_DATE)                 AS END_DATE_BS,
-                  TO_CHAR(CC.IN_TIME,'HH:MI AM')       AS IN_TIME,
-                  TO_CHAR(CC.OUT_TIME,'HH:MI AM')      AS OUT_TIME,
-                  MIN_TO_HOUR(CC.WORKING_HOURS)        AS WORKING_HOURS,
                   WORKING_CYCLE_DESC(CC.WORKING_CYCLE) AS WORKING_CYCLE,
                   CHARGE_TYPE_DESC(CC.CHARGE_TYPE)     AS CHARGE_TYPE,
                   CC.CHARGE_RATE,
@@ -60,10 +57,7 @@ class CustomerContractRepo implements RepositoryInterface {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustomerContract::class,NULL, [
                         CustomerContract::START_DATE,
                         CustomerContract::END_DATE,
-                    ],
-            [CustomerContract::IN_TIME,CustomerContract::OUT_TIME],
-                    NUll,NULL,NUll,NULL,NUll,
-                    [CustomerContract::WORKING_HOURS]
+                    ]
                     ), false);
             $select->where([CustomerContract::STATUS => EntityHelper::STATUS_ENABLED]);
             $select->where([CustomerContract::CONTRACT_ID => $id]);
