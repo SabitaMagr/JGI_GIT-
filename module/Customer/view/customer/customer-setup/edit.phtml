@@ -8,6 +8,7 @@ $phoneNo = $form->get('phoneNo');
 $contactPersonName = $form->get('contactPersonName');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
+$panNo = $form->get('panNo');
 
 $form->setAttribute('action', $this->url('customer-setup', ['action' => 'edit', "id" => $id]));
 $form->prepare();
@@ -45,6 +46,13 @@ $form->prepare();
                             <?php print $this->formLabel($address); ?>
                             <?php print $this->formElement($address); ?>
                             <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($panNo); ?>
+                            <?php print $this->formElement($panNo); ?>
+                            <?php print $this->formElementErrors()->render($panNo, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">

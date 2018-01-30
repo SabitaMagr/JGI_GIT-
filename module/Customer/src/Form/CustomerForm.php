@@ -85,5 +85,15 @@ class CustomerForm {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"PAN NO"})
+     * @Annotation\Attributes({ "id":"panNo", "class":"form-control" })
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"150"}})
+     */
+    public $panNo;
 
 }

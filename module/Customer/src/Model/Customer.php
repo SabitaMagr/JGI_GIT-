@@ -20,6 +20,7 @@ class Customer extends Model {
     const MODIFIED_DT = "MODIFIED_DT";
     const REMARKS = "REMARKS";
     const STATUS = "STATUS";
+    const PAN_NO = "PAN_NO";
 
     public $customerId;
     public $customerCode;
@@ -34,6 +35,8 @@ class Customer extends Model {
     public $modifiedDt;
     public $remarks;
     public $status;
+    public $panNo;
+    
     public $mappings = [
         'customerId' => self::CUSTOMER_ID,
         'customerCode' => self::CUSTOMER_CODE,
@@ -48,6 +51,7 @@ class Customer extends Model {
         'modifiedDt' => self::MODIFIED_DT,
         'remarks' => self::REMARKS,
         'status' => self::STATUS,
+        'panNo'=>self::PAN_NO
     ];
 
 }
