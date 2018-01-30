@@ -83,7 +83,7 @@ class SystemSettingForm {
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Options({"label":"Late Penalty Leave Deduction"})
-     * @Annotation\Attributes({ "id":"latePenaltyLeaveDeduction", "class":" form-control","min":"0"})
+     * @Annotation\Attributes({ "id":"latePenaltyLeaveDeduction", "class":" form-control","step":"0.5","min":"0","max":"100"})
      */
     public $latePenaltyLeaveDeduction;
 
