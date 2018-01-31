@@ -1,51 +1,34 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-
-        var $table = $('#table');
-
-
-        var columns = [
-            {field: "ATTENDANCE_DT", title: "Attendance Date"},
-            {field: "FULL_NAME", title: "Employee Name"},
-        ];
-        var map = {
-            'ATTENDANCE_DT': 'Attendance Date',
-            'FULL_NAME': 'Employee Name',
-        }
-        app.initializeKendoGrid($table, columns);
-
-        app.searchTable($table, ['EMPLOYEE_ID', 'FULL_NAME']);
-
-        $('#excelExport').on('click', function () {
-            app.excelExport($table, map, 'Contract Employee List.xlsx');
-        });
-        $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, map, 'Contract Employee List.pdf');
-        });
-
-        app.pullDataById("", {}).then(function (response) {
-            app.renderKendoGrid($table, response.data);
-        }, function (error) {
-
-        });
         
         $('select').select2();
+        var totalWorkingHr=$('.totalWorkingHr')
+        var employeeStartTime=$('.employeeStartTime')
+        var employeeEndTime=$('.employeeEndTime')
         
+        app.addComboTimePicker(totalWorkingHr,employeeStartTime,employeeEndTime);
+
         
-        app.populateSelect($('.employees'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '');
+
        
-        app.addDatePicker($('.contractEmpStartDate'));
-        app.addDatePicker($('.contractEmpEndDate'));
-        
-        
-        
+
+
+
+        app.populateSelect($('.employees'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '');
+
+//        app.addDatePicker($('.contractEmpStartDate'));
+//        app.addDatePicker($('.contractEmpEndDate'));
+
+
+
         $('#addContractEmp').on('click', function () {
 
             var appendValues = "<tr>"
                     + "<td><select name='employee[]' class='employees'></select></td>"
-                    + "<td><input type='text' class='contractEmpStartDate' name='contractEmpStartDate[]'></td>"
-                    + "<td><input type='text' class='contractEmpEndDate' name='contractEmpEndDate[]'></td>"
+                    +"<td><input type='text' class='totalWorkingHr' data-format='h:mm' data-template='hh : mm' ></td>"
+                    +"<td><input type='text' class='employeeStartTime' data-format='h:mm a' data-template='hh : mm A'></td>"
+                    +"<td><input type='text' class='employeeEndTime' data-format='h:mm a' data-template='hh : mm A'></td>"
                     + "<td>"
                     + "<div class='th-inner '>"
                     + "<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
@@ -58,40 +41,31 @@
 
             $('#tblContractEmp tbody').append(appendValues);
 
-            $('#tblContractEmp tbody').find('.contractEmpStartDate:last').datepicker({
-                format: 'dd-M-yyyy',
-                todayHighlight: true,
-                autoclose: true,
-                startDate: new Date(document.customerContractDetails.START_DATE),
-                endDate: new Date(document.customerContractDetails.END_DATE) 
-            });
 
-            $('#tblContractEmp tbody').find('.contractEmpEndDate:last').datepicker({
-                format: 'dd-M-yyyy',
-                todayHighlight: true,
-                autoclose: true,
-                startDate: new Date(document.customerContractDetails.START_DATE),
-                endDate: new Date(document.customerContractDetails.END_DATE)
-            });
-            
-            
+
 
             app.populateSelect($('#tblContractEmp tbody').find('.employees:last'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '');
             $('#tblContractEmp tbody').find('.employees:last').select2();
+            
+            app.addComboTimePicker(
+            $('#tblContractEmp tbody').find('.totalWorkingHr:last'),
+            $('#tblContractEmp tbody').find('.employeeStartTime:last'),
+            $('#tblContractEmp tbody').find('.employeeEndTime:last')
+            );
 
 
         });
-        
-        
-        function populateEmployees() {
+
+
+        function populateEmployees(employeeData) {
             $("#tblContractEmp tbody").find("tr:gt(0)").remove();
 
-            $.each(document.contractEmpDetails, function (index, value) {
+            $.each(employeeData, function (index, value) {
 
                 var appendValues = "<tr>"
                         + "<td><select name='employee[]' class='employees'></select></td>"
-                        + "<td><input type='text' class='contractEmpStartDate' name='contractEmpStartDate[]'></td>"
-                        + "<td><input type='text' class='contractEmpEndDate' name='contractEmpEndDate[]'></td>"
+//                        + "<td><input type='text' class='contractEmpStartDate' name='contractEmpStartDate[]'></td>"
+//                        + "<td><input type='text' class='contractEmpEndDate' name='contractEmpEndDate[]'></td>"
                         + "<td>"
                         + "<div class='th-inner '>"
                         + "<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
@@ -108,8 +82,8 @@
                     format: 'dd-M-yyyy',
                     todayHighlight: true,
                     autoclose: true,
-                    startDate: new Date(document.customerContractDetails.START_DATE),
-                    endDate: new Date(document.customerContractDetails.END_DATE),
+//                    startDate: new Date(),
+//                    endDate: new Date(),
                     setDate: new Date()
                 });
 
@@ -117,8 +91,8 @@
                     format: 'dd-M-yyyy',
                     todayHighlight: true,
                     autoclose: true,
-                    startDate: new Date(document.customerContractDetails.START_DATE),
-                    endDate: new Date(document.customerContractDetails.END_DATE),
+//                    startDate: new Date(),
+//                    endDate: new Date(),
                     setDate: new Date()
                 });
 
@@ -133,19 +107,35 @@
             });
 
         }
-        
-        
+
+
         $('#delContractEmp').on('click', function () {
             $('#tblContractEmp .chkBoxContractEmp:checked').each(function () {
                 $(this).parents("tr").remove()
             });
         });
-        
-        
-        populateEmployees();
-        
-        
-        
+
+
+//        populateEmployees();
+
+
+
+//        console.log(document.monthDetails);
+        app.populateSelect($('#monthSelect'), document.monthDetails, 'MONTH_ID', 'MONTH_TITLE', 'Select Month', '');
+
+
+        $('#monthSelect').on('change', function () {
+            var selectedVal = $(this).val();
+            app.pullDataById(document.pullEmployeeAssignBy, {monthId: selectedVal}).then(function (response) {
+
+                if (response.data.length > 0) {
+                    populateEmployees(response.data);
+                }
+
+            }, function (error) {
+                console.log(error);
+            });
+        });
 
 
 
