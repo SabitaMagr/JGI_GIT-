@@ -36,5 +36,30 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'LeaveBalanaceList');
         });
+
+        var $year = $('#fiscalYear');
+        var $month = $('#fiscalMonth');
+        var $monthlyLeaveTable = $('#monthlyLeaveTable');
+        app.setFiscalMonth($year, $month);
+        app.initializeKendoGrid($monthlyLeaveTable, [
+            {field: "LEAVE_ENAME", title: "Leave Name"},
+            {field: "TOTAL_DAYS", title: "Total Days"},
+            {field: "LEAVE_TAKEN", title: "Leave taken"},
+            {field: "BALANCE", title: "Available Days"}
+        ]);
+
+        $month.on('change', function () {
+            var value = $(this).val();
+            if (value == null) {
+                return;
+            }
+            app.serverRequest("", {fiscalYearMonthNo: value}).then(function (response) {
+                app.renderKendoGrid($monthlyLeaveTable, response.data);
+            }, function (error) {
+
+            });
+        });
+
+
     });
 })(window.jQuery, window.app);

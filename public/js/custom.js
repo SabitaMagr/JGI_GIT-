@@ -1386,6 +1386,41 @@ window.app = (function ($, toastr, App) {
         }
     };
 
+    var setFiscalMonth = function ($year, $month) {
+        var link = document.getFiscalYearMonthLink;
+
+        var yearList = null;
+        var monthList = null;
+        var currentMonth = null;
+        var selectedYearMonthList = null;
+        serverRequest(link, {}).then(function (response) {
+            if (response.success) {
+                yearList = response.data.years;
+                monthList = response.data.months;
+                currentMonth = response.data.currentMonth;
+                populateSelect($year, yearList, 'FISCAL_YEAR_ID', 'FISCAL_YEAR_NAME', 'Fiscal Years', null, currentMonth['FISCAL_YEAR_ID']);
+                yearOnChange(currentMonth['FISCAL_YEAR_ID']);
+            }
+        }, function (error) {
+
+        });
+
+        $year.on('change', function () {
+            var value = $(this).val();
+            yearOnChange(value);
+        });
+
+        var yearOnChange = function (fiscalYearId) {
+            selectedYearMonthList = monthList.filter(function (item) {
+                return item['FISCAL_YEAR_ID'] == fiscalYearId;
+            });
+            var currentMonths = selectedYearMonthList.filter(function (item) {
+                return item['MONTH_ID'] == currentMonth['MONTH_ID'];
+            });
+            populateSelect($month, selectedYearMonthList, 'MONTH_ID', 'MONTH_EDESC', 'Months', null, currentMonths.length > 0 ? currentMonth['MONTH_ID'] : null);
+        };
+    };
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1425,6 +1460,7 @@ window.app = (function ($, toastr, App) {
         exportDomToPdf2: exportDomToPdf2,
         serverRequest: serverRequest,
         bulkServerRequest: bulkServerRequest,
-        setDropZone: setDropZone
+        setDropZone: setDropZone,
+        setFiscalMonth: setFiscalMonth
     };
 })(window.jQuery, window.toastr, window.App);

@@ -2,9 +2,13 @@
 
 namespace Application\Controller;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Files;
+use Application\Model\FiscalYear;
+use Application\Model\Months;
 use Application\Repository\FileRepository;
+use Application\Repository\MonthRepository;
 use Exception;
 use ReflectionClass;
 use Zend\Authentication\Storage\StorageInterface;
@@ -131,6 +135,18 @@ class HrisController extends AbstractActionController {
             $fileRepository = new FileRepository($this->adapter);
             $fileDetail = $fileRepository->fetchById($postedData['fileId']);
             return new JsonModel(['success' => true, 'data' => $fileDetail, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getFiscalYearMonthAction() {
+        try {
+            $data['years'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
+            $monthRepo = new MonthRepository($this->adapter);
+            $data['months'] = iterator_to_array($monthRepo->fetchAll(), false);
+            $data['currentMonth'] = $monthRepo->getCurrentMonth();
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

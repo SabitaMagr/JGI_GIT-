@@ -9,7 +9,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
 
 class MonthRepository implements RepositoryInterface {
@@ -96,6 +95,15 @@ EOT;
     public function getCurrentDateBS() {
         $sql = <<<EOT
             SELECT BS_DATE(TRUNC(SYSDATE)) AS CURRENT_DATE FROM DUAL              
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
+    public function getCurrentMonth() {
+        $sql = <<<EOT
+            SELECT * FROM HRIS_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE              
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
