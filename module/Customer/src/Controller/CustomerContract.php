@@ -198,9 +198,9 @@ class CustomerContract extends AbstractActionController {
                     }
                 }
                 
-                EntityHelper::rawQueryResult($this->adapter, "BEGIN
-                    HRIS_ATTD_BETWEEN_DATES({$id});
-                        END;");
+//                EntityHelper::rawQueryResult($this->adapter, "BEGIN
+//                    HRIS_ATTD_BETWEEN_DATES({$id});
+//                        END;");
 
 
 

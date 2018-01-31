@@ -13,6 +13,11 @@ class CustContractEmp extends Model {
     CONST END_DATE = "END_DATE";
     CONST ASSIGNED_DATE = "ASSIGNED_DATE";
     CONST OLD_EMPLOYEE_ID = "OLD_EMPLOYEE_ID";
+    CONST START_TIME = "START_TIME";
+    CONST END_TIME = "END_TIME";
+    CONST WORKING_HOUR = "WORKING_HOUR";
+    CONST NEPALI_MONTH = "NEPALI_MONTH";
+    CONST NEPALI_YEAR = "NEPALI_YEAR";
 
     public $contractId;
     public $employeeId;
@@ -20,6 +25,10 @@ class CustContractEmp extends Model {
     public $endDate;
     public $assignedDate;
     public $oldEmployeeId;
+    public $startTime;
+    public $endTime;
+//    public $
+    
     public $mappings = [
         'contractId' => self::CONTRACT_ID,
         'employeeId' => self::EMPLOYEE_ID,

@@ -1,12 +1,19 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
-$this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
-        ->appendFile($this->basePath('js/customer/contract-employees/view.js'));
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+//$this->headLink()
+//        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+//        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+//$this->headScript()
+//        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+//        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+//        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
+
+$this->headScript()->appendFile($this->basePath('js/customer/contract-employees/view.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -20,6 +27,8 @@ $this->headScript()
     document.employeeList =<?= json_encode($employeeList); ?>;
     document.customerContractDetails =<?= json_encode($customerContractDetails) ?>;
     document.contractEmpDetails =<?= json_encode($contractEmpDetails) ?>;
+    document.monthDetails =<?= json_encode($monthDetails) ?>;
+    document.pullEmployeeAssignBy = '<?= $this->url('contract-employees', ['action' => 'monthWiseEmployeeList', 'id' => $id]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -55,24 +64,39 @@ $this->headScript()
                 </div>
             </div>
         </div>
-        <form method="POST" action="<?= $this->url('contract-employees', ['action' => 'employeeAssign', 'id' => $id]) ?>">
+
+        <form id='employeeAssign' method="POST" action="<?= $this->url('contract-employees', ['action' => 'employeeAssign', 'id' => $id]) ?>">
+
+            <div class="row margin-top-20">
+                <div class="col-lg-3">
+                    <label>Month</label>
+                    <select required="required" id="monthSelect">
+                    </select>
+                </div>
+
+            </div>
+
+
+
             <div class="row margin-top-20">
 
 
-                <div class="col-md-8">
+                <div class="col-md-10">
 
                     <table class="table table-bordered" id="tblContractEmp">
                         <tbody>
                             <tr>
                                 <td>Employee</td>
-                                <td>Start Dates</td>
-                                <td>End Dates</td>
+                                <td>Working Hour</td>
+                                <td>Start Time</td>
+                                <td>End Time</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td><select name="employee[]" class="employees"></select></td>
-                                <td><input type="text" class="contractEmpStartDate" name="contractEmpStartDate[]"></td>
-                                <td><input type="text" class="contractEmpEndDate" name="contractEmpEndDate[]"></td>
+                                <td><select required="required" name="employee[]" class="employees"></select></td>
+                                <td><input  name="totalWorkingHr[]" type="text" class="totalWorkingHr" data-format="h:mm" data-template="hh : mm" ></td>
+                                <td><input  name="employeeStartTime[]" type="text" class="employeeStartTime" data-format="h:mm a" data-template="hh : mm A"></td>
+                                <td><input  name="employeeEndTime[]" type="text" class="employeeEndTime" data-format="h:mm a" data-template="hh : mm A"></td>
                                 <td>
                                     <div class="th-inner ">
                                         <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -107,9 +131,7 @@ $this->headScript()
 
         </form>
 
-        <div id="table">
 
-        </div>
 
 
 

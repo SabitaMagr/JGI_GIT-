@@ -63,11 +63,24 @@ class ContractEmployees extends HrisController {
         $custEmployeeDetails = $custEmployeeRepo->fetchById($id);
 
 
+        $contractStartDate = $customerContractDetails['START_DATE'];
+        $contractEndDate = $customerContractDetails['END_DATE'];
+
+        $monthDetails = $this->repository->getAllMonthBetweenTwoDates($contractStartDate, $contractEndDate);
+//        echo '<pre>';
+//        echo $contractStartDate;
+//        echo $contractEndDate;
+//        print_r($customerContractDetails);
+//                print_r($monthDetails);
+//        die();
+
+
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
                     'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"]),
                     'customerContractDetails' => $customerContractDetails,
-                    'contractEmpDetails' => $custEmployeeDetails
+                    'contractEmpDetails' => $custEmployeeDetails,
+                    'monthDetails' => $monthDetails
         ]);
     }
 
@@ -81,6 +94,11 @@ class ContractEmployees extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postData = $request->getPost();
+            
+            
+            echo '<Pre>';
+            print_r($postData);
+            die();
 
 
             $employees = $request->getPost('employee');
@@ -116,6 +134,23 @@ class ContractEmployees extends HrisController {
 
             $this->flashmessenger()->addMessage("Contract Employee updated successfully.");
             return $this->redirect()->toRoute("contract-employees", ["action" => "view", "id" => $id]);
+        }
+    }
+
+    public function monthWiseEmployeeListAction() {
+
+        try {
+            $id = (int) $this->params()->fromRoute("id");
+            if ($id === 0) {
+                throw new Exception('id is undefined');
+            }
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+            $monthId = $request->getPost('monthId');
+            $employeeDetails = $this->repository->getAllMonthWiseEmployees($monthId);
+            return new JsonModel(['success' => true, 'data' => $employeeDetails, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

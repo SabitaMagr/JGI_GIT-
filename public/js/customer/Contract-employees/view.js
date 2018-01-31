@@ -1,17 +1,17 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
-        
+
         $('select').select2();
-        var totalWorkingHr=$('.totalWorkingHr')
-        var employeeStartTime=$('.employeeStartTime')
-        var employeeEndTime=$('.employeeEndTime')
-        
-        app.addComboTimePicker(totalWorkingHr,employeeStartTime,employeeEndTime);
+        var $totalWorkingHr = $('.totalWorkingHr');
+        var $employeeStartTime = $('.employeeStartTime');
+        var $employeeEndTime = $('.employeeEndTime');
 
-        
+        app.addComboTimePicker($totalWorkingHr, $employeeStartTime, $employeeEndTime);
 
-       
+
+
+
 
 
 
@@ -25,10 +25,10 @@
         $('#addContractEmp').on('click', function () {
 
             var appendValues = "<tr>"
-                    + "<td><select name='employee[]' class='employees'></select></td>"
-                    +"<td><input type='text' class='totalWorkingHr' data-format='h:mm' data-template='hh : mm' ></td>"
-                    +"<td><input type='text' class='employeeStartTime' data-format='h:mm a' data-template='hh : mm A'></td>"
-                    +"<td><input type='text' class='employeeEndTime' data-format='h:mm a' data-template='hh : mm A'></td>"
+                    + "<td><select required='required' name='employee[]' class='employees'></select></td>"
+                    + "<td><input name='totalWorkingHr[]' type='text' class='totalWorkingHr' data-format='h:mm' data-template='hh : mm' ></td>"
+                    + "<td><input name='employeeStartTime[]' type='text' class='employeeStartTime' data-format='h:mm a' data-template='hh : mm A'></td>"
+                    + "<td><input name='employeeEndTime[]' type='text' class='employeeEndTime' data-format='h:mm a' data-template='hh : mm A'></td>"
                     + "<td>"
                     + "<div class='th-inner '>"
                     + "<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
@@ -46,12 +46,12 @@
 
             app.populateSelect($('#tblContractEmp tbody').find('.employees:last'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '');
             $('#tblContractEmp tbody').find('.employees:last').select2();
-            
+
             app.addComboTimePicker(
-            $('#tblContractEmp tbody').find('.totalWorkingHr:last'),
-            $('#tblContractEmp tbody').find('.employeeStartTime:last'),
-            $('#tblContractEmp tbody').find('.employeeEndTime:last')
-            );
+                    $('#tblContractEmp tbody').find('.totalWorkingHr:last'),
+                    $('#tblContractEmp tbody').find('.employeeStartTime:last'),
+                    $('#tblContractEmp tbody').find('.employeeEndTime:last')
+                    );
 
 
         });
@@ -136,6 +136,65 @@
                 console.log(error);
             });
         });
+
+
+        var displayErrorMsg = function (object) {
+            var selectedVal = object.val()
+            var $parent = object.parent();
+            if (selectedVal == "") {
+                var $errorElement = $('</br><span class="errorMsg" aria-required="true">Field is Required</span>');
+                if (!($parent.find('span.errorMsg').length > 0)) {
+                    $parent.append($errorElement);
+                }
+                return 'error';
+            } else {
+                if ($parent.find('span.errorMsg').length > 0) {
+                    $parent.find('span.errorMsg').remove();
+                    $parent.find('br').remove();
+                }
+                return 'no error';
+            }
+        }
+
+
+        $('#employeeAssign').submit(function () {
+
+            var error = [];
+
+            $('.totalWorkingHr').each(function (index) {
+                console.log(this);
+                var errorResult = displayErrorMsg($(this));
+                if (errorResult == 'error') {
+                    error.push('error');
+                }
+            });
+
+            $('.employeeStartTime').each(function (index) {
+                var errorResult = displayErrorMsg($(this));
+                if (errorResult == 'error') {
+                    error.push('error');
+                }
+            });
+
+            $('.employeeEndTime').each(function (index) {
+                var errorResult = displayErrorMsg($(this));
+                if (errorResult == 'error') {
+                    error.push('error');
+                }
+            });
+
+            console.log(error);
+            if (error.length > 0) {
+                return false;
+            } else {
+                return true;
+            }
+
+        });
+
+
+
+
 
 
 
