@@ -15,4 +15,3 @@ IF DELETING THEN
   AND LEAVE_ID      = :new.LEAVE_ID;
 END IF;
 END;
-/
