@@ -61,11 +61,13 @@
             $("#tblContractEmp tbody").find("tr:gt(0)").remove();
 
             $.each(employeeData, function (index, value) {
+                console.log(value);
 
                 var appendValues = "<tr>"
                         + "<td><select name='employee[]' class='employees'></select></td>"
-//                        + "<td><input type='text' class='contractEmpStartDate' name='contractEmpStartDate[]'></td>"
-//                        + "<td><input type='text' class='contractEmpEndDate' name='contractEmpEndDate[]'></td>"
+                        + "<td><input name='totalWorkingHr[]' type='text' class='totalWorkingHr' data-format='h:mm' data-template='hh : mm' ></td>"
+                        + "<td><input name='employeeStartTime[]' type='text' class='employeeStartTime' data-format='h:mm a' data-template='hh : mm A'></td>"
+                        + "<td><input name='employeeEndTime[]' type='text' class='employeeEndTime' data-format='h:mm a' data-template='hh : mm A'></td>"
                         + "<td>"
                         + "<div class='th-inner '>"
                         + "<label class='mt-checkbox mt-checkbox-single mt-checkbox-outline'>"
@@ -78,30 +80,32 @@
 
                 $('#tblContractEmp tbody').append(appendValues);
 
-                $('#tblContractEmp tbody').find('.contractEmpStartDate:last').datepicker({
-                    format: 'dd-M-yyyy',
-                    todayHighlight: true,
-                    autoclose: true,
-//                    startDate: new Date(),
-//                    endDate: new Date(),
-                    setDate: new Date()
-                });
 
-                $('#tblContractEmp tbody').find('.contractEmpEndDate:last').datepicker({
-                    format: 'dd-M-yyyy',
-                    todayHighlight: true,
-                    autoclose: true,
-//                    startDate: new Date(),
-//                    endDate: new Date(),
-                    setDate: new Date()
-                });
 
-                $('#tblContractEmp tbody').find('.contractEmpStartDate:last').datepicker("update", value.START_DATE);
-                $('#tblContractEmp tbody').find('.contractEmpEndDate:last').datepicker("update", value.END_DATE);
+//                $('#tblContractEmp tbody').find('.contractEmpStartDate:last').datepicker("update", value.START_DATE);
+//                $('#tblContractEmp tbody').find('.contractEmpEndDate:last').datepicker("update", value.END_DATE);
 
                 app.populateSelect($('#tblContractEmp tbody').find('.employees:last'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '');
                 $('#tblContractEmp tbody').find('.employees:last').val(value.EMPLOYEE_ID);
                 $('#tblContractEmp tbody').find('.employees:last').select2();
+
+
+
+                $('#tblContractEmp tbody').find('.totalWorkingHr:last').combodate({
+                    minuteStep: 1,
+                    value: value.WORKING_HOUR
+                });
+
+                $('#tblContractEmp tbody').find('.employeeStartTime:last').combodate({
+                    minuteStep: 1,
+                    value: value.START_TIME
+                });
+
+                $('#tblContractEmp tbody').find('.employeeEndTime:last').combodate({
+                    minuteStep: 1,
+                    value: value.END_TIME
+                });
+
 
 
             });
@@ -127,10 +131,11 @@
         $('#monthSelect').on('change', function () {
             var selectedVal = $(this).val();
             app.pullDataById(document.pullEmployeeAssignBy, {monthId: selectedVal}).then(function (response) {
-
-                if (response.data.length > 0) {
-                    populateEmployees(response.data);
+//                console.log(response.data.length==o);
+                if (response.data.length == 0) {
+                    app.successMessage(['No Employee Assigned For This Month'])
                 }
+                populateEmployees(response.data);
 
             }, function (error) {
                 console.log(error);

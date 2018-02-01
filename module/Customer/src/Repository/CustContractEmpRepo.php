@@ -2,12 +2,14 @@
 
 namespace Customer\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\ContractAttendanceModel;
 use Customer\Model\CustContractEmp;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class CustContractEmpRepo implements RepositoryInterface {
@@ -72,10 +74,25 @@ class CustContractEmpRepo implements RepositoryInterface {
     }
 
     public function getAllMonthWiseEmployees($monthId) {
-        $sql = "select * from HRIS_CUST_CONTRACT_EMP where MONTH_CODE_ID=$monthId";
-        $statement = $this->adapter->query($sql);
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustContractEmp::class, NULL, NULL, [
+                    CustContractEmp::START_TIME,
+                    CustContractEmp::END_TIME
+                        ], null, null, null, false, false, [
+                    CustContractEmp::WORKING_HOUR,
+                ]), false);
+        $select->from(CustContractEmp::TABLE_NAME);
+        $select->where([CustContractEmp::MONTH_CODE_ID => $monthId]);
+        
+        $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return Helper::extractDbData($result);
+    }
+    
+    
+    public function deleteContractEmpMonthly($id,$monthId) {
+        $this->gateway->delete([CustContractEmp::CONTRACT_ID => $id,CustContractEmp::MONTH_CODE_ID => $monthId]);
     }
 
 }

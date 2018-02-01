@@ -16,6 +16,7 @@ class CustContractEmp extends Model {
     CONST START_TIME = "START_TIME";
     CONST END_TIME = "END_TIME";
     CONST WORKING_HOUR = "WORKING_HOUR";
+    CONST MONTH_CODE_ID = "MONTH_CODE_ID";
     CONST NEPALI_MONTH = "NEPALI_MONTH";
     CONST NEPALI_YEAR = "NEPALI_YEAR";
 
@@ -27,7 +28,10 @@ class CustContractEmp extends Model {
     public $oldEmployeeId;
     public $startTime;
     public $endTime;
-//    public $
+    public $workingHour;
+    public $monthCodeId;
+    public $nepaliMonth;
+    public $nepaliYear;
     
     public $mappings = [
         'contractId' => self::CONTRACT_ID,
@@ -36,6 +40,12 @@ class CustContractEmp extends Model {
         'endDate' => self::END_DATE,
         'assignedDate' => self::ASSIGNED_DATE,
         'oldEmployeeId' => self::OLD_EMPLOYEE_ID,
+         'startTime' => self::START_TIME,
+         'endTime' => self::END_TIME,
+         'workingHour' => self::WORKING_HOUR,
+         'monthCodeId' => self::MONTH_CODE_ID,
+         'nepaliMonth' => self::NEPALI_MONTH,
+         'nepaliYear' => self::NEPALI_YEAR
     ];
 
 }
