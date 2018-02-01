@@ -36,11 +36,13 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'LeaveBalanaceList');
         });
-
+        var months = null;
         var $year = $('#fiscalYear');
         var $month = $('#fiscalMonth');
         var $monthlyLeaveTable = $('#monthlyLeaveTable');
-        app.setFiscalMonth($year, $month);
+        app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
+            months = monthList;
+        });
         app.initializeKendoGrid($monthlyLeaveTable, [
             {field: "LEAVE_ENAME", title: "Leave Name"},
             {field: "TOTAL_DAYS", title: "Total Days"},
@@ -48,12 +50,19 @@
             {field: "BALANCE", title: "Available Days"}
         ]);
 
+
         $month.on('change', function () {
             var value = $(this).val();
             if (value == null) {
                 return;
             }
-            app.serverRequest("", {fiscalYearMonthNo: value}).then(function (response) {
+            var selectedMonthList = months.filter(function (item) {
+                return item['MONTH_ID'] === value;
+            });
+            if (selectedMonthList.length <= 0) {
+                return;
+            }
+            app.serverRequest("", {fiscalYearMonthNo: selectedMonthList[0]['FISCAL_YEAR_MONTH_NO']}).then(function (response) {
                 app.renderKendoGrid($monthlyLeaveTable, response.data);
             }, function (error) {
 

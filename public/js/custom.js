@@ -1386,7 +1386,7 @@ window.app = (function ($, toastr, App) {
         }
     };
 
-    var setFiscalMonth = function ($year, $month) {
+    var setFiscalMonth = function ($year, $month, fn) {
         var link = document.getFiscalYearMonthLink;
 
         var yearList = null;
@@ -1398,6 +1398,9 @@ window.app = (function ($, toastr, App) {
                 yearList = response.data.years;
                 monthList = response.data.months;
                 currentMonth = response.data.currentMonth;
+                if (typeof fn !== 'undefined') {
+                    fn(yearList, monthList, currentMonth);
+                }
                 populateSelect($year, yearList, 'FISCAL_YEAR_ID', 'FISCAL_YEAR_NAME', 'Fiscal Years', null, currentMonth['FISCAL_YEAR_ID']);
                 yearOnChange(currentMonth['FISCAL_YEAR_ID']);
             }

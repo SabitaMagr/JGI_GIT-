@@ -65,24 +65,40 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     //to get the leave detail based on assigned employee id
-    public function getLeaveDetail($employeeId, $leaveId) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns([new Expression("LA.BALANCE AS BALANCE")], true);
-
-        $select->from(['LA' => LeaveAssign::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=LA.EMPLOYEE_ID", ["FIRST_NAME" => new Expression("INITCAP(E.FIRST_NAME)"), "MIDDLE_NAME" => new Expression("INITCAP(E.MIDDLE_NAME)"), "LAST_NAME" => new Expression("INITCAP(E.LAST_NAME)")])
-                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("INITCAP(L.LEAVE_ENAME)"), 'ALLOW_HALFDAY', 'ALLOW_GRACE_LEAVE', 'IS_SUBSTITUTE_MANDATORY', 'ENABLE_SUBSTITUTE']);
-
-        $select->where([
-            "L.STATUS='E'",
-            "E.EMPLOYEE_ID=" . $employeeId,
-            "L.LEAVE_ID=" . $leaveId
-        ]);
-
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result->current();
+    public function getLeaveDetail($employeeId, $leaveId, $startDate = null) {
+        $date = "TRUNC(SYSDATE)";
+        if ($startDate != null) {
+            $date = "TO_DATE('{$startDate}','DD-MON-YYYY')";
+        }
+        $sql = "SELECT LA.EMPLOYEE_ID       AS EMPLOYEE_ID,
+                  LA.BALANCE                AS BALANCE,
+                  LA.FISCAL_YEAR            AS FISCAL_YEAR,
+                  LA.FISCAL_YEAR_MONTH_NO   AS FISCAL_YEAR_MONTH_NO,
+                  LA.LEAVE_ID               AS LEAVE_ID,
+                  L.LEAVE_CODE              AS LEAVE_CODE,
+                  INITCAP(L.LEAVE_ENAME)    AS LEAVE_ENAME,
+                  L.ALLOW_HALFDAY           AS ALLOW_HALFDAY,
+                  L.ALLOW_GRACE_LEAVE       AS ALLOW_GRACE_LEAVE,
+                  L.IS_SUBSTITUTE_MANDATORY AS IS_SUBSTITUTE_MANDATORY,
+                  L.ENABLE_SUBSTITUTE       AS ENABLE_SUBSTITUTE
+                FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
+                INNER JOIN HRIS_LEAVE_MASTER_SETUP L
+                ON L.LEAVE_ID                =LA.LEAVE_ID
+                WHERE L.STATUS               ='E'
+                AND LA.EMPLOYEE_ID           ={$employeeId}
+                AND L.LEAVE_ID               ={$leaveId}
+                AND (LA.FISCAL_YEAR_MONTH_NO =
+                  CASE
+                    WHEN L.IS_MONTHLY='Y'
+                    THEN
+                      (SELECT FISCAL_YEAR_MONTH_NO
+                      FROM HRIS_MONTH_CODE
+                      WHERE {$date} BETWEEN FROM_DATE AND TO_DATE
+                      )
+                  END
+                OR LA.FISCAL_YEAR_MONTH_NO IS NULL )";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute()->current();
     }
 
     //to get the leave list based on assigned employee id for select option

@@ -72,6 +72,7 @@
             if (typeof employeeId === 'undefined' || employeeId === null || employeeId === '' || employeeId === -1) {
                 return;
             }
+            leaveChange($leave[0]);
             calculateAvailableDays(startDateStr, endDateStr, employeeId);
             checkForErrors(startDateStr, endDateStr, employeeId);
         });
@@ -153,9 +154,11 @@
                 return;
             }
             App.blockUI({target: "#hris-page-content", message: "Calculating Leave Days"});
+            var startDateValue = $startDate.val();
             app.pullDataById(document.wsPullLeaveDetail, {
                 'leaveId': $this.val(),
-                'employeeId': $employee.val()
+                'employeeId': $employee.val(),
+                'startDate': (startDateValue == '') ? null : startDateValue
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 var leaveDetail = success.data;
