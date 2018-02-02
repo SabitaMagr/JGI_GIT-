@@ -157,11 +157,11 @@ class HolidaySetup extends HrisController {
 
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
-
         if ($id === 0) {
             return $this->redirect()->toRoute("holidaysetup");
         }
         $this->repository->delete($id);
+        $this->repository->holidayAssign($id);
         $this->flashmessenger()->addMessage("Holiday Successfully Deleted!!!");
         return $this->redirect()->toRoute('holidaysetup');
     }
