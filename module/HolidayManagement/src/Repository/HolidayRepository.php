@@ -72,6 +72,15 @@ class HolidayRepository implements RepositoryInterface {
             new Expression("HALFDAY AS HALFDAY"),
             new Expression("ASSIGN_ON_EMPLOYEE_SETUP AS ASSIGN_ON_EMPLOYEE_SETUP"),
             new Expression("REMARKS AS REMARKS"),
+            new Expression("COMPANY_ID AS COMPANY_ID"),
+            new Expression("BRANCH_ID AS BRANCH_ID"),
+            new Expression("DEPARTMENT_ID AS DEPARTMENT_ID"),
+            new Expression("DESIGNATION_ID AS DESIGNATION_ID"),
+            new Expression("POSITION_ID AS POSITION_ID"),
+            new Expression("SERVICE_TYPE_ID AS SERVICE_TYPE_ID"),
+            new Expression("EMPLOYEE_TYPE AS EMPLOYEE_TYPE"),
+            new Expression("GENDER_ID AS GENDER_ID"),
+            new Expression("EMPLOYEE_ID AS EMPLOYEE_ID"),
                 ], true);
 
         $select->from(Holiday::TABLE_NAME);
@@ -152,13 +161,7 @@ WHERE A.STATUS ='E'";
         return $statement->execute();
     }
 
-    public function holidayAssign(int $holidayId, array $assignedTo) {
-        $holidayAssignGateway = new TableGateway("HRIS_HOLIDAY_ASSIGN", $this->adapter);
-        $holidayAssignGateway->delete(["HOLIDAY_ID" => $holidayId]);
-        foreach ($assignedTo as $item) {
-            $item['HOLIDAY_ID'] = $holidayId;
-            $holidayAssignGateway->insert($item);
-        }
+    public function holidayAssign(int $holidayId) {
         EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_HOLIDAY_ASSIGN_AUTO({$holidayId}); END;");
     }
 
