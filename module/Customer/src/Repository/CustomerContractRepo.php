@@ -5,9 +5,11 @@ namespace Customer\Repository;
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use Customer\Model\Customer;
 use Customer\Model\CustomerContract;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class CustomerContractRepo implements RepositoryInterface {
@@ -53,16 +55,18 @@ class CustomerContractRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rawResult = $this->gateway->select(function(Select $select)use($id) {
-            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustomerContract::class,NULL, [
-                        CustomerContract::START_DATE,
-                        CustomerContract::END_DATE,
-                    ]
-                    ), false);
-            $select->where([CustomerContract::STATUS => EntityHelper::STATUS_ENABLED]);
-            $select->where([CustomerContract::CONTRACT_ID => $id]);
-        });
-        return $rawResult->current();
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustomerContract::class, NULL, [
+                    CustomerContract::START_DATE,
+                    CustomerContract::END_DATE,
+                        ], NULL, NULL, NULL, 'CC'
+                ), false);
+        $select->from(['CC' => CustomerContract::TABLE_NAME])
+                ->join(['C' => "HRIS_CUSTOMER"], "C." . Customer::CUSTOMER_ID . "=CC." . CustomerContract::CUSTOMER_ID, ['CUSTOMER_ENAME' => new Expression("INITCAP(C.CUSTOMER_ENAME)")], 'left');
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
     }
 
 }

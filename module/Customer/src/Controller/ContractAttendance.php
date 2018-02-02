@@ -6,6 +6,7 @@ use Application\Controller\HrisController;
 use Application\Helper\Helper;
 use Customer\Model\ContractAttendanceModel;
 use Customer\Repository\ContractAttendanceRepo;
+use Customer\Repository\CustContractEmpRepo;
 use Customer\Repository\CustomerContractRepo;
 use DateTime;
 use Exception;
@@ -59,9 +60,21 @@ class ContractAttendance extends HrisController {
             }
         }
 
+        $customerContractRepo = new CustomerContractRepo($this->adapter);
+        $customerContractDetails = $customerContractRepo->fetchById($id);
+
+        $contractStartDate = $customerContractDetails['START_DATE'];
+        $contractEndDate = $customerContractDetails['END_DATE'];
+
+
+        $customerEmployeeRepository = new CustContractEmpRepo($this->adapter);
+
+        $monthDetails = $customerEmployeeRepository->getAllMonthBetweenTwoDates($contractStartDate, $contractEndDate);
+
 
         return Helper::addFlashMessagesToArray($this, [
-                    'id' => $id
+                    'id' => $id,
+                    'monthDetails' => $monthDetails
         ]);
     }
 
@@ -70,46 +83,63 @@ class ContractAttendance extends HrisController {
 
         try {
             $id = (int) $this->params()->fromRoute("id");
+            $monthId = (int) $this->params()->fromRoute("monthId");
             if ($id === 0) {
                 throw new Exception("id is not passed");
             }
+            if ($monthId === 0) {
+                throw new Exception("monthId is not passed");
+            }
 
-            $attendanceData = $this->repository->fetchById($id);
-            
-            
-            $contractRepo= new CustomerContractRepo($this->adapter);
-            $contractDetails=$contractRepo->fetchById($id);
+
+            $attendanceData = $this->repository->fetchContractAttendanceMonthWise($id, $monthId);
+
+
+            $contractRepo = new CustomerContractRepo($this->adapter);
+            $contractDetails = $contractRepo->fetchById($id);
+
+            $cutomerName = $contractDetails['CUSTOMER_ENAME'];
+            $contractName = $contractDetails['CONTRACT_NAME'];
 
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
 
 
 
-            $sheet->setCellValue('A1', 'CONTRACT_ID')
-                    ->setCellValue('B1', 'EMPLOYEE_ID')
-                    ->setCellValue('C1', 'EMPLOYEE_NAME')
-                    ->setCellValue('D1', 'ATTENDNACE_DATE')
-                    ->setCellValue('E1', 'ATTENDANCE_IN_TIME')
-                    ->setCellValue('F1', 'ATTENDNACE_OUT_TIME');
+            $sheet->setCellValue('A1', 'Customer')
+                    ->setCellValue('B1', 'Contract Name')
+                    ->setCellValue('C1', 'CONTRACT_ID')
+                    ->setCellValue('D1', 'EMPLOYEE_ID')
+                    ->setCellValue('E1', 'EMPLOYEE_NAME')
+                    ->setCellValue('F1', 'ATTENDNACE_DATE')
+                    ->setCellValue('G1', 'ATTENDANCE_IN_TIME')
+                    ->setCellValue('H1', 'ATTENDANCE_OUT_TIME')
+                    ->setCellValue('I1', 'Normal Hour')
+                    ->setCellValue('J1', 'PartTime Hour')
+                    ->setCellValue('K1', 'OverTime Hour')
+                    ->setCellValue('L1', 'Absent')
+                    ->setCellValue('M1', 'Substitute');
 
 
-                $inTime = $contractDetails['IN_TIME'];
-                $OutTime = $contractDetails['OUT_TIME'];
-                
+
             $i = 2;
             foreach ($attendanceData as $exportData) {
-                $contractSheet = 'A' . $i;
-                $employeeIdSheet = 'B' . $i;
-                $employeeNameSheet = 'C' . $i;
-                $dateSheet = 'D' . $i;
-                $inTimeSheet = 'E' . $i;
-                $outTimeSheet = 'F' . $i;
-                $sheet->setCellValue($contractSheet, $exportData['CONTRACT_ID'])
+                $customerNameSheet = 'A' . $i;
+                $contractNameSheet = 'B' . $i;
+                $contractSheet = 'C' . $i;
+                $employeeIdSheet = 'D' . $i;
+                $employeeNameSheet = 'E' . $i;
+                $dateSheet = 'F' . $i;
+                $inTimeSheet = 'G' . $i;
+                $outTimeSheet = 'H' . $i;
+                $sheet->setCellValue($customerNameSheet, $cutomerName)
+                        ->setCellValue($contractNameSheet, $contractName)
+                        ->setCellValue($contractSheet, $exportData['CONTRACT_ID'])
                         ->setCellValue($employeeIdSheet, $exportData['EMPLOYEE_ID'])
                         ->setCellValue($employeeNameSheet, $exportData['FULL_NAME'])
                         ->setCellValue($dateSheet, $exportData['ATTENDANCE_DT'])
-                        ->setCellValue($inTimeSheet, $inTime)
-                        ->setCellValue($outTimeSheet, $OutTime);
+                        ->setCellValue($inTimeSheet, '')
+                        ->setCellValue($outTimeSheet, '');
                 $i++;
             }
 
@@ -142,6 +172,7 @@ class ContractAttendance extends HrisController {
 
     public function uploadAttendanceAction() {
 
+
         try {
 
             $id = (int) $this->params()->fromRoute("id");
@@ -153,12 +184,24 @@ class ContractAttendance extends HrisController {
             $request = $this->getRequest();
             $files = $request->getFiles()->toArray();
 
+            $postData=$request->getPost();
+            $monthId=$request->getPost('monthId');
+            
+            echo '<pre>';
+            print_r($monthId);
+            die();
+
             if (sizeof($files) > 0) {
                 $ext = pathinfo($files['excel_file']['name'], PATHINFO_EXTENSION);
                 $fileName = pathinfo($files['excel_file']['name'], PATHINFO_FILENAME);
                 $unique = Helper::generateUniqueName();
                 $newFileName = $unique . "." . $ext;
                 $uploadPath = Helper::UPLOAD_DIR . "/attendance/" . $newFileName;
+
+
+                if ($ext != 'xlsx') {
+                    throw new Exception("Please upload a xlsx file");
+                }
 
 
                 if (!empty($_FILES["excel_file"])) {
@@ -175,35 +218,42 @@ class ContractAttendance extends HrisController {
                     $contractAttendnaceModel = new ContractAttendanceModel();
                     $i = 0;
                     foreach ($sheetData as $importDetails) {
+                        
+                        echo '<pre>';
+                        print_r($importDetails);
+                        die();
                         $contractId = $importDetails['A'];
                         $employeeId = $importDetails['B'];
                         $attendanceDate = $importDetails['D'];
                         $inTime = $importDetails['E'];
                         $outTime = $importDetails['F'];
+//                        $normalHour = $importDetails['G'];
+//                        $ptHour = $importDetails['G'];
+//                        $otHour = $importDetails['I'];
                         if ($i != 0) {
                             if ($contractId != $id && !is_numeric($employeeId)) {
-                                throw new Exception('mismatch data in excel');
+                                throw new Exception('contract Id mismatch data in excel');
                             }
 
                             if ($this->validateDate($attendanceDate) == false) {
                                 throw new Exception('some dates are invalid in excel file');
                             }
+                            
+                            
 
-                            if ($inTime && $outTime) {
-                                $contractAttendnaceModel->inTime = new Expression("TO_TIMESTAMP('{$inTime}', 'HH.MI AM')");
-                                $contractAttendnaceModel->outTime = new Expression("TO_TIMESTAMP('{$outTime}', 'HH.MI AM')");
-                                $contractAttendnaceModel->totalHour = new Expression("(SELECT round(((TO_DATE('{$outTime}','HH:MI AM')-TO_DATE('{$inTime}','HH:MI AM')) *(60*24)),2) AS minu FROM dual)");
-                            } else {
-                                $contractAttendnaceModel->inTime = null;
-                                $contractAttendnaceModel->outTime = null;
-                                $contractAttendnaceModel->totalHour = null;
-                            }
-                                $this->repository->updateImportAttendance($contractAttendnaceModel, $id, $employeeId, $attendanceDate);
+//                            if ($inTime && $outTime) {
+//                                $contractAttendnaceModel->inTime = new Expression("TO_TIMESTAMP('{$inTime}', 'HH.MI AM')");
+//                                $contractAttendnaceModel->outTime = new Expression("TO_TIMESTAMP('{$outTime}', 'HH.MI AM')");
+////                                $contractAttendnaceModel->totalHour = new Expression("(SELECT round(((TO_DATE('{$outTime}','HH:MI AM')-TO_DATE('{$inTime}','HH:MI AM')) *(60*24)),2) AS minu FROM dual)");
+//                            } else {
+//                                $contractAttendnaceModel->inTime = null;
+//                                $contractAttendnaceModel->outTime = null;
+//                                $contractAttendnaceModel->totalHour = null;
+//                            }
+                            $this->repository->updateImportAttendance($contractAttendnaceModel, $id, $employeeId, $attendanceDate);
                         }
                         $i++;
                     }
-                } else {
-                    throw new Exception('the file type is not xlsx');
                 }
             } else {
                 throw new Exception('Error Reading File');
@@ -215,6 +265,24 @@ class ContractAttendance extends HrisController {
             $errorMSg = $e->getMessage();
             $this->flashmessenger()->addMessage("Error !!" . $errorMSg);
             return $this->redirect()->toRoute("contract-attendance", ["action" => "view", "id" => $id]);
+        }
+    }
+
+    public function pullAttendanceContractMonthlyAction() {
+        try {
+            $id = (int) $this->params()->fromRoute("id");
+            if ($id === 0) {
+                throw new Exception('id is undefined');
+            }
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+            $monthId = $request->getPost('monthId');
+
+            $attendanceData = $this->repository->fetchContractAttendanceMonthWise($id, $monthId);
+
+            return new JsonModel(['success' => true, 'data' => $attendanceData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

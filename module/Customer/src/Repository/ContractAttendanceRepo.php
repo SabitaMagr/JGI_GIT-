@@ -3,9 +3,11 @@
 namespace Customer\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\ContractAttendanceModel;
+use Customer\Model\CustomerContract;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
@@ -67,13 +69,38 @@ class ContractAttendanceRepo implements RepositoryInterface {
         ];
 
         $tempArray = $model->getArrayCopyForDB();
-        if (!array_key_exists('IN_TIME', $tempArray)||!array_key_exists('OUT_TIME', $tempArray)||!array_key_exists('TOTAL_HOUR', $tempArray)) {
+        if (!array_key_exists('IN_TIME', $tempArray) || !array_key_exists('OUT_TIME', $tempArray) || !array_key_exists('TOTAL_HOUR', $tempArray)) {
             $tempArray['IN_TIME'] = null;
             $tempArray['OUT_TIME'] = null;
             $tempArray['TOTAL_HOUR'] = null;
         }
 
         $this->gateway->update($tempArray, $updateArray);
+    }
+
+    public function fetchContractAttendanceMonthWise($id, $monthId) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ContractAttendanceModel::class, NULL, [
+                    ContractAttendanceModel::ATTENDANCE_DT,
+                        ], [ContractAttendanceModel::IN_TIME, ContractAttendanceModel::OUT_TIME], NUll, NULL, 'CA', NULL, NUll, [ContractAttendanceModel::TOTAL_HOUR, ContractAttendanceModel::NORMARL_HOUR, ContractAttendanceModel::PT_HOUR, ContractAttendanceModel::OT_HOUR]
+                ), false);
+
+        $select->from(['CA' => ContractAttendanceModel::TABLE_NAME])
+                ->join(['E' => "HRIS_EMPLOYEES"], "CA." . ContractAttendanceModel::EMPLOYEE_ID . "=E.EMPLOYEE_ID", ['FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")], 'left')
+                ->join(['C' => "HRIS_CUSTOMER_CONTRACT"], "C." . CustomerContract::CONTRACT_ID ."=CA.".ContractAttendanceModel::CONTRACT_ID, ['CONTRACT_NAME' => new Expression("INITCAP(C.CONTRACT_NAME)")], 'left');
+
+
+
+        $select->where(['CA.' . ContractAttendanceModel::CONTRACT_ID => $id,
+            'CA.' . ContractAttendanceModel::MONTH_CODE_ID => $monthId
+        ]);
+        $select->order("CA.ATTENDANCE_DT ASC");
+
+        $statement = $sql->prepareStatementForSqlObject($select);
+
+        $result = $statement->execute();
+        return Helper::extractDbData($result);                                                                                                                                                                                  
     }
 
 }

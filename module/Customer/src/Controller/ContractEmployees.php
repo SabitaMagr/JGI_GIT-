@@ -67,13 +67,6 @@ class ContractEmployees extends HrisController {
         $contractEndDate = $customerContractDetails['END_DATE'];
 
         $monthDetails = $this->repository->getAllMonthBetweenTwoDates($contractStartDate, $contractEndDate);
-//        echo '<pre>';
-//        echo $contractStartDate;
-//        echo $contractEndDate;
-//        print_r($customerContractDetails);
-//                print_r($monthDetails);
-//        die();
-
 
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
@@ -94,9 +87,9 @@ class ContractEmployees extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postData = $request->getPost();
-            
-            $monthId=$request->getPost('monthId');
-            
+
+            $monthId = $request->getPost('monthId');
+
 //            echo '<Pre>';
 //            print_r($postData);
 //            die();
@@ -105,7 +98,7 @@ class ContractEmployees extends HrisController {
             $employees = $request->getPost('employee');
 
             $custEmployeeRepo = new CustContractEmpRepo($this->adapter);
-            $custEmployeeRepo->deleteContractEmpMonthly($id,$monthId);
+            $custEmployeeRepo->deleteContractEmpMonthly($id, $monthId);
 
             if ($employees) {
                 $totalWorkingHr = $request->getPost('totalWorkingHr');
@@ -115,26 +108,26 @@ class ContractEmployees extends HrisController {
                 $custEmployeeModel = new CustContractEmp();
                 $custEmployeeModel->contractId = $id;
                 $custEmployeeModel->assignedDate = Helper::getCurrentDate();
-                $custEmployeeModel->monthCodeId=$monthId;
-                
+                $custEmployeeModel->monthCodeId = $monthId;
+
                 echo '<pre>';
 
                 foreach ($employees as $employeeDetails) {
                     if ($employeeDetails > 0) {
-                            $custEmployeeModel->employeeId = $employeeDetails;
-                            $custEmployeeModel->workingHour = Helper::hoursToMinutes($totalWorkingHr[$i]);
-                            $custEmployeeModel->startTime = Helper::getExpressionTime($employeeStartTime[$i]) ;
-                            $custEmployeeModel->endTime  = Helper::getExpressionTime($employeeEndTime[$i]);
-                            $custEmployeeRepo->add($custEmployeeModel);
+                        $custEmployeeModel->employeeId = $employeeDetails;
+                        $custEmployeeModel->workingHour = Helper::hoursToMinutes($totalWorkingHr[$i]);
+                        $custEmployeeModel->startTime = Helper::getExpressionTime($employeeStartTime[$i]);
+                        $custEmployeeModel->endTime = Helper::getExpressionTime($employeeEndTime[$i]);
+                        $custEmployeeRepo->add($custEmployeeModel);
                     }
                     $i++;
                 }
             }
-            
 
-//            EntityHelper::rawQueryResult($this->adapter, "BEGIN
-//                    HRIS_ATTD_BETWEEN_DATES({$id});
-//                        END;");
+
+            EntityHelper::rawQueryResult($this->adapter, "BEGIN
+                    HRIS_ATTD_BETWEEN_DATES({$id},{$monthId});
+                        END;");
 
 
             $this->flashmessenger()->addMessage("Contract Employee updated successfully.");

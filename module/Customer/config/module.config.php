@@ -58,7 +58,7 @@ return [
             'contract-attendance' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/customer/contract/attendance[/:action[/:id]]',
+                    'route' => '/customer/contract/attendance[/:action[/:id][/:monthId]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',

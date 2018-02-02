@@ -19,6 +19,9 @@ $this->headScript()
     document.templateLink = '<?= $this->url("contract-attendance", ["action" => "exportTemplate", "id" => $id]); ?>';
     document.UploadExcelLink = '<?= $this->url("contract-attendance", ["action" => "uploadAttendance", "id" => $id]); ?>';
     document.contractId = '<?= $id ?>';
+    document.monthDetails =<?= json_encode($monthDetails) ?>;
+    document.downloadExcelLink = '<?= $this->url("contract-attendance", ["action" => "exportTemplate", "id" => $id]) ?>';
+    document.pullEmployeeAssignBy = '<?= $this->url('contract-attendance', ['action' => 'pullAttendanceContractMonthly', 'id' => $id]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -39,7 +42,7 @@ $this->headScript()
                     </a>
                     <ul class="dropdown-menu pull-right">
                         <li >
-                            <a href="<?= $this->url("contract-attendance", ["action" => "exportTemplate", "id" => $id]); ?>" target="_blank" id="templateExport">
+                            <a   id="templateExport">
                                 <i class="fa fa-file-excel-o" ></i>
                                 Export Template for attendance
                             </a>
@@ -60,21 +63,31 @@ $this->headScript()
                 </div>
             </div>
         </div>
-        <div class="row margin-top-20">
-            <div class="col-sm-4">
-                <form enctype="multipart/form-data" action="<?= $this->url("contract-attendance", ["action" => "uploadAttendance", "id" => $id]); ?>" method="post" id="export_excel">  
+
+        <form enctype="multipart/form-data" action="<?= $this->url("contract-attendance", ["action" => "uploadAttendance", "id" => $id]); ?>" method="post" id="import_excel">  
+            <div class="row margin-top-20">
+                <div class="col-lg-3">
+                    <label>Month</label>
+                    <select required="required" id="monthSelect" name="monthId">
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="row margin-top-20">
+                <div class="col-sm-4">
                     <label>Select Excel Attedance Upload</label>  
-                    <input type="file" name="excel_file" id="excel_file" />  
+                    <input required="required" type="file" name="excel_file" id="excel_file" />  
                     <input type="submit" value="submit"> 
-                </form>  
+                </div>
+
+                <div class="col-sm-2">
+                    <!--<a id="uploadBtn" class="btn btn-primary">Upload</a>-->
+                </div>
+
+
             </div>
-
-            <div class="col-sm-2">
-                <!--<a id="uploadBtn" class="btn btn-primary">Upload</a>-->
-            </div>
-
-
-        </div>
+        </form>  
 
         <div id="table">
 
