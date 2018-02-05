@@ -109,16 +109,17 @@ class ContractAttendance extends HrisController {
             $sheet->setCellValue('A1', 'Customer')
                     ->setCellValue('B1', 'Contract Name')
                     ->setCellValue('C1', 'CONTRACT_ID')
-                    ->setCellValue('D1', 'EMPLOYEE_ID')
-                    ->setCellValue('E1', 'EMPLOYEE_NAME')
-                    ->setCellValue('F1', 'ATTENDNACE_DATE')
-                    ->setCellValue('G1', 'ATTENDANCE_IN_TIME')
-                    ->setCellValue('H1', 'ATTENDANCE_OUT_TIME')
-                    ->setCellValue('I1', 'Normal Hour')
-                    ->setCellValue('J1', 'PartTime Hour')
-                    ->setCellValue('K1', 'OverTime Hour')
-                    ->setCellValue('L1', 'Absent')
-                    ->setCellValue('M1', 'Substitute');
+                    ->setCellValue('D1', 'MONTH_ID')
+                    ->setCellValue('E1', 'EMPLOYEE_ID')
+                    ->setCellValue('F1', 'EMPLOYEE_NAME')
+                    ->setCellValue('G1', 'ATTENDNACE_DATE')
+                    ->setCellValue('H1', 'ATTENDANCE_IN_TIME')
+                    ->setCellValue('I1', 'ATTENDANCE_OUT_TIME')
+                    ->setCellValue('J1', 'Normal Hour')
+                    ->setCellValue('K1', 'PartTime Hour')
+                    ->setCellValue('L1', 'OverTime Hour')
+                    ->setCellValue('M1', 'Absent')
+                    ->setCellValue('N1', 'Substitute');
 
 
 
@@ -127,19 +128,21 @@ class ContractAttendance extends HrisController {
                 $customerNameSheet = 'A' . $i;
                 $contractNameSheet = 'B' . $i;
                 $contractSheet = 'C' . $i;
-                $employeeIdSheet = 'D' . $i;
-                $employeeNameSheet = 'E' . $i;
-                $dateSheet = 'F' . $i;
-                $inTimeSheet = 'G' . $i;
-                $outTimeSheet = 'H' . $i;
+                $monthIdSheet = 'D' . $i;
+                $employeeIdSheet = 'E' . $i;
+                $employeeNameSheet = 'F' . $i;
+                $dateSheet = 'G' . $i;
+                $inTimeSheet = 'H' . $i;
+                $outTimeSheet = 'I' . $i;
                 $sheet->setCellValue($customerNameSheet, $cutomerName)
                         ->setCellValue($contractNameSheet, $contractName)
                         ->setCellValue($contractSheet, $exportData['CONTRACT_ID'])
+                        ->setCellValue($monthIdSheet, $monthId)
                         ->setCellValue($employeeIdSheet, $exportData['EMPLOYEE_ID'])
                         ->setCellValue($employeeNameSheet, $exportData['FULL_NAME'])
                         ->setCellValue($dateSheet, $exportData['ATTENDANCE_DT'])
-                        ->setCellValue($inTimeSheet, '')
-                        ->setCellValue($outTimeSheet, '');
+                        ->setCellValue($inTimeSheet, $exportData['IN_TIME'])
+                        ->setCellValue($outTimeSheet, $exportData['OUT_TIME']);
                 $i++;
             }
 
@@ -184,12 +187,12 @@ class ContractAttendance extends HrisController {
             $request = $this->getRequest();
             $files = $request->getFiles()->toArray();
 
-            $postData=$request->getPost();
-            $monthId=$request->getPost('monthId');
-            
-            echo '<pre>';
-            print_r($monthId);
-            die();
+            $postData = $request->getPost();
+            $monthId = $request->getPost('monthId');
+
+//            echo '<pre>';
+//            print_r($monthId);
+//            die();
 
             if (sizeof($files) > 0) {
                 $ext = pathinfo($files['excel_file']['name'], PATHINFO_EXTENSION);
@@ -217,29 +220,66 @@ class ContractAttendance extends HrisController {
 
                     $contractAttendnaceModel = new ContractAttendanceModel();
                     $i = 0;
+
+
                     foreach ($sheetData as $importDetails) {
-                        
-                        echo '<pre>';
-                        print_r($importDetails);
-                        die();
-                        $contractId = $importDetails['A'];
-                        $employeeId = $importDetails['B'];
-                        $attendanceDate = $importDetails['D'];
-                        $inTime = $importDetails['E'];
-                        $outTime = $importDetails['F'];
-//                        $normalHour = $importDetails['G'];
-//                        $ptHour = $importDetails['G'];
-//                        $otHour = $importDetails['I'];
+
+                        $contractId = $importDetails['C'];
+                        $monthIdFromUpload = $importDetails['D'];
+                        $employeeId = $importDetails['E'];
+                        $attendanceDate = $importDetails['G'];
+                        $inTime = $importDetails['H'];
+                        $outTime = $importDetails['I'];
+                        $normalHour = $importDetails['J'];
+                        $ptHour = $importDetails['K'];
+                        $otHour = $importDetails['L'];
+                        $absent = $importDetails['M'];
+                        $substitute = $importDetails['N'];
                         if ($i != 0) {
-                            if ($contractId != $id && !is_numeric($employeeId)) {
+//                            ECHO $contractId
+//                            echo '<pre>';
+//                            print_r($importDetails);
+//                            die();
+                            if ($contractId != $id) {
                                 throw new Exception('contract Id mismatch data in excel');
                             }
 
-                            if ($this->validateDate($attendanceDate) == false) {
-                                throw new Exception('some dates are invalid in excel file');
+                            if (!is_numeric($employeeId)) {
+                                throw new Exception('employee_id  data error');
                             }
-                            
-                            
+
+                            if (!is_numeric($employeeId)) {
+                                throw new Exception('employee_id  data error');
+                            }
+
+                            if ($monthId != $monthIdFromUpload) {
+                                throw new Exception('MOnth_id is not valid');
+                            }
+
+                            $contractAttendnaceModel->inTime = new Expression("TO_TIMESTAMP('{$inTime}', 'HH.MI AM')");
+                            $contractAttendnaceModel->outTime = new Expression("TO_TIMESTAMP('{$outTime}', 'HH.MI AM')");
+                            $contractAttendnaceModel->outTime = new Expression("TO_TIMESTAMP('{$outTime}', 'HH.MI AM')");
+                            $contractAttendnaceModel->normalHour = $normalHour * 60;
+                            $contractAttendnaceModel->ptHour = $ptHour * 60;
+                            $contractAttendnaceModel->otHour = $otHour * 60;
+                            $contractAttendnaceModel->totalHour = $contractAttendnaceModel->normalHour +
+                                    $contractAttendnaceModel->ptHour +
+                                    $contractAttendnaceModel->otHour;
+                            $contractAttendnaceModel->isAbsent = $absent;
+
+
+
+                            if ($substitute == 'Y') {
+                                $contractAttendnaceModel->contractId = $contractId;
+                                $contractAttendnaceModel->monthCodeId = $monthId;
+                                $contractAttendnaceModel->employeeId = $employeeId;
+                                $contractAttendnaceModel->attendanceDt = $attendanceDate;
+                                $contractAttendnaceModel->isSubstitute = $substitute;
+                                $this->repository->add($contractAttendnaceModel);
+                            } else {
+                                $this->repository->updateImportAttendance($contractAttendnaceModel, $id, $monthId, $employeeId, $attendanceDate);
+                            }
+
 
 //                            if ($inTime && $outTime) {
 //                                $contractAttendnaceModel->inTime = new Expression("TO_TIMESTAMP('{$inTime}', 'HH.MI AM')");
@@ -250,7 +290,15 @@ class ContractAttendance extends HrisController {
 //                                $contractAttendnaceModel->outTime = null;
 //                                $contractAttendnaceModel->totalHour = null;
 //                            }
-                            $this->repository->updateImportAttendance($contractAttendnaceModel, $id, $employeeId, $attendanceDate);
+
+                            if ($i == 1) {
+                                $deleteCondition = [
+                                    'CONTRACT_ID' => $contractId,
+                                    'MONTH_CODE_ID' => $monthId,
+                                    'IS_SUBSTITUTE' => 'Y'
+                                ];
+                                $this->repository->deleteSubEmplooyee($deleteCondition);
+                            }
                         }
                         $i++;
                     }

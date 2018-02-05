@@ -17,6 +17,8 @@ class ContractAttendanceModel extends Model {
     CONST PT_HOUR = "PT_HOUR";
     CONST OT_HOUR = "OT_HOUR";
     CONST MONTH_CODE_ID = "MONTH_CODE_ID";
+    CONST IS_ABSENT = "IS_ABSENT";
+    CONST IS_SUBSTITUTE = "IS_SUBSTITUTE";
 
     public $contractId;
     public $attendanceDt;
@@ -28,6 +30,8 @@ class ContractAttendanceModel extends Model {
     public $ptHour;
     public $otHour;
     public $monthCodeId;
+    public $isAbsent;
+    public $isSubstitute;
     public $mappings = [
         'contractId' => self::CONTRACT_ID,
         'attendanceDt' => self::ATTENDANCE_DT,
@@ -38,7 +42,9 @@ class ContractAttendanceModel extends Model {
         'normalHour' => self::NORMARL_HOUR,
         'ptHour' => self::PT_HOUR,
         'otHour' => self::OT_HOUR,
-        'monthCodeId' => self::MONTH_CODE_ID
+        'monthCodeId' => self::MONTH_CODE_ID,
+        'isAbsent' => self::IS_ABSENT,
+        'isSubstitute' => self::IS_SUBSTITUTE
     ];
 
 }

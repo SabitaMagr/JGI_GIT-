@@ -15,6 +15,8 @@
             {field: "PT_HOUR", title: "PT Hour"},
             {field: "OT_HOUR", title: "OT Hour"},
             {field: "TOTAL_HOUR", title: "Total Hour"},
+            {field: "IS_ABSENT", title: "Absent"},
+            {field: "IS_SUBSTITUTE", title: "Substitute"},
         ];
 
 
@@ -27,11 +29,13 @@
             'PT_HOUR': 'Part Hour',
             'OT_HOUR': 'OT Hour',
             'TOTAL_HOUR': 'Total Hour',
+            'IS_ABSENT': 'Is Absent',
+            'IS_SUBSTITUTE': 'Is Substitue',
         }
 
         app.initializeKendoGrid($table, columns);
 
-        app.searchTable($table, ['EMPLOYEE_ID', 'FULL_NAME', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME']);
+        app.searchTable($table, ['EMPLOYEE_ID', 'FULL_NAME', 'ATTENDANCE_DT', 'IN_TIME', 'OUT_TIME','NORMARL_HOUR','PT_HOUR','OT_HOUR','TOTAL_HOUR','IS_ABSENT','IS_SUBSTITUTE']);
 
         $('#excelExport').on('click', function () {
             app.excelExport($table, map, 'Customer Contract List.xlsx');

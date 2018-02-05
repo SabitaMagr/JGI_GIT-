@@ -73,7 +73,7 @@ class CustContractEmpRepo implements RepositoryInterface {
         return Helper::extractDbData($result);
     }
 
-    public function getAllMonthWiseEmployees($monthId) {
+    public function getAllMonthWiseEmployees($contractId,$monthId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustContractEmp::class, NULL, NULL, [
@@ -83,7 +83,7 @@ class CustContractEmpRepo implements RepositoryInterface {
                     CustContractEmp::WORKING_HOUR,
                 ]), false);
         $select->from(CustContractEmp::TABLE_NAME);
-        $select->where([CustContractEmp::MONTH_CODE_ID => $monthId]);
+        $select->where([CustContractEmp::MONTH_CODE_ID => $monthId,CustContractEmp::CONTRACT_ID => $contractId]);
         
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();

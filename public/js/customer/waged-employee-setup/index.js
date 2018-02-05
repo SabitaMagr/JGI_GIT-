@@ -15,6 +15,7 @@
             }
         };
         var columns = [
+            {field: "EMPLOYEE_ID", title: "EMPLOYEE ID", width: 150},
             {field: "FULL_NAME", title: "Name", width: 150},
             {field: "GENDER_NAME", title: "Gender", width: 150},
             {field: "BLOOD_GROUP_CODE", title: "Blood Group", width: 150},
@@ -23,6 +24,7 @@
             {field: ["EMPLOYEE_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ];
         var map = {
+            'EMPLOYEE ID': 'EMPLOYEE_ID',
             'Employee': 'FULL_NAME',
             'Gender': 'GENDER_NAME',
             'Blood Group': 'BLOOD_GROUP_CODE',

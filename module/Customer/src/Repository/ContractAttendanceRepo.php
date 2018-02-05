@@ -61,46 +61,53 @@ class ContractAttendanceRepo implements RepositoryInterface {
         return $result;
     }
 
-    public function updateImportAttendance(Model $model, $contractId, $employeeId, $attendanceDate) {
+    public function updateImportAttendance(Model $model, $contractId, $monthId, $employeeId, $attendanceDate) {
         $updateArray = [
             ContractAttendanceModel::CONTRACT_ID => $contractId,
+            ContractAttendanceModel::MONTH_CODE_ID => $monthId,
             ContractAttendanceModel::EMPLOYEE_ID => $employeeId,
             ContractAttendanceModel::ATTENDANCE_DT => $attendanceDate
         ];
 
         $tempArray = $model->getArrayCopyForDB();
-        if (!array_key_exists('IN_TIME', $tempArray) || !array_key_exists('OUT_TIME', $tempArray) || !array_key_exists('TOTAL_HOUR', $tempArray)) {
-            $tempArray['IN_TIME'] = null;
-            $tempArray['OUT_TIME'] = null;
-            $tempArray['TOTAL_HOUR'] = null;
-        }
+//        if (!array_key_exists('IN_TIME', $tempArray) || !array_key_exists('OUT_TIME', $tempArray) || !array_key_exists('TOTAL_HOUR', $tempArray)) {
+//            $tempArray['IN_TIME'] = null;
+//            $tempArray['OUT_TIME'] = null;
+//            $tempArray['TOTAL_HOUR'] = null;
+//        }
 
         $this->gateway->update($tempArray, $updateArray);
     }
 
     public function fetchContractAttendanceMonthWise($id, $monthId) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ContractAttendanceModel::class, NULL, [
-                    ContractAttendanceModel::ATTENDANCE_DT,
-                        ], [ContractAttendanceModel::IN_TIME, ContractAttendanceModel::OUT_TIME], NUll, NULL, 'CA', NULL, NUll, [ContractAttendanceModel::TOTAL_HOUR, ContractAttendanceModel::NORMARL_HOUR, ContractAttendanceModel::PT_HOUR, ContractAttendanceModel::OT_HOUR]
-                ), false);
 
-        $select->from(['CA' => ContractAttendanceModel::TABLE_NAME])
-                ->join(['E' => "HRIS_EMPLOYEES"], "CA." . ContractAttendanceModel::EMPLOYEE_ID . "=E.EMPLOYEE_ID", ['FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")], 'left')
-                ->join(['C' => "HRIS_CUSTOMER_CONTRACT"], "C." . CustomerContract::CONTRACT_ID ."=CA.".ContractAttendanceModel::CONTRACT_ID, ['CONTRACT_NAME' => new Expression("INITCAP(C.CONTRACT_NAME)")], 'left');
+        $sql = "SELECT CA.CONTRACT_ID AS CONTRACT_ID,
+                INITCAP(TO_CHAR(CA.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT,
+                INITCAP(TO_CHAR(CA.IN_TIME, 'HH:MI AM')) AS IN_TIME,
+                INITCAP(TO_CHAR(CA.OUT_TIME, 'HH:MI AM')) AS OUT_TIME, 
+                NVL2(CA.TOTAL_HOUR,LPAD(TRUNC(CA.TOTAL_HOUR/60,0),2, 0)||':'||LPAD(MOD(CA.TOTAL_HOUR,60),2, 0),null) AS TOTAL_HOUR,
+                CA.EMPLOYEE_ID AS EMPLOYEE_ID,
+                NVL2(CA.NORMARL_HOUR,LPAD(TRUNC(CA.NORMARL_HOUR/60,0),2, 0)||':'||LPAD(MOD(CA.NORMARL_HOUR,60),2, 0),null) AS NORMARL_HOUR,
+                NVL2(CA.PT_HOUR,LPAD(TRUNC(CA.PT_HOUR/60,0),2, 0)||':'||LPAD(MOD(CA.PT_HOUR,60),2, 0),null) AS PT_HOUR,
+                NVL2(CA.OT_HOUR,LPAD(TRUNC(CA.OT_HOUR/60,0),2, 0)||':'||LPAD(MOD(CA.OT_HOUR,60),2, 0),null) AS OT_HOUR,
+                CA.MONTH_CODE_ID AS MONTH_CODE_ID,
+                (CASE CA.IS_ABSENT WHEN 'Y' THEN 'ABSENT' WHEN 'N' THEN 'PRESENT' ELSE '-' END) AS IS_ABSENT,
+                (CASE CA.IS_SUBSTITUTE WHEN 'Y' THEN 'SUBSTITUTE' ELSE 'REGULAR' END) AS IS_SUBSTITUTE,
+                INITCAP(SE.FULL_NAME) AS FULL_NAME,
+                INITCAP(C.CONTRACT_NAME) AS CONTRACT_NAME 
+                FROM HRIS_CUST_CONTRACT_ATTENDANCE CA 
+                LEFT JOIN HRIS_SERVICE_EMPLOYEES SE ON CA.EMPLOYEE_ID=SE.EMPLOYEE_ID 
+                LEFT JOIN HRIS_CUSTOMER_CONTRACT C ON C.CONTRACT_ID=CA.CONTRACT_ID 
+                WHERE CA.CONTRACT_ID = {$id} AND CA.MONTH_CODE_ID = {$monthId} ORDER BY CA.ATTENDANCE_DT ASC";
 
 
-
-        $select->where(['CA.' . ContractAttendanceModel::CONTRACT_ID => $id,
-            'CA.' . ContractAttendanceModel::MONTH_CODE_ID => $monthId
-        ]);
-        $select->order("CA.ATTENDANCE_DT ASC");
-
-        $statement = $sql->prepareStatementForSqlObject($select);
-
+        $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return Helper::extractDbData($result);                                                                                                                                                                                  
+        return Helper::extractDbData($result);
+    }
+
+    public function deleteSubEmplooyee($conditon) {
+        $this->gateway->delete($conditon);
     }
 
 }

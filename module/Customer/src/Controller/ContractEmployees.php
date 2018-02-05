@@ -6,6 +6,7 @@ use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Customer\Model\CustContractEmp;
+use Customer\Model\ServiceEmployeeSetupModel;
 use Customer\Repository\ContractAttendanceRepo;
 use Customer\Repository\CustContractEmpRepo;
 use Customer\Repository\CustomerContractRepo;
@@ -70,7 +71,7 @@ class ContractEmployees extends HrisController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
-                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"]),
+                    'employeeList' => EntityHelper::getTableList($this->adapter, ServiceEmployeeSetupModel::TABLE_NAME, [ServiceEmployeeSetupModel::EMPLOYEE_ID, ServiceEmployeeSetupModel::FULL_NAME], [ServiceEmployeeSetupModel::STATUS => "E"]),
                     'customerContractDetails' => $customerContractDetails,
                     'contractEmpDetails' => $custEmployeeDetails,
                     'monthDetails' => $monthDetails
@@ -145,7 +146,7 @@ class ContractEmployees extends HrisController {
             $request = $this->getRequest();
             $postData = $request->getPost();
             $monthId = $request->getPost('monthId');
-            $employeeDetails = $this->repository->getAllMonthWiseEmployees($monthId);
+            $employeeDetails = $this->repository->getAllMonthWiseEmployees($id,$monthId);
             return new JsonModel(['success' => true, 'data' => $employeeDetails, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
