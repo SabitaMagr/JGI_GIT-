@@ -219,15 +219,10 @@ class AttendanceByHr extends HrisController {
         try {
             $request = $this->getRequest();
             $postedData = $request->getPost();
-
-            $action = $postedData['action'];
-            $data = $postedData['data'];
-            foreach ($data as $item) {
-                $this->repository->manualAttendance($item['EMPLOYEE_ID'], Helper::getExpressionDate($item['ATTENDANCE_DT'])->getExpression(), $action);
-            }
-            return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
+            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action']);
+            return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

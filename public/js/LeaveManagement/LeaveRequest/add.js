@@ -1,5 +1,5 @@
 (function ($, app) {
-    'use strict';
+//    'use strict';
     $(document).ready(function () {
         $('select').select2();
 
@@ -162,10 +162,10 @@
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 var leaveDetail = success.data;
-                availableDays = parseInt(leaveDetail.BALANCE);
+                availableDays = parseFloat(leaveDetail.BALANCE);
                 $availableDays.val(availableDays);
 
-                var noOfDays = parseInt($noOfDays.val());
+                var noOfDays = parseFloat($noOfDays.val());
 
                 if ((availableDays != "" && noOfDays != "") && noOfDays > availableDays) {
                     $("#errorMsg").html("* Applied days can't be more than available days");
