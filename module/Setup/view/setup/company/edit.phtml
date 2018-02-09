@@ -22,6 +22,8 @@ $crAccCode = $form->get('crAccCode');
 $excessCrAccCode = $form->get('excessCrAccCode');
 $lessDrAccCode = $form->get('lessDrAccCode');
 $equalCrAccCode = $form->get('equalCrAccCode');
+$advanceDrAccCode = $form->get('advanceDrAccCode');
+$advanceCrAccCode = $form->get('advanceCrAccCode');
 
 //custom validatin message
 if (key($telephone->getMessages()) == "regexNotMatch") {
@@ -180,6 +182,20 @@ $form->prepare();
                             <?php print $this->formLabel($equalCrAccCode); ?>
                             <?php print $this->formElement($equalCrAccCode); ?>
                             <?php print $this->formElementErrors()->render($equalCrAccCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($advanceDrAccCode); ?>
+                            <?php print $this->formElement($advanceDrAccCode); ?>
+                            <?php print $this->formElementErrors()->render($advanceDrAccCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($advanceCrAccCode); ?>
+                            <?php print $this->formElement($advanceCrAccCode); ?>
+                            <?php print $this->formElementErrors()->render($advanceCrAccCode, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>

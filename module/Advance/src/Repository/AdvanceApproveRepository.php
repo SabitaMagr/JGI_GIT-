@@ -31,6 +31,16 @@ class AdvanceApproveRepository implements RepositoryInterface {
 
     public function edit(Model $model, $id) {
         $this->tableGateway->update($model->getArrayCopyForDB(), [AdvanceRequestModel::ADVANCE_REQUEST_ID => $id]);
+        $this->hris_advance_request_proc($id);
+    }
+
+    private function hris_advance_request_proc($id) {
+        $sql = "BEGIN
+                  HRIS_ADVANCE_REQUEST_PROC({$id},'Y');
+                END;";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
     }
 
     public function fetchAll() {

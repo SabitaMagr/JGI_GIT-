@@ -121,6 +121,22 @@ class CompanyForm {
     public $equalCrAccCode;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Advance Dr Account Code"})
+     * @Annotation\Attributes({ "id":"advanceDrAccCode","class":"form-control"})
+     */
+    public $advanceDrAccCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Advance Cr Account Code"})
+     * @Annotation\Attributes({ "id":"advanceCrAccCode","class":"form-control"})
+     */
+    public $advanceCrAccCode;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */

@@ -14,7 +14,7 @@
         var $requestAmt = $('#requestedAmount');
         var $monthlyDeductionPercentage = $('#deductionRate');
         var $monthToRepay = $('#deductionIn');
-        var maximunRequestAmt;
+        var maxRequestAmt;
         var monthlyDeductionValue = 0;
 
         app.populateSelect($employeeId, document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', '---', '');
@@ -34,7 +34,7 @@
         $employeeId.on('change', function () {
             var selectedEmpVal = $(this).val();
             if (selectedEmpVal) {
-                window.app.floatingProfile.setDataFromRemote(selectedEmpVal);
+                app.floatingProfile.setDataFromRemote(selectedEmpVal);
                 app.populateSelect($advance, document.advanceList, 'ADVANCE_ID', 'ADVANCE_ENAME', '---', '');
                 var employeeDetail = searchList(document.employeeList, 'EMPLOYEE_ID', selectedEmpVal)
                 if (employeeDetail['SALARY']) {
@@ -55,7 +55,6 @@
 
 
         function advanceConfig(advanceData) {
-//            console.log(advanceData);
             $('#deductionType').val(advanceData.DEDUCTION_TYPE);
             $monthlyDeductionPercentage.val(advanceData.DEDUCTION_RATE);
             $monthToRepay.val(advanceData.DEDUCTION_IN);
@@ -103,9 +102,9 @@
 //            
             var salaryRate = advanceData.MAX_SALARY_RATE;
             var maxMonths = advanceData.MAX_ADVANCE_MONTH;
-            maximunRequestAmt = (salaryRate / 100) * monthlySalary * maxMonths;
-            $('#maxReqAmt').text("Max Request Amount=Rs " + maximunRequestAmt);
-            $requestAmt.attr('max', maximunRequestAmt);
+            maxRequestAmt = (salaryRate / 100) * monthlySalary * maxMonths;
+            $('#maxReqAmt').text("Max Request Amount=Rs " + maxRequestAmt);
+            $requestAmt.attr('max', maxRequestAmt);
 
             (advanceData.DEDUCTION_TYPE == 'S' && advanceData.ALLOW_OVERRIDE_RATE == 'Y') ? $monthlyDeductionPercentage.prop('readonly', false) : $monthlyDeductionPercentage.prop('readonly', true);
             (advanceData.DEDUCTION_TYPE == 'M' && advanceData.ALLOW_OVERRIDE_MONTH == 'Y') ? $monthToRepay.prop('readonly', false) : $monthToRepay.prop('readonly', true);
@@ -167,8 +166,8 @@
                 }
             }
         });
-        
-        
+
+
         app.setLoadingOnSubmit('AdvanceRequest', function () {
             var deductionPercentage = $monthlyDeductionPercentage.val();
             var deductionMonthValue = $monthToRepay.val();

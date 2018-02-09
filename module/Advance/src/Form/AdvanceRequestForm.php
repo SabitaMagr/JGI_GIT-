@@ -73,11 +73,9 @@ class AdvanceRequestForm {
      */
     public $approvedRemarks;
 
-    
-
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Monthly Deduction Percentage"})
      * @Annotation\Attributes({ "id":"deductionRate","class":"form-control","step":"0.01","min":"0","max":"100"})
@@ -101,7 +99,7 @@ class AdvanceRequestForm {
      * @Annotation\Attributes({ "id":"overrideRecommenderId","class":"form-control"})
      */
     public $overrideRecommenderId;
-    
+
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)

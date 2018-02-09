@@ -64,9 +64,6 @@ class AdvanceSetup extends AbstractActionController {
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-//                echo '<pre>';
-//                print_r($request->getPost());
-//                die();
                 $advanceSetupModel = new AdvanceSetupModel();
                 $advanceSetupModel->exchangeArrayFromForm($form->getData());
                 $advanceSetupModel->status = "E";
