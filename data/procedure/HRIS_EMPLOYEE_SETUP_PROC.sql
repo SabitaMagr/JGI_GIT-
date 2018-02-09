@@ -143,11 +143,7 @@ BEGIN
       AND START_DATE                >=V_JOIN_DATE
     )
     LOOP
-      HRIS_HOLIDAY_ASSIGN_AUTO
-      (
-        holiday.HOLIDAY_ID,P_EMPLOYEE_ID
-      )
-      ;
+      HRIS_HOLIDAY_ASSIGN_AUTO(holiday.HOLIDAY_ID,P_EMPLOYEE_ID) ;
     END LOOP;
   END;
 END;

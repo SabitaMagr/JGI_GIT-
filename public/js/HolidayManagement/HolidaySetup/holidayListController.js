@@ -62,11 +62,8 @@ angular.module('hris', [])
                         numeric: false
                     },
                     dataBound: gridDataBound,
-//                    rowTemplate: kendo.template($("#rowTemplate").html()),
                     columns: [
-//                        {field: "HOLIDAY_CODE", title: "Holiday Code", width: 130},
                         {field: "HOLIDAY_ENAME", title: "Holiday"},
-//                        {field: "START_DATE", title: "From Date", width: 130},
                         {title: "From Date",
                             columns: [
                                 {field: "START_DATE",
@@ -84,11 +81,15 @@ angular.module('hris', [])
                                     title: "BS",
                                     template: "<span>#: (END_DATE_N == null) ? '-' : END_DATE_N #</span>"}]},
                         {field: "HALFDAY", title: "Interval"},
-                        {field: ["HOLIDAY_ID"], title: "Action", template: `<span><a class="btn-edit"
-                           href="` + document.editLink + `/#:HOLIDAY_ID#" style="height:17px;"> 
-        <i class="fa fa-edit"></i>
-        </a>
-        </span>`}
+                        {field: ["HOLIDAY_ID"], title: "Action", template: `
+                                <span>
+                                    <a class="btn btn-icon-only yellow" href="${document.editLink}/#:HOLIDAY_ID#" style="height:17px;" title="Edit">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a  class="btn btn-icon-only red confirmation" href="${document.deleteLink}/#:HOLIDAY_ID#" style="height:17px;" title="Cancel">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </span>`}
                     ]
                 });
 

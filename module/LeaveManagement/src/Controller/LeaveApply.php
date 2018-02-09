@@ -108,7 +108,8 @@ class LeaveApply extends HrisController {
                 $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
                 $leaveId = $postedData['leaveId'];
                 $employeeId = $postedData['employeeId'];
-                $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId);
+                $startDate = $postedData['startDate'];
+                $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId, $startDate);
 
                 return new CustomViewModel(['success' => true, 'data' => $leaveDetail, 'error' => '']);
             } else {

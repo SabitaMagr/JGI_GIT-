@@ -68,8 +68,7 @@ class LeaveApproveController extends HrisController {
         $authApprover = $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'];
         $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
         //to get the previous balance of selected leave from assigned leave detail
-        $result = $this->repository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID'])->getArrayCopy();
-        $preBalance = $result['BALANCE'];
+        $preBalance = $detail['BALANCE'];
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
@@ -143,7 +142,7 @@ class LeaveApproveController extends HrisController {
                     'availableDays' => $preBalance,
                     'status' => $detail['STATUS'],
                     'remarksDtl' => $detail['REMARKS'],
-                    'totalDays' => $result['TOTAL_DAYS'],
+                    'totalDays' => $detail['TOTAL_DAYS'],
                     'recommendedBy' => $recommenderId,
                     'recommender' => $authRecommender,
                     'approver' => $authApprover,
