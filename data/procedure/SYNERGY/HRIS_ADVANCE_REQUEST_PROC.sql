@@ -1,68 +1,68 @@
-CREATE OR REPLACE PROCEDURE HRIS_ADVANCE_REQUEST_PROC(
-    P_ADV_REQ_ID HRIS_EMPLOYEE_ADVANCE_REQUEST.ADVANCE_REQUEST_ID%TYPE,
-    P_LINK_TO_SYNERGY CHAR := 'N')
+CREATE OR REPLACE PROCEDURE hris_advance_request_proc(
+    p_adv_req_id hris_employee_advance_request.advance_request_id%TYPE,
+    p_link_to_synergy CHAR := 'N' )
 AS
-  V_EMPLOYEE_ID HRIS_EMPLOYEE_ADVANCE_REQUEST.EMPLOYEE_ID%TYPE;
-  V_STATUS HRIS_EMPLOYEE_ADVANCE_REQUEST.STATUS%TYPE;
-  V_REQUESTED_AMOUNT HRIS_EMPLOYEE_ADVANCE_REQUEST.REQUESTED_AMOUNT%TYPE;
-  V_DATE_OF_ADVANCE HRIS_EMPLOYEE_ADVANCE_REQUEST.DATE_OF_ADVANCE%TYPE;
-  V_DEDUCTION_IN HRIS_EMPLOYEE_ADVANCE_REQUEST.DEDUCTION_ID%TYPE;
+  v_employee_id hris_employee_advance_request.employee_id%TYPE;
+  v_status hris_employee_advance_request.status%TYPE;
+  v_requested_amount hris_employee_advance_request.requested_amount%TYPE;
+  v_date_of_advance hris_employee_advance_request.date_of_advance%TYPE;
+  v_deduction_in hris_employee_advance_request.deduction_in%TYPE;
   --
-  V_FORM_CODE HRIS_PREFERENCES.VALUE%TYPE;
-  V_DR_ACC_CODE HRIS_PREFERENCES.VALUE%TYPE;
-  V_CR_ACC_CODE HRIS_PREFERENCES.VALUE%TYPE; --
-  V_COMPANY_CODE VARCHAR2(255 BYTE):='07';
-  V_BRANCH_CODE  VARCHAR2(255 BYTE):=-'07.01';
-  V_CREATED_BY   VARCHAR2(255 BYTE):='ADMIN';
-  V_VOUCHER_NO   VARCHAR2(255 BYTE);
+  v_form_code hris_preferences.value%TYPE;
+  v_dr_acc_code hris_preferences.value%TYPE;
+  v_cr_acc_code hris_preferences.value%TYPE; --
+  v_company_code VARCHAR2(255 BYTE) := '07';
+  v_branch_code  VARCHAR2(255 BYTE) :=-'07.01';
+  v_created_by   VARCHAR2(255 BYTE) := 'ADMIN';
+  v_voucher_no   VARCHAR2(255 BYTE);
 BEGIN
   BEGIN
-    SELECT TR.EMPLOYEE_ID,
-      TR.STATUS,
-      TR.REQUESTED_AMOUNT,
-      TR.DATE_OF_ADVANCE,
-      TR.DEDUCTION_IN,
-      C.COMPANY_CODE,
-      C.COMPANY_CODE
-      ||'.01',
-      C.FORM_CODE,
-      C.ADVANCE_DR_ACC_CODE,
-      C.ADVANCE_CR_ACC_CODE
-    INTO V_EMPLOYEE_ID,
-      V_STATUS,
-      V_REQUESTED_AMOUNT,
-      V_DATE_OF_ADVANCE,
-      V_DEDUCTION_IN,
-      V_COMPANY_CODE,
-      V_BRANCH_CODE,
-      V_FORM_CODE,
-      V_DR_ACC_CODE,
-      V_CR_ACC_CODE
-    FROM HRIS_EMPLOYEE_ADVANCE_REQUEST TR
-    JOIN HRIS_EMPLOYEES E
-    ON (TR.EMPLOYEE_ID = E.EMPLOYEE_ID )
-    JOIN HRIS_COMPANY C
-    ON (E.COMPANY_ID            = C.COMPANY_ID)
-    WHERE TR.ADVANCE_REQUEST_ID =P_ADV_REQ_ID;
+    SELECT tr.employee_id,
+      tr.status,
+      tr.requested_amount,
+      tr.date_of_advance,
+      tr.deduction_in,
+      c.company_code,
+      c.company_code
+      || '.01',
+      c.form_code,
+      c.advance_dr_acc_code,
+      c.advance_cr_acc_code
+    INTO v_employee_id,
+      v_status,
+      v_requested_amount,
+      v_date_of_advance,
+      v_deduction_in,
+      v_company_code,
+      v_branch_code,
+      v_form_code,
+      v_dr_acc_code ,
+      v_cr_acc_code
+    FROM hris_employee_advance_request tr
+    JOIN hris_employees e
+    ON ( tr.employee_id = e.employee_id )
+    JOIN hris_company c
+    ON ( e.company_id           = c.company_id )
+    WHERE tr.advance_request_id = p_adv_req_id;
   EXCEPTION
-  WHEN NO_DATA_FOUND THEN
-    DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| P_ADV_REQ_ID);
+  WHEN no_data_found THEN
+    dbms_output.put('NO DATA FOUND FOR ID =>' || p_adv_req_id);
     RETURN;
   END;
   --
   --
-  IF P_LINK_TO_SYNERGY = 'Y' THEN
-    SELECT FN_NEW_VOUCHER_NO(V_COMPANY_CODE,V_FORM_CODE,TRUNC(SYSDATE),'FA_DOUBLE_VOUCHER')
-    INTO V_VOUCHER_NO
-    FROM DUAL;
+  IF p_link_to_synergy = 'Y' THEN
+    SELECT fn_new_voucher_no( v_company_code, v_form_code, TRUNC(SYSDATE), 'FA_DOUBLE_VOUCHER' )
+    INTO v_voucher_no
+    FROM dual;
     --
-    HRIS_TRAVEL_ADVANCE(V_COMPANY_CODE,V_FORM_CODE,TRUNC(SYSDATE),V_BRANCH_CODE,V_CREATED_BY,TRUNC(SYSDATE),V_DR_ACC_CODE,V_CR_ACC_CODE,'TEST',V_REQUESTED_AMOUNT,'E'||V_EMPLOYEE_ID,V_VOUCHER_NO);
+    hris_travel_advance( v_company_code, v_form_code, TRUNC(SYSDATE), v_branch_code, v_created_by, TRUNC(SYSDATE), v_dr_acc_code, v_cr_acc_code, 'TEST', v_requested_amount, 'E' || v_employee_id, v_voucher_no );
     --
-    HRIS_ADVANCE_TO_EMPOWER( V_COMPANY_CODE, V_BRANCH_CODE, V_DATE_OF_ADVANCE, V_DATE_OF_ADVANCE, V_CREATED_BY, V_REQUESTED_AMOUNT, V_DEDUCTION_IN, V_REQUESTED_AMOUNT/V_DEDUCTION_IN, V_EMPLOYEE_ID, V_DR_ACC_CODE,V_CR_ACC_CODE)
+    hris_advance_to_empower( v_company_code, v_branch_code, v_date_of_advance, v_date_of_advance, v_created_by, v_requested_amount, v_deduction_in, v_requested_amount / v_deduction_in, v_employee_id, v_dr_acc_code, v_cr_acc_code );
     --
-    UPDATE HRIS_EMPLOYEE_ADVANCE_REQUEST
-    SET VOUCHER_NO           = V_VOUCHER_NO
-    WHERE ADVANCE_REQUEST_ID = P_ADV_REQ_ID;
+    UPDATE hris_employee_advance_request
+    SET voucher_no           = v_voucher_no
+    WHERE advance_request_id = p_adv_req_id;
   END IF;
   --
 END;

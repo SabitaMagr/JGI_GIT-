@@ -41,6 +41,20 @@ class Penalty extends HrisController {
         ]);
     }
 
+    public function penalizedMonthsAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = (array) $request->getPost();
+                $reportData = $this->repository->penalizedMonthReport($data['fiscalYearId'], $data['fiscalYearMonthNo']);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return $this->stickFlashMessagesTo([]);
+    }
+
     public function selfAction() {
         $id = (int) $this->params()->fromRoute("id", 0);
         $request = $this->getRequest();
