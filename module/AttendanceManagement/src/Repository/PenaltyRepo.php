@@ -151,7 +151,7 @@ EOT;
     public function deduct($data) {
         EntityHelper::rawQueryResult($this->adapter, "
                 BEGIN
-                  HRIS_LATE_LEAVE_DEDUCTION({$data['monthId']},{$data['noOfDays']},{$data['employeeId']});
+                  HRIS_LATE_LEAVE_DEDUCTION({$data['companyId']},{$data['fiscalYearId']},{$data['fiscalYearMonthNo']},{$data['noOfDeductionDays']},{$data['employeeId']},'{$data['action']}');
                 END;
 ");
     }

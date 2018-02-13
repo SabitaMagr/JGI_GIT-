@@ -5,20 +5,20 @@
         var actiontemplateConfig = {
             update: {
                 'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
-                'params': [],
-                'url': "javascript:;"
+                'params': ["COMPANY_ID", "FISCAL_YEAR_ID", "FISCAL_YEAR_MONTH_NO"],
+                'url': document.editLink
             },
             delete: {
                 'ALLOW_DELETE': document.acl.ALLOW_DELETE,
-                'params': [],
-                'url': "javascript:;"
+                'params': ["COMPANY_ID", "FISCAL_YEAR_ID", "FISCAL_YEAR_MONTH_NO"],
+                'url': document.deleteLink
             }
         };
 
         app.initializeKendoGrid($table, [
             {field: "COMPANY_NAME", title: "Company Name"},
             {field: "NO_OF_DAYS", title: "No of Days"},
-            {field: [], title: "Action", template: app.genKendoActionTemplate(actiontemplateConfig)}
+            {field: ["COMPANY_ID", "FISCAL_YEAR_ID", "FISCAL_YEAR_MONTH_NO"], title: "Action", template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
         app.searchTable($table, ['COMPANY_NAME']);
         var exportMap = {
@@ -35,13 +35,14 @@
         var months = null;
         var $year = $('#fiscalYear');
         var $month = $('#fiscalMonth');
+        var $noOfDeductionDays = $('#noOfDeductionDays');
+        $noOfDeductionDays.val(document.noOfDeductionDays);
         app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
             months = monthList;
         });
 
-
-        $month.on('change', function () {
-            var value = $(this).val();
+        var monthChange = function ($this) {
+            var value = $this.val();
             if (value == null) {
                 return;
             }
@@ -56,13 +57,35 @@
             }, function (error) {
 
             });
+        };
+        $month.on('change', function () {
+            monthChange($(this));
         });
 
-        
+        var deductionProcess = function (link, config) {
+            app.serverRequest(link, config).then(function (response) {
+                if (response.success) {
+                    monthChange($month);
+                }
+            }, function (error) {
+
+            });
+        };
 
         $('body').on('click', '.btn-edit', function () {
+            var $this = $(this);
+            var link = $this.attr('href');
+            deductionProcess(link, {action: 'E', noOfDeductionDays: $noOfDeductionDays.val()});
             return false;
         });
+
+        document.confirmation.setConfig({onConfirm: function ($this) {
+                var link = $this.attr('href');
+                deductionProcess(link, {action: 'D', noOfDeductionDays: $noOfDeductionDays.val()});
+                return false;
+            }});
+
+
 
 
     });

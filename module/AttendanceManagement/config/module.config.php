@@ -95,7 +95,7 @@ return [
             'penalty' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/attendance/penalty[/:action[/:id]]',
+                    'route' => '/attendance/penalty[/:action[/:id[/:fiscalYearId[/:fiscalYearMonthNo]]]]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -300,7 +300,7 @@ return [
                 'route' => 'penalty',
                 'pages' => [
                     [
-                        'label' => 'List',
+                        'label' => 'Report',
                         'route' => 'penalty',
                         'action' => 'index',
                     ],
@@ -308,6 +308,11 @@ return [
                         'label' => 'Self',
                         'route' => 'penalty',
                         'action' => 'self',
+                    ],
+                    [
+                        'label' => 'Action',
+                        'route' => 'penalty',
+                        'action' => 'penalizedMonths',
                     ],
                 ],
             ],

@@ -687,16 +687,25 @@ window.app = (function ($, toastr, App) {
         return arr;
     };
 
-
+    document.confirmation = {config: null, setConfig: function (config) {
+            this.config = config
+        }};
     (function () {
         $(".page-content").on("click", ".confirmation", function (e) {
             e.preventDefault();
             var $this = $(this);
             $this.confirmation({
                 onConfirm: function () {
-                    location.href = $this.attr('href');
+                    if (document.confirmation.config == null) {
+                        location.href = $this.attr('href');
+                        return;
+                    }
+                    if (typeof document.confirmation.config.onConfirm !== 'undefined') {
+                        document.confirmation.config.onConfirm($this);
+                    }
                 },
                 onCancel: function () {
+
                 }, });
         });
     })();

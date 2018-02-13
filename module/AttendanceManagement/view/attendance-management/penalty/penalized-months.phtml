@@ -5,6 +5,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
         ->appendFile($this->basePath('js/AttendanceManagement/penalty/penalized-months.js'));
 ?>
 <script>
@@ -12,6 +13,7 @@ $this->headScript()
     document.deleteLink = '<?= $this->url("penalty", ["action" => "deduct"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.getFiscalYearMonthLink = '<?php echo $this->url('penalty', ['action' => 'getFiscalYearMonth']); ?>';
+    document.noOfDeductionDays =<?php echo $noOfDeductionDays; ?>;
 </script>
 
 <div class="page-bar">
@@ -52,6 +54,9 @@ $this->headScript()
             <div class="col-sm-2">
                 <select class="form-control" id="fiscalMonth" >
                 </select>
+            </div>
+            <div class="col-sm-2">
+                <input class="form-control" id="noOfDeductionDays" type="number" step="0.5" min="0" required />
             </div>
         </div>
 

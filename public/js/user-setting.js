@@ -6,7 +6,7 @@
         var setting = {};
 
         (function ($n, $e) {
-            app.pullDataById(document.settingUrl, {
+            app.serverRequest(document.settingUrl, {
                 test: 'test'
             }).then(function (success) {
                 setting = success;
@@ -14,7 +14,7 @@
                     state: setting["ENABLE_NOTIFICATION"] === "Y",
                     onSwitchChange: function () {
                         var $this = $(this);
-                        app.pullDataById(document.updateSettingUrl, {
+                        app.serverRequest(document.updateSettingUrl, {
                             "ENABLE_NOTIFICATION": $this.bootstrapSwitch("state") ? "Y" : "N"
                         }).then(function (success) {
                             console.log('success', success);
@@ -27,7 +27,7 @@
                     state: setting["ENABLE_EMAIL"] === "Y",
                     onSwitchChange: function () {
                         var $this = $(this);
-                        app.pullDataById(document.updateSettingUrl, {
+                        app.serverRequest(document.updateSettingUrl, {
                             "ENABLE_NOTIFICATION": $this.bootstrapSwitch("state") ? "Y" : "N"
                         }).then(function (success) {
                             console.log('success', success);

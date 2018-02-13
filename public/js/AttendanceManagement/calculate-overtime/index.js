@@ -54,8 +54,7 @@ angular.module('hris', [])
                 if (($("#overtimeOnly").is(":checked"))) {
                     overtimeOnly = 1;
                 }
-                App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.pullAttendanceWidOvertimeListLink, {
+                window.app.serverRequest(document.pullAttendanceWidOvertimeListLink, {
                     'employeeId': employeeId,
                     'companyId': companyId,
                     'branchId': branchId,
@@ -70,7 +69,6 @@ angular.module('hris', [])
                     'employeeTypeId': employeeTypeId,
                     'overtimeOnly': parseInt(overtimeOnly)
                 }).then(function (success) {
-                    App.unblockUI("#hris-page-content");
                     console.log(success.data);
                     if (displayKendoFirstTime) {
                         $scope.initializekendoGrid();
@@ -83,7 +81,6 @@ angular.module('hris', [])
 
                     window.app.scrollTo('attendanceWidOTTable');
                 }, function (failure) {
-                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             };

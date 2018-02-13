@@ -41,7 +41,7 @@
         });
 
 
-        app.pullDataById("", {}).then(function (response) {
+        app.serverRequest("", {}).then(function (response) {
             app.renderKendoGrid($table, response.data);
         }, function (error) {
 

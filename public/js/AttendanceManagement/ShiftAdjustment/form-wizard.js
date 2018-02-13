@@ -119,7 +119,7 @@
         $('#form_wizard_1').find('.button-previous').hide();
         $('#form_wizard_1 .button-submit').click(function () {
             shiftAdjustment['employeeList'] = shiftAdjustedEmployeeList;
-            app.pullDataById(document.shiftAdjustAddUrl, shiftAdjustment).then(function (response) {
+            app.serverRequest(document.shiftAdjustAddUrl, shiftAdjustment).then(function (response) {
                 if (response.success) {
                     document.location = document.shiftAdjustmentPage;
                 }

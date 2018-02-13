@@ -65,7 +65,7 @@
             $nepaliToDate.val('');
             $bulkActionDiv.hide();
             var search = document.searchManager.getSearchValues();
-            app.pullDataById(document.listWS, search).then(function (response) {
+            app.serverRequest(document.listWS, search).then(function (response) {
                 app.renderKendoGrid($shiftAssignTable, response.data);
             }, function (error) {
                 app.showMessage(error, 'error');
@@ -98,7 +98,7 @@
                 var counter = 0;
                 var length = employeeIdList.length;
                 var addShift = function (employeeId) {
-                    app.pullDataById(document.editWs, {
+                    app.serverRequest(document.editWs, {
                         shiftId: shiftId,
                         fromDate: fromDate,
                         toDate: toDate,
