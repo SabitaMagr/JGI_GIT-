@@ -8,8 +8,10 @@ $this->headScript()
         ->appendFile($this->basePath('js/AttendanceManagement/penalty/penalized-months.js'));
 ?>
 <script>
-    document.deductLink = '<?php echo $this->url('penalty', ['action' => 'deduct']); ?>';
-    document.getFiscalYearMonthLink = '<?php echo $this->url('leave', ['action' => 'getFiscalYearMonth']); ?>';
+    document.editLink = '<?= $this->url("penalty", ["action" => "deduct"]); ?>';
+    document.deleteLink = '<?= $this->url("penalty", ["action" => "deduct"]); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.getFiscalYearMonthLink = '<?php echo $this->url('penalty', ['action' => 'getFiscalYearMonth']); ?>';
 </script>
 
 <div class="page-bar">

@@ -2,11 +2,23 @@
     'use strict';
     $(document).ready(function () {
         var $table = $('#table');
+        var actiontemplateConfig = {
+            update: {
+                'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
+                'params': [],
+                'url': "javascript:;"
+            },
+            delete: {
+                'ALLOW_DELETE': document.acl.ALLOW_DELETE,
+                'params': [],
+                'url': "javascript:;"
+            }
+        };
 
         app.initializeKendoGrid($table, [
             {field: "COMPANY_NAME", title: "Company Name"},
             {field: "NO_OF_DAYS", title: "No of Days"},
-            {field: "NO_OF_DAYS", title: "Action"}
+            {field: [], title: "Action", template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
         app.searchTable($table, ['COMPANY_NAME']);
         var exportMap = {
@@ -44,6 +56,12 @@
             }, function (error) {
 
             });
+        });
+
+        
+
+        $('body').on('click', '.btn-edit', function () {
+            return false;
         });
 
 

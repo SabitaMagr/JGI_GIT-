@@ -52,7 +52,7 @@ class Penalty extends HrisController {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return $this->stickFlashMessagesTo([]);
+        return $this->stickFlashMessagesTo(['acl' => $this->acl,]);
     }
 
     public function selfAction() {
