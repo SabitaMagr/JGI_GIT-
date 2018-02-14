@@ -32,7 +32,7 @@ class PaySlipPrevious extends HrisController {
         if ($request->isPost()) {
             try {
                 $data = (array) $request->getPost();
-                $list = $this->repository->getPayslipDetail($this->storageData['company_detail']['COMPANY_CODE'], $this->storageData['employee_detail']['EMPLOYEE_CODE'], $data['PERIOD_DT_CODE']);
+                $list = $this->repository->getPayslipDetail($this->storageData['company_detail']['COMPANY_CODE'], $this->storageData['employee_detail']['EMPLOYEE_CODE'], $data['PERIOD_DT_CODE'], $data['SALARY_TYPE']);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -52,12 +52,17 @@ class PaySlipPrevious extends HrisController {
                 break;
         }
         $periodList = $this->repository->getPeriodList($this->storageData['company_detail']['COMPANY_CODE']);
+        $arrearsListRaw = $this->repository->getArrearsList($this->storageData['company_detail']['COMPANY_CODE']);
+        $arrearsList = [0 => 'Default'];
+        $arrearsList = array_merge($arrearsList, $this->listValueToKV($arrearsListRaw, "ARREARS_CODE", "ARREARS_DESC"));
         $monthSE = $this->getSelectElement(['name' => 'Month', 'id' => 'mcode', 'class' => 'form-control', 'label' => 'Month'], $this->listValueToKV($periodList, "MCODE", "MNAME"));
+        $arrearsSE = $this->getSelectElement(['name' => 'salaryType', 'id' => 'salaryType', 'class' => 'form-control', 'label' => 'Salary Type'], $arrearsList);
         $view = new ViewModel($this->stickFlashMessagesTo(
                         [
                             'employeeId' => $this->employeeId,
                             'employeeCode' => $this->storageData['employee_detail']['EMPLOYEE_CODE'],
-                            'monthSE' => $monthSE
+                            'monthSE' => $monthSE,
+                            'arrearsSE' => $arrearsSE
         ]));
         $view->setTemplate($template);
         return $view;

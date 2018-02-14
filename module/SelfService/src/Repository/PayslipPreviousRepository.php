@@ -21,7 +21,16 @@ class PayslipPreviousRepository extends HrisRepository {
         return $this->rawQuery($sql);
     }
 
-    public function getPayslipDetail($companyCode, $employeeCode, $periodDtCode) {
+    public function getArrearsList($companyCode) {
+        $sql = "SELECT ARREARS_CODE,
+                  ARREARS_DESC
+                FROM HR_ARREARS_SETUP
+                WHERE COMPANY_CODE='{$companyCode}'
+                AND BRANCH_CODE='{$companyCode}.01'";
+        return $this->rawQuery($sql);
+    }
+
+    public function getPayslipDetail($companyCode, $employeeCode, $periodDtCode, $salaryType) {
         $sql = "SELECT 'R000' PAY_CODE,
                   'Calc Basic' PAY_EDESC,
                   'Calc Basic' PAY_NDESC,
@@ -30,10 +39,18 @@ class PayslipPreviousRepository extends HrisRepository {
                   0 PRIORITY_INDEX
                 FROM HR_SALARY_SHEET_DETAIL
                 WHERE 1          = 1
-                AND SHEET_NO     =''
-                AND EMPLOYEE_CODE=''
-                AND COMPANY_CODE ='01'
-                AND BRANCH_CODE  ='01.01'
+                AND SHEET_NO                =(SELECT HSS.SHEET_NO
+                    FROM HR_SALARY_SHEET HSS
+                    JOIN HR_EMPLOYEE_SETUP HES
+                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE)
+                    WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
+                    AND HSS.COMPANY_CODE     ='{$companyCode}'
+                    AND HSS.BRANCH_CODE      ='{$companyCode}.01'
+                    AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
+                    AND HSS.SALARY_TYPE ='{$salaryType}')
+                AND EMPLOYEE_CODE         ='{$employeeCode}'
+                AND COMPANY_CODE ='{$companyCode}'
+                AND BRANCH_CODE  ='{$companyCode}.01'
                 AND DELETED_FLAG ='N'
                 UNION ALL
                 SELECT A.PAY_CODE,
@@ -52,7 +69,8 @@ class PayslipPreviousRepository extends HrisRepository {
                     WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
                     AND HSS.COMPANY_CODE     ='{$companyCode}'
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
-                    AND HES.EMPLOYEE_CODE    ='{$employeeCode}')
+                    AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
+                    AND HSS.SALARY_TYPE ='{$salaryType}')
                 AND A.EMPLOYEE_CODE         ='{$employeeCode}'
                 AND A.COMPANY_CODE          ='{$companyCode}'
                 AND A.BRANCH_CODE           ='{$companyCode}.01'

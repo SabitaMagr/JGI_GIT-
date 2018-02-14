@@ -2,6 +2,7 @@
     'use strict';
     $(document).ready(function () {
         var $periodDtCode = $('#mcode');
+        var $salaryType = $('#salaryType');
         var $tbodyA = $('#tbody-a');
         var $tbodyD = $('#tbody-d');
         var render = function (list) {
@@ -20,20 +21,19 @@
                 }
             });
         };
-        var periodDtCodeChange = function ($this) {
-            app.serverRequest('', {'PERIOD_DT_CODE': $this.val()}).then(function (response) {
+        var changePaySlip = function () {
+            app.serverRequest('', {'PERIOD_DT_CODE': $periodDtCode.val(), 'SALARY_TYPE': $salaryType.val()}).then(function (response) {
                 render(response.data);
             }, function (error) {
                 console.log('error', error);
             });
         };
         $periodDtCode.on('change', function () {
-            periodDtCodeChange($(this));
+            changePaySlip();
         });
-        periodDtCodeChange($periodDtCode);
-
-
-
-
+        $salaryType.on('change', function () {
+            changePaySlip();
+        });
+        changePaySlip();
     });
 })(window.jQuery, window.app);
