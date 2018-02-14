@@ -33,7 +33,8 @@ class PaySlipPrevious extends HrisController {
             try {
                 $data = (array) $request->getPost();
                 $list = $this->repository->getPayslipDetail($this->storageData['company_detail']['COMPANY_CODE'], $this->storageData['employee_detail']['EMPLOYEE_CODE'], $data['PERIOD_DT_CODE'], $data['SALARY_TYPE']);
-                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+                $salSheetDetail = $this->repository->getSalarySheetDetail($this->storageData['company_detail']['COMPANY_CODE'], $this->storageData['employee_detail']['EMPLOYEE_CODE'], $data['PERIOD_DT_CODE'], $data['SALARY_TYPE']);
+                return new JsonModel(['success' => true, 'data' => ['paySlip' => $list, 'salarySheetDetail' => $salSheetDetail], 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }

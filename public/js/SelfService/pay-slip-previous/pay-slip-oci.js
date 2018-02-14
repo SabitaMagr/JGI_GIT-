@@ -5,7 +5,7 @@
         var $salaryType = $('#salaryType');
         var $tbodyA = $('#tbody-a');
         var $tbodyD = $('#tbody-d');
-        var render = function (list) {
+        var renderPayslip = function (list) {
             $tbodyA.html('');
             $tbodyD.html('');
 
@@ -21,9 +21,17 @@
                 }
             });
         };
+        var renderSalarySheetDetail = function (data) {
+            $.each(data, function (key, value) {
+                $('#' + key).html(value);
+            });
+        };
         var changePaySlip = function () {
             app.serverRequest('', {'PERIOD_DT_CODE': $periodDtCode.val(), 'SALARY_TYPE': $salaryType.val()}).then(function (response) {
-                render(response.data);
+                renderPayslip(response.data['paySlip']);
+                if ((typeof response.data['salarySheetDetail'] !== 'undefined') && response.data['salarySheetDetail'].length === 1) {
+                    renderSalarySheetDetail(response.data['salarySheetDetail'][0]);
+                }
             }, function (error) {
                 console.log('error', error);
             });
@@ -35,5 +43,9 @@
             changePaySlip();
         });
         changePaySlip();
+
+        $('#pdfExport').on('click', function () {
+            app.exportDomToPdf2($('#payslip-container'))
+        });
     });
 })(window.jQuery, window.app);

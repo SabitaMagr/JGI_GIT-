@@ -45,28 +45,128 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/pay-slip-previou
                     <?php print $this->formElement($arrearsSE); ?>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <table class="table customTable">
-                        <caption>
-                            Facilities and Renumerations (+)
-                        </caption>
-                        <tbody id="tbody-a">
-
-                        </tbody>
-                    </table>
+            <div id="payslip-container" class="margin-top-30">
+                <div class="row">
+                    <div class="col-sm-12">  
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        Sheet No
+                                    </td>
+                                    <td id="SHEET_NO">
+                                    </td>
+                                    <td>
+                                        Employee Code
+                                    </td>
+                                    <td id="EMPLOYEE_CODE">
+                                    </td>
+                                    <td>
+                                        Basic Salary
+                                    </td>
+                                    <td id="BASIC_SALARY">
+                                    </td>
+                                    <td>
+                                        Basic Period
+                                    </td>
+                                    <td id="BASIC_PERIOD">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Calc Basic
+                                    </td>
+                                    <td id="CALC_BASIC">
+                                    </td>
+                                    <td>
+                                        Grade Code
+                                    </td>
+                                    <td id="GRADE_CODE">
+                                    </td>
+                                    <td>
+                                        Marital Status
+                                    </td>
+                                    <td id="MARITAL_STATUS">
+                                    </td>
+                                    <td>
+                                        Present Days
+                                    </td>
+                                    <td id="PRESENT_DAYS">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Work Days
+                                    </td>
+                                    <td id="WORK_DAYS">
+                                    </td>
+                                    <td>
+                                        Overtime Hours
+                                    </td>
+                                    <td id="OVERTIME_HOURS">
+                                    </td>
+                                    <td>
+                                        Leave with pay days
+                                    </td>
+                                    <td id="LEAVE_WITH_PAY_DAYS">
+                                    </td>
+                                    <td>
+                                        leave without pay days
+                                    </td>
+                                    <td id="LEAVE_WITHOUT_PAY_DAYS">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Gross Amount
+                                    </td>
+                                    <td id="GROSS_AMOUNT">
+                                    </td>
+                                    <td>
+                                        Net Amount
+                                    </td>
+                                    <td id="NET_AMOUNT">
+                                    </td>
+                                    <td>
+                                        Absent Days
+                                    </td>
+                                    <td id="ABSENT_DAYS">
+                                    </td>
+                                    <td>
+                                        Holidays
+                                    </td>
+                                    <td id="HOLIDAYS">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <table class="table customTable">
-                        <caption>
-                            Deductions and Savings (-)
-                        </caption>
-                        <tbody id="tbody-d">
 
-                        </tbody>
-                    </table>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <table class="table customTable">
+                            <caption>
+                                Facilities and Renumerations (+)
+                            </caption>
+                            <tbody id="tbody-a">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <table class="table customTable">
+                            <caption>
+                                Deductions and Savings (-)
+                            </caption>
+                            <tbody id="tbody-d">
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
