@@ -12,70 +12,57 @@ class PayslipPreviousRepository extends HrisRepository {
     }
 
     public function getPeriodList($companyCode) {
-        $sql = "
-                SELECT PERIOD_DT_CODE AS mcode,
+        $sql = "SELECT PERIOD_DT_CODE AS mcode,
                   DT_EDESC            AS mname
                 FROM HR_PERIOD_DETAIL
                 WHERE COMPANY_CODE='{$companyCode}'
-                ORDER BY to_number(PERIOD_DT_CODE) ;";
+                AND BRANCH_CODE='{$companyCode}.01'
+                ORDER BY to_number(PERIOD_DT_CODE)";
         return $this->rawQuery($sql);
     }
 
-    public function getPayslipDetail($companyCode, $employeeCode) {
-        $sql = "SELECT SS.SHEET_NO,
-                  SS.SAL_SHEET_CODE,
-                  SSD.EMPLOYEE_CODE ,
-                  E.EMPLOYEE_EDESC,
-                  SSD.BASIC_SALARY,
-                  SSD.BASIC_PERIOD,
-                  E.EMPLOYEE_CODE,
-                  SSD.CALC_BASIC,
-                  SSD.GRADE_CODE,
-                  SSD.MARITAL_STATUS,
-                  SSD.PRESENT_DAYS,
-                  SSD.WORK_DAYS ,
-                  SS.PERIOD_DT_CODE,
-                  SSD.OVERTIME_HOURS,
-                  SSD.LEAVE_WITH_PAY_DAYS,
-                  SSD.LEAVE_WITHOUT_PAY_DAYS,
-                  SSD.GROSS_AMOUNT,
-                  SSD.NET_AMOUNT,
-                  SSD.EREMARKS,
-                  SSD.NREMARKS,
-                  SSD.HOLIDAYS,
-                  SSD.ABSENT_DAYS,
-                  SSD.HOLIDAYS,
-                  SSD.DEPARTMENT_CODE,
-                  (SELECT COMPANY_SETUP.COMPANY_EDESC
-                  FROM COMPANY_SETUP
-                  WHERE COMPANY_SETUP.COMPANY_CODE=E.COMPANY_CODE
-                  ) AS COMPANY_NAME,
-                  (SELECT HR_BRANCH_CODE.BRANCH_EDESC
-                  FROM HR_BRANCH_CODE
-                  WHERE HR_BRANCH_CODE.BRANCH_CODE=E.BRANCH_CODE
-                  ) AS BRANCH_NAME,
-                  (SELECT HR_DEPARTMENT_CODE.DEPARTMENT_EDESC
-                  FROM HR_DEPARTMENT_CODE
-                  WHERE HR_DEPARTMENT_CODE.DEPARTMENT_CODE=SSD.DEPARTMENT_CODE
-                  ) AS DEPARTMENT_NAME,
-                  (SELECT HR_GRADE_CODE.GRADE_EDESC
-                  FROM HR_GRADE_CODE
-                  WHERE HR_GRADE_CODE.GRADE_CODE=SSD.GRADE_CODE
-                  ) AS GRADE_NAME,
-                  (SELECT DT_EDESC
-                  FROM HR_PERIOD_DETAIL
-                  WHERE HR_PERIOD_DETAIL.PERIOD_DT_CODE=SS.PERIOD_DT_CODE
-                  AND HR_PERIOD_DETAIL.COMPANY_CODE    =SS.COMPANY_CODE
-                  ) AS MONTH
-                FROM HR_SALARY_SHEET SS
-                JOIN HR_SALARY_SHEET_DETAIL SSD
-                ON (SS.SHEET_NO =SSD.SHEET_NO)
-                JOIN HR_EMPLOYEE_SETUP E
-                ON (SSD.EMPLOYEE_CODE =E.EMPLOYEE_CODE)
-                WHERE SS.COMPANY_CODE ='{$companyCode}'
-                AND SS.PERIOD_DT_CODE = 1
-                AND SS.SALARY_TYPE    =0
-                AND SSD.EMPLOYEE_CODE ='{$employeeCode}'";
+    public function getPayslipDetail($companyCode, $employeeCode, $periodDtCode) {
+        $sql = "SELECT 'R000' PAY_CODE,
+                  'Calc Basic' PAY_EDESC,
+                  'Calc Basic' PAY_NDESC,
+                  CALC_BASIC AMOUNT,
+                  'A' PAY_TYPE_FLAG,
+                  0 PRIORITY_INDEX
+                FROM HR_SALARY_SHEET_DETAIL
+                WHERE 1          = 1
+                AND SHEET_NO     =''
+                AND EMPLOYEE_CODE=''
+                AND COMPANY_CODE ='01'
+                AND BRANCH_CODE  ='01.01'
+                AND DELETED_FLAG ='N'
+                UNION ALL
+                SELECT A.PAY_CODE,
+                  B.PAY_EDESC,
+                  B.PAY_NDESC,
+                  A.AMOUNT,
+                  A.PAY_TYPE_FLAG,
+                  B.PRIORITY_INDEX
+                FROM HR_SALARY_PAY_DETAIL A,
+                  HR_PAY_SETUP B
+                WHERE 1                     = 1
+                AND SHEET_NO                =(SELECT HSS.SHEET_NO
+                    FROM HR_SALARY_SHEET HSS
+                    JOIN HR_EMPLOYEE_SETUP HES
+                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE)
+                    WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
+                    AND HSS.COMPANY_CODE     ='{$companyCode}'
+                    AND HSS.BRANCH_CODE      ='{$companyCode}.01'
+                    AND HES.EMPLOYEE_CODE    ='{$employeeCode}')
+                AND A.EMPLOYEE_CODE         ='{$employeeCode}'
+                AND A.COMPANY_CODE          ='{$companyCode}'
+                AND A.BRANCH_CODE           ='{$companyCode}.01'
+                AND A.DELETED_FLAG          ='N'
+                AND A.PAY_CODE              =B.PAY_CODE
+                AND A.COMPANY_CODE          =B.COMPANY_CODE
+                AND A.BRANCH_CODE           = B.BRANCH_CODE
+                AND A.PAY_TYPE_FLAG        IN ('A','D')
+                AND B.INVISIBLE_ON_PAY_SLIP = 'N'
+                ORDER BY PRIORITY_INDEX";
         return $this->rawQuery($sql);
     }
 
