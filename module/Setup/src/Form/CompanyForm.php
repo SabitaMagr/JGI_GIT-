@@ -115,7 +115,7 @@ class CompanyForm {
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Equal Cr Account Code"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Equal Dr Account Code"})
      * @Annotation\Attributes({ "id":"equalCrAccCode","class":"form-control"})
      */
     public $equalCrAccCode;
