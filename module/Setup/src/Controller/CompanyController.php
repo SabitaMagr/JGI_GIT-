@@ -139,6 +139,8 @@ class CompanyController extends HrisController {
         $excessCrAccCode = $this->form->get('excessCrAccCode');
         $lessDrAccCode = $this->form->get('lessDrAccCode');
         $equalCrAccCode = $this->form->get('equalCrAccCode');
+        $advanceDrAccCode = $this->form->get('advanceDrAccCode');
+        $advanceCrAccCode = $this->form->get('advanceCrAccCode');
 
         $formCodeList = $this->synergyRepo->getFormList($this->storageData['company_detail']['COMPANY_CODE']);
         $accCodeList = $this->synergyRepo->getAccountList($this->storageData['company_detail']['COMPANY_CODE']);
@@ -149,6 +151,8 @@ class CompanyController extends HrisController {
         $excessCrAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
         $lessDrAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
         $equalCrAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
+        $advanceDrAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
+        $advanceCrAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
     }
 
     public function deleteAction() {

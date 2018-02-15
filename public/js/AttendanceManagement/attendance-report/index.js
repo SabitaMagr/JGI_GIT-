@@ -22,8 +22,7 @@ angular.module('hris', [])
                 var serviceEventTypeId = angular.element(document.getElementById('serviceEventTypeId')).val();
                 var fromDate = angular.element(document.getElementById('fromDate')).val();
                 var toDate = angular.element(document.getElementById('toDate')).val();
-                App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
+                window.app.serverRequest(document.url, {
                     action: 'pullAllAttendanceReport',
                     data: {
                         'employeeId': employeeId,
@@ -39,7 +38,6 @@ angular.module('hris', [])
                         'toDate': toDate
                     }
                 }).then(function (success) {
-                    App.unblockUI("#hris-page-content");
                     if (displayKendoFirstTime) {
                         $scope.initializekendoGrid();
                         displayKendoFirstTime = false;
@@ -49,7 +47,6 @@ angular.module('hris', [])
                     dataSource.read();
                     grid.setDataSource(dataSource);
                 }, function (failure) {
-                    App.unblockUI("#hris-page-content");
                     console.log(failure);
                 });
             }

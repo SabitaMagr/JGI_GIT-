@@ -4,6 +4,7 @@ namespace AttendanceManagement\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 
 class PenaltyRepo {
@@ -150,9 +151,31 @@ EOT;
     public function deduct($data) {
         EntityHelper::rawQueryResult($this->adapter, "
                 BEGIN
-                  HRIS_LATE_LEAVE_DEDUCTION({$data['monthId']},{$data['noOfDays']},{$data['employeeId']});
+                  HRIS_LATE_LEAVE_DEDUCTION({$data['companyId']},{$data['fiscalYearId']},{$data['fiscalYearMonthNo']},{$data['noOfDeductionDays']},{$data['employeeId']},'{$data['action']}');
                 END;
 ");
+    }
+
+    public function penalizedMonthReport($fiscalYearId, $fiscalYearMonthNo): array {
+        $sql = "SELECT CMC.COMPANY_ID,
+                  CMC.COMPANY_NAME,
+                  CMC.FISCAL_YEAR_ID,
+                  CMC.FISCAL_YEAR_MONTH_NO,
+                  CMC.MONTH_EDESC,
+                  PM.NO_OF_DAYS
+                FROM
+                  (SELECT HRIS_COMPANY.*,HRIS_MONTH_CODE.* FROM HRIS_COMPANY , HRIS_MONTH_CODE
+                  ) CMC
+                LEFT JOIN HRIS_PENALIZED_MONTHS PM
+                ON (PM.COMPANY_ID           =CMC.COMPANY_ID
+                AND PM.FISCAL_YEAR_ID       =CMC.FISCAL_YEAR_ID
+                AND PM.FISCAL_YEAR_MONTH_NO = CMC.FISCAL_YEAR_MONTH_NO)
+                WHERE CMC.FISCAL_YEAR_ID    ={$fiscalYearId}
+                AND CMC.FISCAL_YEAR_MONTH_NO={$fiscalYearMonthNo}
+";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return iterator_to_array($result, false);
     }
 
 }

@@ -58,7 +58,7 @@
             search['status'] = $status.val();
             search['fromDate'] = $fromDate.val();
             search['toDate'] = $toDate.val();
-            app.pullDataById('', search).then(function (response) {
+            app.serverRequest('', search).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
                 } else {

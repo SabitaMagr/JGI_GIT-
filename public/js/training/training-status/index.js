@@ -53,7 +53,7 @@
         ]);
 
         $search.on('click', function () {
-            app.pullDataById('', {
+            app.serverRequest('', {
                 'status': $status.val(),
                 'fromDate': $fromDate.val(),
                 'toDate': $toDate.val()

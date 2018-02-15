@@ -109,7 +109,7 @@
                             console.log("app log", "The form is not filled");
                             $scope.expenseDtlEmpty = 0;
                         }
-                        window.app.pullDataById(document.urlExpenseAdd, {
+                        app.serverRequest(document.urlExpenseAdd, {
                             data: {
                                 expenseDtlList: $scope.expenseDtlFormList,
                                 travelId: parseInt(travelId),
