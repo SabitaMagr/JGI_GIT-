@@ -48,7 +48,10 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/pay-slip-previou
             <div id="payslip-container" class="margin-top-30">
                 <div class="row">
                     <div class="col-sm-12">  
-                        <table class="table table-bordered">
+                        <table class="table table-striped customTable">
+                            <caption>
+                                Salary Sheet Detail
+                            </caption>
                             <tbody>
                                 <tr>
                                     <td>
@@ -56,55 +59,76 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/pay-slip-previou
                                     </td>
                                     <td id="SHEET_NO">
                                     </td>
+                                </tr>
+                                <tr>
                                     <td>
                                         Employee Code
                                     </td>
                                     <td id="EMPLOYEE_CODE">
                                     </td>
                                     <td>
+                                        Employee Name
+                                    </td>
+                                    <td id="EMPLOYEE_EDESC">
+                                    </td>
+                                    <td>
+                                        Company
+                                    </td>
+                                    <td id="COMPANY_EDESC">
+                                    </td>
+                                    <td>
+                                        Account No
+                                    </td>
+                                    <td id="ACCOUNT_NO">
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                    <td>
+                                        PF No
+                                    </td>
+                                    <td id="PF_NUMBER">
+                                    </td>
+                                    <td>
+                                        CIT No
+                                    </td>
+                                    <td id="CIT_NUMBER">
+                                    </td>
+                                    <td>
+                                        PAN No
+                                    </td>
+                                    <td id="PAN_NO">
+                                    </td>
+                                    <td>
                                         Basic Salary
                                     </td>
                                     <td id="BASIC_SALARY">
                                     </td>
-                                    <td>
-                                        Basic Period
-                                    </td>
-                                    <td id="BASIC_PERIOD">
-                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>
-                                        Calc Basic
-                                    </td>
-                                    <td id="CALC_BASIC">
-                                    </td>
-                                    <td>
-                                        Grade Code
-                                    </td>
-                                    <td id="GRADE_CODE">
-                                    </td>
-                                    <td>
-                                        Marital Status
-                                    </td>
-                                    <td id="MARITAL_STATUS">
-                                    </td>
+
                                     <td>
                                         Present Days
                                     </td>
                                     <td id="PRESENT_DAYS">
                                     </td>
-                                </tr>
-                                <tr>
+                                    <td>
+                                        Absent Days
+                                    </td>
+                                    <td id="ABSENT_DAYS">
+                                    </td>
                                     <td>
                                         Work Days
                                     </td>
                                     <td id="WORK_DAYS">
                                     </td>
                                     <td>
-                                        Overtime Hours
+                                        Holidays
                                     </td>
-                                    <td id="OVERTIME_HOURS">
+                                    <td id="HOLIDAYS">
                                     </td>
+                                </tr>
+                                <tr>
                                     <td>
                                         Leave with pay days
                                     </td>
@@ -115,52 +139,68 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/pay-slip-previou
                                     </td>
                                     <td id="LEAVE_WITHOUT_PAY_DAYS">
                                     </td>
+                                    <td>
+                                        Overtime Hours
+                                    </td>
+                                    <td id="OVERTIME_HOURS">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table class="table customTable">
+                                            <caption>
+                                                Facilities and Renumerations (+)
+                                            </caption>
+                                            <tbody id="tbody-a">
+
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table class="table customTable">
+                                            <caption>
+                                                Deductions and Savings (-)
+                                            </caption>
+                                            <tbody id="tbody-d">
+
+                                            </tbody>
+                                        </table>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        Gross Amount
-                                    </td>
-                                    <td id="GROSS_AMOUNT">
+                                        <table class="table customTable">
+                                            <tr>
+                                                <td>
+                                                    Total Earnings
+                                                </td>
+                                                <td id="GROSS_AMOUNT">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Net Payable
+                                                </td>
+                                                <td id="NET_AMOUNT">
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </td>
                                     <td>
-                                        Net Amount
-                                    </td>
-                                    <td id="NET_AMOUNT">
-                                    </td>
-                                    <td>
-                                        Absent Days
-                                    </td>
-                                    <td id="ABSENT_DAYS">
-                                    </td>
-                                    <td>
-                                        Holidays
-                                    </td>
-                                    <td id="HOLIDAYS">
+                                        <table class="table customTable">
+                                            <td>
+                                                Total Deductions
+                                            </td>
+                                            <td id="DEDUCTION_AMOUNT">
+                                            </td>
+                                        </table>
+
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-6">
-                        <table class="table customTable">
-                            <caption>
-                                Facilities and Renumerations (+)
-                            </caption>
-                            <tbody id="tbody-a">
-
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-sm-6">
-                        <table class="table customTable">
-                            <caption>
-                                Deductions and Savings (-)
-                            </caption>
-                            <tbody id="tbody-d">
-
                             </tbody>
                         </table>
                     </div>

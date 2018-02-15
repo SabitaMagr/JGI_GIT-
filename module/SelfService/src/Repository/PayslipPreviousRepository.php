@@ -85,18 +85,30 @@ class PayslipPreviousRepository extends HrisRepository {
     }
 
     public function getSalarySheetDetail($companyCode, $employeeCode, $periodDtCode, $salaryType) {
-        $sql = "SELECT *
-                FROM HR_SALARY_SHEET_DETAIL
-                WHERE SHEET_NO                =(SELECT HSS.SHEET_NO
-                    FROM HR_SALARY_SHEET HSS
-                    JOIN HR_EMPLOYEE_SETUP HES
-                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE)
-                    WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
+        $sql = "SELECT HSSD.*,
+                  E.EMPLOYEE_EDESC,
+                  C.COMPANY_EDESC,
+                  E.PF_NUMBER,
+                  E.CIT_NUMBER,
+                  E.PAN_NO,
+                  (HSSD.GROSS_AMOUNT-HSSD.NET_AMOUNT) AS DEDUCTION_AMOUNT
+                FROM HR_SALARY_SHEET_DETAIL HSSD
+                JOIN HR_EMPLOYEE_SETUP E
+                ON (HSSD.EMPLOYEE_CODE=E.EMPLOYEE_CODE)
+                JOIN COMPANY_SETUP C
+                ON(E.COMPANY_CODE   =C.COMPANY_CODE)
+                WHERE HSSD.SHEET_NO =
+                  (SELECT HSS.SHEET_NO
+                  FROM HR_SALARY_SHEET HSS
+                  JOIN HR_EMPLOYEE_SETUP HES
+                  ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE)
+                   WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
                     AND HSS.COMPANY_CODE     ='{$companyCode}'
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
                     AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
-                    AND HSS.SALARY_TYPE ='{$salaryType}')
-                AND EMPLOYEE_CODE='{$employeeCode}'";
+                    AND HSS.SALARY_TYPE ='{$salaryType}'
+                  )
+                AND HSSD.EMPLOYEE_CODE='{$employeeCode}'";
         return $this->rawQuery($sql);
     }
 
