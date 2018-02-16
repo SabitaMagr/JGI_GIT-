@@ -6,7 +6,7 @@ use Exception;
 
 class NumberHelper {
 
-    public function toText($amt) {
+    public function toText($amt = 0) {
         if (is_numeric($amt)) {
             $sign = $amt > 0 ? '' : 'Negative ';
             return $sign . $this->toQuadrillions(abs($amt));

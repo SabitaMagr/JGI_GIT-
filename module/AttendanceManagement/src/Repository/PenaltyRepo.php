@@ -137,14 +137,14 @@ EOT;
         return EntityHelper::rawQueryResult($this->adapter, "
             SELECT (
               CASE
-                WHEN COUNT(PM.YEAR) > 0
+                WHEN COUNT(PM.FISCAL_YEAR_ID) > 0
                 THEN 'Y'
                 ELSE 'N'
               END) AS IS_DEDUCTED
             FROM HRIS_PENALIZED_MONTHS PM
             JOIN HRIS_MONTH_CODE M
-            ON (PM.YEAR     =M.YEAR
-            AND PM.MONTH_NO = M.MONTH_NO)
+            ON (PM.FISCAL_YEAR_ID     =M.FISCAL_YEAR_ID
+            AND PM.FISCAL_YEAR_MONTH_NO = M.FISCAL_YEAR_MONTH_NO)
             WHERE M.MONTH_ID= {$monthId} ")->current();
     }
 
