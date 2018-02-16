@@ -7,8 +7,11 @@ use Exception;
 class NumberHelper {
 
     public function toText($amt = 0) {
+        if ($amt == null) {
+            $amt = 0;
+        }
         if (is_numeric($amt)) {
-            $sign = $amt > 0 ? '' : 'Negative ';
+            $sign = $amt >= 0 ? '' : 'Negative ';
             return $sign . $this->toQuadrillions(abs($amt));
         } else {
             throw new Exception('Only numeric values are allowed.');
