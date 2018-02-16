@@ -7,6 +7,7 @@ $form->setAttribute('id', 'serviceType-form');
 $serviceTypeName = $form->get('serviceTypeName');
 $remarks = $form->get('remarks');
 $status = $form->get('status');
+$type = $form->get('type');
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
@@ -23,7 +24,6 @@ if ($this->messages) {
 $form->prepare();
 ?>
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuServiceType"]];echo json_encode($menu);?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
 </script>
 <div class="page-bar">
@@ -44,28 +44,35 @@ $form->prepare();
                 <?php
                 print $this->form()->openTag($form);
                 ?>
-                
+
                 <div class=" row">
 
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($serviceTypeName); ?>
-                    <span class="required" aria-required="true">*</span>
-                    <?php print $this->formElement($serviceTypeName); ?>
-                    <?php print $this->formElementErrors()->render($serviceTypeName, ['class' => 'help-block']); ?>
-                    <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($serviceTypeName); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($serviceTypeName); ?>
+                            <?php print $this->formElementErrors()->render($serviceTypeName, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($type); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($type); ?>
+                            <?php print $this->formElementErrors()->render($type, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
 
                     <div class="col-sm-4">
-                <div class="form-group">
-                    <?php print $this->formLabel($remarks); ?>
-                    <?php print $this->formElement($remarks); ?>
-                    <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
-                </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($remarks); ?>
+                            <?php print $this->formElement($remarks); ?>
+                            <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
                 </div>
-                
+
 
 
                 <?php

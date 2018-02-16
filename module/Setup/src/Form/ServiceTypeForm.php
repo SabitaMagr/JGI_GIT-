@@ -25,7 +25,7 @@ class ServiceTypeForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
-     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
+     * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"height: 50px; font-size:12px"})
      */
     public $remarks;
 
@@ -39,12 +39,18 @@ class ServiceTypeForm {
     public $status;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Type"})
+     * @Annotation\Attributes({ "id":"type","class":"form-control"})
+     */
+    public $type;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
 
 }
-
-/* End of file ServiceTypeForm.php */
-/* Location: ./Setup/src/Form/ServiceTypeForm.php */
