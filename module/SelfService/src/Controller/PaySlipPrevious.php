@@ -3,8 +3,11 @@
 namespace SelfService\Controller;
 
 use Application\Controller\HrisController;
+use Exception;
+use SelfService\Repository\PayslipPreviousRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class PaySlipPrevious extends HrisController {
@@ -14,7 +17,7 @@ class PaySlipPrevious extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
-        $this->initializeRepository(\SelfService\Repository\PayslipPreviousRepository::class);
+        $this->initializeRepository(PayslipPreviousRepository::class);
         $this->viewType = $this->storageData['preference']['oldPayslipType'];
 
         $this->queryToList = function($sql) {
@@ -25,6 +28,17 @@ class PaySlipPrevious extends HrisController {
     }
 
     public function payslipAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = (array) $request->getPost();
+                $list = $this->repository->getPayslipDetail($this->storageData['company_detail']['COMPANY_CODE'], $this->storageData['employee_detail']['EMPLOYEE_CODE'], $data['PERIOD_DT_CODE'], $data['SALARY_TYPE']);
+                $salSheetDetail = $this->repository->getSalarySheetDetail($this->storageData['company_detail']['COMPANY_CODE'], $this->storageData['employee_detail']['EMPLOYEE_CODE'], $data['PERIOD_DT_CODE'], $data['SALARY_TYPE']);
+                return new JsonModel(['success' => true, 'data' => ['paySlip' => $list, 'salarySheetDetail' => $salSheetDetail], 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
         $template = "";
         switch ($this->viewType) {
             case "M":
@@ -38,11 +52,18 @@ class PaySlipPrevious extends HrisController {
                 exit;
                 break;
         }
+        $periodList = $this->repository->getPeriodList($this->storageData['company_detail']['COMPANY_CODE']);
+        $arrearsListRaw = $this->repository->getArrearsList($this->storageData['company_detail']['COMPANY_CODE']);
+        $arrearsList = [0 => 'Default'];
+        $arrearsList = array_merge($arrearsList, $this->listValueToKV($arrearsListRaw, "ARREARS_CODE", "ARREARS_DESC"));
+        $monthSE = $this->getSelectElement(['name' => 'Month', 'id' => 'mcode', 'class' => 'form-control', 'label' => 'Month'], $this->listValueToKV($periodList, "MCODE", "MNAME"));
+        $arrearsSE = $this->getSelectElement(['name' => 'salaryType', 'id' => 'salaryType', 'class' => 'form-control', 'label' => 'Salary Type'], $arrearsList);
         $view = new ViewModel($this->stickFlashMessagesTo(
                         [
                             'employeeId' => $this->employeeId,
                             'employeeCode' => $this->storageData['employee_detail']['EMPLOYEE_CODE'],
-                            'periodList' => $this->repository->getPeriodList()
+                            'monthSE' => $monthSE,
+                            'arrearsSE' => $arrearsSE
         ]));
         $view->setTemplate($template);
         return $view;
