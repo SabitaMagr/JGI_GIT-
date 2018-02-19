@@ -937,3 +937,29 @@ ALTER TABLE HRIS_EMPLOYEES
 MODIFY ID_DRIVING_LICENCE_TYPE VARCHAR(30);
 
 INSERT INTO HRIS_BLOOD_GROUPS VALUES (9,'N/A',NULL,'E');
+
+insert into hris_menus
+(
+menu_id,
+MENU_NAME,
+PARENT_MENU,
+route,
+status,
+created_dt,
+icon_class,
+action,
+menu_index,
+is_visible
+)values
+(
+(select max(menu_id)+1 from hris_menus),
+'Report with Location',
+4,
+'attendancebyhr',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'attendnaceReportWithLocation',
+(select max(MENU_INDEX)+1 from hris_menus where parent_menu=4),
+'Y'
+);
