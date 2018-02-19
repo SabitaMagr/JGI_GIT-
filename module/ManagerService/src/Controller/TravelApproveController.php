@@ -32,7 +32,7 @@ class TravelApproveController extends HrisController {
             try {
                 $search['employeeId'] = $this->employeeId;
                 $search['status'] = ['RQ', 'RC'];
-                $rawList = $this->repository->getAllFiltered($search);
+                $rawList = $this->repository->getPendingList($this->employeeId);
                 $list = Helper::extractDbData($rawList);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {

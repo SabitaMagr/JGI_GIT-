@@ -3,7 +3,6 @@
 namespace Payroll\Controller;
 
 use Payroll\Repository\PayrollRepository;
-use SelfService\Repository\AdvanceRequestRepository;
 use Setup\Repository\EmployeeRepository;
 
 class VariableProcessor {

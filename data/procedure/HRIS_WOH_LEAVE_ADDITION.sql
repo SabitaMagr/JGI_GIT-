@@ -100,7 +100,7 @@ BEGIN
       V_INCREMENT_DAY         :=1;
     END IF;
   END LOOP;
-  --
+--
   INSERT
   INTO HRIS_EMPLOYEE_LEAVE_ADDITION
     (

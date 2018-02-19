@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_WOH_OT_ADDITION(
+create or replace PROCEDURE HRIS_WOH_OT_ADDITION(
     P_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE)
 AS
   V_OVERTIME_ID HRIS_OVERTIME.OVERTIME_ID%TYPE;
@@ -87,7 +87,8 @@ BEGIN
           RECOMMENDED_DATE,
           APPROVED_BY,
           APPROVED_DATE,
-          TOTAL_HOUR
+          TOTAL_HOUR,
+          WOH_ID
         )
         VALUES
         (
@@ -101,7 +102,8 @@ BEGIN
           V_REQUESTED_DT,
           V_APPROVED_BY,
           V_REQUESTED_DT,
-          V_TOTAL_HOUR
+          V_TOTAL_HOUR,
+          P_ID
         );
       INSERT
       INTO HRIS_OVERTIME_DETAIL
@@ -111,7 +113,8 @@ BEGIN
           START_TIME,
           END_TIME,
           STATUS,
-          TOTAL_HOUR
+          TOTAL_HOUR,
+          WOH_ID
         )
         VALUES
         (
@@ -120,7 +123,8 @@ BEGIN
           V_START_TIME,
           V_END_TIME,
           V_DETAIL_STATUS,
-          V_TOTAL_HOUR
+          V_TOTAL_HOUR,
+          P_ID
         );
     END IF;
   END LOOP;

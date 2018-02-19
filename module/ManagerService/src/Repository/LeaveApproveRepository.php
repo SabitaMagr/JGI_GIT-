@@ -8,8 +8,6 @@ use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveAssign;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
 class LeaveApproveRepository implements RepositoryInterface {

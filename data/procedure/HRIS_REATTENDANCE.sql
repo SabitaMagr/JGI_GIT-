@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_REATTENDANCE(
+create or replace PROCEDURE HRIS_REATTENDANCE(
     P_FROM_ATTENDANCE_DT HRIS_ATTENDANCE.ATTENDANCE_DT%TYPE,
     P_EMPLOYEE_ID HRIS_ATTENDANCE.EMPLOYEE_ID%TYPE:=NULL,
     P_TO_ATTENDANCE_DT DATE                       :=NULL)
@@ -216,7 +216,7 @@ BEGIN
         NULL;
       ELSIF (V_OVERALL_STATUS ='TN') THEN
         NULL;
-      ELSIF(V_HALFDAY_FLAG   ='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
+      ELSIF(V_HALFDAY_FLAG    ='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
         V_OVERALL_STATUS     :='LP';
       ELSIF (V_OVERALL_STATUS = 'AB') THEN
         V_OVERALL_STATUS     :='PR';
@@ -236,10 +236,10 @@ BEGIN
         END IF;
       END IF;
       --
-      IF i                 <V_DATE_DIFF THEN
-        IF V_IN_TIME      IS NOT NULL AND V_OUT_TIME IS NULL THEN
-          IF V_LATE_STATUS ='L' THEN
-            V_LATE_STATUS := 'Y';
+      IF TRUNC(employee.ATTENDANCE_DT) != TRUNC(SYSDATE) THEN
+        IF V_IN_TIME                  IS NOT NULL AND V_OUT_TIME IS NULL THEN
+          IF V_LATE_STATUS             ='L' THEN
+            V_LATE_STATUS             := 'Y';
           ELSE
             V_LATE_STATUS := 'X';
           END IF;
@@ -273,6 +273,49 @@ BEGIN
       WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
       AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
       --
+      DECLARE
+        V_ID HRIS_EMPLOYEE_WORK_DAYOFF.ID%TYPE;
+      BEGIN
+        SELECT ID
+        INTO V_ID
+        FROM HRIS_EMPLOYEE_WORK_DAYOFF
+        WHERE EMPLOYEE_ID = employee.EMPLOYEE_ID
+        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT-(
+          CASE
+            WHEN (employee.TWO_DAY_SHIFT ='E')
+            THEN 1
+            ELSE 0
+          END))
+        AND STATUS ='AP'
+        AND ROWNUM =1;
+        --
+        HRIS_WOD_REWARD(V_ID);
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
+      END;
+      -- check if woh is present for every employee
+      DECLARE
+        V_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE;
+      BEGIN
+        SELECT ID
+        INTO V_ID
+        FROM HRIS_EMPLOYEE_WORK_HOLIDAY
+        WHERE EMPLOYEE_ID =employee.EMPLOYEE_ID
+        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT-(
+          CASE
+            WHEN (employee.TWO_DAY_SHIFT ='E')
+            THEN 1
+            ELSE 0
+          END))
+        AND STATUS = 'AP'
+        AND ROWNUM =1;
+        --
+        HRIS_WOH_REWARD(V_ID);
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
+      END;
     END LOOP;
   END LOOP;
 END;
