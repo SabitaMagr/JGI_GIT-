@@ -3,7 +3,6 @@
 namespace ManagerService\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;

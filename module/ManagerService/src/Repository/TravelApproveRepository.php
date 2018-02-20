@@ -37,11 +37,12 @@ class TravelApproveRepository implements RepositoryInterface {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [TravelRequest::TRAVEL_ID => $id]);
         $link = $model->status == 'AP' ? 'Y' : 'N';
-        EntityHelper::rawQueryResult($this->adapter, "
+        if ($link == 'Y') {
+            EntityHelper::rawQueryResult($this->adapter, "
                 BEGIN
                     HRIS_TRAVEL_REQUEST_PROC({$id},'{$link}');
-                END;
-");
+                END;");
+        }
     }
 
     public function fetchAll() {
