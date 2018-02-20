@@ -247,9 +247,9 @@ class AttendanceByHr extends HrisController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
-    
-    public function attendnaceReportWithLocationAction(){
-         return Helper::addFlashMessagesToArray($this, [
+
+    public function attendanceReportWithLocationAction() {
+        return Helper::addFlashMessagesToArray($this, [
                     'status' => $this->getStatusSelect(),
                     'presentStatus' => $this->getPresentStatusSelect(),
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
@@ -257,8 +257,8 @@ class AttendanceByHr extends HrisController {
                     'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
-    
-    public function pullAttendanceWithLocationAction(){
+
+    public function pullAttendanceWithLocationAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
@@ -282,9 +282,9 @@ class AttendanceByHr extends HrisController {
             $result['data'] = Helper::extractDbData($results);
             $result['error'] = "";
 
-            return new CustomViewModel($result);
+            return new JsonModel($result);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

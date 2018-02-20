@@ -963,6 +963,6 @@ END;
 /
 
 BEGIN
-    HRIS_INSERT_MENU('Report with Location','attendancebyhr','attendnaceReportWithLocation',4,12,'fa fa-list-alt','Y');
+    HRIS_INSERT_MENU('Report with Location','attendancebyhr','attendanceReportWithLocation',4,12,'fa fa-list-alt','Y');
 END;
 /
