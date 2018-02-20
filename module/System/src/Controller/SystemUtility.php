@@ -35,4 +35,42 @@ class SystemUtility extends HrisController {
         ]);
     }
 
+    public function databaseBackupAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+
+                $databaseBackup = EntityHelper::rawQueryResult($this->adapter, "SELECT * FROM HRIS_DATABASE_BACKUP")->current();
+                if ($databaseBackup) {
+                    $userName = $databaseBackup['USER_NAME'];
+                    $password = $databaseBackup['PASSWORD'];
+                    $connectionString = $databaseBackup['CONNECTION_STRING'];
+                    $oralceUser = $databaseBackup['ORACLE_USER'];
+                    $directory = $databaseBackup['DIRECTORY_NAME'];
+
+                    date_default_timezone_set('Asia/Kathmandu');
+                    $todayDate = date("Ymd_g_i");
+
+                    $query = "EXPDP " . $userName . "/" . $password . "@" . $connectionString . " DUMPFILE = " . $oralceUser . "_" . $todayDate . ".dmp SCHEMAS = " . $oralceUser . " DIRECTORY = " . $directory . " LOGFILE= " . $oralceUser . "_" . $todayDate . ".log VERSION = 10.2.0";
+                    $this->execInBackground($query);
+                } else {
+                    throw new Exception('Backup Value not set in Database');
+                }
+
+                return new JsonModel(['success' => true, 'data' => null, 'message' => "dataBackup Sucessfull"]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }
+//        return $this->stickFlashMessagesTo([]);
+    }
+
+    function execInBackground($cmd) {
+        if (substr(php_uname(), 0, 7) == "Windows") {
+            pclose(popen("start /B " . $cmd, "r"));
+        } else {
+            exec($cmd . " > /dev/null &");
+        }
+    }
+
 }

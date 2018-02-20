@@ -682,5 +682,199 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         $statement->execute();
     }
+    
+    public function filterRecordWithLocation($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $presentStatus, $min = null, $max = null) {
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $fromDateCondition = "";
+        $toDateCondition = "";
+        $statusCondition = '';
+        $presentStatusCondition = '';
+        $rowNums = '';
+        if ($fromDate != null) {
+            $fromDateCondition = " AND A.ATTENDANCE_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+        }
+        if ($toDate != null) {
+            $toDateCondition = " AND A.ATTENDANCE_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+        }
+
+        $statusMap = [
+            "A" => "'AB'",
+            "H" => "'HD','WH'",
+            "L" => "'LV','LP'",
+            "P" => "'PR','WD','WH','BA','LA','TP','LP','VP'",
+            "T" => "'TN','TP'",
+            "TVL" => "'TV','VP'",
+            "WOH" => "'WH'",
+            "WOD" => "'WD'",
+        ];
+
+        if ($status != null) {
+            if (gettype($status) === 'array') {
+                $q = "";
+                for ($i = 0; $i < sizeof($status); $i++) {
+                    if ($i == 0) {
+                        $q = $statusMap[$status[$i]];
+                    } else {
+                        $q .= "," . $statusMap[$status[$i]];
+                    }
+                }
+                $statusCondition = "AND A.OVERALL_STATUS IN ({$q})";
+            } else {
+                $statusCondition = "AND A.OVERALL_STATUS IN ({$statusMap[$status]})";
+            }
+        }
+
+        $presentStatusMap = [
+            "LI" => "'L','B','Y'",
+            "EO" => "'E','B'",
+            "MP" => "'X','Y'",
+        ];
+        if ($presentStatus != null) {
+            if (gettype($presentStatus) === 'array') {
+                $q = "";
+                for ($i = 0; $i < sizeof($presentStatus); $i++) {
+                    if ($i == 0) {
+                        $q = $presentStatusMap[$presentStatus[$i]];
+                    } else {
+                        $q .= "," . $presentStatusMap[$presentStatus[$i]];
+                    }
+                }
+                $presentStatusCondition = "AND A.LATE_STATUS IN ({$q})";
+            } else {
+                $presentStatusCondition = "AND A.LATE_STATUS IN ({$presentStatusMap[$presentStatus]})";
+            }
+        }
+
+        if ($min != null && $max != null) {
+            $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
+        }
+        $sql = "
+               SELECT * FROM (SELECT 
+                  ROWNUM                                           AS R,
+                  ADMSIN.DEVICE_LOCATION AS IN_DEVICE_NAME,
+                  ADMSOUT.DEVICE_LOCATION AS OUT_DEVICE_NAME,
+                  A.ID                                             AS ID,
+                  A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,
+                  INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT,
+                  BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_N,
+                  INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM'))          AS IN_TIME,
+                  INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI AM'))         AS OUT_TIME,
+                  A.IN_REMARKS                                     AS IN_REMARKS,
+                  A.OUT_REMARKS                                    AS OUT_REMARKS,
+                  MIN_TO_HOUR(A.TOTAL_HOUR)                        AS TOTAL_HOUR,
+                  A.LEAVE_ID                                       AS LEAVE_ID,
+                  A.HOLIDAY_ID                                     AS HOLIDAY_ID,
+                  A.TRAINING_ID                                    AS TRAINING_ID,
+                  A.TRAVEL_ID                                      AS TRAVEL_ID,
+                  A.SHIFT_ID                                       AS SHIFT_ID,
+                  A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
+                  A.LATE_STATUS                                    AS LATE_STATUS,
+                  COM.COMPANY_NAME                                 AS COMPANY_NAME,
+                  DEP.DEPARTMENT_NAME                              AS DEPARTMENT_NAME,
+                  INITCAP(E.FULL_NAME)                             AS EMPLOYEE_NAME,
+                  H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
+                  L.LEAVE_ENAME                                    AS LEAVE_ENAME,
+                  T.TRAINING_NAME                                  AS TRAINING_NAME,
+                  TVL.DESTINATION                                  AS TRAVEL_DESTINATION,
+                  (
+                  CASE
+                    WHEN A.OVERALL_STATUS = 'DO'
+                    THEN 'Day Off'
+                    WHEN A.OVERALL_STATUS ='HD'
+                    THEN 'On Holiday ('
+                      ||H.HOLIDAY_ENAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='LV'
+                    THEN 'On Leave ('
+                      ||L.LEAVE_ENAME
+                      || ')'
+                    WHEN A.OVERALL_STATUS ='TV'
+                    THEN 'On Travel ('
+                      ||TVL.DESTINATION
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='TN'
+                    THEN 'On Training ('
+                      || (CASE WHEN A.TRAINING_TYPE = 'A' THEN T.TRAINING_NAME ELSE ETN.TITLE END)
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='WD'
+                    THEN 'Work On Dayoff'
+                    WHEN A.OVERALL_STATUS ='WH'
+                    THEN 'Work on Holiday ('
+                      ||H.HOLIDAY_ENAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='LP'
+                    THEN 'On Partial Leave ('
+                      ||L.LEAVE_ENAME
+                      ||') '
+                      ||LATE_STATUS_DESC(A.LATE_STATUS) 
+                    WHEN A.OVERALL_STATUS ='VP'
+                    THEN 'Work on Travel ('
+                      ||TVL.DESTINATION
+                      ||')'
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='TP'
+                    THEN 'Present ('
+                      ||T.TRAINING_NAME
+                      ||')'
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='PR'
+                    THEN 'Present '
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='AB'
+                    THEN 'Absent'
+                    WHEN A.OVERALL_STATUS ='BA'
+                    THEN 'Present(Late In and Early Out)'
+                    WHEN A.OVERALL_STATUS ='LA'
+                    THEN 'Present(Late Penalty)'
+                  END) AS STATUS,
+                   S.SHIFT_ENAME,
+                  TO_CHAR(S.START_TIME,'HH:MI AM') AS START_TIME,
+                  TO_CHAR(S.END_TIME,'HH:MI AM')   AS END_TIME
+                FROM HRIS_ATTENDANCE_DETAIL A
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON A.EMPLOYEE_ID=E.EMPLOYEE_ID
+                LEFT JOIN HRIS_COMPANY COM
+                ON E.COMPANY_ID=COM.COMPANY_ID
+                LEFT JOIN HRIS_DEPARTMENTS DEP
+                ON E.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+                LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP H
+                ON A.HOLIDAY_ID=H.HOLIDAY_ID
+                LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+                ON A.LEAVE_ID=L.LEAVE_ID
+                LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
+                ON (A.TRAINING_ID=T.TRAINING_ID AND A.TRAINING_TYPE='A')
+                LEFT JOIN HRIS_EMPLOYEE_TRAINING_REQUEST ETN
+                ON (ETN.REQUEST_ID=A.TRAINING_ID AND A.TRAINING_TYPE ='R')
+                LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TVL
+                ON A.TRAVEL_ID      =TVL.TRAVEL_ID
+                LEFT JOIN HRIS_SHIFTS S
+                ON A.SHIFT_ID=S.SHIFT_ID
+                LEFT JOIN HRIS_ATTENDANCE AIN
+                ON (AIN.ATTENDANCE_DT=A.ATTENDANCE_DT 
+                AND AIN.EMPLOYEE_ID=A.EMPLOYEE_ID 
+                AND TO_CHAR(AIN.ATTENDANCE_TIME, 'HH:MI AM')=TO_CHAR(A.IN_TIME, 'HH:MI AM')
+                )
+                LEFT JOIN HRIS_ATTENDANCE AOUT
+                ON (AOUT.ATTENDANCE_DT=A.ATTENDANCE_DT 
+                AND AOUT.EMPLOYEE_ID=A.EMPLOYEE_ID 
+                AND TO_CHAR(AOUT.ATTENDANCE_TIME, 'HH:MI AM')=TO_CHAR(A.OUT_TIME, 'HH:MI AM')
+                )
+                LEFT JOIN HRIS_ATTD_DEVICE_MASTER ADMSIN
+                ON (ADMSIN.DEVICE_IP=AIN.IP_ADDRESS)
+                LEFT JOIN HRIS_ATTD_DEVICE_MASTER ADMSOUT
+                ON (ADMSOUT.DEVICE_IP=AIN.IP_ADDRESS)
+                WHERE 1=1
+                {$searchConditon}
+                {$fromDateCondition}
+                {$toDateCondition}
+                {$statusCondition}
+                {$presentStatusCondition}
+                ORDER BY A.ATTENDANCE_DT DESC ,A.IN_TIME ASC) Q
+                {$rowNums}
+                ";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+    
+    
 
 }

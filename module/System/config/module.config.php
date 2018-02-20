@@ -358,6 +358,11 @@ return [
                         'route' => 'system-utility',
                         'action' => 'reAttendance',
                     ],
+                    [
+                        'label' => 'Database Backup',
+                        'route' => 'system-utility',
+                        'action' => 'databaseBackup',
+                    ],
                 ],
             ],
         ]

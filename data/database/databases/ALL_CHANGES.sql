@@ -961,3 +961,8 @@ BEGIN
   HRIS_INSERT_MENU('Leave Balance(monthly)','leavebalance','monthly',2 ,7,'fa fa-list-alt','Y');
 END;
 /
+
+BEGIN
+    HRIS_INSERT_MENU('Report with Location','attendancebyhr','attendnaceReportWithLocation',4,12,'fa fa-list-alt','Y');
+END;
+/

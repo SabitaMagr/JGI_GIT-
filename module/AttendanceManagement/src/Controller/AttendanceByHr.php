@@ -247,5 +247,45 @@ class AttendanceByHr extends HrisController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
+    
+    public function attendnaceReportWithLocationAction(){
+         return Helper::addFlashMessagesToArray($this, [
+                    'status' => $this->getStatusSelect(),
+                    'presentStatus' => $this->getPresentStatusSelect(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
+    
+    public function pullAttendanceWithLocationAction(){
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+            $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+            $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+            $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+            $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+            $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+            $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+            $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
+            $status = $data['status'];
+            $results = $this->repository->filterRecordWithLocation($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, $data['presentStatus']);
+
+            $result = [];
+            $result['success'] = true;
+            $result['data'] = Helper::extractDbData($results);
+            $result['error'] = "";
+
+            return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
 
 }
