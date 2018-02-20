@@ -35,6 +35,33 @@ class LeaveBalance extends HrisController {
         ]);
     }
 
+    public function monthlyAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $rawList = $this->repository->getPivotedList($data, true);
+                $list = Helper::extractDbData($rawList);
+                return new JsonModel([
+                    "success" => true,
+                    "data" => $list,
+                    "message" => null,
+                ]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }
+
+        $leaveList = $this->repository->getAllLeave(true);
+        $leaves = iterator_to_array($leaveList, false);
+        return $this->stickFlashMessagesTo([
+                    'leavesArrray' => $leaves,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
+
     public function pullLeaveBalanceDetailAction() {
         try {
             $request = $this->getRequest();

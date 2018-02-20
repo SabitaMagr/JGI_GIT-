@@ -4,7 +4,6 @@ namespace LeaveManagement\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Model\LeaveMaster;
 use Setup\Model\HrEmployees;
@@ -13,7 +12,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class LeaveBalanceRepository implements RepositoryInterface {
+class LeaveBalanceRepository {
 
     private $adapter;
     private $tableGateway;
@@ -27,15 +26,11 @@ class LeaveBalanceRepository implements RepositoryInterface {
         $this->employeeTableGateway = new TableGateway("HRIS_EMPLOYEES", $adapter);
     }
 
-    public function add(Model $model) {
-        // TODO: Implement add() method.
-    }
-
-    public function getAllLeave() {
-        $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) AS LEAVE_ENAME FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' ORDER BY LEAVE_ID";
+    public function getAllLeave($isMonthly = false) {
+        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : "";
+        $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) AS LEAVE_ENAME FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' {$condition} ORDER BY LEAVE_ID";
         $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        return $statement->execute();
     }
 
     public function getAllEmployee($emplyoeeId, $companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId) {
@@ -135,22 +130,6 @@ class LeaveBalanceRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function edit(Model $model, $id) {
-        // TODO: Implement edit() method.
-    }
-
-    public function fetchAll() {
-        // TODO: Implement fetchAll() method.
-    }
-
-    public function fetchById($id) {
-        // TODO: Implement fetchById() method.
-    }
-
-    public function delete($id) {
-        // TODO: Implement delete() method.
-    }
-
     public function getOnlyCarryForwardedRecord() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -191,9 +170,10 @@ class LeaveBalanceRepository implements RepositoryInterface {
         return $record;
     }
 
-    public function getPivotedList($searchQuery) {
+    public function getPivotedList($searchQuery, $isMonthly = false) {
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
-        $leaveArrayDb = $this->fetchLeaveAsDbArray();
+        $monthlyCondition = $isMonthly ? " AND FISCAL_YEAR_MONTH_NO ={$searchQuery['fiscalYearMonthNo']} " : "";
+        $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly);
 
         $sql = "
            SELECT LA.*,E.FULL_NAME FROM (SELECT *
@@ -206,15 +186,16 @@ class LeaveBalanceRepository implements RepositoryInterface {
               FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
               WHERE EMPLOYEE_ID IN
                 ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}
-                )
+                ){$monthlyCondition}
               ) PIVOT ( MAX(BALANCE) AS BALANCE,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
             ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID) 
 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
-    private function fetchLeaveAsDbArray() {
-        $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT LEAVE_ID FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS ='E'");
+    private function fetchLeaveAsDbArray($isMonthly = false) {
+        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : "";
+        $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT LEAVE_ID FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS ='E' {$condition}");
         $dbArray = "";
         foreach ($rawList as $key => $row) {
             if ($key == sizeof($rawList)) {

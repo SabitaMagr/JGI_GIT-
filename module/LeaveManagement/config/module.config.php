@@ -184,9 +184,14 @@ return [
                 'route' => 'leavebalance',
                 'pages' => [
                     [
-                        'label' => 'List',
+                        'label' => 'Annual',
                         'route' => 'leavebalance',
                         'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Monthly',
+                        'route' => 'leavebalance',
+                        'action' => 'monthly',
                     ],
                     [
                         'label' => 'Leave Apply',
