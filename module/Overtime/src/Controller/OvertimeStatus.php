@@ -57,8 +57,6 @@ class OvertimeStatus extends HrisController {
     }
 
     public function viewAction() {
-        $this->initializeForm();
-
         $id = (int) $this->params()->fromRoute('id');
 
         if ($id === 0) {
@@ -118,7 +116,7 @@ class OvertimeStatus extends HrisController {
                     'customRenderer' => Helper::renderCustomView(),
                     'recommApprove' => $recommApprove,
                     'overtimeDetails' => $overtimeDetails,
-                    'totalHour' => $detail['TOTAL_HOUR']
+                    'totalHour' => $detail['TOTAL_HOUR_DETAIL']
         ]);
     }
 

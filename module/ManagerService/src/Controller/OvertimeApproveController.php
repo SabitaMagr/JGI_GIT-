@@ -85,7 +85,7 @@ class OvertimeApproveController extends HrisController {
                     'employeeId' => $this->employeeId,
                     'requestedEmployeeId' => $requestedEmployeeID,
                     'overtimeDetails' => $overtimeDetails,
-                    'totalHour' => $detail['TOTAL_HOUR']
+                    'totalHour' => $detail['TOTAL_HOUR_DETAIL']
         ]);
     }
 
