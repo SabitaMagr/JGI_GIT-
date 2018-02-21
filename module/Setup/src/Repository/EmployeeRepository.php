@@ -164,51 +164,181 @@ class EmployeeRepository implements RepositoryInterface {
         return $result->current();
     }
 
-    public function fetchForProfileById($id = null) {
-        if (!isset($id) || $id == null || $id == "") {
-            return [];
-        }
-
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-        $select->columns(
-                EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [
-                    HrEmployees::FIRST_NAME,
-                    HrEmployees::MIDDLE_NAME,
-                    HrEmployees::LAST_NAME], [
-                    HrEmployees::BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
-                    HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
-                    HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
-                    HrEmployees::ID_PASSPORT_EXPIRY,
-                    HrEmployees::JOIN_DATE
-                        ], NULL, NULL, NULL, 'E'), false);
-
-        $select->from(['E' => HrEmployees::TABLE_NAME]);
-        $select->join(['B1' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B1." . Branch::BRANCH_ID, ['BRANCH' => 'BRANCH_NAME'], 'left')
-                ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME'], 'left')
-                ->join(['F' => EmployeeFile::TABLE_NAME], "F." . EmployeeFile::FILE_CODE . "=C." . Company::LOGO, ['COMPANY_FILE_PATH' => "FILE_PATH", 'COMPANY_FILE_CODE' => "FILE_CODE", 'COMPANY_FILE_NAME' => "FILE_NAME"], 'left')
-                ->join(['B2' => Branch::TABLE_NAME], "E." . HrEmployees::APP_BRANCH_ID . "=B2." . Branch::BRANCH_ID, ['APP_BRANCH' => 'BRANCH_NAME'], 'left')
-                ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')
-                ->join(['D2' => Department::TABLE_NAME], "E." . HrEmployees::APP_DEPARTMENT_ID . "=D2." . Department::DEPARTMENT_ID, ['APP_DEPARTMENT' => 'DEPARTMENT_NAME'], 'left')
-                ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION' => 'DESIGNATION_TITLE'], 'left')
-                ->join(['DES2' => Designation::TABLE_NAME], "E." . HrEmployees::APP_DESIGNATION_ID . "=DES2." . Designation::DESIGNATION_ID, ['APP_DESIGNATION' => 'DESIGNATION_TITLE'], 'left')
-                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION' => 'POSITION_NAME'], 'left')
-                ->join(['P2' => Position::TABLE_NAME], "E." . HrEmployees::APP_POSITION_ID . "=P2." . Position::POSITION_ID, ['APP_POSITION' => 'POSITION_NAME'], 'left')
-                ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE' => 'SERVICE_TYPE_NAME'], 'left')
-                ->join(['S2' => ServiceType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_TYPE_ID . "=S2." . ServiceType::SERVICE_TYPE_ID, ['APP_SERVICE_TYPE' => 'SERVICE_TYPE_NAME'], 'left')
-                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE' => 'SERVICE_EVENT_TYPE_NAME'], 'left')
-                ->join(['SE2' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::APP_SERVICE_EVENT_TYPE_ID . "=SE2." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['APP_SERVICE_EVENT_TYPE' => 'SERVICE_EVENT_TYPE_NAME'], 'left')
-                ->join(['EF' => EmployeeFile::TABLE_NAME], "E." . HrEmployees::PROFILE_PICTURE_ID . "=EF." . EmployeeFile::FILE_CODE, ["FILE_NAME" => EmployeeFile::FILE_PATH], 'left')
-                ->join(['RA' => RecommendApprove::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=RA." . RecommendApprove::EMPLOYEE_ID, ["RECOMMENDER_ID" => RecommendApprove::RECOMMEND_BY, "APPROVER_ID" => RecommendApprove::APPROVED_BY,], 'left')
-                ->join(['E1' => HrEmployees::TABLE_NAME], "E1." . HrEmployees::EMPLOYEE_ID . "=RA." . RecommendApprove::RECOMMEND_BY, ["RECOMMENDER" => new Expression("INITCAP(E1.FULL_NAME)")], 'left')
-                ->join(['E2' => HrEmployees::TABLE_NAME], "E2." . HrEmployees::EMPLOYEE_ID . "=RA." . RecommendApprove::APPROVED_BY, ["APPROVER" => new Expression("INITCAP(E2.FULL_NAME)")], 'left');
-        $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
-
-        $statement = $sql->prepareStatementForSqlObject($select);
+    public function fetchForProfileById($employeeId, $date = null) {
+        $dateOn = ($date == null) ? 'TRUNC(SYSDATE)' : $date;
+        $sql = "SELECT EH.*,
+                  E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
+                  INITCAP(E.FIRST_NAME)                                             AS FIRST_NAME,
+                  INITCAP(E.MIDDLE_NAME)                                            AS MIDDLE_NAME,
+                  INITCAP(E.LAST_NAME)                                              AS LAST_NAME,
+                  E.FULL_NAME                                                       AS FULL_NAME,
+                  E.NAME_NEPALI                                                     AS NAME_NEPALI,
+                  E.GENDER_ID                                                       AS GENDER_ID,
+                  INITCAP(TO_CHAR(E.BIRTH_DATE, 'DD-MON-YYYY'))                     AS BIRTH_DATE,
+                  E.BLOOD_GROUP_ID                                                  AS BLOOD_GROUP_ID,
+                  E.RELIGION_ID                                                     AS RELIGION_ID,
+                  E.SOCIAL_ACTIVITY                                                 AS SOCIAL_ACTIVITY,
+                  E.TELEPHONE_NO                                                    AS TELEPHONE_NO,
+                  E.MOBILE_NO                                                       AS MOBILE_NO,
+                  E.EXTENSION_NO                                                    AS EXTENSION_NO,
+                  E.EMAIL_OFFICIAL                                                  AS EMAIL_OFFICIAL,
+                  E.EMAIL_PERSONAL                                                  AS EMAIL_PERSONAL,
+                  E.SOCIAL_NETWORK                                                  AS SOCIAL_NETWORK,
+                  E.EMRG_CONTACT_NAME                                               AS EMRG_CONTACT_NAME,
+                  E.EMERG_CONTACT_NO                                                AS EMERG_CONTACT_NO,
+                  E.EMERG_CONTACT_ADDRESS                                           AS EMERG_CONTACT_ADDRESS,
+                  E.EMERG_CONTACT_RELATIONSHIP                                      AS EMERG_CONTACT_RELATIONSHIP,
+                  E.ADDR_PERM_HOUSE_NO                                              AS ADDR_PERM_HOUSE_NO,
+                  E.ADDR_PERM_WARD_NO                                               AS ADDR_PERM_WARD_NO,
+                  E.ADDR_PERM_STREET_ADDRESS                                        AS ADDR_PERM_STREET_ADDRESS,
+                  E.ADDR_PERM_COUNTRY_ID                                            AS ADDR_PERM_COUNTRY_ID,
+                  E.ADDR_PERM_VDC_MUNICIPALITY_ID                                   AS ADDR_PERM_VDC_MUNICIPALITY_ID,
+                  E.ADDR_TEMP_HOUSE_NO                                              AS ADDR_TEMP_HOUSE_NO,
+                  E.ADDR_TEMP_WARD_NO                                               AS ADDR_TEMP_WARD_NO,
+                  E.ADDR_TEMP_STREET_ADDRESS                                        AS ADDR_TEMP_STREET_ADDRESS,
+                  E.ADDR_TEMP_COUNTRY_ID                                            AS ADDR_TEMP_COUNTRY_ID,
+                  E.ADDR_TEMP_VDC_MUNICIPALITY_ID                                   AS ADDR_TEMP_VDC_MUNICIPALITY_ID,
+                  E.FAM_FATHER_NAME                                                 AS FAM_FATHER_NAME,
+                  E.FAM_FATHER_OCCUPATION                                           AS FAM_FATHER_OCCUPATION,
+                  E.FAM_MOTHER_NAME                                                 AS FAM_MOTHER_NAME,
+                  E.FAM_MOTHER_OCCUPATION                                           AS FAM_MOTHER_OCCUPATION,
+                  E.FAM_GRAND_FATHER_NAME                                           AS FAM_GRAND_FATHER_NAME,
+                  E.FAM_GRAND_MOTHER_NAME                                           AS FAM_GRAND_MOTHER_NAME,
+                  E.MARITAL_STATUS                                                  AS MARITAL_STATUS,
+                  E.FAM_SPOUSE_NAME                                                 AS FAM_SPOUSE_NAME,
+                  E.FAM_SPOUSE_OCCUPATION                                           AS FAM_SPOUSE_OCCUPATION,
+                  INITCAP(TO_CHAR(E.FAM_SPOUSE_BIRTH_DATE, 'DD-MON-YYYY'))          AS FAM_SPOUSE_BIRTH_DATE,
+                  INITCAP(TO_CHAR(E.FAM_SPOUSE_WEDDING_ANNIVERSARY, 'DD-MON-YYYY')) AS FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                  E.ID_CARD_NO                                                      AS ID_CARD_NO,
+                  E.ID_LBRF                                                         AS ID_LBRF,
+                  E.ID_BAR_CODE                                                     AS ID_BAR_CODE,
+                  E.ID_PROVIDENT_FUND_NO                                            AS ID_PROVIDENT_FUND_NO,
+                  E.ID_DRIVING_LICENCE_NO                                           AS ID_DRIVING_LICENCE_NO,
+                  E.ID_DRIVING_LICENCE_TYPE                                         AS ID_DRIVING_LICENCE_TYPE,
+                  INITCAP(TO_CHAR(E.ID_DRIVING_LICENCE_EXPIRY, 'DD-MON-YYYY'))      AS ID_DRIVING_LICENCE_EXPIRY,
+                  E.ID_THUMB_ID                                                     AS ID_THUMB_ID,
+                  E.ID_PAN_NO                                                       AS ID_PAN_NO,
+                  E.ID_ACCOUNT_NO                                                   AS ID_ACCOUNT_NO,
+                  E.ID_RETIREMENT_NO                                                AS ID_RETIREMENT_NO,
+                  E.ID_CITIZENSHIP_NO                                               AS ID_CITIZENSHIP_NO,
+                  INITCAP(TO_CHAR(E.ID_CITIZENSHIP_ISSUE_DATE, 'DD-MON-YYYY'))      AS ID_CITIZENSHIP_ISSUE_DATE,
+                  E.ID_CITIZENSHIP_ISSUE_PLACE                                      AS ID_CITIZENSHIP_ISSUE_PLACE,
+                  E.ID_PASSPORT_NO                                                  AS ID_PASSPORT_NO,
+                  INITCAP(TO_CHAR(E.ID_PASSPORT_EXPIRY, 'DD-MON-YYYY'))             AS ID_PASSPORT_EXPIRY,
+                  INITCAP(TO_CHAR(E.JOIN_DATE, 'DD-MON-YYYY'))                      AS JOIN_DATE,
+                  E.SALARY                                                          AS SALARY,
+                  E.SALARY_PF                                                       AS SALARY_PF,
+                  E.REMARKS                                                         AS REMARKS,
+                  E.STATUS                                                          AS STATUS,
+                  E.CREATED_DT                                                      AS CREATED_DT,
+                  E.SERVICE_EVENT_TYPE_ID                                           AS SERVICE_EVENT_TYPE_ID,
+                  E.COUNTRY_ID                                                      AS COUNTRY_ID,
+                  E.PROFILE_PICTURE_ID                                              AS PROFILE_PICTURE_ID,
+                  E.RETIRED_FLAG                                                    AS RETIRED_FLAG,
+                  E.EMPLOYEE_TYPE                                                   AS EMPLOYEE_TYPE,
+                  E.CREATED_BY                                                      AS CREATED_BY,
+                  E.MODIFIED_BY                                                     AS MODIFIED_BY,
+                  E.MODIFIED_DT                                                     AS MODIFIED_DT,
+                  E.IS_HR                                                           AS IS_HR,
+                  E.ADDR_TEMP_ZONE_ID                                               AS ADDR_TEMP_ZONE_ID,
+                  E.ADDR_TEMP_DISTRICT_ID                                           AS ADDR_TEMP_DISTRICT_ID,
+                  E.ADDR_PERM_ZONE_ID                                               AS ADDR_PERM_ZONE_ID,
+                  E.ADDR_PERM_DISTRICT_ID                                           AS ADDR_PERM_DISTRICT_ID,
+                  E.LOCATION_ID                                                     AS LOCATION_ID,
+                  E.FUNCTIONAL_TYPE_ID                                              AS FUNCTIONAL_TYPE_ID,
+                  E.FUNCTIONAL_LEVEL_ID                                             AS FUNCTIONAL_LEVEL_ID,
+                  C.COMPANY_NAME                                                    AS COMPANY_NAME,
+                  B1.BRANCH_NAME                                                    AS BRANCH,
+                  D1.DEPARTMENT_NAME                                                AS DEPARTMENT,
+                  DES1.DESIGNATION_TITLE                                            AS DESIGNATION,
+                  P1.POSITION_NAME                                                  AS POSITION,
+                  S1.SERVICE_TYPE_NAME                                              AS SERVICE_TYPE,
+                  SE1.SERVICE_EVENT_TYPE_NAME                                       AS SERVICE_EVENT_TYPE,
+                  EF.FILE_PATH                                                      AS FILE_NAME,
+                  RA.RECOMMEND_BY                                                   AS RECOMMENDER_ID,
+                  RA.APPROVED_BY                                                    AS APPROVER_ID,
+                  INITCAP(REC.FULL_NAME)                                            AS RECOMMENDER,
+                  INITCAP(APP.FULL_NAME)                                            AS APPROVER,
+                  F.FILE_PATH                                                       AS COMPANY_FILE_PATH,
+                  F.FILE_CODE                                                       AS COMPANY_FILE_CODE,
+                  F.FILE_NAME                                                       AS COMPANY_FILE_NAME
+                FROM HRIS_EMPLOYEES E
+                JOIN
+                  (SELECT E.EMPLOYEE_ID,
+                    (
+                    CASE
+                      WHEN H.TO_COMPANY_ID IS NOT NULL
+                      THEN H.TO_COMPANY_ID
+                      ELSE E.COMPANY_ID
+                    END ) AS COMPANY_ID,
+                    (
+                    CASE
+                      WHEN H.TO_BRANCH_ID IS NOT NULL
+                      THEN H.TO_BRANCH_ID
+                      ELSE E.BRANCH_ID
+                    END ) AS BRANCH_ID,
+                    (
+                    CASE
+                      WHEN H.TO_DEPARTMENT_ID IS NOT NULL
+                      THEN H.TO_DEPARTMENT_ID
+                      ELSE E.DEPARTMENT_ID
+                    END ) AS DEPARTMENT_ID,
+                    (
+                    CASE
+                      WHEN H.TO_DESIGNATION_ID IS NOT NULL
+                      THEN H.TO_DESIGNATION_ID
+                      ELSE E.DESIGNATION_ID
+                    END ) AS DESIGNATION_ID,
+                    (
+                    CASE
+                      WHEN H.TO_POSITION_ID IS NOT NULL
+                      THEN H.TO_POSITION_ID
+                      ELSE E.POSITION_ID
+                    END ) AS POSITION_ID,
+                    (
+                    CASE
+                      WHEN H.TO_SERVICE_TYPE_ID IS NOT NULL
+                      THEN H.TO_SERVICE_TYPE_ID
+                      ELSE E.SERVICE_TYPE_ID
+                    END ) AS SERVICE_TYPE_ID,
+                    (
+                    CASE
+                      WHEN H.TO_SALARY IS NOT NULL
+                      THEN H.TO_SALARY
+                      ELSE E.SALARY
+                    END ) AS SALARY
+                  FROM HRIS_EMPLOYEES E
+                  LEFT JOIN HRIS_JOB_HISTORY H
+                  ON (E.EMPLOYEE_ID     =H.EMPLOYEE_ID)
+                  WHERE H.JOB_HISTORY_ID= HRIS_GET_SERVICE_STATUS(E.EMPLOYEE_ID,{$dateOn})
+                  ) EH ON (E.EMPLOYEE_ID=EH.EMPLOYEE_ID)
+                LEFT JOIN HRIS_BRANCHES B1
+                ON EH.BRANCH_ID=B1.BRANCH_ID
+                LEFT JOIN HRIS_COMPANY C
+                ON EH.COMPANY_ID=C.COMPANY_ID
+                LEFT JOIN HRIS_EMPLOYEE_FILE F
+                ON F.FILE_CODE=C.LOGO
+                LEFT JOIN HRIS_DEPARTMENTS D1
+                ON EH.DEPARTMENT_ID=D1.DEPARTMENT_ID
+                LEFT JOIN HRIS_DESIGNATIONS DES1
+                ON EH.DESIGNATION_ID=DES1.DESIGNATION_ID
+                LEFT JOIN HRIS_POSITIONS P1
+                ON EH.POSITION_ID=P1.POSITION_ID
+                LEFT JOIN HRIS_SERVICE_TYPES S1
+                ON EH.SERVICE_TYPE_ID=S1.SERVICE_TYPE_ID
+                LEFT JOIN HRIS_SERVICE_EVENT_TYPES SE1
+                ON E.SERVICE_EVENT_TYPE_ID=SE1.SERVICE_EVENT_TYPE_ID
+                LEFT JOIN HRIS_EMPLOYEE_FILE EF
+                ON E.PROFILE_PICTURE_ID=EF.FILE_CODE
+                LEFT JOIN HRIS_RECOMMENDER_APPROVER RA
+                ON E.EMPLOYEE_ID=RA.EMPLOYEE_ID
+                LEFT JOIN HRIS_EMPLOYEES REC
+                ON REC.EMPLOYEE_ID=RA.RECOMMEND_BY
+                LEFT JOIN HRIS_EMPLOYEES APP
+                ON APP.EMPLOYEE_ID  =RA.APPROVED_BY
+                WHERE EH.EMPLOYEE_ID={$employeeId}";
+        $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-
         return $result->current();
     }
 
