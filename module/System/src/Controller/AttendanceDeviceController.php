@@ -32,7 +32,7 @@ class AttendanceDeviceController extends HrisController {
                 $list = $this->repository->fetchAll();
                 $attendanceDevice = [];
                 foreach ($list as $row) {
-                    $row['PING_STATUS'] = $this->pingAddress($row['DEVICE_IP']);
+                    $row['PING_STATUS'] = '---';
                     array_push($attendanceDevice, $row);
                 }
                 return new JsonModel(['success' => true, 'data' => $attendanceDevice, 'error' => '']);
@@ -135,6 +135,20 @@ class AttendanceDeviceController extends HrisController {
             $result = "Unknown Error";
         }
         return $result;
+    }
+
+    public function pullDeviceWithPingStatusAction() {
+        try {
+            $list = $this->repository->fetchAll();
+            $attendanceDevice = [];
+            foreach ($list as $row) {
+                $row['PING_STATUS'] = $this->pingAddress($row['DEVICE_IP']);
+                array_push($attendanceDevice, $row);
+            }
+            return new JsonModel(['success' => true, 'data' => $attendanceDevice, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

@@ -27,6 +27,7 @@ $this->headScript()
 <script>
     document.editLink = '<?= $this->url("AttendanceDevice", ["action" => "edit"]); ?>';
     document.deleteLink = '<?= $this->url("AttendanceDevice", ["action" => "delete"]); ?>';
+    document.pullDeviceWithPingStatus = '<?= $this->url("AttendanceDevice", ["action" => "pullDeviceWithPingStatus"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
@@ -52,15 +53,26 @@ $this->headScript()
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id="export">
+                        <li>
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
+        <div class="row">
+            <div class='col-sm-2'>
+                <input class="btn btn-primary" id="pingBtn" value="PING " type="button">
+            </div>
+        </div>
         <div id="table">
         </div>
     </div>
