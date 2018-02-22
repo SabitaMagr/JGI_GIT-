@@ -23,9 +23,12 @@ $this->headScript()
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-    
-    <script>
-    document.attendanceDevice=<?= json_encode($attendanceDevice); ?>;
+
+<script>
+    document.editLink = '<?= $this->url("AttendanceDevice", ["action" => "edit"]); ?>';
+    document.deleteLink = '<?= $this->url("AttendanceDevice", ["action" => "delete"]); ?>';
+    document.pullDeviceWithPingStatus = '<?= $this->url("AttendanceDevice", ["action" => "pullDeviceWithPingStatus"]); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
 <div class="page-bar">
@@ -33,9 +36,9 @@ $this->headScript()
 </div>
 
 <div class="margin-top-20">
-    
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -50,51 +53,28 @@ $this->headScript()
                         <i class="fa fa-angle-down "></i>
                     </a>
                     <ul class="dropdown-menu pull-right">
-                        <li >
-                            <a href="javascript:;" id="export">
+                        <li>
+                            <a href="javascript:;" id="excelExport">
                                 <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                        </li>
+                        <li >
+                            <a href="javascript:;" id="pdfExport">
+                                <i class="fa fa-file-pdf-o" ></i> 
+                                Export to PDF 
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-    <div id="attendanceDevice">
+        <div class="row">
+            <div class='col-sm-2'>
+                <input class="btn btn-primary" id="pingBtn" value="PING " type="button">
+            </div>
+        </div>
+        <div id="table">
+        </div>
     </div>
-	</div>
-    
 
-
-    
-    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (DEVICE_NAME == null) ? ' ' : DEVICE_NAME #
-        </td>
-        <td>
-        #: (DEVICE_IP == null) ? ' ' : DEVICE_IP #
-        </td>
-        <td>
-        #: (PING_STATUS == null) ? '-' : PING_STATUS #
-        </td>
-        <td>
-        #: (DEVICE_LOCATION == null) ? ' ' : DEVICE_LOCATION #
-        </td>
-        <td>
-        #: (ISACTIVE == null) ? '-' : ISACTIVE #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="<?= $this->url("AttendanceDevice", ["action" => "edit"]); ?>/#:DEVICE_ID #" style="height:17px;">
-        <i class="fa fa-edit"></i>
-        </a> 
-         <a class="btn-delete confirmation"
-        href="<?= $this->url("AttendanceDevice", ["action" => "delete"]); ?>/#:DEVICE_ID #" id="bs_#:DEVICE_ID #" style="height:17px;">
-        <i class="fa fa-trash-o"></i></a>
-        </a>
-        </td>
-        </tr>
-    </script>
-    
-  
 </div>

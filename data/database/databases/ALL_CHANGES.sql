@@ -966,3 +966,9 @@ BEGIN
     HRIS_INSERT_MENU('Report with Location','attendancebyhr','attendanceReportWithLocation',4,12,'fa fa-list-alt','Y');
 END;
 /
+
+
+BEGIN
+    HRIS_INSERT_MENU('System Setting','system-setting','index',9,99,'fa fa-square-o','Y');
+END;
+/
