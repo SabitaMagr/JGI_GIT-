@@ -1,6 +1,6 @@
 <?php
 
-$dirList = ["procedure", "triggers", "function","procedure/SYNERGY"];
+$dirList = ["procedure", "triggers", "function"];
 $fileDataAll = "";
 
 

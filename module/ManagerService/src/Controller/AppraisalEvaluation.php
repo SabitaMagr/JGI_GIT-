@@ -126,9 +126,10 @@ class AppraisalEvaluation extends HrisController {
         $appraisalAnswerRepo = new AppraisalAnswerRepository($this->adapter);
         $employeeRepo = new EmployeeRepository($this->adapter);
         $headingRepo = new HeadingRepository($this->adapter);
-        $employeeDetail = $employeeRepo->fetchForProfileById($employeeId);
         $userDetail = $employeeRepo->getById($this->employeeId);
         $assignedAppraisalDetail = $appraisalAssignRepo->getEmployeeAppraisalDetail($employeeId, $appraisalId);
+        $fromDate = Helper::getExpressionDate($assignedAppraisalDetail['FROM_DATE']);
+        $employeeDetail = $employeeRepo->fetchForProfileById($employeeId, $fromDate->getExpression());
         $appraisalTypeId = $assignedAppraisalDetail['APPRAISAL_TYPE_ID'];
         $currentStageId = $assignedAppraisalDetail['STAGE_ID'];
         $headingList = $headingRepo->fetchByAppraisalTypeId($appraisalTypeId);

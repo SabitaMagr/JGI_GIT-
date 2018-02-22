@@ -309,8 +309,7 @@ class EmployeeRepository implements RepositoryInterface {
                     END ) AS SALARY
                   FROM HRIS_EMPLOYEES E
                   LEFT JOIN HRIS_JOB_HISTORY H
-                  ON (E.EMPLOYEE_ID     =H.EMPLOYEE_ID)
-                  WHERE H.JOB_HISTORY_ID= HRIS_GET_SERVICE_STATUS(E.EMPLOYEE_ID,{$dateOn})
+                  ON (E.EMPLOYEE_ID     =H.EMPLOYEE_ID AND H.JOB_HISTORY_ID= HRIS_GET_SERVICE_STATUS(E.EMPLOYEE_ID,{$dateOn}))
                   ) EH ON (E.EMPLOYEE_ID=EH.EMPLOYEE_ID)
                 LEFT JOIN HRIS_BRANCHES B1
                 ON EH.BRANCH_ID=B1.BRANCH_ID
