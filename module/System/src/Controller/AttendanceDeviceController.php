@@ -2,47 +2,52 @@
 
 namespace System\Controller;
 
-use Application\Helper\EntityHelper as ApplicationEntityHelper;
+use Application\Controller\HrisController;
 use Application\Helper\Helper;
-use Setup\Model\Company;
+use Exception;
 use Setup\Repository\DepartmentRepository;
 use System\Form\AttendanceDeviceForm;
 use System\Model\AttendanceDevice;
 use System\Repository\AttendanceDeviceRepository;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class AttendanceDeviceController extends AbstractActionController {
+class AttendanceDeviceController extends HrisController {
 
-    private $form;
-    private $adapter;
-    private $repository;
+//    private $form;
+//    private $adapter;
+//    private $repository;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->repository = new AttendanceDeviceRepository($adapter);
-    }
-
-    public function initializeForm() {
-        $attendanceDeviceForm = new AttendanceDeviceForm();
-        $builder = new AnnotationBuilder();
-        $this->form = $builder->createForm($attendanceDeviceForm);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(AttendanceDeviceRepository::class);
+        $this->initializeForm(AttendanceDeviceForm::class);
     }
 
     public function indexAction() {
-        $list = $this->repository->fetchAll();
-        $attendanceDevice = [];
-        foreach ($list as $row) {
-            $row['PING_STATUS'] = $this->pingAddress($row['DEVICE_IP']);
-            array_push($attendanceDevice, $row);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $list = $this->repository->fetchAll();
+                $attendanceDevice = [];
+                foreach ($list as $row) {
+                    $row['PING_STATUS'] = $this->pingAddress($row['DEVICE_IP']);
+                    array_push($attendanceDevice, $row);
+                }
+                return new JsonModel(['success' => true, 'data' => $attendanceDevice, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
         }
-        return Helper::addFlashMessagesToArray($this, ['attendanceDevice' => $attendanceDevice]);
+
+        return $this->stickFlashMessagesTo([
+                    'acl' => $this->acl
+        ]);
     }
 
     public function addAction() {
         $allCompanyBranches = new DepartmentRepository($this->adapter);
-        $this->initializeForm();
 
         $request = $this->getRequest();
 
@@ -69,8 +74,8 @@ class AttendanceDeviceController extends AbstractActionController {
 
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
-        $allCompanyBranches = new DepartmentRepository($this->adapter);
-        $this->initializeForm();
+//        $allCompanyBranches = new DepartmentRepository($this->adapter);
+
         $request = $this->getRequest();
 
         $attendanceDevice = new AttendanceDevice();
@@ -88,6 +93,8 @@ class AttendanceDeviceController extends AbstractActionController {
                 return $this->redirect()->toRoute("AttendanceDevice");
             }
         }
+
+
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
                     'form' => $this->form,
