@@ -48,11 +48,12 @@
                 var availableDays = parseFloat($availableDays.val());
 
                 $noOfDays.val(dateDiff);
+                var balanceDiff = dateDiff / (halfDay === 'N' ? 1 : 2);
 
-                if (dateDiff > availableDays) {
+                if (balanceDiff > availableDays) {
                     $errorMsg.html("* Applied days can't be more than available days.");
                     $request.prop("disabled", true);
-                } else if (dateDiff === 0) {
+                } else if (balanceDiff === 0) {
                     $errorMsg.html("* Applied days can't be 0 day.");
                     $request.prop("disabled", true);
                 } else {
