@@ -12,6 +12,7 @@
         var $toDate = $('#toDate');
         var $nepaliToDate = $('#nepaliToDate');
         var $bulkEdit = $('#bulkEdit');
+        var $bulkDelete = $('#bulkDelete');
 
 
         var grid = app.initializeKendoGrid($shiftAssignTable, [
@@ -94,23 +95,23 @@
             for (var i in employeeShift) {
                 employeeShiftIds.push(employeeShift[i]['ID']);
             }
-            (function (employeeIdList) {
+            (function (shiftAssignIdList) {
                 var counter = 0;
-                var length = employeeIdList.length;
-                var addShift = function (employeeId) {
+                var length = shiftAssignIdList.length;
+                var addShift = function (shiftAssignId) {
                     app.serverRequest(document.editWs, {
                         shiftId: shiftId,
                         fromDate: fromDate,
                         toDate: toDate,
-                        employeeIds: [employeeId]
+                        shiftAssignIds: [shiftAssignId]
                     }).then(function (response) {
                         NProgress.set((counter + 1) / length);
                         if (!response.success) {
-                            app.showMessage("Shift Assign Edit for Employee Id : " + employeeId + "Failed.", 'error');
+                            app.showMessage("Shift Assign Edit for Employee Id : " + shiftAssignId + "Failed.", 'error');
                         }
                         counter++;
                         if (counter < length) {
-                            addShift(employeeIdList[counter]);
+                            addShift(shiftAssignIdList[counter]);
                         } else {
                             app.showMessage("Shift Assign Edited.");
                             $search.trigger('click');
@@ -121,12 +122,49 @@
 
                 };
                 NProgress.start();
-                addShift(employeeIdList[counter]);
+                addShift(shiftAssignIdList[counter]);
 
 
             })(employeeShiftIds);
 
         });
+
+        $bulkDelete.on('click', function () {
+            var employeeShift = grid.getSelected();
+            var employeeShiftIds = [];
+
+            for (var i in employeeShift) {
+                employeeShiftIds.push(employeeShift[i]['ID']);
+            }
+            (function (shiftAssignIdList) {
+                var counter = 0;
+                var length = shiftAssignIdList.length;
+                var addShift = function (shiftAssignId) {
+                    app.serverRequest(document.deleteWs, {
+                        shiftAssignId: shiftAssignId
+                    }).then(function (response) {
+                        NProgress.set((counter + 1) / length);
+                        if (!response.success) {
+                            app.showMessage("Shift Assign Edit for Employee Id : " + shiftAssignId + "Failed.", 'error');
+                        }
+                        counter++;
+                        if (counter < length) {
+                            addShift(shiftAssignIdList[counter]);
+                        } else {
+                            app.showMessage("Shift Assign Edited.");
+                            $search.trigger('click');
+                        }
+                    }, function (error) {
+
+                    });
+
+                };
+                NProgress.start();
+                addShift(shiftAssignIdList[counter]);
+            })(employeeShiftIds);
+
+        });
+
 
 
     });
