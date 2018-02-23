@@ -87,7 +87,19 @@
         });
 
         app.populateSelect($shiftId, document.shiftList, 'SHIFT_ID', 'SHIFT_ENAME', 'Select Shift', -1);
+        $shiftId.on('change', function () {
+            var $this = $(this);
+            var value = $this.val();
+            var filList = document.shiftList.filter(function (shift) {
+                return shift['SHIFT_ID'] == value;
+            });
 
+            if (filList.length > 0) {
+                $fromDate.val(filList[0]['START_DATE']);
+                $toDate.val(filList[0]['END_DATE']);
+            }
+
+        });
         $bulkAdd.on('click', function () {
             var shiftId = $shiftId.val();
             if (shiftId == -1) {

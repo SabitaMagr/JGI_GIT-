@@ -7,6 +7,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
+use AttendanceManagement\Repository\ShiftRepository;
 use Exception;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -21,17 +22,19 @@ class ShiftAssign extends HrisController {
     }
 
     public function indexAction() {
-        $shifts = EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E']);
+        $shiftRepo = new ShiftRepository($this->adapter);
+        $shiftList = iterator_to_array($shiftRepo->fetchAll(), false);
         return new ViewModel([
-            'shiftList' => $shifts,
+            'shiftList' => $shiftList,
             'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 
     public function addAction() {
-        $shifts = EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E']);
+        $shiftRepo = new ShiftRepository($this->adapter);
+        $shiftList = iterator_to_array($shiftRepo->fetchAll(), false);
         return new ViewModel([
-            'shiftList' => $shifts,
+            'shiftList' => $shiftList,
             'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }

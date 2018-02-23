@@ -7,6 +7,7 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use AttendanceManagement\Model\ShiftSetup;
 use Setup\Model\Company;
+use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
@@ -35,7 +36,7 @@ class ShiftRepository implements RepositoryInterface {
         $this->tableGateway->update($array, [ShiftSetup::SHIFT_ID => $id]);
     }
 
-    public function fetchAll() {
+    public function fetchAll(): Traversable {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(ShiftSetup::class, [ShiftSetup::SHIFT_ENAME], [
@@ -52,7 +53,6 @@ class ShiftRepository implements RepositoryInterface {
                     ShiftSetup::TOTAL_WORKING_HR,
                     ShiftSetup::ACTUAL_WORKING_HR
                 ]), false);
-//        $select->columns(Helper::convertColumnDateFormat($this->adapter, new ShiftSetup(), ['startDate', 'endDate'], ['startTime', 'endTime']), false);
         $select->from(['S' => ShiftSetup::TABLE_NAME]);
         $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=S." . ShiftSetup::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
         $select->where(["S." . ShiftSetup::STATUS . "='E'"]);
