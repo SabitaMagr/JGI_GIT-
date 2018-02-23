@@ -862,7 +862,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_ATTD_DEVICE_MASTER ADMSIN
                 ON (ADMSIN.DEVICE_IP=AIN.IP_ADDRESS)
                 LEFT JOIN HRIS_ATTD_DEVICE_MASTER ADMSOUT
-                ON (ADMSOUT.DEVICE_IP=AIN.IP_ADDRESS)
+                ON (ADMSOUT.DEVICE_IP=AOUT.IP_ADDRESS)
                 WHERE 1=1
                 {$searchConditon}
                 {$fromDateCondition}
