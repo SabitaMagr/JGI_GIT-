@@ -347,9 +347,6 @@ class EmployeeRepository implements RepositoryInterface {
 
     public function edit(Model $model, $id) {
         $tempArray = $model->getArrayCopyForDB();
-        if (!array_key_exists('MIDDLE_NAME', $tempArray)) {
-            $tempArray['MIDDLE_NAME'] = '';
-        }
         $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
     }
 

@@ -972,3 +972,8 @@ BEGIN
     HRIS_INSERT_MENU('System Setting','system-setting','index',9,99,'fa fa-square-o','Y');
 END;
 /
+
+BEGIN
+    HRIS_INSERT_MENU('Attendance Log','AttendanceDevice','attendanceLog',337,99,'fa fa-square-o','Y');
+END;
+/
