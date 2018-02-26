@@ -24,18 +24,21 @@
             }
         };
         app.initializeKendoGrid($employeeTable, [
-            {field: "EMPLOYEE_CODE", title: "Code", template: '<td>#: (EMPLOYEE_CODE == null) ? ' - ' : EMPLOYEE_CODE #</td>', width: 100},
-            {field: "FULL_NAME", title: "Full Name", width: 150},
-            {field: "MOBILE_NO", title: "Mobile No", width: 150},
-            {field: "BIRTH_DATE", title: "Birth Date", width: 150},
+            {field: "EMPLOYEE_CODE", title: "Code", locked: true, width: 70},
+            {field: "FULL_NAME", title: "Full Name", locked: true, width: 150},
+            {field: "MOBILE_NO", title: "Mobile No", locked: true, width: 100},
+            {field: "BIRTH_DATE", title: "Birth Date", locked: true, width: 100},
+            {field: "JOIN_DATE", title: "Join Date", locked: true, width: 100},
             {field: "COMPANY_NAME", title: "Company", width: 150},
             {field: "BRANCH_NAME", title: "Branch", width: 150},
             {field: "DEPARTMENT_NAME", title: "Department", width: 150},
             {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
+            {field: "POSITION_NAME", title: "Position", width: 150},
+            {field: "LEVEL_NO", title: "Level", width: 150},
             {field: "LOCATION_EDESC", title: "Location", width: 150},
             {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 150},
             {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Level", width: 150},
-            {field: "EMPLOYEE_ID", title: "Action", width: 150, template: app.genKendoActionTemplate(actiontemplateConfig)}
+            {field: "EMPLOYEE_ID", title: "Action", width: 120, locked: true, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], false);
 
@@ -47,8 +50,8 @@
             'BRANCH_NAME': 'Branch',
             'DEPARTMENT_NAME': 'Department',
             'DESIGNATION_TITLE': 'Designation',
-            'LEVEL_NO': 'Level',
             'POSITION_NAME': 'Position',
+            'LEVEL_NO': 'Level',
             'LOCATION_EDESC': 'Location',
             'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
             'FUNCTIONAL_LEVEL_EDESC': 'Functional Level',

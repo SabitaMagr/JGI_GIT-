@@ -13,11 +13,9 @@ use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Model\Designation;
-use Setup\Model\EmployeeFile;
 use Setup\Model\Gender;
 use Setup\Model\HrEmployees;
 use Setup\Model\Position;
-use Setup\Model\RecommendApprove;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
 use Zend\Db\Adapter\AdapterInterface;
@@ -25,9 +23,6 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Setup\Model\Location;
-use Setup\Model\FunctionalTypes;
-use Setup\Model\FunctionalLevels;
 
 class EmployeeRepository implements RepositoryInterface {
 
@@ -155,7 +150,7 @@ class EmployeeRepository implements RepositoryInterface {
                 ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
                 ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME' => new Expression('INITCAP(D1.DEPARTMENT_NAME)')], 'left')
                 ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE' => new Expression('INITCAP(DES1.DESIGNATION_TITLE)')], 'left')
-                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)')], 'left')
+                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)'), "LEVEL_NO" => "P1.LEVEL_NO"], 'left')
                 ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
                 ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
         $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
@@ -252,6 +247,7 @@ class EmployeeRepository implements RepositoryInterface {
                   D1.DEPARTMENT_NAME                                                AS DEPARTMENT,
                   DES1.DESIGNATION_TITLE                                            AS DESIGNATION,
                   P1.POSITION_NAME                                                  AS POSITION,
+                  P1.LEVEL_NO                                                       AS LEVEL_NO,
                   S1.SERVICE_TYPE_NAME                                              AS SERVICE_TYPE,
                   SE1.SERVICE_EVENT_TYPE_NAME                                       AS SERVICE_EVENT_TYPE,
                   EF.FILE_PATH                                                      AS FILE_NAME,
@@ -468,6 +464,8 @@ class EmployeeRepository implements RepositoryInterface {
               INITCAP(B.BRANCH_NAME)                                            AS BRANCH_NAME,
               INITCAP(D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
               INITCAP(DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
+              INITCAP(P.POSITION_NAME)                                          AS POSITION_NAME,
+              P.LEVEL_NO                                                        AS LEVEL_NO,
               INITCAP(C.COMPANY_NAME)                                           AS COMPANY_NAME,
               INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
               BG.BLOOD_GROUP_CODE                                               AS BLOOD_GROUP_CODE,
@@ -478,7 +476,7 @@ class EmployeeRepository implements RepositoryInterface {
               INITCAP(D1.DEPARTMENT_NAME)                                       AS APP_DEPARTMENT_NAME,
               INITCAP(DES1.DESIGNATION_TITLE)                                   AS APP_DESIGNATION_TITLE,
               INITCAP(P1.POSITION_NAME)                                         AS APP_POSITION_NAME,
-              P1.LEVEL_NO                                                       AS LEVEL_NO,
+              P1.LEVEL_NO                                                       AS APP_LEVEL_NO,
               INITCAP(S1.SERVICE_TYPE_NAME)                                     AS APP_SERVICE_TYPE_NAME,
               INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)                              AS APP_SERVICE_EVENT_TYPE_NAME,
               LOC.LOCATION_EDESC                                                AS LOCATION_EDESC,
@@ -493,6 +491,8 @@ class EmployeeRepository implements RepositoryInterface {
             ON E.DEPARTMENT_ID=D.DEPARTMENT_ID
             LEFT JOIN HRIS_DESIGNATIONS DES
             ON E.DESIGNATION_ID=DES.DESIGNATION_ID
+            LEFT JOIN HRIS_POSITIONS P
+            ON E.POSITION_ID=P.POSITION_ID
             LEFT JOIN HRIS_COMPANY C
             ON E.COMPANY_ID=C.COMPANY_ID
             LEFT JOIN HRIS_GENDERS G
@@ -549,7 +549,6 @@ class EmployeeRepository implements RepositoryInterface {
                 ]), false);
 
         $select->from("HRIS_EMPLOYEES");
-//        $select->columns(Helper::convertColumnDateFormat($this->adapter, new HrEmployees(), ['birthDate']), false);
         $select->where(["STATUS='E' AND RETIRED_FLAG='N'"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -799,6 +798,7 @@ class EmployeeRepository implements RepositoryInterface {
                   INITCAP(D1.DEPARTMENT_NAME)                                       AS DEPARTMENT_NAME,
                   INITCAP(DES1.DESIGNATION_TITLE)                                   AS DESIGNATION_TITLE,
                   INITCAP(P1.POSITION_NAME)                                         AS POSITION_NAME,
+                  P1.LEVEL_NO                                                       AS LEVEL_NO,
                   INITCAP(S1.SERVICE_TYPE_NAME)                                     AS SERVICE_TYPE_NAME,
                   INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)                              AS SERVICE_EVENT_TYPE_NAME,
                   EF.FILE_PATH                                                      AS EMPLOYEE_FILE_PATH
