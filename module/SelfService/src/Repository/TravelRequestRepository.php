@@ -79,7 +79,7 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
-            new Expression("(TR.TO_DATE)-TRUNC(TR.FROM_DATE) AS DURATION"),
+            new Expression("((TR.TO_DATE)-TRUNC(TR.FROM_DATE))+1 AS DURATION"),
             new Expression("INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.STATUS AS STATUS"),

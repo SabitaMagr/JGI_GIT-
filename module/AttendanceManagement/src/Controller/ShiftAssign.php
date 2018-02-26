@@ -74,12 +74,12 @@ class ShiftAssign extends HrisController {
                 throw new Exception("The request should be of type post");
             }
             $data = $request->getPost();
-            $ids = $data['employeeIds'];
+            $employeeIds = $data['employeeIds'];
             $shiftId = $data['shiftId'];
             $fromDate = Helper::getExpressionDate($data['fromDate']);
             $toDate = Helper::getExpressionDate($data['toDate']);
-            foreach ($ids as $id) {
-                $this->repository->bulkAdd($id, $shiftId, $fromDate->getExpression(), $toDate->getExpression(), $this->employeeId);
+            foreach ($employeeIds as $employeeId) {
+                $this->repository->bulkAdd($employeeId, $shiftId, $fromDate->getExpression(), $toDate->getExpression(), $this->employeeId);
             }
 
             return new JsonModel(['success' => true, 'data' => null, 'error' => '']);
