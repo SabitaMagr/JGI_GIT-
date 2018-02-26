@@ -62,7 +62,6 @@ class SystemUtility extends HrisController {
                 return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
             }
         }
-//        return $this->stickFlashMessagesTo([]);
     }
 
     function execInBackground($cmd) {

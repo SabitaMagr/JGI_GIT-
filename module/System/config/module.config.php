@@ -258,11 +258,11 @@ return [
         ],
         'AttendanceDevice' => [
             [
-                'label' => "Attedance Device Setup",
+                'label' => "Attendance Device",
                 'route' => "AttendanceDevice"
             ],
             [
-                'label' => "Attedance Device Setup",
+                'label' => "Attendance Device",
                 'route' => "AttendanceDevice",
                 'pages' => [
                     [
@@ -279,6 +279,11 @@ return [
                         'label' => 'Edit',
                         'route' => 'AttendanceDevice',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Log',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'attendanceLog',
                     ],
                 ],
             ],

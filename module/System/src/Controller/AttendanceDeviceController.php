@@ -3,9 +3,9 @@
 namespace System\Controller;
 
 use Application\Controller\HrisController;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
-use Setup\Repository\DepartmentRepository;
 use System\Form\AttendanceDeviceForm;
 use System\Model\AttendanceDevice;
 use System\Repository\AttendanceDeviceRepository;
@@ -14,10 +14,6 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
 
 class AttendanceDeviceController extends HrisController {
-
-//    private $form;
-//    private $adapter;
-//    private $repository;
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
@@ -47,8 +43,6 @@ class AttendanceDeviceController extends HrisController {
     }
 
     public function addAction() {
-        $allCompanyBranches = new DepartmentRepository($this->adapter);
-
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -65,17 +59,13 @@ class AttendanceDeviceController extends HrisController {
                 return $this->redirect()->toRoute("AttendanceDevice");
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'form' => $this->form,
-//                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-//                    'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }
 
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
-//        $allCompanyBranches = new DepartmentRepository($this->adapter);
-
         $request = $this->getRequest();
 
         $attendanceDevice = new AttendanceDevice();
@@ -93,13 +83,9 @@ class AttendanceDeviceController extends HrisController {
                 return $this->redirect()->toRoute("AttendanceDevice");
             }
         }
-
-
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'id' => $id,
                     'form' => $this->form,
-//                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-//                    'branch' => $allCompanyBranches->fetchAllBranchAndCompany(),
         ]);
     }
 
@@ -122,14 +108,6 @@ class AttendanceDeviceController extends HrisController {
         } elseif (strpos($output, 'Expired') !== false) {
             $result = "Expired in Transit";
         } elseif (strpos($output, 'data') !== false) {
-//            $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-//            $connection = @socket_connect($socket, $ip, 23);
-//            if ($connection) {
-//                $result = 'ONLINE';
-//            } else {
-//                $result = socket_strerror(socket_last_error($socket));
-//            }
-//            socket_close($socket);
             $result = "ONLINE";
         } else {
             $result = "Unknown Error";
@@ -149,6 +127,27 @@ class AttendanceDeviceController extends HrisController {
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
+    }
+
+    function attendanceLogAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postData = (array) $request->getPost();
+                $attendanceData = $this->repository->fetchByIP($postData['ipList'], $postData['fromDate'], $postData['toDate']);
+                return new JsonModel(['success' => true, 'data' => $attendanceData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        $deviceIPList = EntityHelper::getTableList($this->adapter, AttendanceDevice::TABLE_NAME, [AttendanceDevice::DEVICE_IP]);
+        $deviceIPKV = $this->listValueToKV($deviceIPList, AttendanceDevice::DEVICE_IP, AttendanceDevice::DEVICE_IP);
+        $deviceIPSE = $this->getSelectElement(['name' => 'deviceIP', 'id' => 'deviceIP', 'class' => 'form-control', 'label' => 'Device IP'], $deviceIPKV);
+        $deviceIPSE->setAttributes(['multiple' => 'multiple']);
+        return $this->stickFlashMessagesTo([
+                    'deviceIPSE' => $deviceIPSE
+        ]);
     }
 
 }

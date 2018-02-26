@@ -271,7 +271,8 @@ class EntityHelper {
             }
             return " {$conditonType} {$colName} IN ({$valuesinCSV})";
         } else {
-            return " {$conditonType} {$colName} = {$colValue}";
+            $value = $isString ? "'{$colValue}'" : $colValue;
+            return " {$conditonType} {$colName} = {$value}";
         }
     }
 
@@ -294,7 +295,7 @@ class EntityHelper {
         }
         if ($serviceTypeId != null && $serviceTypeId != -1) {
             $conditon .= self::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
-        }else {
+        } else {
             $conditon .= " AND E.SERVICE_TYPE_ID IN (SELECT SERVICE_TYPE_ID FROM HRIS_SERVICE_TYPES WHERE TYPE NOT IN ('RESIGNED','RETIRED'))";
         }
         if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
@@ -302,7 +303,7 @@ class EntityHelper {
         }
         if ($employeeTypeId != null && $employeeTypeId != -1) {
             $conditon .= self::conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND", true);
-        } 
+        }
         if ($employeeId != null && $employeeId != -1) {
             $conditon .= self::conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
         }
