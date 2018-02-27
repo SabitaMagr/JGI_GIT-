@@ -294,13 +294,15 @@ class EntityHelper {
         }
         if ($serviceTypeId != null && $serviceTypeId != -1) {
             $conditon .= self::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
+        }else {
+            $conditon .= " AND E.SERVICE_TYPE_ID IN (SELECT SERVICE_TYPE_ID FROM HRIS_SERVICE_TYPES WHERE TYPE NOT IN ('RESIGNED','RETIRED'))";
         }
         if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
             $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
         }
         if ($employeeTypeId != null && $employeeTypeId != -1) {
             $conditon .= self::conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND", true);
-        }
+        } 
         if ($employeeId != null && $employeeId != -1) {
             $conditon .= self::conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
         }

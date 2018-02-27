@@ -4,6 +4,7 @@ namespace Appraisal\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
+use Application\Model\Months;
 use Application\Repository\RepositoryInterface;
 use Appraisal\Model\AppraisalAssign;
 use Appraisal\Model\AppraisalStatus;
@@ -167,7 +168,8 @@ class AppraisalAssignRepository implements RepositoryInterface {
                 ->join(['DES1' => Designation::TABLE_NAME], "DES1." . Designation::DESIGNATION_ID . "=E1." . HrEmployees::DESIGNATION_ID, ["DESIGNATION_NAME_A" => new Expression("INITCAP(DES1.DESIGNATION_TITLE)")], "left")
                 ->join(['DES2' => Designation::TABLE_NAME], "DES2." . Designation::DESIGNATION_ID . "=E2." . HrEmployees::DESIGNATION_ID, ["DESIGNATION_NAME_R" => new Expression("INITCAP(DES2.DESIGNATION_TITLE)")], "left")
                 ->join(['POS1' => Position::TABLE_NAME], "POS1." . Position::POSITION_ID . "=E1." . HrEmployees::POSITION_ID, ["POSITION_NAME_A" => new Expression("INITCAP(POS1.POSITION_NAME)")], "left")
-                ->join(['POS2' => Position::TABLE_NAME], "POS2." . Position::POSITION_ID . "=E2." . HrEmployees::POSITION_ID, ["POSITION_NAME_R" => new Expression("INITCAP(POS2.POSITION_NAME)")], "left");
+                ->join(['POS2' => Position::TABLE_NAME], "POS2." . Position::POSITION_ID . "=E2." . HrEmployees::POSITION_ID, ["POSITION_NAME_R" => new Expression("INITCAP(POS2.POSITION_NAME)")], "left")
+                ->join(['MTH' => Months::TABLE_NAME],"MTH.FISCAL_YEAR_ID = A.FISCAL_YEAR_ID AND MTH.FISCAL_YEAR_MONTH_NO = (CASE WHEN A.FISCAL_YEAR_MONTH_NO IS NOT NULL THEN A.FISCAL_YEAR_MONTH_NO ELSE 1 END)",["FROM_DATE"=>new Expression("INITCAP(TO_CHAR(MTH.FROM_DATE,'DD-MON-YYYY'))")]);
 
         $select->where([
             "AA." . AppraisalAssign::EMPLOYEE_ID . "=" . $employeeId,
@@ -176,33 +178,33 @@ class AppraisalAssignRepository implements RepositoryInterface {
             "E." . HrEmployees::STATUS . "='E'",
             "T." . Type::STATUS . "='E'",
             "S." . Stage::STATUS . "='E' AND
-  (((E1.STATUS =
-    CASE
-      WHEN E1.STATUS IS NOT NULL
-      THEN ('E')
-    END
-  OR E1.STATUS IS NULL)
-  AND
-  (E1.RETIRED_FLAG =
-    CASE
-      WHEN E1.RETIRED_FLAG IS NOT NULL
-      THEN ('N')
-    END
-  OR E1.RETIRED_FLAG IS NULL))
-OR
-  ((E2.STATUS =
-    CASE
-      WHEN E2.STATUS IS NOT NULL
-      THEN ('E')
-    END
-  OR E2.STATUS IS NULL)
-AND
-  (E2.RETIRED_FLAG =
-    CASE
-      WHEN E2.RETIRED_FLAG IS NOT NULL
-      THEN ('N')
-    END
-  OR E2.RETIRED_FLAG IS NULL)))"
+              (((E1.STATUS =
+                CASE
+                  WHEN E1.STATUS IS NOT NULL
+                  THEN ('E')
+                END
+              OR E1.STATUS IS NULL)
+              AND
+              (E1.RETIRED_FLAG =
+                CASE
+                  WHEN E1.RETIRED_FLAG IS NOT NULL
+                  THEN ('N')
+                END
+              OR E1.RETIRED_FLAG IS NULL))
+            OR
+              ((E2.STATUS =
+                CASE
+                  WHEN E2.STATUS IS NOT NULL
+                  THEN ('E')
+                END
+              OR E2.STATUS IS NULL)
+            AND
+              (E2.RETIRED_FLAG =
+                CASE
+                  WHEN E2.RETIRED_FLAG IS NOT NULL
+                  THEN ('N')
+                END
+              OR E2.RETIRED_FLAG IS NULL)))"
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
