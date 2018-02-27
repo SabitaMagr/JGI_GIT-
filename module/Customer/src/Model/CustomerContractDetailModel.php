@@ -4,17 +4,17 @@ namespace Customer\Model;
 
 use Application\Model\Model;
 
-class CustomerContract extends Model {
+class CustomerContractDetailModel extends Model {
 
-    CONST TABLE_NAME = "HRIS_CUSTOMER_CONTRACT";
+    CONST TABLE_NAME = "HRIS_CUSTOMER_CONTRACT_DETAILS";
     CONST CONTRACT_ID = "CONTRACT_ID";
     CONST CUSTOMER_ID = "CUSTOMER_ID";
-    CONST CONTRACT_NAME = "CONTRACT_NAME";
-    CONST START_DATE = "START_DATE";
-    CONST END_DATE = "END_DATE";
-    CONST BILLING_MONTH = "BILLING_MONTH";
-    CONST FREEZED = "FREEZED";
-    CONST BILLING_TYPE = "BILLING_TYPE";
+    CONST LOCATION_ID = "LOCATION_ID";
+    CONST DESIGNATION_ID = "DESIGNATION_ID";
+    CONST QUANTITY = "QUANTITY";
+    CONST RATE = "RATE";
+    CONST SHIFT_ID = "SHIFT_ID";
+    CONST DAYS_IN_MONTH = "DAYS_IN_MONTH";
     CONST CREATED_BY = "CREATED_BY";
     CONST CREATED_DT = "CREATED_DT";
     CONST MODIFIED_BY = "MODIFIED_BY";
@@ -24,12 +24,12 @@ class CustomerContract extends Model {
 
     public $contractId;
     public $customerId;
-    public $contractName;
-    public $startDate;
-    public $endDate;
-    public $billingMonth;
-    public $freezed;
-    public $billingType;
+    public $locationId;
+    public $designationId;
+    public $quantity;
+    public $rate;
+    public $shiftId;
+    public $daysInMonth;
     public $createdDt;
     public $createdBy;
     public $modifiedDt;
@@ -39,12 +39,12 @@ class CustomerContract extends Model {
     public $mappings = [
         'contractId' => self::CONTRACT_ID,
         'customerId' => self::CUSTOMER_ID,
-        'contractName' => self::CONTRACT_NAME,
-        'startDate' => self::START_DATE,
-        'endDate' => self::END_DATE,
-        'billingMonth' => self::BILLING_MONTH,
-        'freezed' => self::FREEZED,
-        'billingType' => self::BILLING_TYPE,
+        'locationId' => self::LOCATION_ID,
+        'designationId' => self::DESIGNATION_ID,
+        'quantity' => self::QUANTITY,
+        'rate' => self::RATE,
+        'shiftId' => self::SHIFT_ID,
+        'daysInMonth' => self::DAYS_IN_MONTH,
         'createdDt' => self::CREATED_DT,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,

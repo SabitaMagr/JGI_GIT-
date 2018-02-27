@@ -20,6 +20,7 @@ $this->headScript()
     document.editLink = '<?= $this->url("customer-contract", ["action" => "edit"]); ?>';
     document.deleteLink = '<?= $this->url("customer-contract", ["action" => "delete"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
+    document.contractDetailLink='<?= $this->url("customer-contract-details", ["action" => "view"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

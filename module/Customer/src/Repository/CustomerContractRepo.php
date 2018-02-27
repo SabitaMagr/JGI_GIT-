@@ -41,9 +41,11 @@ class CustomerContractRepo implements RepositoryInterface {
                   BS_DATE(CC.START_DATE)               AS START_DATE_BS,
                   TO_CHAR(CC.END_DATE,'DD-MON-YYYY')   AS END_DATE_AD,
                   BS_DATE(CC.END_DATE)                 AS END_DATE_BS,
-                  WORKING_CYCLE_DESC(CC.WORKING_CYCLE) AS WORKING_CYCLE,
-                  CHARGE_TYPE_DESC(CC.CHARGE_TYPE)     AS CHARGE_TYPE,
-                  CC.CHARGE_RATE,
+                  CASE BILLING_MONTH 
+                  WHEN 'N' THEN 'NEPALI'
+                  ELSE 'ENGLISH' END  AS BILLING_MONTH,
+                  FREEZED,
+                  BILLING_TYPE,
                   CC.REMARKS
                 FROM HRIS_CUSTOMER_CONTRACT CC
                 JOIN HRIS_CUSTOMER C

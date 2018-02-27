@@ -14,6 +14,14 @@
                 'url': document.deleteLink
             }
         };
+        
+        var actionTemplate=app.genKendoActionTemplate(actiontemplateConfig);
+        var locationLinkTemplate=`
+                <a class="btn-edit" title="View" href="${document.contractDetailLink}/#:CONTRACT_ID #" style="height:17px;">
+                    <i class="fa fa-search-plus"></i>
+                </a>`;
+        var allTemplate=actionTemplate+locationLinkTemplate;
+        
         var columns = [
             {field: "CONTRACT_NAME", title: "Contract" ,width:"100px"},
             {field: "CUSTOMER_ENAME", title: "Customer" ,width:"120px"},
@@ -29,7 +37,7 @@
             {field: "CHARGE_TYPE", title: "Charge Type" ,width:"120px"},
             {field: "CHARGE_RATE", title: "Charge Rate" ,width:"120px"},
             {field: "REMARKS", title: "Remarks"},
-            {field: ["CONTRACT_ID"], width:"90px" ,title: "Action", template: app.genKendoActionTemplate(actiontemplateConfig)}
+            {field: ["CONTRACT_ID"], width:"90px" ,title: "Action", template: allTemplate}
         ];
         var map = {
             'CONTRACT_NAME': 'Contract',

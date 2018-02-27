@@ -14,11 +14,20 @@
                 'url': document.deleteLink
             }
         };
+        
+        
+        var actionTemplate=app.genKendoActionTemplate(actiontemplateConfig);
+        var locationLinkTemplate=`
+                <a class="btn-edit" title="View" href="${document.locationSetupLink}/#:CUSTOMER_ID #" style="height:17px;">
+                    <i class="fa fa-search-plus"></i>
+                </a>`;
+        var allTemplate=actionTemplate+locationLinkTemplate;
+        
         var columns = [
             {field: "CUSTOMER_ENAME", title: "Name", width: 150},
             {field: "ADDRESS", title: "Address", width: 150},
             {field: "PHONE_NO", title: "Phone No", width: 150},
-            {field: ["CUSTOMER_ID"], title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
+            {field: ["CUSTOMER_ID"], title: "Action", width: 120, template:allTemplate }
         ];
         var map = {
             'CUSTOMER_ENAME': 'Name',

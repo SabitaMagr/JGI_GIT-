@@ -60,8 +60,8 @@ class ContractEmployees extends HrisController {
         $customerContractRepo = new CustomerContractRepo($this->adapter);
         $customerContractDetails = $customerContractRepo->fetchById($id);
 
-        $custEmployeeRepo = new CustContractEmpRepo($this->adapter);
-        $custEmployeeDetails = $custEmployeeRepo->fetchById($id);
+//        $custEmployeeRepo = new CustContractEmpRepo($this->adapter);
+//        $custEmployeeDetails = $custEmployeeRepo->fetchById($id);
 
 
         $contractStartDate = $customerContractDetails['START_DATE'];
@@ -73,7 +73,7 @@ class ContractEmployees extends HrisController {
                     'id' => $id,
                     'employeeList' => EntityHelper::getTableList($this->adapter, ServiceEmployeeSetupModel::TABLE_NAME, [ServiceEmployeeSetupModel::EMPLOYEE_ID, ServiceEmployeeSetupModel::FULL_NAME], [ServiceEmployeeSetupModel::STATUS => "E"]),
                     'customerContractDetails' => $customerContractDetails,
-                    'contractEmpDetails' => $custEmployeeDetails,
+//                    'contractEmpDetails' => $custEmployeeDetails,
                     'monthDetails' => $monthDetails
         ]);
     }
@@ -91,9 +91,9 @@ class ContractEmployees extends HrisController {
 
             $monthId = $request->getPost('monthId');
 
-//            echo '<Pre>';
-//            print_r($postData);
-//            die();
+            echo '<Pre>';
+            print_r($postData);
+            die();
 
 
             $employees = $request->getPost('employee');

@@ -6,7 +6,7 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
-        ->appendFile($this->basePath('js/customer/customer-setup/index.js'));
+        ->appendFile($this->basePath('js/customer/customer-location/view.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -16,9 +16,9 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.editLink = '<?= $this->url("customer-setup", ["action" => "edit"]); ?>';
-    document.deleteLink = '<?= $this->url("customer-setup", ["action" => "delete"]); ?>';
-    document.locationSetupLink = '<?= $this->url("customer-location", ["action" => "view"]); ?>';
+    document.editLink = '<?= $this->url("customer-location", ["action" => "edit"]); ?>';
+    document.deleteLink = '<?= $this->url("customer-location", ["action" => "delete"]); ?>';
+    document.pullLocationDetails= '<?= $this->url("customer-location", ["action" => "fetchAllCustomerLocation","id"=>$id]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">

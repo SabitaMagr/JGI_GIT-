@@ -6,6 +6,8 @@ use Application\Controller\ControllerFactory;
 use Customer\Controller\ContractAttendance;
 use Customer\Controller\ContractEmployees;
 use Customer\Controller\CustomerContract;
+use Customer\Controller\CustomerContractDetails;
+use Customer\Controller\CustomerLocation;
 use Customer\Controller\CustomerSetup;
 use Customer\Controller\ServiceEmployeeSetup;
 use Zend\Router\Http\Segment;
@@ -27,6 +29,20 @@ return [
                     ],
                 ],
             ],
+            'customer-location' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/customer/location[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => CustomerLocation::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
             'customer-contract' => [
                 'type' => Segment::class,
                 'options' => [
@@ -37,6 +53,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => CustomerContract::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'customer-contract-details' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/customer/contract/details[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => CustomerContractDetails::class,
                         'action' => 'index'
                     ],
                 ],
@@ -171,7 +201,9 @@ return [
     'controllers' => [
         'factories' => [
             CustomerSetup::class => ControllerFactory::class,
+            CustomerLocation::class => ControllerFactory::class,
             CustomerContract::class => ControllerFactory::class,
+            CustomerContractDetails::class => ControllerFactory::class,
             ServiceEmployeeSetup::class => ControllerFactory::class,
             ContractAttendance::class => ControllerFactory::class,
             ContractEmployees::class => ControllerFactory::class,
