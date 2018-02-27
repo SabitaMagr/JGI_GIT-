@@ -187,6 +187,8 @@
             'ATTENDANCE_DT_N': 'Attendance Date(BS)',
             'IN_TIME': 'In Time',
             'OUT_TIME': 'Out Time',
+            'IN_DEVICE_NAME': 'In Location',
+            'OUT_DEVICE_NAME': 'Out Location',
             'IN_REMARKS': 'In Remarks',
             'OUT_REMARKS': 'Out Remarks',
             'TOTAL_HOUR': 'Total Hour',
