@@ -53,7 +53,7 @@ class SystemRuleProcessor {
                 $calculatedValue = 0;
                 foreach ($this->ruleDetailList as $ruleDetail) {
                     if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D'])) {
-                        $ruleValue = (($this->multiplicationFactor == 12) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]) + ($ruleDetail['ruleValue'] * ($ruleDetail['rule']['IS_MONTHLY'] == 'Y') ? 1 : $this->multiplicationFactor);
+                        $ruleValue = (($this->multiplicationFactor == 12) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]) + ($ruleDetail['ruleValue'] * (($ruleDetail['rule']['IS_MONTHLY'] == 'Y') ? 1 : $this->multiplicationFactor));
                     }
                     switch ($ruleDetail['rule']['PAY_TYPE_FLAG']) {
                         case "A":

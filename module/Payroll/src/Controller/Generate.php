@@ -3,7 +3,6 @@
 namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\FiscalYear;
@@ -33,11 +32,11 @@ class Generate extends HrisController {
 
     public function indexAction() {
         $ruleRepo = new RulesRepository($this->adapter);
-        $data['ruleList'] = Helper::extractDbData($ruleRepo->fetchAll());
+        $data['ruleList'] = iterator_to_array($ruleRepo->fetchAll(), false);
         $data['fiscalYearList'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
         $monthRepo = new MonthRepository($this->adapter);
-        $data['monthList'] = Helper::extractDbData($monthRepo->fetchAll());
-        $data['salarySheetList'] = Helper::extractDbData($this->salarySheetRepo->fetchAll());
+        $data['monthList'] = iterator_to_array($monthRepo->fetchAll(), false);
+        $data['salarySheetList'] = iterator_to_array($this->salarySheetRepo->fetchAll(), false);
         $links['viewLink'] = $this->url()->fromRoute('generate', ['action' => 'viewSalarySheet']);
         $links['generateLink'] = $this->url()->fromRoute('generate', ['action' => 'generateSalarySheet']);
         $links['getSalarySheetListLink'] = $this->url()->fromRoute('generate', ['action' => 'getSalarySheetList']);
@@ -47,7 +46,7 @@ class Generate extends HrisController {
 
     public function getSalarySheetListAction() {
         try {
-            $list = Helper::extractDbData($this->salarySheetRepo->fetchAll());
+            $list = iterator_to_array($this->salarySheetRepo->fetchAll(), false);
             return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
@@ -104,7 +103,8 @@ class Generate extends HrisController {
                         $salarySheetDetailRepo->add($salarySheetDetail);
                     }
                     break;
-                case 3:break;
+                case 3:
+                    break;
             }
 
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
@@ -147,9 +147,9 @@ class Generate extends HrisController {
             }
             $results = $salarySheetController->viewSalarySheet($monthId, $employeeList);
 
-            return new CustomViewModel(['success' => true, 'data' => $results, 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => $results, 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]]);
         }
     }
 

@@ -57,7 +57,6 @@ class SalarySheet {
                 $payId = $pay[Rules::PAY_ID];
                 $salarySheetDetailModel->payId = $payId;
                 $salarySheetDetailModel->val = isset($salarySheetDetail['ruleValueKV'][$payId]) ? $salarySheetDetail['ruleValueKV'][$payId] : 0;
-//                $salarySheetDetailModel->totalVal = $salarySheetDetail['calculatedValue'];
                 $this->salarySheetDetailRepo->add($salarySheetDetailModel);
             }
         }
