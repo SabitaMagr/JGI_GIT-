@@ -3,7 +3,6 @@
 namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\FiscalYear;
@@ -103,7 +102,7 @@ class FlatValue extends HrisController {
     public function detailAction() {
         $flatValues = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_ID, FlatValueModel::FLAT_EDESC]);
         $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'flatValues' => $flatValues,
                     'fiscalYears' => $fiscalYears,
@@ -123,9 +122,9 @@ class FlatValue extends HrisController {
             $detailRepo = new FlatValueDetailRepo($this->adapter);
             $result = $detailRepo->getFlatValuesDetailById($flatId, $fiscalYearId, $employeeFilter);
 
-            return new CustomViewModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -140,9 +139,9 @@ class FlatValue extends HrisController {
             $detailRepo = new FlatValueDetailRepo($this->adapter);
             $detailRepo->postFlatValuesDetail($data);
 
-            return new CustomViewModel(['success' => true, 'data' => $data, 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

@@ -26,3 +26,20 @@
     });
 
 })(window.jQuery);
+
+(function (id) {
+    var $menu = $('#' + id);
+    function selectMenu($selMenu, level) {
+        if (level === 1) {
+            $selMenu.addClass('active');
+        }
+        var $selMenuParent = $selMenu.parent();
+        if ($selMenuParent.hasClass('sub-menu')) {
+            $selMenuParent.css('display', 'block');
+            var $selMenuParentParent = $selMenuParent.parent();
+            $selMenuParentParent.addClass('open');
+            selectMenu($selMenuParentParent, level + 1);
+        }
+    }
+    selectMenu($menu, 1);
+})('m1');

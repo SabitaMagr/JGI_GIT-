@@ -32,11 +32,6 @@ class Generate extends HrisController {
     }
 
     public function indexAction() {
-//        $payrollGenerator = new PayrollGenerator($this->adapter);
-//        $returnData = $payrollGenerator->generate(1000376, 25);
-//        print_r($returnData);
-//        exit;
-//        
         $ruleRepo = new RulesRepository($this->adapter);
         $data['ruleList'] = Helper::extractDbData($ruleRepo->fetchAll());
         $data['fiscalYearList'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);

@@ -148,4 +148,18 @@ class TravelStatus extends HrisController {
         );
     }
 
+    public function settlementReportAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $list = $this->travelStatusRepository->notSettled();
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return [];
+    }
+
 }

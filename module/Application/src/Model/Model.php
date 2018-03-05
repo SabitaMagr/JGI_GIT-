@@ -5,7 +5,7 @@ namespace Application\Model;
 class Model {
 
     public $mappings;
-    private $updateKeys;
+    private $updateKeys = [];
 
     public function exchangeArrayFromForm(array $data) {
         $entityKeys = array_keys($this->mappings);

@@ -49,7 +49,10 @@ class PayrollGenerator {
         "IS_TEMPORARY"
     ];
     const SYSTEM_RULE = [
-        "TOTAL_ANNUAL_AMOUNT"
+        "TOTAL_ANNUAL_AMOUNT",
+        "TOTAL_AMOUNT",
+        "SELF_PREV_TOTAL",
+        "MULTIPLICATION_FACTOR"
     ];
 
     public function __construct($adapter) {
@@ -91,9 +94,6 @@ class PayrollGenerator {
         foreach ($payList as $ruleDetail) {
             $ruleId = $ruleDetail[Rules::PAY_ID];
             $formula = $ruleDetail[Rules::FORMULA];
-            $operationType = $ruleDetail[Rules::PAY_TYPE_FLAG];
-
-
             $refRules = $this->ruleRepo->fetchReferencingRules($ruleId);
 
             foreach ($this->formattedMonthlyvalueList as $monthlyKey => $monthlyValue) {
@@ -109,11 +109,10 @@ class PayrollGenerator {
             }
 
             foreach ($this->formattedSystemRuleList as $key => $systemRule) {
-                $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule);
+                $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule, $ruleId);
             }
 
             $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
-
             $ruleValue = eval("return {$processedformula} ;");
             array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleDetail]);
             $ruleValueMap[$ruleId] = $ruleValue;
@@ -175,9 +174,9 @@ class PayrollGenerator {
         }
     }
 
-    private function convertSystemRuleToValue($rule, $key, $variable) {
+    private function convertSystemRuleToValue($rule, $key, $variable, $ruleId) {
         if (strpos($rule, $variable) !== false) {
-            $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->ruleDetailList, $this->monthId);
+            $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $this->employeeId, $this->ruleDetailList, $this->monthId, $ruleId);
             $processedSystemRule = $systemRuleProcessor->processSystemRule($key);
             return str_replace($variable, is_string($processedSystemRule) ? "'{$processedSystemRule}'" : $processedSystemRule, $rule);
         } else {
@@ -206,7 +205,7 @@ class PayrollGenerator {
         }
         return $payValue;
     }
-    
+
 //    $calculateTax = function($annualAmount, $maritalStatus) {
 //            $tax = 0;
 //            switch ($maritalStatus) {
@@ -235,5 +234,4 @@ class PayrollGenerator {
 //            }
 //            return $tax;
 //        };
-
 }
