@@ -687,14 +687,16 @@ window.app = (function ($, toastr, App) {
         return arr;
     };
 
-    document.confirmation = {config: null, setConfig: function (config) {
+    document.confirmation = {
+        config: null,
+        setConfig: function (config) {
             this.config = config
         }};
     (function () {
-        $(".page-content").on("click", ".confirmation", function (e) {
-            e.preventDefault();
+        $(".page-content").on("mouseover", ".confirmation", function (e) {
             var $this = $(this);
             $this.confirmation({
+                placement: 'bottom',
                 onConfirm: function () {
                     if (document.confirmation.config == null) {
                         location.href = $this.attr('href');
