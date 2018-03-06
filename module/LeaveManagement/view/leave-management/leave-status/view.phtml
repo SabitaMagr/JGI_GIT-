@@ -246,28 +246,21 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
-                        <?php
-                        if ($gracePeriod->getValue() != ""):
-                            ?>
+                        <?php if ($gracePeriod->getValue() != ""): ?>
                             <div class="col-sm-4">
-                                <div
-                                    class="form-group">
-                                        <?php print $this->formLabel($gracePeriod); ?>
-                                        <?php print $this->formElement($gracePeriod); ?>
+                                <div class="form-group">
+                                    <?php print $this->formLabel($gracePeriod); ?>
+                                    <?php print $this->formElement($gracePeriod); ?>
                                 </div>
                             </div>
-                        <?php endif;
-                        ?>
+                        <?php endif; ?>
 
                     </div>
-
-                    <?php if ($remarkDtl != null) { ?>
-                        <div class="form-group padding-0">
-                            <?php print $this->formLabel($remarks); ?>
-                            <?php print $this->formElement($remarks); ?>
-                        </div>
-                        <?php
-                    }
+                    <div class="form-group padding-0">
+                        <?php print $this->formLabel($remarks); ?>
+                        <?php print $this->formElement($remarks); ?>
+                    </div>
+                    <?php
                     if ($subEmployeeId != null) {
                         $disabled = ($subApprovedFlag != null) ? "disabled" : "";
                         if ($subApprovedFlag == 'Y') {

@@ -263,14 +263,10 @@ print $this->form()->openTag($form);
                         <?php endif;
                         ?>
                         <div class="col-sm-4">
-                            <?php if ($remarksDtl != null) { ?>
-                                <div
-                                    class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">
-                                        <?php print $this->formLabel($remarks); ?>
-                                        <?php print $this->formElement($remarks); ?>
-                                </div>
-                            <?php }
-                            ?>
+                            <div class="form-group">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                            </div>
                         </div>
 
                         <div class="col-sm-4">
