@@ -64,7 +64,7 @@ class Generate extends HrisController {
     }
 
     public function generateSalarySheetAction() {
-        $salarySheetRepo = new SalarySheetController($this->adapter);
+        $salarySheet = new SalarySheetController($this->adapter);
         $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
         try {
             $request = $this->getRequest();
@@ -80,9 +80,10 @@ class Generate extends HrisController {
                     $fromDate = $data['fromDate'];
                     $toDate = $data['toDate'];
                     /*  */
-                    $sheetNo = $salarySheetRepo->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate);
+                    $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate);
+                    $this->salarySheetRepo->generateSalShReport($sheetNo);
                     /*  */
-                    $employeeList = $salarySheetRepo->fetchEmployeeList($fromDate, $toDate);
+                    $employeeList = $salarySheet->fetchEmployeeList($fromDate, $toDate);
                     $returnData['sheetNo'] = $sheetNo;
                     $returnData['employeeList'] = $employeeList;
                     break;
@@ -91,7 +92,7 @@ class Generate extends HrisController {
                     $monthId = $data['monthId'];
                     $sheetNo = $data['sheetNo'];
                     $payrollGenerator = new PayrollGenerator($this->adapter);
-                    $returnData = $payrollGenerator->generate($employeeId, $monthId);
+                    $returnData = $payrollGenerator->generate($employeeId, $monthId, $sheetNo);
 
                     $salarySheetDetail = new SalarySheetDetail();
                     $salarySheetDetail->sheetNo = $sheetNo;

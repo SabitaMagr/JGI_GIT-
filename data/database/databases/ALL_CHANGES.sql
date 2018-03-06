@@ -984,3 +984,8 @@ BEGIN
   HRIS_INSERT_MENU('Not Settled Report','travelStatus','settlement-report','104',5,'fa fa-star-o','Y');
 END;
 /
+
+BEGIN
+  HRIS_INSERT_MENU('Monthly Val Assign(Position)','monthlyValue','position-wise',36,3,'fa fa-file-text-o','Y');
+END;
+/

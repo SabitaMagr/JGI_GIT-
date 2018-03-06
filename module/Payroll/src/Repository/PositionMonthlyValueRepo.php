@@ -95,5 +95,6 @@ class PositionMonthlyValueRepo {
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
+    
 
 }

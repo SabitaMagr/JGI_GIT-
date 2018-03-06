@@ -4,12 +4,11 @@ namespace Payroll\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
 use Payroll\Model\MonthlyValueDetail;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class MonthlyValueDetailRepo implements RepositoryInterface {
+class MonthlyValueDetailRepo {
 
     private $adapter;
     private $gateway;
@@ -25,14 +24,6 @@ class MonthlyValueDetailRepo implements RepositoryInterface {
 
     public function edit(Model $model, $id) {
         $this->gateway->update($model->getArrayCopyForDB(), [MonthlyValueDetail::EMPLOYEE_ID => $id[0], MonthlyValueDetail::MTH_ID => $id[1]]);
-    }
-
-    public function fetchAll() {
-        
-    }
-
-    public function delete($id) {
-        
     }
 
     public function fetchById($id) {
@@ -105,7 +96,5 @@ class MonthlyValueDetailRepo implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
-
-
 
 }

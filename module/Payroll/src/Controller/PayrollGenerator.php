@@ -22,6 +22,7 @@ class PayrollGenerator {
     private $ruleRepo;
     private $employeeId;
     private $monthId = 0;
+    private $sheetNo;
     private $formattedFlatValueList;
     private $formattedMonthlyvalueList;
     private $formattedVariableList;
@@ -84,9 +85,10 @@ class PayrollGenerator {
         }
     }
 
-    public function generate($employeeId, $monthId) {
+    public function generate($employeeId, $monthId, $sheetNo) {
         $this->employeeId = $employeeId;
         $this->monthId = $monthId;
+        $this->sheetNo = $sheetNo;
         $payList = $this->ruleRepo->fetchAll();
 
         $ruleValueMap = [];
@@ -166,7 +168,7 @@ class PayrollGenerator {
 
     private function convertVariableToValue($rule, $key, $variable) {
         if (strpos($rule, $variable) !== false) {
-            $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId);
+            $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId, $this->sheetNo);
             $processedVariable = $variableProcessor->processVariable($key);
             return str_replace($variable, is_string($processedVariable) ? "'{$processedVariable}'" : $processedVariable, $rule);
         } else {

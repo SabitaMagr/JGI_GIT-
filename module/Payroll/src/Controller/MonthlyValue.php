@@ -3,7 +3,6 @@
 namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\FiscalYear;
@@ -128,9 +127,9 @@ class MonthlyValue extends HrisController {
             $detailRepo = new MonthlyValueDetailRepo($this->adapter);
             $result = $detailRepo->getMonthlyValuesDetailById($mthId, $fiscalYearId, $employeeFilter);
 
-            return new CustomViewModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -145,9 +144,9 @@ class MonthlyValue extends HrisController {
             $detailRepo = new MonthlyValueDetailRepo($this->adapter);
             $detailRepo->postMonthlyValuesDetail($data);
 
-            return new CustomViewModel(['success' => true, 'data' => $data, 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -176,9 +175,9 @@ class MonthlyValue extends HrisController {
             $detailRepo = new PositionMonthlyValueRepo($this->adapter);
             $result = $detailRepo->getPositionMonthlyValue($monthId);
 
-            return new CustomViewModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -197,9 +196,9 @@ class MonthlyValue extends HrisController {
             $detailRepo = new PositionMonthlyValueRepo($this->adapter);
             $detailRepo->setPositionMonthlyValue($monthId, $positionId, $mthId, $assignedValue);
 
-            return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
