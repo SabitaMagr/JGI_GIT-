@@ -296,7 +296,7 @@ class EntityHelper {
         if ($serviceTypeId != null && $serviceTypeId != -1) {
             $conditon .= self::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
         } else {
-            $conditon .= " AND E.SERVICE_TYPE_ID IN (SELECT SERVICE_TYPE_ID FROM HRIS_SERVICE_TYPES WHERE TYPE NOT IN ('RESIGNED','RETIRED'))";
+            $conditon .= " AND (E.SERVICE_TYPE_ID IN (SELECT SERVICE_TYPE_ID FROM HRIS_SERVICE_TYPES WHERE TYPE NOT IN ('RESIGNED','RETIRED')) OR E.SERVICE_TYPE_ID IS NULL)";
         }
         if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
             $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
