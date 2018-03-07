@@ -108,6 +108,50 @@ BEGIN
       AND EMPLOYEE_ID     = employee.EMPLOYEE_ID ;
       --
       IF V_IN_TIME IS NULL THEN
+      --
+      DECLARE
+        V_ID HRIS_EMPLOYEE_WORK_DAYOFF.ID%TYPE;
+      BEGIN
+        SELECT ID
+        INTO V_ID
+        FROM HRIS_EMPLOYEE_WORK_DAYOFF
+        WHERE EMPLOYEE_ID = employee.EMPLOYEE_ID
+        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT-(
+          CASE
+            WHEN (employee.TWO_DAY_SHIFT ='E')
+            THEN 1
+            ELSE 0
+          END))
+        AND STATUS ='AP'
+        AND ROWNUM =1;
+        --
+        HRIS_WOD_REWARD(V_ID);
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
+      END;
+      -- check if woh is present for every employee
+      DECLARE
+        V_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE;
+      BEGIN
+        SELECT ID
+        INTO V_ID
+        FROM HRIS_EMPLOYEE_WORK_HOLIDAY
+        WHERE EMPLOYEE_ID =employee.EMPLOYEE_ID
+        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT-(
+          CASE
+            WHEN (employee.TWO_DAY_SHIFT ='E')
+            THEN 1
+            ELSE 0
+          END))
+        AND STATUS = 'AP'
+        AND ROWNUM =1;
+        --
+        HRIS_WOH_REWARD(V_ID);
+      EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
+      END;
         CONTINUE;
       END IF ;
       --
