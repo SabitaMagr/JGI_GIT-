@@ -27,8 +27,7 @@ class MonthlyValueDetailRepo {
     }
 
     public function fetchById($id) {
-        $sql = "
-                SELECT MTH_VALUE
+        $sql = "SELECT MTH_VALUE
                 FROM HRIS_MONTHLY_VALUE_DETAIL
                 WHERE EMPLOYEE_ID = {$id['employeeId']}
                 AND MONTH_ID      = {$id['monthId']}

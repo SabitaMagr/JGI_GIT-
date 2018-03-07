@@ -989,3 +989,6 @@ BEGIN
   HRIS_INSERT_MENU('Monthly Val Assign(Position)','monthlyValue','position-wise',36,3,'fa fa-file-text-o','Y');
 END;
 /
+
+
+ALTER TABLE HRIS_MONTHLY_VALUE_SETUP ADD ASSIGN_TYPE CHAR(1 BYTE) DEFAULT 'P' NOT NULL CHECK(ASSIGN_TYPE IN ('P','E'));

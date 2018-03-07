@@ -158,8 +158,7 @@ class PayrollGenerator {
 
     private function convertMonthlyToValue($rule, $key, $constant) {
         if (strpos($rule, $constant) !== false) {
-            $monthlyValTmp = $this->positionMonthlyValueRepo->fetchById(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'MTH_ID' => $key]);
-            $monthlyVal = ($monthlyValTmp != null) && (isset($monthlyValTmp['ASSIGNED_VALUE'])) ? $monthlyValTmp['ASSIGNED_VALUE'] : 0;
+            $monthlyVal = $this->positionMonthlyValueRepo->fetchValue(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'MTH_ID' => $key]);
             return str_replace($constant, $monthlyVal, $rule);
         } else {
             return $rule;
