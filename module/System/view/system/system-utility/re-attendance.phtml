@@ -36,6 +36,8 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
 
 <script>
     document.employeeList =<?= json_encode($employeeList); ?>;
+    document.searchValues =<?= json_encode($searchValues); ?>;
+    document.employeeFilter= '<?= $this->url('system-utility',['action'=>'pullEmployeeFilter']); ?>';
 </script>
 
 
@@ -79,7 +81,17 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
                             <select multiple name="employeeId" required="required" id="employeeId" class="form-control">
                             </select>
                         </div>
+                        
                     </div>
+                    <div class="col-sm-4">
+                        
+                        <a id="btn-filter" class="btn-edit" style="margin-top: 24px; height:28px; padding: 2px 7px !important;">
+                            <i class="fa fa-search" style="height:17px;"></i>      
+                        </a>
+                    </div>
+                        
+                    
+               
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
@@ -91,3 +103,5 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
         </div>
     </div>
 </div>
+
+<?php print $this->partial('partials/re-attendance-modal.phtml'); ?>

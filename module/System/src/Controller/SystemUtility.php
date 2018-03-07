@@ -7,14 +7,20 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use Setup\Model\HrEmployees;
+use System\Repository\SystemUtilityRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
 
 class SystemUtility extends HrisController {
 
+    protected $adapter;
+
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        $this->adapter = $adapter;
         parent::__construct($adapter, $storage);
+
+        //$this->initializeRepository(SystemUtilityRepository::class);
     }
 
     public function reAttendanceAction() {
@@ -31,7 +37,8 @@ class SystemUtility extends HrisController {
             }
         }
         return $this->stickFlashMessagesTo([
-                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"])
+                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"]),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -69,6 +76,29 @@ class SystemUtility extends HrisController {
             pclose(popen("start /B " . $cmd, "r"));
         } else {
             exec($cmd . " > /dev/null &");
+        }
+    }
+
+    public function pullEmployeeFilterAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = (array) $request->getPost();
+
+            $companyId = $postData['companyId'];
+            $branchId = $postData['branchId'];
+            $departmentId = $postData['departmentId'];
+            $designationId = $postData['designationId'];
+            $positionId = $postData['positonId'];
+            $employeeType = $postData['employeeType'];
+            $serviceTypeId = $postData['serviceTypeId'];
+            $genderId = $postData['genderId'];
+        
+            $repository = new SystemUtilityRepository($this->adapter);
+            $employeeResult = $repository->filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId, $genderId);
+
+            return new JsonModel(['success' => true, 'data' => $employeeResult, 'message' => "success"]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 
