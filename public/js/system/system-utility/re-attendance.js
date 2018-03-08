@@ -2,6 +2,7 @@
     'use strict';
     $(document).ready(function () {
         app.datePickerWithNepali('fromDate', 'nepalifromDate');
+        app.datePickerWithNepali('toDate', 'nepalitoDate');
 
         var $employeeId = $('#employeeId');
         var $filterBtn = $('#btn-filter');
@@ -29,8 +30,9 @@
         app.populateSelect($genderId, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender', '');
         app.populateSelect($serviceEventTypeId, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'All Working Type','');
         $submitBtn.on('click', function () {
-            var selectedDate = $('#fromDate').val();
-            if (!selectedDate) {
+            var selectedFromDate = $('#fromDate').val();
+            var selectedToDate = $('#toDate').val();
+            if (!selectedFromDate || !selectedToDate) {
                 app.showMessage("Please select a date First");
                 return;
             }
@@ -40,7 +42,8 @@
                 var employeeid = $(this).val();
                 var employeeData = {
                     EMPLOYEE_ID: employeeid,
-                    ATTENDANCE_DATE: selectedDate
+                    ATTENDANCE_FROM_DATE: selectedFromDate,
+                    ATTENDANCE_TO_DATE: selectedToDate,
                 }
                 selectedEmployees.push(employeeData);
             });
@@ -52,7 +55,8 @@
                 $.each(document.employeeList, function (index, value) {
                     var employeeData = {
                         EMPLOYEE_ID: value.EMPLOYEE_ID,
-                        ATTENDANCE_DATE: selectedDate
+                        ATTENDANCE_FROM_DATE: selectedFromDate,
+                        ATTENDANCE_TO_DATE: selectedToDate,
                     }
                     employeeListWithDate.push(employeeData);
                 });
