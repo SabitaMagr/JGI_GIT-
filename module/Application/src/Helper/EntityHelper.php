@@ -310,7 +310,7 @@ class EntityHelper {
         return $conditon;
     }
     
-    public static function getEmployeeSearchCondition($companyId, $branchId, $departmentId, $positionId, $designationId, $employeeType, $serviceTypeId, $genderId){
+    public static function getEmployeeSearchCondition($companyId, $branchId, $departmentId, $positionId, $designationId, $employeeType, $serviceTypeId, $genderId, $serviceEventTypeId){
         $conditon = "";
         if ($companyId != null && $companyId != -1) {
             $conditon .= self::conditionBuilder($companyId, "E.COMPANY_ID", "AND");
@@ -334,6 +334,9 @@ class EntityHelper {
         }
         if ($genderId != null && $genderId != -1) {
             $conditon .= self::conditionBuilder($genderId, "E.GENDER_ID", "AND");
+        }
+        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
+            $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
         }
         if ($employeeType != null && $employeeType != -1) {
             $conditon .= self::conditionBuilder($employeeType, "E.EMPLOYEE_TYPE", "AND", true);

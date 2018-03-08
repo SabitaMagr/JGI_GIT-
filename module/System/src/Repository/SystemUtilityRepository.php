@@ -33,8 +33,8 @@ class SystemUtilityRepository implements RepositoryInterface {
         
     }
     
-    public function filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId = null, $genderId=null) {
-        $condition = EntityHelper::getEmployeeSearchCondition($companyId, $branchId, $departmentId, $positionId, $designationId, $employeeType, $serviceTypeId, $genderId);
+    public function filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId = null, $genderId=null, $serviceEventTypeId=null) {
+        $condition = EntityHelper::getEmployeeSearchCondition($companyId, $branchId, $departmentId, $positionId, $designationId, $employeeType, $serviceTypeId, $genderId, $serviceEventTypeId);
         $sql = "SELECT E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
               E.COMPANY_ID                                                      AS COMPANY_ID,
               E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,

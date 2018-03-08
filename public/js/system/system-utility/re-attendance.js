@@ -3,7 +3,6 @@
     $(document).ready(function () {
         app.datePickerWithNepali('fromDate', 'nepalifromDate');
 
-
         var $employeeId = $('#employeeId');
         var $filterBtn = $('#btn-filter');
         var $submitBtn = $('#btn-reAttendnace');
@@ -15,6 +14,7 @@
         var $employeeTypeId = $('#employeeTypeId');
         var $serviceTypeId = $('#serviceTypeId');
         var $genderId = $('#genderId');
+        var $serviceEventTypeId = $('#serviceEventTypeId');
         $employeeId.select2();
 
 
@@ -27,6 +27,7 @@
         //app.populateSelect($employeeTypeId, document.searchValues['employeeType'], 'EMPLOYEE_TYPE', 'EMPLOYEE_TYPE', 'All Employee Type', '');
         app.populateSelect($serviceTypeId, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'All Service Type', '');
         app.populateSelect($genderId, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender', '');
+        app.populateSelect($serviceEventTypeId, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'All Working Type','');
         $submitBtn.on('click', function () {
             var selectedDate = $('#fromDate').val();
             if (!selectedDate) {
@@ -78,6 +79,7 @@
             var serviceTypeId = $serviceTypeId.val();
             var genderId = $genderId.val();
             var employeeType = $employeeTypeId.val();
+            var serviceEventTypeId = $serviceEventTypeId.val();
             console.log(employeeType);
             //console.log(genderId);
 
@@ -91,6 +93,7 @@
                 employeeType: employeeType,
                 serviceTypeId: serviceTypeId,
                 genderId: genderId,
+                serviceEventTypeId: serviceEventTypeId,
 
             }).then(function (response) {
                 //console.log(response.data);
@@ -110,6 +113,7 @@
                 console.log("Employee list for failure", failure);
             });
         });
+        
 
     });
 })(window.jQuery, window.app);
