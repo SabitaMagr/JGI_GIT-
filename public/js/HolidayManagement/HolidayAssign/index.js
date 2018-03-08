@@ -47,12 +47,9 @@ angular.module('hris', [])
 
                 $scope.all = false;
 
-                App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.wsGetHolidayAssignedEmployees, {
+                window.app.serverRequest(document.wsGetHolidayAssignedEmployees, {
                     holidayId: $scope.holiday
                 }).then(function (response) {
-                    App.unblockUI("#hris-page-content");
-                    console.log("shift Assign Filter Success Response", response);
                     if (response.success) {
                         $scope.$apply(function () {
                             $scope.alreadyAssignedEmpList = response.data;
@@ -69,8 +66,6 @@ angular.module('hris', [])
                     }
 
                 }, function (failure) {
-                    App.unblockUI("#hris-page-content");
-                    console.log("shift Assign Filter Failure Response", failure);
                 });
             };
 
@@ -121,14 +116,36 @@ angular.module('hris', [])
                         checkedEmpList.push($scope.employeeList[index].EMPLOYEE_ID);
                     }
                 }
-                App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.wsAssignHolidayToEmployees, {
+                var reattendance = function (employeeList, fromDate, toDate) {
+                    var employeeIdList = [];
+                    $.each(employeeList, function (employeeId) {
+                        var employeeData = {
+                            EMPLOYEE_ID: employeeId,
+                            FROM_DATE: fromDate,
+                            TO_DATE: toDate
+                        }
+                        employeeIdList.push(employeeData);
+                    });
+                    window.app.bulkServerRequest(document.regenAttendanceLink, employeeIdList, function () {
+                        window.app.showMessage("Holiday Assigned Successfully");
+                    }, function (data, error) {
+                        app.showMessage(error, 'error');
+                    });
+                };
+
+                window.app.serverRequest(document.wsAssignHolidayToEmployees, {
                     holidayId: $scope.holiday,
                     employeeIdList: checkedEmpList
                 }).then(function (response) {
-                    App.unblockUI("#hris-page-content");
                     if (response.success) {
-                        window.app.showMessage("Holiday Assigned Successfully");
+                        var holiday = $scope.holidayList.filter(function (item) {
+                            return item['HOLIDAY_ID'] == $scope.holiday;
+                        })[0];
+                        var employeeIdList = [];
+                        for (var index in $scope.employeeList) {
+                            employeeIdList.push($scope.employeeList[index].EMPLOYEE_ID);
+                        }
+                        reattendance(employeeIdList, holiday['START_DATE'], holiday['END_DATE']);
                     } else {
                         window.app.showMessage(response.error);
                     }

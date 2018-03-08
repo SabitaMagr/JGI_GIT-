@@ -32,14 +32,15 @@
                 $.each(document.employeeList, function (index, value) {
                     var employeeData = {
                         EMPLOYEE_ID: value.EMPLOYEE_ID,
-                        ATTENDANCE_DATE: selectedDate
+                        FROM_DATE: selectedDate,
+                        TO_DATE: selectedDate
                     }
                     employeeListWithDate.push(employeeData);
                 });
                 employeeList = employeeListWithDate;
             }
-            app.bulkServerRequest('', employeeList, function () {
-                app.showMessage("Reattendance Successful.");
+            app.bulkServerRequest(document.regenAttendanceLink, employeeList, function () {
+                app.showMessage("Attendance Report Regeneration Successful.");
             }, function (data, error) {
                 app.showMessage(error, 'error');
             });
