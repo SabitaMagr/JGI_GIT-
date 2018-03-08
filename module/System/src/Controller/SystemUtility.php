@@ -92,9 +92,10 @@ class SystemUtility extends HrisController {
             $employeeType = $postData['employeeType'];
             $serviceTypeId = $postData['serviceTypeId'];
             $genderId = $postData['genderId'];
+            $serviceEventTypeId = $postData['serviceEventTypeId'];
         
             $repository = new SystemUtilityRepository($this->adapter);
-            $employeeResult = $repository->filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId, $genderId);
+            $employeeResult = $repository->filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId, $genderId, $serviceEventTypeId);
 
             return new JsonModel(['success' => true, 'data' => $employeeResult, 'message' => "success"]);
         } catch (Exception $e) {
