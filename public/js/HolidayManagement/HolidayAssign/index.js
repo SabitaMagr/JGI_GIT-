@@ -118,7 +118,7 @@ angular.module('hris', [])
                 }
                 var reattendance = function (employeeList, fromDate, toDate) {
                     var employeeIdList = [];
-                    $.each(employeeList, function (employeeId) {
+                    $.each(employeeList, function (key, employeeId) {
                         var employeeData = {
                             EMPLOYEE_ID: employeeId,
                             FROM_DATE: fromDate,
