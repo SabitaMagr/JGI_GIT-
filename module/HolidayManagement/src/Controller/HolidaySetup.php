@@ -50,14 +50,15 @@ class HolidaySetup extends HrisController {
             $postData = $request->getPost();
             $this->form->setData($postData);
             if ($this->form->isValid()) {
+                $formData = $this->form->getData();
+                $this->toCSV($formData, $postData);
                 $holiday = new Holiday();
-                $holiday->exchangeArrayFromForm($this->form->getData());
+                $holiday->exchangeArrayFromForm($formData);
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
                 $holiday->createdBy = $this->employeeId;
                 $holiday->status = 'E';
                 $holiday->fiscalYear = (int) Helper::getMaxId($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID");
                 $holiday->holidayId = ((int) Helper::getMaxId($this->adapter, 'HRIS_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
-                $this->arrayToCSV($holiday, $postData);
                 $this->repository->add($holiday);
                 $this->repository->holidayAssign($holiday->holidayId);
                 $this->flashmessenger()->addMessage("Holiday Successfully added!!!");
@@ -71,7 +72,7 @@ class HolidaySetup extends HrisController {
         ]);
     }
 
-    private function arrayToCSV(Holiday &$model, $postData) {
+    private function toCSV(&$out, $postData) {
         $arrayToCSV = function(array $list, $isString = false ) {
             $valuesinCSV = "";
             for ($i = 0; $i < sizeof($list); $i++) {
@@ -86,25 +87,15 @@ class HolidaySetup extends HrisController {
         };
 
 
-        if (isset($postData['company'])) {
-            $model->companyId = $arrayToCSV($postData['company']);
-        }
-        if (isset($postData['branch'])) {
-            $model->branchId = $arrayToCSV($postData['branch']);
-        }
-        if (isset($postData['department'])) {
-            $model->departmentId = $arrayToCSV($postData['department']);
-        }
-        if (isset($postData['designation'])) {
-            $model->designationId = $arrayToCSV($postData['designation']);
-        }
-        if (isset($postData['position'])) {
-            $model->positionId = $arrayToCSV($postData['position']);
-        }
-        $model->serviceTypeId = isset($postData['serviceType']) ? $arrayToCSV($postData['serviceType']) : '';
-        $model->employeeType = isset($postData['employeeType']) ? $arrayToCSV($postData['employeeType'], true) : '';
-        $model->genderId = isset($postData['gender']) ? $arrayToCSV($postData['gender']) : '';
-        $model->employeeId = isset($postData['employee']) ? $arrayToCSV($postData['employee']) : '';
+        $out['companyId'] = (isset($postData['company'])) ? $arrayToCSV($postData['company']) : '';
+        $out['branchId'] = (isset($postData['branch'])) ? $arrayToCSV($postData['branch']) : '';
+        $out['departmentId'] = (isset($postData['department'])) ? $arrayToCSV($postData['department']) : '';
+        $out['designationId'] = (isset($postData['designation'])) ? $arrayToCSV($postData['designation']) : '';
+        $out['positionId'] = (isset($postData['position'])) ? $arrayToCSV($postData['position']) : '';
+        $out['serviceTypeId'] = isset($postData['serviceType']) ? $arrayToCSV($postData['serviceType']) : '';
+        $out['employeeType'] = isset($postData['employeeType']) ? $arrayToCSV($postData['employeeType'], true) : '';
+        $out['genderId'] = isset($postData['gender']) ? $arrayToCSV($postData['gender']) : '';
+        $out['employeeId'] = isset($postData['employee']) ? $arrayToCSV($postData['employee']) : '';
     }
 
     private function csvToArray($csvList) {
@@ -129,13 +120,14 @@ class HolidaySetup extends HrisController {
         $holiday = new Holiday();
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $postData = $request->getPost();
-            $this->form->setData($postData);
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
             if ($this->form->isValid()) {
-                $holiday->exchangeArrayFromForm($this->form->getData());
+                $formData = $this->form->getData();
+                $this->toCSV($formData, $postedData);
+                $holiday->exchangeArrayFromForm($formData);
                 $holiday->modifiedDt = Helper::getcurrentExpressionDate();
                 $holiday->modifiedBy = $this->employeeId;
-                $this->arrayToCSV($holiday, $postData);
                 $this->repository->edit($holiday, $id);
                 $this->repository->holidayAssign($id);
                 $this->flashmessenger()->addMessage("Holiday Successfuly Edited.");

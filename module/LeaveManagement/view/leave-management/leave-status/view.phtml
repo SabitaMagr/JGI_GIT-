@@ -238,14 +238,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                     <div class="row">
                         <div class="col-sm-4">
-                            <div
-                                class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
-                                    <?php print $this->formLabel($noOfDays); ?>
-                                    <?php print $this->formElement($noOfDays); ?>
-                                <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                            <div class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($noOfDays); ?>
+                                <?php print $this->formElement($noOfDays); ?>
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
+                        <?php if (!in_array($halfDay->getValue(), [null, '', 'N'])): ?>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($halfDay); ?>
+                                    <?php print $this->formElement($halfDay); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                         <?php if ($gracePeriod->getValue() != ""): ?>
                             <div class="col-sm-4">
                                 <div class="form-group">
