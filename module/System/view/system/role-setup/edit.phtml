@@ -10,6 +10,7 @@ $allowAdd = $form->get('allowAdd');
 $allowUpdate = $form->get('allowUpdate');
 $allowDelete = $form->get('allowDelete');
 $remarks = $form->get('remarks');
+$selectOptions = $form->get('selectOptions');
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 
@@ -26,6 +27,7 @@ $form->prepare();
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\rolesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -96,6 +98,11 @@ $form->prepare();
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formElement($selectOptions);?>
                         </div>
                     </div>
 
