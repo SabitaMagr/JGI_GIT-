@@ -11,56 +11,49 @@
         var columnName = "ROLE_NAME";
         var checkColumnName = "ROLE_ID";
         var selfId = $("#roleId").val();
+        var $controlOption = $("#controlOption");
         
         var $selectOptions = $("#selectOptions");
         $selectOptions.select2();
+       
         var controlValue = $('input[name=control]:checked').val();
       console.log(controlValue);
        $('input[name=control]').change(function(){
            var controlValue = $('input[name=control]:checked').val();
            console.log(controlValue);
-           if(controlValue === 'C')
+           
+           if(controlValue === 'C'){
+               $controlOption.text("Select Companies");
+               
                 app.populateSelect($selectOptions, document.searchValues['company'], 'COMPANY_ID', 'COMPANY_NAME', '---', '');
+            }
            else if(controlValue === 'B'){
+               $controlOption.text("Select Branches");
                 $selectOptions.empty();
                app.populateSelect($selectOptions, document.searchValues['branch'], 'BRANCH_ID', 'BRANCH_NAME', '---', '');
            }
            else if(controlValue === "DP"){
+               $controlOption.text("Select Departments");
                $selectOptions.empty();
                app.populateSelect($selectOptions, document.searchValues['department'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', '---', '');
            }
            else if(controlValue === "DS"){
+               $controlOption.text("Select Designations");
                $selectOptions.empty();
                app.populateSelect($selectOptions, document.searchValues['designation'], 'DESIGNATION_ID', 'DESIGNATION_TITLE', '---', '');
            }
            else if(controlValue === "P"){
+               $controlOption.text("Select Positions");
                $selectOptions.empty();
                app.populateSelect($selectOptions, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', '---', '');
            }
-           else if(controlValue === "U"){
-               $selectOptions.empty();
-               app.populateSelect($selectOptions, document.searchValues['user'], 'USER_ID', 'USER_NAME', '---', '');
-           }
-           else
+          
+           else{
+               $controlOption.empty();
                 $selectOptions.empty();
+            }
        });
-      //app.populateSelect($selectOptions, document.searchValues['company'], 'COMPANY_ID', 'COMPANY_NAME', '---', '');
-        
-        
-        /*
-        if(controlValue != "F"){
-            $('input[name=control]').change(function(){
-                console.log($( 'input[name=control]:checked' ).val());
-                var value = $( 'input[name=control]:checked' ).val();
-                $selec
-        app.populateSelect($selectOptions, document.searchValues['company'], 'COMPANY_ID', 'COMPANY_NAME', '---', '');
-                data['id']=1;
-                data['name'] = value;
-                var newOption = new Option(data['name'], data['id'], false, false);
-                $('#selectOptions').append(newOption).trigger('change');
-                $("#selectOptions").select2().val(data['id']).trigger('change');
-            })
-        */
+      
             
         
            
