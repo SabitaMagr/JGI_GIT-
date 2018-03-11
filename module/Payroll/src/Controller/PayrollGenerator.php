@@ -6,18 +6,16 @@ use Application\Helper\Helper;
 use Payroll\Controller\SystemRuleProcessor;
 use Payroll\Controller\VariableProcessor;
 use Payroll\Model\Rules;
-use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\FlatValueRepository;
-use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\MonthlyValueRepository;
+use Payroll\Repository\PositionFlatValueRepo;
 use Payroll\Repository\PositionMonthlyValueRepo;
 use Payroll\Repository\RulesRepository;
 
 class PayrollGenerator {
 
     private $adapter;
-    private $flatValueDetRepo;
-    private $monthlyValueDetRepo;
+    private $positionFlatValueDetRepo;
     private $positionMonthlyValueRepo;
     private $ruleRepo;
     private $employeeId;
@@ -58,8 +56,7 @@ class PayrollGenerator {
 
     public function __construct($adapter) {
         $this->adapter = $adapter;
-        $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
-        $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
+        $this->positionFlatValueDetRepo = new PositionFlatValueRepo($adapter);
         $this->positionMonthlyValueRepo = new PositionMonthlyValueRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
         $monthlyValueList = $this->getMonthlyValues();
@@ -148,7 +145,7 @@ class PayrollGenerator {
 
     private function convertFlatToValue($rule, $key, $constant) {
         if (strpos($rule, $constant) !== false) {
-            $flatValTmp = $this->flatValueDetRepo->fetchById(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'FLAT_ID' => $key]);
+            $flatValTmp = $this->positionFlatValueDetRepo->fetchValue(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'FLAT_ID' => $key]);
             $flatVal = ($flatValTmp != null) && (isset($flatValTmp['FLAT_VALUE'])) ? $flatValTmp['FLAT_VALUE'] : 0;
             return str_replace($constant, $flatVal, $rule);
         } else {

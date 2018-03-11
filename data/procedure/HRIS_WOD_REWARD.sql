@@ -29,7 +29,7 @@ BEGIN
     WHERE E.EMPLOYEE_ID =V_EMPLOYEE_ID;
   EXCEPTION
   WHEN no_data_found THEN
-    RAISE_APPLICATION_ERROR(-20000, 'Employee position not set.');
+    HRIS_RAISE_ERR(V_EMPLOYEE_ID,'Work on dayoff reward could not be given.','Employee position is not set');
   END;
   --
 DELETE FROM HRIS_EMPLOYEE_LEAVE_ADDITION WHERE WOD_ID=P_ID;
