@@ -67,6 +67,7 @@ class CompanyForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Link Travel To Synergy"})
      * @Annotation\Attributes({ "id":"linkTravelToSynergy"})
      */
