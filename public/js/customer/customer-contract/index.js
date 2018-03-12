@@ -19,6 +19,9 @@
         var locationLinkTemplate=`
                 <a class="btn-edit" title="View" href="${document.contractDetailLink}/#:CONTRACT_ID #" style="height:17px;">
                     <i class="fa fa-search-plus"></i>
+                </a>
+                <a class="btn-edit" title="EmpAssign" href="${document.contractEmpAssignLink}/#:CONTRACT_ID #" style="height:17px;">
+                    <i class="fa fa-user"></i>
                 </a>`;
         var allTemplate=actionTemplate+locationLinkTemplate;
         

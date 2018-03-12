@@ -26,9 +26,9 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
     document.contractId = '<?= $id ?>';
     document.employeeList =<?= json_encode($employeeList); ?>;
     document.customerContractDetails =<?= json_encode($customerContractDetails) ?>;
-    document.contractEmpDetails =<?= json_encode($contractEmpDetails) ?>;
-    document.monthDetails =<?= json_encode($monthDetails) ?>;
-    document.pullEmployeeAssignBy = '<?= $this->url('contract-employees', ['action' => 'monthWiseEmployeeList', 'id' => $id]) ?>';
+    //document.contractEmpDetails =<?= '';//json_encode($contractEmpDetails) ?>;
+    document.locationList =<?= json_encode($locationList) ?>;
+//    document.pullEmployeeAssignBy = '<?= $this->url('contract-employees', ['action' => 'monthWiseEmployeeList', 'id' => $id]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -67,15 +67,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
         <form id='employeeAssign' method="POST" action="<?= $this->url('contract-employees', ['action' => 'employeeAssign', 'id' => $id]) ?>">
 
-            <div class="row margin-top-20">
-                <div class="col-lg-3">
-                    <label>Month</label>
-                    <select required="required" id="monthSelect" name="monthId">
-                    </select>
-                </div>
-
-            </div>
-
+            <input type="hidden" name="customer" value="<?=$customerId;?>">
 
 
             <div class="row margin-top-20">
@@ -87,14 +79,14 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
                         <tbody>
                             <tr>
                                 <td>Employee</td>
-                                <td>Working Hour</td>
+                                <td>Location</td>
                                 <td>Start Time</td>
                                 <td>End Time</td>
                                 <td></td>
                             </tr>
                             <tr>
                                 <td><select required="required" name="employee[]" class="employees"></select></td>
-                                <td><input  name="totalWorkingHr[]" type="text" class="totalWorkingHr" data-format="h:mm" data-template="hh : mm" ></td>
+                                <td><select required="required" name="location[]" class="location"></select></td>
                                 <td><input  name="employeeStartTime[]" type="text" class="employeeStartTime" data-format="h:mm a" data-template="hh : mm A"></td>
                                 <td><input  name="employeeEndTime[]" type="text" class="employeeEndTime" data-format="h:mm a" data-template="hh : mm A"></td>
                                 <td>

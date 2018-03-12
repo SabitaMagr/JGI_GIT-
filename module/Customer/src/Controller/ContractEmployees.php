@@ -6,10 +6,11 @@ use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Customer\Model\CustContractEmp;
-use Customer\Model\ServiceEmployeeSetupModel;
+use Customer\Model\Customer;
 use Customer\Repository\ContractAttendanceRepo;
 use Customer\Repository\CustContractEmpRepo;
 use Customer\Repository\CustomerContractRepo;
+use Customer\Repository\CustomerLocationRepo;
 use Exception;
 use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
@@ -24,19 +25,24 @@ class ContractEmployees extends HrisController {
     }
 
     public function indexAction() {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            try {
-                $customerRepo = new CustomerContractRepo($this->adapter);
-                $result = $customerRepo->fetchAll();
-                $list = Helper::extractDbData($result);
-                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
-            } catch (Exception $e) {
-                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-            }
-        }
+//        $request = $this->getRequest();
+//        if ($request->isPost()) {
+//            try {
+//                $customerRepo = new CustomerContractRepo($this->adapter);
+//                $result = $customerRepo->fetchAll();
+//                $list = Helper::extractDbData($result);
+//                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
+//            } catch (Exception $e) {
+//                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+//            }
+//        }
+
+
         return Helper::addFlashMessagesToArray($this, [
-                    'acl' => $this->acl
+                    'acl' => $this->acl,
+                    'customerList' => EntityHelper::getTableList($this->adapter, Customer::TABLE_NAME, [Customer::CUSTOMER_ID, Customer::CUSTOMER_ENAME], [Customer::STATUS => "E"]),
+                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E"]),
+                    'locationList' => $locationList
         ]);
     }
 
@@ -60,65 +66,72 @@ class ContractEmployees extends HrisController {
         $customerContractRepo = new CustomerContractRepo($this->adapter);
         $customerContractDetails = $customerContractRepo->fetchById($id);
 
-//        $custEmployeeRepo = new CustContractEmpRepo($this->adapter);
-//        $custEmployeeDetails = $custEmployeeRepo->fetchById($id);
+        $customerId = $customerContractDetails['CUSTOMER_ID'];
 
-
-        $contractStartDate = $customerContractDetails['START_DATE'];
-        $contractEndDate = $customerContractDetails['END_DATE'];
-
-        $monthDetails = $this->repository->getAllMonthBetweenTwoDates($contractStartDate, $contractEndDate);
+        $customerLocationRepo = new CustomerLocationRepo($this->adapter);
+        $locationList = $customerLocationRepo->fetchAllLocationByCustomer($customerId);
 
         return Helper::addFlashMessagesToArray($this, [
                     'id' => $id,
-                    'employeeList' => EntityHelper::getTableList($this->adapter, ServiceEmployeeSetupModel::TABLE_NAME, [ServiceEmployeeSetupModel::EMPLOYEE_ID, ServiceEmployeeSetupModel::FULL_NAME], [ServiceEmployeeSetupModel::STATUS => "E"]),
+                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E"]),
                     'customerContractDetails' => $customerContractDetails,
 //                    'contractEmpDetails' => $custEmployeeDetails,
-                    'monthDetails' => $monthDetails
+                    'customerId' => $customerId,
+                    'locationList' => $locationList
         ]);
     }
 
     public function employeeAssignAction() {
-        $id = (int) $this->params()->fromRoute("id");
-        if ($id === 0) {
-            return $this->redirect()->toRoute("contract-employees");
-        }
-
-
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postData = $request->getPost();
-
-            $monthId = $request->getPost('monthId');
-
-            echo '<Pre>';
-            print_r($postData);
-            die();
-
-
+//            $customerId = $request->getPost('customerId');
+            $contractId = $request->getPost('contractId');
+            $employeedesignation = $request->getPost('designation');
             $employees = $request->getPost('employee');
+            $employeeLocation = $request->getPost('location');
+            $employeeStartTime = $request->getPost('employeeStartTime');
+            $employeeEndTime = $request->getPost('employeeEndTime');
 
-            $custEmployeeRepo = new CustContractEmpRepo($this->adapter);
-            $custEmployeeRepo->deleteContractEmpMonthly($id, $monthId);
+
+//            echo '<pre>';
+//            print_r($postData);
+//
+//            die();
 
             if ($employees) {
-                $totalWorkingHr = $request->getPost('totalWorkingHr');
-                $employeeStartTime = $request->getPost('employeeStartTime');
-                $employeeEndTime = $request->getPost('employeeEndTime');
                 $i = 0;
                 $custEmployeeModel = new CustContractEmp();
-                $custEmployeeModel->contractId = $id;
-                $custEmployeeModel->assignedDate = Helper::getCurrentDate();
-                $custEmployeeModel->monthCodeId = $monthId;
+                $custEmployeeModel->contractId = $contractId;
 
-                echo '<pre>';
+                $custEmployeeModel->status = 'D';
+                $custEmployeeModel->modifiedDt = Helper::getcurrentExpressionDate();
+                $custEmployeeModel->modifiedBy = $this->employeeId;
+
+
+
+//                echo'<Pre>';
+//                print_r($custEmployeeModel);
+//                die();
+                //to delete old assigned
+                $this->repository->edit($custEmployeeModel, $contractId);
+
+
+                $custEmployeeRepo = new CustContractEmpRepo($this->adapter);
+                $custEmployeeModel->customerId = 1;
+                $custEmployeeModel->lastAssignedDate = Helper::getCurrentDate();
 
                 foreach ($employees as $employeeDetails) {
                     if ($employeeDetails > 0) {
                         $custEmployeeModel->employeeId = $employeeDetails;
-                        $custEmployeeModel->workingHour = Helper::hoursToMinutes($totalWorkingHr[$i]);
+                        $custEmployeeModel->designationId = $employeedesignation[$i];
+                        $custEmployeeModel->locationId = $employeeLocation[$i];
                         $custEmployeeModel->startTime = Helper::getExpressionTime($employeeStartTime[$i]);
                         $custEmployeeModel->endTime = Helper::getExpressionTime($employeeEndTime[$i]);
+                        $custEmployeeModel->status = 'E';
+                        $custEmployeeModel->modifiedDt = NULL;
+                        $custEmployeeModel->modifiedDt = NULL;
+
                         $custEmployeeRepo->add($custEmployeeModel);
                     }
                     $i++;
@@ -126,13 +139,9 @@ class ContractEmployees extends HrisController {
             }
 
 
-            EntityHelper::rawQueryResult($this->adapter, "BEGIN
-                    HRIS_ATTD_BETWEEN_DATES({$id},{$monthId});
-                        END;");
-
-
             $this->flashmessenger()->addMessage("Contract Employee updated successfully.");
-            return $this->redirect()->toRoute("contract-employees", ["action" => "view", "id" => $id]);
+            $this->redirect()->toRoute("contract-employees", ["action" => "index"]);
+//            return $this->redirect()->toRoute("contract-employees", ["action" => "view", "id" => $id]);
         }
     }
 
@@ -146,8 +155,66 @@ class ContractEmployees extends HrisController {
             $request = $this->getRequest();
             $postData = $request->getPost();
             $monthId = $request->getPost('monthId');
-            $employeeDetails = $this->repository->getAllMonthWiseEmployees($id,$monthId);
+            $employeeDetails = $this->repository->getAllMonthWiseEmployees($id, $monthId);
             return new JsonModel(['success' => true, 'data' => $employeeDetails, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchAllContractCustomerWiseAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+            $cutomerId = $request->getPost('customerId');
+            if (!$cutomerId) {
+                throw new Exception('no CustomerId passed');
+            }
+            $contractDetails = EntityHelper::getTableList($this->adapter, \Customer\Model\CustomerContract::TABLE_NAME, [\Customer\Model\CustomerContract::CONTRACT_ID, \Customer\Model\CustomerContract::CONTRACT_NAME], [\Customer\Model\CustomerContract::CUSTOMER_ID => $cutomerId, \Customer\Model\CustomerContract::STATUS => "E"]);
+            return new JsonModel(['success' => true, 'data' => $contractDetails, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchContractDetailsAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+            $contractId = $request->getPost('contractId');
+            if (!$contractId) {
+                throw new Exception('no ContractId passed');
+            }
+            $contractDetailRepo = new \Customer\Repository\CustomerContractDetailRepo($this->adapter);
+            $contractDetails = $contractDetailRepo->fetchAllContractDetailByContractId($contractId);
+            $locationList = [];
+
+
+            $customerId = $contractDetails[0]['CUSTOMER_ID'];
+            if ($customerId > 0) {
+                $customerLocationRepo = new CustomerLocationRepo($this->adapter);
+                $locationList = $customerLocationRepo->fetchAllLocationByCustomer($customerId);
+            }
+            $returnData = [];
+            $returnData['locationList'] = $locationList;
+            $returnData['contractDetails'] = $contractDetails;
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchContractDesginationWiseEmployeeAssignAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+
+            $contractId = $request->getPost('contractId');
+            $designationId = $request->getPost('designationId');
+
+            $employeeData = $this->repository->getEmployeeAssignedDesignationWise($contractId, $designationId);
+
+            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

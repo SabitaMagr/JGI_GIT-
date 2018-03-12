@@ -14,7 +14,7 @@
             app.pullDataById(document.settingUrl, {
                 test: 'test'
             }).then(function (success) {
-                console.log("setting suc", success);
+//                console.log("setting suc", success);
                 setting = success;
                 $enableNotificaion.bootstrapSwitch({
                     state: setting[enableNotification] === constraint[1],

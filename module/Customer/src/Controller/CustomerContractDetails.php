@@ -7,7 +7,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Model\ShiftSetup;
 use Customer\Model\CustomerContractDetailModel;
-use Customer\Model\CustomerLocationModel;
+use Customer\Repository\CustomerContractDetailRepo;
 use Customer\Repository\CustomerContractRepo;
 use Setup\Model\Designation;
 use Zend\Authentication\Storage\StorageInterface;
@@ -17,7 +17,7 @@ class CustomerContractDetails extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
-//         $this->initializeRepository(CustomerLocationRepo::class);
+        $this->initializeRepository(CustomerContractDetailRepo::class);
     }
 
     public function indexAction() {
@@ -30,19 +30,17 @@ class CustomerContractDetails extends HrisController {
             return $this->redirect()->toRoute('customer-contract');
         }
 
-        $customerContractRepo = new CustomerContractRepo($this->adapter);
-        $contractDetails = $customerContractRepo->fetchById($id);
-        $customerId = $contractDetails['CUSTOMER_ID'];
-        
-        
+        $contractDetail = $this->repository->fetchAllContractDetailByContractId($id);
+//        echo '<Pre>';
+//        print_r($contractDetail);
+//        die();
 
         return Helper::addFlashMessagesToArray($this, [
                     'acl' => $this->acl,
                     "id" => $id,
-                    "customerId" => $customerId,
+                    'contractDetail' => $contractDetail,
                     'designationList' => EntityHelper::getTableList($this->adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"]),
                     'shiftList' => EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => "E"]),
-                    'locationList' => EntityHelper::getTableList($this->adapter, CustomerLocationModel::TABLE_NAME, [CustomerLocationModel::LOCATION_ID, CustomerLocationModel::LOCATION_NAME], [CustomerLocationModel::STATUS => "E", CustomerLocationModel::CUSTOMER_ID => $customerId])
         ]);
     }
 
@@ -60,12 +58,19 @@ class CustomerContractDetails extends HrisController {
             $quantity = $request->getPost('quantity');
             $rate = $request->getPost('rate');
             $shift = $request->getPost('shift');
+            $weekDayValue = $request->getPost('weekDayValue');
+            $daysInMonth = $request->getPost('daysInMonth');
 
-            echo '<pre>';
-            print_r($designation);
-            print_r($quantity);
-            print_r($rate);
-            print_r($shift);
+//            echo '<pre>';
+//            print_r($postData);
+//            print_r($designation);
+//            print_r($quantity);
+//            print_r($rate);
+//            print_r($shift);
+//            print_r($weekDayValue);
+//            print_r($daysInMonth);
+//            die();
+
 
 
             if ($designation) {
@@ -75,33 +80,36 @@ class CustomerContractDetails extends HrisController {
                 $customerId = $contractDetails['CUSTOMER_ID'];
 
                 $contractDetailModel = new CustomerContractDetailModel();
-                $contractDetailModel->contractId;
-                $contractDetailModel->customerId;
+                $contractDetailModel->contractId = $id;
+                $contractDetailModel->status = 'D';
+                $contractDetailModel->modifiedDt = Helper::getcurrentExpressionDate();
+                $contractDetailModel->modifiedBy = $this->employeeId;
 
+                //to delete old assigned
+                $this->repository->edit($contractDetailModel, $id);
 
-                print_r($contractDetails);
+                $contractDetailModel->customerId = $customerId;
 
                 $i = 0;
                 foreach ($designation as $designationDetails) {
-                    if ($employeeDetails > 0) {
+                    if ($designationDetails > 0) {
                         $contractDetailModel->designationId = $designationDetails;
-                        $contractDetailModel->quantity = $quantity;
-                        $contractDetailModel->rate = $rate;
-                        $contractDetailModel->shiftId = $shift;
-//                        $contractDetailModel->locationId;
-//                        $contractDetailModel->daysInMonth;
+                        $contractDetailModel->quantity = $quantity[$i];
+                        $contractDetailModel->rate = $rate[$i];
+                        $contractDetailModel->shiftId = $shift[$i];
+                        $contractDetailModel->weekDetails = $weekDayValue[$i];
+                        $contractDetailModel->daysInMonth = $daysInMonth[$i];
+                        $contractDetailModel->status = 'E';
+                        $contractDetailModel->createdBy = $this->employeeId;
+                        $contractDetailModel->modifiedDt = NULL;
+                        $contractDetailModel->modifiedBy = NULL;
+                        $this->repository->add($contractDetailModel);
                     }
                     $i++;
                 }
-
-
-
-                die();
-                echo 'yes';
             }
-
-
-            die();
+            $this->flashmessenger()->addMessage("Contract Details Sucessfully Updated");
+            $this->redirect()->toRoute("customer-contract");
         }
     }
 

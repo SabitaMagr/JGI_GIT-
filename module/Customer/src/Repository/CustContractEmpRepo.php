@@ -31,7 +31,7 @@ class CustContractEmpRepo implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        
+        $this->gateway->update($model->getArrayCopyForDB(), [CustContractEmp::CONTRACT_ID => $id]);
     }
 
     public function fetchAll() {
@@ -73,7 +73,7 @@ class CustContractEmpRepo implements RepositoryInterface {
         return Helper::extractDbData($result);
     }
 
-    public function getAllMonthWiseEmployees($contractId,$monthId) {
+    public function getAllMonthWiseEmployees($contractId, $monthId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustContractEmp::class, NULL, NULL, [
@@ -83,16 +83,32 @@ class CustContractEmpRepo implements RepositoryInterface {
                     CustContractEmp::WORKING_HOUR,
                 ]), false);
         $select->from(CustContractEmp::TABLE_NAME);
-        $select->where([CustContractEmp::MONTH_CODE_ID => $monthId,CustContractEmp::CONTRACT_ID => $contractId]);
-        
+        $select->where([CustContractEmp::MONTH_CODE_ID => $monthId, CustContractEmp::CONTRACT_ID => $contractId]);
+
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
-    
-    
-    public function deleteContractEmpMonthly($id,$monthId) {
-        $this->gateway->delete([CustContractEmp::CONTRACT_ID => $id,CustContractEmp::MONTH_CODE_ID => $monthId]);
+
+    public function deleteContractEmpMonthly($id, $monthId) {
+        $this->gateway->delete([CustContractEmp::CONTRACT_ID => $id, CustContractEmp::MONTH_CODE_ID => $monthId]);
+    }
+
+    public function getEmployeeAssignedDesignationWise($contractId, $designationId) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustContractEmp::class, NULL, NULL, [
+                    CustContractEmp::START_TIME,
+                    CustContractEmp::END_TIME
+                        ], null, null, null, false, false, null), false);
+        $select->from(CustContractEmp::TABLE_NAME);
+        $select->where([CustContractEmp::CONTRACT_ID => $contractId, CustContractEmp::STATUS => 'E']);
+        if ($designationId) {
+            $select->where([CustContractEmp::DESIGNATION_ID => $designationId]);
+        }
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }

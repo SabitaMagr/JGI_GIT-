@@ -15,6 +15,7 @@ class CustomerContractDetailModel extends Model {
     CONST RATE = "RATE";
     CONST SHIFT_ID = "SHIFT_ID";
     CONST DAYS_IN_MONTH = "DAYS_IN_MONTH";
+    CONST WEEK_DETAILS = "WEEK_DETAILS";
     CONST CREATED_BY = "CREATED_BY";
     CONST CREATED_DT = "CREATED_DT";
     CONST MODIFIED_BY = "MODIFIED_BY";
@@ -30,6 +31,7 @@ class CustomerContractDetailModel extends Model {
     public $rate;
     public $shiftId;
     public $daysInMonth;
+    public $weekDetails;
     public $createdDt;
     public $createdBy;
     public $modifiedDt;
@@ -45,6 +47,7 @@ class CustomerContractDetailModel extends Model {
         'rate' => self::RATE,
         'shiftId' => self::SHIFT_ID,
         'daysInMonth' => self::DAYS_IN_MONTH,
+        'weekDetails' => self::WEEK_DETAILS,
         'createdDt' => self::CREATED_DT,
         'createdBy' => self::CREATED_BY,
         'modifiedBy' => self::MODIFIED_BY,

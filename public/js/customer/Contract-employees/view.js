@@ -14,8 +14,10 @@
 
 
 
+        console.log(document.locationList);
 
         app.populateSelect($('.employees'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '');
+        app.populateSelect($('.location'), document.locationList, 'LOCATION_ID', 'LOCATION_NAME', 'Select An Location', '');
 
 //        app.addDatePicker($('.contractEmpStartDate'));
 //        app.addDatePicker($('.contractEmpEndDate'));
@@ -26,7 +28,7 @@
 
             var appendValues = "<tr>"
                     + "<td><select required='required' name='employee[]' class='employees'></select></td>"
-                    + "<td><input name='totalWorkingHr[]' type='text' class='totalWorkingHr' data-format='h:mm' data-template='hh : mm' ></td>"
+                    + "<td><select required='required' name='location[]' class='location'></select></td>"
                     + "<td><input name='employeeStartTime[]' type='text' class='employeeStartTime' data-format='h:mm a' data-template='hh : mm A'></td>"
                     + "<td><input name='employeeEndTime[]' type='text' class='employeeEndTime' data-format='h:mm a' data-template='hh : mm A'></td>"
                     + "<td>"
@@ -45,17 +47,17 @@
 
 
             app.populateSelect($('#tblContractEmp tbody').find('.employees:last'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '');
+            app.populateSelect($('#tblContractEmp tbody').find('.location:last'), document.locationList, 'LOCATION_ID', 'LOCATION_NAME', 'Select An Location', '');
             $('#tblContractEmp tbody').find('.employees:last').select2();
+            $('#tblContractEmp tbody').find('.location:last').select2();
 
             app.addComboTimePicker(
-                    $('#tblContractEmp tbody').find('.totalWorkingHr:last'),
                     $('#tblContractEmp tbody').find('.employeeStartTime:last'),
                     $('#tblContractEmp tbody').find('.employeeEndTime:last')
                     );
 
 
         });
-
 
         function populateEmployees(employeeData) {
             $("#tblContractEmp tbody").find("tr:gt(0)").remove();
@@ -125,22 +127,22 @@
 
 
 //        console.log(document.monthDetails);
-        app.populateSelect($('#monthSelect'), document.monthDetails, 'MONTH_ID', 'MONTH_TITLE', 'Select Month', '');
-
-
-        $('#monthSelect').on('change', function () {
-            var selectedVal = $(this).val();
-            app.pullDataById(document.pullEmployeeAssignBy, {monthId: selectedVal}).then(function (response) {
-//                console.log(response.data.length==o);
-                if (response.data.length == 0) {
-                    app.successMessage(['No Employee Assigned For This Month'])
-                }
-                populateEmployees(response.data);
-
-            }, function (error) {
-                console.log(error);
-            });
-        });
+//        app.populateSelect($('#monthSelect'), document.monthDetails, 'MONTH_ID', 'MONTH_TITLE', 'Select Month', '');
+//
+//
+//        $('#monthSelect').on('change', function () {
+//            var selectedVal = $(this).val();
+//            app.pullDataById(document.pullEmployeeAssignBy, {monthId: selectedVal}).then(function (response) {
+////                console.log(response.data.length==o);
+//                if (response.data.length == 0) {
+//                    app.successMessage(['No Employee Assigned For This Month'])
+//                }
+//                populateEmployees(response.data);
+//
+//            }, function (error) {
+//                console.log(error);
+//            });
+//        });
 
 
         var displayErrorMsg = function (object) {

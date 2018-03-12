@@ -3,8 +3,10 @@
 namespace Customer\Controller;
 
 use Application\Controller\HrisController;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Customer\Model\ContractAttendanceModel;
+use Customer\Model\Customer;
 use Customer\Repository\ContractAttendanceRepo;
 use Customer\Repository\CustContractEmpRepo;
 use Customer\Repository\CustomerContractRepo;
@@ -13,10 +15,12 @@ use Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\View\Model\JsonModel;
+use function Zend\Filter\File\move_uploaded_file;
 
 class ContractAttendance extends HrisController {
 
@@ -28,20 +32,30 @@ class ContractAttendance extends HrisController {
 
     public function indexAction() {
 
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            try {
-                $customerRepo = new CustomerContractRepo($this->adapter);
-                $result = $customerRepo->fetchAll();
-                $list = Helper::extractDbData($result);
-                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
-            } catch (Exception $e) {
-                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-            }
-        }
+        $monthList = $this->repository->getMonthList();
+
+
         return Helper::addFlashMessagesToArray($this, [
-                    'acl' => $this->acl
+                    'acl' => $this->acl,
+                    'customerList' => EntityHelper::getTableList($this->adapter, Customer::TABLE_NAME, [Customer::CUSTOMER_ID, Customer::CUSTOMER_ENAME], [Customer::STATUS => "E"]),
+                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E"]),
+                    'monthList' => $monthList
         ]);
+    }
+
+    public function pullCustomerMonthlyAttendanceAction() {
+        try {
+            $request = $this->getRequest();
+            $customerId = $request->getPost('customerId');
+            $monthId = $request->getPost('monthId');
+
+            $attendnaceDetails = $this->repository->getCutomerEmpAttendnaceMonthly($monthId, $customerId);
+
+
+            return new JsonModel(['success' => true, 'data' => $attendnaceDetails, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
     public function viewAction() {
@@ -329,6 +343,65 @@ class ContractAttendance extends HrisController {
             $attendanceData = $this->repository->fetchContractAttendanceMonthWise($id, $monthId);
 
             return new JsonModel(['success' => true, 'data' => $attendanceData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function updateEmpContractAttendnaceAction() {
+        $request = $this->getRequest();
+
+        try {
+
+//            $monthCount= Helper::
+//            echo '<Pre>';
+//            print_r($request->getPost());
+//            die();
+
+            $customerId = $request->getPost('customerId');
+            $monthId = $request->getPost('monthId');
+            $kendoData = $request->getPost('kendoData');
+
+            $monthStartDate = $kendoData['FROM_DATE'];
+
+            $contractId = $kendoData['CONTRACT_ID'];
+            $employeeId = $kendoData['EMPLOYEE_ID'];
+            $locationId = $kendoData['LOCATION_ID'];
+            $shiftId = $kendoData['SHIFT_ID'];
+
+//            echo 'customer' . $customerId . '</br>';
+//            echo 'contract' . $contractId . '</br>';
+//            echo 'monthId' . $monthId . '</br>';
+//            echo 'employee' . $employeeId . '</br>';
+//            echo 'location' . $locationId . '</br>';
+//            echo 'shift' . $shiftId . '</b>r';
+//    echo '<pre>';
+//            print_r($kendoData);
+            $sql = "BEGIN
+                    DELETE FROM HRIS_CONTRACT_EMP_ATTENDANCE WHERE
+ MONTH_CODE={$monthId} AND CONTRACT_ID={$contractId} AND EMPLOYEE_ID={$employeeId} 
+AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
+
+            for ($i = 1; $i <= 32; $i++) {
+                $arrayIndex = 'C' . $i;
+                $attendnaceStatus = $kendoData[$arrayIndex];
+                if ($attendnaceStatus != 'PR') {
+                    $sql .= "INSERT INTO HRIS_CONTRACT_EMP_ATTENDANCE 
+                    (ATTENDANCE_DATE,EMPLOYEE_ID,CUSTOMER_ID,CONTRACT_ID,
+                    LOCATION_ID,SHIFT_ID,MONTH_CODE,STATUS)
+                    VALUES
+                    (TO_DATE('{$monthStartDate}','DD-MON-YY')+{$i}-1,{$employeeId},{$customerId},{$contractId},
+                    {$locationId},{$shiftId},{$monthId},'{$attendnaceStatus}');";
+                }
+//                echo $attendnaceStatus;
+            }
+
+            $sql .= "END;";
+
+
+
+            $result = $this->repository->updateAttendance($sql);
+            return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

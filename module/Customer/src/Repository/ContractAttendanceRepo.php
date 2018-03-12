@@ -7,7 +7,6 @@ use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\ContractAttendanceModel;
-use Customer\Model\CustomerContract;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
@@ -108,6 +107,73 @@ class ContractAttendanceRepo implements RepositoryInterface {
 
     public function deleteSubEmplooyee($conditon) {
         $this->gateway->delete($conditon);
+    }
+
+    public function getMonthList() {
+        $sql = <<<EOT
+            SELECT AM.MONTH_ID,M.MONTH_EDESC FROM
+            (SELECT  UNIQUE (SELECT M.MONTH_ID
+                FROM HRIS_MONTH_CODE M
+                WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
+                ) AS MONTH_ID
+            FROM HRIS_ATTENDANCE_DETAIL AD) AM JOIN HRIS_MONTH_CODE M ON (M.MONTH_ID=AM.MONTH_ID) 
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function populateEmpAttendance($monthId, $customerId) {
+        $sql = "BEGIN HRIS_GARDU_ATTENDNACE_MONTHLY({$monthId},{$customerId});  END;";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
+    }
+
+    public function getCutomerEmpAttendnaceMonthly($monthId, $customerId) {
+
+        $pivotString = '';
+        for ($i = 1; $i <= 32; $i++) {
+            if ($i != 32) {
+                $pivotString .= $i . ' AS ' . 'C' . $i . ', ';
+            } else {
+                $pivotString .= $i . ' AS ' . 'C' . $i;
+            }
+        }
+
+        $sql = "
+                select * from (select D.FROM_DATE,D.DAY_COUNT,
+ CE.EMPLOYEE_ID,E.FULL_NAME,CE.CONTRACT_ID,CE.LOCATION_ID,CL.LOCATION_NAME,CD.SHIFT_ID,
+ CASE  WHEN CA.STATUS IS NULL THEN 
+ 'PR'
+ ELSE CA.STATUS END AS STATUS
+ from (SELECT   M.FROM_DATE + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,M.FROM_DATE
+    FROM dual d
+    join HRIS_MONTH_CODE M on (1=1) where m.month_id={$monthId}
+    CONNECT BY  rownum <= M.TO_DATE - M.FROM_DATE + 1
+ ) D
+   LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1)
+    LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (CA.EMPLOYEE_ID=CE.EMPLOYEE_ID 
+    AND CA.LOCATION_ID=CE.LOCATION_ID AND CA.ATTENDANCE_DATE=D.DATES)
+    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
+    LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
+    LEFT JOIN HRIS_CUSTOMER_CONTRACT_DETAILS CD ON (CD.CONTRACT_ID=CE.CONTRACT_ID AND CD.DESIGNATION_ID=CE.DESIGNATION_ID)
+    LEFT JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=CD.SHIFT_ID)
+    WHERE CE.STATUS='E' AND CE.CUSTOMER_ID={$customerId})PIVOT (MAX(STATUS) FOR DAY_COUNT IN ({$pivotString})) 
+                ";
+
+//    echo $sql;
+//    die();
+
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function updateAttendance($sql) {
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
     }
 
 }

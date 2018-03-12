@@ -3,13 +3,13 @@
 namespace Customer\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\CustomerLocationModel;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-use Zend\Stdlib\ArrayUtils;
 
 class CustomerLocationRepo implements RepositoryInterface {
 
@@ -63,7 +63,7 @@ class CustomerLocationRepo implements RepositoryInterface {
 //        return $rawResult;
     }
 
-    public function fetchAllLocationByCustomer() {
+    public function fetchAllLocationByCustomer($customerId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustomerLocationModel::class, [
@@ -75,9 +75,11 @@ class CustomerLocationRepo implements RepositoryInterface {
                 ), false);
         $select->from(['CL' => CustomerLocationModel::TABLE_NAME]);
 //                ->join(['C' => "HRIS_CUSTOMER"], "C." . Customer::CUSTOMER_ID . "=CC." . CustomerContract::CUSTOMER_ID, ['CUSTOMER_ENAME' => new Expression("INITCAP(C.CUSTOMER_ENAME)")], 'left');
+        $select->where([CustomerLocationModel::STATUS => EntityHelper::STATUS_ENABLED]);
+        $select->where([CustomerLocationModel::CUSTOMER_ID => $customerId]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
-        return $result;
+        return Helper::extractDbData($result);
     }
 
 }

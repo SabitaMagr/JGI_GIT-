@@ -10,9 +10,9 @@ $this->headScript()->appendFile($this->basePath('js/customer/customer-contract-d
 
 <script>
     document.contractId = '<?= $id ?>';
+    document.contractDetail =<?= json_encode($contractDetail); ?>;
     document.designationList =<?= json_encode($designationList); ?>;
     document.shiftList =<?= json_encode($shiftList); ?>;
-    document.locationList =<?= json_encode($locationList); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-setup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -27,58 +27,60 @@ $this->headScript()->appendFile($this->basePath('js/customer/customer-contract-d
             </div>
         </div>
 
-        <form action="<?= $this->url("customer-contract-details", ["action" => "add","id"=>$id]); ?>"  method="post">
+        <form action="<?= $this->url("customer-contract-details", ["action" => "add", "id" => $id]); ?>"  method="post">
 
-        <div class="row margin-top-20">
-            <div class="col-md-12">
-                    
-                <table class="table table-bordered" id="tblContractDetails">
-                    <tbody>
-                        <tr>
-                            <td>Designation</td>
-                            <td>Quantity</td>
-                            <td>Rate</td>
-                            <td>Shift</td>
-                            <td>Location</td>
-                            <td>Days In Month</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td><select required="required" name="designation[]" class="designation"></select></td>
-                            <td><input  required="required"  name="quantity[]" type="number" class="quantity"></td>
-                            <td><input  required="required"  name="rate[]" type="number" class="rate" step="0.01" ></td>
-                            <td><select required="required" name="shift[]" class="shift"></select></td>
-                            <td><select required="required" name="location[]" class="location"></select></td>
-                            <td><input  required="required"  name="daysInMonth[]" type="number" class="daysInMonth"></td>
-                            <td>
-                                <div class="th-inner ">
-                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                        <input class='chkBoxContractDetails' type="checkbox"/>
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="fht-cell" style="width: 46px;"></div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="row margin-top-20">
+                <div class="col-md-12">
 
-                <a id="addContractDetails" class=" btn btn-icon-only default pull-right">
-                    <i class="fa fa-plus"></i>
-                </a>
-                <a id="delContractDetails" class="btn btn-icon-only default pull-right">
-                    <i class="fa fa-trash-o"></i>
-                </a>
+                    <table class="table table-bordered" id="tblContractDetails">
+                        <tbody>
+                            <tr>
+                                <td>Designation</td>
+                                <td>Quantity</td>
+                                <td>Rate</td>
+                                <td>Shift</td>
+                                <td>WeekDays</td>
+                                <td>Days In Month</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><select required="required" name="designation[]" class="designation"></select></td>
+                                <td><input  required="required"  name="quantity[]" type="number" class="quantity"></td>
+                                <td><input  required="required"  name="rate[]" type="number" class="rate" step="0.01" ></td>
+                                <td><select required="required" name="shift[]" class="shift"></select></td>
+                                <td><select multiple required="required" name="weekDays[]" class="weekDays"></select>
+                                    <input type="hidden" name="weekDayValue[]">
+                                </td>
+                                <td><input  required="required"  name="daysInMonth[]" type="number" class="daysInMonth"></td>
+                                <td>
+                                    <div class="th-inner ">
+                                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                            <input class='chkBoxContractDetails' type="checkbox"/>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                    <div class="fht-cell" style="width: 46px;"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <a id="addContractDetails" class=" btn btn-icon-only default pull-right">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                    <a id="delContractDetails" class="btn btn-icon-only default pull-right">
+                        <i class="fa fa-trash-o"></i>
+                    </a>
 
 
+                </div>
             </div>
-        </div>
-                    
-                    <div class="row">
-                        <input type="submit" value=" submit">
-                    </div>
-                        
 
-                </form>
+            <div class="row">
+                <input type="submit" value=" submit">
+            </div>
+
+
+        </form>
     </div>
 </div>

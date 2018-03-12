@@ -19,6 +19,10 @@ $this->headScript()
 <script>
     document.viewLink = '<?= $this->url("contract-attendance", ["action" => "view"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
+    document.customerList =<?php echo json_encode($customerList); ?>;
+    document.monthList =<?php echo json_encode($monthList); ?>;
+    document.pullCustomerMonthlyAttendanceUrl = '<?= $this->url("contract-attendance", ["action" => "pullCustomerMonthlyAttendance"]); ?>';
+    document.updateEmpContractAttendnace = '<?= $this->url("contract-attendance", ["action" => "updateEmpContractAttendnace"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -54,8 +58,31 @@ $this->headScript()
                 </div>
             </div>
         </div>
-        <div id="table">
+
+        <div class="row margin-top-20">
+
+            <div class="col-md-3">
+                <select id="customerSelect"></select>
+            </div>
+            <div class="col-md-3">
+                <select id="monthSelect"></select>
+            </div>
+            <div class="col-md-3">
+                <input type="button" id="viewBtn" class="btn btn-primary" value="view">
+            </div>
+
         </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div id="grid">
+
+                </div>
+
+            </div>
+        </div>
+
     </div>
 </div>
 
