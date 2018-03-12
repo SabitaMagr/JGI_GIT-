@@ -21,8 +21,11 @@ class PayrollRepository extends HrisRepository {
                 WHERE EMPLOYEE_ID={$employeeId}
                 AND SHEET_NO = {$sheetNo}
                 ";
-        $basicSalaryRaw = EntityHelper::rawQueryResult($this->adapter, $sql);
-        return $basicSalaryRaw->current()['SALARY'];
+        $resultList = $this->rawQuery($sql);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['SALARY'];
     }
 
     public function getMonthDays($employeeId, $sheetNo) {

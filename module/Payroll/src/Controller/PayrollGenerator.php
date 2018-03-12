@@ -2,6 +2,7 @@
 
 namespace Payroll\Controller;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Payroll\Controller\SystemRuleProcessor;
 use Payroll\Controller\VariableProcessor;
@@ -191,7 +192,7 @@ class PayrollGenerator {
                 $rule = str_replace($payEdesc, is_string($value) ? "'{$value}'" : $value, $rule);
             }
         }
-        return $rule;
+        return isset($rule) ? $rule : 0;
     }
 
     private function getReferencingRuleValue($payId) {

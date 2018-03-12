@@ -31,14 +31,14 @@ class PositionFlatValueRepo extends HrisRepository {
                   LEFT JOIN
                     (SELECT *
                     FROM HRIS_FLAT_VALUE_DETAIL
-                    WHERE MONTH_ID ={$keys['MONTH_ID']}
+                    WHERE FISCAL_YEAR_ID = (SELECT FISCAL_YEAR_ID FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$keys['MONTH_ID']})
                     AND EMPLOYEE_ID={$keys['EMPLOYEE_ID']}
                     ) MVD
                   ON (MVS.FLAT_ID=MVD.FLAT_ID)
                   LEFT JOIN
                     (SELECT *
                     FROM HRIS_POSITION_FLAT_VALUE
-                    WHERE MONTH_ID ={$keys['MONTH_ID']}
+                    WHERE FISCAL_YEAR_ID =(SELECT FISCAL_YEAR_ID FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$keys['MONTH_ID']})
                     AND POSITION_ID=
                       (SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = {$keys['EMPLOYEE_ID']}
                       )
@@ -53,11 +53,11 @@ class PositionFlatValueRepo extends HrisRepository {
         return $resultList[0]['ASSIGNED_VALUE'];
     }
 
-    public function getPositionFlatValue($monthId) {
+    public function getPositionFlatValue($fiscalYearId) {
         $sql = "
             SELECT *
             FROM
-              ( SELECT FLAT_ID,POSITION_ID,ASSIGNED_VALUE FROM HRIS_POSITION_FLAT_VALUE WHERE MONTH_ID ={$monthId}
+              ( SELECT FLAT_ID,POSITION_ID,ASSIGNED_VALUE FROM HRIS_POSITION_FLAT_VALUE WHERE FISCAL_YEAR_ID ={$fiscalYearId}
               ) PIVOT ( MAX(ASSIGNED_VALUE) FOR FLAT_ID IN ({$this->fetchFlatValueAsDbArray()}) )";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
@@ -75,10 +75,10 @@ class PositionFlatValueRepo extends HrisRepository {
         return $dbArray;
     }
 
-    public function setPositionFlatValue($monthId, $positionId, $flatId, $assignedValue) {
+    public function setPositionFlatValue($fiscalYearId, $positionId, $flatId, $assignedValue) {
         $sql = "
                 DECLARE
-                  V_MONTH_ID HRIS_POSITION_FLAT_VALUE.MONTH_ID%TYPE             := {$monthId};
+                  V_FISCAL_YEAR_ID HRIS_POSITION_FLAT_VALUE.FISCAL_YEAR_ID%TYPE             := {$fiscalYearId};
                   V_FLAT_ID HRIS_POSITION_FLAT_VALUE.FLAT_ID%TYPE                 := {$flatId};
                   V_POSITION_ID HRIS_POSITION_FLAT_VALUE.POSITION_ID%TYPE       := {$positionId};
                   V_ASSIGNED_VALUE HRIS_POSITION_FLAT_VALUE.ASSIGNED_VALUE%TYPE := {$assignedValue};
@@ -89,12 +89,12 @@ class PositionFlatValueRepo extends HrisRepository {
                   FROM HRIS_POSITION_FLAT_VALUE
                   WHERE FLAT_ID    = V_FLAT_ID
                   AND POSITION_ID = V_POSITION_ID
-                  AND MONTH_ID    = V_MONTH_ID;
+                  AND FISCAL_YEAR_ID    = V_FISCAL_YEAR_ID;
                   UPDATE HRIS_POSITION_FLAT_VALUE
                   SET ASSIGNED_VALUE = V_ASSIGNED_VALUE
                   WHERE FLAT_ID       = V_FLAT_ID
                   AND POSITION_ID    = V_POSITION_ID
-                  AND MONTH_ID       = V_MONTH_ID;
+                  AND FISCAL_YEAR_ID       = V_FISCAL_YEAR_ID;
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN
                   INSERT
@@ -102,14 +102,14 @@ class PositionFlatValueRepo extends HrisRepository {
                     (
                       FLAT_ID,
                       POSITION_ID,
-                      MONTH_ID,
+                      FISCAL_YEAR_ID,
                       ASSIGNED_VALUE
                     )
                     VALUES
                     (
                       V_FLAT_ID,
                       V_POSITION_ID,
-                      V_MONTH_ID,
+                      V_FISCAL_ID,
                       V_ASSIGNED_VALUE
                     );
                 END;";

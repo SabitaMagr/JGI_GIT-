@@ -9,7 +9,6 @@ $this->headScript()
 
 <script>
     document.fiscalYears =<?php echo json_encode($fiscalYears); ?>;
-    document.months =<?php echo json_encode($months); ?>;
     document.flatValues =<?php echo json_encode($flatValues); ?>;
     document.positions =<?php echo json_encode($positions); ?>;
     document.getPositionFlatLink = '<?php echo $this->url('flatValue', ['action' => 'getPositionFlatValue']); ?>';
@@ -33,10 +32,6 @@ $this->headScript()
                     <div class="row">
                         <div class="col-sm-2">
                             <select class="form-control" id="fiscalYearId" >
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <select class="form-control" id="monthId" >
                             </select>
                         </div>
                         <div class="col-sm-8">

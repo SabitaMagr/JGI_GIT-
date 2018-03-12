@@ -2,12 +2,10 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        var months = document.months;
         var fiscalYears = document.fiscalYears;
         var flatValues = document.flatValues;
         var positions = document.positions;
 
-        var $monthId = $("#monthId");
         var $fiscalYearId = $("#fiscalYearId");
 
         var $assignFlatValueBtn = $('#assignFlatValueBtn');
@@ -19,37 +17,14 @@
 
 
         app.populateSelect($fiscalYearId, fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
-        app.populateSelect($monthId, [], "MONTH_ID", "MONTH_EDESC", "Select Month");
 
-        $fiscalYearId.on('change', function () {
-            var value = $(this).val();
-            var filteredMonths = [];
-            if (value != -1) {
-                var filteredMonths = months.filter(function (item) {
-                    return item['FISCAL_YEAR_ID'] == value;
-                });
-            }
-            app.populateSelect($monthId, filteredMonths, "MONTH_ID", "MONTH_EDESC", "Select Month");
-        });
-
-        var pullData = function (monthId, fn) {
-            app.pullDataById(document.getPositionFlatLink, {monthId: monthId}).then(function (response) {
+        var pullData = function (fiscalYearId, fn) {
+            app.pullDataById(document.getPositionFlatLink, {fiscalYearId: fiscalYearId}).then(function (response) {
                 fn(response.data);
             }, function (error) {
 
             });
         };
-
-        $monthId.on('change', function () {
-            var value = $(this).val();
-            if (value == -1) {
-                return;
-            }
-            pullData(value, function (data) {
-                initTable(flatValues, positions, data);
-            });
-
-        });
 
         var findFlatValue = function (serverData, positionId, flatId) {
             var result = serverData.filter(function (item) {
@@ -138,8 +113,6 @@
 
         $assignFlatValueBtn.on('click', function () {
             var fiscalYearId = $fiscalYearId.val();
-            var monthId = $monthId.val();
-
             var promiseList = [];
             $.each($grid.find('input'), function (key, item) {
                 var $item = $(item);
@@ -148,7 +121,6 @@
                 var value = $item.val();
                 if (typeof rowValue !== "undefined" && rowValue != null && rowValue != "" && typeof colValue !== "undefined" && colValue != null && colValue != "" && typeof value !== "undefined" && value != null && value != "") {
                     promiseList.push(app.serverRequest(document.setPositionFlatValueLink, {
-                        monthId: monthId,
                         fiscalYearId: fiscalYearId,
                         positionId: rowValue,
                         flatId: colValue,

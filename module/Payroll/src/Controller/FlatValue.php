@@ -150,12 +150,10 @@ class FlatValue extends HrisController {
 
     public function positionWiseAction() {
         $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
-        $months = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]);
         $flatValues = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_ID, FlatValueModel::FLAT_EDESC]);
         $positions = EntityHelper::getTableList($this->adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::LEVEL_NO]);
         return $this->stickFlashMessagesTo([
                     'fiscalYears' => $fiscalYears,
-                    'months' => $months,
                     'flatValues' => $flatValues,
                     'positions' => $positions,
         ]);
@@ -165,10 +163,10 @@ class FlatValue extends HrisController {
         try {
             $request = $this->getRequest();
             $postedData = $request->getPost();
-            $monthId = $postedData['monthId'];
+            $fiscalYearId = $postedData['fiscalYearId'];
 
             $detailRepo = new PositionFlatValueRepo($this->adapter);
-            $result = $detailRepo->getPositionFlatValue($monthId);
+            $result = $detailRepo->getPositionFlatValue($fiscalYearId);
 
             return new JsonModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
         } catch (Exception $e) {
@@ -180,13 +178,13 @@ class FlatValue extends HrisController {
         try {
             $request = $this->getRequest();
             $postedData = $request->getPost();
-            $monthId = $postedData['monthId'];
+            $fiscalYearId = $postedData['fiscalYearId'];
             $positionId = $postedData['positionId'];
             $flatId = $postedData['flatId'];
             $assignedValue = $postedData['assignedValue'];
 
             $detailRepo = new PositionFlatValueRepo($this->adapter);
-            $detailRepo->setPositionFlatValue($monthId, $positionId, $flatId, $assignedValue);
+            $detailRepo->setPositionFlatValue($fiscalYearId, $positionId, $flatId, $assignedValue);
 
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
