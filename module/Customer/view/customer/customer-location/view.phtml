@@ -34,7 +34,7 @@ $this->headScript()
             </div>
             <div class="actions">
                 <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
-                    <a href="<?= $this->url('customer-setup', ['action' => 'add']) ?>" class="btn default btn-sm">
+                    <a href="<?= $this->url('customer-location', ['action' => 'add','id'=>$id]) ?>" class="btn default btn-sm">
                         <i class="fa fa-plus-square icon-black"></i>
                         New 
                     </a>

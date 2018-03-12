@@ -13,26 +13,21 @@ $this->headScript()->appendFile($this->basePath('js/customer/customer-contract/e
 ?>
 <?php
 $customerId = $form->get('customerId');
+$contractName = $form->get('contractName');
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
-$workingCycle = $form->get('workingCycle');
-$chargeType = $form->get('chargeType');
-$chargeRate = $form->get('chargeRate');
+$billingMonth = $form->get('billingMonth');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
-$contractName = $form->get('contractName');
 
-$form->setAttribute('action', $this->url('customer-contract', ['action' => 'edit','id'=>$id]));
+$form->setAttribute('action', $this->url('customer-contract', ['action' => 'edit', 'id' => $id]));
 $form->prepare();
 
 $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
 ?>
 
 <script>
-  document.employeeList =<?=json_encode($employeeList);?>;
-  document.workingCycleEditVal='<?=$workingCycle->getValue()?>';
-  document.contractDetails=<?= json_encode($contractDetails)?>;
-  document.contractEmpDetails=<?= json_encode($contractEmpDetails)?>;
+    document.employeeList =<?= json_encode($employeeList); ?>;
 </script>
 
 <div class="page-bar">
@@ -61,7 +56,7 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
                             <?php print $this->formElementErrors()->render($customerId, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    
+
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <?php print $this->formLabel($contractName); ?>
@@ -69,24 +64,7 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
                             <?php print $this->formElementErrors()->render($contractName, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    
-                    <div class="col-sm-12 col-md-6 col-lg-4">
-                        <div class="form-group padding-0">
-                            <?php print $this->formLabel($chargeType); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($chargeType); ?>
-                            </div>
-                        </div>
-                        <?php print $this->formElementErrors()->render($chargeType, ['class' => 'help-block error']); ?>
-                    </div>
-                    <div class="col-sm-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($chargeRate); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($chargeRate); ?>
-                            <?php print $this->formElementErrors()->render($chargeRate, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
+
 
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="row">
@@ -127,15 +105,15 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
 
                         </div>
 
+
                     </div>
+
                     <div class="col-sm-12 col-md-6 col-lg-4">
-                        <div class="form-group padding-0">
-                            <?php print $this->formLabel($workingCycle); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($workingCycle); ?>
-                            </div>
+                        <div class="form-group">
+                            <?php print $this->formLabel($billingMonth); ?>
+                            <?php print $this->formElement($billingMonth); ?>
+                            <?php print $this->formElementErrors()->render($billingMonth, ['class' => 'help-block']); ?>
                         </div>
-                        <?php print $this->formElementErrors()->render($workingCycle, ['class' => 'help-block error']); ?>
                     </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4" >
@@ -148,82 +126,8 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
                 </div>
 
 
-                <div class="row" id="monthWise">
-                    <div class="col-md-6">
-                        <table class="table table-bordered">
-                            <tr>
-                                <th>SUN</th>
-                                <th>MON</th>
-                                <th>TUE</th>
-                                <th>WED</th>
-                                <th>THR</th>
-                                <th>FRI</th>
-                                <th>SAT</th>
-                            </tr>
-
-                            <tr>
-                                <?php
-                                foreach ($weekArr as $weekData) {
-                                    ?>
-                                    <td>
-                                        <div class="th-inner ">
-                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                <input value='YES' id="<?= $weekData ?>" name="<?= $weekData ?>" value="<?= $weekData ?>" class="" type="checkbox"/>
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="fht-cell" style="width: 46px;"></div>
-                                    </td>
-                                    <?php
-                                }
-                                ?>
-                            </tr>
-
-                        </table>
-
-                    </div>
-                </div>
 
 
-                <div class="row" id="dateWise">
-                    <div class="col-md-6">
-
-                        <table class="table table-bordered" id="tblContractDates">
-                            <tbody>
-                                <tr>
-                                    <td>Dates</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" class="contractDates" name="contractDates[]" ></td>
-                                    <td>
-                                        <div class="th-inner ">
-                                            <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                                <input class='chkBoxContractDates' type="checkbox"/>
-                                                <span></span>
-                                            </label>
-                                        </div>
-                                        <div class="fht-cell" style="width: 46px;"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <a id="addContractdate" class="addDate btn btn-icon-only default pull-right">
-                            <i class="fa fa-plus"></i>
-                        </a>
-                        <a id="delContractdate" class="btn btn-icon-only default pull-right">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
-
-                    </div>
-                </div>
-                
-                
-                
-                
-                
-                
 
                 <?php
                 print $this->formSubmit($submit);

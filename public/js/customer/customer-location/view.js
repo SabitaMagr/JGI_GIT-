@@ -39,6 +39,7 @@
 //        });
 
         app.pullDataById(document.pullLocationDetails, {}).then(function (response) {
+            console.log(response.data);
             app.renderKendoGrid($table, response.data);
         }, function (error) {
 

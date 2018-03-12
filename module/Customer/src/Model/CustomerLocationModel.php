@@ -26,12 +26,12 @@ class CustomerLocationModel extends Model {
     public $status;
     public $locationId;
     public $customerId;
-    public $LocationName;
+    public $locationName;
     public $address;
     public $mappings = [
         'locationId' => self::LOCATION_ID,
         'customerId' => self::CUSTOMER_ID,
-        'LocationName' => self::LOCATION_NAME,
+        'locationName' => self::LOCATION_NAME,
         'address' => self::ADDRESS,
         'createdDt' => self::CREATED_DT,
         'createdBy' => self::CREATED_BY,

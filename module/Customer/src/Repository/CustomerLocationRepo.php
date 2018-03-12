@@ -8,6 +8,7 @@ use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\CustomerLocationModel;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -22,15 +23,15 @@ class CustomerLocationRepo implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-//        $this->gateway->insert($model->getArrayCopyForDB());
+        $this->gateway->insert($model->getArrayCopyForDB());
     }
 
     public function delete($id) {
-//        $this->gateway->update([Customer::STATUS => EntityHelper::STATUS_DISABLED], [Customer::CUSTOMER_ID => $id]);
+        $this->gateway->update([CustomerLocationModel::STATUS => EntityHelper::STATUS_DISABLED], [CustomerLocationModel::LOCATION_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
-//        $this->gateway->update($model->getArrayCopyForDB(), [Customer::CUSTOMER_ID => $id]);
+        $this->gateway->update($model->getArrayCopyForDB(), [CustomerLocationModel::LOCATION_ID => $id]);
     }
 
     public function fetchAll() {
@@ -47,20 +48,20 @@ class CustomerLocationRepo implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-
-
-//        $rawResult = $this->gateway->select(function(Select $select)use($id) {
-//            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustomerLocationModel::class, [
-//                        CustomerLocationModel::LOCATION_ID,
-//                        CustomerLocationModel::CUSTOMER_ID,
-//                        CustomerLocationModel::LOCATION_NAME,
-//                        CustomerLocationModel::ADDRESS,
-//                    ]), false);
-//            $select->where([CustomerLocationModel::CUSTOMER_ID => $id]);
-//            $select->where([CustomerLocationModel::STATUS => EntityHelper::STATUS_ENABLED]);
-//            $select->order([CustomerLocationModel::LOCATION_NAME => Select::ORDER_ASCENDING]);
-//        });
-//        return $rawResult;
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(CustomerLocationModel::class, [
+                    CustomerLocationModel::LOCATION_ID,
+                    CustomerLocationModel::CUSTOMER_ID,
+                    CustomerLocationModel::LOCATION_NAME,
+                    CustomerLocationModel::ADDRESS,
+                ]), false);
+        $select->from(CustomerLocationModel::TABLE_NAME);
+        $select->where([CustomerLocationModel::LOCATION_ID => $id]);
+        $select->where([CustomerLocationModel::STATUS => EntityHelper::STATUS_ENABLED]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
     }
 
     public function fetchAllLocationByCustomer($customerId) {

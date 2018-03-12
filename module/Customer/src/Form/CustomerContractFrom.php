@@ -19,6 +19,16 @@ class CustomerContractFrom {
      * @Annotation\Attributes({ "id":"customerId","class":"form-control"})
      */
     public $customerId;
+    
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Contract Name"})
+     * @Annotation\Attributes({ "id":"contractName", "class":"form-control" })
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
+     */
+    public $contractName;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Text")
@@ -37,60 +47,19 @@ class CustomerContractFrom {
      * @Annotation\Attributes({ "id":"endDate","class":"form-control" })
      */
     public $endDate;
-
+    
+    
     /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"In Time"})
-     * @Annotation\Attributes({ "id":"inTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control" })
-     */
-    public $inTime;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Out Time"})
-     * @Annotation\Attributes({ "id":"outTime", "data-format":"h:mm a", "data-template":"hh : mm A", "class":"form-control"})
-     */
-    public $outTime;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Working Hour"})
-     * @Annotation\Attributes({ "id":"workingHours", "data-format":"h:mm", "data-template":"hh : mm", "class":"form-control" })
-     */
-    public $workingHours;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"W":"Weekly","R":"Randomly"},"label":"Working Cycle"})
-     * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"workingCycle"})
-     */
-    public $workingCycle;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"H":"Hourly","D":"Day wise","W":"Weekly","M":"Monthly"},"label":"Charge Type"})
-     * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"chargeType"})
-     */
-    public $chargeType;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Number")
      * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Charge Rate"})
-     * @Annotation\Attributes({"id":"chargeRate","class":"form-control","min":"0","step":"0.01"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Billing Month"})
+     * @Annotation\Attributes({ "id":"billingMonth","class":"form-control","options":{"N":"NEPALI","E":"ENGLISH"}})
      */
-    public $chargeRate;
+    
+    public $billingMonth;
+
+
 
     /**
      * @Annotion\Type("Zend\Form\Element\Textarea")
@@ -108,14 +77,6 @@ class CustomerContractFrom {
      */
     public $submit;
     
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Contract Name"})
-     * @Annotation\Attributes({ "id":"contractName", "class":"form-control" })
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
-     */
-    public $contractName;
+    
 
 }
