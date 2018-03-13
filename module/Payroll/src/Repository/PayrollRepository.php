@@ -272,6 +272,16 @@ class PayrollRepository extends HrisRepository {
         return $result['IS_PERMANENT'];
     }
 
+    public function getWorkedDays($employeeId, $sheetNo) {
+        $sql = "SELECT PRESENT+DAYOFF+HOLIDAY+PAID_LEAVE+TRAVEL+TRAINING AS WORKED_DAYS
+                FROM HRIS_SALARY_SHEET_EMP_DETAIL WHERE EMPLOYEE_ID = {$employeeId} AND SHEET_NO = {$sheetNo}";
+        $resultList = $this->rawQuery($sql);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('Result not found.');
+        }
+        return $resultList[0]['WORKED_DAYS'];
+    }
+
     public function fetchEmployeeList() {
         $sql = "
                 SELECT E.EMPLOYEE_ID,

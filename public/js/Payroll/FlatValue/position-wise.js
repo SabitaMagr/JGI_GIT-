@@ -25,6 +25,16 @@
 
             });
         };
+        $fiscalYearId.on('change', function () {
+            var value = $(this).val();
+            if (value == -1) {
+                return;
+            }
+            pullData(value, function (data) {
+                initTable(flatValues, positions, data);
+            });
+
+        });
 
         var findFlatValue = function (serverData, positionId, flatId) {
             var result = serverData.filter(function (item) {

@@ -2,7 +2,6 @@
 
 namespace Payroll\Controller;
 
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Payroll\Controller\SystemRuleProcessor;
 use Payroll\Controller\VariableProcessor;
@@ -46,7 +45,8 @@ class PayrollGenerator {
         "IS_PERMANENT",
         "IS_PROBATION",
         "IS_CONTRACT",
-        "IS_TEMPORARY"
+        "IS_TEMPORARY",
+        "WORKED_DAYS",
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",
