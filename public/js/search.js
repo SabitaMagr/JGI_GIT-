@@ -8,13 +8,20 @@
             serviceType: [],
             serviceEventType: [],
             employee: [],
+            gender: [],
+            employeeType: [],
+            location: [],
             companyListener: null,
             branchListener: null,
             departmentListener: null,
             designationListener: null,
+            positionListener: null,
             serviceTypeListener: null,
             serviceEventTypeListener: null,
             employeeListener: null,
+            genderListener: null,
+            employeeTypeListener: null,
+            locationListener: null,
             ids: []
             , setCompany: function (company) {
                 this.company = company;
@@ -44,6 +51,18 @@
                 this.employee = employee;
             }, getEmployee: function () {
                 return this.employee
+            }, setGender: function (gender) {
+                this.gender = gender;
+            }, getGender: function () {
+                return this.gender;
+            }, setEmployeeType: function (employeeType) {
+                this.employeeType = employeeType;
+            }, getEmployeeType: function () {
+                return this.employeeType;
+            }, setLocation: function (location) {
+                this.location = location;
+            }, getLocation: function () {
+                return this.location;
             }, getEmployeeById: function (id) {
                 var filteredList = this.employee.filter(function (item) {
                     return item['EMPLOYEE_ID'] == id;
@@ -63,6 +82,12 @@
                 this.serviceEventTypeListener = listener;
             }, setEmployeeListener: function (listener) {
                 this.employeeListener = listener;
+            }, setGenderListener: function (listener) {
+                this.genderListener = listener;
+            }, setEmployeeTypeListener: function (listener) {
+                this.employeeTypeListener = listener;
+            }, setLocationListener: function (listener) {
+                this.locationListener = listener;
             }, callCompanyListener: function () {
                 if (this.companyListener !== null) {
                     this.companyListener();
@@ -79,6 +104,10 @@
                 if (this.designationListener !== null) {
                     this.designationListener();
                 }
+            }, callPositionListener: function () {
+                if (this.positionListener !== null) {
+                    this.positionListener();
+                }
             }, callServiceTypeListener: function () {
                 if (this.serviceTypeListener !== null) {
                     this.serviceTypeListener();
@@ -90,6 +119,18 @@
             }, callEmployeeListener: function () {
                 if (this.employeeListener !== null) {
                     this.employeeListener();
+                }
+            }, callGenderListener: function () {
+                if (this.genderListener !== null) {
+                    this.genderListener();
+                }
+            }, callEmployeeTypeListener: function () {
+                if (this.employeeTypeListener !== null) {
+                    this.employeeTypeListener();
+                }
+            }, callLocationListener: function () {
+                if (this.locationListener !== null) {
+                    this.locationListener();
                 }
             },
             setIds: function (ids) {
@@ -138,7 +179,7 @@
         /*
          * Search javascript code starts here
          */
-        var changeSearchOption = function (companyId, branchId, departmentId, designationId, positionId, serviceTypeId, serviceEventTypeId, employeeId, genderId, employeeTypeId) {
+        var changeSearchOption = function (companyId, branchId, departmentId, designationId, positionId, serviceTypeId, serviceEventTypeId, employeeId, genderId, employeeTypeId, locationId) {
             document.searchManager.setIds(JSON.parse(JSON.stringify(arguments)));
 
             var $company = $('#' + companyId);
@@ -152,11 +193,15 @@
 
             var $gender = $('#' + "random-random");
             var $employeeType = $('#' + "random-random");
-            if (genderId != null) {
+            var $location = $('#' + "random-random");
+            if (typeof genderId !== 'undefined' && genderId !== null) {
                 $gender = $('#' + genderId);
             }
             if (typeof employeeTypeId !== 'undefined' && employeeTypeId !== null) {
                 $employeeType = $('#' + employeeTypeId);
+            }
+            if (typeof locationId !== 'undefined' && locationId !== null) {
+                $location = $('#' + locationId);
             }
 
             /* setup functions */
@@ -245,6 +290,9 @@
                 if ($employeeType.length != 0) {
                     searchParams['EMPLOYEE_TYPE'] = $employeeType.val();
                 }
+                if ($location.length != 0) {
+                    searchParams['LOCATION_ID'] = $location.val();
+                }
                 var employeeList = search(document.searchValues['employee'], searchParams);
                 document.searchManager.setEmployee(employeeList);
                 populateList($employee, employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'All Employee');
@@ -275,6 +323,9 @@
             if ($employeeType.length != 0) {
                 populateList($employeeType, document.searchValues['employeeType'], 'EMPLOYEE_TYPE_KEY', 'EMPLOYEE_TYPE_VALUE', 'All Employee Type');
             }
+            if ($location.length != 0) {
+                populateList($location, document.searchValues['location'], 'LOCATION_ID', 'LOCATION_EDESC', 'All Location');
+            }
             /* initialize dropdowns */
 
             /* setup change events */
@@ -298,6 +349,7 @@
             });
             onChangeEvent($position, function ($this) {
                 employeeSearchAndPopulate();
+                document.searchManager.callPositionListener();
             });
             onChangeEvent($serviceType, function ($this) {
                 employeeSearchAndPopulate();
@@ -314,11 +366,19 @@
             if ($gender.length != 0) {
                 onChangeEvent($gender, function ($this) {
                     employeeSearchAndPopulate();
+                    document.searchManager.callGenderListener();
                 });
             }
             if ($employeeType.length != 0) {
                 onChangeEvent($employeeType, function ($this) {
                     employeeSearchAndPopulate();
+                    document.searchManager.callEmployeeTypeListener();
+                });
+            }
+            if ($location.length != 0) {
+                onChangeEvent($location, function ($this) {
+                    employeeSearchAndPopulate();
+                    document.searchManager.callLocationListener();
                 });
             }
             var acl = document.acl;
@@ -349,7 +409,7 @@
             }
 
         };
-        changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId");
+        changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId", "locationId");
 
         /* setup change events */
 

@@ -118,6 +118,7 @@ class CalculateOvertime extends AbstractActionController {
     }
 
     public function pullAttendanceWidOvertimeListAction() {
+        throw new Exception("Need Rework on this Page.");
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
