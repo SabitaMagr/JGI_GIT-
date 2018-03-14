@@ -152,34 +152,22 @@ class PayrollRepository extends HrisRepository {
         return $resultList[0]['IS_MARRIED'];
     }
 
-    public function isPermanent($employeeId, $monthId) {
-        $sql = "
-                SELECT (
+    public function isPermanent($employeeId, $sheetNo) {
+        $sql = "SELECT (
                   CASE
-                    WHEN TO_SERVICE_TYPE_ID =1
+                    WHEN PERMANENT_FLAG ='Y'
+                    AND PERMANENT_DATE <= START_DATE
                     THEN 1
                     ELSE 0
                   END) AS IS_PERMANENT
-                FROM
-                  (SELECT *
-                  FROM
-                    (SELECT JH.*
-                    FROM HRIS_JOB_HISTORY JH,
-                      (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID = {$monthId}
-                      ) M
-                    WHERE JH.EMPLOYEE_ID = {$employeeId}
-                    AND JH.START_DATE   <= M.FROM_DATE
-                    ORDER BY JH.START_DATE DESC
-                    )
-                  WHERE ROWNUM =1
-                  )           
-                ";
-        $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
-        $result = $rawResult->current();
-        if ($result == null) {
-            return 0;
+                FROM HRIS_SALARY_SHEET_EMP_DETAIL
+                WHERE EMPLOYEE_ID = {$employeeId}
+                AND SHEET_NO      = {$sheetNo}";
+        $resultList = $this->rawQuery($sql);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('Result not found.');
         }
-        return $result['IS_PERMANENT'];
+        return $resultList[0]['IS_PERMANENT'];
     }
 
     public function isProbation($employeeId, $monthId) {

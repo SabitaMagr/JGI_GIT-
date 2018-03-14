@@ -46,7 +46,7 @@ class PayrollGenerator {
         "IS_PROBATION",
         "IS_CONTRACT",
         "IS_TEMPORARY",
-        "WORKED_DAYS",
+        "TOTAL_DAYS_TO_PAY",
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",

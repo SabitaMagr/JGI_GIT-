@@ -108,7 +108,7 @@ class VariableProcessor {
              * IS_PERMANENT
              */
             case PayrollGenerator::VARIABLES[13]:
-                $processedValue = $this->payrollRepo->isPermanent($this->employeeId, $this->monthId);
+                $processedValue = $this->payrollRepo->isPermanent($this->employeeId, $this->sheetNo);
                 break;
             /*
              * IS_PROBATION
@@ -129,7 +129,7 @@ class VariableProcessor {
                 $processedValue = $this->payrollRepo->isTemporary($this->employeeId, $this->monthId);
                 break;
             /*
-             * WORKED_DAYS
+             * TOTAL_DAYS_TO_PAY
              */
             case PayrollGenerator::VARIABLES[17]:
                 $processedValue = $this->payrollRepo->getWorkedDays($this->employeeId, $this->sheetNo);
