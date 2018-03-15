@@ -24,6 +24,7 @@ class TrainingApproveRepository extends HrisRepository {
                 DECLARE
                   V_TRAINING_ID HRIS_EMPLOYEE_TRAINING_REQUEST.TRAINING_ID%TYPE;
                   V_START_DATE HRIS_EMPLOYEE_TRAINING_REQUEST.START_DATE%TYPE;
+                  V_END_DATE HRIS_EMPLOYEE_TRAINING_REQUEST.END_DATE%TYPE;
                   V_EMPLOYEE_ID HRIS_EMPLOYEE_TRAINING_REQUEST.EMPLOYEE_ID%TYPE;
                   V_STATUS HRIS_EMPLOYEE_TRAINING_REQUEST.STATUS%TYPE;
                   V_REQUEST_ID HRIS_EMPLOYEE_TRAINING_REQUEST.REQUEST_ID%TYPE:= {$id};
@@ -31,10 +32,12 @@ class TrainingApproveRepository extends HrisRepository {
                 BEGIN
                   SELECT TRAINING_ID,
                     TRUNC( START_DATE ),
+                    TRUNC( END_DATE ),
                     EMPLOYEE_ID,
                     STATUS
                   INTO V_TRAINING_ID,
                     V_START_DATE,
+                    V_END_DATE,
                     V_EMPLOYEE_ID,
                     V_STATUS
                   FROM HRIS_EMPLOYEE_TRAINING_REQUEST
@@ -71,7 +74,7 @@ class TrainingApproveRepository extends HrisRepository {
                         );
                     END IF;
                     IF V_STATUS IN ('AP','C') AND V_START_DATE <TRUNC(SYSDATE) THEN
-                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID);
+                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                     END IF;                  
                 END IF;
                   
