@@ -64,6 +64,6 @@
         }
         window.app.checkUniqueConstraints(inputFieldId,formId,tableName,columnName,checkColumnName,selfId, function () {
             App.blockUI({target: "#hris-page-content"});
-        });
+        }); 
     });
 })(window.jQuery, window.app);
