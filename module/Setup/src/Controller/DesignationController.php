@@ -77,7 +77,6 @@ class DesignationController extends AbstractActionController {
                 return $this->redirect()->toRoute("designation");
             }
         }
-        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], "DESIGNATION_TITLE", "ASC", null, false, true);
         $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
@@ -119,7 +118,6 @@ class DesignationController extends AbstractActionController {
                 return $this->redirect()->toRoute("designation");
             }
         }
-        $designationList = EntityHelper::getTableKVListWithSortOption($this->adapter, Designation::TABLE_NAME, Designation::DESIGNATION_ID, [Designation::DESIGNATION_TITLE], ["STATUS" => "E"], Designation::DESIGNATION_TITLE, "ASC", null, false, true);
         $CompanyWisedesignationList = $this->repository->fetchAllDesignationCompanyWise();
         return new ViewModel(Helper::addFlashMessagesToArray(
                         $this, [
@@ -148,6 +146,3 @@ class DesignationController extends AbstractActionController {
     }
 
 }
-
-/* End of file DesignationController.php */
-/* Location: ./Setup/src/Controller/DesignationController.php */

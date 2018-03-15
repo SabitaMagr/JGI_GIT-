@@ -137,5 +137,3 @@ class PositionController extends AbstractActionController {
     }
 
 }
-
-?>

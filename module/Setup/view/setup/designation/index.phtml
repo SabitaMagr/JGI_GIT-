@@ -16,16 +16,13 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.menu =<?php $menu = ["id" => "menuSetup", "subMenu" => ["id" => "subMenuDesignation"]];
-echo json_encode($menu);
-?>;
-    document.viewLink = '<?= $this->url("designation", ["action" => "edit"]) ?>';
+    document.editLink = '<?= $this->url("designation", ["action" => "edit"]) ?>';
     document.deleteLink = '<?= $this->url("designation", ["action" => "delete"]) ?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 

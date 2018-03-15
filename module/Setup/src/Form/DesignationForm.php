@@ -57,15 +57,6 @@ class DesignationForm {
     public $withinDepartment;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","class":"form-control"})
-     */
-    public $status;
-
-    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
@@ -81,6 +72,3 @@ class DesignationForm {
     public $companyId;
 
 }
-
-/* End of file DesignationForm.php */
-/* Location: ./Setup/src/Form/DesignationForm.php */
