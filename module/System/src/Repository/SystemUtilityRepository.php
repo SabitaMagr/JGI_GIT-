@@ -1,4 +1,5 @@
 <?php
+
 namespace System\Repository;
 
 use Application\Helper\EntityHelper;
@@ -8,7 +9,9 @@ use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
 
 class SystemUtilityRepository implements RepositoryInterface {
+
     protected $adapter;
+
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
     }
@@ -32,9 +35,9 @@ class SystemUtilityRepository implements RepositoryInterface {
     public function fetchById($id) {
         
     }
-    
-    public function filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId = null, $genderId=null, $serviceEventTypeId=null) {
-        $condition = EntityHelper::getEmployeeSearchCondition($companyId, $branchId, $departmentId, $positionId, $designationId, $employeeType, $serviceTypeId, $genderId, $serviceEventTypeId);
+
+    public function filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId = null, $genderId = null, $serviceEventTypeId = null) {
+        $condition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeType, null, $genderId);
         $sql = "SELECT E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
               E.COMPANY_ID                                                      AS COMPANY_ID,
               E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
@@ -195,12 +198,8 @@ class SystemUtilityRepository implements RepositoryInterface {
             ORDER BY E.FIRST_NAME ASC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        
-        return Helper::extractDbData($result);
-        
-    }
 
-    
-    
+        return Helper::extractDbData($result);
+    }
 
 }

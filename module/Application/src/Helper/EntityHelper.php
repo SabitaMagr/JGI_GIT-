@@ -319,41 +319,6 @@ class EntityHelper {
         }
         return $conditon;
     }
-    
-    public static function getEmployeeSearchCondition($companyId, $branchId, $departmentId, $positionId, $designationId, $employeeType, $serviceTypeId, $genderId, $serviceEventTypeId){
-        $conditon = "";
-        if ($companyId != null && $companyId != -1) {
-            $conditon .= self::conditionBuilder($companyId, "E.COMPANY_ID", "AND");
-        }
-        if ($branchId != null && $branchId != -1) {
-            $conditon .= self::conditionBuilder($branchId, "E.BRANCH_ID", "AND");
-        }
-        if ($departmentId != null && $departmentId != -1) {
-            $conditon .= self::conditionBuilder($departmentId, "E.DEPARTMENT_ID", "AND");
-        }
-        if ($positionId != null && $positionId != -1) {
-            $conditon .= self::conditionBuilder($positionId, "E.POSITION_ID", "AND");
-        }
-        if ($designationId != null && $designationId != -1) {
-            $conditon .= self::conditionBuilder($designationId, "E.DESIGNATION_ID", "AND");
-        }
-        if ($serviceTypeId != null && $serviceTypeId != -1) {
-            $conditon .= self::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
-        } else {
-            $conditon .= " AND E.SERVICE_TYPE_ID IN (SELECT SERVICE_TYPE_ID FROM HRIS_SERVICE_TYPES WHERE TYPE NOT IN ('RESIGNED','RETIRED'))";
-        }
-        if ($genderId != null && $genderId != -1) {
-            $conditon .= self::conditionBuilder($genderId, "E.GENDER_ID", "AND");
-        }
-        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
-            $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
-        }
-        if ($employeeType != null && $employeeType != -1) {
-            $conditon .= self::conditionBuilder($employeeType, "E.EMPLOYEE_TYPE", "AND", true);
-        }
-        
-        return $conditon;
-    }
 
     public static function getAttendanceStatusSelectElement() {
         $statusFormElement = new Select2();
