@@ -49,7 +49,7 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                         ], [
                     ShiftAdjustmentModel::START_TIME,
                     ShiftAdjustmentModel::END_TIME
-                        ], NULL, NULL, 'SA', FALSE, FALSE, NULL,$customCols), false);
+                        ], NULL, NULL, 'SA', FALSE, FALSE, NULL, $customCols), false);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
@@ -80,8 +80,6 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
 
     public function insertShiftAdjustment($startTime, $endTime, $adjustmentStartDate, $adjustmentEndDate, $employeeList, $employeeId = null, $id = null) {
         $employeeAdjustment = '';
-
-
         foreach ($employeeList as $employee) {
             $employeeAdjustment = $employeeAdjustment . "
                 INSERT INTO HRIS_EMPLOYEE_SHIFT_ADJUSTMENT
@@ -92,7 +90,7 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                 VALUES
                 (
                   V_ADJUSTMENT_ID,
-                  " . $employee . "
+                  {$employee}
                 );";
         }
         if ($id == "") {
@@ -128,16 +126,6 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                      V_EMPLOYEE_ID
                     );
                     {$employeeAdjustment}
-                      BEGIN
-                        FOR i IN 0..V_DIFF
-                        LOOP
-                          IF TRUNC(V_ADJUSTMENT_START_DATE+i)>= TRUNC(SYSDATE) THEN
-                            CONTINUE;
-                          END IF;
-                          HRIS_REATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
-                        END LOOP;
-                      END;
-                    COMMIT;
                     END;";
         } else {
             $sql = "
@@ -160,16 +148,6 @@ class ShiftAdjustmentRepository implements RepositoryInterface {
                     WHERE ADJUSTMENT_ID    = V_ADJUSTMENT_ID; 
                   DELETE FROM HRIS_EMPLOYEE_SHIFT_ADJUSTMENT WHERE ADJUSTMENT_ID=V_ADJUSTMENT_ID;
                     {$employeeAdjustment}
-                    BEGIN
-                    FOR i IN 0..V_DIFF
-                    LOOP
-                      IF TRUNC(V_ADJUSTMENT_START_DATE+i)>= TRUNC(SYSDATE) THEN
-                        CONTINUE;
-                      END IF;
-                      HRIS_REATTENDANCE(TRUNC(V_ADJUSTMENT_START_DATE+i));
-                    END LOOP;
-                  END;
-                    COMMIT;
                     END;";
         }
 

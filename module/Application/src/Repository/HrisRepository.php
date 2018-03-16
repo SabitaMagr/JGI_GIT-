@@ -23,6 +23,11 @@ class HrisRepository {
         return iterator_to_array($iterator, false);
     }
 
+    protected function executeStatement($sql) {
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
+    }
+
     protected function checkIfTableExists($tableName): bool {
         $sql = "SELECT * FROM USER_TABLES WHERE TABLE_NAME ='{$tableName}'";
         $statement = $this->adapter->query($sql);

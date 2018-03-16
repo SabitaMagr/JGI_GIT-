@@ -135,20 +135,23 @@ class LeaveRequestRepository implements RepositoryInterface {
                       V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
                       V_STATUS HRIS_EMPLOYEE_LEAVE_REQUEST.STATUS%TYPE;
                       V_START_DATE HRIS_EMPLOYEE_LEAVE_REQUEST.START_DATE%TYPE;
+                      V_END_DATE HRIS_EMPLOYEE_LEAVE_REQUEST.END_DATE%TYPE;
                       V_EMPLOYEE_ID HRIS_EMPLOYEE_LEAVE_REQUEST.EMPLOYEE_ID%TYPE;
                     BEGIN
                       SELECT ID,
                         STATUS,
                         START_DATE,
+                        END_DATE,
                         EMPLOYEE_ID
                       INTO V_ID,
                         V_STATUS,
                         V_START_DATE,
+                        V_END_DATE,
                         V_EMPLOYEE_ID
                       FROM HRIS_EMPLOYEE_LEAVE_REQUEST
                       WHERE ID                                    = {$id};
                       IF(V_STATUS IN ('AP','C') AND V_START_DATE <=TRUNC(SYSDATE)) THEN
-                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID);
+                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                       END IF;
                     END;
     ");

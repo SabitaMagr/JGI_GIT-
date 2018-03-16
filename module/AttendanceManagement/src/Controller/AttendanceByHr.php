@@ -151,19 +151,22 @@ class AttendanceByHr extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
 
-            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
             $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
             $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
-            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
             $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
             $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
             $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
             $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+            $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
+            $locationId = isset($data['locationId']) ? $data['locationId'] : -1;
+            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $fromDate = $data['fromDate'];
             $toDate = $data['toDate'];
             $status = $data['status'];
-            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, $data['presentStatus']);
+            $presentStatus = $data['presentStatus'];
+            $results = $this->repository->filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $locationId, $employeeId, $fromDate, $toDate, $status, $presentStatus);
 
             $result = [];
             $result['success'] = true;

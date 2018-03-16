@@ -58,7 +58,7 @@ class AttendanceDeviceRepository implements RepositoryInterface {
         $sql = "SELECT A.IP_ADDRESS,
                   A.THUMB_ID,
                   TO_CHAR(A.ATTENDANCE_DT,'DD-MON-YYYY') AS ATTENDANCE_DATE,
-                  TO_CHAR(A.ATTENDANCE_TIME,'HH:MI AM') AS ATTENDANCE_TIME,
+                  TO_CHAR(A.ATTENDANCE_TIME,'HH:MI:SS AM') AS ATTENDANCE_TIME,
                   A.EMPLOYEE_ID,
                   E.FULL_NAME AS EMPLOYEE_NAME
                 FROM HRIS_ATTENDANCE A

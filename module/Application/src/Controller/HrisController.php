@@ -6,7 +6,6 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Files;
 use Application\Model\FiscalYear;
-use Application\Model\Months;
 use Application\Repository\FileRepository;
 use Application\Repository\MonthRepository;
 use Exception;
@@ -149,6 +148,24 @@ class HrisController extends AbstractActionController {
             return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function regenAttendanceAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $fromDate = Helper::getExpressionDate($data['FROM_DATE'])->getExpression();
+            $toDateQuery = "";
+            if (isset($data['TO_DATE'])) {
+                $toDate = Helper::getExpressionDate($data['TO_DATE'])->getExpression();
+                $toDateQuery = $toDateQuery . ",{$toDate}";
+            }
+            $employeeId = $data['EMPLOYEE_ID'];
+            EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_REATTENDANCE({$fromDate},{$employeeId}{$toDateQuery}); END;");
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Reattendance successful."]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 

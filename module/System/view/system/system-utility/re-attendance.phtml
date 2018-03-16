@@ -1,22 +1,3 @@
-<?php if ($this->messages): ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php endif; ?>
-<?php
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
-?>
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\system-utility')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
-
-
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
@@ -33,13 +14,29 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-attendance.js'));
 ?>
-
+<?php if ($this->messages): ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php endif; ?>
+<?php
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
 <script>
     document.employeeList =<?= json_encode($employeeList); ?>;
     document.searchValues =<?= json_encode($searchValues); ?>;
-    document.employeeFilter= '<?= $this->url('system-utility',['action'=>'pullEmployeeFilter']); ?>';
+    document.employeeFilter = '<?= $this->url('system-utility', ['action' => 'pullEmployeeFilter']); ?>';
+    document.regenAttendanceLink = '<?php echo $this->url('system-utility', ['action' => 'regen-attendance']); ?>';
 </script>
-
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\system-utility')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 
 <div class="row margin-top-30">
     <div class="col-sm-12">
@@ -99,7 +96,7 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
                             <select multiple name="employeeId" required="required" id="employeeId" class="form-control">
                             </select>
                         </div>
-                        
+
                     </div>
                     <div class="col-sm-2">
                         <div class="col-sm-6">
@@ -112,14 +109,14 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
                             <input type="button" name="submit" class="btn btn-success pull-right" style="margin-top: 24px; height:28px !important;" id="btn-reAttendnace" value="Submit">
                         </div>
                     </div>
-                    
-               
+
+
                 </div>
-                
+
             </div>
 
         </div>
     </div>
 </div>
 
-<?php  print $this->partial('partials/re-attendance-modal.phtml'); ?>
+<?php print $this->partial('partials/re-attendance-modal.phtml'); ?>

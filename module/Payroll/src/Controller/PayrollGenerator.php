@@ -6,22 +6,21 @@ use Application\Helper\Helper;
 use Payroll\Controller\SystemRuleProcessor;
 use Payroll\Controller\VariableProcessor;
 use Payroll\Model\Rules;
-use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\FlatValueRepository;
-use Payroll\Repository\MonthlyValueDetailRepo;
 use Payroll\Repository\MonthlyValueRepository;
+use Payroll\Repository\PositionFlatValueRepo;
 use Payroll\Repository\PositionMonthlyValueRepo;
 use Payroll\Repository\RulesRepository;
 
 class PayrollGenerator {
 
     private $adapter;
-    private $flatValueDetRepo;
-    private $monthlyValueDetRepo;
+    private $positionFlatValueDetRepo;
     private $positionMonthlyValueRepo;
     private $ruleRepo;
     private $employeeId;
     private $monthId = 0;
+    private $sheetNo;
     private $formattedFlatValueList;
     private $formattedMonthlyvalueList;
     private $formattedVariableList;
@@ -46,7 +45,8 @@ class PayrollGenerator {
         "IS_PERMANENT",
         "IS_PROBATION",
         "IS_CONTRACT",
-        "IS_TEMPORARY"
+        "IS_TEMPORARY",
+        "TOTAL_DAYS_TO_PAY",
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",
@@ -57,8 +57,7 @@ class PayrollGenerator {
 
     public function __construct($adapter) {
         $this->adapter = $adapter;
-        $this->flatValueDetRepo = new FlatValueDetailRepo($adapter);
-        $this->monthlyValueDetRepo = new MonthlyValueDetailRepo($adapter);
+        $this->positionFlatValueDetRepo = new PositionFlatValueRepo($adapter);
         $this->positionMonthlyValueRepo = new PositionMonthlyValueRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
         $monthlyValueList = $this->getMonthlyValues();
@@ -84,9 +83,10 @@ class PayrollGenerator {
         }
     }
 
-    public function generate($employeeId, $monthId) {
+    public function generate($employeeId, $monthId, $sheetNo) {
         $this->employeeId = $employeeId;
         $this->monthId = $monthId;
+        $this->sheetNo = $sheetNo;
         $payList = $this->ruleRepo->fetchAll();
 
         $ruleValueMap = [];
@@ -146,7 +146,7 @@ class PayrollGenerator {
 
     private function convertFlatToValue($rule, $key, $constant) {
         if (strpos($rule, $constant) !== false) {
-            $flatValTmp = $this->flatValueDetRepo->fetchById(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'FLAT_ID' => $key]);
+            $flatValTmp = $this->positionFlatValueDetRepo->fetchValue(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'FLAT_ID' => $key]);
             $flatVal = ($flatValTmp != null) && (isset($flatValTmp['FLAT_VALUE'])) ? $flatValTmp['FLAT_VALUE'] : 0;
             return str_replace($constant, $flatVal, $rule);
         } else {
@@ -156,8 +156,7 @@ class PayrollGenerator {
 
     private function convertMonthlyToValue($rule, $key, $constant) {
         if (strpos($rule, $constant) !== false) {
-            $monthlyValTmp = $this->positionMonthlyValueRepo->fetchById(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'MTH_ID' => $key]);
-            $monthlyVal = ($monthlyValTmp != null) && (isset($monthlyValTmp['ASSIGNED_VALUE'])) ? $monthlyValTmp['ASSIGNED_VALUE'] : 0;
+            $monthlyVal = $this->positionMonthlyValueRepo->fetchValue(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'MTH_ID' => $key]);
             return str_replace($constant, $monthlyVal, $rule);
         } else {
             return $rule;
@@ -166,7 +165,7 @@ class PayrollGenerator {
 
     private function convertVariableToValue($rule, $key, $variable) {
         if (strpos($rule, $variable) !== false) {
-            $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId);
+            $variableProcessor = new VariableProcessor($this->adapter, $this->employeeId, $this->monthId, $this->sheetNo);
             $processedVariable = $variableProcessor->processVariable($key);
             return str_replace($variable, is_string($processedVariable) ? "'{$processedVariable}'" : $processedVariable, $rule);
         } else {
@@ -193,7 +192,7 @@ class PayrollGenerator {
                 $rule = str_replace($payEdesc, is_string($value) ? "'{$value}'" : $value, $rule);
             }
         }
-        return $rule;
+        return isset($rule) ? $rule : 0;
     }
 
     private function getReferencingRuleValue($payId) {

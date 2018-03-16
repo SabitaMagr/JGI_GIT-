@@ -5,6 +5,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/FlatValue/addEdit.js
 $flatCode = $form->get('flatCode');
 $flatEdesc = $form->get('flatEdesc');
 $flatLdesc = $form->get('flatLdesc');
+$assignType = $form->get('assignType');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $form->setAttribute('action', $this->url('flatValue', ['action' => 'add']));
@@ -52,6 +53,15 @@ $form->setAttribute('action', $this->url('flatValue', ['action' => 'add']));
                             <?php print $this->formLabel($flatLdesc); ?>
                             <?php print $this->formElement($flatLdesc); ?>
                             <?php print $this->formElementErrors()->render($flatLdesc, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($assignType); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($assignType); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($assignType, ['class' => 'help-block']); ?>
                         </div>
                     </div>
 

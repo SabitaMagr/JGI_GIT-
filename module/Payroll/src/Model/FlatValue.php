@@ -11,6 +11,7 @@ class FlatValue extends Model {
     CONST FLAT_CODE = "FLAT_CODE";
     CONST FLAT_EDESC = "FLAT_EDESC";
     CONST FLAT_LDESC = "FLAT_LDESC";
+    CONST ASSIGN_TYPE = "ASSIGN_TYPE";
     CONST CREATED_DT = "CREATED_DT";
     CONST MODIFIED_DT = "MODIFIED_DT";
     CONST STATUS = "STATUS";
@@ -20,6 +21,7 @@ class FlatValue extends Model {
     public $flatCode;
     public $flatEdesc;
     public $flatLdesc;
+    public $assignType;
     public $createdDt;
     public $modifiedDt;
     public $status;
@@ -29,6 +31,7 @@ class FlatValue extends Model {
         'flatCode' => self::FLAT_CODE,
         'flatEdesc' => self::FLAT_EDESC,
         'flatLdesc' => self::FLAT_LDESC,
+        'assignType' => self::ASSIGN_TYPE,
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
         'status' => self::STATUS,

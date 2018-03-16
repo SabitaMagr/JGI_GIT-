@@ -58,8 +58,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
         return $result;
     }
 
-    public function filterRecord($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $presentStatus, $min = null, $max = null) {
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+    public function filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $locationId, $employeeId, $fromDate = null, $toDate = null, $status = null, $presentStatus = null, $min = null, $max = null) {
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, $locationId);
         $fromDateCondition = "";
         $toDateCondition = "";
         $statusCondition = '';
@@ -682,7 +682,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         $statement->execute();
     }
-    
+
     public function filterRecordWithLocation($employeeId = null, $branchId = null, $departmentId = null, $positionId = null, $designationId = null, $serviceTypeId = null, $serviceEventTypeId = null, $fromDate = null, $toDate = null, $status = null, $companyId = null, $employeeTypeId = null, $presentStatus, $min = null, $max = null) {
         $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
         $fromDateCondition = "";
@@ -862,7 +862,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_ATTD_DEVICE_MASTER ADMSIN
                 ON (ADMSIN.DEVICE_IP=AIN.IP_ADDRESS)
                 LEFT JOIN HRIS_ATTD_DEVICE_MASTER ADMSOUT
-                ON (ADMSOUT.DEVICE_IP=AIN.IP_ADDRESS)
+                ON (ADMSOUT.DEVICE_IP=AOUT.IP_ADDRESS)
                 WHERE 1=1
                 {$searchConditon}
                 {$fromDateCondition}
@@ -874,7 +874,5 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
-    
-    
 
 }

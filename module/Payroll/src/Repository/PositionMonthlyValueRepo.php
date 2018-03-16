@@ -3,18 +3,54 @@
 namespace Payroll\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Repository\HrisRepository;
 use Payroll\Model\PositionMonthlyValue;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 
-class PositionMonthlyValueRepo {
+class PositionMonthlyValueRepo extends HrisRepository {
 
-    private $adapter;
-    private $gateway;
+    public function __construct(AdapterInterface $adapter, $tableName = null) {
+        if ($tableName == null) {
+            $tableName = PositionMonthlyValue::TABLE_NAME;
+        }
+        parent::__construct($adapter, $tableName);
+    }
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->gateway = new TableGateway(PositionMonthlyValue::TABLE_NAME, $adapter);
+    public function fetchValue($keys) {
+        $sql = "SELECT (
+                  CASE
+                    WHEN ASSIGN_TYPE ='E'
+                    THEN MTH_VALUE
+                    ELSE ASSIGNED_VALUE
+                  END) AS ASSIGNED_VALUE
+                FROM
+                  (SELECT MVS.ASSIGN_TYPE,
+                    MVD.MTH_VALUE,
+                    PMV.ASSIGNED_VALUE
+                  FROM HRIS_MONTHLY_VALUE_SETUP MVS
+                  LEFT JOIN
+                    (SELECT *
+                    FROM HRIS_MONTHLY_VALUE_DETAIL
+                    WHERE MONTH_ID ={$keys['MONTH_ID']}
+                    AND EMPLOYEE_ID={$keys['EMPLOYEE_ID']}
+                    ) MVD
+                  ON (MVS.MTH_ID=MVD.MTH_ID)
+                  LEFT JOIN
+                    (SELECT *
+                    FROM HRIS_POSITION_MONTHLY_VALUE
+                    WHERE MONTH_ID ={$keys['MONTH_ID']}
+                    AND POSITION_ID=
+                      (SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = {$keys['EMPLOYEE_ID']}
+                      )
+                    ) PMV
+                  ON (MVS.MTH_ID   =PMV.MTH_ID)
+                  WHERE MVS.MTH_ID ={$keys['MTH_ID']}
+                  )";
+        $resultList = $this->rawQuery($sql);
+        if (sizeof($resultList) != 1) {
+            return 0;
+        }
+        return $resultList[0]['ASSIGNED_VALUE'];
     }
 
     public function fetchById($id) {

@@ -49,7 +49,9 @@ BEGIN
         employee.EMPLOYEE_ID
       );
     IF employee.START_DATE<TRUNC(SYSDATE) THEN
-      HRIS_REATTENDANCE(employee.START_DATE,employee.EMPLOYEE_ID,employee.START_DATE);
+NULL;
+-- need this task to be run on schedule | pending for now
+--       HRIS_REATTENDANCE(employee.START_DATE,employee.EMPLOYEE_ID,employee.START_DATE);
     END IF;
   END LOOP;
 END;

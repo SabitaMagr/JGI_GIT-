@@ -28,7 +28,7 @@
         //app.populateSelect($employeeTypeId, document.searchValues['employeeType'], 'EMPLOYEE_TYPE', 'EMPLOYEE_TYPE', 'All Employee Type', '');
         app.populateSelect($serviceTypeId, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'All Service Type', '');
         app.populateSelect($genderId, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender', '');
-        app.populateSelect($serviceEventTypeId, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'All Working Type','');
+        app.populateSelect($serviceEventTypeId, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'All Working Type', '');
         $submitBtn.on('click', function () {
             var selectedFromDate = $('#fromDate').val();
             var selectedToDate = $('#toDate').val();
@@ -55,15 +55,15 @@
                 $.each(document.employeeList, function (index, value) {
                     var employeeData = {
                         EMPLOYEE_ID: value.EMPLOYEE_ID,
-                        ATTENDANCE_FROM_DATE: selectedFromDate,
-                        ATTENDANCE_TO_DATE: selectedToDate,
+                        FROM_DATE: selectedDate,
+                        TO_DATE: selectedDate
                     }
                     employeeListWithDate.push(employeeData);
                 });
                 employeeList = employeeListWithDate;
             }
-            app.bulkServerRequest('', employeeList, function () {
-                app.showMessage("Reattendance Successful.");
+            app.bulkServerRequest(document.regenAttendanceLink, employeeList, function () {
+                app.showMessage("Attendance Report Regeneration Successful.");
             }, function (data, error) {
                 app.showMessage(error, 'error');
             });
@@ -75,7 +75,6 @@
         $('#filterForRole').on('click', function () {
 
             var companyId = $companyId.val();
-            //console.log(companyId);
             var branchId = $branchId.val();
             var departmentId = $departmentId.val();
             var designationId = $designationId.val();
@@ -84,10 +83,8 @@
             var genderId = $genderId.val();
             var employeeType = $employeeTypeId.val();
             var serviceEventTypeId = $serviceEventTypeId.val();
-            console.log(employeeType);
-            //console.log(genderId);
 
-            
+
             app.pullDataById(document.employeeFilter, {
                 branchId: branchId,
                 departmentId: departmentId,
@@ -100,24 +97,21 @@
                 serviceEventTypeId: serviceEventTypeId,
 
             }).then(function (response) {
-                //console.log(response.data);
                 var data = response.data;
-                console.log(data);
                 var employeeIdArray = [];
                 $('#myModal').modal('hide');
                 $employeeId.empty();
                 app.populateSelect($employeeId, data, 'EMPLOYEE_ID', 'FULL_NAME', '---', '');
-                for(var i=0;i<data.length;i++){
+                for (var i = 0; i < data.length; i++) {
                     employeeIdArray[i] = data[i]['EMPLOYEE_ID'];
                 }
                 $employeeId.select2().val(employeeIdArray).trigger('change');
-                //$employeeId.select2().val().trigger('change');
-                
+
             }, function (failure) {
                 console.log("Employee list for failure", failure);
             });
         });
-        
+
 
     });
 })(window.jQuery, window.app);

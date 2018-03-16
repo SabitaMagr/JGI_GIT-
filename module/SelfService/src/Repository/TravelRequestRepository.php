@@ -30,21 +30,24 @@ class TravelRequestRepository implements RepositoryInterface {
         EntityHelper::rawQueryResult($this->adapter, "
                 DECLARE
                   V_FROM_DATE HRIS_EMPLOYEE_TRAVEL_REQUEST.FROM_DATE%TYPE;
+                  V_TO_DATE HRIS_EMPLOYEE_TRAVEL_REQUEST.TO_DATE%TYPE;
                   V_EMPLOYEE_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.EMPLOYEE_ID%TYPE;
                   V_STATUS HRIS_EMPLOYEE_TRAVEL_REQUEST.STATUS%TYPE;
                   V_TRAVEL_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.TRAVEL_ID%TYPE:= {$id};
                 BEGIN
                   SELECT FROM_DATE ,
+                    TO_DATE,
                     EMPLOYEE_ID,
                     STATUS
                   INTO V_FROM_DATE,
+                    V_TO_DATE,
                     V_EMPLOYEE_ID,
                     V_STATUS
                   FROM HRIS_EMPLOYEE_TRAVEL_REQUEST
                   WHERE TRAVEL_ID =V_TRAVEL_ID;
                   --
                   IF V_STATUS IN ('AP','C') AND V_FROM_DATE < TRUNC(SYSDATE) THEN
-                    HRIS_REATTENDANCE(V_FROM_DATE,V_EMPLOYEE_ID);
+                    HRIS_REATTENDANCE(V_FROM_DATE,V_EMPLOYEE_ID,V_TO_DATE);
                   END IF;
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN

@@ -169,7 +169,7 @@ class AppraisalAssignRepository implements RepositoryInterface {
                 ->join(['DES2' => Designation::TABLE_NAME], "DES2." . Designation::DESIGNATION_ID . "=E2." . HrEmployees::DESIGNATION_ID, ["DESIGNATION_NAME_R" => new Expression("INITCAP(DES2.DESIGNATION_TITLE)")], "left")
                 ->join(['POS1' => Position::TABLE_NAME], "POS1." . Position::POSITION_ID . "=E1." . HrEmployees::POSITION_ID, ["POSITION_NAME_A" => new Expression("INITCAP(POS1.POSITION_NAME)")], "left")
                 ->join(['POS2' => Position::TABLE_NAME], "POS2." . Position::POSITION_ID . "=E2." . HrEmployees::POSITION_ID, ["POSITION_NAME_R" => new Expression("INITCAP(POS2.POSITION_NAME)")], "left")
-                ->join(['MTH' => Months::TABLE_NAME],"MTH.FISCAL_YEAR_ID = A.FISCAL_YEAR_ID AND MTH.FISCAL_YEAR_MONTH_NO = (CASE WHEN A.FISCAL_YEAR_MONTH_NO IS NOT NULL THEN A.FISCAL_YEAR_MONTH_NO ELSE 1 END)",["FROM_DATE"=>new Expression("INITCAP(TO_CHAR(MTH.FROM_DATE,'DD-MON-YYYY'))")]);
+                ->join(['MTH' => Months::TABLE_NAME],"MTH.FISCAL_YEAR_ID = A.FISCAL_YEAR_ID AND (MTH.FISCAL_YEAR_MONTH_NO = CASE WHEN A.FISCAL_YEAR_MONTH_NO IS NOT NULL THEN A.FISCAL_YEAR_MONTH_NO END OR 1=1)",["FROM_DATE"=>new Expression("INITCAP(TO_CHAR(MTH.FROM_DATE,'DD-MON-YYYY'))")]);
 
         $select->where([
             "AA." . AppraisalAssign::EMPLOYEE_ID . "=" . $employeeId,

@@ -31,10 +31,7 @@ class HolidayRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        $array = $model->getArrayCopyForDB();
-        $this->tableGateway->update($array, [
-            Holiday::HOLIDAY_ID => $id
-        ]);
+        $this->tableGateway->update($model->getArrayCopyForDB(), [Holiday::HOLIDAY_ID => $id]);
     }
 
     public function fetchAll($today = null) {
@@ -100,26 +97,26 @@ class HolidayRepository implements RepositoryInterface {
 
     public function filterRecords($fromDate, $toDate) {
         $sql = "
-SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
- BS_DATE(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
-  INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE,
-  BS_DATE(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE_N,
-  A.HOLIDAY_ID,
-  A.HOLIDAY_CODE,
-  INITCAP(A.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
-  INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
-  CASE
-    WHEN A.HALFDAY = 'F'
-    THEN 'First Half'
-    ELSE
-      CASE
-        WHEN A.HALFDAY='S'
-        THEN 'Second Half'
-        ELSE 'Full Day'
-      END
-  END AS HALFDAY
-FROM HRIS_HOLIDAY_MASTER_SETUP A
-WHERE A.STATUS ='E'";
+                SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+                 BS_DATE(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
+                  INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE,
+                  BS_DATE(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE_N,
+                  A.HOLIDAY_ID,
+                  A.HOLIDAY_CODE,
+                  INITCAP(A.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
+                  INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
+                  CASE
+                    WHEN A.HALFDAY = 'F'
+                    THEN 'First Half'
+                    ELSE
+                      CASE
+                        WHEN A.HALFDAY='S'
+                        THEN 'Second Half'
+                        ELSE 'Full Day'
+                      END
+                  END AS HALFDAY
+                FROM HRIS_HOLIDAY_MASTER_SETUP A
+                WHERE A.STATUS ='E'";
 
         if ($fromDate != null) {
             $sql .= " AND A.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";

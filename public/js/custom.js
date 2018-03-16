@@ -687,14 +687,16 @@ window.app = (function ($, toastr, App) {
         return arr;
     };
 
-    document.confirmation = {config: null, setConfig: function (config) {
+    document.confirmation = {
+        config: null,
+        setConfig: function (config) {
             this.config = config
         }};
     (function () {
-        $(".page-content").on("click", ".confirmation", function (e) {
-            e.preventDefault();
+        $(".page-content").on("mouseover", ".confirmation", function (e) {
             var $this = $(this);
             $this.confirmation({
+                placement: 'bottom',
                 onConfirm: function () {
                     if (document.confirmation.config == null) {
                         location.href = $this.attr('href');
@@ -1273,8 +1275,15 @@ window.app = (function ($, toastr, App) {
                 for (var i in iParams) {
                     url += `/#: ${iParams[i]} #`;
                 }
+                var confirmationClass = '';
+                if (typeof config.delete['confirmation'] === 'undefined' || config.delete['confirmation'] === null) {
+                    confirmationClass = 'confirmation'
+                } else {
+                    confirmationClass = (config.delete['confirmation']) ? 'confirmation' : '';
+
+                }
                 var deleteLink = `
-                <a class="confirmation btn-delete" title="Delete" href="${url}" style="height:17px;">
+                <a class="${confirmationClass} btn-delete" title="Delete" href="${url}" style="height:17px;">
                     <i class="fa fa-trash-o"></i>
                 </a>`;
             }
