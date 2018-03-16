@@ -1,9 +1,13 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.datePickerWithNepali('fromDate', 'nepalifromDate');
-        app.datePickerWithNepali('toDate', 'nepalitoDate');
-
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
+        app.getServerDate().then(function (response) {
+            $('#fromDate').val(response.data.serverDate);
+            $('#nepaliFromDate').val(nepaliDatePickerExt.fromEnglishToNepali(response.data.serverDate));
+            $('#toDate').val(response.data.serverDate);
+            $('#nepaliToDate').val(nepaliDatePickerExt.fromEnglishToNepali(response.data.serverDate));
+        });
         var $employeeId = $('#employeeId');
         var $filterBtn = $('#btn-filter');
         var $submitBtn = $('#btn-reAttendnace');
@@ -28,7 +32,6 @@
         app.populateSelect($serviceTypeId, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'All Service Type', '');
         app.populateSelect($serviceEventTypeId, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'All Working Type', '');
         app.populateSelect($genderId, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender', '');
-        //app.populateSelect($employeeTypeId, document.searchValues['employeeType'], 'EMPLOYEE_TYPE', 'EMPLOYEE_TYPE', 'All Employee Type', '');
         $submitBtn.on('click', function () {
             var selectedFromDate = $('#fromDate').val();
             var selectedToDate = $('#toDate').val();
