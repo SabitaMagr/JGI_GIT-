@@ -73,7 +73,11 @@ class RoleSetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("rolesetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'customRenderer' => Helper::renderCustomView(),]);
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
     }
 
     public function editAction() {

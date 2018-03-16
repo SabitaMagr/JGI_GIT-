@@ -80,7 +80,7 @@ class SystemUtility extends HrisController {
             $serviceTypeId = $postData['serviceTypeId'];
             $genderId = $postData['genderId'];
             $serviceEventTypeId = $postData['serviceEventTypeId'];
-        
+
             $repository = new SystemUtilityRepository($this->adapter);
             $employeeResult = $repository->filterRecords($branchId, $departmentId, $designationId, $positionId, $employeeType, $serviceTypeId, $companyId, $genderId, $serviceEventTypeId);
 

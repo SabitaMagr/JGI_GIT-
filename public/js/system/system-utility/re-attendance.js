@@ -25,10 +25,10 @@
         app.populateSelect($departmentId, document.searchValues['department'], 'DEPARTMENT_ID', 'DEPARTMENT_NAME', 'All Departments', '');
         app.populateSelect($designationId, document.searchValues['designation'], 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'All Designation', '');
         app.populateSelect($positionId, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', 'All Position', '');
-        //app.populateSelect($employeeTypeId, document.searchValues['employeeType'], 'EMPLOYEE_TYPE', 'EMPLOYEE_TYPE', 'All Employee Type', '');
         app.populateSelect($serviceTypeId, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'All Service Type', '');
-        app.populateSelect($genderId, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender', '');
         app.populateSelect($serviceEventTypeId, document.searchValues['serviceEventType'], 'SERVICE_EVENT_TYPE_ID', 'SERVICE_EVENT_TYPE_NAME', 'All Working Type', '');
+        app.populateSelect($genderId, document.searchValues['gender'], 'GENDER_ID', 'GENDER_NAME', 'All Gender', '');
+        //app.populateSelect($employeeTypeId, document.searchValues['employeeType'], 'EMPLOYEE_TYPE', 'EMPLOYEE_TYPE', 'All Employee Type', '');
         $submitBtn.on('click', function () {
             var selectedFromDate = $('#fromDate').val();
             var selectedToDate = $('#toDate').val();
@@ -42,8 +42,8 @@
                 var employeeid = $(this).val();
                 var employeeData = {
                     EMPLOYEE_ID: employeeid,
-                    ATTENDANCE_FROM_DATE: selectedFromDate,
-                    ATTENDANCE_TO_DATE: selectedToDate,
+                    FROM_DATE: selectedFromDate,
+                    TO_DATE: selectedToDate,
                 }
                 selectedEmployees.push(employeeData);
             });
@@ -55,8 +55,8 @@
                 $.each(document.employeeList, function (index, value) {
                     var employeeData = {
                         EMPLOYEE_ID: value.EMPLOYEE_ID,
-                        FROM_DATE: selectedDate,
-                        TO_DATE: selectedDate
+                        FROM_DATE: selectedFromDate,
+                        TO_DATE: selectedToDate
                     }
                     employeeListWithDate.push(employeeData);
                 });

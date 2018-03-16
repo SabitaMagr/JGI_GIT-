@@ -66,6 +66,12 @@ $form->prepare();
                         </div>
                         <?php print $this->formElementErrors()->render($control, ['class' => 'help-block error']); ?>
                     </div>
+                    <div class="col-sm-4">
+                        <label for="selectOptions" id="controlOption"></label>
+                        <div class="form-group">
+                            <?php print $this->formElement($selectOptions); ?>
+                        </div>
+                    </div>
                     <div class=" col-sm-4 ">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($allowAdd); ?>
@@ -100,13 +106,6 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <label for="selectOptions" id="controlOption"></label>
-                        <div class="form-group">
-                            <?php print $this->formElement($selectOptions);?>
-                        </div>
-                    </div>
-
                 </div>
 
 
