@@ -1275,8 +1275,15 @@ window.app = (function ($, toastr, App) {
                 for (var i in iParams) {
                     url += `/#: ${iParams[i]} #`;
                 }
+                var confirmationClass = '';
+                if (typeof config.delete['confirmation'] === 'undefined' || config.delete['confirmation'] === null) {
+                    confirmationClass = 'confirmation'
+                } else {
+                    confirmationClass = (config.delete['confirmation']) ? 'confirmation' : '';
+
+                }
                 var deleteLink = `
-                <a class="confirmation btn-delete" title="Delete" href="${url}" style="height:17px;">
+                <a class="${confirmationClass} btn-delete" title="Delete" href="${url}" style="height:17px;">
                     <i class="fa fa-trash-o"></i>
                 </a>`;
             }

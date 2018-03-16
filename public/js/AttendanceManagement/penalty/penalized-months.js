@@ -11,7 +11,8 @@
             delete: {
                 'ALLOW_DELETE': document.acl.ALLOW_DELETE,
                 'params': ["COMPANY_ID", "FISCAL_YEAR_ID", "FISCAL_YEAR_MONTH_NO"],
-                'url': document.deleteLink
+                'url': document.deleteLink,
+                'confirmation': false
             }
         };
 
@@ -79,11 +80,12 @@
             return false;
         });
 
-        document.confirmation.setConfig({onConfirm: function ($this) {
-                var link = $this.attr('href');
-                deductionProcess(link, {action: 'D', noOfDeductionDays: $noOfDeductionDays.val()});
-                return false;
-            }});
+        $('body').on('click', '.btn-delete', function () {
+            var $this = $(this);
+            var link = $this.attr('href');
+            deductionProcess(link, {action: 'D', noOfDeductionDays: $noOfDeductionDays.val()});
+            return false;
+        });
 
 
 
