@@ -10,7 +10,7 @@
         var $contractSelect = $('#ContractSelect');
         var $assignTable = $('#assignTable');
 
-        console.log(document.customerList);
+      //  console.log(document.customerList);
 
         app.populateSelect($('#CustomerSelect'), document.customerList, 'CUSTOMER_ID', 'CUSTOMER_ENAME', 'Select An Customer', '');
 

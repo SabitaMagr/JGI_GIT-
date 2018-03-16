@@ -25,17 +25,6 @@ class ContractEmployees extends HrisController {
     }
 
     public function indexAction() {
-//        $request = $this->getRequest();
-//        if ($request->isPost()) {
-//            try {
-//                $customerRepo = new CustomerContractRepo($this->adapter);
-//                $result = $customerRepo->fetchAll();
-//                $list = Helper::extractDbData($result);
-//                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
-//            } catch (Exception $e) {
-//                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-//            }
-//        }
 
         $employeeListSql = "select E.EMPLOYEE_ID,'('||E.EMPLOYEE_CODE||') '||E.FULL_NAME||' ('||D.DESIGNATION_TITLE||')'  AS FULL_NAME 
             from  HRIS_EMPLOYEES E
@@ -50,8 +39,7 @@ class ContractEmployees extends HrisController {
         return Helper::addFlashMessagesToArray($this, [
                     'acl' => $this->acl,
                     'customerList' => EntityHelper::getTableList($this->adapter, Customer::TABLE_NAME, [Customer::CUSTOMER_ID, Customer::CUSTOMER_ENAME], [Customer::STATUS => "E"]),
-                    'employeeList' => $employeeList,
-                    'locationList' => $locationList
+                    'employeeList' => $employeeList
         ]);
     }
 

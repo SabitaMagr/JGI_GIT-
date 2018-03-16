@@ -23,7 +23,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
     document.pullContractDetails = '<?= $this->url("contract-employees", ["action" => "fetchContractDetails"]); ?>';
     document.pullDesignationWiseEmpAssign = '<?= $this->url("contract-employees", ["action" => "fetchContractDesginationWiseEmployeeAssign"]); ?>';
     document.employeeList =<?= json_encode($employeeList); ?>;
-    document.locationList =<?= json_encode($locationList) ?>;
+  
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
