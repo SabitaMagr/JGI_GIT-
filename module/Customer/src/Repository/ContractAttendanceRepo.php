@@ -112,12 +112,9 @@ class ContractAttendanceRepo implements RepositoryInterface {
 
     public function getMonthList() {
         $sql = <<<EOT
-            SELECT AM.MONTH_ID,M.MONTH_EDESC FROM
-            (SELECT  UNIQUE (SELECT M.MONTH_ID
-                FROM HRIS_MONTH_CODE M
-                WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-                ) AS MONTH_ID
-            FROM HRIS_ATTENDANCE_DETAIL AD) AM JOIN HRIS_MONTH_CODE M ON (M.MONTH_ID=AM.MONTH_ID) 
+            SELECT MC.MONTH_ID,MC.MONTH_EDESC FROM HRIS_FISCAL_YEARS FY
+LEFT JOIN HRIS_MONTH_CODE MC  ON (FY.FISCAL_YEAR_ID=MC.FISCAL_YEAR_ID)
+WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE ORDER BY MONTH_ID
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

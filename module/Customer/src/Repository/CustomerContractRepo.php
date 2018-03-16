@@ -66,6 +66,10 @@ class CustomerContractRepo implements RepositoryInterface {
                 ), false);
         $select->from(['CC' => CustomerContract::TABLE_NAME])
                 ->join(['C' => "HRIS_CUSTOMER"], "C." . Customer::CUSTOMER_ID . "=CC." . CustomerContract::CUSTOMER_ID, ['CUSTOMER_ENAME' => new Expression("INITCAP(C.CUSTOMER_ENAME)"),'ADDRESS' => new Expression("INITCAP(C.ADDRESS)"),'START_DATE_BS'=>new Expression("BS_DATE(CC.START_DATE)"),'END_DATE_BS'=>new Expression("BS_DATE(CC.END_DATE)")], 'left');
+        
+         $select->where([
+            "CC.CONTRACT_ID=$id"
+        ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();

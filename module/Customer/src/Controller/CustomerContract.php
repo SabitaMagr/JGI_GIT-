@@ -122,7 +122,7 @@ class CustomerContract extends AbstractActionController {
         $customerIdElement->setValueOptions(EntityHelper::getTableKVList($this->adapter, Customer::TABLE_NAME, Customer::CUSTOMER_ID, [Customer::CUSTOMER_ENAME], [Customer::STATUS => EntityHelper::STATUS_ENABLED], null, true));
         $customerContract = new CustomerContractModel();
         $detail = $this->repository->fetchById($id);
-
+        
 
         $customerContract->exchangeArrayFromDB($detail);
         $form->bind($customerContract);
