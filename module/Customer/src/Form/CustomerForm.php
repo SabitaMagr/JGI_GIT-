@@ -51,12 +51,11 @@ class CustomerForm {
     public $address;
 
     /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(false)
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Phone No"})
-     * @Annotation\Attributes({ "id":"phoneNo", "class":"form-control" })
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"30"}})
+     * @Annotation\Attributes({ "id":"phoneNo", "class":" form-control"})
      */
     public $phoneNo;
 
@@ -85,7 +84,7 @@ class CustomerForm {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
-    
+
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(false)

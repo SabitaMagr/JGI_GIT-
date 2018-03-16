@@ -20,6 +20,9 @@
                 <a class="btn-edit" title="View" href="${document.contractDetailLink}/#:CONTRACT_ID #" style="height:17px;">
                     <i class="fa fa-search-plus"></i>
                 </a>
+                <a class="btn-edit" title="View" href="${document.contractPrintLink}/#:CONTRACT_ID #" style="height:17px;">
+                    <i class="fa fa-print"></i>
+                </a>
                 `;
         var allTemplate=actionTemplate+locationLinkTemplate;
         

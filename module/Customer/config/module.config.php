@@ -3,7 +3,9 @@
 namespace Customer;
 
 use Application\Controller\ControllerFactory;
+use Customer\Controller\ContractAbsentDetails;
 use Customer\Controller\ContractAttendance;
+use Customer\Controller\ContractEmpAddedDetails;
 use Customer\Controller\ContractEmployees;
 use Customer\Controller\CustomerContract;
 use Customer\Controller\CustomerContractDetails;
@@ -113,6 +115,34 @@ return [
                     ],
                 ],
             ],
+            'contract-absent-details' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/contract/absent/details[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => ContractAbsentDetails::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'contract-added-details' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/contract/added/details[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => ContractEmpAddedDetails::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -207,6 +237,8 @@ return [
             ServiceEmployeeSetup::class => ControllerFactory::class,
             ContractAttendance::class => ControllerFactory::class,
             ContractEmployees::class => ControllerFactory::class,
+            ContractAbsentDetails::class => ControllerFactory::class,
+            ContractEmpAddedDetails::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

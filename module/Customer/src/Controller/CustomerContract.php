@@ -114,7 +114,7 @@ class CustomerContract extends AbstractActionController {
                 return $this->redirect()->toRoute("customer-contract");
             }
         }
-        
+
 
 
 
@@ -133,6 +133,26 @@ class CustomerContract extends AbstractActionController {
             'id' => $id,
             'customRenderer' => Helper::renderCustomView(),
             'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"]),
+        ]);
+    }
+
+    public function printAction() {
+        $id = (int) $this->params()->fromRoute("id");
+        if ($id === 0) {
+            return $this->redirect()->toRoute("customer-contract");
+        }
+        $contract = $this->repository->fetchById($id);
+
+        $contractDetailRepo = new \Customer\Repository\CustomerContractDetailRepo($this->adapter);
+
+        $contractDetails = $contractDetailRepo->fetchAllContractDetailByContractId($id);
+
+
+
+        return new ViewModel([
+            'id' => $id,
+            'contract' => $contract,
+            'contractDetails' => $contractDetails,
         ]);
     }
 

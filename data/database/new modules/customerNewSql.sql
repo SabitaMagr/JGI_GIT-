@@ -177,6 +177,109 @@ STATUS CHAR(2 BYTE) NOT NULL CHECK (STATUS IN ('PR','AB','HO'))
 );
 
 
+CREATE TABLE HRIS_CONTRACT_EMP_ABSENT_SUB(
+ID NUMBER(7,0),
+ATTENDANCE_DATE DATE,
+CUSTOMER_ID NUMBER(7,0),
+CONTRACT_ID NUMBER(7,0), 
+EMPLOYEE_ID NUMBER(7,0),
+EMPLOYEE_LOCATION_ID NUMBER(7,0),
+EMPLOYEE_DESIGNATION_ID NUMBER(7,0),
+EMPLOYEE_SHIFT_ID NUMBER(7,0),
+ABSENT_REASON VARCHAR2(255 BYTE),
+SUB_EMPLOYEE_ID NUMBER(7,0),
+SUB_SHIFT_TYPE_ID NUMBER(7,0),
+SUB_LOCATION_ID NUMBER(7,0),
+SUB_DESIGNATION_ID NUMBER(7,0),
+POSTING_TYPE VARCHAR2(50 BYTE),
+NORMAL_HOUR FLOAT(126),
+OT_HOUR FLOAT(126),
+PT_HOUR FLOAT(126),
+CREATED_BY          NUMBER(7,0) ,
+CREATED_DT          DATE DEFAULT TRUNC(SYSDATE),
+MODIFIED_BY         NUMBER(7,0),
+MODIFIED_DT         DATE,
+REMARKS             VARCHAR2(512 BYTE),
+STATUS              CHAR(1 BYTE) DEFAULT 'E' NOT NULL CHECK(STATUS IN ('E','D'))
+);
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Employee Absent Details',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null),
+'contract-absent-details',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+1,
+'Y'
+);
+
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Employee Added Details',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null),
+'contract-added-details',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+1,
+'Y'
+);
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Bill',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null),
+'contract-attendance',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'billPrint',
+1,
+'Y'
+);
+
+
 
 
 

@@ -37,11 +37,20 @@ class ContractEmployees extends HrisController {
 //            }
 //        }
 
+        $employeeListSql = "select E.EMPLOYEE_ID,'('||E.EMPLOYEE_CODE||') '||E.FULL_NAME||' ('||D.DESIGNATION_TITLE||')'  AS FULL_NAME 
+            from  HRIS_EMPLOYEES E
+            LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=E.DESIGNATION_ID)
+            where E.status='E' and E.RESIGNED_FLAG='N'";
+
+
+        $employeeDetails = EntityHelper::rawQueryResult($this->adapter, $employeeListSql);
+        $employeeList = Helper::extractDbData($employeeDetails);
+
 
         return Helper::addFlashMessagesToArray($this, [
                     'acl' => $this->acl,
                     'customerList' => EntityHelper::getTableList($this->adapter, Customer::TABLE_NAME, [Customer::CUSTOMER_ID, Customer::CUSTOMER_ENAME], [Customer::STATUS => "E"]),
-                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E"]),
+                    'employeeList' => $employeeList,
                     'locationList' => $locationList
         ]);
     }
@@ -85,7 +94,7 @@ class ContractEmployees extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postData = $request->getPost();
-//            $customerId = $request->getPost('customerId');
+            $customerId = $request->getPost('customerId');
             $contractId = $request->getPost('contractId');
             $employeedesignation = $request->getPost('designation');
             $employees = $request->getPost('employee');
@@ -94,10 +103,6 @@ class ContractEmployees extends HrisController {
             $employeeEndTime = $request->getPost('employeeEndTime');
 
 
-//            echo '<pre>';
-//            print_r($postData);
-//
-//            die();
 
             if ($employees) {
                 $i = 0;
@@ -118,7 +123,7 @@ class ContractEmployees extends HrisController {
 
 
                 $custEmployeeRepo = new CustContractEmpRepo($this->adapter);
-                $custEmployeeModel->customerId = 1;
+                $custEmployeeModel->customerId = $customerId;
                 $custEmployeeModel->lastAssignedDate = Helper::getCurrentDate();
 
                 foreach ($employees as $employeeDetails) {

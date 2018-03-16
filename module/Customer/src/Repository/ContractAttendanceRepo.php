@@ -5,6 +5,7 @@ namespace Customer\Repository;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
+use Application\Repository\MonthRepository;
 use Application\Repository\RepositoryInterface;
 use Customer\Model\ContractAttendanceModel;
 use Zend\Db\Adapter\AdapterInterface;
@@ -130,10 +131,16 @@ EOT;
     }
 
     public function getCutomerEmpAttendnaceMonthly($monthId, $customerId) {
+        $monthDetails = EntityHelper::rawQueryResult($this->adapter, "select from_date,to_date,to_date-from_date+1 as daysCount from hris_month_code where month_id={$monthId}")->current();
+
+        $fromDate = $monthDetails['FROM_DATE'];
+        $toDate = $monthDetails['TO_DATE'];
+        $daysCount = $monthDetails['DAYSCOUNT'];
+
 
         $pivotString = '';
-        for ($i = 1; $i <= 32; $i++) {
-            if ($i != 32) {
+        for ($i = 1; $i <= $daysCount; $i++) {
+            if ($i != $daysCount) {
                 $pivotString .= $i . ' AS ' . 'C' . $i . ', ';
             } else {
                 $pivotString .= $i . ' AS ' . 'C' . $i;
@@ -146,34 +153,71 @@ EOT;
  CASE  WHEN CA.STATUS IS NULL THEN 
  'PR'
  ELSE CA.STATUS END AS STATUS
- from (SELECT   M.FROM_DATE + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,M.FROM_DATE
+ from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
     FROM dual d
-    join HRIS_MONTH_CODE M on (1=1) where m.month_id={$monthId}
-    CONNECT BY  rownum <= M.TO_DATE - M.FROM_DATE + 1
+    CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
  ) D
-   LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1)
+   LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1 and CE.status='E')
     LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (CA.EMPLOYEE_ID=CE.EMPLOYEE_ID 
     AND CA.LOCATION_ID=CE.LOCATION_ID AND CA.ATTENDANCE_DATE=D.DATES)
     LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
     LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
-    LEFT JOIN HRIS_CUSTOMER_CONTRACT_DETAILS CD ON (CD.CONTRACT_ID=CE.CONTRACT_ID AND CD.DESIGNATION_ID=CE.DESIGNATION_ID)
+    LEFT JOIN HRIS_CUSTOMER_CONTRACT_DETAILS CD ON (CD.CONTRACT_ID=CE.CONTRACT_ID AND CD.DESIGNATION_ID=CE.DESIGNATION_ID AND CD.status='E')
+    LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CD.CONTRACT_ID)
     LEFT JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=CD.SHIFT_ID)
-    WHERE CE.STATUS='E' AND CE.CUSTOMER_ID={$customerId})PIVOT (MAX(STATUS) FOR DAY_COUNT IN ({$pivotString})) 
+    WHERE CE.STATUS='E' AND CE.CUSTOMER_ID={$customerId} AND D.DATES BETWEEN CC.START_DATE AND CC.END_DATE)PIVOT (MAX(STATUS) FOR DAY_COUNT IN ({$pivotString})) 
                 ";
 
-//    echo $sql;
-//    die();
-
-
+//        echo $sql;
+//        die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return Helper::extractDbData($result);
+
+        $returnData['monthDetails'] = $monthDetails;
+        $returnData['attendanceResult'] = Helper::extractDbData($result);
+
+        return $returnData;
     }
 
     public function updateAttendance($sql) {
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
+    }
+
+    public function pullMonthlyBillCustomerWise($monthId, $customerId) {
+        $monthDetails = EntityHelper::rawQueryResult($this->adapter, "select from_date,to_date,to_date-from_date+1 as daysCount from hris_month_code where month_id={$monthId}")->current();
+
+        $fromDate = $monthDetails['FROM_DATE'];
+        $toDate = $monthDetails['TO_DATE'];
+
+
+
+        $sql = "SELECT EMPLOYEE_ID,FULL_NAME,CONTRACT_ID,LOCATION_ID,LOCATION_NAME,DESIGNATION_ID,DESIGNATION_TITLE,RATE,COUNT(STATUS) AS PRESENT_DAYS 
+  FROM (select D.FROM_DATE,D.DAY_COUNT,D.DATES,
+ CE.EMPLOYEE_ID,E.FULL_NAME,CE.CONTRACT_ID,CE.LOCATION_ID,CL.LOCATION_NAME,CD.SHIFT_ID,CD.DESIGNATION_ID,D.D.DESIGNATION_TITLE,CD.RATE,
+ CASE  WHEN CA.STATUS IS NULL THEN 
+ 'PR'
+ ELSE CA.STATUS END AS STATUS
+ from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
+    FROM dual d
+    CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
+ ) D
+   LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1 and CE.status='E')
+    LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (CA.EMPLOYEE_ID=CE.EMPLOYEE_ID 
+    AND CA.LOCATION_ID=CE.LOCATION_ID AND CA.ATTENDANCE_DATE=D.DATES)
+    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
+    LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
+    LEFT JOIN HRIS_CUSTOMER_CONTRACT_DETAILS CD ON (CD.CONTRACT_ID=CE.CONTRACT_ID AND CD.DESIGNATION_ID=CE.DESIGNATION_ID AND CD.status='E')
+    LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CD.CONTRACT_ID)
+    LEFT JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=CD.SHIFT_ID)
+    LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=CD.DESIGNATION_ID)
+    WHERE CE.STATUS='E' AND CE.CUSTOMER_ID={$customerId} AND D.DATES BETWEEN CC.START_DATE AND CC.END_DATE )
+    WHERE STATUS='PR' GROUP BY EMPLOYEE_ID,FULL_NAME,CONTRACT_ID,LOCATION_ID,LOCATION_NAME,DESIGNATION_ID,DESIGNATION_TITLE,RATE";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }

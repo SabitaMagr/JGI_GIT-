@@ -1,4 +1,3 @@
-
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
@@ -7,7 +6,7 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
-        ->appendFile($this->basePath('js/customer/customer-contract/index.js'));
+        ->appendFile($this->basePath('js/customer/Contract-emp-added-details/index.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -17,16 +16,15 @@ $this->headScript()
 <?php } ?>
 
 <script>
-    document.editLink = '<?= $this->url("customer-contract", ["action" => "edit"]); ?>';
-    document.deleteLink = '<?= $this->url("customer-contract", ["action" => "delete"]); ?>';
+    document.editLink = '<?= $this->url("contract-added-details", ["action" => "edit"]); ?>';
+    document.deleteLink = '<?= $this->url("contract-added-details", ["action" => "delete"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
-    document.contractDetailLink='<?= $this->url("customer-contract-details", ["action" => "view"]); ?>';
-    document.contractEmpAssignLink='<?= $this->url("contract-employees", ["action" => "view"]); ?>';
-    document.contractPrintLink='<?= $this->url("customer-contract", ["action" => "print"]); ?>';
 </script>
+
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\service-employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
+
 
 <div class="margin-top-20">
     <div class="portlet light bg-inverse">
@@ -37,7 +35,7 @@ $this->headScript()
             </div>
             <div class="actions">
                 <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
-                    <a href="<?= $this->url('customer-contract', ['action' => 'add']) ?>" class="btn default btn-sm">
+                    <a href="<?= $this->url('contract-added-details', ['action' => 'add']) ?>" class="btn default btn-sm">
                         <i class="fa fa-plus-square icon-black"></i>
                         New 
                     </a>

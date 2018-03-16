@@ -50,8 +50,6 @@ class ContractAttendance extends HrisController {
             $monthId = $request->getPost('monthId');
 
             $attendnaceDetails = $this->repository->getCutomerEmpAttendnaceMonthly($monthId, $customerId);
-
-
             return new JsonModel(['success' => true, 'data' => $attendnaceDetails, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -369,14 +367,6 @@ class ContractAttendance extends HrisController {
             $locationId = $kendoData['LOCATION_ID'];
             $shiftId = $kendoData['SHIFT_ID'];
 
-//            echo 'customer' . $customerId . '</br>';
-//            echo 'contract' . $contractId . '</br>';
-//            echo 'monthId' . $monthId . '</br>';
-//            echo 'employee' . $employeeId . '</br>';
-//            echo 'location' . $locationId . '</br>';
-//            echo 'shift' . $shiftId . '</b>r';
-//    echo '<pre>';
-//            print_r($kendoData);
             $sql = "BEGIN
                     DELETE FROM HRIS_CONTRACT_EMP_ATTENDANCE WHERE
  MONTH_CODE={$monthId} AND CONTRACT_ID={$contractId} AND EMPLOYEE_ID={$employeeId} 
@@ -402,6 +392,35 @@ AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
 
             $result = $this->repository->updateAttendance($sql);
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function billPrintAction() {
+
+        $monthList = $this->repository->getMonthList();
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'customerList' => EntityHelper::getTableList($this->adapter, Customer::TABLE_NAME, [Customer::CUSTOMER_ID, Customer::CUSTOMER_ENAME], [Customer::STATUS => "E"]),
+                    'monthList' => $monthList
+        ]);
+    }
+
+    public function pullMonthlyBillCustomerWiseAction() {
+        try {
+            $request = $this->getRequest();
+            $customerId = $request->getPost('customerId');
+            $monthId = $request->getPost('monthId');
+
+
+
+
+            $returnData['attendnaceDetails'] = $this->repository->pullMonthlyBillCustomerWise($monthId, $customerId);
+
+
+//            $attendnaceDetails = $this->repository->pullMonthlyBillCustomerWise($monthId, $customerId);
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

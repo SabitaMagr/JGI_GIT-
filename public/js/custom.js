@@ -1292,6 +1292,23 @@ window.app = (function ($, toastr, App) {
         popupWin.document.write('<style>@page{size:landscape;}</style><html><head><link rel="stylesheet" type="text/css" href="' + cssUrl + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
         popupWin.document.close();
     };
+    
+    var exportDomToPdf2 = function (divId) {
+        var $div = divId;
+        if (!(divId instanceof jQuery)) {
+            $div = $('#' + divId);
+        }
+        var printContents = $div.html();
+        var popupWin = window.open('', '_blank', 'width=1000,height=500,toolbar=0,scrollbars=0,status=0');
+        popupWin.document.open();
+        var links = '';
+        var $linkList = $('link');
+        $.each($linkList, function (index, item) {
+            links = links + item.outerHTML;
+        });
+        popupWin.document.write('<style>@page{size:landscape;}</style><html><head>' + links + '</head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.close();
+    };
 
     var bulkServerRequest = function (link, dataList, completeFn, errorFn) {
         (function (dataList) {
@@ -1375,6 +1392,7 @@ window.app = (function ($, toastr, App) {
         genKendoActionTemplate: genKendoActionTemplate,
         getDateRangeBetween: getDateRangeBetween,
         exportDomToPdf: exportDomToPdf,
+        exportDomToPdf2: exportDomToPdf2,
         serverRequest: serverRequest,
         bulkServerRequest: bulkServerRequest
 
