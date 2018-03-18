@@ -2,6 +2,7 @@
 
 namespace AttendanceManagement\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\ACLHelper;
 use Application\Helper\EntityHelper as EntityHelper2;
@@ -13,25 +14,15 @@ use Exception;
 use Setup\Model\Company;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-class ShiftSetup extends AbstractActionController {
-
-    private $repository;
-    private $form;
-    private $adapter;
-    private $employeeId;
-    private $storageData;
-    private $acl;
+class ShiftSetup extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->repository = new ShiftRepository($adapter);
-        $this->adapter = $adapter;
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
-        $this->acl = $this->storageData['acl'];
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(ShiftRepository::class);
+        $this->initializeForm(ShiftForm::class);
     }
 
     public function indexAction() {
@@ -39,29 +30,21 @@ class ShiftSetup extends AbstractActionController {
         if ($request->isPost()) {
             try {
                 $result = $this->repository->fetchAll();
-                $shiftList = Helper::extractDbData($result);
-                return new CustomViewModel(['success' => true, 'data' => $shiftList, 'error' => '']);
+                $shiftList = iterator_to_array($result, false);
+                return new JsonModel(['success' => true, 'data' => $shiftList, 'error' => '']);
             } catch (Exception $e) {
-                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
-    }
-
-    public function initializeForm() {
-        $shiftFrom = new ShiftForm();
-        $builder = new AnnotationBuilder();
-        $this->form = $builder->createForm($shiftFrom);
+        return $this->stickFlashMessagesTo(['acl' => $this->acl]);
     }
 
     public function addAction() {
-        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
-        $this->initializeForm();
         $request = $this->getRequest();
+        $shift = new Shift();
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
-                $shift = new Shift();
                 $shift->exchangeArrayFromForm($this->form->getData());
                 $shift->shiftId = ((int) Helper::getMaxId($this->adapter, Shift::TABLE_NAME, Shift::SHIFT_ID)) + 1;
                 $shift->startDate = Helper::getExpressionDate($shift->startDate);
@@ -90,23 +73,25 @@ class ShiftSetup extends AbstractActionController {
                 return $this->redirect()->toRoute("shiftsetup");
             }
         }
+        $id = (int) $this->params()->fromRoute("id", 0);
+        if ($id !== 0) {
+            $shift->exchangeArrayFromDB($this->repository->fetchById($id));
+            $this->form->bind($shift);
+        }
 
         $defaultShift = $this->repository->DefaultShift();
 
-        return new ViewModel(Helper::addFlashMessagesToArray(
-                        $this, [
-                    'form' => $this->form,
-                    'customRenderer' => Helper::renderCustomView(),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE),
-                    'anotherDefaultShift' => $defaultShift
+        return $this->stickFlashMessagesTo(
+                        [
+                            'form' => $this->form,
+                            'customRenderer' => Helper::renderCustomView(),
+                            'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], [Company::STATUS => 'E'], "COMPANY_NAME", "ASC", NULL, TRUE, TRUE),
+                            'anotherDefaultShift' => $defaultShift
                         ]
-                )
         );
     }
 
     public function editAction() {
-        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
-        $this->initializeForm();
         $id = (int) $this->params()->fromRoute("id");
 
         if ($id === 0) {
