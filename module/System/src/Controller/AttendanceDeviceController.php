@@ -6,6 +6,8 @@ use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
+use Setup\Model\Branch;
+use Setup\Model\Company;
 use System\Form\AttendanceDeviceForm;
 use System\Model\AttendanceDevice;
 use System\Repository\AttendanceDeviceRepository;
@@ -59,6 +61,7 @@ class AttendanceDeviceController extends HrisController {
                 return $this->redirect()->toRoute("AttendanceDevice");
             }
         }
+        $this->prepareForm();
         return $this->stickFlashMessagesTo([
                     'form' => $this->form,
         ]);
@@ -67,14 +70,8 @@ class AttendanceDeviceController extends HrisController {
     public function editAction() {
         $id = (int) $this->params()->fromRoute("id");
         $request = $this->getRequest();
-
         $attendanceDevice = new AttendanceDevice();
-        $detail = $this->repository->fetchById($id)->getArrayCopy();
-
-        if (!$request->isPost()) {
-            $attendanceDevice->exchangeArrayFromDB($detail);
-            $this->form->bind($attendanceDevice);
-        } else {
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
@@ -83,10 +80,24 @@ class AttendanceDeviceController extends HrisController {
                 return $this->redirect()->toRoute("AttendanceDevice");
             }
         }
+        $detail = $this->repository->fetchById($id)->getArrayCopy();
+        $attendanceDevice->exchangeArrayFromDB($detail);
+        $this->form->bind($attendanceDevice);
+        $this->prepareForm();
         return $this->stickFlashMessagesTo([
                     'id' => $id,
                     'form' => $this->form,
         ]);
+    }
+
+    private function prepareForm() {
+        $companyList = EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, TRUE);
+        $companySE = $this->form->get('companyId');
+        $companySE->setValueOptions($companyList);
+
+        $branchList = EntityHelper::getTableKVListWithSortOption($this->adapter, Branch::TABLE_NAME, Branch::BRANCH_ID, [Branch::BRANCH_NAME], ["STATUS" => "E"], Branch::BRANCH_NAME, "ASC", null, true, TRUE);
+        $branchSE = $this->form->get('branchId');
+        $branchSE->setValueOptions($branchList);
     }
 
     public function deleteAction() {
