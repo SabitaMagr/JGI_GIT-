@@ -77,7 +77,7 @@
         populateList($designation, document.searchValues['designation'], 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'All Designation');
         populateList($position, document.searchValues['position'], 'POSITION_ID', 'POSITION_NAME', 'All Position');
         populateList($serviceType, document.searchValues['serviceType'], 'SERVICE_TYPE_ID', 'SERVICE_TYPE_NAME', 'All Service Type');
-        populateList($employee, document.searchValues['employee'], 'EMPLOYEE_ID', ['FIRST_NAME', 'MIDDLE_NAME', 'LAST_NAME'], 'All Employee');
+        populateList($employee, document.searchValues['employee'], 'EMPLOYEE_ID', 'FULL_NAME', 'All Employee');
         
         if ($employeeType.length != 0) {
                 populateList($employeeType, document.searchValues['employeeType'], 'EMPLOYEE_TYPE_KEY', 'EMPLOYEE_TYPE_VALUE', 'All Employee Type');

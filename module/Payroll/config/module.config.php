@@ -2,8 +2,12 @@
 
 namespace Payroll;
 
-use Zend\Router\Http\Segment;
 use Application\Controller\ControllerFactory;
+use Payroll\Controller\FlatValue;
+use Payroll\Controller\Generate;
+use Payroll\Controller\MonthlyValue;
+use Payroll\Controller\Rules;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
@@ -13,7 +17,7 @@ return [
                 'options' => [
                     'route' => '/payroll/monthlyValue[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\MonthlyValue::class,
+                        'controller' => MonthlyValue::class,
                         'action' => 'index'
                     ]
                 ]
@@ -23,7 +27,7 @@ return [
                 'options' => [
                     'route' => '/payroll/flatValue[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\FlatValue::class,
+                        'controller' => FlatValue::class,
                         'action' => 'index'
                     ]
                 ]
@@ -33,7 +37,7 @@ return [
                 'options' => [
                     'route' => '/payroll/rules[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\Rules::class,
+                        'controller' => Rules::class,
                         'action' => 'index'
                     ]
                 ]
@@ -43,7 +47,7 @@ return [
                 'options' => [
                     'route' => '/payroll/generate[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\Generate::class,
+                        'controller' => Generate::class,
                         'action' => 'index'
                     ]
                 ]
@@ -76,9 +80,14 @@ return [
                         'action' => 'edit',
                     ],
                     [
-                        'label' => 'Detail',
+                        'label' => 'Employee Wise',
                         'route' => 'monthlyValue',
                         'action' => 'detail',
+                    ],
+                    [
+                        'label' => 'Position Wise',
+                        'route' => 'monthlyValue',
+                        'action' => 'position-wise',
                     ],
                 ]
             ]
@@ -108,9 +117,14 @@ return [
                         'action' => 'edit',
                     ],
                     [
-                        'label' => 'Detail',
+                        'label' => 'Employee Wise',
                         'route' => 'flatValue',
                         'action' => 'detail',
+                    ],
+                    [
+                        'label' => 'Position Wise',
+                        'route' => 'flatValue',
+                        'action' => 'position-wise',
                     ],
                 ]
             ]
@@ -141,7 +155,7 @@ return [
                     ],
                 ]
             ]
-        ],'generate' => [
+        ], 'generate' => [
             [
                 'label' => 'Generate',
                 'route' => 'generate',
@@ -159,16 +173,14 @@ return [
             ]
         ],
     ],
-
     'controllers' => [
         'factories' => [
-            Controller\MonthlyValue::class => ControllerFactory::class,
-            Controller\FlatValue::class => ControllerFactory::class,
-            Controller\Rules::class => ControllerFactory::class,
-            Controller\Generate::class => ControllerFactory::class,
+            MonthlyValue::class => ControllerFactory::class,
+            FlatValue::class => ControllerFactory::class,
+            Rules::class => ControllerFactory::class,
+            Generate::class => ControllerFactory::class,
         ],
     ],
-
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',

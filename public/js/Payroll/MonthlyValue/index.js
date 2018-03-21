@@ -16,8 +16,8 @@
             }
         };
         app.initializeKendoGrid($table, [
-            {field: "MTH_CODE", title: "Flat Code"},
-            {field: "MTH_EDESC", title: "Flat Title"},
+            {field: "MTH_CODE", title: " Code"},
+            {field: "MTH_EDESC", title: "Month Value"},
             {field: "REMARKS", title: "Remarks"},
             {field: "MTH_ID", title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
