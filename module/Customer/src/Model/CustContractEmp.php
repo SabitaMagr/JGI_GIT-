@@ -21,6 +21,10 @@ class CustContractEmp extends Model {
     CONST MODIFIED_DT = "MODIFIED_DT";
     CONST REMARKS = "REMARKS";
     CONST STATUS = "STATUS";
+    CONST START_DATE = "START_DATE";
+    CONST END_DATE = "END_DATE";
+    CONST ID = "ID";
+    CONST DUTY_TYPE_ID = "DUTY_TYPE_ID";
 
     public $contractId;
     public $customerId;
@@ -35,6 +39,10 @@ class CustContractEmp extends Model {
     public $modifiedBy;
     public $remarks;
     public $status;
+    public $startDate;
+    public $endDate;
+    public $id;
+    public $dutyTypeId;
     public $mappings = [
         'contractId' => self::CONTRACT_ID,
         'customerId' => self::CUSTOMER_ID,
@@ -50,6 +58,10 @@ class CustContractEmp extends Model {
         'modifiedDt' => self::MODIFIED_DT,
         'remarks' => self::REMARKS,
         'status' => self::STATUS,
+        'startDate' => self::START_DATE,
+        'endDate' => self::END_DATE,
+        'id' => self::ID,
+        'dutyTypeId' => self::DUTY_TYPE_ID
     ];
 
 }

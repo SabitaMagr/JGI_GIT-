@@ -7,6 +7,7 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use AttendanceManagement\Model\ShiftSetup;
 use Customer\Model\CustomerContractDetailModel;
+use Customer\Model\DutyTypeModel;
 use Customer\Repository\CustomerContractDetailRepo;
 use Customer\Repository\CustomerContractRepo;
 use Setup\Model\Designation;
@@ -40,7 +41,7 @@ class CustomerContractDetails extends HrisController {
                     "id" => $id,
                     'contractDetail' => $contractDetail,
                     'designationList' => EntityHelper::getTableList($this->adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"]),
-                    'shiftList' => EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => "E"]),
+                    'dutyTypeList' => EntityHelper::getTableList($this->adapter, DutyTypeModel::TABLE_NAME, [DutyTypeModel::DUTY_TYPE_ID, DutyTypeModel::DUTY_TYPE_NAME], [DutyTypeModel::STATUS => "E"]),
         ]);
     }
 
@@ -57,7 +58,7 @@ class CustomerContractDetails extends HrisController {
             $designation = $request->getPost('designation');
             $quantity = $request->getPost('quantity');
             $rate = $request->getPost('rate');
-            $shift = $request->getPost('shift');
+            $dutyType = $request->getPost('dutyType');
             $weekDayValue = $request->getPost('weekDayValue');
             $daysInMonth = $request->getPost('daysInMonth');
 
@@ -96,7 +97,7 @@ class CustomerContractDetails extends HrisController {
                         $contractDetailModel->designationId = $designationDetails;
                         $contractDetailModel->quantity = $quantity[$i];
                         $contractDetailModel->rate = $rate[$i];
-                        $contractDetailModel->shiftId = $shift[$i];
+                        $contractDetailModel->dutyTypeId = $dutyType[$i];
                         $contractDetailModel->weekDetails = $weekDayValue[$i];
                         $contractDetailModel->daysInMonth = $daysInMonth[$i];
                         $contractDetailModel->status = 'E';

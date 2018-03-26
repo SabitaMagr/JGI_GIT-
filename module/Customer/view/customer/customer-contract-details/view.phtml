@@ -12,7 +12,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/customer-contract-d
     document.contractId = '<?= $id ?>';
     document.contractDetail =<?= json_encode($contractDetail); ?>;
     document.designationList =<?= json_encode($designationList); ?>;
-    document.shiftList =<?= json_encode($shiftList); ?>;
+    document.dutyTypeList =<?= json_encode($dutyTypeList); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-setup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -38,7 +38,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/customer-contract-d
                                 <td>Designation</td>
                                 <td>Quantity</td>
                                 <td>Rate</td>
-                                <td>Shift</td>
+                                <td>Duty Type</td>
                                 <td>WeekDays</td>
                                 <td>Days In Month</td>
                                 <td></td>
@@ -47,7 +47,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/customer-contract-d
                                 <td><select required="required" name="designation[]" class="designation"></select></td>
                                 <td><input  required="required"  name="quantity[]" type="number" class="quantity"></td>
                                 <td><input  required="required"  name="rate[]" type="number" class="rate" step="0.01" ></td>
-                                <td><select required="required" name="shift[]" class="shift"></select></td>
+                                <td><select required="required" name="dutyType[]" class="dutyType"></select></td>
                                 <td><select multiple required="required" name="weekDays[]" class="weekDays"></select>
                                     <input type="hidden" name="weekDayValue[]">
                                 </td>

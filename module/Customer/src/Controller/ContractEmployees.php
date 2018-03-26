@@ -7,11 +7,13 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Customer\Model\CustContractEmp;
 use Customer\Model\Customer;
+use Customer\Model\DutyTypeModel;
 use Customer\Repository\ContractAttendanceRepo;
 use Customer\Repository\CustContractEmpRepo;
 use Customer\Repository\CustomerContractRepo;
 use Customer\Repository\CustomerLocationRepo;
 use Exception;
+use Setup\Model\Designation;
 use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -39,6 +41,8 @@ class ContractEmployees extends HrisController {
         return Helper::addFlashMessagesToArray($this, [
                     'acl' => $this->acl,
                     'customerList' => EntityHelper::getTableList($this->adapter, Customer::TABLE_NAME, [Customer::CUSTOMER_ID, Customer::CUSTOMER_ENAME], [Customer::STATUS => "E"]),
+                    'designationList' => EntityHelper::getTableList($this->adapter, Designation::TABLE_NAME, [Designation::DESIGNATION_ID, Designation::DESIGNATION_TITLE], [Designation::STATUS => "E"]),
+                    'dutyTypeList' => EntityHelper::getTableList($this->adapter, DutyTypeModel::TABLE_NAME, [DutyTypeModel::DUTY_TYPE_ID, DutyTypeModel::DUTY_TYPE_NAME], [DutyTypeModel::STATUS => "E"]),
                     'employeeList' => $employeeList
         ]);
     }
@@ -207,6 +211,90 @@ class ContractEmployees extends HrisController {
 
             $employeeData = $this->repository->getEmployeeAssignedDesignationWise($contractId, $designationId);
 
+            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchContractWiseEmployeeAssignAction() {
+        try {
+            $request = $this->getRequest();
+            $contractId = $request->getPost('contractId');
+            $customerId = $request->getPost('customerId');
+
+            $customerLocationRepo = new CustomerLocationRepo($this->adapter);
+            $locationList = $customerLocationRepo->fetchAllLocationByCustomer($customerId);
+
+            $employeeData = $this->repository->getEmployeeAssignedContractWise($contractId);
+
+
+            $returnData['locationList'] = $locationList;
+            $returnData['empDetails'] = $employeeData;
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function fetchContractEmpLocDesWiseAction() {
+        try {
+            $request = $this->getRequest();
+
+            $contractId = $request->getPost('contractId');
+            $employeeId = $request->getPost('employeeId');
+            $locationId = $request->getPost('locationId');
+            $designationId = $request->getPost('designationId');
+
+
+            $returnData = $this->repository->getContractEmpLocDesWise($contractId, $employeeId, $locationId, $designationId);
+
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function addContractEmpAssignAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+
+            $customer = $request->getPost('customer');
+            $contract = $request->getPost('contract');
+            $designation = $request->getPost('designation');
+            $employee = $request->getPost('employee');
+            $location = $request->getPost('location');
+            $startDate = $request->getPost('startDate');
+            $endDate = $request->getPost('endDate');
+            $startTime = $request->getPost('startTime');
+            $endTime = $request->getPost('endTime');
+            $dutyType = $request->getPost('dutyType');
+            
+//            echo $dutyType
+
+            $custEmployeeModel = new CustContractEmp();
+
+            $custEmployeeModel->id = (int) Helper::getMaxId($this->adapter, CustContractEmp::TABLE_NAME, CustContractEmp::ID) + 1;
+
+            $custEmployeeModel->customerId = $customer;
+            $custEmployeeModel->contractId = $contract;
+            $custEmployeeModel->employeeId = $employee;
+            $custEmployeeModel->designationId = $designation;
+            $custEmployeeModel->locationId = $location;
+            $custEmployeeModel->startDate = Helper::getExpressionDate($startDate);
+            $custEmployeeModel->endDate = Helper::getExpressionDate($endDate);
+            $custEmployeeModel->startTime = Helper::getExpressionTime($startTime);
+            $custEmployeeModel->endTime = Helper::getExpressionTime($endTime);
+            $custEmployeeModel->status = 'E';
+            $custEmployeeModel->createdBy = $this->employeeId;
+            $custEmployeeModel->dutyTypeId = $dutyType;
+            
+            
+
+
+            $this->repository->add($custEmployeeModel);
+            $employeeData = $this->repository->getEmployeeAssignedContractWise($contract);
             return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

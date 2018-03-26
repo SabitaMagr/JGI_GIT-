@@ -34,11 +34,13 @@ class ContractAttendance extends HrisController {
 
         $monthList = $this->repository->getMonthList();
 
+        $employeeList = $this->repository->getEmployeeListWithCode();
+
 
         return Helper::addFlashMessagesToArray($this, [
                     'acl' => $this->acl,
                     'customerList' => EntityHelper::getTableList($this->adapter, Customer::TABLE_NAME, [Customer::CUSTOMER_ID, Customer::CUSTOMER_ENAME], [Customer::STATUS => "E"]),
-                    'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => "E"]),
+                    'employeeList' => $employeeList,
                     'monthList' => $monthList
         ]);
     }
@@ -420,6 +422,59 @@ AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
 
 
 //            $attendnaceDetails = $this->repository->pullMonthlyBillCustomerWise($monthId, $customerId);
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullAttendanceAbsentDataAction() {
+        try {
+            $request = $this->getRequest();
+
+            $monthStartDate = $request->getPost('monthStartDate');
+            $column = $request->getPost('column');
+            $customerId = $request->getPost('customerId');
+            $contractId = $request->getPost('contractId');
+            $employeeId = $request->getPost('employeeId');
+            $locationId = $request->getPost('locationId');
+            $dutyTypeId = $request->getPost('dutyTypeId');
+            $designationId = $request->getPost('designationId');
+            $startTime = $request->getPost('startTime');
+            $endTime = $request->getPost('endTime');
+
+
+            $returnData = $this->repository->pullAttendanceAbsentData($monthStartDate, $column, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime
+            );
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function updateAttendanceDataAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+
+
+            $attendanceDate = $request->getPost('attendanceDate');
+            $customerId = $request->getPost('customerId');
+            $contractId = $request->getPost('contractId');
+            $employeeId = $request->getPost('employeeId');
+            $locationId = $request->getPost('locationId');
+            $dutyTypeId = $request->getPost('dutyTypeId');
+            $designationId = $request->getPost('designationId');
+            $startTime = $request->getPost('startTime');
+            $endTime = $request->getPost('endTime');
+            $status = $request->getPost('stauts');
+            $inTime = $request->getPost('inTime');
+            $outTime = $request->getPost('outTime');
+            $subEmployeeId = $request->getPost('subEmployeeId');
+
+
+            $returnData = $this->repository->updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime, $status, $inTime, $outTime, $subEmployeeId);
+
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

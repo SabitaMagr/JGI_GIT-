@@ -144,25 +144,76 @@ EOT;
             }
         }
 
+//        $sql = "
+//                select * from (select D.FROM_DATE,D.DAY_COUNT,
+// CE.EMPLOYEE_ID,E.FULL_NAME,CE.CONTRACT_ID,CE.LOCATION_ID,CL.LOCATION_NAME,CD.SHIFT_ID,
+// CASE  WHEN CA.STATUS IS NULL THEN 
+// 'PR'
+// ELSE CA.STATUS END AS STATUS
+// from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
+//    FROM dual d
+//    CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
+// ) D
+//   LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1 and CE.status='E')
+//    LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (CA.EMPLOYEE_ID=CE.EMPLOYEE_ID 
+//    AND CA.LOCATION_ID=CE.LOCATION_ID AND CA.ATTENDANCE_DATE=D.DATES)
+//    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
+//    LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
+//    LEFT JOIN HRIS_CUSTOMER_CONTRACT_DETAILS CD ON (CD.CONTRACT_ID=CE.CONTRACT_ID AND CD.DESIGNATION_ID=CE.DESIGNATION_ID AND CD.status='E')
+//    LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CD.CONTRACT_ID)
+//    LEFT JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=CD.SHIFT_ID)
+//    WHERE CE.STATUS='E' AND CE.CUSTOMER_ID={$customerId} AND D.DATES BETWEEN CC.START_DATE AND CC.END_DATE)PIVOT (MAX(STATUS) FOR DAY_COUNT IN ({$pivotString})) 
+//                ";
+
         $sql = "
-                select * from (select D.FROM_DATE,D.DAY_COUNT,
- CE.EMPLOYEE_ID,E.FULL_NAME,CE.CONTRACT_ID,CE.LOCATION_ID,CL.LOCATION_NAME,CD.SHIFT_ID,
- CASE  WHEN CA.STATUS IS NULL THEN 
- 'PR'
- ELSE CA.STATUS END AS STATUS
- from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
-    FROM dual d
-    CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
- ) D
-   LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1 and CE.status='E')
-    LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (CA.EMPLOYEE_ID=CE.EMPLOYEE_ID 
-    AND CA.LOCATION_ID=CE.LOCATION_ID AND CA.ATTENDANCE_DATE=D.DATES)
+            select * from (
+                select E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
+    D.FROM_DATE,D.DAY_COUNT,CE.CONTRACT_ID,CE.CUSTOMER_ID,
+    CE.LOCATION_ID,CE.EMPLOYEE_ID,CE.DESIGNATION_ID,CE.START_DATE,CE.END_DATE,CE.DUTY_TYPE_ID,
+    TO_CHAR(CE.START_TIME, 'HH:MI AM') AS START_TIME,
+    TO_CHAR(CE.END_TIME, 'HH:MI AM') AS END_TIME,
+    ID,
+    DT.DUTY_TYPE_NAME,
+    CASE
+          WHEN CA.STATUS IS NULL THEN 'PR'
+          ELSE
+            CA.STATUS
+        END
+      AS STATUS,
+      SE.FULL_NAME AS SUB_EMP_NAME,
+       CASE
+          WHEN CA.IN_TIME IS NULL
+          THEN TO_CHAR(CE.START_TIME,'HH:MI AM')||'-'||TO_CHAR(CE.END_TIME,'HH:MI AM')
+          ELSE
+            TO_CHAR(CA.IN_TIME,'HH:MI AM')||'-'||TO_CHAR(CA.OUT_TIME,'HH:MI AM')
+        END
+      AS IN_OUT_TIME
+    from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
+        FROM dual d
+        CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
+     ) D
+    LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1 and CE.status='E')
+    LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (
+            CE.CUSTOMER_ID=CA.CUSTOMER_ID AND
+            CE.CONTRACT_ID=CA.CONTRACT_ID AND
+            CE.EMPLOYEE_ID=CA.EMPLOYEE_ID AND
+            CE.LOCATION_ID=CA.LOCATION_ID AND
+            CE.DUTY_TYPE_ID=CA.DUTY_TYPE_ID AND
+            CE.DESIGNATION_ID=CA.DESIGNATION_ID AND
+            CE.START_TIME=CA.START_TIME AND
+            CE.END_TIME=CA.END_TIME AND
+            CA.ATTENDANCE_DATE=D.DATES)
     LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
     LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
-    LEFT JOIN HRIS_CUSTOMER_CONTRACT_DETAILS CD ON (CD.CONTRACT_ID=CE.CONTRACT_ID AND CD.DESIGNATION_ID=CE.DESIGNATION_ID AND CD.status='E')
-    LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CD.CONTRACT_ID)
-    LEFT JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=CD.SHIFT_ID)
-    WHERE CE.STATUS='E' AND CE.CUSTOMER_ID={$customerId} AND D.DATES BETWEEN CC.START_DATE AND CC.END_DATE)PIVOT (MAX(STATUS) FOR DAY_COUNT IN ({$pivotString})) 
+    LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CE.CONTRACT_ID)
+    LEFT JOIN HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
+    LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=CE.DESIGNATION_ID)
+     LEFT JOIN HRIS_EMPLOYEES SE ON (SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
+    WHERE CE.CUSTOMER_ID={$customerId} and d.dates between CE.START_DATE and CE.END_DATE
+    )PIVOT (
+ MAX (STATUS) AS STATUS,MAX (SUB_EMP_NAME) AS SUB_EMP_NAME,MAX (IN_OUT_TIME) AS IN_OUT_TIME
+FOR DAY_COUNT IN ({$pivotString})) 
+            
                 ";
 
 //        echo $sql;
@@ -215,6 +266,174 @@ EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
+    }
+
+    public function getEmployeeListWithCode() {
+        $sql = "select EMPLOYEE_ID,'('||EMPLOYEE_CODE||') '||FULL_NAME AS FULL_NAME ,retired_flag
+            from  HRIS_EMPLOYEES where status='E' and RESIGNED_FLAG='N'";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function pullAttendanceAbsentData($monthStartDate, $column, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime) {
+
+        $sql = "
+            SELECT  (TO_DATE('{$monthStartDate}','DD-MON-YY') + $column -1) AS ATTENDNACE_DATE,
+            CE.CUSTOMER_ID,CE.CONTRACT_ID,CE.EMPLOYEE_ID,CE.LOCATION_ID,
+            CE.DUTY_TYPE_ID,CE.DESIGNATION_ID,
+            INITCAP(TO_CHAR(CE.START_TIME, 'HH:MI AM')) AS START_TIME,
+            INITCAP(TO_CHAR(CE.END_TIME, 'HH:MI AM')) AS END_TIME,
+            CA.SUB_EMPLOYEE_ID,SE.FULL_NAME AS SUB_EMPLOYEE_NAME,
+            CASE WHEN CA.STATUS  IS NULL 
+            THEN 'PR'
+            ELSE CA.STATUS
+            END AS STATUS,
+            CASE WHEN CA.IN_TIME IS NULL
+            THEN TO_CHAR(CE.START_TIME, 'HH:MI AM')
+            ELSE TO_CHAR(CA.IN_TIME, 'HH:MI AM')
+            END AS IN_TIME,
+            CASE WHEN CA.OUT_TIME IS NULL
+            THEN TO_CHAR(CE.END_TIME, 'HH:MI AM')
+            ELSE TO_CHAR(CA.OUT_TIME, 'HH:MI AM')
+            END AS OUT_TIME
+            FROM HRIS_CUST_CONTRACT_EMP CE
+            LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (
+            CE.CUSTOMER_ID=CA.CUSTOMER_ID AND
+            CE.CONTRACT_ID=CA.CONTRACT_ID AND
+            CE.EMPLOYEE_ID=CA.EMPLOYEE_ID AND
+            CE.LOCATION_ID=CA.LOCATION_ID AND
+            CE.DUTY_TYPE_ID=CA.DUTY_TYPE_ID AND
+            CE.DESIGNATION_ID=CA.DESIGNATION_ID AND
+            CE.START_TIME=CA.START_TIME AND
+            CE.END_TIME=CA.END_TIME AND
+            CA.ATTENDANCE_DATE=TO_DATE('{$monthStartDate}','DD-MON-YY') + $column -1
+            )
+            LEFT JOIN HRIS_EMPLOYEES SE ON(SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
+             WHERE  
+                      CE.CUSTOMER_ID={$customerId}
+                        AND CE.CONTRACT_ID={$contractId}
+                            AND CE.EMPLOYEE_ID={$employeeId}
+                                AND CE.LOCATION_ID={$locationId}
+                                    AND CE.DUTY_TYPE_ID={$dutyTypeId}
+                                        AND CE.DESIGNATION_ID={$designationId}
+                                            AND TO_CHAR(CE.START_TIME, 'HH:MI AM')='{$startTime}'
+                                                AND TO_CHAR(CE.END_TIME, 'HH:MI AM')='{$endTime}'
+
+                ";
+
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
+    public function updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime, $status, $inTime, $outTime, $subEmployeeId) {
+
+        if ($subEmployeeId == '' or $subEmployeeId == null) {
+            $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=NULL";
+        } else {
+            $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=" . $subEmployeeId;
+        }
+
+
+        $sql = "DECLARE
+                V_CUSTOMER_ID NUMBER:={$customerId};
+                V_CONTRACT_ID NUMBER:={$contractId};
+                V_EMPLOYEE_ID NUMBER:={$employeeId};
+                V_LOCATION_ID NUMBER:={$locationId};
+                V_DUTY_TYPE_ID NUMBER:={$dutyTypeId};
+                V_DESIGNATION_ID NUMBER:={$designationId};
+                V_START_TIME VARCHAR2(20 BYTE):='{$startTime}';
+                V_END_TIME VARCHAR2(20 BYTE):='{$endTime}';
+                V_ATTENDANCE_DATE DATE:=TO_DATE('{$attendanceDate}','DD-MON-YY');
+                V_STATUS CHAR(2 BYTE):='{$status}';
+                V_IN_TIME VARCHAR2(20 BYTE):='{$inTime}';
+                V_OUT_TIME VARCHAR2(20 BYTE):='{$outTime}';
+                {$subEmployeeString};
+                V_ATTENDANCE_COUNT NUMBER;
+                BEGIN
+                SELECT COUNT(*) INTO V_ATTENDANCE_COUNT FROM HRIS_CONTRACT_EMP_ATTENDANCE WHERE 
+                    CUSTOMER_ID=V_CUSTOMER_ID AND
+                    CONTRACT_ID=V_CONTRACT_ID AND
+                    EMPLOYEE_ID=V_EMPLOYEE_ID AND
+                    LOCATION_ID=V_LOCATION_ID AND
+                    DUTY_TYPE_ID=V_DUTY_TYPE_ID AND
+                    DESIGNATION_ID=V_DESIGNATION_ID AND
+                    INITCAP(TO_CHAR(START_TIME, 'HH:MI AM'))=V_START_TIME AND
+                    INITCAP(TO_CHAR(END_TIME, 'HH:MI AM'))=V_END_TIME AND
+                    ATTENDANCE_DATE=V_ATTENDANCE_DATE;
+                    
+                BEGIN
+                IF(V_ATTENDANCE_COUNT=0)
+                THEN
+                INSERT INTO HRIS_CONTRACT_EMP_ATTENDANCE
+                (CUSTOMER_ID,CONTRACT_ID,EMPLOYEE_ID,LOCATION_ID,DUTY_TYPE_ID,DESIGNATION_ID,START_TIME,END_TIME,ATTENDANCE_DATE,
+                STATUS,
+                IN_TIME,
+                OUT_TIME
+                
+                )
+                VALUES
+                (V_CUSTOMER_ID,V_CONTRACT_ID,V_EMPLOYEE_ID,V_LOCATION_ID,V_DUTY_TYPE_ID,V_DESIGNATION_ID,
+                TO_TIMESTAMP(V_START_TIME, 'HH.MI AM'),
+                TO_TIMESTAMP(V_END_TIME, 'HH.MI AM'),
+                V_ATTENDANCE_DATE,
+                V_STATUS,
+                TO_TIMESTAMP(V_IN_TIME, 'HH.MI AM'),
+                TO_TIMESTAMP(V_OUT_TIME, 'HH.MI AM')
+                );
+
+
+                ELSE
+                
+                UPDATE HRIS_CONTRACT_EMP_ATTENDANCE
+                SET 
+                IN_TIME=TO_TIMESTAMP(V_IN_TIME, 'HH.MI AM'),
+                OUT_TIME=TO_TIMESTAMP(V_OUT_TIME, 'HH.MI AM'),
+                STATUS=V_STATUS,
+                SUB_EMPLOYEE_ID=V_SUB_EMPLOYEE_ID
+                WHERE 
+                    CUSTOMER_ID=V_CUSTOMER_ID AND
+                    CONTRACT_ID=V_CONTRACT_ID AND
+                    EMPLOYEE_ID=V_EMPLOYEE_ID AND
+                    LOCATION_ID=V_LOCATION_ID AND
+                    DUTY_TYPE_ID=V_DUTY_TYPE_ID AND
+                    DESIGNATION_ID=V_DESIGNATION_ID AND
+                    INITCAP(TO_CHAR(START_TIME, 'HH:MI AM'))=V_START_TIME AND
+                    INITCAP(TO_CHAR(END_TIME, 'HH:MI AM'))=V_END_TIME AND
+                    ATTENDANCE_DATE=V_ATTENDANCE_DATE;
+                
+                END IF;
+
+                END;
+                        
+
+END;";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
+
+        $sql1 = "SELECT 
+            CA.STATUS,
+            TO_CHAR(CA.IN_TIME, 'HH:MI AM') AS IN_TIME,
+            TO_CHAR(CA.OUT_TIME, 'HH:MI AM') AS OUT_TIME,
+            SE.FULL_NAME AS SUB_EMPLOYEE
+    FROM HRIS_CONTRACT_EMP_ATTENDANCE CA 
+    LEFT JOIN HRIS_EMPLOYEES SE ON (SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
+    WHERE
+                    CA.CUSTOMER_ID={$customerId} AND
+                    CA.CONTRACT_ID={$contractId} AND
+                    CA.EMPLOYEE_ID={$employeeId} AND
+                    CA.LOCATION_ID={$locationId} AND
+                    CA.DUTY_TYPE_ID={$dutyTypeId} AND
+                    CA.DESIGNATION_ID={$designationId} AND
+                    CA.START_TIME=TO_TIMESTAMP('{$startTime}', 'HH.MI AM') AND
+                    CA.END_TIME=TO_TIMESTAMP('{$endTime}', 'HH.MI AM') AND
+                    CA.ATTENDANCE_DATE=TO_DATE('{$attendanceDate}','DD-MON-YY')";
+
+        $statement1 = $this->adapter->query($sql1);
+        $result = $statement1->execute();
+        return $result->current();
     }
 
 }

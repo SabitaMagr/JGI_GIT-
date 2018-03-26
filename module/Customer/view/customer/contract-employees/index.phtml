@@ -4,6 +4,15 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
+$this->headLink()
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
 $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/index.js'));
@@ -19,11 +28,16 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
     document.viewLink = '<?= $this->url("contract-employees", ["action" => "view"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.customerList =<?php echo json_encode($customerList); ?>;
+    document.designationList =<?php echo json_encode($designationList); ?>;
     document.pullContractList = '<?= $this->url("contract-employees", ["action" => "fetchAllContractCustomerWise"]); ?>';
     document.pullContractDetails = '<?= $this->url("contract-employees", ["action" => "fetchContractDetails"]); ?>';
     document.pullDesignationWiseEmpAssign = '<?= $this->url("contract-employees", ["action" => "fetchContractDesginationWiseEmployeeAssign"]); ?>';
+    document.pullContractWiseEmployeeAssign = '<?= $this->url("contract-employees", ["action" => "fetchContractWiseEmployeeAssign"]); ?>';
+    document.addContractEmpAssign = '<?= $this->url("contract-employees", ["action" => "addContractEmpAssign"]); ?>';
+    document.fetchContractEmpLocDesWise = '<?= $this->url("contract-employees", ["action" => "fetchContractEmpLocDesWise"]); ?>';
     document.employeeList =<?= json_encode($employeeList); ?>;
-  
+    document.dutyTypeList =<?= json_encode($dutyTypeList); ?>;
+
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\customer-contract')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -52,12 +66,13 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
         </div>
         <form method="post" action="<?= $this->url("contract-employees", ["action" => "employeeAssign"]) ?>">
-            
+
             <input id='customerId' type="hidden" name='customerId'>
             <input id='contractId' type="hidden" name='contractId'>
 
 
             <div class="row margin-top-20">
+                <a class="btn btn-primary" id="addModalBtn">ADD</a>
 
                 <div class="col-md-12">
                     <table class="table" id="assignTable">
@@ -66,7 +81,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
                 </div>
             </div>
-            
+
             <div class="row" id="submitBtn">
                 <div class="col-sm-2">
                     <input type="submit" value="Update">
@@ -78,4 +93,123 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
     </div>
 </div>
+
+<div id="table">
+</div>
+
+
+
+<!--modal to assign employee Assign-->
+<div class="modal fade" id="addModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add New Employee</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Designation :</label>
+                        <select  class="form-control" required='required' id="addDesignation" name='designation'></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Employees :</label>
+                        <select class="form-control"  required='required'  id="addEmployee" name='employee' ></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Location :</label>
+                        <select class="form-control"  required='required'  id="addLocation" name='location' ></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Duty Type :</label>
+                        <select class="form-control"  required='required'  id="addDutyType" name='dutyType' ></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="startDate">Start Date :</label>
+                            <input type="text" name="startDate" id="startDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="nepaliStartDate">&nbsp;</label>
+                            <input type="text" name="nepaliStartDate" id="nepaliStartDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>     
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="endDate">End Date :</label>
+                            <input type="text" name="endDate" id="endDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="nepaliEndDate">&nbsp;</label>
+                            <input type="text" name="nepaliEndDate" id="nepaliEndDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>     
+
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Start Time :</label>
+                        <input class="form-control"   id="addEmployeeStartTime" name='employeeStartTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>End Time :</label>
+                        <input class="form-control"   id="addEmployeeEndTime" name='employeeEndTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="addBtn" type="button" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+
+    /*    .select2-container.select2-container--default.select2-container--open  {
+            z-index: 5000;
+        }*/
+
+</style>
 

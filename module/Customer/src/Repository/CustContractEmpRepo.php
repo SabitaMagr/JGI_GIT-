@@ -111,4 +111,52 @@ class CustContractEmpRepo implements RepositoryInterface {
         return Helper::extractDbData($result);
     }
 
+    public function getEmployeeAssignedContractWise($contractId) {
+        $sql = "SELECT ce.CONTRACT_ID AS CONTRACT_ID, ce.CUSTOMER_ID AS CUSTOMER_ID, ce.LOCATION_ID AS LOCATION_ID,
+             ce.EMPLOYEE_ID AS EMPLOYEE_ID,ce.DESIGNATION_ID AS DESIGNATION_ID,
+             INITCAP(TO_CHAR(ce.START_TIME, 'HH:MI AM')) AS START_TIME,
+             INITCAP(TO_CHAR(ce.END_TIME, 'HH:MI AM')) AS END_TIME,
+             ce.REMARKS AS REMARKS,
+             ce.STATUS AS STATUS,
+             INITCAP(TO_CHAR(ce.START_DATE, 'DD-MON-YYYY')) AS START_DATE_AD,
+             BS_DATE(ce.START_DATE)               AS START_DATE_BS,
+             INITCAP(TO_CHAR(ce.END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD,
+             BS_DATE(END_DATE)               AS END_DATE_BS,
+             ce.ID AS ID,
+             CL.LOCATION_NAME,e.full_name,d.designation_title,
+             DT.DUTY_TYPE_ID,DT.DUTY_TYPE_NAME
+             FROM HRIS_CUST_CONTRACT_EMP ce
+             left join hris_employees e on (ce.EMPLOYEE_ID=e.employee_id)
+             left join HRIS_DESIGNATIONS d on (d.DESIGNATION_ID=ce.designation_id)
+             left join HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
+             left join HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
+             where ce.STATUS='E' and ce.contract_id={$contractId}
+                ";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function getContractEmpLocDesWise($contractId, $employeeId, $locationId, $designationId) {
+        $sql = "SELECT CONTRACT_ID AS CONTRACT_ID, CUSTOMER_ID AS CUSTOMER_ID, LOCATION_ID AS LOCATION_ID,
+             EMPLOYEE_ID AS EMPLOYEE_ID, DESIGNATION_ID AS DESIGNATION_ID,
+             INITCAP(TO_CHAR(START_TIME, 'HH:MI AM')) AS START_TIME,
+             INITCAP(TO_CHAR(END_TIME, 'HH:MI AM')) AS END_TIME,
+             LAST_ASSIGNED_DATE AS LAST_ASSIGNED_DATE, CREATED_BY AS CREATED_BY,
+             MODIFIED_DT AS MODIFIED_DT, MODIFIED_BY AS MODIFIED_BY, REMARKS AS REMARKS,
+             STATUS AS STATUS,
+             INITCAP(TO_CHAR(START_DATE, 'DD-MON-YYYY')) AS START_DATE_AD,
+             BS_DATE(START_DATE)               AS START_DATE_BS,
+             INITCAP(TO_CHAR(END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD,
+             BS_DATE(END_DATE)               AS END_DATE_BS,
+             ID AS ID FROM HRIS_CUST_CONTRACT_EMP
+             WHERE CONTRACT_ID = {$contractId}
+             AND EMPLOYEE_ID = {$employeeId} AND LOCATION_ID = {$locationId} 
+             AND DESIGNATION_ID = {$designationId} AND STATUS = 'E'";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
 }
