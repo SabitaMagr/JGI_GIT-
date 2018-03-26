@@ -5,11 +5,11 @@
             try {
                 var recommendRemarksId = $("#form-recommendedRemarks");
                 var approveRemarksId = $("#form-approvedRemarks");
-                
-                if(typeof recommendRemarksId !=="undefined"){
+
+                if (typeof recommendRemarksId !== "undefined") {
                     recommendRemarksId.removeAttr("required");
                 }
-                if(typeof approveRemarksId !=="undefined"){
+                if (typeof approveRemarksId !== "undefined") {
                     approveRemarksId.removeAttr("required");
                 }
                 var id = $(this);
@@ -30,6 +30,7 @@
             } catch (e) {
                 console.log("onApproveBtnClick", e.message);
             }
+            App.blockUI({target: "#hris-page-content"});
         });
     });
 })(window.jQuery, window.app);
