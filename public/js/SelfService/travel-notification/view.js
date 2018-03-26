@@ -1,8 +1,8 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
-        app.setLoadingOnSubmit("leaveApply");
+        app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate');
+        app.setLoadingOnSubmit("travelRequest-form");
 
         $('#approve').on('click', function () {
             var subRemarks = $("#form-subRemarks");

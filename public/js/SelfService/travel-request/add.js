@@ -4,6 +4,7 @@
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'form-fromDate', 'nepaliEndDate1', 'form-toDate')
         app.setLoadingOnSubmit("travelRequest-form");
         $('select#form-transportType').select2();
+        $('select#travelSubstitute').select2();
         $('select#form-employeeId').select2();
         var employeeId = $('#employeeId').val();
         app.floatingProfile.setDataFromRemote(employeeId);
