@@ -27,11 +27,11 @@ class CustContractEmpRepo implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->gateway->delete([CustContractEmp::CONTRACT_ID => $id]);
+        $this->gateway->update([CustContractEmp::STATUS => EntityHelper::STATUS_DISABLED], [CustContractEmp::ID => $id]);
     }
 
     public function edit(Model $model, $id) {
-        $this->gateway->update($model->getArrayCopyForDB(), [CustContractEmp::CONTRACT_ID => $id]);
+        $this->gateway->update($model->getArrayCopyForDB(), [CustContractEmp::ID => $id]);
     }
 
     public function fetchAll() {

@@ -11,6 +11,7 @@ use Customer\Controller\CustomerContract;
 use Customer\Controller\CustomerContractDetails;
 use Customer\Controller\CustomerLocation;
 use Customer\Controller\CustomerSetup;
+use Customer\Controller\DutyType;
 use Customer\Controller\ServiceEmployeeSetup;
 use Zend\Router\Http\Segment;
 
@@ -143,6 +144,20 @@ return [
                     ],
                 ],
             ],
+            'duty-type' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/duty/type[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => DutyType::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
     'navigation' => [
@@ -227,6 +242,33 @@ return [
                 ],
             ],
         ],
+        'duty-type' => [
+            [
+                'label' => "Duty Type",
+                'route' => "duty-type"
+            ],
+            [
+                'label' => "Duty Type",
+                'route' => "duty-type",
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'duty-type',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'duty-type',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'duty-type',
+                        'action' => 'edit',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
@@ -239,6 +281,7 @@ return [
             ContractEmployees::class => ControllerFactory::class,
             ContractAbsentDetails::class => ControllerFactory::class,
             ContractEmpAddedDetails::class => ControllerFactory::class,
+            DutyType::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

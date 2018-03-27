@@ -11,6 +11,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
@@ -25,6 +26,8 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 <?php } ?>
 
 <script>
+    document.updateLink = '<?= $this->url("contract-employees", ["action" => "update"]); ?>';
+    document.deleteLink = '<?= $this->url("contract-employees", ["action" => "delete"]); ?>';
     document.viewLink = '<?= $this->url("contract-employees", ["action" => "view"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.customerList =<?php echo json_encode($customerList); ?>;
@@ -203,6 +206,117 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
         </div>
     </div>
 </div>
+
+
+
+
+<!--modal to edit employee Assign-->
+<div class="modal fade" id="editModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Employee</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Designation :</label>
+                        <select  class="form-control" required='required' id="editDesignation" name='designation'></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Employees :</label>
+                        <select class="form-control"  required='required'  id="editEmployee" name='employee' ></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Location :</label>
+                        <select class="form-control"  required='required'  id="editLocation" name='location' ></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Duty Type :</label>
+                        <select class="form-control"  required='required'  id="editDutyType" name='dutyType' ></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="editstartDate">Start Date :</label>
+                            <input type="text" name="editstartDate" id="editstartDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="editnepaliStartDate">&nbsp;</label>
+                            <input type="text" name="editnepaliStartDate" id="editnepaliStartDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>     
+
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="editendDate">End Date :</label>
+                            <input type="text" name="editendDate" id="editendDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label for="editnepaliEndDate">&nbsp;</label>
+                            <input type="text" name="editnepaliEndDate" id="editnepaliEndDate"
+                                   class="form-control" value="">
+                        </div>
+                    </div>     
+
+                </div>
+
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Start Time :</label>
+                        <input class="form-control"   id="editEmployeeStartTime" name='editemployeeStartTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>End Time :</label>
+                        <input class="form-control"   id="editEmployeeEndTime" name='editemployeeEndTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="updateBtn" type="button" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 <style>

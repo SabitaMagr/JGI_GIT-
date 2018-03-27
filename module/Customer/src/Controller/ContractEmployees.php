@@ -270,7 +270,7 @@ class ContractEmployees extends HrisController {
             $startTime = $request->getPost('startTime');
             $endTime = $request->getPost('endTime');
             $dutyType = $request->getPost('dutyType');
-            
+
 //            echo $dutyType
 
             $custEmployeeModel = new CustContractEmp();
@@ -289,12 +289,71 @@ class ContractEmployees extends HrisController {
             $custEmployeeModel->status = 'E';
             $custEmployeeModel->createdBy = $this->employeeId;
             $custEmployeeModel->dutyTypeId = $dutyType;
-            
-            
+
+
 
 
             $this->repository->add($custEmployeeModel);
             $employeeData = $this->repository->getEmployeeAssignedContractWise($contract);
+            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function deleteAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+
+
+
+            $id = $request->getPost('id');
+            $contractId = $request->getPost('contractId');
+
+            $this->repository->delete($id);
+            $employeeData = $this->repository->getEmployeeAssignedContractWise($contractId);
+
+            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function updateAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+
+            $id = $request->getPost('id');
+            $contract = $request->getPost('contract');
+            $designation = $request->getPost('designation');
+            $employee = $request->getPost('employee');
+            $location = $request->getPost('location');
+            $startDate = $request->getPost('startDate');
+            $endDate = $request->getPost('endDate');
+            $startTime = $request->getPost('startTime');
+            $endTime = $request->getPost('endTime');
+            $dutyType = $request->getPost('dutyType');
+
+
+            $custEmployeeModel = new CustContractEmp();
+
+
+            $custEmployeeModel->employeeId = $employee;
+            $custEmployeeModel->designationId = $designation;
+            $custEmployeeModel->locationId = $location;
+            $custEmployeeModel->startDate = Helper::getExpressionDate($startDate);
+            $custEmployeeModel->endDate = Helper::getExpressionDate($endDate);
+            $custEmployeeModel->startTime = Helper::getExpressionTime($startTime);
+            $custEmployeeModel->endTime = Helper::getExpressionTime($endTime);
+            $custEmployeeModel->dutyTypeId = $dutyType;
+            $custEmployeeModel->modifiedBy = $this->employeeId;
+            $custEmployeeModel->modifiedDt = Helper::getcurrentExpressionDate();
+
+            $this->repository->edit($custEmployeeModel, $id);
+            $employeeData = $this->repository->getEmployeeAssignedContractWise($contract);
+
             return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

@@ -353,3 +353,29 @@ ADD SUB_EMPLOYEE_ID NUMBER(7,0);
 
 ALTER TABLE HRIS_CONTRACT_EMP_ATTENDANCE
 ADD DESIGNATION_ID NUMBER(7,0);
+
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Duty Type',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer%') and parent_menu is null),
+'duty-type',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'index',
+1,
+'Y'
+);
