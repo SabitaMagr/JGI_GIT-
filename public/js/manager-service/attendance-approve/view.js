@@ -1,4 +1,4 @@
-(function ($,app) {
+(function ($, app) {
     'use strict';
     $(document).ready(function (e) {
         $("#approve").on("click", function () {
@@ -12,6 +12,7 @@
                 if (typeof approveRemarksId !== "undefined") {
                     approveRemarksId.removeAttr("required");
                 }
+                app.setLoadingOnSubmit('attendanceByHr');
             } catch (e) {
                 console.log("onApproveBtnClick", e.message);
             }

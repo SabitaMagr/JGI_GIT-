@@ -1,17 +1,18 @@
-(function ($,app) {
+(function ($, app) {
     'use strict';
     $(document).ready(function (e) {
         $("#approve").on("click", function () {
             try {
-                var recommendRemarksId = $("#form-recommendedRemarks");
-                var approveRemarksId = $("#form-approvedRemarks");
+                var $recommendedRemarks = $("#form-recommendedRemarks");
+                var $approvedRemarks = $("#form-approvedRemarks");
 
-                if (typeof recommendRemarksId !== "undefined") {
-                    recommendRemarksId.removeAttr("required");
+                if (typeof $recommendedRemarks !== "undefined") {
+                    $recommendedRemarks.removeAttr("required");
                 }
-                if (typeof approveRemarksId !== "undefined") {
-                    approveRemarksId.removeAttr("required");
+                if (typeof $approvedRemarks !== "undefined") {
+                    $approvedRemarks.removeAttr("required");
                 }
+                app.setLoadingOnSubmit('overtimeRequest-form');
             } catch (e) {
                 console.log("onApproveBtnClick", e.message);
             }

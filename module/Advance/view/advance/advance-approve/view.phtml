@@ -194,7 +194,7 @@ $form->prepare();
                             <div class="form-group">
                                 <?php print $this->formLabel($reason); ?>
                                 <?php print $this->formElement($reason); ?>
-                                <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
+                                <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>overtimeRequest-form
                             </div>
                         </div>
 
@@ -216,7 +216,7 @@ $form->prepare();
                         </div>
                         <div class="col-sm-12">
                             <?php if ($showBtns): ?>
-                                <input type="submit" name="submit" class="btn btn-info pull-right" value="Approve">
+                                <input type="submit" name="submit" class="btn btn-info pull-right" id="approve" value="Approve">
                                 <input type="submit" name="submit" class="btn btn-danger pull-left" value="Reject">
                             <?php endif; ?>
                         </div>

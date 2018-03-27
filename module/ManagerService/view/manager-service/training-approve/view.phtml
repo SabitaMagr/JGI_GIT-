@@ -5,6 +5,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+$this->headScript()->appendFile($this->basePath('js/manager-service/training-approve/view.js'));
 
 $title = $form->get('title');
 $title->setAttributes(["disabled" => "disabled"]);
@@ -217,7 +218,7 @@ $form->prepare();
                     </div>
                     <div class="col-sm-12">
                         <?php if ($showBtns): ?>
-                            <input type="submit" name="submit" class="btn btn-info pull-right" value="Approve">
+                            <input type="submit" name="submit" class="btn btn-info pull-right" id="approve" value="Approve">
                             <input type="submit" name="submit" class="btn btn-danger pull-left" value="Reject">
                         <?php endif; ?>
                     </div>

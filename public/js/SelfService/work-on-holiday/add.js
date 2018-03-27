@@ -43,7 +43,7 @@
         window.app.floatingProfile.setDataFromRemote(employeeId);
 
         holidayChange($holidayId);
-        app.setLoadingOnSubmit("WorkOnHoliday");
+        app.setLoadingOnSubmit("workOnHoliday-form");
     });
 })(window.jQuery, window.app);
 
