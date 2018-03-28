@@ -168,6 +168,20 @@
                         $('#' + value).val(values[value]).trigger('change.select2');
                     }
                 });
+            },
+            getSelectedEmployee: function () {
+                var selectedValues = $('#employeeId').val();
+                var employeeList = this.getEmployee();
+                if (selectedValues === null) {
+                    return employeeList;
+                }
+                return employeeList.filter(function (item) {
+                    if (Array.isArray(selectedValues)) {
+                        return $.inArray(item['EMPLOYEE_ID'], selectedValues) === 0;
+                    } else {
+                        return item['EMPLOYEE_ID'] == selectedValues;
+                    }
+                });
             }
         };
         (function () {

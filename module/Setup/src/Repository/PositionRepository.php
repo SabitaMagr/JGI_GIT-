@@ -46,12 +46,6 @@ class PositionRepository implements RepositoryInterface {
     }
 
     public function fetchActiveRecord() {
-//        $rowset = $this->tableGateway->select(function(Select $select) {
-//            $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class,[Position::POSITION_NAME]),false);
-//            $select->where([Position::STATUS => 'E']);
-//            $select->order(Position::POSITION_NAME . " ASC");
-//        });
-
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Position::class, [Position::POSITION_NAME], NULL, NULL, NULL, NULL, 'P', FALSE, FALSE), false);
@@ -75,6 +69,7 @@ class PositionRepository implements RepositoryInterface {
                 'SN' => $i,
                 'POSITION_ID' => $row['POSITION_ID'],
                 'LEVEL_NO' => $row['LEVEL_NO'],
+                'POSITION_CODE' => $row['POSITION_CODE'],
                 'POSITION_NAME' => $row['POSITION_NAME'],
                 'REMARKS' => $row['REMARKS'],
                 'COMPANY_NAME' => $row['COMPANY_NAME'],

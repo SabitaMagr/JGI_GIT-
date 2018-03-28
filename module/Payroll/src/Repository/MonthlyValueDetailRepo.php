@@ -39,9 +39,10 @@ class MonthlyValueDetailRepo {
         return $result != null ? $result['MTH_VALUE'] : 0;
     }
 
-    public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $employeeFilter, $monthId = null) {
-        $employeeIn = EntityHelper::employeesIn($employeeFilter['companyId'], $employeeFilter['branchId'], $employeeFilter['departmentId'], $employeeFilter['positionId'], $employeeFilter['designationId'], $employeeFilter['serviceTypeId'], $employeeFilter['serviceEventTypeId'], $employeeFilter['employeeTypeId'], $employeeFilter['employeeId']);
-        $sql = "SELECT * FROM HRIS_MONTHLY_VALUE_DETAIL WHERE MTH_ID = {$monthlyValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$employeeIn} )";
+    public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $emp, $monthId = null) {
+        $searchConditon = EntityHelper::getSearchConditon($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'], $emp['locationId']);
+        $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}";
+        $sql = "SELECT * FROM HRIS_MONTHLY_VALUE_DETAIL WHERE MTH_ID = {$monthlyValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$empQuery} )";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }

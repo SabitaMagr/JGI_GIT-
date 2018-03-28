@@ -178,7 +178,7 @@
 
         $searchBtn.on('click', function () {
             $table.find('tbody').empty();
-            var filteredEmployeeList = document.searchManager.getEmployee();
+            var filteredEmployeeList = document.searchManager.getSelectedEmployee();
             $.each(filteredEmployeeList, function (k, v) {
                 var appendData = "<tr>"
                         + "<td>" + v.FULL_NAME + "</td>"

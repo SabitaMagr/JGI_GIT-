@@ -4,6 +4,7 @@ $this->headScript()->appendFile($this->basePath('js/setup/position/add.js'));
 $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'position-form');
 
+$positionCode = $form->get('positionCode');
 $positionName = $form->get('positionName');
 $remarks = $form->get('remarks');
 
@@ -58,6 +59,13 @@ $form->prepare();
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($levelNo); ?>
                             <?php print $this->formElementErrors()->render($levelNo, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($positionCode); ?>
+                            <?php print $this->formElement($positionCode); ?>
+                            <?php print $this->formElementErrors()->render($positionCode, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                     <div class="col-sm-4">

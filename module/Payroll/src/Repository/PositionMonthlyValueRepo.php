@@ -50,7 +50,7 @@ class PositionMonthlyValueRepo extends HrisRepository {
         if (sizeof($resultList) != 1) {
             return 0;
         }
-        return $resultList[0]['ASSIGNED_VALUE'];
+        return isset($resultList[0]['ASSIGNED_VALUE']) ? $resultList[0]['ASSIGNED_VALUE'] : 0;
     }
 
     public function fetchById($id) {

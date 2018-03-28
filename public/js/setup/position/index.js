@@ -7,6 +7,7 @@
         var action = editAction + deleteAction;
         app.initializeKendoGrid($table, [
             {field: "LEVEL_NO", title: "Level", width: 100},
+            {field: "POSITION_CODE", title: "Code", width: 50},
             {field: "POSITION_NAME", title: "Position", width: 300},
             {field: "WOH_FLAG", title: "Work On Holiday", width: 150},
             {field: "COMPANY_NAME", title: "Company", width: 250},
@@ -20,6 +21,7 @@
             app.excelExport($table, {
                 'LEVEL_NO': 'Level',
                 'POSITION_NAME': 'Position',
+                'POSITION_CODE': 'Code',
                 'COMPANY_NAME': 'Company',
                 'WOH_FLAG': 'Work On Holiday',
                 'REMARKS': 'Remarks'

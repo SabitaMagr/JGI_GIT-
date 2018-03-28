@@ -146,8 +146,7 @@ class PayrollGenerator {
 
     private function convertFlatToValue($rule, $key, $constant) {
         if (strpos($rule, $constant) !== false) {
-            $flatValTmp = $this->positionFlatValueDetRepo->fetchValue(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'FLAT_ID' => $key]);
-            $flatVal = ($flatValTmp != null) && (isset($flatValTmp['FLAT_VALUE'])) ? $flatValTmp['FLAT_VALUE'] : 0;
+            $flatVal = $this->positionFlatValueDetRepo->fetchValue(['EMPLOYEE_ID' => $this->employeeId, 'MONTH_ID' => $this->monthId, 'FLAT_ID' => $key]);
             return str_replace($constant, $flatVal, $rule);
         } else {
             return $rule;

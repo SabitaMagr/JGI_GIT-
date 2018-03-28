@@ -12,6 +12,16 @@ class PositionForm {
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}}) 
+     * @Annotation\Options({"label":"Code"})
+     * @Annotation\Attributes({ "id":"positionCode", "class":"form-control" })
+     */
+    public $positionCode;
+
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Position Name"})
