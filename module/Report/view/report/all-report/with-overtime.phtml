@@ -15,7 +15,12 @@ $this->headScript()
 ?>
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.fiscalYears =<?php echo json_encode($fiscalYears); ?>;
+    document.months =<?php echo json_encode($months); ?>;
+    document.getFiscalYearMonthLink = '<?php echo $this->url('penalty', ['action' => 'getFiscalYearMonth']); ?>';
+    document.linkToEmpower =<?php echo $linkToEmpower; ?>;
     document.withOvertimeWs = '<?php echo $this->url('allreport', ['action' => 'withOvertime']); ?>';
+    document.toEmpowerLink = '<?php echo $this->url('allreport', ['action' => 'toEmpower']); ?>';
 </script>
 
 <div class="page-bar">
@@ -92,6 +97,14 @@ $this->headScript()
         </div>
         <div class="row margin-top-10">
             <div class="col-sm-2">
+                <select class="form-control"  id="fiscalYearId" >
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" id="monthId" >
+                </select>
+            </div>
+            <div class="col-sm-2">
                 <div class="form-group">
                     <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
                 </div>
@@ -111,8 +124,17 @@ $this->headScript()
                     <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <button id="reset" class="btn default btn-sm pull-right">
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <button  id="confirm" class="btn btn-default btn-link">
+                    Confirm By HR
+                    <i class="fa fa-check"></i>
+                </button>
+
+            </div>   
+            <div class="col-sm-4 col-sm-offset-6">
+                <button class="btn default btn-sm pull-right hris-reset-btn">
                     Reset
                     <i class="fa fa-refresh"></i>
                 </button>

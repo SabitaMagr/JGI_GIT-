@@ -2,25 +2,26 @@
 
 namespace Report\Controller;
 
+use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
+use Application\Model\Months;
 use Exception;
 use Report\Repository\ReportRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class AllReportController extends AbstractActionController {
+class AllReportController extends HrisController {
 
-    private $adapter;
-    private $reportRepo;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->reportRepo = new ReportRepository($this->adapter);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(ReportRepository::class);
     }
 
     public function indexAction() {
@@ -33,7 +34,7 @@ class AllReportController extends AbstractActionController {
 
     public function departmentWiseAction() {
         $departmentId = (int) $this->params()->fromRoute('id1');
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'comBraDepList' => [
                         'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
                     ],
@@ -43,7 +44,7 @@ class AllReportController extends AbstractActionController {
 
     public function branchWiseAction() {
         $branchId = (int) $this->params()->fromRoute('id1');
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'comBraDepList' => [
                         'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME], [Branch::STATUS => "E"])
                     ],
@@ -54,10 +55,8 @@ class AllReportController extends AbstractActionController {
     public function departmentWiseDailyAction() {
         $monthId = (int) $this->params()->fromRoute('id1');
         $departmentId = (int) $this->params()->fromRoute('id2');
-
-
-        $monthList = $this->reportRepo->getMonthList();
-        return Helper::addFlashMessagesToArray($this, [
+        $monthList = $this->repository->getMonthList();
+        return $this->stickFlashMessagesTo([
                     'comBraDepList' => [
                         'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
                     ],
@@ -70,9 +69,9 @@ class AllReportController extends AbstractActionController {
     public function employeeWiseAction() {
 
         $employeeId = (int) $this->params()->fromRoute('id1');
-        $employeeList = $this->reportRepo->getEmployeeList();
+        $employeeList = $this->repository->getEmployeeList();
 
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'comBraDepList' => $this->getComBraDepList(),
                     'employeeList' => $employeeList,
                     'employeeId' => $employeeId
@@ -84,16 +83,36 @@ class AllReportController extends AbstractActionController {
         if ($request->isPost()) {
             try {
                 $data = $request->getPost();
-                $reportData = $this->reportRepo->reportWithOT($data);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                $reportData = $this->repository->reportWithOT($data);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } catch (Exception $e) {
-                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
 
-        return Helper::addFlashMessagesToArray($this, [
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'fiscalYears' => EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]),
+                    'months' => EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID, Months::FISCAL_YEAR_MONTH_NO]),
+                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists()
         ]);
+    }
+
+    public function toEmpowerAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $fiscalYearMonthNo = $postedData['fiscalYearMonthNo'];
+                $fiscalYearId = $postedData['fiscalYearId'];
+                $this->repository->toEmpower($fiscalYearId, $fiscalYearMonthNo);
+                return new JsonModel(['success' => true, 'data' => null, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
     public function employeeWiseDailyReportAction() {
@@ -107,13 +126,13 @@ class AllReportController extends AbstractActionController {
                     throw new Exception("parameter employeeId is required");
                 }
 
-                $reportData = $this->reportRepo->employeeWiseDailyReport($employeeId);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                $reportData = $this->repository->employeeWiseDailyReport($employeeId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -132,13 +151,13 @@ class AllReportController extends AbstractActionController {
                     throw new Exception("parameter monthId is required");
                 }
 
-                $reportData = $this->reportRepo->departmentWiseDailyReport($monthId, $departmentId);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                $reportData = $this->repository->departmentWiseDailyReport($monthId, $departmentId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -152,13 +171,13 @@ class AllReportController extends AbstractActionController {
                 if (!isset($departmentId)) {
                     throw new Exception("parameter departmentId is required");
                 }
-                $reportData = $this->reportRepo->departmentWiseEmployeeMonthReport($departmentId);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                $reportData = $this->repository->departmentWiseEmployeeMonthReport($departmentId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -172,23 +191,23 @@ class AllReportController extends AbstractActionController {
                 if (!isset($branchId)) {
                     throw new Exception("parameter branchId is required");
                 }
-                $reportData = $this->reportRepo->branchWiseEmployeeMonthReport($branchId);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                $reportData = $this->repository->branchWiseEmployeeMonthReport($branchId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
     public function departmentMonthReportAction() {
-        $data = $this->reportRepo->departmentMonthReport();
-        return new CustomViewModel(['success' => true, 'data' => $data, 'error' => null]);
+        $data = $this->repository->departmentMonthReport();
+        return new JsonModel(['success' => true, 'data' => $data, 'error' => null]);
     }
 
     private function getComBraDepList() {
-        $cbd = $this->reportRepo->getCompanyBranchDepartment();
+        $cbd = $this->repository->getCompanyBranchDepartment();
         $comBraDepList = [];
         foreach ($cbd as $row) {
             if (isset($comBraDepList[$row['COMPANY_ID']])) {
@@ -246,7 +265,7 @@ class AllReportController extends AbstractActionController {
         $customFormElement->setAttributes(["id" => "customWise", "class" => "form-control"]);
         $customFormElement->setLabel("Custom");
 
-        $allLeave = $this->reportRepo->fetchAllLeave();
+        $allLeave = $this->repository->fetchAllLeave();
         return Helper::addFlashMessagesToArray($this, [
                     'customWise' => $customFormElement,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
@@ -255,7 +274,7 @@ class AllReportController extends AbstractActionController {
     }
 
     public function HireAndFireReportAction() {
-        $nepaliMonth = $this->reportRepo->FetchNepaliMonth();
+        $nepaliMonth = $this->repository->FetchNepaliMonth();
         return Helper::addFlashMessagesToArray($this, [
                     'nepaliMonth' => $nepaliMonth
         ]);
@@ -274,19 +293,19 @@ class AllReportController extends AbstractActionController {
 
             switch ($customWise) {
                 case 'EMP':
-                    $reportData = $this->reportRepo->filterLeaveReportEmployee($data);
+                    $reportData = $this->repository->filterLeaveReportEmployee($data);
                     break;
                 case 'BRA':
-                    $reportData = $this->reportRepo->filterLeaveReportBranch($data);
+                    $reportData = $this->repository->filterLeaveReportBranch($data);
                     break;
                 case 'DEP':
-                    $reportData = $this->reportRepo->filterLeaveReportDepartmnet($data);
+                    $reportData = $this->repository->filterLeaveReportDepartmnet($data);
                     break;
                 case 'DES':
-                    $reportData = $this->reportRepo->filterLeaveReportDesignation($data);
+                    $reportData = $this->repository->filterLeaveReportDesignation($data);
                     break;
                 case 'POS':
-                    $reportData = $this->reportRepo->filterLeaveReportPosition($data);
+                    $reportData = $this->repository->filterLeaveReportPosition($data);
                     break;
             }
 
@@ -301,7 +320,7 @@ class AllReportController extends AbstractActionController {
             $request = $this->getRequest();
             $Postdata = $request->getPost();
             $data = json_decode($Postdata['data']);
-            $HireReport = $this->reportRepo->CalculateHireEmployees($data);
+            $HireReport = $this->repository->CalculateHireEmployees($data);
             return new CustomViewModel(['success' => true, 'data' => $HireReport, 'error' => '']);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -311,7 +330,7 @@ class AllReportController extends AbstractActionController {
     public function branchWiseDailyAction() {
         $monthId = (int) $this->params()->fromRoute('id1');
         $branchId = (int) $this->params()->fromRoute('id2');
-        $monthList = $this->reportRepo->getMonthList();
+        $monthList = $this->repository->getMonthList();
 
         return Helper::addFlashMessagesToArray($this, [
                     'comBraList' => [
@@ -322,13 +341,13 @@ class AllReportController extends AbstractActionController {
                     'branchId' => $branchId
         ]);
     }
-    
+
     public function branchWiseDailyReportAction() {
         try {
             $request = $this->getRequest();
             if ($request->isPost()) {
                 $postedData = $request->getPost();
-                
+
                 $branchId = $postedData['branchId'];
                 if (!isset($branchId)) {
                     throw new Exception("parameter branchId is required");
@@ -338,16 +357,14 @@ class AllReportController extends AbstractActionController {
                     throw new Exception("parameter monthId is required");
                 }
 
-                $reportData = $this->reportRepo->branchWiseDailyReport($monthId, $branchId);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                $reportData = $this->repository->branchWiseDailyReport($monthId, $branchId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
-    
 
 }
