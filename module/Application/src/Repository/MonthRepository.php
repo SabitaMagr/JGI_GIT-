@@ -103,7 +103,21 @@ EOT;
 
     public function getCurrentMonth() {
         $sql = <<<EOT
-            SELECT * FROM HRIS_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE              
+            SELECT MONTH_ID,
+              FISCAL_YEAR_ID,
+              FISCAL_YEAR_MONTH_NO,
+              YEAR,
+              MONTH_NO,
+              MONTH_EDESC,
+              MONTH_NDESC,
+              FROM_DATE,
+              INITCAP(TO_CHAR(FROM_DATE,'DD-MON-YYYY')) AS FROM_DATE_AD,
+              BS_DATE(FROM_DATE) AS FROM_DATE_BS,
+              TO_DATE ,
+              INITCAP(TO_CHAR(TO_DATE,'DD-MON-YYYY')) AS TO_DATE_AD,
+              BS_DATE(TO_DATE) AS TO_DATE_BS
+            FROM HRIS_MONTH_CODE
+            WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
 EOT;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

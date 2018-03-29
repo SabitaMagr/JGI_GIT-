@@ -92,8 +92,6 @@ class AllReportController extends HrisController {
 
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'fiscalYears' => EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]),
-                    'months' => EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID, Months::FISCAL_YEAR_MONTH_NO]),
                     'linkToEmpower' => $this->repository->checkIfEmpowerTableExists()
         ]);
     }

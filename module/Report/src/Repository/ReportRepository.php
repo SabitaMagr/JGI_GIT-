@@ -412,48 +412,13 @@ EOT;
     }
 
     public function reportWithOT($data) {
-        $companyCondition = "";
-        $branchCondition = "";
-        $departmentCondition = "";
-        $designationCondition = "";
-        $positionCondition = "";
-        $serviceTypeCondition = "";
-        $serviceEventTypeConditon = "";
-        $employeeCondition = "";
-        $employeeTypeCondition = "";
         $fromCondition = "";
         $toCondition = "";
 
         $otFromCondition = "";
         $otToCondition = "";
 
-        if (isset($data['companyId']) && $data['companyId'] != null && $data['companyId'] != -1) {
-            $companyCondition = "AND E.COMPANY_ID = {$data['companyId']}";
-        }
-        if (isset($data['branchId']) && $data['branchId'] != null && $data['branchId'] != -1) {
-            $branchCondition = "AND E.BRANCH_ID = {$data['branchId']}";
-        }
-        if (isset($data['departmentId']) && $data['departmentId'] != null && $data['departmentId'] != -1) {
-            $departmentCondition = "AND E.DEPARTMENT_ID = {$data['departmentId']}";
-        }
-        if (isset($data['designationId']) && $data['designationId'] != null && $data['designationId'] != -1) {
-            $designationCondition = "AND E.DESIGNATION_ID = {$data['designationId']}";
-        }
-        if (isset($data['positionId']) && $data['positionId'] != null && $data['positionId'] != -1) {
-            $positionCondition = "AND E.POSITION_ID = {$data['positionId']}";
-        }
-        if (isset($data['serviceTypeId']) && $data['serviceTypeId'] != null && $data['serviceTypeId'] != -1) {
-            $serviceTypeCondition = "AND E.SERVICE_TYPE_ID = {$data['serviceTypeId']}";
-        }
-        if (isset($data['serviceEventTypeId']) && $data['serviceEventTypeId'] != null && $data['serviceEventTypeId'] != -1) {
-            $serviceEventTypeConditon = "AND E.SERVICE_EVENT_TYPE_ID = {$data['serviceEventTypeId']}";
-        }
-        if (isset($data['employeeId']) && $data['employeeId'] != null && $data['employeeId'] != -1) {
-            $employeeCondition = "AND E.EMPLOYEE_ID = {$data['employeeId']}";
-        }
-        if (isset($data['employeeTypeId']) && $data['employeeTypeId'] != null && $data['employeeTypeId'] != -1) {
-            $employeeTypeCondition = "AND E.EMPLOYEE_TYPE = '{$data['employeeTypeId']}'";
-        }
+        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
 
         if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
             $fromDate = Helper::getExpressionDate($data['fromDate']);
@@ -466,7 +431,6 @@ EOT;
             $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
         }
 
-        $condition = $companyCondition . $branchCondition . $departmentCondition . $designationCondition . $positionCondition . $serviceTypeCondition . $serviceEventTypeConditon . $employeeCondition . $employeeTypeCondition;
 
 
         $sql = <<<EOT

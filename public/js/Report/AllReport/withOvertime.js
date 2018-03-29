@@ -30,6 +30,11 @@
         var $month = $('#monthId');
         app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
             months = monthList;
+            $fromDate.val(currentMonth['FROM_DATE_AD']);
+            $toDate.val(currentMonth['TO_DATE_AD']);
+            $nepaliFromDate.val(currentMonth['FROM_DATE_BS']);
+            $nepaliToDate.val(currentMonth['TO_DATE_BS']);
+
         });
         var monthChange = function ($this) {
             var value = $this.val();
@@ -98,7 +103,7 @@
                 return;
             }
 
-            var filteredMonth = document.months.filter(function (item) {
+            var filteredMonth = months.filter(function (item) {
                 return item['MONTH_ID'] == monthValue;
             });
             if (filteredMonth.length !== 1) {
