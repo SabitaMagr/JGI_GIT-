@@ -4,9 +4,9 @@ namespace Payroll;
 
 use Application\Controller\ControllerFactory;
 use Payroll\Controller\FlatValue;
-use Payroll\Controller\Generate;
 use Payroll\Controller\MonthlyValue;
 use Payroll\Controller\Rules;
+use Payroll\Controller\SalarySheetController;
 use Zend\Router\Http\Segment;
 
 return [
@@ -42,12 +42,12 @@ return [
                     ]
                 ]
             ],
-            'generate' => [
+            'salarySheet' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/payroll/generate[/:action[/:id]]',
+                    'route' => '/payroll/salarysheet[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Generate::class,
+                        'controller' => SalarySheetController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -155,18 +155,18 @@ return [
                     ],
                 ]
             ]
-        ], 'generate' => [
+        ], 'salarySheet' => [
             [
-                'label' => 'Generate',
-                'route' => 'generate',
+                'label' => 'Salary Sheet',
+                'route' => 'salarySheet',
             ],
             [
-                'label' => 'Generate',
-                'route' => 'generate',
+                'label' => 'Salary Sheet',
+                'route' => 'salarySheet',
                 'pages' => [
                     [
-                        'label' => 'List',
-                        'route' => 'generate',
+                        'label' => 'Generate',
+                        'route' => 'salarySheet',
                         'action' => 'index',
                     ],
                 ]
@@ -178,7 +178,7 @@ return [
             MonthlyValue::class => ControllerFactory::class,
             FlatValue::class => ControllerFactory::class,
             Rules::class => ControllerFactory::class,
-            Generate::class => ControllerFactory::class,
+            SalarySheetController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

@@ -11,11 +11,14 @@ $this->headScript()->appendFile($this->basePath('assets/global/plugins/nprogress
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/Payroll/Generate/index.js'));
+        ->appendFile($this->basePath('js/Payroll/salary-sheet/index.js'));
 ?>
 <script>
     document.data =<?php echo $data; ?>;
 </script>
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\salarySheet')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 <div class="portlet box yellow">
     <div class="portlet-title">
         <div class="caption">

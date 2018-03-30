@@ -48,6 +48,7 @@ print $this->form()->openTag($form);
 <script>
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.employeeId =<?= json_encode($employeeId) ?>;
+    document.isHalfDay =<?php echo (!in_array($halfDay->getValue(), [null, '', 'N'])) ? 'true' : 'false'; ?>;
 </script>
 
 <div class="page-bar">

@@ -443,7 +443,7 @@ $res = mysqli_fetch_assoc($row);
             </table>
 
             <div class="printbutton" style="width:800px;">
-                <a href="<?= $this->url('generate', ['action' => 'printPayslip']) ?>/<?php echo $id; ?>/<?php echo $_POST['mcode']; ?>"><center><button type="print" class="btn btn-color-green btn-sm"  style="width:150px;"/>
+                <a href="<?= $this->url('salarySheet', ['action' => 'printPayslip']) ?>/<?php echo $id; ?>/<?php echo $_POST['mcode']; ?>"><center><button type="print" class="btn btn-color-green btn-sm"  style="width:150px;"/>
                         <strong>Print</strong></a></div>
             </form>
         </div> 

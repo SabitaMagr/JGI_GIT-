@@ -16,6 +16,9 @@
                 var parentId = id.parent(".form-group");
                 var availableBalance = parseFloat($("#availableDays").val());
                 var noOfDays = parseFloat($("#noOfDays").val());
+                if (typeof document.isHalfDay !== 'undefined') {
+                    noOfDays = noOfDays / (document.isHalfDay ? 2 : 1);
+                }
                 if (noOfDays > availableBalance) {
                     var errorMsgSpan = $('<span />', {
                         "class": 'errorMsgNoLeft',

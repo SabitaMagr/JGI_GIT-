@@ -63,6 +63,7 @@ print $this->form()->openTag($form);
 ?>
 <script>
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+    document.isHalfDay =<?php echo (!in_array($halfDay->getValue(), [null, '', 'N'])) ? 'true' : 'false'; ?>;
 </script>
 
 <div class="row margin-top-20">

@@ -8,7 +8,7 @@ use Application\Helper\Helper;
 use Application\Model\FiscalYear;
 use Application\Repository\MonthRepository;
 use Exception;
-use Payroll\Controller\SalarySheet as SalarySheetController;
+use Payroll\Controller\SalarySheet as SalarySheetService;
 use Payroll\Model\SalarySheet;
 use Payroll\Model\SalarySheetDetail;
 use Payroll\Repository\PayrollRepository;
@@ -20,7 +20,7 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
 
-class Generate extends HrisController {
+class SalarySheetController extends HrisController {
 
     private $salarySheetRepo;
 
@@ -37,9 +37,9 @@ class Generate extends HrisController {
         $monthRepo = new MonthRepository($this->adapter);
         $data['monthList'] = iterator_to_array($monthRepo->fetchAll(), false);
         $data['salarySheetList'] = iterator_to_array($this->salarySheetRepo->fetchAll(), false);
-        $links['viewLink'] = $this->url()->fromRoute('generate', ['action' => 'viewSalarySheet']);
-        $links['generateLink'] = $this->url()->fromRoute('generate', ['action' => 'generateSalarySheet']);
-        $links['getSalarySheetListLink'] = $this->url()->fromRoute('generate', ['action' => 'getSalarySheetList']);
+        $links['viewLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'viewSalarySheet']);
+        $links['generateLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'generateSalarySheet']);
+        $links['getSalarySheetListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSalarySheetList']);
         $data['links'] = $links;
         return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
     }
@@ -57,14 +57,14 @@ class Generate extends HrisController {
         $request = $this->getRequest();
         $data = $request->getPost();
         $sheetId = $data['sheetNo'];
-        $salarySheetController = new SalarySheetController($this->adapter);
+        $salarySheetController = new SalarySheetService($this->adapter);
         $salarySheet = $salarySheetController->viewSalarySheet($sheetId);
 
         return new JsonModel(['success' => true, 'data' => $salarySheet, 'error' => '']);
     }
 
     public function generateSalarySheetAction() {
-        $salarySheet = new SalarySheetController($this->adapter);
+        $salarySheet = new SalarySheetService($this->adapter);
         $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
         try {
             $request = $this->getRequest();
@@ -125,7 +125,7 @@ class Generate extends HrisController {
             $monthRepo = new MonthRepository($this->adapter);
             $monthDetail = $monthRepo->fetchByMonthId($monthId);
 
-            $salarySheetController = new SalarySheetController($this->adapter);
+            $salarySheetController = new SalarySheetService($this->adapter);
             $payrollRepo = new PayrollRepository($this->adapter);
             $employeeList = $payrollRepo->fetchEmployeeList();
 
