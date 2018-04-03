@@ -28,7 +28,7 @@ class ContractEmployees extends HrisController {
 
     public function indexAction() {
 
-        $employeeListSql = "select E.EMPLOYEE_ID,'('||E.EMPLOYEE_CODE||') '||E.FULL_NAME||' ('||D.DESIGNATION_TITLE||')'  AS FULL_NAME 
+        $employeeListSql = "select E.EMPLOYEE_ID,'('||E.EMPLOYEE_CODE||') '||E.FULL_NAME AS FULL_NAME 
             from  HRIS_EMPLOYEES E
             LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=E.DESIGNATION_ID)
             where E.status='E' and E.RESIGNED_FLAG='N'";
@@ -86,6 +86,12 @@ class ContractEmployees extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postData = $request->getPost();
+
+
+            echo '<Pre>';
+            print_r($postData);
+            die();
+
             $customerId = $request->getPost('customerId');
             $contractId = $request->getPost('contractId');
             $employeedesignation = $request->getPost('designation');
@@ -208,8 +214,9 @@ class ContractEmployees extends HrisController {
 
             $contractId = $request->getPost('contractId');
             $designationId = $request->getPost('designationId');
+            $dutyTypeId = $request->getPost('dutyTypeId');
 
-            $employeeData = $this->repository->getEmployeeAssignedDesignationWise($contractId, $designationId);
+            $employeeData = $this->repository->getEmployeeAssignedDesignationWise($contractId, $designationId, $dutyTypeId);
 
             return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
         } catch (Exception $e) {
@@ -270,8 +277,38 @@ class ContractEmployees extends HrisController {
             $startTime = $request->getPost('startTime');
             $endTime = $request->getPost('endTime');
             $dutyType = $request->getPost('dutyType');
+            $rate = $request->getPost('rate');
+            $monthDays = $request->getPost('monthDays');
 
-//            echo $dutyType
+
+            $contractDetails = $this->repository->getContractDetail($contract, $designation, $dutyType);
+
+            $contractDetailModel = new \Customer\Model\CustomerContractDetailModel();
+            $contractDetialRepo = new \Customer\Repository\CustomerContractDetailRepo($this->adapter);
+
+
+            if ($contractDetails) {
+                $contractDetailModel->quantity = $contractDetails['QUANTITY'] + 1;
+                $contractDetialRepo->editWithCondition($contractDetailModel, array(
+                    $contractDetailModel::STATUS => 'E',
+                    $contractDetailModel::CONTRACT_ID => $contract,
+                    $contractDetailModel::DESIGNATION_ID => $designation,
+                    $contractDetailModel::DUTY_TYPE_ID => $dutyType
+                ));
+            } else {
+                $contractDetailModel->customerId = $customer;
+                $contractDetailModel->contractId = $contract;
+                $contractDetailModel->designationId = $designation;
+                $contractDetailModel->dutyTypeId = $dutyType;
+                $contractDetailModel->quantity = 1;
+                $contractDetailModel->status = 'E';
+                $contractDetailModel->createdBy = $this->employeeId;
+                $contractDetailModel->rate = $rate;
+                $contractDetailModel->daysInMonth = $monthDays;
+                $contractDetialRepo->add($contractDetailModel);
+            }
+
+
 
             $custEmployeeModel = new CustContractEmp();
 
@@ -293,9 +330,11 @@ class ContractEmployees extends HrisController {
 
 
 
+
             $this->repository->add($custEmployeeModel);
-            $employeeData = $this->repository->getEmployeeAssignedContractWise($contract);
-            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
+//            $employeeData = $this->repository->getEmployeeAssignedContractWise($contract);
+//            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
@@ -309,12 +348,39 @@ class ContractEmployees extends HrisController {
 
 
             $id = $request->getPost('id');
-            $contractId = $request->getPost('contractId');
+            $contract = $request->getPost('contract');
+            $designation = $request->getPost('designation');
+            $dutyType = $request->getPost('dutyType');
 
             $this->repository->delete($id);
-            $employeeData = $this->repository->getEmployeeAssignedContractWise($contractId);
 
-            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
+            $contractDetailModel = new \Customer\Model\CustomerContractDetailModel();
+            $contractDetialRepo = new \Customer\Repository\CustomerContractDetailRepo($this->adapter);
+
+            $contractDetails = $this->repository->getContractDetail($contract, $designation, $dutyType);
+
+
+            if ($contractDetails['QUANTITY'] > 1) {
+                $contractDetailModel->quantity = $contractDetails['QUANTITY'] - 1;
+                $contractDetialRepo->editWithCondition($contractDetailModel, array(
+                    $contractDetailModel::STATUS => 'E',
+                    $contractDetailModel::CONTRACT_ID => $contract,
+                    $contractDetailModel::DESIGNATION_ID => $designation,
+                    $contractDetailModel::DUTY_TYPE_ID => $dutyType
+                ));
+            } else {
+                $contractDetailModel->status = 'D';
+                $contractDetialRepo->editWithCondition($contractDetailModel, array(
+                    $contractDetailModel::STATUS => 'E',
+                    $contractDetailModel::CONTRACT_ID => $contract,
+                    $contractDetailModel::DESIGNATION_ID => $designation,
+                    $contractDetailModel::DUTY_TYPE_ID => $dutyType
+                ));
+            }
+
+
+
+            return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
@@ -326,35 +392,78 @@ class ContractEmployees extends HrisController {
             $postData = $request->getPost();
 
             $id = $request->getPost('id');
-            $contract = $request->getPost('contract');
-            $designation = $request->getPost('designation');
-            $employee = $request->getPost('employee');
-            $location = $request->getPost('location');
-            $startDate = $request->getPost('startDate');
-            $endDate = $request->getPost('endDate');
+            $contractId = $request->getPost('contractId');
+            $customerId = $request->getPost('customerId');
+            $locationId = $request->getPost('locationId');
+            $employeeId = $request->getPost('employeeId');
+            $designationId = $request->getPost('designationId');
+            $dutyTypeId = $request->getPost('dutyTypeId');
             $startTime = $request->getPost('startTime');
             $endTime = $request->getPost('endTime');
-            $dutyType = $request->getPost('dutyType');
+            $startDate = $request->getPost('startDate');
+            $endDate = $request->getPost('endDate');
 
 
             $custEmployeeModel = new CustContractEmp();
 
 
-            $custEmployeeModel->employeeId = $employee;
-            $custEmployeeModel->designationId = $designation;
-            $custEmployeeModel->locationId = $location;
+            $custEmployeeModel->employeeId = $employeeId;
+            $custEmployeeModel->locationId = $locationId;
             $custEmployeeModel->startDate = Helper::getExpressionDate($startDate);
             $custEmployeeModel->endDate = Helper::getExpressionDate($endDate);
             $custEmployeeModel->startTime = Helper::getExpressionTime($startTime);
             $custEmployeeModel->endTime = Helper::getExpressionTime($endTime);
-            $custEmployeeModel->dutyTypeId = $dutyType;
-            $custEmployeeModel->modifiedBy = $this->employeeId;
-            $custEmployeeModel->modifiedDt = Helper::getcurrentExpressionDate();
 
-            $this->repository->edit($custEmployeeModel, $id);
-            $employeeData = $this->repository->getEmployeeAssignedContractWise($contract);
 
-            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
+            if ($id > 0) {
+                $returnData['operation'] = 'edit';
+                $custEmployeeModel->modifiedBy = $this->employeeId;
+                $custEmployeeModel->modifiedDt = Helper::getcurrentExpressionDate();
+                $this->repository->edit($custEmployeeModel, $id);
+            } else {
+                $returnData['operation'] = 'add';
+                $custEmployeeModel->contractId = $contractId;
+                $custEmployeeModel->customerId = $customerId;
+                $custEmployeeModel->designationId = $designationId;
+                $custEmployeeModel->dutyTypeId = $dutyTypeId;
+                $custEmployeeModel->id = (int) Helper::getMaxId($this->adapter, CustContractEmp::TABLE_NAME, CustContractEmp::ID) + 1;
+                $custEmployeeModel->createdBy = $this->employeeId;
+                $custEmployeeModel->status = 'E';
+                $this->repository->add($custEmployeeModel);
+                $returnData['id'] = $custEmployeeModel->id;
+            }
+
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullCdContractDesignationDutyTypeAction() {
+        try {
+            $request = $this->getRequest();
+            $postData = $request->getPost();
+
+            $contract = $request->getPost('contract');
+            $designation = $request->getPost('designation');
+            $dutyType = $request->getPost('dutyType');
+
+            $contractDetails = $this->repository->getContractDetail($contract, $designation, $dutyType);
+
+            return new JsonModel(['success' => true, 'data' => $contractDetails, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullEmployeeAssignDataByIdAction() {
+        try {
+            $request = $this->getRequest();
+
+            $id = $request->getPost('id');
+
+            $details = $this->repository->pullEmployeeAssignDataById($id);
+            return new JsonModel(['success' => true, 'data' => $details, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

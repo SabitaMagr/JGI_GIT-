@@ -1,16 +1,10 @@
-
 <?php
-$this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
-
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
@@ -40,6 +34,8 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
     document.fetchContractEmpLocDesWise = '<?= $this->url("contract-employees", ["action" => "fetchContractEmpLocDesWise"]); ?>';
     document.employeeList =<?= json_encode($employeeList); ?>;
     document.dutyTypeList =<?= json_encode($dutyTypeList); ?>;
+    document.pullCdContractDesignationDutyType = '<?= $this->url("contract-employees", ["action" => "pullCdContractDesignationDutyType"]); ?>';
+    document.pullEmployeeAssignDataById = '<?= $this->url("contract-employees", ["action" => "pullEmployeeAssignDataById"]); ?>';
 
 </script>
 <div class="page-bar">
@@ -58,47 +54,57 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
         <div class="row margin-top-20">
 
             <div class="col-md-3">
-                <select id="CustomerSelect"></select>
+                <div class="form-group">
+                    <select id="CustomerSelect" class="form-control">
+                    </select>
+                </div>
             </div>
             <div class="col-md-3">
-                <select id="ContractSelect"></select>
+                <div class="form-group">
+                    <select id="ContractSelect" class="form-control"></select>
+                </div>
             </div>
             <div class="col-md-3">
-                <input type="button" id="viewBtn" class="btn btn-primary" value="view">
+                <input type="button" id="viewBtn" class="btn btn-success button-sm" value="view">
             </div>
 
         </div>
-        <form method="post" action="<?= $this->url("contract-employees", ["action" => "employeeAssign"]) ?>">
-
-            <input id='customerId' type="hidden" name='customerId'>
-            <input id='contractId' type="hidden" name='contractId'>
 
 
-            <div class="row margin-top-20">
-                <a class="btn btn-primary" id="addModalBtn">ADD</a>
+        <div class="row margin-top-20">
+            <div class="col-md-12">
+                <a class="btn btn-primary button-sm" id="addModalBtn">ADD</a>
+            </div>
 
-                <div class="col-md-12">
+        </div>
+
+
+        <div class="row margin-top-20">
+            <div class="col-md-12">
+
+                <div id='assignTableDiv' class="table-responsive">
                     <table class="table" id="assignTable">
 
                     </table>
 
                 </div>
+
             </div>
-
-            <div class="row" id="submitBtn">
-                <div class="col-sm-2">
-                    <input type="submit" value="Update">
-                </div>
-            </div>
+        </div>
 
 
-        </form>
+
 
     </div>
 </div>
 
-<div id="table">
-</div>
+
+
+
+
+
+
+
 
 
 
@@ -121,6 +127,14 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
                 <div class="row">
                     <div class="col-md-5">
+                        <label>Duty Type :</label>
+                        <select class="form-control"  required='required'  id="addDutyType" name='dutyType' ></select>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
                         <label>Employees :</label>
                         <select class="form-control"  required='required'  id="addEmployee" name='employee' ></select>
                     </div>
@@ -135,13 +149,6 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
                 </div>
 
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Duty Type :</label>
-                        <select class="form-control"  required='required'  id="addDutyType" name='dutyType' ></select>
-                    </div>
-
-                </div>
 
                 <div class="row">
                     <div class="col-sm-3">
@@ -183,7 +190,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
                 <div class="row">
                     <div class="col-md-6">
                         <label>Start Time :</label>
-                        <input class="form-control"   id="addEmployeeStartTime" name='employeeStartTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
+                        <input class="form-control"   id="addEmployeeStartTime" name='employeeStartTime' type='text' data-format='h:mm a' data-template='HH : mm'></br>
                     </div>
 
                 </div>
@@ -191,10 +198,27 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
                 <div class="row">
                     <div class="col-md-6">
                         <label>End Time :</label>
-                        <input class="form-control"   id="addEmployeeEndTime" name='employeeEndTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
+                        <input class="form-control"   id="addEmployeeEndTime" name='employeeEndTime' type='text' data-format='h:mm a' data-template='HH : mm'></br>
                     </div>
 
                 </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Rate</label>
+                        <input class="form-control"   id="addRate" name='rate' type='number'></br>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="col-md-5">
+                        <label>Monthly Days</label>
+                        <input class="form-control"   id="addMonthDays" name='monthDays' type='number'></br>
+                    </div>
+
+                </div>
+
 
 
 
@@ -208,112 +232,6 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 </div>
 
 
-
-
-<!--modal to edit employee Assign-->
-<div class="modal fade" id="editModal" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Edit Employee</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Designation :</label>
-                        <select  class="form-control" required='required' id="editDesignation" name='designation'></select>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Employees :</label>
-                        <select class="form-control"  required='required'  id="editEmployee" name='employee' ></select>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Location :</label>
-                        <select class="form-control"  required='required'  id="editLocation" name='location' ></select>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Duty Type :</label>
-                        <select class="form-control"  required='required'  id="editDutyType" name='dutyType' ></select>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="editstartDate">Start Date :</label>
-                            <input type="text" name="editstartDate" id="editstartDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="editnepaliStartDate">&nbsp;</label>
-                            <input type="text" name="editnepaliStartDate" id="editnepaliStartDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>     
-
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="editendDate">End Date :</label>
-                            <input type="text" name="editendDate" id="editendDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="editnepaliEndDate">&nbsp;</label>
-                            <input type="text" name="editnepaliEndDate" id="editnepaliEndDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>     
-
-                </div>
-
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Start Time :</label>
-                        <input class="form-control"   id="editEmployeeStartTime" name='editemployeeStartTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>End Time :</label>
-                        <input class="form-control"   id="editEmployeeEndTime" name='editemployeeEndTime' type='text' data-format='h:mm a' data-template='hh : mm A'></br>
-                    </div>
-
-                </div>
-
-
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button id="updateBtn" type="button" class="btn btn-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 

@@ -37,7 +37,6 @@
                         + "<td><input  required='required'  name='quantity[]' value='" + value.QUANTITY + "' type='number' class='quantity'></td>"
                         + "<td><input  required='required'  name='rate[]' value='" + value.RATE + "' type='number' class='rate' step='0.01'></td>"
                         + "<td><select required='required' name='dutyType[]' class='dutyType'></td>"
-                        + "<td><select multiple required='required' name='weekDays[]' class='weekDays'></select><input type='hidden' value='" + value.WEEK_DETAILS + "' name='weekDayValue[]'></td>"
                         + "<td><input  required='required'  name='daysInMonth[]' value='" + value.DAYS_IN_MONTH + "' type='number' class='daysInMonth'></td>"
                         + "<td>"
                         + "<div class='th-inner '>"
@@ -52,24 +51,16 @@
                 $('#tblContractDetails tbody').append(appendValues);
 
                 app.populateSelect($('#tblContractDetails tbody').find('.designation:last'), document.designationList, 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'Select An Designation', '', value.DESIGNATION_ID);
-                app.populateSelect($('#tblContractDetails tbody').find('.dutyType:last'), document.dutyTypeList, 'DUTY_TYPE_ID', 'DUTY_TYPE_NAME', 'Select An Shift', '', value.DUTY_TYPE_ID);
-                populateWeekList($('#tblContractDetails tbody').find('.weekDays:last'));
+                app.populateSelect($('#tblContractDetails tbody').find('.dutyType:last'), document.dutyTypeList, 'DUTY_TYPE_ID', 'DUTY_TYPE_NAME', 'Select An DutyType', '', value.DUTY_TYPE_ID);
                 $('#tblContractDetails tbody').find('.designation:last').select2();
                 $('#tblContractDetails tbody').find('.dutyType:last').select2();
-                $('#tblContractDetails tbody').find('.weekDays:last').select2();
 
-                if (value.WEEK_DETAILS != null) {
-                    var weekDataArr = value.WEEK_DETAILS.split(",");
-                    $('#tblContractDetails tbody').find('.weekDays:last').val(weekDataArr).change();
-                }
 
             });
 
         } else {
             app.populateSelect($('.designation'), document.designationList, 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'Select An Designation', '');
-            app.populateSelect($('.dutyType'), document.dutyTypeList, 'SHIFT_ID', 'SHIFT_ENAME', 'Select An Shift', '');
-            populateWeekList($('.weekDays'));
-
+            app.populateSelect($('.dutyType'), document.dutyTypeList, 'DUTY_TYPE_ID', 'DUTY_TYPE_NAME', 'Select An DutyType', '');
         }
 
 
@@ -80,7 +71,6 @@
                     + "<td><input  required='required'  name='quantity[]' type='number' class='quantity'></td>"
                     + "<td><input  required='required'  name='rate[]' type='number' class='rate' step='0.01'></td>"
                     + "<td><select required='required' name='dutyType[]' class='dutyType'></td>"
-                    + "<td><select multiple required='required' name='weekDays[]' class='weekDays'></select><input type='hidden' name='weekDayValue[]'></td>"
                     + "<td><input  required='required'  name='daysInMonth[]' type='number' class='daysInMonth'></td>"
                     + "<td>"
                     + "<div class='th-inner '>"
@@ -96,10 +86,8 @@
 
             app.populateSelect($('#tblContractDetails tbody').find('.designation:last'), document.designationList, 'DESIGNATION_ID', 'DESIGNATION_TITLE', 'Select An Designation', '');
             app.populateSelect($('#tblContractDetails tbody').find('.dutyType:last'), document.dutyTypeList, 'DUTY_TYPE_ID', 'DUTY_TYPE_NAME', 'Select An Shift', '');
-            populateWeekList($('#tblContractDetails tbody').find('.weekDays:last'));
             $('#tblContractDetails tbody').find('.designation:last').select2();
             $('#tblContractDetails tbody').find('.dutyType:last').select2();
-            $('#tblContractDetails tbody').find('.weekDays:last').select2();
         });
 
         $('#delContractDetails').on('click', function () {
@@ -109,18 +97,6 @@
         });
 
 
-        $('#tblContractDetails tbody').on('change', '.weekDays', function () {
-            var selectedVal = $(this).val();
-//            console.log(selectedVal);
-            if (selectedVal == null) {
-                var weekDayValues = '';
-            } else {
-                var weekDayValues = selectedVal.toString();
-            }
-            console.log(weekDayValues);
-            var hiddenInput = $(this).parent().children('input');
-            hiddenInput.val(weekDayValues);
-        });
 
 
     });

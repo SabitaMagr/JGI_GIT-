@@ -58,6 +58,55 @@ TRUNC(SYSDATE),
 'N'
 );
 
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Customer Location',
+(select menu_id from hris_menus where lower(menu_name) like lower ('customer setup%')),
+'customer-location',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'view',
+1,
+'N'
+);
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'Customer Location',
+(select menu_id from hris_menus where lower(menu_name) like lower ('customer setup%')),
+'customer-location',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'view',
+1,
+'N'
+);
+
 CREATE TABLE HRIS_CUSTOMER_CONTRACT(
 CONTRACT_ID NUMBER(7,0) NOT NULL,
 CUSTOMER_ID NUMBER(7,0) NOT NULL,
@@ -120,13 +169,17 @@ TRUNC(SYSDATE),
 );
 
 CREATE TABLE HRIS_CUST_CONTRACT_EMP(
+ID NUMBER(7,0) PRIMARY KEY,
 CONTRACT_ID NUMBER(7,0), 
 CUSTOMER_ID NUMBER(7,0),
 LOCATION_ID NUMBER(7,0),
 EMPLOYEE_ID NUMBER(7,0),
 DESIGNATION_ID NUMBER(7,0),
+DUTY_TYPE_ID NUMBER(7,0),
 START_TIME TIMESTAMP,
 END_TIME TIMESTAMP,
+START_DATE DATE,
+END_DATE DATE,
 LAST_ASSIGNED_DATE DATE,
 CREATED_BY          NUMBER(7,0),
 CREATED_DT          DATE DEFAULT TRUNC(SYSDATE),
@@ -135,6 +188,11 @@ MODIFIED_DT         DATE,
 REMARKS             VARCHAR2(512 BYTE),
 STATUS              CHAR(1 BYTE) DEFAULT 'E' NOT NULL CHECK(STATUS IN ('E','D'))
 );
+
+
+
+
+
 
 INSERT INTO HRIS_MENUS
 (MENU_ID,
@@ -305,14 +363,7 @@ TRUNC(SYSDATE),
 
 
 
-ALTER TABLE HRIS_CUST_CONTRACT_EMP
-ADD START_DATE DATE;
 
-ALTER TABLE HRIS_CUST_CONTRACT_EMP
-ADD END_DATE DATE;
-
-ALTER TABLE HRIS_CUST_CONTRACT_EMP
-ADD ID NUMBER(7,0);
 
 
 CREATE TABLE HRIS_DUTY_TYPE
@@ -336,8 +387,7 @@ ADD DUTY_TYPE_ID NUMBER(7,0);
 ALTER TABLE HRIS_CUSTOMER_CONTRACT_DETAILS
 DROP COLUMN SHIFT_ID;
 
-ALTER TABLE HRIS_CUST_CONTRACT_EMP
-ADD DUTY_TYPE_ID NUMBER(7,0);
+
 
 ALTER TABLE HRIS_CONTRACT_EMP_ATTENDANCE
 ADD DUTY_TYPE_ID NUMBER(7,0);
@@ -378,4 +428,207 @@ TRUNC(SYSDATE),
 'index',
 1,
 'Y'
+);
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'add',
+(select menu_id from hris_menus where lower(menu_name) like lower('Duty Type%')),
+'duty-type',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'add',
+1,
+'N'
+);
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'edit',
+(select menu_id from hris_menus where lower(menu_name) like lower('Duty Type%')),
+'duty-type',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'edit',
+1,
+'N'
+);
+
+
+
+ALTER TABLE HRIS_CONTRACT_EMP_ATTENDANCE  
+ADD POSTING_TYPE CHAR(2 BYTE);
+
+
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'add Customer',
+(select menu_id from hris_menus where lower(menu_name) like lower ('customer setup%')),
+'customer-setup',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'add',
+1,
+'N'
+);
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'edit Customer',
+(select menu_id from hris_menus where lower(menu_name) like lower ('customer setup%')),
+'customer-setup',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'edit',
+1,
+'N'
+);
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'add Customer Location',
+(select menu_id from hris_menus where lower(menu_name) like lower ('customer setup%')),
+'customer-location',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'add',
+1,
+'N'
+);
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'edit Customer Location',
+(select menu_id from hris_menus where lower(menu_name) like lower ('customer setup%')),
+'customer-location',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'edit',
+1,
+'N'
+);
+
+
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'add',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer contract%')),
+'customer-contract',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'add',
+1,
+'N'
+);
+
+INSERT INTO HRIS_MENUS
+(MENU_ID,
+MENU_NAME,
+PARENT_MENU,
+ROUTE,
+STATUS,
+CREATED_DT,
+ICON_CLASS,
+ACTION,
+MENU_INDEX,
+IS_VISIBLE)
+VALUES
+((SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+'edit',
+(select menu_id from hris_menus where lower(menu_name) like lower('customer contract%')),
+'customer-contract',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'edit',
+1,
+'N'
 );

@@ -688,7 +688,7 @@ window.app = (function ($, toastr, App) {
     };
 
 
-    (function () {
+     (function () {
         $(".page-content").on("click", ".confirmation", function (e) {
             e.preventDefault();
             var $this = $(this);

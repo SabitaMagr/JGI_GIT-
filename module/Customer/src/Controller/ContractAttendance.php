@@ -456,6 +456,11 @@ AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
         try {
             $request = $this->getRequest();
             $postData = $request->getPost();
+            
+            
+//            echo'<pre>';
+//            print_r($postData);
+//            die();
 
 
             $attendanceDate = $request->getPost('attendanceDate');
@@ -471,9 +476,10 @@ AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
             $inTime = $request->getPost('inTime');
             $outTime = $request->getPost('outTime');
             $subEmployeeId = $request->getPost('subEmployeeId');
+            $postingType = $request->getPost('postingType');
 
 
-            $returnData = $this->repository->updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime, $status, $inTime, $outTime, $subEmployeeId);
+            $returnData = $this->repository->updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime, $status, $inTime, $outTime, $subEmployeeId,$postingType);
 
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
         } catch (Exception $e) {

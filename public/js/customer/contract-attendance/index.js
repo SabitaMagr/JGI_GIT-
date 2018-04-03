@@ -219,7 +219,7 @@ function getStausString(status, time, subEmp) {
                     startTime: dataItem['START_TIME'],
                     endTime: dataItem['END_TIME']
                 }).then(function (response) {
-//                    console.log(response);
+                    console.log(response);
                     var attendanceData = response.data;
                     if (attendanceData) {
                         attdAttendanceDate = attendanceData.ATTENDNACE_DATE;
@@ -235,11 +235,15 @@ function getStausString(status, time, subEmp) {
                         var attdInTime = attendanceData.IN_TIME;
                         var attdOutTime = attendanceData.OUT_TIME;
                         var attdSubEmp = attendanceData.SUB_EMPLOYEE_ID;
+                        var attdpostingType = attendanceData.POSTING_TYPE;
                         $('#attdStatus').val(attdStatus);
                         $('#addInTime').combodate('setValue', attdInTime);
                         $('#addOutTime').combodate('setValue', attdOutTime);
+                        $('#postingType').val(attdpostingType);
                         app.populateSelect($('#subEmployee'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'No Substitute', '', attdSubEmp);
+                        lockSubEmployee();
                         $('#subEmpModal').modal('show');
+
                     }
 
                 });
@@ -247,13 +251,40 @@ function getStausString(status, time, subEmp) {
         });
 
 
+        $('#attdStatus').on('change', function () {
+            console.log($('#attdStatus').val());
+            lockSubEmployee();
+
+
+
+        });
+
+        function lockSubEmployee() {
+            if ($('#attdStatus').val() == 'AB') {
+                $('#subEmployee').prop("disabled", false);
+                $('#postingType').prop("disabled", false);
+            } else {
+                $('#subEmployee').val('');
+                $('#postingType').val('SU');
+                $('#subEmployee').prop("disabled", true);
+                $('#postingType').prop("disabled", true);
+            }
+        }
+
+
 
         $('#updateAttendanceBtn').on('click', function () {
 
-            var attdStaus = $('#attdStatus').val();
+            var attdStatus = $('#attdStatus').val();
             var attdInTime = $('#addInTime').val()
             var attdOutTime = $('#addOutTime').val()
             var attdSubEmployeeId = $('#subEmployee').val()
+            var attdpostingType = $('#postingType').val()
+
+            if (attdStatus == 'AB' && attdSubEmployeeId == '') {
+                app.showMessage('SubEmployee is Required', 'error', 'Requierd');
+                return;
+            }
 
             console.log('sdf');
             app.serverRequest(document.updateAttendanceData, {
@@ -266,10 +297,11 @@ function getStausString(status, time, subEmp) {
                 designationId: attdDesignationId,
                 startTime: attdStartTime,
                 endTime: attdEndTime,
-                stauts: attdStaus,
+                stauts: attdStatus,
                 inTime: attdInTime,
                 outTime: attdOutTime,
-                subEmployeeId: attdSubEmployeeId
+                subEmployeeId: attdSubEmployeeId,
+                postingType: attdpostingType
             }).then(function (response) {
                 console.log(response);
 
@@ -278,16 +310,16 @@ function getStausString(status, time, subEmp) {
                 var dataItem = grid.dataSource.getByUid(selectedUId);
                 console.log(dataItem);
 //                console.log(dataItem['C' + selectedColumnName + '_STATUS']);
-                
-                if(response.success==true){
 
-                dataItem['C' + selectedColumnName + '_STATUS'] = response.data.STATUS;
-                dataItem['C' + selectedColumnName + '_IN_OUT_TIME'] = response.data.IN_TIME+'-'+response.data.OUT_TIME;
-                dataItem['C' + selectedColumnName + '_SUB_EMP_NAME'] = response.data.SUB_EMPLOYEE;
-                grid.refresh();
+                if (response.success == true) {
 
-                $('#subEmpModal').modal('hide');
-            }
+                    dataItem['C' + selectedColumnName + '_STATUS'] = response.data.STATUS;
+                    dataItem['C' + selectedColumnName + '_IN_OUT_TIME'] = response.data.IN_TIME + '-' + response.data.OUT_TIME;
+                    dataItem['C' + selectedColumnName + '_SUB_EMP_NAME'] = response.data.SUB_EMPLOYEE;
+                    grid.refresh();
+
+                    $('#subEmpModal').modal('hide');
+                }
 
 
             }, function (error) {

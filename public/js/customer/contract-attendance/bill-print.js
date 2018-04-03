@@ -47,6 +47,7 @@
                                     <th>Location</th>
                                     <th>Designation</th>
                                     <th>PresentDays</th>
+                                    <th>MonthlyDays</th>
                                     <th>Rate</th>
                                     <th>Amt</th>
                 
@@ -74,8 +75,9 @@
                                     <td>` + value.LOCATION_NAME + `</td>
                                     <td>` + value.DESIGNATION_TITLE + `</td>
                                     <td>` + value.PRESENT_DAYS + `</td>
+                                    <td>` + value.DAYS_IN_MONTH + `</td>
                                     <td>` + value.RATE + `</td>
-                                    <td>` + Math.ceil((value.RATE / 30) * value.PRESENT_DAYS) + `</td>
+                                    <td>` + Math.trunc((value.RATE / value.DAYS_IN_MONTH) * value.PRESENT_DAYS) + `</td>
                                 </tr>`;
                     $('#employeeTbl').append(appendData);
                     totalAmt += Math.ceil((value.RATE / 30) * value.PRESENT_DAYS);
