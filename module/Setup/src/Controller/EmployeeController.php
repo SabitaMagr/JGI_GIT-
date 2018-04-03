@@ -57,6 +57,7 @@ class EmployeeController extends HrisController {
     private $formSix;
     private $formSeven;
     private $formEight;
+    private $countryList;
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage, ConfigInterface $config) {
         parent::__construct($adapter, $storage);
@@ -64,6 +65,13 @@ class EmployeeController extends HrisController {
         $this->employeeFileRepo = new EmployeeFile($this->adapter);
         $this->jobHistoryRepo = new JobHistoryRepository($this->adapter);
         $this->config = $config;
+    }
+
+    public function getCountryList() {
+        if (!isset($this->countryList)) {
+            $this->countryList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_COUNTRIES', 'COUNTRY_ID', ['COUNTRY_NAME'], null, null, true);
+        }
+        return $this->countryList;
     }
 
     public function indexAction() {
@@ -108,7 +116,7 @@ class EmployeeController extends HrisController {
             $zoneList = ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Zones::TABLE_NAME, \Setup\Model\Zones::ZONE_ID, [\Setup\Model\Zones::ZONE_NAME], null, null, true);
             $religionList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_RELIGIONS', 'RELIGION_ID', ['RELIGION_NAME'], null, null, true);
             $companyList = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true);
-            $countryList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_COUNTRIES', 'COUNTRY_ID', ['COUNTRY_NAME'], null, null, true);
+
 
             $genderId->setValueOptions($genderList);
             $bloodGroupId->setValueOptions($bloodGroupList);
@@ -116,7 +124,7 @@ class EmployeeController extends HrisController {
             $addrPermZoneId->setValueOptions($zoneList);
             $addrTempZoneId->setValueOptions($zoneList);
             $companyId->setValueOptions($companyList);
-            $countryId->setValueOptions($countryList);
+            $countryId->setValueOptions($this->getCountryList());
         }
         if (!$this->formTwo) {
             $this->formTwo = $builder->createForm($formTabTwo);
@@ -351,7 +359,8 @@ class EmployeeController extends HrisController {
                     'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
                     'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
                     'customRender' => Helper::renderCustomView(),
-                    'programSE' => $programSE
+                    'programSE' => $programSE,
+                    'countries' => $this->getCountryList()
         ]);
     }
 
