@@ -28,7 +28,7 @@ class SystemRuleProcessor {
         $this->monthId = $monthId;
         $this->month = new Months();
         $this->month->exchangeArrayFromDB((array) $monthRepo->fetchByMonthId($monthId));
-        $this->multiplicationFactor = 13 - $this->month->fiscalYearMonthNo;
+        $this->multiplicationFactor = 12 - $this->month->fiscalYearMonthNo;
 
         $ssdRepo = new SalarySheetDetailRepo($adapter);
         $prevSummedRaw = $ssdRepo->fetchPrevSumPayValue($employeeId, $this->month->fiscalYearId, $this->month->fiscalYearMonthNo);
@@ -52,8 +52,16 @@ class SystemRuleProcessor {
             case PayrollGenerator::SYSTEM_RULE[0]:
                 $calculatedValue = 0;
                 foreach ($this->ruleDetailList as $ruleDetail) {
-                    if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D'])) {
-                        $ruleValue = (($this->multiplicationFactor == 12) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]) + ($ruleDetail['ruleValue'] * (($ruleDetail['rule']['IS_MONTHLY'] == 'Y') ? 1 : $this->multiplicationFactor));
+                    if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
+                        $past = 0;
+                        if ($ruleDetail['rule']['INCLUDE_PAST_VALUE'] === 'Y') {
+                            $past = (($this->multiplicationFactor == 11) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]);
+                        }
+                        $future = 0;
+                        if ($ruleDetail['rule']['INCLUDE_FUTURE_VALUE'] === 'Y') {
+                            $future = $ruleDetail['ruleValue'] * $this->multiplicationFactor;
+                        }
+                        $ruleValue = $past + $ruleDetail['ruleValue'] + $future;
                     }
                     switch ($ruleDetail['rule']['PAY_TYPE_FLAG']) {
                         case "A":
@@ -70,7 +78,7 @@ class SystemRuleProcessor {
             case PayrollGenerator::SYSTEM_RULE[1]:
                 $calculatedValue = 0;
                 foreach ($this->ruleDetailList as $ruleDetail) {
-                    if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D'])) {
+                    if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_SALARY'] === 'Y')) {
                         $ruleValue = $ruleDetail['ruleValue'];
                     }
                     switch ($ruleDetail['rule']['PAY_TYPE_FLAG']) {

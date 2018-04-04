@@ -43,13 +43,34 @@ class RulesRepository implements RepositoryInterface {
                     ELSE 'VIEW'
                   END) AS PAY_TYPE,
                   PRIORITY_INDEX,
-                  IS_MONTHLY,
+                  INCLUDE_IN_TAX,
                   (
                   CASE
-                    WHEN IS_MONTHLY = 'Y'
+                    WHEN INCLUDE_IN_TAX = 'Y'
                     THEN 'Yes'
                     ELSE 'No'
-                  END ) AS IS_MONTHLY_DETAIL,
+                  END ) AS INCLUDE_IN_TAX_DETAIL,
+                  INCLUDE_IN_SALARY,
+                  (
+                  CASE
+                    WHEN INCLUDE_IN_SALARY = 'Y'
+                    THEN 'Yes'
+                    ELSE 'No'
+                  END ) AS INCLUDE_IN_SALARY_DETAIL,
+                  INCLUDE_PAST_VALUE,
+                  (
+                  CASE
+                    WHEN INCLUDE_PAST_VALUE = 'Y'
+                    THEN 'Yes'
+                    ELSE 'No'
+                  END ) AS INCLUDE_PAST_VALUE_DETAIL,
+                  INCLUDE_FUTURE_VALUE,
+                  (
+                  CASE
+                    WHEN INCLUDE_FUTURE_VALUE = 'Y'
+                    THEN 'Yes'
+                    ELSE 'No'
+                  END ) AS INCLUDE_FUTURE_VALUE_DETAIL,
                   FORMULA,
                   REMARKS,
                   STATUS

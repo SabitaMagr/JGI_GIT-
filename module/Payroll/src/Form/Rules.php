@@ -59,14 +59,6 @@ class Rules {
     public $priorityIndex;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Monthly"})
-     * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"isMonthly"})
-     */
-    public $isMonthly;
-
-    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
      * @Annotation\Options({"label":"Formula"})
@@ -83,6 +75,38 @@ class Rules {
      * @Annotation\Attributes({ "id":"remarks","class":"form-control"})
      */
     public $remarks;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include In Tax"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include In Tax"})
+     */
+    public $includeInTax;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include In Salary"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include In Salary"})
+     */
+    public $includeInSalary;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Past Value"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include Past Value"})
+     */
+    public $includePastValue;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Future Value"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include Future Value"})
+     */
+    public $includeFutureValue;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

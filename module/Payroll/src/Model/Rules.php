@@ -19,8 +19,11 @@ class Rules extends Model {
     const MODIFIED_DT = "MODIFIED_DT";
     const MODIFIED_BY = "MODIFIED_BY";
     const STATUS = "STATUS";
-    const IS_MONTHLY = "IS_MONTHLY";
     const FORMULA = "FORMULA";
+    const INCLUDE_IN_TAX = "INCLUDE_IN_TAX";
+    const INCLUDE_IN_SALARY = "INCLUDE_IN_SALARY";
+    const INCLUDE_PAST_VALUE = "INCLUDE_PAST_VALUE";
+    const INCLUDE_FUTURE_VALUE = "INCLUDE_FUTURE_VALUE";
 
     public $payId;
     public $payCode;
@@ -34,8 +37,11 @@ class Rules extends Model {
     public $modifiedDt;
     public $modifiedBy;
     public $status;
-    public $isMonthly;
     public $formula;
+    public $includeInTax;
+    public $includeInSalary;
+    public $includePastValue;
+    public $includeFutureValue;
     public $mappings = [
         'payId' => self::PAY_ID,
         'payCode' => self::PAY_CODE,
@@ -49,8 +55,11 @@ class Rules extends Model {
         'modifiedDt' => self::MODIFIED_DT,
         'modifiedBy' => self::MODIFIED_BY,
         'status' => self::STATUS,
-        'isMonthly' => self::IS_MONTHLY,
         'formula' => self::FORMULA,
+        'includeInTax' => self::INCLUDE_IN_TAX,
+        'includeInSalary' => self::INCLUDE_IN_SALARY,
+        'includePastValue' => self::INCLUDE_PAST_VALUE,
+        'includeFutureValue' => self::INCLUDE_FUTURE_VALUE,
     ];
 
 }
