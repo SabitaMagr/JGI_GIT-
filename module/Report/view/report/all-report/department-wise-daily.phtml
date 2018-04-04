@@ -21,9 +21,9 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportthree
 <script>
     document.wsDepartmentWiseDailyReport = '<?php echo $this->url('allreport', ['action' => 'departmentWiseDailyReport']); ?>';
     document.comBraDepList =<?php echo json_encode($comBraDepList); ?>;
-    document.monthList =<?php echo json_encode($monthList); ?>;
     document.monthId =<?php echo $monthId; ?>;
     document.departmentId =<?php echo $departmentId; ?>;
+    document.getFiscalYearMonthLink = '<?php echo $this->url('allreport', ['action' => 'getFiscalYearMonth']); ?>';
 
 </script>
 
@@ -59,26 +59,28 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportthree
         </div>
     </div>
     <div class="portlet-body">
-        <div class="row">
-            <div class="col-sm-3 bottomgap">
-                <select id="monthList" class="">
 
-                </select> 
+        <div class="row margin-top-10">
+            <div class="col-sm-2">
+                <select class="form-control"  id="fiscalYear" >
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" id="fiscalMonth" >
+                </select>
             </div>
             <div class="  col-sm-3  bottomgap">
                 <select id="departmentList">
-
                 </select> 
-
             </div>
-            <div class="col-sm-offset-3  col-sm-3 bottomgap">
+            <div class=" col-sm-3 bottomgap">
                 <button id="generateReport" class="btn btn-block btn-customized">
                     Generate Report
                 </button>
 
             </div>
-
         </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <div id="reportTable" class="kendo-report">
