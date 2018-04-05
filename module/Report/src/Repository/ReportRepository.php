@@ -1035,7 +1035,7 @@ EOT;
                       AND FISCAL_YEAR_MONTH_NO=V_FISCAL_YEAR_MONTH_NO;
                   DELETE
                   FROM HR_MONTHLY_MODIFIED_PAY_VALUE
-                  WHERE PERIOD_DT_CODE=V_FISCAL_YEAR_MONTH_NO;
+                  WHERE PERIOD_DT_CODE=V_FISCAL_YEAR_MONTH_NO AND PAY_CODE IN ('TD','PD','AD','HD','PL','UL','OT');
                   FOR report IN
                   (SELECT C.COMPANY_CODE,
                     C.COMPANY_CODE
