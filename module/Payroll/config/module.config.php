@@ -7,6 +7,7 @@ use Payroll\Controller\FlatValue;
 use Payroll\Controller\MonthlyValue;
 use Payroll\Controller\Rules;
 use Payroll\Controller\SalarySheetController;
+use Payroll\Controller\TaxSheetController;
 use Zend\Router\Http\Segment;
 
 return [
@@ -48,6 +49,16 @@ return [
                     'route' => '/payroll/salarysheet[/:action[/:id]]',
                     'defaults' => [
                         'controller' => SalarySheetController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'taxSheet' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/taxsheet[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => TaxSheetController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -171,7 +182,23 @@ return [
                     ],
                 ]
             ]
-        ],
+        ], 'taxSheet' => [
+            [
+                'label' => 'Tax Sheet',
+                'route' => 'taxSheet',
+            ],
+            [
+                'label' => 'Tax Sheet',
+                'route' => 'taxSheet',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'taxSheet',
+                        'action' => 'index',
+                    ],
+                ]
+            ]
+        ]
     ],
     'controllers' => [
         'factories' => [
@@ -179,6 +206,7 @@ return [
             FlatValue::class => ControllerFactory::class,
             Rules::class => ControllerFactory::class,
             SalarySheetController::class => ControllerFactory::class,
+            TaxSheetController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

@@ -1026,7 +1026,13 @@ EOT;
         $sql = "DECLARE
                   V_FISCAL_YEAR_ID       NUMBER:={$fiscalYearId};
                   V_FISCAL_YEAR_MONTH_NO NUMBER:={$fiscalYearMonthNo};
+                  V_FROM_DATE DATE;
+                  V_TO_DATE DATE;
                 BEGIN
+                SELECT FROM_DATE,TO_DATE INTO V_FROM_DATE,V_TO_DATE
+                      FROM HRIS_MONTH_CODE
+                      WHERE FISCAL_YEAR_ID    =V_FISCAL_YEAR_ID
+                      AND FISCAL_YEAR_MONTH_NO=V_FISCAL_YEAR_MONTH_NO;
                   DELETE
                   FROM HR_MONTHLY_MODIFIED_PAY_VALUE
                   WHERE PERIOD_DT_CODE=V_FISCAL_YEAR_MONTH_NO;
@@ -1122,13 +1128,7 @@ EOT;
                     FROM HRIS_ATTENDANCE_DETAIL A
                     LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                     ON (A.LEAVE_ID= L.LEAVE_ID)
-                    LEFT JOIN
-                      (SELECT *
-                      FROM HRIS_MONTH_CODE
-                      WHERE FISCAL_YEAR_ID    =3
-                      AND FISCAL_YEAR_MONTH_NO=1
-                      ) M
-                    ON (A.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                    WHERE A.ATTENDANCE_DT BETWEEN V_FROM_DATE AND V_TO_DATE
                     GROUP BY A.EMPLOYEE_ID
                     ) A
                   LEFT JOIN HRIS_EMPLOYEES E
@@ -1141,14 +1141,8 @@ EOT;
                     (SELECT O.EMPLOYEE_ID,
                       SUM(O.TOTAL_HOUR) AS TOTAL_MIN
                     FROM HRIS_OVERTIME O
-                    LEFT JOIN
-                      (SELECT *
-                      FROM HRIS_MONTH_CODE
-                      WHERE FISCAL_YEAR_ID    =3
-                      AND FISCAL_YEAR_MONTH_NO=1
-                      ) M
-                    ON (O.OVERTIME_DATE BETWEEN M.FROM_DATE AND M.TO_DATE)
                     WHERE O.STATUS= 'AP'
+                    AND (O.OVERTIME_DATE BETWEEN V_FROM_DATE AND V_TO_DATE)
                     GROUP BY O.EMPLOYEE_ID
                     ) OT ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
                   ORDER BY C.COMPANY_NAME,

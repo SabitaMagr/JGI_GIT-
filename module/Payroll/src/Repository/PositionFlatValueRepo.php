@@ -109,7 +109,7 @@ class PositionFlatValueRepo extends HrisRepository {
                     (
                       V_FLAT_ID,
                       V_POSITION_ID,
-                      V_FISCAL_ID,
+                      V_FISCAL_YEAR_ID,
                       V_ASSIGNED_VALUE
                     );
                 END;";

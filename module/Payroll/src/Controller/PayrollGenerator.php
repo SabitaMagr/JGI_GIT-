@@ -88,8 +88,10 @@ class PayrollGenerator {
         $this->monthId = $monthId;
         $this->sheetNo = $sheetNo;
         $payList = $this->ruleRepo->fetchAll();
+        $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $employeeId, null, $monthId, null);
 
         $ruleValueMap = [];
+        $ruleTaxValueMap = [];
         $counter = 0;
         foreach ($payList as $ruleDetail) {
             $ruleId = $ruleDetail[Rules::PAY_ID];
@@ -114,12 +116,14 @@ class PayrollGenerator {
 
             $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
             $ruleValue = eval("return {$processedformula} ;");
-            array_push($this->ruleDetailList, ["ruleValue" => $ruleValue, "rule" => $ruleDetail]);
+            $rule = ["ruleValue" => $ruleValue, "rule" => $ruleDetail];
+            array_push($this->ruleDetailList, $rule);
             $ruleValueMap[$ruleId] = $ruleValue;
+            $ruleTaxValueMap[$ruleId] = $systemRuleProcessor->getTaxValue($rule);
             $counter++;
         }
 
-        return ["ruleValueKV" => $ruleValueMap];
+        return ["ruleValueKV" => $ruleValueMap, "ruleTaxValueKV" => $ruleTaxValueMap];
     }
 
     private function getMonthlyValues() {

@@ -11,10 +11,12 @@ use Exception;
 use Payroll\Controller\SalarySheet as SalarySheetService;
 use Payroll\Model\SalarySheet;
 use Payroll\Model\SalarySheetDetail;
+use Payroll\Model\TaxSheet;
 use Payroll\Repository\PayrollRepository;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetDetailRepo;
 use Payroll\Repository\SalarySheetRepo;
+use Payroll\Repository\TaxSheetRepo;
 use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -66,6 +68,7 @@ class SalarySheetController extends HrisController {
     public function generateSalarySheetAction() {
         $salarySheet = new SalarySheetService($this->adapter);
         $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
+        $taxSheetRepo = new TaxSheetRepo($this->adapter);
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
@@ -83,7 +86,8 @@ class SalarySheetController extends HrisController {
                     $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate);
                     $this->salarySheetRepo->generateSalShReport($sheetNo);
                     /*  */
-                    $employeeList = $salarySheet->fetchEmployeeList($fromDate, $toDate);
+//                    $employeeList = $salarySheet->fetchEmployeeList($fromDate, $toDate);
+                    $employeeList = [['EMPLOYEE_ID' => 292]];
                     $returnData['sheetNo'] = $sheetNo;
                     $returnData['employeeList'] = $employeeList;
                     break;
@@ -102,6 +106,15 @@ class SalarySheetController extends HrisController {
                         $salarySheetDetail->payId = $key;
                         $salarySheetDetail->val = $value;
                         $salarySheetDetailRepo->add($salarySheetDetail);
+                    }
+
+                    $taxSheet = new TaxSheet();
+                    $taxSheet->sheetNo = $sheetNo;
+                    $taxSheet->employeeId = $employeeId;
+                    foreach ($returnData['ruleTaxValueKV'] as $key => $value) {
+                        $taxSheet->payId = $key;
+                        $taxSheet->val = $value;
+                        $taxSheetRepo->add($taxSheet);
                     }
                     break;
                 case 3:

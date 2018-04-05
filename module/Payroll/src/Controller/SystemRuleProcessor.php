@@ -19,7 +19,7 @@ class SystemRuleProcessor {
     private $prevSummedSSD;
     private $ruleId;
 
-    public function __construct($adapter, $employeeId, $ruleDetailList, int $monthId, int $ruleId) {
+    public function __construct($adapter, $employeeId, $ruleDetailList = null, int $monthId = null, int $ruleId = null) {
         $this->adapter = $adapter;
         $this->employeeId = $employeeId;
         $this->employeeRepo = new EmployeeRepository($adapter);
@@ -101,6 +101,21 @@ class SystemRuleProcessor {
                 break;
         }
         return $processedValue;
+    }
+
+    public function getTaxValue($ruleDetail) {
+        if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
+            $past = 0;
+            if ($ruleDetail['rule']['INCLUDE_PAST_VALUE'] === 'Y') {
+                $past = (($this->multiplicationFactor == 11) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]);
+            }
+            $future = 0;
+            if ($ruleDetail['rule']['INCLUDE_FUTURE_VALUE'] === 'Y') {
+                $future = $ruleDetail['ruleValue'] * $this->multiplicationFactor;
+            }
+            return $past + $ruleDetail['ruleValue'] + $future;
+        }
+        return null;
     }
 
 }
