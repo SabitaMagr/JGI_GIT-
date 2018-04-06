@@ -39,8 +39,10 @@ class RulesRepository implements RepositoryInterface {
                     WHEN PAY_TYPE_FLAG ='A'
                     THEN 'Additon'
                     WHEN PAY_TYPE_FLAG='D'
-                    THEN 'DEDUCTION'
-                    ELSE 'VIEW'
+                    THEN 'Deduction'
+                    WHEN PAY_TYPE_FLAG='V'
+                    THEN 'View'
+                    ELSE 'Tax'
                   END) AS PAY_TYPE,
                   PRIORITY_INDEX,
                   INCLUDE_IN_TAX,

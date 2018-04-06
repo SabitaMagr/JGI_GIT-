@@ -44,7 +44,7 @@ class Rules {
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction","V":"View"},"label":"Pay Type"})
+     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction","V":"View","T":"Tax"},"label":"Pay Type"})
      * @Annotation\Attributes({ "id":"payTypeFlag","class":"form-control"})
      */
     public $payTypeFlag;

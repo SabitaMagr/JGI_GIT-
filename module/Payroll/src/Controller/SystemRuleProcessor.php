@@ -104,7 +104,7 @@ class SystemRuleProcessor {
     }
 
     public function getTaxValue($ruleDetail) {
-        if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
+        if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D','T']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
             $past = 0;
             if ($ruleDetail['rule']['INCLUDE_PAST_VALUE'] === 'Y') {
                 $past = (($this->multiplicationFactor == 11) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]);
