@@ -402,6 +402,7 @@ class ContractEmployees extends HrisController {
             $endTime = $request->getPost('endTime');
             $startDate = $request->getPost('startDate');
             $endDate = $request->getPost('endDate');
+            $monthlyRate = $request->getPost('monthlyRate');
 
 
             $custEmployeeModel = new CustContractEmp();
@@ -413,6 +414,7 @@ class ContractEmployees extends HrisController {
             $custEmployeeModel->endDate = Helper::getExpressionDate($endDate);
             $custEmployeeModel->startTime = Helper::getExpressionTime($startTime);
             $custEmployeeModel->endTime = Helper::getExpressionTime($endTime);
+            $custEmployeeModel->monthlyRate = $monthlyRate;
 
 
             if ($id > 0) {
@@ -426,11 +428,11 @@ class ContractEmployees extends HrisController {
                 $custEmployeeModel->customerId = $customerId;
                 $custEmployeeModel->designationId = $designationId;
                 $custEmployeeModel->dutyTypeId = $dutyTypeId;
-                $custEmployeeModel->id = (int) Helper::getMaxId($this->adapter, CustContractEmp::TABLE_NAME, CustContractEmp::ID) + 1;
+                $custEmployeeModel->empAssignId = (int) Helper::getMaxId($this->adapter, CustContractEmp::TABLE_NAME, CustContractEmp::EMP_ASSIGN_ID) + 1;
                 $custEmployeeModel->createdBy = $this->employeeId;
                 $custEmployeeModel->status = 'E';
                 $this->repository->add($custEmployeeModel);
-                $returnData['id'] = $custEmployeeModel->id;
+                $returnData['id'] = $custEmployeeModel->empAssignId;
             }
 
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);

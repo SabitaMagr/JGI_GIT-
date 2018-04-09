@@ -1,16 +1,19 @@
 function setTemplate(temp) {
     var returnvalue = '';
-    if (temp == 'AB') {
+    if (temp == 'Absent') {
         returnvalue = 'attendance-color-red';
-    } else if (temp == 'PR') {
+    } else if (temp == 'Present') {
         returnvalue = 'attendance-color-green';
+    } else if (temp == 'DayOff' || temp == 'PaidHoliday') {
+        returnvalue = 'attendance-color-yellow';
     }
+    console.log(returnvalue);
 
     return returnvalue;
 }
 
-function getStausString(status, time, subEmp) {
-    var returnvalue = status + ' (' + time + ')';
+function getStausString(status, normal, ot, subEmp) {
+    var returnvalue = status + '</br>Normal:' + normal + '</br>Ot:' + ot;
 
     if (subEmp != null) {
         returnvalue += ' (' + subEmp + ')';
@@ -33,14 +36,17 @@ function getStausString(status, time, subEmp) {
         var attdLocationId;
         var attdDutyTypeId;
         var attdDesignationId;
-        var attdStartTime;
-        var attdEndTime;
-        $('#addInTime').combodate({
+        var attdEmpAssignId;
+        var attdEmpAssignId;
+        var attdDutyNormalHour;
+        var attdDutyOtHour;
+        $('#normalHour').combodate({
             minuteStep: 1,
         });
-        $('#addOutTime').combodate({
+        $('#otHour').combodate({
             minuteStep: 1,
         });
+
         var $cutomerSelect = $('#customerSelect');
         var $monthSelect = $('#monthSelect');
         app.populateSelect($cutomerSelect, document.customerList, 'CUSTOMER_ID', 'CUSTOMER_ENAME', 'Select An Customer', '');
@@ -70,42 +76,30 @@ function getStausString(status, time, subEmp) {
                 width: 100
             });
             cols.push({
-                field: 'LOCATION_NAME',
-                title: "Location",
-                locked: true,
-                template: '<span>#:LOCATION_NAME#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'START_TIME',
-                title: "Start Time",
-                locked: true,
-                template: '<span>#:START_TIME#</span>',
-                width: 100
-            });
-            cols.push({
-                field: 'END_TIME',
-                title: "End Time",
-                locked: true,
-                template: '<span>#:END_TIME#</span>',
-                width: 100
-            });
-            cols.push({
                 field: 'DUTY_TYPE_NAME',
                 title: "Duty Type",
                 locked: true,
                 template: '<span>#:DUTY_TYPE_NAME#</span>',
                 width: 100
             });
+            cols.push({
+                field: 'LOCATION_NAME',
+                title: "Location",
+                locked: true,
+                template: '<span>#:LOCATION_NAME#</span>',
+                width: 100
+            });
             for (var i = 1; i <= dayCount; i++) {
                 var temp = 'C' + i;
                 var tempStatus = 'C' + i + '_STATUS';
-                var tempTime = 'C' + i + '_IN_OUT_TIME';
+                var tempNormalHour = 'C' + i + '_NORMAL_HOUR';
+                var tempOtHour = 'C' + i + '_OT_HOUR';
                 var tempSubEmp = 'C' + i + '_SUB_EMP_NAME';
                 cols.push({
                     field: temp,
                     title: "" + i,
-                    template: '<button data-field="' + i + '"  class="attdBtn #: setTemplate(' + tempStatus + ') #">#: (' + tempStatus + ' == null) ? "-" : getStausString(' + tempStatus + ',' + tempTime + ',' + tempSubEmp + ') #</button>',
+//                    template: '<button data-field="' + i + '"  class="attdBtn #: setTemplate(' + tempStatus + ') #">PR</br>hour:02:00</br>ot:02:00</button>',
+                    template: '<button data-field="' + i + '"  class="attdBtn #: setTemplate(' + tempStatus + ') #">#= (' + tempStatus + ' == null) ? "-" : getStausString(' + tempStatus + ',' + tempNormalHour + ',' + tempOtHour + ',' + tempSubEmp + ') #</button>',
 //                    template: '<span class="#: setTemplate(' + temp + ') #">#: (' + temp + ' == null) ? "-" : ' + temp + ' #</span>',
                     width: 100,
 //                    editor: CustomSelectElement
@@ -139,51 +133,50 @@ function getStausString(status, time, subEmp) {
 
             }
             ).then(function (response) {
-//                console.log(response);
-                console.log(response.data.monthDetails.DAYSCOUNT);
+                console.log(response.data);
+//                console.log(response.data.monthDetails.DAYSCOUNT);
                 var cols = [];
                 cols = GenerateColsForKendo(response.data.monthDetails.DAYSCOUNT);
-                var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
-                        dataSource = new kendo.data.DataSource({
-                            transport: {
-                                read: function (e) {
-                                    e.success(response.data.attendanceResult);
-                                },
-                                update: function (e) {
-                                    var rowData = e.data.models[0];
-                                    app.serverRequest(document.updateEmpContractAttendnace, {
-                                        customerId: selectedCustomerVal,
-                                        monthId: selectedMonthVal,
-                                        kendoData: rowData
+                var dataSource = new kendo.data.DataSource({
+                    transport: {
+                        read: function (e) {
+                            e.success(response.data.attendanceResult);
+                        },
+                        update: function (e) {
+                            var rowData = e.data.models[0];
+                            app.serverRequest(document.updateEmpContractAttendnace, {
+                                customerId: selectedCustomerVal,
+                                monthId: selectedMonthVal,
+                                kendoData: rowData
 
-                                    }
-                                    ).then(function (response) {
-                                        console.log(response.success);
-                                        if (response.success == true) {
-                                            e.success();
-                                        }
-                                    });
-                                },
-                                parameterMap: function (options, operation) {
-                                    if (operation !== "read" && options.models) {
-                                        return {models: kendo.stringify(options.models)};
-                                    }
-                                }
-                            },
-                            batch: true,
-                            pageSize: 100,
-                            schema: {
-                                model: {
-                                    id: "CONTRACT_ID",
-                                    fields: {
-//                                        CONTRACT_ID: { editable: false, nullable: true },
-                                        FULL_NAME: {editable: false, nullable: true},
-                                        LOCATION_NAME: {editable: false, nullable: true},
-//                                    C1: {},
-                                    }
-                                }
                             }
-                        });
+                            ).then(function (response) {
+                                console.log(response.success);
+                                if (response.success == true) {
+                                    e.success();
+                                }
+                            });
+                        },
+                        parameterMap: function (options, operation) {
+                            if (operation !== "read" && options.models) {
+                                return {models: kendo.stringify(options.models)};
+                            }
+                        }
+                    },
+                    batch: true,
+                    pageSize: 100,
+                    schema: {
+                        model: {
+                            id: "CONTRACT_ID",
+                            fields: {
+//                                        CONTRACT_ID: { editable: false, nullable: true },
+                                FULL_NAME: {editable: false, nullable: true},
+                                LOCATION_NAME: {editable: false, nullable: true},
+//                                    C1: {},
+                            }
+                        }
+                    }
+                });
                 $("#grid").kendoGrid({
                     dataSource: dataSource,
                     height: 450,
@@ -216,6 +209,7 @@ function getStausString(status, time, subEmp) {
                     locationId: dataItem['LOCATION_ID'],
                     dutyTypeId: dataItem['DUTY_TYPE_ID'],
                     designationId: dataItem['DESIGNATION_ID'],
+                    empAssignId: dataItem['EMP_ASSIGN_ID'],
                     startTime: dataItem['START_TIME'],
                     endTime: dataItem['END_TIME']
                 }).then(function (response) {
@@ -229,16 +223,17 @@ function getStausString(status, time, subEmp) {
                         attdLocationId = attendanceData.LOCATION_ID;
                         attdDutyTypeId = attendanceData.DUTY_TYPE_ID;
                         attdDesignationId = attendanceData.DESIGNATION_ID;
-                        attdStartTime = attendanceData.START_TIME;
-                        attdEndTime = attendanceData.END_TIME;
+                        attdEmpAssignId = attendanceData.EMP_ASSIGN_ID;
+                        attdDutyNormalHour = attendanceData.DUTY_NORMAL_HOUR;
+                        attdDutyOtHour = attendanceData.DUTY_OT_HOUR;
                         var attdStatus = attendanceData.STATUS;
-                        var attdInTime = attendanceData.IN_TIME;
-                        var attdOutTime = attendanceData.OUT_TIME;
+                        var attdNormalHour = attendanceData.NORMAL_HOUR;
+                        var attdOtHour = attendanceData.OT_HOUR;
                         var attdSubEmp = attendanceData.SUB_EMPLOYEE_ID;
                         var attdpostingType = attendanceData.POSTING_TYPE;
                         $('#attdStatus').val(attdStatus);
-                        $('#addInTime').combodate('setValue', attdInTime);
-                        $('#addOutTime').combodate('setValue', attdOutTime);
+                        $('#normalHour').combodate('setValue', attdNormalHour);
+                        $('#otHour').combodate('setValue', attdOtHour);
                         $('#postingType').val(attdpostingType);
                         app.populateSelect($('#subEmployee'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'No Substitute', '', attdSubEmp);
                         lockSubEmployee();
@@ -254,10 +249,27 @@ function getStausString(status, time, subEmp) {
         $('#attdStatus').on('change', function () {
             console.log($('#attdStatus').val());
             lockSubEmployee();
-
-
-
+            setDefaultDuty();
         });
+
+        function setDefaultDuty() {
+            if ($('#attdStatus').val() == 'DO' || $('#attdStatus').val() == 'PH') {
+                $('#normalHour').combodate('setValue', attdDutyNormalHour);
+                $('#otHour').combodate('setValue', attdDutyOtHour);
+                $('#normalHour').parent().find('select').prop('disabled', true);
+                $('#otHour').parent().find('select').prop('disabled', true);
+            } else if ($('#attdStatus').val() == 'PR') {
+                $('#normalHour').combodate('setValue', attdDutyNormalHour);
+                $('#otHour').combodate('setValue', attdDutyOtHour);
+                $('#normalHour').parent().find('select').prop('disabled', false);
+                $('#otHour').parent().find('select').prop('disabled', false);
+            } else if ($('#attdStatus').val() == 'AB') {
+                $('#normalHour').combodate('setValue', '00:00');
+                $('#otHour').combodate('setValue', '00:00');
+                $('#normalHour').parent().find('select').prop('disabled', true);
+                $('#otHour').parent().find('select').prop('disabled', true);
+            }
+        }
 
         function lockSubEmployee() {
             if ($('#attdStatus').val() == 'AB') {
@@ -276,15 +288,15 @@ function getStausString(status, time, subEmp) {
         $('#updateAttendanceBtn').on('click', function () {
 
             var attdStatus = $('#attdStatus').val();
-            var attdInTime = $('#addInTime').val()
-            var attdOutTime = $('#addOutTime').val()
-            var attdSubEmployeeId = $('#subEmployee').val()
-            var attdpostingType = $('#postingType').val()
+            var attdNormalHour = $('#normalHour').val();
+            var attdOtHour = $('#otHour').val();
+            var attdSubEmployeeId = $('#subEmployee').val();
+            var attdpostingType = $('#postingType').val();
 
-            if (attdStatus == 'AB' && attdSubEmployeeId == '') {
-                app.showMessage('SubEmployee is Required', 'error', 'Requierd');
-                return;
-            }
+//            if (attdStatus == 'AB' && attdSubEmployeeId == '') {
+//                app.showMessage('SubEmployee is Required', 'error', 'Requierd');
+//                return;
+//            }
 
             console.log('sdf');
             app.serverRequest(document.updateAttendanceData, {
@@ -295,11 +307,14 @@ function getStausString(status, time, subEmp) {
                 locationId: attdLocationId,
                 dutyTypeId: attdDutyTypeId,
                 designationId: attdDesignationId,
-                startTime: attdStartTime,
-                endTime: attdEndTime,
+                empAssignId: attdEmpAssignId,
+//                startTime: attdStartTime,
+//                endTime: attdEndTime,
                 stauts: attdStatus,
-                inTime: attdInTime,
-                outTime: attdOutTime,
+                normalHour: attdNormalHour,
+                otHour: attdOtHour,
+//                inTime: attdInTime,
+//                outTime: attdOutTime,
                 subEmployeeId: attdSubEmployeeId,
                 postingType: attdpostingType
             }).then(function (response) {
@@ -314,7 +329,8 @@ function getStausString(status, time, subEmp) {
                 if (response.success == true) {
 
                     dataItem['C' + selectedColumnName + '_STATUS'] = response.data.STATUS;
-                    dataItem['C' + selectedColumnName + '_IN_OUT_TIME'] = response.data.IN_TIME + '-' + response.data.OUT_TIME;
+                    dataItem['C' + selectedColumnName + '_NORMAL_HOUR'] = response.data.NORMAL_HOUR;
+                    dataItem['C' + selectedColumnName + '_OT_HOUR'] = response.data.OT_HOUR;
                     dataItem['C' + selectedColumnName + '_SUB_EMP_NAME'] = response.data.SUB_EMPLOYEE;
                     grid.refresh();
 

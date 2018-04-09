@@ -6,7 +6,7 @@ use Application\Model\Model;
 
 class CustContractEmp extends Model {
 
-    CONST TABLE_NAME = "HRIS_CUST_CONTRACT_EMP";
+    CONST TABLE_NAME = "HRIS_CONTRACT_EMP_ASSIGN";
     CONST CONTRACT_ID = "CONTRACT_ID";
     CONST CUSTOMER_ID = "CUSTOMER_ID";
     CONST LOCATION_ID = "LOCATION_ID";
@@ -23,8 +23,9 @@ class CustContractEmp extends Model {
     CONST STATUS = "STATUS";
     CONST START_DATE = "START_DATE";
     CONST END_DATE = "END_DATE";
-    CONST ID = "ID";
+    CONST EMP_ASSIGN_ID = "EMP_ASSIGN_ID";
     CONST DUTY_TYPE_ID = "DUTY_TYPE_ID";
+    CONST MONTHLY_RATE = "MONTHLY_RATE";
 
     public $contractId;
     public $customerId;
@@ -41,8 +42,9 @@ class CustContractEmp extends Model {
     public $status;
     public $startDate;
     public $endDate;
-    public $id;
+    public $empAssignId;
     public $dutyTypeId;
+    public $monthlyRate;
     public $mappings = [
         'contractId' => self::CONTRACT_ID,
         'customerId' => self::CUSTOMER_ID,
@@ -60,8 +62,9 @@ class CustContractEmp extends Model {
         'status' => self::STATUS,
         'startDate' => self::START_DATE,
         'endDate' => self::END_DATE,
-        'id' => self::ID,
-        'dutyTypeId' => self::DUTY_TYPE_ID
+        'empAssignId' => self::EMP_ASSIGN_ID,
+        'dutyTypeId' => self::DUTY_TYPE_ID,
+        'monthlyRate' => self::MONTHLY_RATE
     ];
 
 }

@@ -440,12 +440,13 @@ AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
             $locationId = $request->getPost('locationId');
             $dutyTypeId = $request->getPost('dutyTypeId');
             $designationId = $request->getPost('designationId');
+            $empAssignId = $request->getPost('empAssignId');
             $startTime = $request->getPost('startTime');
             $endTime = $request->getPost('endTime');
 
 
             $returnData = $this->repository->pullAttendanceAbsentData($monthStartDate, $column, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime
-            );
+                    , $empAssignId);
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -456,8 +457,8 @@ AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
         try {
             $request = $this->getRequest();
             $postData = $request->getPost();
-            
-            
+
+
 //            echo'<pre>';
 //            print_r($postData);
 //            die();
@@ -470,16 +471,15 @@ AND LOCATION_ID={$locationId} AND SHIFT_ID={$shiftId};";
             $locationId = $request->getPost('locationId');
             $dutyTypeId = $request->getPost('dutyTypeId');
             $designationId = $request->getPost('designationId');
-            $startTime = $request->getPost('startTime');
-            $endTime = $request->getPost('endTime');
+            $empAssignId = $request->getPost('empAssignId');
             $status = $request->getPost('stauts');
-            $inTime = $request->getPost('inTime');
-            $outTime = $request->getPost('outTime');
+            $normalHour = $request->getPost('normalHour');
+            $otHour = $request->getPost('otHour');
             $subEmployeeId = $request->getPost('subEmployeeId');
             $postingType = $request->getPost('postingType');
 
 
-            $returnData = $this->repository->updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime, $status, $inTime, $outTime, $subEmployeeId,$postingType);
+            $returnData = $this->repository->updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType);
 
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
         } catch (Exception $e) {

@@ -27,11 +27,11 @@ class CustContractEmpRepo implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->gateway->update([CustContractEmp::STATUS => EntityHelper::STATUS_DISABLED], [CustContractEmp::ID => $id]);
+        $this->gateway->update([CustContractEmp::STATUS => EntityHelper::STATUS_DISABLED], [CustContractEmp::EMP_ASSIGN_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
-        $this->gateway->update($model->getArrayCopyForDB(), [CustContractEmp::ID => $id]);
+        $this->gateway->update($model->getArrayCopyForDB(), [CustContractEmp::EMP_ASSIGN_ID => $id]);
     }
 
     public function fetchAll() {
@@ -43,7 +43,7 @@ class CustContractEmpRepo implements RepositoryInterface {
             TO_CHAR(START_DATE, 'DD/MM/YYYY') AS START_DATE, 
             TO_CHAR(END_DATE, 'DD/MM/YYYY') AS END_DATE, 
             TO_CHAR(ASSIGNED_DATE, 'DD/MM/YYYY') AS ASSIGNED_DATE 
-            from HRIS_CUST_CONTRACT_EMP WHERE 
+            from HRIS_CONTRACT_EMP_ASSIGN WHERE 
                 CONTRACT_ID=$id";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -125,10 +125,10 @@ class CustContractEmpRepo implements RepositoryInterface {
              BS_DATE(ce.START_DATE)               AS START_DATE_BS,
              INITCAP(TO_CHAR(ce.END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD,
              BS_DATE(END_DATE)               AS END_DATE_BS,
-             ce.ID AS ID,
+             ce.EMP_ASSIGN_ID AS ID,
              CL.LOCATION_NAME,e.full_name,d.designation_title,
              DT.DUTY_TYPE_ID,DT.DUTY_TYPE_NAME
-             FROM HRIS_CUST_CONTRACT_EMP ce
+             FROM HRIS_CONTRACT_EMP_ASSIGN ce
              left join hris_employees e on (ce.EMPLOYEE_ID=e.employee_id)
              left join HRIS_DESIGNATIONS d on (d.DESIGNATION_ID=ce.designation_id)
              left join HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
@@ -152,7 +152,7 @@ class CustContractEmpRepo implements RepositoryInterface {
              BS_DATE(START_DATE)               AS START_DATE_BS,
              INITCAP(TO_CHAR(END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD,
              BS_DATE(END_DATE)               AS END_DATE_BS,
-             ID AS ID FROM HRIS_CUST_CONTRACT_EMP
+             EMP_ASSIGN_ID AS ID FROM HRIS_CONTRACT_EMP_ASSIGN
              WHERE CONTRACT_ID = {$contractId}
              AND EMPLOYEE_ID = {$employeeId} AND LOCATION_ID = {$locationId} 
              AND DESIGNATION_ID = {$designationId} AND STATUS = 'E'";
@@ -182,7 +182,7 @@ class CustContractEmpRepo implements RepositoryInterface {
                     CustContractEmp::END_TIME
                         ], null, null, null, false, false, null), false);
         $select->from(CustContractEmp::TABLE_NAME);
-        $select->where([CustContractEmp::ID => $id, CustContractEmp::STATUS => 'E']);
+        $select->where([CustContractEmp::EMP_ASSIGN_ID => $id, CustContractEmp::STATUS => 'E']);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result->current();

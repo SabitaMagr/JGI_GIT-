@@ -172,27 +172,36 @@ EOT;
     CE.LOCATION_ID,CE.EMPLOYEE_ID,CE.DESIGNATION_ID,CE.START_DATE,CE.END_DATE,CE.DUTY_TYPE_ID,
     TO_CHAR(CE.START_TIME, 'HH:MI AM') AS START_TIME,
     TO_CHAR(CE.END_TIME, 'HH:MI AM') AS END_TIME,
-    ID,
+    CE.EMP_ASSIGN_ID,
     DT.DUTY_TYPE_NAME,
     CASE
-          WHEN CA.STATUS IS NULL THEN 'PR'
-          ELSE
-            CA.STATUS
+          WHEN CA.STATUS IS NULL THEN 'Present'
+          WHEN CA.STATUS='PR' THEN 'Present'
+          WHEN CA.STATUS='AB' THEN 'Absent'
+          WHEN CA.STATUS='DO' THEN 'DayOff'
+          WHEN CA.STATUS='PH' THEN 'PaidHoliday'
         END
       AS STATUS,
-      SE.FULL_NAME AS SUB_EMP_NAME,
-       CASE
-          WHEN CA.IN_TIME IS NULL
-          THEN TO_CHAR(CE.START_TIME,'HH:MI AM')||'-'||TO_CHAR(CE.END_TIME,'HH:MI AM')
-          ELSE
-            TO_CHAR(CA.IN_TIME,'HH:MI AM')||'-'||TO_CHAR(CA.OUT_TIME,'HH:MI AM')
-        END
-      AS IN_OUT_TIME
+      CASE  
+            WHEN CA.NORMAL_HOUR IS NULL 
+            THEN
+            TO_CHAR(to_date(DT.NORMAL_HOUR*60,'sssss'),'hh24:mi')
+            ELSE
+            TO_CHAR(to_date(CA.NORMAL_HOUR*60,'sssss'),'hh24:mi')
+            END AS NORMAL_HOUR,
+            CASE  
+            WHEN CA.OT_HOUR IS NULL 
+            THEN
+            TO_CHAR(to_date(DT.OT_HOUR*60,'sssss'),'hh24:mi')
+            ELSE
+            TO_CHAR(to_date(CA.OT_HOUR*60,'sssss'),'hh24:mi')
+            END AS OT_HOUR,
+      SE.FULL_NAME AS SUB_EMP_NAME
     from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
         FROM dual d
         CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
      ) D
-    LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1 and CE.status='E')
+    LEFT JOIN HRIS_CONTRACT_EMP_ASSIGN CE on (1=1 and CE.status='E')
     LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (
             CE.CUSTOMER_ID=CA.CUSTOMER_ID AND
             CE.CONTRACT_ID=CA.CONTRACT_ID AND
@@ -200,8 +209,7 @@ EOT;
             CE.LOCATION_ID=CA.LOCATION_ID AND
             CE.DUTY_TYPE_ID=CA.DUTY_TYPE_ID AND
             CE.DESIGNATION_ID=CA.DESIGNATION_ID AND
-            CE.START_TIME=CA.START_TIME AND
-            CE.END_TIME=CA.END_TIME AND
+            CE.EMP_ASSIGN_ID=CA.EMP_ASSIGN_ID AND
             CA.ATTENDANCE_DATE=D.DATES)
     LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
     LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
@@ -211,7 +219,10 @@ EOT;
      LEFT JOIN HRIS_EMPLOYEES SE ON (SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
     WHERE CE.CUSTOMER_ID={$customerId} and d.dates between CE.START_DATE and CE.END_DATE
     )PIVOT (
- MAX (STATUS) AS STATUS,MAX (SUB_EMP_NAME) AS SUB_EMP_NAME,MAX (IN_OUT_TIME) AS IN_OUT_TIME
+ MAX (STATUS) AS STATUS,
+ MAX(NORMAL_HOUR) AS NORMAL_HOUR,
+ MAX(OT_HOUR) AS OT_HOUR, 
+MAX (SUB_EMP_NAME) AS SUB_EMP_NAME
 FOR DAY_COUNT IN ({$pivotString})) 
             
                 ";
@@ -370,7 +381,7 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
         return Helper::extractDbData($result);
     }
 
-    public function pullAttendanceAbsentData($monthStartDate, $column, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime) {
+    public function pullAttendanceAbsentData($monthStartDate, $column, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime, $empAssignId) {
 
         $sql = "
             SELECT  (TO_DATE('{$monthStartDate}','DD-MON-YY') + $column -1) AS ATTENDNACE_DATE,
@@ -378,7 +389,10 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
             CE.DUTY_TYPE_ID,CE.DESIGNATION_ID,
             INITCAP(TO_CHAR(CE.START_TIME, 'HH:MI AM')) AS START_TIME,
             INITCAP(TO_CHAR(CE.END_TIME, 'HH:MI AM')) AS END_TIME,
+            CE.EMP_ASSIGN_ID,
             CA.SUB_EMPLOYEE_ID,CA.POSTING_TYPE,SE.FULL_NAME AS SUB_EMPLOYEE_NAME,
+            TO_CHAR(to_date(D.NORMAL_HOUR*60,'sssss'),'hh24:mi') AS DUTY_NORMAL_HOUR,
+            TO_CHAR(to_date(D.OT_HOUR*60,'sssss'),'hh24:mi') AS DUTY_OT_HOUR,
             CASE WHEN CA.STATUS  IS NULL 
             THEN 'PR'
             ELSE CA.STATUS
@@ -390,8 +404,22 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
             CASE WHEN CA.OUT_TIME IS NULL
             THEN TO_CHAR(CE.END_TIME, 'HH:MI AM')
             ELSE TO_CHAR(CA.OUT_TIME, 'HH:MI AM')
-            END AS OUT_TIME
-            FROM HRIS_CUST_CONTRACT_EMP CE
+            END AS OUT_TIME,
+            CASE  
+            WHEN CA.NORMAL_HOUR IS NULL 
+            THEN
+            TO_CHAR(to_date(D.NORMAL_HOUR*60,'sssss'),'hh24:mi')
+            ELSE
+            TO_CHAR(to_date(CA.NORMAL_HOUR*60,'sssss'),'hh24:mi')
+            END AS NORMAL_HOUR,
+            CASE  
+            WHEN CA.OT_HOUR IS NULL 
+            THEN
+            TO_CHAR(to_date(D.OT_HOUR*60,'sssss'),'hh24:mi')
+            ELSE
+            TO_CHAR(to_date(CA.OT_HOUR*60,'sssss'),'hh24:mi')
+            END AS OT_HOUR
+            FROM HRIS_CONTRACT_EMP_ASSIGN CE
             LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (
             CE.CUSTOMER_ID=CA.CUSTOMER_ID AND
             CE.CONTRACT_ID=CA.CONTRACT_ID AND
@@ -399,10 +427,10 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
             CE.LOCATION_ID=CA.LOCATION_ID AND
             CE.DUTY_TYPE_ID=CA.DUTY_TYPE_ID AND
             CE.DESIGNATION_ID=CA.DESIGNATION_ID AND
-            CE.START_TIME=CA.START_TIME AND
-            CE.END_TIME=CA.END_TIME AND
+            CE.EMP_ASSIGN_ID=CA.EMP_ASSIGN_ID AND
             CA.ATTENDANCE_DATE=TO_DATE('{$monthStartDate}','DD-MON-YY') + $column -1
             )
+            LEFT JOIN HRIS_DUTY_TYPE D ON (D.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
             LEFT JOIN HRIS_EMPLOYEES SE ON(SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
              WHERE  
                       CE.CUSTOMER_ID={$customerId}
@@ -411,8 +439,7 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                                 AND CE.LOCATION_ID={$locationId}
                                     AND CE.DUTY_TYPE_ID={$dutyTypeId}
                                         AND CE.DESIGNATION_ID={$designationId}
-                                            AND TO_CHAR(CE.START_TIME, 'HH:MI AM')='{$startTime}'
-                                                AND TO_CHAR(CE.END_TIME, 'HH:MI AM')='{$endTime}'
+                                                AND CE.EMP_ASSIGN_ID='{$empAssignId}'
 
                 ";
 
@@ -422,14 +449,14 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
         return $result->current();
     }
 
-    public function updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $startTime, $endTime, $status, $inTime, $outTime, $subEmployeeId, $postingType) {
+    public function updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType) {
 
         if ($subEmployeeId == '' or $subEmployeeId == null) {
             $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=NULL";
             $postingTypeString = "V_POSTING_TYPE CHAR(2 BYTE):=NULL";
         } else {
             $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=" . $subEmployeeId;
-            $postingTypeString = "V_POSTING_TYPE CHAR(2 BYTE):='" . $postingType."'";
+            $postingTypeString = "V_POSTING_TYPE CHAR(2 BYTE):='" . $postingType . "'";
         }
 
 
@@ -440,12 +467,11 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                 V_LOCATION_ID NUMBER:={$locationId};
                 V_DUTY_TYPE_ID NUMBER:={$dutyTypeId};
                 V_DESIGNATION_ID NUMBER:={$designationId};
-                V_START_TIME VARCHAR2(20 BYTE):='{$startTime}';
-                V_END_TIME VARCHAR2(20 BYTE):='{$endTime}';
+                V_EMP_ASSIGN_ID NUMBER:={$empAssignId};
                 V_ATTENDANCE_DATE DATE:=TO_DATE('{$attendanceDate}','DD-MON-YY');
                 V_STATUS CHAR(2 BYTE):='{$status}';
-                V_IN_TIME VARCHAR2(20 BYTE):='{$inTime}';
-                V_OUT_TIME VARCHAR2(20 BYTE):='{$outTime}';
+                V_NORMAL_HOUR NUMBER:=TO_NUMBER(TO_CHAR(TO_DATE('{$normalHour}','hh24:mi'),'sssss'))/60;
+                V_OT_HOUR NUMBER:=TO_NUMBER(TO_CHAR(TO_DATE('{$otHour}','hh24:mi'),'sssss'))/60;
                 {$subEmployeeString};
                 {$postingTypeString};
                 V_ATTENDANCE_COUNT NUMBER;
@@ -457,31 +483,30 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                     LOCATION_ID=V_LOCATION_ID AND
                     DUTY_TYPE_ID=V_DUTY_TYPE_ID AND
                     DESIGNATION_ID=V_DESIGNATION_ID AND
-                    INITCAP(TO_CHAR(START_TIME, 'HH:MI AM'))=V_START_TIME AND
-                    INITCAP(TO_CHAR(END_TIME, 'HH:MI AM'))=V_END_TIME AND
+                    EMP_ASSIGN_ID=V_EMP_ASSIGN_ID AND
                     ATTENDANCE_DATE=V_ATTENDANCE_DATE;
                     
                 BEGIN
                 IF(V_ATTENDANCE_COUNT=0)
                 THEN
                 INSERT INTO HRIS_CONTRACT_EMP_ATTENDANCE
-                (CUSTOMER_ID,CONTRACT_ID,EMPLOYEE_ID,LOCATION_ID,DUTY_TYPE_ID,DESIGNATION_ID,START_TIME,END_TIME,ATTENDANCE_DATE,
+                (CUSTOMER_ID,CONTRACT_ID,EMPLOYEE_ID,LOCATION_ID,DUTY_TYPE_ID,DESIGNATION_ID,ATTENDANCE_DATE,
                 STATUS,
-                IN_TIME,
-                OUT_TIME,
+                EMP_ASSIGN_ID,
                 SUB_EMPLOYEE_ID,
-                POSTING_TYPE
+                POSTING_TYPE,
+                NORMAL_HOUR,
+                OT_HOUR
                 )
                 VALUES
                 (V_CUSTOMER_ID,V_CONTRACT_ID,V_EMPLOYEE_ID,V_LOCATION_ID,V_DUTY_TYPE_ID,V_DESIGNATION_ID,
-                TO_TIMESTAMP(V_START_TIME, 'HH.MI AM'),
-                TO_TIMESTAMP(V_END_TIME, 'HH.MI AM'),
                 V_ATTENDANCE_DATE,
                 V_STATUS,
-                TO_TIMESTAMP(V_IN_TIME, 'HH.MI AM'),
-                TO_TIMESTAMP(V_OUT_TIME, 'HH.MI AM'),
+                V_EMP_ASSIGN_ID,
                 V_SUB_EMPLOYEE_ID,
-                V_POSTING_TYPE
+                V_POSTING_TYPE,
+                V_NORMAL_HOUR,
+                V_OT_HOUR
                 );
 
 
@@ -489,11 +514,11 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                 
                 UPDATE HRIS_CONTRACT_EMP_ATTENDANCE
                 SET 
-                IN_TIME=TO_TIMESTAMP(V_IN_TIME, 'HH.MI AM'),
-                OUT_TIME=TO_TIMESTAMP(V_OUT_TIME, 'HH.MI AM'),
                 STATUS=V_STATUS,
                 SUB_EMPLOYEE_ID=V_SUB_EMPLOYEE_ID,
-                POSTING_TYPE=V_POSTING_TYPE
+                POSTING_TYPE=V_POSTING_TYPE,
+                NORMAL_HOUR=V_NORMAL_HOUR,
+                OT_HOUR=V_OT_HOUR
                 WHERE 
                     CUSTOMER_ID=V_CUSTOMER_ID AND
                     CONTRACT_ID=V_CONTRACT_ID AND
@@ -501,8 +526,7 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                     LOCATION_ID=V_LOCATION_ID AND
                     DUTY_TYPE_ID=V_DUTY_TYPE_ID AND
                     DESIGNATION_ID=V_DESIGNATION_ID AND
-                    INITCAP(TO_CHAR(START_TIME, 'HH:MI AM'))=V_START_TIME AND
-                    INITCAP(TO_CHAR(END_TIME, 'HH:MI AM'))=V_END_TIME AND
+                    EMP_ASSIGN_ID=V_EMP_ASSIGN_ID AND
                     ATTENDANCE_DATE=V_ATTENDANCE_DATE;
                 
                 END IF;
@@ -511,11 +535,24 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                         
 
 END;";
+
+//                ECHO $sql;
+//                DIE();
+
         $statement = $this->adapter->query($sql);
         $statement->execute();
 
         $sql1 = "SELECT 
-            CA.STATUS,
+            CASE
+          WHEN CA.STATUS IS NULL THEN 'Present'
+          WHEN CA.STATUS='PR' THEN 'Present'
+          WHEN CA.STATUS='AB' THEN 'Absent'
+          WHEN CA.STATUS='DO' THEN 'DayOff'
+          WHEN CA.STATUS='PH' THEN 'PaidHoliday'
+        END
+      AS STATUS,
+      TO_CHAR(to_date(CA.NORMAL_HOUR*60,'sssss'),'hh24:mi') AS NORMAL_HOUR,
+      TO_CHAR(to_date(CA.OT_HOUR*60,'sssss'),'hh24:mi') AS OT_HOUR,
             TO_CHAR(CA.IN_TIME, 'HH:MI AM') AS IN_TIME,
             TO_CHAR(CA.OUT_TIME, 'HH:MI AM') AS OUT_TIME,
             SE.FULL_NAME AS SUB_EMPLOYEE
@@ -528,8 +565,7 @@ END;";
                     CA.LOCATION_ID={$locationId} AND
                     CA.DUTY_TYPE_ID={$dutyTypeId} AND
                     CA.DESIGNATION_ID={$designationId} AND
-                    CA.START_TIME=TO_TIMESTAMP('{$startTime}', 'HH.MI AM') AND
-                    CA.END_TIME=TO_TIMESTAMP('{$endTime}', 'HH.MI AM') AND
+                    CA.EMP_ASSIGN_ID={$empAssignId} AND
                     CA.ATTENDANCE_DATE=TO_DATE('{$attendanceDate}','DD-MON-YY')";
 
         $statement1 = $this->adapter->query($sql1);

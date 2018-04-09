@@ -2374,11 +2374,14 @@ div#ndp-nepali-box{
 }
 
 .attendance-color-red{
-    color: red;
+    background-color: #f9a0a0;
 }
 
 .attendance-color-green{
-    color: green;
+    background-color: #d6f7d6;
+}
+.attendance-color-yellow{
+    background-color: #efef8d;
 }
 
 

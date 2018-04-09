@@ -13,13 +13,6 @@
         $('#addModalBtn').hide();
 
 
-        var editBtn = `<a class="btn-edit" title="Edit"  style="height:17px;">
-                    <i class="fa fa-edit"></i>
-                </a>
-                <a class="btn-delete" title="Delete"  style="height:17px;">
-                    <i class="fa fa-trash-o"></i>
-                </a>`;
-
 
 
         var $cutomerSelect = $('#CustomerSelect');
@@ -78,10 +71,9 @@
                     <th style="width:80px;">DutyType</th>
                     <th>Employee</th>
                     <th>Location</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
                     <th>Start Date</th>
                     <th>End Date</th>
+                    <th>Rate</th>
                     <th>Action</th>
                     </tr></thead>`;
                 $assignTable.append(headerAppendData);
@@ -100,7 +92,7 @@
 
                         for (var n = 0; n < value.QUANTITY; n++) {
 
-//                            console.log(empAssignData[n]);
+                            console.log(empAssignData[n]);
 
                             var appendData = `<tr>
                         <td><input type='hidden' name='assignId[]' class='assignId' value=''>
@@ -110,10 +102,9 @@
                         <select required='required' name='employees[]' class='employees'></select>
                         </td>
                         <td><select required='required' name='location[]' class='location'></select></td>
-                        <td style="white-space:nowrap;"><input name='employeeStartTime[]' type='text' class='employeeStartTime' data-format='h:mm a' data-template='HH : mm'></td>
-                        <td style="white-space:nowrap;"><input name='employeeEndTime[]' type='text' class='employeeEndTime' data-format='h:mm a' data-template='HH : mm'></td>
                         <td><input style='width: 88px;' name='employeeStartDate[]' type='text' class='employeeStartDate' ></td>
                         <td><input style='width: 88px;' name='employeeEndDate[]' type='text' class='employeeEndDate' ></td>
+                        <td><input style='width: 88px;' name='monthlyRate[]' type='number' class='monthlyRate' data-rate='` + value.RATE + `' ></td>
                         <td>
                         <input type='button' class='btn assignEditBtn  button-sm' value='Edit'>
                         <button class='btn assignCancelBtn button-sm'><i class="fa fa-close"></i></button>
@@ -127,19 +118,11 @@
 
                             if (empAssignData[n]) {
 
-                                $('#assignTable tbody').find('.assignId:last').val(empAssignData[n].ID)
+                                $('#assignTable tbody').find('.assignId:last').val(empAssignData[n].EMP_ASSIGN_ID)
                                 app.populateSelect($('#assignTable tbody').find('.employees:last'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '', empAssignData[n].EMPLOYEE_ID);
                                 app.populateSelect($('#assignTable tbody').find('.location:last'), locationList, 'LOCATION_ID', 'LOCATION_NAME', 'Select An Location', '', empAssignData[n].LOCATION_ID);
 
-                                $('#assignTable tbody').find('.employeeStartTime:last').combodate({
-                                    minuteStep: 1,
-                                    value: empAssignData[n].START_TIME
-                                });
 
-                                $('#assignTable tbody').find('.employeeEndTime:last').combodate({
-                                    minuteStep: 1,
-                                    value: empAssignData[n].END_TIME
-                                });
 
 //                                
                                 $('#assignTable tbody').find('.employeeStartDate:last').datepicker({
@@ -154,17 +137,12 @@
 
                                 $('#assignTable tbody').find('.employeeStartDate:last').datepicker("update", new Date(empAssignData[n].START_DATE));
                                 $('#assignTable tbody').find('.employeeEndDate:last').datepicker("update", new Date(empAssignData[n].END_DATE));
+                                $('#assignTable tbody').find('.monthlyRate:last').val(empAssignData[n].MONTHLY_RATE);
+//                                $('#assignTable tbody').find('.monthlyRate:last').attr("data-rate", 500);
                             } else {
                                 app.populateSelect($('#assignTable tbody').find('.employees:last'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '', );
                                 app.populateSelect($('#assignTable tbody').find('.location:last'), locationList, 'LOCATION_ID', 'LOCATION_NAME', 'Select An Location', '', );
 
-                                $('#assignTable tbody').find('.employeeStartTime:last').combodate({
-                                    minuteStep: 1,
-                                });
-
-                                $('#assignTable tbody').find('.employeeEndTime:last').combodate({
-                                    minuteStep: 1,
-                                });
 
 
                                 $('#assignTable tbody').find('.employeeStartDate:last').datepicker({
@@ -195,11 +173,8 @@
                         $('.location').prop("disabled", true);
                         $('.employeeStartDate').prop("disabled", true);
                         $('.employeeEndDate').prop("disabled", true);
-                        $('#assignTable tbody').find('.hour').prop("disabled", true);
-                        $('#assignTable tbody').find('.minute').prop("disabled", true);
-                        $('#assignTable tbody').find('.ampm').prop("disabled", true);
+                        $('.monthlyRate').prop("disabled", true);
 
-                        $('#assignTable tbody').find('.combodate').css("opacity", "0.6");
 
 
                     });
@@ -287,8 +262,6 @@
             var dutyType = $('#addDutyType').val();
             var startDate = $('#startDate').val();
             var endDate = $('#endDate').val();
-            var startTime = $('#addEmployeeStartTime').val();
-            var endTime = $('#addEmployeeEndTime').val();
             var rate = $('#addRate').val();
             var monthDays = $('#addMonthDays').val();
 
@@ -317,15 +290,6 @@
                 return;
             }
 
-            if (startTime == null || startTime == '') {
-                app.showMessage('StartTime is Required', 'info', 'Required')
-                return;
-            }
-
-            if (endTime == null || endTime == '') {
-                app.showMessage('End Time is Required', 'info', 'Required')
-                return;
-            }
 
             if (rate == null || rate == '') {
                 app.showMessage('Rate is Required', 'info', 'Required')
@@ -346,8 +310,6 @@
                 'dutyType': dutyType,
                 'startDate': startDate,
                 'endDate': endDate,
-                'startTime': startTime,
-                'endTime': endTime,
                 'rate': rate,
                 'monthDays': monthDays
             }).then(function (response) {
@@ -415,17 +377,13 @@
             var selectedLocation = $(selectedtr.find('.location'));
             var selectedStartDate = $(selectedtr.find('.employeeStartDate'));
             var selectedEndDate = $(selectedtr.find('.employeeEndDate'));
-            var selectedStartTime = $(selectedtr.find('.employeeStartTime'));
-            var selectedEndTime = $(selectedtr.find('.employeeEndTime'));
-            var selectedHour = $(selectedtr.find('.hour'));
-            var selectedMinute = $(selectedtr.find('.minute'));
-            var selectedampm = $(selectedtr.find('.ampm'));
             var selectedAssignId = $(selectedtr.find('.assignId'));
             var selectedDutyTypeId = $(selectedtr.find('.dutyTypeId'));
             var selectedDesignation = $(selectedtr.find('.designation'));
             var selectedComboDate = $(selectedtr.find('.combodate'));
             var selectedDeleteBtn = $(selectedtr.find('.assignDeleteBtn'));
             var selectedCancelBtn = $(selectedtr.find('.assignCancelBtn'));
+            var selectedMonthlyRate = $(selectedtr.find('.monthlyRate'));
 
             if (btnValue == 'Edit') {
                 $(this).val('Update')
@@ -436,14 +394,13 @@
                 selectedLocation.prop("disabled", false);
                 selectedStartDate.prop("disabled", false);
                 selectedEndDate.prop("disabled", false);
-                selectedHour.prop("disabled", false);
-                selectedMinute.prop("disabled", false);
-                selectedampm.prop("disabled", false);
                 selectedComboDate.css("opacity", "1");
+                selectedMonthlyRate.prop("disabled", false);
 
                 if (selectedStartDate.val() == '' && selectedEndDate.val() == '') {
                     selectedStartDate.datepicker("update", new Date(contractStartDate));
                     selectedEndDate.datepicker("update", new Date(contractEndDate));
+                    selectedMonthlyRate.val(selectedMonthlyRate.attr("data-rate"));
                 }
 
             } else if (btnValue == 'Update') {
@@ -452,19 +409,16 @@
                 var locationValue = selectedLocation.val();
                 var startDateValue = selectedStartDate.val();
                 var startEndValue = selectedEndDate.val();
-                var startTimeValue = selectedStartTime.val();
-                var endTimeValue = selectedEndTime.val();
                 var assignIdValue = selectedAssignId.val();
                 var dutyTypeIdValue = selectedDutyTypeId.val();
                 var designationValue = selectedDesignation.val();
+                var monthlyRateValue = selectedMonthlyRate.val();
 
                 var requiredList = [
                     selectedEmployee,
                     selectedLocation,
                     selectedStartDate,
-                    selectedEndDate,
-                    selectedStartTime,
-                    selectedEndTime
+                    selectedEndDate
                 ];
                 var error = [];
                 $.each(requiredList, function (index, value) {
@@ -484,10 +438,9 @@
                         employeeId: employeeValue,
                         designationId: designationValue,
                         dutyTypeId: dutyTypeIdValue,
-                        startTime: startTimeValue,
-                        endTime: endTimeValue,
                         startDate: startDateValue,
-                        endDate: startEndValue
+                        endDate: startEndValue,
+                        monthlyRate: monthlyRateValue
 
                     }).then(function (response) {
                         console.log(response);
@@ -504,16 +457,14 @@
 
                     selectedDeleteBtn.show();
                     selectedCancelBtn.hide();
-                    $(this).val('Edit')
+                    $(this).val('Edit');
                     selectedtr.css("background-color", "");
                     selectedEmployee.prop("disabled", true);
                     selectedLocation.prop("disabled", true);
                     selectedStartDate.prop("disabled", true);
                     selectedEndDate.prop("disabled", true);
-                    selectedHour.prop("disabled", true);
-                    selectedMinute.prop("disabled", true);
-                    selectedampm.prop("disabled", true);
                     selectedComboDate.css("opacity", "0.6");
+                    selectedMonthlyRate.prop("disabled", true);
                 }
             }
         });
@@ -577,15 +528,11 @@
             var selectedLocation = $(selectedtr.find('.location'));
             var selectedStartDate = $(selectedtr.find('.employeeStartDate'));
             var selectedEndDate = $(selectedtr.find('.employeeEndDate'));
-            var selectedStartTime = $(selectedtr.find('.employeeStartTime'));
-            var selectedEndTime = $(selectedtr.find('.employeeEndTime'));
-            var selectedHour = $(selectedtr.find('.hour'));
-            var selectedMinute = $(selectedtr.find('.minute'));
-            var selectedampm = $(selectedtr.find('.ampm'));
             var selectedAssignId = $(selectedtr.find('.assignId'));
             var selectedComboDate = $(selectedtr.find('.combodate'));
             var selectedDeleteBtn = $(selectedtr.find('.assignDeleteBtn'));
             var selectedEditBtn = $(selectedtr.find('.assignEditBtn'));
+            var selectedMonthlyRate = $(selectedtr.find('.monthlyRate'));
 
             var assignIdValue = selectedAssignId.val();
             if (assignIdValue > 0) {
@@ -600,8 +547,7 @@
 
                         selectedStartDate.datepicker("update", getDateFormat(responseData.START_DATE));
                         selectedEndDate.datepicker("update", getDateFormat(responseData.END_DATE));
-                        selectedStartTime.combodate('setValue', responseData.START_TIME);
-                        selectedEndTime.combodate('setValue', responseData.END_TIME);
+                        selectedMonthlyRate.val(responseData.MONTHLY_RATE);
                     }
                 });
             } else {
@@ -610,9 +556,8 @@
 
                 selectedStartDate.datepicker("update", '');
                 selectedEndDate.datepicker("update", '');
-                selectedHour.val('').change;
-                selectedMinute.val('').change;
 
+                selectedMonthlyRate.val('');
             }
 
             selectedbtn.hide();
@@ -623,13 +568,7 @@
             selectedLocation.prop("disabled", true);
             selectedStartDate.prop("disabled", true);
             selectedEndDate.prop("disabled", true);
-            selectedHour.prop("disabled", true);
-            selectedMinute.prop("disabled", true);
-            selectedampm.prop("disabled", true);
-            selectedComboDate.css("opacity", "0.6");
-//
-
-
+            selectedMonthlyRate.prop("disabled", true);
         });
 
 
