@@ -461,7 +461,7 @@ EOT;
                 END) AS DAYOFF,
                 SUM(
                 CASE
-                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP') AND A.GRACE_PERIOD IS NULL
+                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
                   THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS PRESENT,
