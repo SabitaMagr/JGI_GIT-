@@ -57,10 +57,14 @@
             'NO_OF_DAYS': 'No Of Days',
             'STATUS': 'Status',
             'REMARKS': 'Remarks',
+            'RECOMMENDER_NAME': 'Recommender',
+            'APPROVER_NAME': 'Approver',
+            'RECOMMENDED_BY_NAME': 'Recommended By',
+            'APPROVED_BY_NAME': 'Approved By',
             'RECOMMENDED_REMARKS': 'Recommended Remarks',
-            'RECOMMENDED_DATE': 'Recommended Date',
             'APPROVED_REMARKS': 'Approved Remarks',
-            'APPROVED_DATE': 'Approved Date'
+            'RECOMMENDED_DT': 'Approved Date',
+            'APPROVED_DT': 'Approved Date'
 
         };
 
