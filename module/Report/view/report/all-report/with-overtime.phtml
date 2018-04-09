@@ -19,6 +19,7 @@ $this->headScript()
     document.linkToEmpower =<?php echo $linkToEmpower; ?>;
     document.withOvertimeWs = '<?php echo $this->url('allreport', ['action' => 'withOvertime']); ?>';
     document.toEmpowerLink = '<?php echo $this->url('allreport', ['action' => 'toEmpower']); ?>';
+    document.loadDataLink = '<?php echo $this->url('allreport', ['action' => 'loadData']); ?>';
 </script>
 
 <div class="page-bar">
@@ -143,13 +144,20 @@ $this->headScript()
         </div>
         <div class="row">
             <div class="col-sm-2">
+                <button  id="loadData" class="btn btn-default btn-link">
+                    Load Data
+                    <i class="fa fa-copy"></i>
+                </button>
+
+            </div>
+            <div class="col-sm-2">
                 <button  id="confirm" class="btn btn-default btn-link">
                     Confirm By HR
                     <i class="fa fa-check"></i>
                 </button>
 
             </div>   
-            <div class="col-sm-4 col-sm-offset-6">
+            <div class="col-sm-4 col-sm-offset-4">
                 <button class="btn default btn-sm pull-right hris-reset-btn">
                     Reset
                     <i class="fa fa-refresh"></i>

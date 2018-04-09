@@ -4,6 +4,8 @@ namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
 use Exception;
+use Payroll\Repository\RulesRepository;
+use Payroll\Repository\SalarySheetRepo;
 use Payroll\Repository\TaxSheetRepo;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -21,7 +23,25 @@ class TaxSheetController extends HrisController {
         if ($request->isPost()) {
             try {
                 $postedData = $request->getPost();
-                $data = $this->repository->fetchEmployeeTaxSheet($postedData['monthId'], $postedData['employeeId']);
+                $data = $this->repository->fetchTaxSheetPivoted($postedData);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        $ruleRepo = new RulesRepository($this->adapter);
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $data['ruleList'] = iterator_to_array($ruleRepo->fetchAll(), false);
+        $data['salarySheetList'] = iterator_to_array($salarySheetRepo->fetchAll(), false);
+        return $data;
+    }
+
+    public function taxslipAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $data = $this->repository->fetchEmployeeTaxSlip($postedData['monthId'], $postedData['employeeId']);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

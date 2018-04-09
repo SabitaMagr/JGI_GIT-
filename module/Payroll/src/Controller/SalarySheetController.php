@@ -193,4 +193,18 @@ class SalarySheetController extends HrisController {
         }
     }
 
+    public function payslipAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
+                $data = $salarySheetDetailRepo->fetchEmployeePaySlip($postedData['monthId'], $postedData['employeeId']);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+    }
+
 }

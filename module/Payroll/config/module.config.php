@@ -168,11 +168,11 @@ return [
             ]
         ], 'salarySheet' => [
             [
-                'label' => 'Salary Sheet',
+                'label' => 'Salary',
                 'route' => 'salarySheet',
             ],
             [
-                'label' => 'Salary Sheet',
+                'label' => 'Salary',
                 'route' => 'salarySheet',
                 'pages' => [
                     [
@@ -180,21 +180,31 @@ return [
                         'route' => 'salarySheet',
                         'action' => 'index',
                     ],
+                    [
+                        'label' => 'Payslip',
+                        'route' => 'salarySheet',
+                        'action' => 'payslip',
+                    ],
                 ]
             ]
         ], 'taxSheet' => [
             [
-                'label' => 'Tax Sheet',
+                'label' => 'Tax',
                 'route' => 'taxSheet',
             ],
             [
-                'label' => 'Tax Sheet',
+                'label' => 'Tax',
                 'route' => 'taxSheet',
                 'pages' => [
                     [
-                        'label' => 'List',
+                        'label' => 'Tax Sheet',
                         'route' => 'taxSheet',
                         'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Taxslip',
+                        'route' => 'taxSheet',
+                        'action' => 'taxslip',
                     ],
                 ]
             ]

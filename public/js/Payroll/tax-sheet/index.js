@@ -2,80 +2,74 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        var months = null;
+        var ruleList = document.ruleList;
+        var salarySheetList = document.salarySheetList;
         var $year = $('#fiscalYearId');
         var $month = $('#monthId');
-        var $employeeId = $('#employeeId');
-        var $viewBtn = $('#viewBtn');
-        var $taxSheetBody = $('#taxSheetBody');
-        var $excelExport = $('#excelExport');
-        var $pdfExport = $('#pdfExport');
-        app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
-            months = monthList;
+        var $fromDate = $('#fromDate');
+        var $nepaliFromDate = $('#nepaliFromDate');
+        var $toDate = $('#toDate');
+        var $nepaliToDate = $('#nepaliToDate');
+        var $table = $('#table');
+        var $search = $('#search');
+
+        app.setFiscalMonth($year, $month);
+        $month.on('change', function () {
+            var value = $(this).val();
+            for (var i in salarySheetList) {
+                if (salarySheetList[i]['MONTH_ID'] == value) {
+                    $fromDate.val(salarySheetList[i]['START_DATE']);
+                    $nepaliFromDate.val(nepaliDatePickerExt.fromEnglishToNepali(salarySheetList[i]['START_DATE']));
+                    $toDate.val(salarySheetList[i]['END_DATE']);
+                    $nepaliToDate.val(nepaliDatePickerExt.fromEnglishToNepali(salarySheetList[i]['END_DATE']));
+                    break;
+                }
+            }
         });
-        app.setEmployeeSearch($employeeId);
-        var showTaxSheet = function ($data) {
-            $taxSheetBody.html('');
-            var additionData = {};
-            var additionCounter = 0;
-            var additionSum = 0
-            var deductionData = {};
-            var deductionCounter = 0;
-            var deductionSum = 0;
-            var taxData = {};
-            var taxCounter = 0;
-            $.each($data, function (index, item) {
-                switch (item['PAY_TYPE_FLAG']) {
-                    case 'A':
-                        additionData[additionCounter] = item;
-                        additionSum = additionSum + parseFloat(item['VAL']);
-                        additionCounter++;
+
+        var exportMap = {"EMPLOYEE_NAME": "Employee"};
+        var employeeNameColumn = {field: "EMPLOYEE_NAME", title: "Employee", width: 150};
+        if (ruleList.length > 0) {
+            employeeNameColumn.locked = true;
+        }
+        var columns = [
+            employeeNameColumn
+        ];
+
+        $.each(ruleList, function (key, value) {
+            var signFn = function ($type) {
+                var sign = "";
+                switch ($type) {
+                    case "A":
+                        sign = "+";
                         break;
-                    case 'D':
-                        deductionData[deductionCounter] = item;
-                        deductionSum = deductionSum + parseFloat(item['VAL']);
-                        deductionCounter++;
+                    case "D":
+                        sign = "-";
                         break;
-                    case 'T':
-                        taxData[taxCounter] = item;
-                        taxCounter++;
+                    case "V":
+                        sign = ".";
                         break;
                 }
-            });
-            var maxRows = (additionCounter > deductionCounter) ? ((additionCounter > taxCounter) ? additionCounter : taxCounter) : ((deductionCounter > taxCounter) ? deductionCounter : taxCounter);
-            for (var i = 0; i < maxRows; i++) {
-                var $row = $(`<tr>
-                                <td>${(typeof additionData[i] !== 'undefined') ? additionData[i]['PAY_EDESC'] : ''}</td>
-                                <td>${(typeof additionData[i] !== 'undefined') ? additionData[i]['VAL'] : ''}</td>
-                                <td>${(typeof deductionData[i] !== 'undefined') ? deductionData[i]['PAY_EDESC'] : ''}</td>
-                                <td>${(typeof deductionData[i] !== 'undefined') ? deductionData[i]['VAL'] : ''}</td>
-                                <td>${(typeof taxData[i] !== 'undefined') ? taxData[i]['PAY_EDESC'] : ''}</td>
-                                <td>${(typeof taxData[i] !== 'undefined') ? taxData[i]['VAL'] : ''}</td>
-                                </tr>`);
-                $taxSheetBody.append($row);
-            }
-            $taxSheetBody.append($(`<tr>
-                                <td>Total:</td>
-                                <td>${additionSum}</td>
-                                <td>Total:</td>
-                                <td>${deductionSum}</td>
-                                <td></td>
-                                <td></td>
-                                </tr>`));
+                return sign;
+            };
+            columns.push({field: "P_" + value['PAY_ID'], title: value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")", width: 150});
+            exportMap["P_" + value['PAY_ID']] = value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")";
+        });
+        app.initializeKendoGrid($table, columns);
 
-        }
-        $viewBtn.on('click', function () {
-            var monthId = $month.val();
-            var employeeId = $employeeId.val();
-            app.serverRequest('', {monthId: monthId, employeeId: employeeId}).then(function (response) {
-                showTaxSheet(response.data);
-            }, function (error) {
-
+        $search.on('click', function () {
+            var q = document.searchManager.getSearchValues();
+            q['monthId'] = $month.val();
+            app.serverRequest('', q).then(function (response) {
+                app.renderKendoGrid($table, response.data);
             });
         });
 
-        $pdfExport.on('click', function () {
-            app.exportDomToPdf2($('#taxSheetView'));
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, exportMap, 'Salary Sheet');
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, exportMap, 'Salary Sheet');
         });
 
     });

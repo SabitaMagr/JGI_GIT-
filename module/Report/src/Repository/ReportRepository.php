@@ -461,8 +461,8 @@ EOT;
                 END) AS DAYOFF,
                 SUM(
                 CASE
-                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP')
-                  THEN 1
+                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP') AND GRACE_PERIOD IS NULL
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS PRESENT,
                 SUM(
@@ -473,8 +473,8 @@ EOT;
                 END) AS HOLIDAY,
                 SUM(
                 CASE
-                  WHEN A.OVERALL_STATUS IN ('LV','LP')
-                  THEN 1
+                  WHEN A.OVERALL_STATUS IN ('LV','LP') AND GRACE_PERIOD IS NULL
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS LEAVE,
                 SUM(
@@ -519,7 +519,7 @@ EOT;
                   THEN 1
                   ELSE 0
                 END) WORK_ON_DAYOFF
-              FROM HRIS_ATTENDANCE_DETAIL A
+              FROM HRIS_ATTENDANCE_PAYROLL A
               LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
               ON (A.LEAVE_ID= L.LEAVE_ID)
               WHERE 1=1
@@ -1022,6 +1022,15 @@ EOT;
         return $this->checkIfTableExists('HR_MONTHLY_MODIFIED_PAY_VALUE');
     }
 
+    public function loadData($fiscalYearId, $fiscalYearMonthNo) {
+        $sql = "
+            BEGIN
+              HRIS_PREPARE_PAYROLL_DATA({$fiscalYearId},{$fiscalYearMonthNo});
+            END;
+            ";
+        $this->executeStatement($sql);
+    }
+
     public function toEmpower($fiscalYearId, $fiscalYearMonthNo) {
         $sql = "DECLARE
                   V_FISCAL_YEAR_ID       NUMBER:={$fiscalYearId};
@@ -1125,7 +1134,7 @@ EOT;
                         THEN 1
                         ELSE 0
                       END) WORK_ON_DAYOFF
-                    FROM HRIS_ATTENDANCE_DETAIL A
+                    FROM HRIS_ATTENDANCE_PAYROLL A
                     LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                     ON (A.LEAVE_ID= L.LEAVE_ID)
                     WHERE A.ATTENDANCE_DT BETWEEN V_FROM_DATE AND V_TO_DATE

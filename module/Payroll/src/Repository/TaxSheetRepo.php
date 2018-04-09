@@ -2,6 +2,7 @@
 
 namespace Payroll\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\HrisRepository;
 use Payroll\Model\TaxSheet;
@@ -37,8 +38,11 @@ class TaxSheetRepo extends HrisRepository {
         return $dbArray;
     }
 
-    public function fetchEmpTaxSheetPivoted($monthId, $employeeId) {
+    public function fetchTaxSheetPivoted($q) {
         $in = $this->fetchPayIdsAsArray();
+        $condition = EntityHelper::getSearchConditon($q['companyId'], $q['branchId'], $q['departmentId'], $q['positionId'], $q['designationId'], $q['serviceTypeId'], $q['serviceEventTypeId'], $q['employeeTypeId'], $q['employeeId']);
+
+        $empIn = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$condition}";
         $sql = "SELECT P.*,
                   E.FULL_NAME AS EMPLOYEE_NAME
                 FROM
@@ -49,9 +53,9 @@ class TaxSheetRepo extends HrisRepository {
                       VAL
                     FROM HRIS_TAX_SHEET
                     WHERE SHEET_NO =
-                      (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID ={$monthId}
+                      (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID ={$q['monthId']}
                       )
-                    AND EMPLOYEE_ID               ={$employeeId}
+                    AND EMPLOYEE_ID               IN ({$empIn})
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
                   ) P
                 JOIN HRIS_EMPLOYEES E
@@ -59,7 +63,7 @@ class TaxSheetRepo extends HrisRepository {
         return $this->rawQuery($sql);
     }
 
-    public function fetchEmployeeTaxSheet($monthId, $employeeId) {
+    public function fetchEmployeeTaxSlip($monthId, $employeeId) {
         $sql = "SELECT TS.*,
                   P.PAY_TYPE_FLAG,
                   P.PAY_EDESC
