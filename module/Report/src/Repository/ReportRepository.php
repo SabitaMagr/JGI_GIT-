@@ -1035,17 +1035,21 @@ EOT;
         $sql = "DECLARE
                   V_FISCAL_YEAR_ID       NUMBER:={$fiscalYearId};
                   V_FISCAL_YEAR_MONTH_NO NUMBER:={$fiscalYearMonthNo};
-                  V_FROM_DATE DATE;
-                  V_TO_DATE DATE;
+                  V_FROM_DATE            DATE;
+                  V_TO_DATE              DATE;
                 BEGIN
-                SELECT FROM_DATE,TO_DATE INTO V_FROM_DATE,V_TO_DATE
-                      FROM HRIS_MONTH_CODE
-                      WHERE FISCAL_YEAR_ID    =V_FISCAL_YEAR_ID
-                      AND FISCAL_YEAR_MONTH_NO=V_FISCAL_YEAR_MONTH_NO;
+                  SELECT FROM_DATE,
+                    TO_DATE
+                  INTO V_FROM_DATE,
+                    V_TO_DATE
+                  FROM HRIS_MONTH_CODE
+                  WHERE FISCAL_YEAR_ID    =V_FISCAL_YEAR_ID
+                  AND FISCAL_YEAR_MONTH_NO=V_FISCAL_YEAR_MONTH_NO;
                   DELETE
                   FROM HR_MONTHLY_MODIFIED_PAY_VALUE
-                  WHERE PERIOD_DT_CODE=V_FISCAL_YEAR_MONTH_NO AND PAY_CODE IN ('TD','PD','AD','HD','PL','UL','OT');
-                  FOR report IN
+                  WHERE PERIOD_DT_CODE=V_FISCAL_YEAR_MONTH_NO
+                  AND PAY_CODE       IN ('TD','PD','AD','HD','PL','UL','OT');
+                  FOR report         IN
                   (SELECT C.COMPANY_CODE,
                     C.COMPANY_CODE
                     ||'.01' AS BRANCH_CODE,
@@ -1076,8 +1080,14 @@ EOT;
                       END) AS DAYOFF,
                       SUM(
                       CASE
-                        WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP')
-                        THEN 1
+                        WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS PRESENT,
                       SUM(
@@ -1089,18 +1099,29 @@ EOT;
                       SUM(
                       CASE
                         WHEN A.OVERALL_STATUS IN ('LV','LP')
-                        THEN 1
+                        AND A.GRACE_PERIOD    IS NULL
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS LEAVE,
                       SUM(
                       CASE
-                        WHEN L.PAID = 'Y'
+                        WHEN A.OVERALL_STATUS IN ('LV','LP')
+                        AND A.GRACE_PERIOD    IS NULL
+                        AND L.PAID             = 'Y'
                         THEN 1
                         ELSE 0
                       END) AS PAID_LEAVE,
                       SUM(
                       CASE
-                        WHEN L.PAID = 'N'
+                        WHEN A.OVERALL_STATUS IN ('LV','LP')
+                        AND A.GRACE_PERIOD    IS NULL
+                        AND L.PAID             = 'N'
                         THEN 1
                         ELSE 0
                       END) AS UNPAID_LEAVE,
@@ -1153,7 +1174,8 @@ EOT;
                     WHERE O.STATUS= 'AP'
                     AND (O.OVERTIME_DATE BETWEEN V_FROM_DATE AND V_TO_DATE)
                     GROUP BY O.EMPLOYEE_ID
-                    ) OT ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
+                    ) OT
+                  ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
                   ORDER BY C.COMPANY_NAME,
                     D.DEPARTMENT_NAME
                   )
