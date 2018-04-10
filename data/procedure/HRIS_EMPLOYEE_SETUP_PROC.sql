@@ -143,7 +143,24 @@ BEGIN
       AND START_DATE                >=V_JOIN_DATE
     )
     LOOP
-      HRIS_HOLIDAY_ASSIGN_AUTO(holiday.HOLIDAY_ID,P_EMPLOYEE_ID) ;
+      HRIS_HOLIDAY_ASSIGN_AUTO
+      (
+        holiday.HOLIDAY_ID,P_EMPLOYEE_ID
+      )
+      ;
+    END LOOP;
+  END;
+  --
+  BEGIN
+    FOR news IN
+    (SELECT NEWS_ID FROM HRIS_NEWS WHERE STATUS ='E'
+    )
+    LOOP
+      HRIS_NEWS_TO_PROC
+      (
+        news.NEWS_ID,P_EMPLOYEE_ID
+      )
+      ;
     END LOOP;
   END;
 END;

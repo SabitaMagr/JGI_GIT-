@@ -87,7 +87,11 @@ class SalarySheetController extends HrisController {
                     $this->salarySheetRepo->generateSalShReport($sheetNo);
                     /*  */
 //                    $employeeList = $salarySheet->fetchEmployeeList($fromDate, $toDate);
-                    $employeeList = [['EMPLOYEE_ID' => 292]];
+                    $employeeList = [
+                        ['EMPLOYEE_ID' => 292],
+                        ['EMPLOYEE_ID' => 147],
+                        ['EMPLOYEE_ID' => 212],
+                    ];
                     $returnData['sheetNo'] = $sheetNo;
                     $returnData['employeeList'] = $employeeList;
                     break;
