@@ -32,7 +32,9 @@ class PaySlipPrevious extends HrisController {
         $template = null;
         switch ($this->viewType) {
             case "M":
-                $toView = [];
+                $toView = [
+                    'employeeCode' => $this->storageData['employee_detail']['EMPLOYEE_CODE'],
+                ];
                 $template = "mysql/payslip";
                 break;
             case "O":
@@ -93,12 +95,21 @@ class PaySlipPrevious extends HrisController {
     }
 
     public function taxsheetAction() {
-        $template = "";
+        $toView = null;
+        $template = null;
         switch ($this->viewType) {
             case "M":
+                $toView = [
+                    'employeeCode' => $this->storageData['employee_detail']['EMPLOYEE_CODE'],
+                ];
                 $template = "mysql/taxsheet";
                 break;
             case "O":
+                $toView = [
+                    'employeeId' => $this->employeeId,
+                    'employeeCode' => $this->storageData['employee_detail']['EMPLOYEE_CODE'],
+                    'adapter' => $this->adapter
+                ];
                 $template = "oracle/taxsheet";
                 break;
             case "N":
@@ -106,7 +117,7 @@ class PaySlipPrevious extends HrisController {
                 exit;
                 break;
         }
-        $view = new ViewModel($this->stickFlashMessagesTo(['employeeId' => $this->employeeId, 'employeeCode' => $this->storageData['employee_detail']['EMPLOYEE_CODE'], 'adapter' => $this->adapter]));
+        $view = new ViewModel($toView);
         $view->setTemplate($template);
         return $view;
     }
