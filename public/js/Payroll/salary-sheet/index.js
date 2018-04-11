@@ -8,6 +8,8 @@
         var monthList = data['monthList'];
         var generateLink = data['links']['generateLink'];
         var getSalarySheetListLink = data['links']['getSalarySheetListLink'];
+        var getSearchDataLink = data['links']['getSearchDataLink'];
+        var companyList = [];
 //        
         var selectedMonth = {};
 //
@@ -20,9 +22,25 @@
         var $nepaliToDate = $('#nepaliToDate');
         var $viewBtn = $('#viewBtn');
         var $generateBtn = $('#generateBtn');
+        var $companyId = $('#companyId');
+
+        (function ($companyId, link) {
+            var onDataLoad = function (data) {
+                companyList = data['company'];
+                app.populateSelect($companyId, data['company'], 'COMPANY_ID', 'COMPANY_NAME', 'Select Company');
+            };
+            app.serverRequest(link, {}).then(function (response) {
+                if (response.success) {
+                    onDataLoad(response.data);
+                }
+            }, function (error) {
+
+            });
+        })($companyId, getSearchDataLink);
 
         $fiscalYear.select2();
         $month.select2();
+        $companyId.select2();
 
         $viewBtn.hide();
         $generateBtn.hide();
@@ -124,7 +142,13 @@
             var monthNo = selectedMonth['MONTH_NO'];
             var fromDate = selectedMonth['FROM_DATE'];
             var toDate = selectedMonth['TO_DATE'];
-
+            var company = $companyId.val();
+            if (company === null) {
+                company = [];
+                $.each(companyList, function (key, value) {
+                    company.push(value['COMPANY_ID']);
+                });
+            }
             var stage1 = function () {
                 app.pullDataById(data['links']['generateLink'], {
                     stage: stage,
@@ -132,7 +156,8 @@
                     year: year,
                     monthNo: monthNo,
                     fromDate: fromDate,
-                    toDate: toDate
+                    toDate: toDate,
+                    companyId: company
                 }).then(function (response) {
                     stage2(response.data);
                 }, function (error) {

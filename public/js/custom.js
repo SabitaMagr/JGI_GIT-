@@ -1071,7 +1071,9 @@ window.app = (function ($, toastr, App) {
         if (typeof isMandatory !== 'undefined' && isMandatory !== null && isMandatory) {
             $defaultOption.prop('disabled', true);
         }
-        $element.append($defaultOption);
+        if (!$element.prop('multiple')) {
+            $element.append($defaultOption);
+        }
         var concatArray = function (keyList, list, concatWith) {
             var temp = '';
             if (typeof concatWith === 'undefined') {
@@ -1445,7 +1447,6 @@ window.app = (function ($, toastr, App) {
         var link = document.getSearchDataLink;
         var searchData = null;
         var onDataLoad = function (data) {
-            console.log(data);
             populateSelect($employeeId, data['employee'], 'EMPLOYEE_ID', 'FULL_NAME', 'Select Employee');
         };
         serverRequest(link, {}).then(function (response) {

@@ -42,6 +42,7 @@ class SalarySheetController extends HrisController {
         $links['viewLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'viewSalarySheet']);
         $links['generateLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'generateSalarySheet']);
         $links['getSalarySheetListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSalarySheetList']);
+        $links['getSearchDataLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSearchData']);
         $data['links'] = $links;
         return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
     }
@@ -82,18 +83,24 @@ class SalarySheetController extends HrisController {
                     $monthNo = $data['monthNo'];
                     $fromDate = $data['fromDate'];
                     $toDate = $data['toDate'];
+                    $companyIdList = $data['companyId'];
                     /*  */
-                    $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate);
-                    $this->salarySheetRepo->generateSalShReport($sheetNo);
                     /*  */
-//                    $employeeList = $salarySheet->fetchEmployeeList($fromDate, $toDate);
-                    $employeeList = [
-                        ['EMPLOYEE_ID' => 292],
-                        ['EMPLOYEE_ID' => 147],
-                        ['EMPLOYEE_ID' => 212],
-                    ];
-                    $returnData['sheetNo'] = $sheetNo;
-                    $returnData['employeeList'] = $employeeList;
+                    $returnData = [];
+                    foreach ($companyIdList as $companyId) {
+                        $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId);
+                        $this->salarySheetRepo->generateSalShReport($sheetNo);
+                        $employeeList = $salarySheet->fetchEmployeeList($companyId);
+//                    $employeeList = [
+//                        ['EMPLOYEE_ID' => 292],
+//                        ['EMPLOYEE_ID' => 147],
+//                        ['EMPLOYEE_ID' => 212],
+//                    ];
+                        $data = null;
+                        $data['sheetNo'] = $sheetNo;
+                        $data['employeeList'] = $employeeList;
+                        array_push($returnData, $data);
+                    }
                     break;
                 case 2:
                     $employeeId = $data['employeeId'];
