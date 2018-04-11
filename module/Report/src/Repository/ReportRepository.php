@@ -480,13 +480,13 @@ EOT;
                 SUM(
                 CASE
                   WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL AND L.PAID = 'Y' 
-                  THEN 1
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS PAID_LEAVE,
                 SUM(
                 CASE
                   WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL AND L.PAID = 'N'
-                  THEN 1
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS UNPAID_LEAVE,
                 SUM(
@@ -1114,7 +1114,13 @@ EOT;
                         WHEN A.OVERALL_STATUS IN ('LV','LP')
                         AND A.GRACE_PERIOD    IS NULL
                         AND L.PAID             = 'Y'
-                        THEN 1
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS PAID_LEAVE,
                       SUM(
@@ -1122,7 +1128,13 @@ EOT;
                         WHEN A.OVERALL_STATUS IN ('LV','LP')
                         AND A.GRACE_PERIOD    IS NULL
                         AND L.PAID             = 'N'
-                        THEN 1
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS UNPAID_LEAVE,
                       SUM(
