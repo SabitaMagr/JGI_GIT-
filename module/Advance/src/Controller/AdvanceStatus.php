@@ -79,7 +79,7 @@ class AdvanceStatus extends HrisController {
             $advanceRequestModel->approvedBy = $this->employeeId;
             $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
 
-            $this->advancePaymentAdd($detail);
+//            $this->advancePaymentAdd($detail);
             $advanceApproveRepository->edit($advanceRequestModel, $id);
 
             try {
