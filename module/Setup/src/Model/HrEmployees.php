@@ -100,6 +100,7 @@ class HrEmployees extends Model {
     public $locationId;
     public $functionalTypeId;
     public $functionalLevelId;
+    public $groupId;
 
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -195,6 +196,7 @@ class HrEmployees extends Model {
     const LOCATION_ID = "LOCATION_ID";
     const FUNCTIONAL_TYPE_ID = "FUNCTIONAL_TYPE_ID";
     const FUNCTIONAL_LEVEL_ID = "FUNCTIONAL_LEVEL_ID";
+    const GROUP_ID = "GROUP_ID";
 
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -290,6 +292,7 @@ class HrEmployees extends Model {
         'locationId' => self::LOCATION_ID,
         'functionalTypeId' => self::FUNCTIONAL_TYPE_ID,
         'functionalLevelId' => self::FUNCTIONAL_LEVEL_ID,
+        'groupId' => self::GROUP_ID,
     ];
 
 }

@@ -35,14 +35,12 @@ class SalarySheetController extends HrisController {
     public function indexAction() {
         $ruleRepo = new RulesRepository($this->adapter);
         $data['ruleList'] = iterator_to_array($ruleRepo->fetchAll(), false);
-        $data['fiscalYearList'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
-        $monthRepo = new MonthRepository($this->adapter);
-        $data['monthList'] = iterator_to_array($monthRepo->fetchAll(), false);
         $data['salarySheetList'] = iterator_to_array($this->salarySheetRepo->fetchAll(), false);
         $links['viewLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'viewSalarySheet']);
         $links['generateLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'generateSalarySheet']);
         $links['getSalarySheetListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSalarySheetList']);
         $links['getSearchDataLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSearchData']);
+        $links['getGroupListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getGroupList']);
         $data['links'] = $links;
         return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
     }
@@ -59,11 +57,15 @@ class SalarySheetController extends HrisController {
     public function viewSalarySheetAction() {
         $request = $this->getRequest();
         $data = $request->getPost();
-        $sheetId = $data['sheetNo'];
+        $sheetNoList = $data['sheetNo'];
         $salarySheetController = new SalarySheetService($this->adapter);
-        $salarySheet = $salarySheetController->viewSalarySheet($sheetId);
+        $salarySheetList = [];
+        foreach ($sheetNoList as $sheetNo) {
+            $salarySheet = $salarySheetController->viewSalarySheet($sheetNo);
+            $salarySheetList = array_merge($salarySheetList, $salarySheet);
+        }
 
-        return new JsonModel(['success' => true, 'data' => $salarySheet, 'error' => '']);
+        return new JsonModel(['success' => true, 'data' => $salarySheetList, 'error' => '']);
     }
 
     public function generateSalarySheetAction() {
@@ -84,22 +86,20 @@ class SalarySheetController extends HrisController {
                     $fromDate = $data['fromDate'];
                     $toDate = $data['toDate'];
                     $companyIdList = $data['companyId'];
+                    $groupIdList = $data['groupId'];
                     /*  */
                     /*  */
                     $returnData = [];
                     foreach ($companyIdList as $companyId) {
-                        $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId);
-                        $this->salarySheetRepo->generateSalShReport($sheetNo);
-                        $employeeList = $salarySheet->fetchEmployeeList($companyId);
-//                    $employeeList = [
-//                        ['EMPLOYEE_ID' => 292],
-//                        ['EMPLOYEE_ID' => 147],
-//                        ['EMPLOYEE_ID' => 212],
-//                    ];
-                        $data = null;
-                        $data['sheetNo'] = $sheetNo;
-                        $data['employeeList'] = $employeeList;
-                        array_push($returnData, $data);
+                        foreach ($groupIdList as $groupId) {
+                            $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId);
+                            $this->salarySheetRepo->generateSalShReport($sheetNo);
+                            $employeeList = $salarySheet->fetchEmployeeList($companyId, $groupId);
+                            $data = null;
+                            $data['sheetNo'] = $sheetNo;
+                            $data['employeeList'] = $employeeList;
+                            array_push($returnData, $data);
+                        }
                     }
                     break;
                 case 2:
@@ -211,6 +211,18 @@ class SalarySheetController extends HrisController {
                 $postedData = $request->getPost();
                 $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
                 $data = $salarySheetDetailRepo->fetchEmployeePaySlip($postedData['monthId'], $postedData['employeeId']);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+    }
+
+    public function getGroupListAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = EntityHelper::getTableList($this->adapter, "HRIS_SALARY_SHEET_GROUP", ["GROUP_ID", "GROUP_NAME"]);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

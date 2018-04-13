@@ -83,7 +83,7 @@ class SalarySheet {
         }
     }
 
-    public function newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId) {
+    public function newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId) {
         $salarySheetModal = new SalarySheetModel();
         $salarySheetModal->sheetNo = ((int) Helper::getMaxId($this->adapter, SalarySheetModel::TABLE_NAME, SalarySheetModel::SHEET_NO)) + 1;
         $salarySheetModal->monthId = $monthId;
@@ -94,13 +94,14 @@ class SalarySheet {
         $salarySheetModal->createdDt = Helper::getcurrentExpressionDate();
         $salarySheetModal->status = EntityHelper::STATUS_ENABLED;
         $salarySheetModal->companyId = $companyId;
+        $salarySheetModal->groupId = $groupId;
 
         $this->salarySheetRepo->add($salarySheetModal);
         return $salarySheetModal->sheetNo;
     }
 
-    public function fetchEmployeeList($companyId) {
-        $rawList = EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => EntityHelper::STATUS_ENABLED, HrEmployees::COMPANY_ID => $companyId]);
+    public function fetchEmployeeList($companyId, $groupId) {
+        $rawList = EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => EntityHelper::STATUS_ENABLED, HrEmployees::COMPANY_ID => $companyId, HrEmployees::GROUP_ID => $groupId]);
         return Helper::extractDbData($rawList);
     }
 
