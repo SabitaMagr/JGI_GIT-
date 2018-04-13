@@ -12,7 +12,7 @@ use SelfService\Controller\LeaveRequest;
 use SelfService\Controller\LoanRequest;
 use SelfService\Controller\MyAttendance;
 use SelfService\Controller\OvertimeRequest;
-use SelfService\Controller\PaySlip;
+use SelfService\Controller\Payroll;
 use SelfService\Controller\PaySlipPrevious;
 use SelfService\Controller\PerformanceAppraisal;
 use SelfService\Controller\Profile;
@@ -127,17 +127,16 @@ return [
                     ]
                 ],
             ],
-            'payslip' => [
+            'payroll' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/selfservice/payslip[/:action]',
+                    'route' => '/selfservice/payroll[/:action]',
                     'constants' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
                     ],
                     'defaults' => [
-                        'controller' => PaySlip::class,
-                        'action' => 'index',
+                        'controller' => Payroll::class,
+                        'action' => 'payslip',
                     ]
                 ],
             ],
@@ -524,19 +523,24 @@ return [
                 ],
             ],
         ],
-        'payslip' => [
+        'payroll' => [
             [
-                'label' => 'PaySlip',
-                'route' => 'payslip',
+                'label' => 'Payroll',
+                'route' => 'payroll',
             ],
             [
-                'label' => 'PaySlip',
-                'route' => 'payslip',
+                'label' => 'Payroll',
+                'route' => 'payroll',
                 'pages' => [
                     [
-                        'label' => 'Detail',
-                        'route' => 'payslip',
-                        'action' => 'index',
+                        'label' => 'Payslip',
+                        'route' => 'payroll',
+                        'action' => 'payslip',
+                    ],
+                    [
+                        'label' => 'Taxslip',
+                        'route' => 'payroll',
+                        'action' => 'taxslip',
                     ],
                 ],
             ],
@@ -890,7 +894,7 @@ return [
             AttendanceRequest::class => ControllerFactory::class,
             Profile::class => ControllerFactory::class,
             Service::class => ControllerFactory::class,
-            PaySlip::class => ControllerFactory::class,
+            Payroll::class => ControllerFactory::class,
             LoanRequest::class => ControllerFactory::class,
             TrainingList::class => ControllerFactory::class,
             TravelRequest::class => ControllerFactory::class,
