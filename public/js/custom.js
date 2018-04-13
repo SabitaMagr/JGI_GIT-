@@ -1448,7 +1448,9 @@ window.app = (function ($, toastr, App) {
         var searchData = null;
         var onDataLoad = function (data) {
             populateSelect($employeeId, data['employee'], 'EMPLOYEE_ID', 'FULL_NAME', 'Select Employee');
-            fn(data['employee']);
+            if (typeof fn !== 'undefined') {
+                fn(data['employee']);
+            }
         };
         serverRequest(link, {}).then(function (response) {
             if (response.success) {
