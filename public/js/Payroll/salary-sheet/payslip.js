@@ -10,10 +10,14 @@
         var $paySlipBody = $('#paySlipBody');
         var $excelExport = $('#excelExport');
         var $pdfExport = $('#pdfExport');
+
+        var employeeList = null;
         app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
             months = monthList;
         });
-        app.setEmployeeSearch($employeeId);
+        app.setEmployeeSearch($employeeId, function (empList) {
+            employeeList = empList;
+        });
         var showPaySlip = function ($data) {
             $paySlipBody.html('');
             var additionData = {};
@@ -22,8 +26,6 @@
             var deductionData = {};
             var deductionCounter = 0;
             var deductionSum = 0;
-            var taxData = {};
-            var taxCounter = 0;
             $.each($data, function (index, item) {
                 switch (item['PAY_TYPE_FLAG']) {
                     case 'A':
@@ -36,21 +38,15 @@
                         deductionSum = deductionSum + parseFloat(item['VAL']);
                         deductionCounter++;
                         break;
-                    case 'T':
-                        taxData[taxCounter] = item;
-                        taxCounter++;
-                        break;
                 }
             });
-            var maxRows = (additionCounter > deductionCounter) ? ((additionCounter > taxCounter) ? additionCounter : taxCounter) : ((deductionCounter > taxCounter) ? deductionCounter : taxCounter);
+            var maxRows = (additionCounter > deductionCounter) ? additionCounter : deductionCounter;
             for (var i = 0; i < maxRows; i++) {
                 var $row = $(`<tr>
                                 <td>${(typeof additionData[i] !== 'undefined') ? additionData[i]['PAY_EDESC'] : ''}</td>
                                 <td>${(typeof additionData[i] !== 'undefined') ? additionData[i]['VAL'] : ''}</td>
                                 <td>${(typeof deductionData[i] !== 'undefined') ? deductionData[i]['PAY_EDESC'] : ''}</td>
                                 <td>${(typeof deductionData[i] !== 'undefined') ? deductionData[i]['VAL'] : ''}</td>
-                                <td>${(typeof taxData[i] !== 'undefined') ? taxData[i]['PAY_EDESC'] : ''}</td>
-                                <td>${(typeof taxData[i] !== 'undefined') ? taxData[i]['VAL'] : ''}</td>
                                 </tr>`);
                 $paySlipBody.append($row);
             }
@@ -59,15 +55,21 @@
                                 <td>${additionSum}</td>
                                 <td>Total:</td>
                                 <td>${deductionSum}</td>
-                                <td></td>
-                                <td></td>
                                 </tr>`));
 
         }
         $viewBtn.on('click', function () {
             var monthId = $month.val();
             var employeeId = $employeeId.val();
-            app.serverRequest('', {monthId: monthId, employeeId: employeeId}).then(function (response) {
+            var employee = employeeList.find(function (item) {
+                return item['EMPLOYEE_ID'] == employeeId;
+            });
+            app.serverRequest('', {
+                monthId: monthId,
+                employeeId: employeeId,
+                companyId: employee['COMPANY_ID'],
+                groupId: employee['GROUP_ID']
+            }).then(function (response) {
                 showPaySlip(response.data);
             }, function (error) {
 

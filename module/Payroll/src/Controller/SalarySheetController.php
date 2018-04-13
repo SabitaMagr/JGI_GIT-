@@ -5,7 +5,6 @@ namespace Payroll\Controller;
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Model\FiscalYear;
 use Application\Repository\MonthRepository;
 use Exception;
 use Payroll\Controller\SalarySheet as SalarySheetService;
@@ -210,7 +209,7 @@ class SalarySheetController extends HrisController {
             try {
                 $postedData = $request->getPost();
                 $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
-                $data = $salarySheetDetailRepo->fetchEmployeePaySlip($postedData['monthId'], $postedData['employeeId']);
+                $data = $salarySheetDetailRepo->fetchEmployeePaySlip($postedData['monthId'], $postedData['employeeId'], $postedData['companyId'], $postedData['groupId']);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

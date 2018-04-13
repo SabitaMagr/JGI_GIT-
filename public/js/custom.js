@@ -1443,11 +1443,12 @@ window.app = (function ($, toastr, App) {
             populateSelect($month, selectedYearMonthList, 'MONTH_ID', 'MONTH_EDESC', 'Months', null, currentMonths.length > 0 ? currentMonth['MONTH_ID'] : null);
         };
     };
-    var setEmployeeSearch = function ($employeeId) {
+    var setEmployeeSearch = function ($employeeId, fn) {
         var link = document.getSearchDataLink;
         var searchData = null;
         var onDataLoad = function (data) {
             populateSelect($employeeId, data['employee'], 'EMPLOYEE_ID', 'FULL_NAME', 'Select Employee');
+            fn(data['employee']);
         };
         serverRequest(link, {}).then(function (response) {
             if (response.success) {
@@ -1457,7 +1458,7 @@ window.app = (function ($, toastr, App) {
         }, function (error) {
 
         });
-    }
+    };
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1499,6 +1500,6 @@ window.app = (function ($, toastr, App) {
         bulkServerRequest: bulkServerRequest,
         setDropZone: setDropZone,
         setFiscalMonth: setFiscalMonth,
-        setEmployeeSearch: setEmployeeSearch
+        setEmployeeSearch: setEmployeeSearch,
     };
 })(window.jQuery, window.toastr, window.App);
