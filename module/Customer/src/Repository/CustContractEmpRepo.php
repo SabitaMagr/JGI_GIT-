@@ -187,5 +187,18 @@ class CustContractEmpRepo implements RepositoryInterface {
         $result = $statement->execute();
         return $result->current();
     }
+    
+    public function pullEmployeeRate($dutyTypeId, $employeeId) {
+        $sql="SELECT E.HOURLY_AMOUNT,DT.NORMAL_HOUR
+                FROM HRIS_EMPLOYEES E
+                JOIN HRIS_DUTY_TYPE DT ON(DT.DUTY_TYPE_ID={$dutyTypeId})
+                WHERE E.EMPLOYEE_ID={$employeeId}";
+        
+        
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+        
+    }
 
 }

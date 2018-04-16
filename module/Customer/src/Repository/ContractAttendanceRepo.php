@@ -127,7 +127,7 @@ EOT;
         $statement->execute();
     }
 
-    public function getCutomerEmpAttendnaceMonthly($monthId, $customerId) {
+    public function getCutomerEmpAttendnaceMonthly($monthId, $customerId, $locationId) {
         $monthDetails = EntityHelper::rawQueryResult($this->adapter, "select from_date,to_date,to_date-from_date+1 as daysCount from hris_month_code where month_id={$monthId}")->current();
 
         $fromDate = $monthDetails['FROM_DATE'];
@@ -144,26 +144,6 @@ EOT;
             }
         }
 
-//        $sql = "
-//                select * from (select D.FROM_DATE,D.DAY_COUNT,
-// CE.EMPLOYEE_ID,E.FULL_NAME,CE.CONTRACT_ID,CE.LOCATION_ID,CL.LOCATION_NAME,CD.SHIFT_ID,
-// CASE  WHEN CA.STATUS IS NULL THEN 
-// 'PR'
-// ELSE CA.STATUS END AS STATUS
-// from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
-//    FROM dual d
-//    CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
-// ) D
-//   LEFT JOIN HRIS_CUST_CONTRACT_EMP CE on (1=1 and CE.status='E')
-//    LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (CA.EMPLOYEE_ID=CE.EMPLOYEE_ID 
-//    AND CA.LOCATION_ID=CE.LOCATION_ID AND CA.ATTENDANCE_DATE=D.DATES)
-//    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
-//    LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
-//    LEFT JOIN HRIS_CUSTOMER_CONTRACT_DETAILS CD ON (CD.CONTRACT_ID=CE.CONTRACT_ID AND CD.DESIGNATION_ID=CE.DESIGNATION_ID AND CD.status='E')
-//    LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CD.CONTRACT_ID)
-//    LEFT JOIN HRIS_SHIFTS S ON (S.SHIFT_ID=CD.SHIFT_ID)
-//    WHERE CE.STATUS='E' AND CE.CUSTOMER_ID={$customerId} AND D.DATES BETWEEN CC.START_DATE AND CC.END_DATE)PIVOT (MAX(STATUS) FOR DAY_COUNT IN ({$pivotString})) 
-//                ";
 
         $sql = "
             select * from (
@@ -217,8 +197,11 @@ EOT;
     LEFT JOIN HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
     LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=CE.DESIGNATION_ID)
      LEFT JOIN HRIS_EMPLOYEES SE ON (SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
-    WHERE CE.CUSTOMER_ID={$customerId} and d.dates between CE.START_DATE and CE.END_DATE
-    )PIVOT (
+    WHERE CE.CUSTOMER_ID={$customerId} and d.dates between CE.START_DATE and CE.END_DATE";
+        if ($locationId) {
+            $sql .= " AND CE.LOCATION_ID={$locationId}";
+        }
+        $sql .= ")PIVOT (
  MAX (STATUS) AS STATUS,
  MAX(NORMAL_HOUR) AS NORMAL_HOUR,
  MAX(OT_HOUR) AS OT_HOUR, 
@@ -418,7 +401,20 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
             TO_CHAR(to_date(D.OT_HOUR*60,'sssss'),'hh24:mi')
             ELSE
             TO_CHAR(to_date(CA.OT_HOUR*60,'sssss'),'hh24:mi')
-            END AS OT_HOUR
+            END AS OT_HOUR,
+            CASE WHEN CA.SUB_RATE IS NULL 
+              THEN CE.MONTHLY_RATE
+              ELSE CA.SUB_RATE
+              END AS RATE,
+              CASE WHEN CA.SUB_OT_RATE IS NULL 
+              THEN CC.OT_RATE
+              ELSE CA.SUB_OT_RATE
+              END AS OT_RATE,
+               CASE
+                  WHEN CA.SUB_OT_TYPE IS NULL THEN CC.OT_TYPE
+                  ELSE CA.SUB_OT_TYPE
+                END
+              AS OT_TYPE
             FROM HRIS_CONTRACT_EMP_ASSIGN CE
             LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (
             CE.CUSTOMER_ID=CA.CUSTOMER_ID AND
@@ -432,6 +428,7 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
             )
             LEFT JOIN HRIS_DUTY_TYPE D ON (D.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
             LEFT JOIN HRIS_EMPLOYEES SE ON(SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
+            LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CE.CONTRACT_ID=CC.CONTRACT_ID)
              WHERE  
                       CE.CUSTOMER_ID={$customerId}
                         AND CE.CONTRACT_ID={$contractId}
@@ -444,19 +441,29 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                 ";
 
 
+//        echo $sql;
+//        die();
+
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
     }
 
-    public function updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType) {
+    public function updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType, $rate, $otRate,$otType) {
 
         if ($subEmployeeId == '' or $subEmployeeId == null) {
-            $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=NULL";
-            $postingTypeString = "V_POSTING_TYPE CHAR(2 BYTE):=NULL";
+            $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=NULL;";
+            $postingTypeString = "V_POSTING_TYPE CHAR(2 BYTE):=NULL;";
+            $postingTypeString .= "V_RATE NUMBER :=NULL;";
+            $postingTypeString .= "V_OT_RATE NUMBER :=NULL;";
+            $postingTypeString .= "V_OT_TYPE CHAR(1 BYTE) :=NULL;";
         } else {
-            $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=" . $subEmployeeId;
-            $postingTypeString = "V_POSTING_TYPE CHAR(2 BYTE):='" . $postingType . "'";
+            $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=" . $subEmployeeId . ";";
+            $postingTypeString = "V_POSTING_TYPE CHAR(2 BYTE):='" . $postingType . "';";
+            $postingTypeString .= "V_RATE NUMBER :=" . $rate . ";";
+            $postingTypeString .= "V_OT_RATE NUMBER :=" . $otRate . ";";
+            $postingTypeString .= "V_OT_TYPE CHAR(1 BYTE) :='" . $otType . "';";
         }
 
 
@@ -472,8 +479,8 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                 V_STATUS CHAR(2 BYTE):='{$status}';
                 V_NORMAL_HOUR NUMBER:=TO_NUMBER(TO_CHAR(TO_DATE('{$normalHour}','hh24:mi'),'sssss'))/60;
                 V_OT_HOUR NUMBER:=TO_NUMBER(TO_CHAR(TO_DATE('{$otHour}','hh24:mi'),'sssss'))/60;
-                {$subEmployeeString};
-                {$postingTypeString};
+                {$subEmployeeString}
+                {$postingTypeString}
                 V_ATTENDANCE_COUNT NUMBER;
                 BEGIN
                 SELECT COUNT(*) INTO V_ATTENDANCE_COUNT FROM HRIS_CONTRACT_EMP_ATTENDANCE WHERE 
@@ -496,7 +503,10 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                 SUB_EMPLOYEE_ID,
                 POSTING_TYPE,
                 NORMAL_HOUR,
-                OT_HOUR
+                OT_HOUR,
+                SUB_RATE,
+                SUB_OT_RATE,
+                SUB_OT_TYPE
                 )
                 VALUES
                 (V_CUSTOMER_ID,V_CONTRACT_ID,V_EMPLOYEE_ID,V_LOCATION_ID,V_DUTY_TYPE_ID,V_DESIGNATION_ID,
@@ -506,7 +516,10 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                 V_SUB_EMPLOYEE_ID,
                 V_POSTING_TYPE,
                 V_NORMAL_HOUR,
-                V_OT_HOUR
+                V_OT_HOUR,
+                V_RATE,
+                V_OT_RATE,
+                V_OT_TYPE
                 );
 
 
@@ -518,7 +531,10 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
                 SUB_EMPLOYEE_ID=V_SUB_EMPLOYEE_ID,
                 POSTING_TYPE=V_POSTING_TYPE,
                 NORMAL_HOUR=V_NORMAL_HOUR,
-                OT_HOUR=V_OT_HOUR
+                OT_HOUR=V_OT_HOUR,
+                SUB_RATE=V_RATE,
+                SUB_OT_RATE=V_OT_RATE,
+                SUB_OT_TYPE=V_OT_TYPE
                 WHERE 
                     CUSTOMER_ID=V_CUSTOMER_ID AND
                     CONTRACT_ID=V_CONTRACT_ID AND
@@ -571,6 +587,189 @@ END;";
         $statement1 = $this->adapter->query($sql1);
         $result = $statement1->execute();
         return $result->current();
+    }
+
+    public function getCutomerEmpAttendnaceReportMonthly($monthId, $customerId, $locationId) {
+        $monthDetails = EntityHelper::rawQueryResult($this->adapter, "select from_date,to_date,to_date-from_date+1 as daysCount from hris_month_code where month_id={$monthId}")->current();
+
+        $fromDate = $monthDetails['FROM_DATE'];
+        $toDate = $monthDetails['TO_DATE'];
+        $daysCount = $monthDetails['DAYSCOUNT'];
+
+
+        $pivotString = '';
+        for ($i = 1; $i <= $daysCount; $i++) {
+            if ($i != $daysCount) {
+                $pivotString .= $i . ' AS ' . 'C' . $i . ', ';
+            } else {
+                $pivotString .= $i . ' AS ' . 'C' . $i;
+            }
+        }
+
+
+        $sql = "select * from (
+            
+                select 
+
+
+    (SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+WHERE STATUS='AB' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+ATTENDANCE_DATE BETWEEN 
+TO_DATE('{$fromDate}','DD-MON-YY')
+AND TO_DATE('{$toDate}','DD-MON-YY')
+) )AS ABSENT_DAYS,
+(SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+WHERE STATUS='DO' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+ATTENDANCE_DATE BETWEEN 
+TO_DATE('{$fromDate}','DD-MON-YY')
+AND TO_DATE('{$toDate}','DD-MON-YY')
+) )AS DAY_OFF,
+
+(SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+WHERE STATUS='PH' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+ATTENDANCE_DATE BETWEEN 
+TO_DATE('{$fromDate}','DD-MON-YY')
+AND TO_DATE('{$toDate}','DD-MON-YY')
+) )AS PAID_HOLIDAY,                
+
+E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
+    D.DAY_COUNT,CE.CONTRACT_ID,CE.CUSTOMER_ID,
+    CE.LOCATION_ID,CE.EMPLOYEE_ID,CE.DESIGNATION_ID,CE.DUTY_TYPE_ID,
+    CE.EMP_ASSIGN_ID,
+    DT.DUTY_TYPE_NAME,
+    CASE
+          WHEN CA.STATUS IS NULL THEN 'Present'
+          WHEN CA.STATUS='PR' THEN 'Present'
+          WHEN CA.STATUS='AB' THEN 'Absent'
+          WHEN CA.STATUS='DO' THEN 'DayOff'
+          WHEN CA.STATUS='PH' THEN 'PaidHoliday'
+        END
+      AS STATUS,
+      CASE  
+            WHEN CA.NORMAL_HOUR IS NULL 
+            THEN
+            TO_CHAR(to_date(DT.NORMAL_HOUR*60,'sssss'),'hh24:mi')
+            ELSE
+            TO_CHAR(to_date(CA.NORMAL_HOUR*60,'sssss'),'hh24:mi')
+            END AS NORMAL_HOUR,
+            CASE  
+            WHEN CA.OT_HOUR IS NULL 
+            THEN
+            TO_CHAR(to_date(DT.OT_HOUR*60,'sssss'),'hh24:mi')
+            ELSE
+            TO_CHAR(to_date(CA.OT_HOUR*60,'sssss'),'hh24:mi')
+            END AS OT_HOUR,
+      SE.FULL_NAME AS SUB_EMP_NAME
+    from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
+        FROM dual d
+        CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
+     ) D
+    LEFT JOIN HRIS_CONTRACT_EMP_ASSIGN CE on (1=1 and CE.status='E')
+    LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (
+            CE.CUSTOMER_ID=CA.CUSTOMER_ID AND
+            CE.CONTRACT_ID=CA.CONTRACT_ID AND
+            CE.EMPLOYEE_ID=CA.EMPLOYEE_ID AND
+            CE.LOCATION_ID=CA.LOCATION_ID AND
+            CE.DUTY_TYPE_ID=CA.DUTY_TYPE_ID AND
+            CE.DESIGNATION_ID=CA.DESIGNATION_ID AND
+            CE.EMP_ASSIGN_ID=CA.EMP_ASSIGN_ID AND
+            CA.ATTENDANCE_DATE=D.DATES)
+    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
+    LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
+    LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CE.CONTRACT_ID)
+    LEFT JOIN HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
+    LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=CE.DESIGNATION_ID)
+     LEFT JOIN HRIS_EMPLOYEES SE ON (SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
+    WHERE CE.CUSTOMER_ID={$customerId} and d.dates between CE.START_DATE and CE.END_DATE";
+        if ($locationId) {
+            $sql .= " AND CE.LOCATION_ID={$locationId}";
+        }
+
+        $sql .= " UNION ALL
+        
+       SELECT
+     
+    (
+    SELECT (TO_DATE('{$toDate}','DD-MON-YY')-TO_DATE('{$fromDate}','DD-MON-YY'))+1-COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+WHERE STATUS='AB' AND SUB_EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID AND EMP_ASSIGN_ID=CA.EMP_ASSIGN_ID AND (
+ATTENDANCE_DATE BETWEEN 
+TO_DATE('{$fromDate}','DD-MON-YY')
+AND TO_DATE('{$toDate}','DD-MON-YY')
+)
+    )AS ABSENT_DAYS,
+    0 AS DAY_OFF,
+    0 AS PAID_HOLIDAY,
+       
+
+        SE.FULL_NAME||' Sub For '||E.FULL_NAME AS FULL_NAME,
+      CL.LOCATION_NAME,
+      CC.CONTRACT_NAME,
+      D.DESIGNATION_TITLE,
+      (CA.ATTENDANCE_DATE-TO_DATE('{$fromDate}','DD-MON-YY')+1) AS DAY_COUNT,
+      CA.CONTRACT_ID,
+      CA.CUSTOMER_ID,
+      CA.LOCATION_ID,
+      CA.EMPLOYEE_ID,
+      CA.DESIGNATION_ID,
+      CA.DUTY_TYPE_ID,
+      CA.EMP_ASSIGN_ID,
+      DT.DUTY_TYPE_NAME,
+      'Present' AS STATUS,
+      TO_CHAR(TO_DATE(CA.NORMAL_HOUR * 60,'sssss'),'hh24:mi') AS NORMAL_HOUR,
+      TO_CHAR(TO_DATE(CA.OT_HOUR * 60,'sssss'),'hh24:mi') AS OT_HOUR,
+      '' AS  SUB_EMP_NAME 
+FROM  HRIS_CONTRACT_EMP_ATTENDANCE CA
+ LEFT JOIN HRIS_EMPLOYEES E ON (
+        E.EMPLOYEE_ID = CA.EMPLOYEE_ID
+      )
+      LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (
+        CL.LOCATION_ID = CA.LOCATION_ID
+      )
+      LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (
+        CC.CONTRACT_ID = CA.CONTRACT_ID
+      )
+      LEFT JOIN HRIS_DUTY_TYPE DT ON (
+        DT.DUTY_TYPE_ID = CA.DUTY_TYPE_ID
+      )
+      LEFT JOIN HRIS_DESIGNATIONS D ON (
+        D.DESIGNATION_ID = CA.DESIGNATION_ID
+      )
+      LEFT JOIN HRIS_EMPLOYEES SE ON (
+        SE.EMPLOYEE_ID = CA.SUB_EMPLOYEE_ID
+      )
+
+WHERE CA.CUSTOMER_ID={$customerId} 
+AND CA.STATUS='AB' 
+AND CA.SUB_EMPLOYEE_ID IS NOT NULL
+AND (CA.ATTENDANCE_DATE BETWEEN TO_DATE('{$fromDate}','DD-MON-YY') AND TO_DATE('{$toDate}','DD-MON-YY')
+
+)";
+
+        if ($locationId) {
+            $sql .= " AND CA.LOCATION_ID={$locationId}";
+        }
+
+        $sql .= ")PIVOT (
+ MAX (STATUS) AS STATUS,
+ MAX(NORMAL_HOUR) AS NORMAL_HOUR,
+ MAX(OT_HOUR) AS OT_HOUR, 
+MAX (SUB_EMP_NAME) AS SUB_EMP_NAME
+FOR DAY_COUNT IN ({$pivotString})) 
+            
+                ";
+
+
+
+
+//        echo $sql;
+//        die();
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        $returnData['monthDetails'] = $monthDetails;
+        $returnData['attendanceResult'] = Helper::extractDbData($result);
+
+        return $returnData;
     }
 
 }

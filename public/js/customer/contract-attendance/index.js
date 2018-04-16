@@ -7,8 +7,6 @@ function setTemplate(temp) {
     } else if (temp == 'DayOff' || temp == 'PaidHoliday') {
         returnvalue = 'attendance-color-yellow';
     }
-    console.log(returnvalue);
-
     return returnvalue;
 }
 
@@ -48,6 +46,7 @@ function getStausString(status, normal, ot, subEmp) {
         });
 
         var $cutomerSelect = $('#customerSelect');
+        var $locationSelect = $('#locationSelect');
         var $monthSelect = $('#monthSelect');
         app.populateSelect($cutomerSelect, document.customerList, 'CUSTOMER_ID', 'CUSTOMER_ENAME', 'Select An Customer', '');
         app.populateSelect($monthSelect, document.monthList, 'MONTH_ID', 'MONTH_EDESC', 'Select An Month', '');
@@ -56,6 +55,22 @@ function getStausString(status, normal, ot, subEmp) {
             var guid = kendo.guid();
             $('<select id="' + guid + '" name="' + options.field + '"><option>PR<option>AB</option><option>HO</option></select>').appendTo(container);
         }
+
+
+        $cutomerSelect.on('change', function () {
+            var customerId = $(this).val();
+
+            console.log('sdf');
+            app.serverRequest(document.pullCustomerLocation, {
+                customerId: customerId
+            }).then(function (response) {
+                console.log(response);
+                if (response.success == true) {
+                    app.populateSelect($locationSelect, response.data, 'LOCATION_ID', 'LOCATION_NAME', 'All Location', '');
+                }
+            });
+
+        });
 
 
 
@@ -106,12 +121,6 @@ function getStausString(status, normal, ot, subEmp) {
                 });
             }
 
-//            cols.push({
-//                locked: true,
-//                command: ["edit"],
-//                title: "&nbsp;",
-//                width: 100
-//            });
 
             return cols;
         }
@@ -120,6 +129,7 @@ function getStausString(status, normal, ot, subEmp) {
 
         $('#viewBtn').on('click', function () {
             var selectedCustomerVal = $cutomerSelect.val();
+            var selectedLocationVal = $locationSelect.val();
             var selectedMonthVal = $monthSelect.val();
             if (selectedCustomerVal == '' || selectedMonthVal == '') {
                 app.errorMessage('Customer or Month is not selected ', 'error');
@@ -129,6 +139,7 @@ function getStausString(status, normal, ot, subEmp) {
             $("#grid").empty();
             app.serverRequest(document.pullCustomerMonthlyAttendanceUrl, {
                 customerId: selectedCustomerVal,
+                locationId: selectedLocationVal,
                 monthId: selectedMonthVal
 
             }
@@ -137,46 +148,12 @@ function getStausString(status, normal, ot, subEmp) {
 //                console.log(response.data.monthDetails.DAYSCOUNT);
                 var cols = [];
                 cols = GenerateColsForKendo(response.data.monthDetails.DAYSCOUNT);
+                
                 var dataSource = new kendo.data.DataSource({
-                    transport: {
-                        read: function (e) {
-                            e.success(response.data.attendanceResult);
-                        },
-                        update: function (e) {
-                            var rowData = e.data.models[0];
-                            app.serverRequest(document.updateEmpContractAttendnace, {
-                                customerId: selectedCustomerVal,
-                                monthId: selectedMonthVal,
-                                kendoData: rowData
-
-                            }
-                            ).then(function (response) {
-                                console.log(response.success);
-                                if (response.success == true) {
-                                    e.success();
-                                }
-                            });
-                        },
-                        parameterMap: function (options, operation) {
-                            if (operation !== "read" && options.models) {
-                                return {models: kendo.stringify(options.models)};
-                            }
-                        }
-                    },
-                    batch: true,
-                    pageSize: 100,
-                    schema: {
-                        model: {
-                            id: "CONTRACT_ID",
-                            fields: {
-//                                        CONTRACT_ID: { editable: false, nullable: true },
-                                FULL_NAME: {editable: false, nullable: true},
-                                LOCATION_NAME: {editable: false, nullable: true},
-//                                    C1: {},
-                            }
-                        }
-                    }
+                    data: response.data.attendanceResult,
+                    pageSize: 500,
                 });
+                
                 $("#grid").kendoGrid({
                     dataSource: dataSource,
                     height: 450,
@@ -231,12 +208,23 @@ function getStausString(status, normal, ot, subEmp) {
                         var attdOtHour = attendanceData.OT_HOUR;
                         var attdSubEmp = attendanceData.SUB_EMPLOYEE_ID;
                         var attdpostingType = attendanceData.POSTING_TYPE;
+                        var attdRate = attendanceData.RATE;
+                        var attdOtRate = attendanceData.OT_RATE;
+                        var attdOtType = attendanceData.OT_TYPE;
                         $('#attdStatus').val(attdStatus);
                         $('#normalHour').combodate('setValue', attdNormalHour);
                         $('#otHour').combodate('setValue', attdOtHour);
                         $('#postingType').val(attdpostingType);
+                        $('#rate').val(attdRate);
+                        $('#otRate').val(attdOtRate);
+                        $('#otType').val(attdOtType);
                         app.populateSelect($('#subEmployee'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'No Substitute', '', attdSubEmp);
                         lockSubEmployee();
+                        if (attdSubEmp) {
+                            $('#subRateDiv').show();
+                        } else {
+                            $('#subRateDiv').hide();
+                        }
                         $('#subEmpModal').modal('show');
 
                     }
@@ -250,6 +238,11 @@ function getStausString(status, normal, ot, subEmp) {
             console.log($('#attdStatus').val());
             lockSubEmployee();
             setDefaultDuty();
+            if ($('#subEmployee').val()) {
+                $('#subRateDiv').show();
+            } else {
+                $('#subRateDiv').hide();
+            }
         });
 
         function setDefaultDuty() {
@@ -264,10 +257,10 @@ function getStausString(status, normal, ot, subEmp) {
                 $('#normalHour').parent().find('select').prop('disabled', false);
                 $('#otHour').parent().find('select').prop('disabled', false);
             } else if ($('#attdStatus').val() == 'AB') {
-                $('#normalHour').combodate('setValue', '00:00');
-                $('#otHour').combodate('setValue', '00:00');
-                $('#normalHour').parent().find('select').prop('disabled', true);
-                $('#otHour').parent().find('select').prop('disabled', true);
+//                $('#normalHour').combodate('setValue', '00:00');
+//                $('#otHour').combodate('setValue', '00:00');
+                $('#normalHour').parent().find('select').prop('disabled', false);
+                $('#otHour').parent().find('select').prop('disabled', false);
             }
         }
 
@@ -284,6 +277,16 @@ function getStausString(status, normal, ot, subEmp) {
         }
 
 
+        $('#subEmployee').on('change', function () {
+            if ($(this).val()) {
+                $('#subRateDiv').show();
+            } else {
+                $('#subRateDiv').hide();
+            }
+        });
+
+
+
 
         $('#updateAttendanceBtn').on('click', function () {
 
@@ -292,6 +295,9 @@ function getStausString(status, normal, ot, subEmp) {
             var attdOtHour = $('#otHour').val();
             var attdSubEmployeeId = $('#subEmployee').val();
             var attdpostingType = $('#postingType').val();
+            var attdrate = $('#rate').val();
+            var attdOtRate = $('#otRate').val();
+            var attdOtType = $('#otType').val();
 
 //            if (attdStatus == 'AB' && attdSubEmployeeId == '') {
 //                app.showMessage('SubEmployee is Required', 'error', 'Requierd');
@@ -316,7 +322,10 @@ function getStausString(status, normal, ot, subEmp) {
 //                inTime: attdInTime,
 //                outTime: attdOutTime,
                 subEmployeeId: attdSubEmployeeId,
-                postingType: attdpostingType
+                postingType: attdpostingType,
+                rate: attdrate,
+                otRate: attdOtRate,
+                otType: attdOtType
             }).then(function (response) {
                 console.log(response);
 

@@ -77,6 +77,24 @@ class CustomerContractFrom {
      */
     public $submit;
     
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required({"required":"true"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"OT Rate"})
+     * @Annotation\Attributes({ "id":"otRate", "class":" form-control","min":"1","step":"0.01"})
+     */
+    public $otRate;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"OT Type"})
+     * @Annotation\Attributes({ "id":"otType","class":"form-control","options":{"H":"Hourly Rate","P":"Percent"}})
+     */
+    public $otType;
+    
     
 
 }

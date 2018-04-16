@@ -28,7 +28,7 @@ class ContractEmployees extends HrisController {
 
     public function indexAction() {
 
-        $employeeListSql = "select E.EMPLOYEE_ID,'('||E.EMPLOYEE_CODE||') '||E.FULL_NAME AS FULL_NAME 
+        $employeeListSql = "select E.EMPLOYEE_ID,''||E.EMPLOYEE_CODE||'  '||E.FULL_NAME AS FULL_NAME 
             from  HRIS_EMPLOYEES E
             LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=E.DESIGNATION_ID)
             where E.status='E' and E.RESIGNED_FLAG='N'";
@@ -278,7 +278,7 @@ class ContractEmployees extends HrisController {
             $endTime = $request->getPost('endTime');
             $dutyType = $request->getPost('dutyType');
             $rate = $request->getPost('rate');
-            $monthDays = $request->getPost('monthDays');
+//            $monthDays = $request->getPost('monthDays');
 
 
             $contractDetails = $this->repository->getContractDetail($contract, $designation, $dutyType);
@@ -304,7 +304,6 @@ class ContractEmployees extends HrisController {
                 $contractDetailModel->status = 'E';
                 $contractDetailModel->createdBy = $this->employeeId;
                 $contractDetailModel->rate = $rate;
-                $contractDetailModel->daysInMonth = $monthDays;
                 $contractDetialRepo->add($contractDetailModel);
             }
 
@@ -312,7 +311,7 @@ class ContractEmployees extends HrisController {
 
             $custEmployeeModel = new CustContractEmp();
 
-            $custEmployeeModel->id = (int) Helper::getMaxId($this->adapter, CustContractEmp::TABLE_NAME, CustContractEmp::ID) + 1;
+            $custEmployeeModel->empAssignId = (int) Helper::getMaxId($this->adapter, CustContractEmp::TABLE_NAME, CustContractEmp::EMP_ASSIGN_ID) + 1;
 
             $custEmployeeModel->customerId = $customer;
             $custEmployeeModel->contractId = $contract;
@@ -326,6 +325,7 @@ class ContractEmployees extends HrisController {
             $custEmployeeModel->status = 'E';
             $custEmployeeModel->createdBy = $this->employeeId;
             $custEmployeeModel->dutyTypeId = $dutyType;
+            $custEmployeeModel->monthlyRate = $rate;
 
 
 
@@ -466,6 +466,28 @@ class ContractEmployees extends HrisController {
 
             $details = $this->repository->pullEmployeeAssignDataById($id);
             return new JsonModel(['success' => true, 'data' => $details, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function pullEmployeeRateAction() {
+        try {
+            $request = $this->getRequest();
+
+            $dutyTypeId = $request->getPost('dutyTypeId');
+            $employeeId = $request->getPost('employeeId');
+
+
+            $data = $this->repository->pullEmployeeRate($dutyTypeId, $employeeId);
+            
+            $returnAmt='N/A';
+
+            if($data['HOURLY_AMOUNT']!='' && $data['NORMAL_HOUR']!='') {
+            $returnAmt=($data['NORMAL_HOUR']/60)*$data['HOURLY_AMOUNT']*30;
+            }
+            
+            return new JsonModel(['success' => true, 'data' => $returnAmt, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

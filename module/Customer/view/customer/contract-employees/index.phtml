@@ -36,6 +36,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
     document.dutyTypeList =<?= json_encode($dutyTypeList); ?>;
     document.pullCdContractDesignationDutyType = '<?= $this->url("contract-employees", ["action" => "pullCdContractDesignationDutyType"]); ?>';
     document.pullEmployeeAssignDataById = '<?= $this->url("contract-employees", ["action" => "pullEmployeeAssignDataById"]); ?>';
+    document.pullEmployeeRate = '<?= $this->url("contract-employees", ["action" => "pullEmployeeRate"]); ?>';
 
 </script>
 <div class="page-bar">
@@ -138,6 +139,10 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
                         <label>Employees :</label>
                         <select class="form-control"  required='required'  id="addEmployee" name='employee' ></select>
                     </div>
+                    <div class="col-md-3">
+                        </br>
+                        <span id="addEmployeeRate"></span>
+                    </div>
 
                 </div>
 
@@ -187,21 +192,6 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
                 </div>
 
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Start Time :</label>
-                        <input class="form-control"   id="addEmployeeStartTime" name='employeeStartTime' type='text' data-format='h:mm a' data-template='HH : mm'></br>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>End Time :</label>
-                        <input class="form-control"   id="addEmployeeEndTime" name='employeeEndTime' type='text' data-format='h:mm a' data-template='HH : mm'></br>
-                    </div>
-
-                </div>
 
                 <div class="row">
                     <div class="col-md-5">
@@ -211,13 +201,13 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
                 </div>
 
-                <div class="row">
+<!--                <div class="row">
                     <div class="col-md-5">
                         <label>Monthly Days</label>
                         <input class="form-control"   id="addMonthDays" name='monthDays' type='number'></br>
                     </div>
 
-                </div>
+                </div>-->
 
 
 

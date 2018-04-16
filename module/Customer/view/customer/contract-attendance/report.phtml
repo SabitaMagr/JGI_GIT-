@@ -11,7 +11,7 @@ $this->headScript()
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/moment.min.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/combodate/js/combodate.js'));
 
-$this->headScript()->appendFile($this->basePath('js/customer/contract-attendance/index.js'));
+$this->headScript()->appendFile($this->basePath('js/customer/contract-attendance/report.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -26,7 +26,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-attendance
     document.customerList =<?php echo json_encode($customerList); ?>;
     document.employeeList =<?php echo json_encode($employeeList); ?>;
     document.monthList =<?php echo json_encode($monthList); ?>;
-    document.pullCustomerMonthlyAttendanceUrl = '<?= $this->url("contract-attendance", ["action" => "pullCustomerMonthlyAttendance"]); ?>';
+    document.pullCustomerMonthlyAttendanceUrl = '<?= $this->url("contract-attendance", ["action" => "pullCustomerMonthlyAttendanceReport"]); ?>';
     document.pullAttendanceAbsentData = '<?= $this->url("contract-attendance", ["action" => "pullAttendanceAbsentData"]); ?>';
     document.updateAttendanceData = '<?= $this->url("contract-attendance", ["action" => "updateAttendanceData"]); ?>';
     document.pullCustomerLocation = '<?= $this->url("contract-attendance", ["action" => "pullCustomerLocation"]); ?>';
@@ -191,52 +191,20 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-attendance
                     </div>
                 </div>
 
-                <div id="subRateDiv">
-
-                    <div class="row">
-                        <div class="col-md-3">
-                            Posting Type : 
-                        </div>
-                        <div class="col-md-4 modalpopup_s2">
-                            <select class="form-control"  required='required'  id="postingType" name='postingType' >
-                                <option value="SU" selected="SELECTED">Substitute</option>
-                                <option value="OT">Over Time</option>
-                            </select>
-                        </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        Posting Type : 
                     </div>
+                    <div class="col-md-4 modalpopup_s2">
+                        <select class="form-control"  required='required'  id="postingType" name='postingType' >
+                            <option value="SU">Substitute</option>
+                            <option value="PT">Part Time</option>
+                            <option value="OT">Over Time</option>
+                        </select>
 
-
-                    <div class="row">
-                        <div class="col-md-3">
-                            Sub Rate : 
-                        </div>
-                        <div class="col-md-3">
-                            <input id="rate" class="form-control" type="number">
-                        </div>
                     </div>
-
-                    <div class="row" >
-                        <div class="col-md-3">
-                            Sub OT Type : 
-                        </div>
-                        <div class="col-md-3">
-                            <select id="otType" class="form-control">
-                                <option value="H">Hourly Rate</option>
-                                <option value="P">Percent</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="row" >
-                        <div class="col-md-3">
-                            Sub OT Rate : 
-                        </div>
-                        <div class="col-md-3">
-                            <input id="otRate" class="form-control" type="number">
-                        </div>
-                    </div>
-
                 </div>
+
 
 
 

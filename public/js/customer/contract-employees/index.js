@@ -1,6 +1,7 @@
 (function ($) {
     'use strict';
     $(document).ready(function () {
+        var uniqueId = 1;
 //        $('select').select2();
         $("#submitBtn").hide();
 
@@ -22,12 +23,6 @@
         var contractStartDate;
         var contractEndDate;
 
-        $('#addEmployeeStartTime').combodate({
-            minuteStep: 1,
-        });
-        $('#addEmployeeEndTime').combodate({
-            minuteStep: 1,
-        });
 
 
 
@@ -79,7 +74,6 @@
                 $assignTable.append(headerAppendData);
 
                 $.each(response.data.contractDetails, function (index, value) {
-//                    console.log('contractDetails',value);
 
                     app.serverRequest(document.pullDesignationWiseEmpAssign, {
                         contractId: contract,
@@ -100,10 +94,19 @@
                         <td><input class='dutyTypeId' name='dutyTypeId[]' type='hidden' value='` + value.DUTY_TYPE_ID + `'>` + value.DUTY_TYPE_NAME + `</td>
                         <td>
                         <select required='required' name='employees[]' class='employees'></select>
+                        <span class='employeeRate'></span>
                         </td>
                         <td><select required='required' name='location[]' class='location'></select></td>
-                        <td><input style='width: 88px;' name='employeeStartDate[]' type='text' class='employeeStartDate' ></td>
-                        <td><input style='width: 88px;' name='employeeEndDate[]' type='text' class='employeeEndDate' ></td>
+                        <td>
+<input style='width: 88px;' name='employeeStartDate[]' type='text' class='employeeStartDate' >
+<div><input style='width: 88px;' id="employeeStartDateNepali` + uniqueId + `" name='employeeStartDateNepali[]' type='text' class='employeeStartDateNepali' >
+                        </div>
+</td>
+                        <td>
+<input style='width: 88px;' name='employeeEndDate[]' type='text' class='employeeEndDate' >
+<div><input style='width: 88px;' id="employeeEndDateNepali` + uniqueId + `" name='employeeEndDateNepali[]' type='text' class='employeeEndDateNepali' >
+                        </div>
+</td>
                         <td><input style='width: 88px;' name='monthlyRate[]' type='number' class='monthlyRate' data-rate='` + value.RATE + `' ></td>
                         <td>
                         <input type='button' class='btn assignEditBtn  button-sm' value='Edit'>
@@ -113,7 +116,14 @@
                     
                         </tr>`;
                             $assignTable.append(appendData);
+                            uniqueId++;
 
+                            var $selectedstartDate = $('#assignTable tbody').find('.employeeStartDate:last');
+                            var $selectedstartDateNepali = $('#assignTable tbody').find('.employeeStartDateNepali:last');
+                            var $selectedEndDate = $('#assignTable tbody').find('.employeeEndDate:last');
+                            var $selectedEndDateNepali = $('#assignTable tbody').find('.employeeEndDateNepali:last');
+
+                            app.startEndDatePickerWithNepali($selectedstartDateNepali, $selectedstartDate, $selectedEndDateNepali, $selectedEndDate);
 
 
                             if (empAssignData[n]) {
@@ -124,42 +134,19 @@
 
 
 
-//                                
-                                $('#assignTable tbody').find('.employeeStartDate:last').datepicker({
-                                    format: 'dd-M-yyyy',
-                                    autoclose: true,
-                                });
 
-                                $('#assignTable tbody').find('.employeeEndDate:last').datepicker({
-                                    format: 'dd-M-yyyy',
-                                    autoclose: true
-                                });
 
-                                $('#assignTable tbody').find('.employeeStartDate:last').datepicker("update", new Date(empAssignData[n].START_DATE));
-                                $('#assignTable tbody').find('.employeeEndDate:last').datepicker("update", new Date(empAssignData[n].END_DATE));
+
+                                $selectedstartDate.datepicker("update", getDateFormat(empAssignData[n].START_DATE));
+                                $selectedstartDateNepali.val(nepaliDatePickerExt.fromEnglishToNepali(getDateFormat(empAssignData[n].START_DATE)));
+                                $selectedEndDate.datepicker("update", getDateFormat(empAssignData[n].END_DATE));
+                                $selectedEndDateNepali.val(nepaliDatePickerExt.fromEnglishToNepali(getDateFormat(empAssignData[n].END_DATE)));
+
                                 $('#assignTable tbody').find('.monthlyRate:last').val(empAssignData[n].MONTHLY_RATE);
-//                                $('#assignTable tbody').find('.monthlyRate:last').attr("data-rate", 500);
                             } else {
                                 app.populateSelect($('#assignTable tbody').find('.employees:last'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'Select An Employee', '', );
                                 app.populateSelect($('#assignTable tbody').find('.location:last'), locationList, 'LOCATION_ID', 'LOCATION_NAME', 'Select An Location', '', );
 
-
-
-                                $('#assignTable tbody').find('.employeeStartDate:last').datepicker({
-                                    format: 'dd-M-yyyy',
-                                    todayHighlight: true,
-                                    autoclose: true,
-                                    startDate: getDateFormat(contractStartDate),
-                                    endDate: getDateFormat(contractEndDate)
-                                });
-
-                                $('#assignTable tbody').find('.employeeEndDate:last').datepicker({
-                                    format: 'dd-M-yyyy',
-                                    todayHighlight: true,
-                                    autoclose: true,
-                                    startDate: getDateFormat(contractStartDate),
-                                    endDate: getDateFormat(contractEndDate)
-                                });
 
                             }
 
@@ -173,8 +160,9 @@
                         $('.location').prop("disabled", true);
                         $('.employeeStartDate').prop("disabled", true);
                         $('.employeeEndDate').prop("disabled", true);
+                        $('.employeeStartDateNepali').prop("disabled", true);
+                        $('.employeeEndDateNepali').prop("disabled", true);
                         $('.monthlyRate').prop("disabled", true);
-
 
 
                     });
@@ -263,43 +251,39 @@
             var startDate = $('#startDate').val();
             var endDate = $('#endDate').val();
             var rate = $('#addRate').val();
-            var monthDays = $('#addMonthDays').val();
+//            var monthDays = $('#addMonthDays').val();
 
             if (designation == null || designation == '') {
-                app.showMessage('Desingation is Required', 'info', 'Required')
+                app.showMessage('Desingation is Required', 'info', 'Required');
                 return;
             }
 
             if (employee == null || employee == '') {
-                app.showMessage('Employee is Required', 'info', 'Required')
+                app.showMessage('Employee is Required', 'info', 'Required');
                 return;
             }
 
             if (location == null || location == '') {
-                app.showMessage('Location is Required', 'info', 'Required')
+                app.showMessage('Location is Required', 'info', 'Required');
                 return;
             }
 
             if (dutyType == null || dutyType == '') {
-                app.showMessage('Duty type is Required', 'info', 'Required')
+                app.showMessage('Duty type is Required', 'info', 'Required');
                 return;
             }
 
             if (startDate == null || startDate == '') {
-                app.showMessage('StartDate is Required', 'info', 'Required')
+                app.showMessage('StartDate is Required', 'info', 'Required');
                 return;
             }
 
 
             if (rate == null || rate == '') {
-                app.showMessage('Rate is Required', 'info', 'Required')
+                app.showMessage('Rate is Required', 'info', 'Required');
                 return;
             }
 
-            if (monthDays == null || monthDays == '') {
-                app.showMessage('Month Days is Required', 'info', 'Required')
-                return;
-            }
 
             app.serverRequest(document.addContractEmpAssign, {
                 'customer': customer,
@@ -310,8 +294,7 @@
                 'dutyType': dutyType,
                 'startDate': startDate,
                 'endDate': endDate,
-                'rate': rate,
-                'monthDays': monthDays
+                'rate': rate
             }).then(function (response) {
                 console.log(response);
                 if (response.success == true) {
@@ -376,7 +359,9 @@
             var selectedEmployee = $(selectedtr.find('.employees'));
             var selectedLocation = $(selectedtr.find('.location'));
             var selectedStartDate = $(selectedtr.find('.employeeStartDate'));
+            var selectedStartDateNepali = $(selectedtr.find('.employeeStartDateNepali'));
             var selectedEndDate = $(selectedtr.find('.employeeEndDate'));
+            var selectedEndDateNepali = $(selectedtr.find('.employeeEndDateNepali'));
             var selectedAssignId = $(selectedtr.find('.assignId'));
             var selectedDutyTypeId = $(selectedtr.find('.dutyTypeId'));
             var selectedDesignation = $(selectedtr.find('.designation'));
@@ -384,6 +369,7 @@
             var selectedDeleteBtn = $(selectedtr.find('.assignDeleteBtn'));
             var selectedCancelBtn = $(selectedtr.find('.assignCancelBtn'));
             var selectedMonthlyRate = $(selectedtr.find('.monthlyRate'));
+            var $selectedEmployeeRate = $(selectedtr.find('.employeeRate'));
 
             if (btnValue == 'Edit') {
                 $(this).val('Update')
@@ -393,13 +379,21 @@
                 selectedEmployee.prop("disabled", false);
                 selectedLocation.prop("disabled", false);
                 selectedStartDate.prop("disabled", false);
+                selectedStartDateNepali.prop("disabled", false);
                 selectedEndDate.prop("disabled", false);
+                selectedEndDateNepali.prop("disabled", false);
                 selectedComboDate.css("opacity", "1");
                 selectedMonthlyRate.prop("disabled", false);
 
                 if (selectedStartDate.val() == '' && selectedEndDate.val() == '') {
-                    selectedStartDate.datepicker("update", new Date(contractStartDate));
-                    selectedEndDate.datepicker("update", new Date(contractEndDate));
+
+                    selectedStartDate.datepicker("update", getDateFormat(contractStartDate));
+                    selectedStartDateNepali.val(nepaliDatePickerExt.fromEnglishToNepali(getDateFormat(contractStartDate)));
+                    selectedEndDate.datepicker("update", getDateFormat(contractEndDate));
+                    selectedEndDateNepali.val(nepaliDatePickerExt.fromEnglishToNepali(getDateFormat(contractEndDate)));
+
+//                    selectedStartDate.datepicker("update", new Date(contractStartDate));
+//                    selectedEndDate.datepicker("update", new Date(contractEndDate));
                     selectedMonthlyRate.val(selectedMonthlyRate.attr("data-rate"));
                 }
 
@@ -452,6 +446,7 @@
                             if (operation == 'add') {
                                 selectedAssignId.val(responseData.id);
                             }
+                            $selectedEmployeeRate.html('');
                         }
                     });
 
@@ -462,7 +457,9 @@
                     selectedEmployee.prop("disabled", true);
                     selectedLocation.prop("disabled", true);
                     selectedStartDate.prop("disabled", true);
+                    selectedStartDateNepali.prop("disabled", true);
                     selectedEndDate.prop("disabled", true);
+                    selectedEndDateNepali.prop("disabled", true);
                     selectedComboDate.css("opacity", "0.6");
                     selectedMonthlyRate.prop("disabled", true);
                 }
@@ -476,17 +473,37 @@
 
         $('#addDutyType').on('change', function () {
             getContractDetailRate();
+            getEmployeeRate();
         });
+
+        $('#addEmployee').on('change', function () {
+            getEmployeeRate();
+        });
+
+        function getEmployeeRate() {
+            var employeeId = $('#addEmployee').val();
+            var dutyTypeId = $('#addDutyType').val();
+
+            if (dutyTypeId && employeeId) {
+                app.serverRequest(document.pullEmployeeRate, {
+                    dutyTypeId: dutyTypeId,
+                    employeeId: employeeId
+
+                }).then(function (response) {
+                    console.log(response.data);
+                    $('#addEmployeeRate').html(response.data);
+                });
+
+            } else {
+                $('#addEmployeeRate').html('');
+            }
+        }
 
 
         function getContractDetailRate() {
             var designation = $('#addDesignation').val();
             var dutyType = $('#addDutyType').val();
 
-//            console.log(designation);
-//            console.log(dutyType);
-//            console.log(typeof designation);
-//            console.log(typeof dutyType);
 
             if (designation != '' && dutyType != '') {
                 app.serverRequest(document.pullCdContractDesignationDutyType, {
@@ -498,15 +515,15 @@
                         console.log(response);
                         if (response.data != false) {
                             $('#addRate').val(response.data.RATE);
-                            $('#addRate').prop('readonly', true);
-                            $('#addMonthDays').val(response.data.DAYS_IN_MONTH);
-                            $('#addMonthDays').prop('readonly', true);
+//                            $('#addRate').prop('readonly', true);
+//                            $('#addMonthDays').val(response.data.DAYS_IN_MONTH);
+//                            $('#addMonthDays').prop('readonly', true);
 
                         } else {
                             $('#addRate').val('');
-                            $('#addRate').prop('readonly', false);
-                            $('#addMonthDays').val('');
-                            $('#addMonthDays').prop('readonly', false);
+//                            $('#addRate').prop('readonly', false);
+//                            $('#addMonthDays').val('');
+//                            $('#addMonthDays').prop('readonly', false);
                         }
 
                     }
@@ -527,9 +544,10 @@
             var selectedEmployee = $(selectedtr.find('.employees'));
             var selectedLocation = $(selectedtr.find('.location'));
             var selectedStartDate = $(selectedtr.find('.employeeStartDate'));
+            var selectedStartDateNepali = $(selectedtr.find('.employeeStartDateNepali'));
             var selectedEndDate = $(selectedtr.find('.employeeEndDate'));
+            var selectedEndDateNepali = $(selectedtr.find('.employeeEndDateNepali'));
             var selectedAssignId = $(selectedtr.find('.assignId'));
-            var selectedComboDate = $(selectedtr.find('.combodate'));
             var selectedDeleteBtn = $(selectedtr.find('.assignDeleteBtn'));
             var selectedEditBtn = $(selectedtr.find('.assignEditBtn'));
             var selectedMonthlyRate = $(selectedtr.find('.monthlyRate'));
@@ -545,8 +563,12 @@
                         selectedEmployee.val(responseData.EMPLOYEE_ID).change();
                         selectedLocation.val(responseData.LOCATION_ID).change();
 
+
                         selectedStartDate.datepicker("update", getDateFormat(responseData.START_DATE));
+                        selectedStartDateNepali.val(nepaliDatePickerExt.fromEnglishToNepali(getDateFormat(responseData.START_DATE)));
                         selectedEndDate.datepicker("update", getDateFormat(responseData.END_DATE));
+                        selectedEndDateNepali.val(nepaliDatePickerExt.fromEnglishToNepali(getDateFormat(responseData.END_DATE)));
+
                         selectedMonthlyRate.val(responseData.MONTHLY_RATE);
                     }
                 });
@@ -567,8 +589,38 @@
             selectedEmployee.prop("disabled", true);
             selectedLocation.prop("disabled", true);
             selectedStartDate.prop("disabled", true);
+            selectedStartDateNepali.prop("disabled", true);
             selectedEndDate.prop("disabled", true);
+            selectedEndDateNepali.prop("disabled", true);
             selectedMonthlyRate.prop("disabled", true);
+        });
+
+
+
+        $('#assignTable').on('change', '.employees', function () {
+            var selectedEmployeeValue = $(this).val()
+            var selectedtr = $(this).parent().parent();
+            var $selectedDutyTypeId = $(selectedtr.find('.dutyTypeId'));
+            var $selectedEmployeeRate = $(selectedtr.find('.employeeRate'));
+            var selectedDutyTypeIdValue = $selectedDutyTypeId.val();
+            var $selectedBtn = $(selectedtr.find('.assignEditBtn'));
+            var btnValue = $selectedBtn.val()
+
+            if (selectedEmployeeValue && selectedDutyTypeIdValue && btnValue == 'Update') {
+                app.serverRequest(document.pullEmployeeRate, {
+                    dutyTypeId: selectedDutyTypeIdValue,
+                    employeeId: selectedEmployeeValue
+
+                }).then(function (response) {
+                    console.log(response.data);
+                    $selectedEmployeeRate.html(response.data);
+                });
+
+            } else {
+                $selectedEmployeeRate.html('');
+            }
+
+
         });
 
 

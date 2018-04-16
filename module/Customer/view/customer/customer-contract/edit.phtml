@@ -18,6 +18,8 @@ $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $billingMonth = $form->get('billingMonth');
 $remarks = $form->get('remarks');
+$otType = $form->get('otType');
+$otRate = $form->get('otRate');
 $submit = $form->get('submit');
 
 $form->setAttribute('action', $this->url('customer-contract', ['action' => 'edit', 'id' => $id]));
@@ -113,6 +115,22 @@ $weekArr = array('SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT');
                             <?php print $this->formLabel($billingMonth); ?>
                             <?php print $this->formElement($billingMonth); ?>
                             <?php print $this->formElementErrors()->render($billingMonth, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($otType); ?>
+                            <?php print $this->formElement($otType); ?>
+                            <?php print $this->formElementErrors()->render($otType, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($otRate); ?>
+                            <?php print $this->formElement($otRate); ?>
+                            <?php print $this->formElementErrors()->render($otRate, ['class' => 'help-block']); ?>
                         </div>
                     </div>
 

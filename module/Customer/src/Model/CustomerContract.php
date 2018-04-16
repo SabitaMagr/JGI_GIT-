@@ -21,6 +21,8 @@ class CustomerContract extends Model {
     CONST MODIFIED_DT = "MODIFIED_DT";
     CONST REMARKS = "REMARKS";
     CONST STATUS = "STATUS";
+    CONST OT_RATE = "OT_RATE";
+    CONST OT_TYPE = "OT_TYPE";
 
     public $contractId;
     public $customerId;
@@ -36,6 +38,9 @@ class CustomerContract extends Model {
     public $modifiedBy;
     public $remarks;
     public $status;
+    public $otRate;
+    public $otType;
+    
     public $mappings = [
         'contractId' => self::CONTRACT_ID,
         'customerId' => self::CUSTOMER_ID,
@@ -51,6 +56,8 @@ class CustomerContract extends Model {
         'modifiedDt' => self::MODIFIED_DT,
         'remarks' => self::REMARKS,
         'status' => self::STATUS,
+        'otRate' => self::OT_RATE,
+        'otType' => self::OT_TYPE,
     ];
 
 }
