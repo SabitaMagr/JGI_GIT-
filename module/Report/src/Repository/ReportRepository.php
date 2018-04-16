@@ -461,8 +461,8 @@ EOT;
                 END) AS DAYOFF,
                 SUM(
                 CASE
-                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP')
-                  THEN 1
+                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS PRESENT,
                 SUM(
@@ -473,20 +473,20 @@ EOT;
                 END) AS HOLIDAY,
                 SUM(
                 CASE
-                  WHEN A.OVERALL_STATUS IN ('LV','LP')
-                  THEN 1
+                  WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS LEAVE,
                 SUM(
                 CASE
-                  WHEN L.PAID = 'Y'
-                  THEN 1
+                  WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL AND L.PAID = 'Y' 
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS PAID_LEAVE,
                 SUM(
                 CASE
-                  WHEN L.PAID = 'N'
-                  THEN 1
+                  WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL AND L.PAID = 'N'
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS UNPAID_LEAVE,
                 SUM(
@@ -519,7 +519,7 @@ EOT;
                   THEN 1
                   ELSE 0
                 END) WORK_ON_DAYOFF
-              FROM HRIS_ATTENDANCE_DETAIL A
+              FROM HRIS_ATTENDANCE_PAYROLL A
               LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
               ON (A.LEAVE_ID= L.LEAVE_ID)
               WHERE 1=1
@@ -1022,15 +1022,34 @@ EOT;
         return $this->checkIfTableExists('HR_MONTHLY_MODIFIED_PAY_VALUE');
     }
 
+    public function loadData($fiscalYearId, $fiscalYearMonthNo) {
+        $sql = "
+            BEGIN
+              HRIS_PREPARE_PAYROLL_DATA({$fiscalYearId},{$fiscalYearMonthNo});
+            END;
+            ";
+        $this->executeStatement($sql);
+    }
+
     public function toEmpower($fiscalYearId, $fiscalYearMonthNo) {
         $sql = "DECLARE
                   V_FISCAL_YEAR_ID       NUMBER:={$fiscalYearId};
                   V_FISCAL_YEAR_MONTH_NO NUMBER:={$fiscalYearMonthNo};
+                  V_FROM_DATE            DATE;
+                  V_TO_DATE              DATE;
                 BEGIN
+                  SELECT FROM_DATE,
+                    TO_DATE
+                  INTO V_FROM_DATE,
+                    V_TO_DATE
+                  FROM HRIS_MONTH_CODE
+                  WHERE FISCAL_YEAR_ID    =V_FISCAL_YEAR_ID
+                  AND FISCAL_YEAR_MONTH_NO=V_FISCAL_YEAR_MONTH_NO;
                   DELETE
                   FROM HR_MONTHLY_MODIFIED_PAY_VALUE
-                  WHERE PERIOD_DT_CODE=V_FISCAL_YEAR_MONTH_NO;
-                  FOR report IN
+                  WHERE PERIOD_DT_CODE=V_FISCAL_YEAR_MONTH_NO
+                  AND PAY_CODE       IN ('TD','PD','AD','HD','PL','UL','OT');
+                  FOR report         IN
                   (SELECT C.COMPANY_CODE,
                     C.COMPANY_CODE
                     ||'.01' AS BRANCH_CODE,
@@ -1061,8 +1080,14 @@ EOT;
                       END) AS DAYOFF,
                       SUM(
                       CASE
-                        WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP')
-                        THEN 1
+                        WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS PRESENT,
                       SUM(
@@ -1074,19 +1099,42 @@ EOT;
                       SUM(
                       CASE
                         WHEN A.OVERALL_STATUS IN ('LV','LP')
-                        THEN 1
+                        AND A.GRACE_PERIOD    IS NULL
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS LEAVE,
                       SUM(
                       CASE
-                        WHEN L.PAID = 'Y'
-                        THEN 1
+                        WHEN A.OVERALL_STATUS IN ('LV','LP')
+                        AND A.GRACE_PERIOD    IS NULL
+                        AND L.PAID             = 'Y'
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS PAID_LEAVE,
                       SUM(
                       CASE
-                        WHEN L.PAID = 'N'
-                        THEN 1
+                        WHEN A.OVERALL_STATUS IN ('LV','LP')
+                        AND A.GRACE_PERIOD    IS NULL
+                        AND L.PAID             = 'N'
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_FLAG    ='Y'
+                            THEN 0.5
+                            ELSE 1
+                          END)
                         ELSE 0
                       END) AS UNPAID_LEAVE,
                       SUM(
@@ -1119,16 +1167,10 @@ EOT;
                         THEN 1
                         ELSE 0
                       END) WORK_ON_DAYOFF
-                    FROM HRIS_ATTENDANCE_DETAIL A
+                    FROM HRIS_ATTENDANCE_PAYROLL A
                     LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                     ON (A.LEAVE_ID= L.LEAVE_ID)
-                    LEFT JOIN
-                      (SELECT *
-                      FROM HRIS_MONTH_CODE
-                      WHERE FISCAL_YEAR_ID    =3
-                      AND FISCAL_YEAR_MONTH_NO=1
-                      ) M
-                    ON (A.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE)
+                    WHERE A.ATTENDANCE_DT BETWEEN V_FROM_DATE AND V_TO_DATE
                     GROUP BY A.EMPLOYEE_ID
                     ) A
                   LEFT JOIN HRIS_EMPLOYEES E
@@ -1141,16 +1183,11 @@ EOT;
                     (SELECT O.EMPLOYEE_ID,
                       SUM(O.TOTAL_HOUR) AS TOTAL_MIN
                     FROM HRIS_OVERTIME O
-                    LEFT JOIN
-                      (SELECT *
-                      FROM HRIS_MONTH_CODE
-                      WHERE FISCAL_YEAR_ID    =3
-                      AND FISCAL_YEAR_MONTH_NO=1
-                      ) M
-                    ON (O.OVERTIME_DATE BETWEEN M.FROM_DATE AND M.TO_DATE)
                     WHERE O.STATUS= 'AP'
+                    AND (O.OVERTIME_DATE BETWEEN V_FROM_DATE AND V_TO_DATE)
                     GROUP BY O.EMPLOYEE_ID
-                    ) OT ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
+                    ) OT
+                  ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
                   ORDER BY C.COMPANY_NAME,
                     D.DEPARTMENT_NAME
                   )

@@ -119,5 +119,28 @@
 
         });
 
+        $('#loadData').on('click', function () {
+            var monthValue = $month.val();
+            var fiscalYearId = $year.val();
+            if (monthValue === null || monthValue === '') {
+                $month.focus();
+                app.showMessage('No Month selected.', 'error');
+                return;
+            }
+
+            var filteredMonth = months.filter(function (item) {
+                return item['MONTH_ID'] == monthValue;
+            });
+            if (filteredMonth.length !== 1) {
+                throw "Internal Data error.";
+                return;
+            }
+            app.serverRequest(document.loadDataLink, {fiscalYearId: fiscalYearId, fiscalYearMonthNo: filteredMonth[0]['FISCAL_YEAR_MONTH_NO']}).then(function (response) {
+                if (response.success) {
+                    app.showMessage(`Attendance Data of month: ${filteredMonth[0]['MONTH_EDESC']} is successfully loaded.`, 'success');
+                }
+            }, function (error) {});
+        });
+
     });
 })(window.jQuery, window.app);

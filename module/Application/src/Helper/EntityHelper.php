@@ -190,6 +190,7 @@ class EntityHelper {
                     HrEmployees::SERVICE_EVENT_TYPE_ID,
                     HrEmployees::GENDER_ID,
                     HrEmployees::EMPLOYEE_TYPE,
+                    HrEmployees::GROUP_ID,
                         ], [HrEmployees::STATUS => "E"]);
 
         $searchValues = [

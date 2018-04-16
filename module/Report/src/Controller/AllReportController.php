@@ -6,8 +6,6 @@ use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Application\Model\FiscalYear;
-use Application\Model\Months;
 use Exception;
 use Report\Repository\ReportRepository;
 use Setup\Model\Branch;
@@ -92,7 +90,7 @@ class AllReportController extends HrisController {
 
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists()
+                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0
         ]);
     }
 
@@ -104,6 +102,23 @@ class AllReportController extends HrisController {
                 $fiscalYearMonthNo = $postedData['fiscalYearMonthNo'];
                 $fiscalYearId = $postedData['fiscalYearId'];
                 $this->repository->toEmpower($fiscalYearId, $fiscalYearMonthNo);
+                return new JsonModel(['success' => true, 'data' => null, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function loadDataAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+                $fiscalYearMonthNo = $postedData['fiscalYearMonthNo'];
+                $fiscalYearId = $postedData['fiscalYearId'];
+                $this->repository->loadData($fiscalYearId, $fiscalYearMonthNo);
                 return new JsonModel(['success' => true, 'data' => null, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");

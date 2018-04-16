@@ -423,7 +423,20 @@
             }
 
         };
-        changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId", "locationId");
+
+        if (typeof document.searchValues !== 'undefined') {
+            changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId", "locationId");
+        } else {
+            if (typeof document.getSearchDataLink !== "undefined") {
+                app.serverRequest(document.getSearchDataLink, {}).then(function (response) {
+                    document.searchValues = response.data;
+                    changeSearchOption("companyId", "branchId", "departmentId", "designationId", "positionId", "serviceTypeId", "serviceEventTypeId", "employeeId", "genderId", "employeeTypeId", "locationId");
+                });
+            } else {
+                throw "No data or url set."
+            }
+        }
+
 
         /* setup change events */
 

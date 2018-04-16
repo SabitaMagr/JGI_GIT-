@@ -3,7 +3,7 @@
     $(document).ready(function () {
         $("select").select2();
 
-        var $penalty = $('#penalty');
+        var $table = $('#penalty');
         var $fiscalYearId = $('#fiscalYearId');
         var $monthId = $('#monthId');
         var $search = $('#search');
@@ -18,7 +18,7 @@
             app.populateSelect($monthId, months, 'MONTH_ID', 'MONTH_EDESC', "Select Month");
         });
 
-        app.initializeKendoGrid($penalty, [
+        app.initializeKendoGrid($table, [
             {field: "COMPANY_NAME", title: "Company", width: 150},
             {field: "DEPARTMENT_NAME", title: "Department", width: 150},
             {field: "FULL_NAME", title: "Name", width: 150},
@@ -57,17 +57,21 @@
             });
         });
         app.searchTable('withOTReport', ['COMPANY_NAME', 'DEPARTMENT_NAME', 'FULL_NAME', 'ATTENDANCE_DT', 'ATTENDANCE_DT_N', 'TYPE'], true);
-        app.pdfExport(
-                'withOTReport',
-                {
-                    'COMPANY_NAME': 'Company',
-                    'DEPARTMENT_NAME': 'Department',
-                    'FULL_NAME': 'Name',
-                    'ATTENDANCE_DT': 'Date(AD)',
-                    'ATTENDANCE_DT_N': 'Date(BS)',
-                    'TYPE': 'Type',
-                }
-        );
+        var exportMap = {
+            'COMPANY_NAME': 'Company',
+            'DEPARTMENT_NAME': 'Department',
+            'FULL_NAME': 'Name',
+            'ATTENDANCE_DT': 'Date(AD)',
+            'ATTENDANCE_DT_N': 'Date(BS)',
+            'TYPE': 'Type',
+        };
+        $('#excelExport').on('click', function () {
+            app.excelExport($table, exportMap, "AttendanceList.xlsx");
+        });
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, exportMap, "AttendanceList.pdf");
+
+        });
 
 
 
@@ -82,7 +86,7 @@
             data['monthId'] = monthValue;
             app.pullDataById(document.penalty, data).then(function (response) {
                 if (response.success) {
-                    app.renderKendoGrid($penalty, response.data);
+                    app.renderKendoGrid($table, response.data);
                 } else {
                     app.showMessage(response.error, 'error');
                 }

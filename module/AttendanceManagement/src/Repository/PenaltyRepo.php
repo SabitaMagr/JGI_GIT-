@@ -4,7 +4,6 @@ namespace AttendanceManagement\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 
 class PenaltyRepo {

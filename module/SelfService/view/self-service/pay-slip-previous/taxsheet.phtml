@@ -29,10 +29,10 @@
 
 </style>
 <?php
-$db_host = "localhost";
-$db_user = "root";
-$db_password = "";
-$database = "neohrisrecover";
+$db_host = "192.168.4.52";
+$db_user = "suyashk446";
+$db_password = "Everest@8848";
+$database = "kumari";
 
 
 $connect = mysqli_connect($db_host, $db_user, $db_password, $database) or die("couldn't connect!!! to database");
@@ -80,7 +80,7 @@ if (isset($_POST['mcode'])) {
                     </tr>
                     <tr>
                         <td colspan="2"><input type="submit" value="Go"
-                                               class="btn btn-color-green form-control btn-go"
+                                               class="btn btn-small btn-success"
                                                label="Filter"/></td>
                     </tr>
                 </table>

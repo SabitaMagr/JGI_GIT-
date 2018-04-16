@@ -151,6 +151,15 @@ class HrisController extends AbstractActionController {
         }
     }
 
+    public function getSearchDataAction() {
+        try {
+            $data = EntityHelper::getSearchData($this->adapter);
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
     public function regenAttendanceAction() {
         try {
             $request = $this->getRequest();

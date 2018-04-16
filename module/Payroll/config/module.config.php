@@ -7,6 +7,7 @@ use Payroll\Controller\FlatValue;
 use Payroll\Controller\MonthlyValue;
 use Payroll\Controller\Rules;
 use Payroll\Controller\SalarySheetController;
+use Payroll\Controller\TaxSheetController;
 use Zend\Router\Http\Segment;
 
 return [
@@ -48,6 +49,16 @@ return [
                     'route' => '/payroll/salarysheet[/:action[/:id]]',
                     'defaults' => [
                         'controller' => SalarySheetController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'taxSheet' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/taxsheet[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => TaxSheetController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -157,11 +168,11 @@ return [
             ]
         ], 'salarySheet' => [
             [
-                'label' => 'Salary Sheet',
+                'label' => 'Salary',
                 'route' => 'salarySheet',
             ],
             [
-                'label' => 'Salary Sheet',
+                'label' => 'Salary',
                 'route' => 'salarySheet',
                 'pages' => [
                     [
@@ -169,9 +180,35 @@ return [
                         'route' => 'salarySheet',
                         'action' => 'index',
                     ],
+                    [
+                        'label' => 'Payslip',
+                        'route' => 'salarySheet',
+                        'action' => 'payslip',
+                    ],
                 ]
             ]
-        ],
+        ], 'taxSheet' => [
+            [
+                'label' => 'Tax',
+                'route' => 'taxSheet',
+            ],
+            [
+                'label' => 'Tax',
+                'route' => 'taxSheet',
+                'pages' => [
+                    [
+                        'label' => 'Tax Sheet',
+                        'route' => 'taxSheet',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Taxslip',
+                        'route' => 'taxSheet',
+                        'action' => 'taxslip',
+                    ],
+                ]
+            ]
+        ]
     ],
     'controllers' => [
         'factories' => [
@@ -179,6 +216,7 @@ return [
             FlatValue::class => ControllerFactory::class,
             Rules::class => ControllerFactory::class,
             SalarySheetController::class => ControllerFactory::class,
+            TaxSheetController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
