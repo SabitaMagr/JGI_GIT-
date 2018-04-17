@@ -31,8 +31,6 @@ class SalarySheetRepo extends HrisRepository {
                                 'startDate',
                                 'endDate',
                             ]), false);
-
-                    $select->where([Months::STATUS => 'E']);
                 });
     }
 

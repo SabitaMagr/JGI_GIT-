@@ -1,6 +1,6 @@
 <?php
 
-namespace Payroll\Controller;
+namespace Payroll\Service;
 
 use Application\Model\Months;
 use Application\Repository\MonthRepository;

@@ -11,3 +11,5 @@
  REMAP_SCHEMA=JWL_HRIS_APR5:HRIS_JGI
 
 /u01/app/oracle/product/11.2.0/xe/bin/expdp HRIS_KUMARI/HRIS_KUMARI@XE full=Y directory=DPDUMP dumpfile=kumari.dmp logfile=kumari.log
+
+/u01/app/oracle/product/11.2.0/xe/bin/expdp HRIS_KUMARI/HRIS_KUMARI@XE schemas=HRIS_KUMARI directory=DPDUMP dumpfile=kumari_2018_04_16.dmp logfile=kumari_2018_04_16.log

@@ -1,6 +1,6 @@
 <?php
 
-namespace Payroll\Controller;
+namespace Payroll\Service;
 
 use Payroll\Repository\PayrollRepository;
 use Setup\Repository\EmployeeRepository;

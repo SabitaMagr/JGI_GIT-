@@ -1,6 +1,6 @@
 <?php
 
-namespace Payroll\Controller;
+namespace Payroll\Service;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -12,7 +12,7 @@ use Payroll\Repository\SalarySheetDetailRepo;
 use Payroll\Repository\SalarySheetRepo;
 use Setup\Model\HrEmployees;
 
-class SalarySheet {
+class SalarySheetService {
 
     private $adapter;
     private $salarySheetRepo;
@@ -29,7 +29,7 @@ class SalarySheet {
         $salarySheetModal->sheetNo = ((int) Helper::getMaxId($this->adapter, SalarySheetModel::TABLE_NAME, SalarySheetModel::SHEET_NO)) + 1;
         $salarySheetModal->monthId = $monthId;
         $salarySheetModal->createdDt = Helper::getcurrentExpressionDate();
-        $salarySheetModal->status = 'E';
+        $salarySheetModal->status = 'CR';
 
         if ($this->salarySheetRepo->add($salarySheetModal)) {
             return [SalarySheetModel::SHEET_NO => $salarySheetModal->sheetNo];
@@ -92,7 +92,7 @@ class SalarySheet {
         $salarySheetModal->startDate = Helper::getExpressionDate($fromDate);
         $salarySheetModal->endDate = Helper::getExpressionDate($toDate);
         $salarySheetModal->createdDt = Helper::getcurrentExpressionDate();
-        $salarySheetModal->status = EntityHelper::STATUS_ENABLED;
+        $salarySheetModal->status = 'CR';
         $salarySheetModal->companyId = $companyId;
         $salarySheetModal->groupId = $groupId;
 
