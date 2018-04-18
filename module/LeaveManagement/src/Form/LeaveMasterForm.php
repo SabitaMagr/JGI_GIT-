@@ -159,5 +159,26 @@ class LeaveMasterForm {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Day Off As Leave"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"dayOffAsLeave","value":"Y"})
+     */
+    public $dayOffAsLeave;
+    
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Holiday As Leave"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"holidayAsLeave","value":"Y"})
+     */
+    public $holidayAsLeave;
+    
 
 }
