@@ -14,6 +14,7 @@ use Payroll\Repository\PayrollRepository;
 use Payroll\Repository\RulesRepository;
 use Payroll\Repository\SalarySheetDetailRepo;
 use Payroll\Repository\SalarySheetRepo;
+use Payroll\Repository\SSPayValueModifiedRepo;
 use Payroll\Repository\TaxSheetRepo;
 use Payroll\Service\PayrollGenerator;
 use Payroll\Service\SalarySheetService;
@@ -230,4 +231,40 @@ class SalarySheetController extends HrisController {
         }
     }
 
+    public function payValueModifiedAction() {
+        $data['getSearchDataLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSearchData']);
+        $data['getGroupListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getGroupList']);
+        $data['getFiscalYearMonthLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getFiscalYearMonth']);
+        $data['pvmReadLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'pvmRead']);
+
+        $rulesRepo = new RulesRepository($this->adapter);
+        $data['ruleList'] = $rulesRepo->fetchSSRules();
+        return ['data' => json_encode($data)];
+    }
+
+    public function pvmReadAction() {
+        $request = $this->getRequest();
+        $postData = $request->getPost();
+        $sspvmRepo = new SSPayValueModifiedRepo($this->adapter);
+        $sspvmRepo->filter(33);
+        return new JsonModel($postData);
+    }
+
+//    public function detailUpdateAction() {
+//        $request = $this->getRequest();
+//        $postData = $request->getPost();
+//        $data = json_decode($postData->models)[0];
+//        $data->TOTAL_AMOUNT = $data->FARE + $data->ALLOWANCE + $data->LOCAL_CONVEYENCE + $data->MISC_EXPENSES;
+//
+//        $model = new TravelExpenseDetail();
+//        $model->exchangeArrayFromDB((array) $data);
+//        $model->departureDate = Helper::getExpressionDate($model->departureDate);
+//        $model->departureTime = Helper::getExpressionTime($model->departureTime);
+//        $model->destinationDate = Helper::getExpressionDate($model->destinationDate);
+//        $model->destinationTime = Helper::getExpressionTime($model->destinationTime);
+//        $travelDetailRepo = new TravelExpenseDtlRepository($this->adapter);
+//        $travelDetailRepo->edit($model, $model->id);
+//
+//        return new JsonModel([$data]);
+//    }
 }

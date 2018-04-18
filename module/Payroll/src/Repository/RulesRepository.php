@@ -2,34 +2,32 @@
 
 namespace Payroll\Repository;
 
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
+use Application\Repository\HrisRepository;
 use Payroll\Model\Rules;
+use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
-use Zend\Db\TableGateway\TableGateway;
 
-class RulesRepository implements RepositoryInterface {
+class RulesRepository extends HrisRepository {
 
-    private $adapter;
-    private $gateway;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->gateway = new TableGateway(Rules::TABLE_NAME, $adapter);
+    public function __construct(AdapterInterface $adapter, $tableName = null) {
+        if ($tableName == null) {
+            $tableName = Rules::TABLE_NAME;
+        }
+        parent::__construct($adapter, $tableName);
     }
 
     public function add(Model $model) {
-        return $this->gateway->insert($model->getArrayCopyForDB());
+        return $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function edit(Model $model, $id) {
-        $this->gateway->update($model->getArrayCopyForDB(), [Rules::PAY_ID => $id]);
+        $this->tableGateway->update($model->getArrayCopyForDB(), [Rules::PAY_ID => $id]);
     }
 
-    public function fetchAll() {
+    public function fetchAll(): Traversable {
         $query = "SELECT PAY_ID,
                   PAY_CODE,
                   PAY_EDESC,
@@ -80,13 +78,11 @@ class RulesRepository implements RepositoryInterface {
                 WHERE STATUS ='E' ORDER BY PRIORITY_INDEX";
 
         $statement = $this->adapter->query($query);
-        $result = $statement->execute();
-        return $result;
+        return $statement->execute();
     }
 
     public function fetchById($id) {
-        return $this->gateway->select(function(Select $select) use($id) {
-                    $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Rules::class, [Rules::PAY_EDESC, Rules::PAY_LDESC]), false);
+        return $this->tableGateway->select(function(Select $select) use($id) {
                     $select->where([Rules::STATUS => 'E', Rules::PAY_ID => $id]);
                 })->current();
     }
@@ -95,10 +91,10 @@ class RulesRepository implements RepositoryInterface {
         $rule = new Rules();
         $rule->modifiedDt = Helper::getcurrentExpressionDate();
         $rule->status = 'D';
-        $this->gateway->update($rule->getArrayCopyForDB(), [Rules::PAY_ID => $id]);
+        $this->tableGateway->update($rule->getArrayCopyForDB(), [Rules::PAY_ID => $id]);
     }
 
-    public function fetchReferencingRules($payId = null) {
+    public function fetchReferencingRules($payId = null): array {
 
         if ($payId == null) {
             $sql = "
@@ -116,9 +112,17 @@ class RulesRepository implements RepositoryInterface {
                   ) PS
                 WHERE P.PRIORITY_INDEX < PS.PRIORITY_INDEX";
         }
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        return $this->rawQuery($sql);
+    }
+
+    public function fetchSSRules(): array {
+        $sql = "SELECT PAY_ID,'H_'||PAY_ID AS PAY_ID_COL,PAY_EDESC
+                FROM HRIS_PAY_SETUP
+                WHERE INCLUDE_IN_SALARY='Y'
+                AND PAY_TYPE_FLAG     IN ('A','D')
+                AND STATUS ='E'
+                ORDER BY PRIORITY_INDEX";
+        return $this->rawQuery($sql);
     }
 
 }

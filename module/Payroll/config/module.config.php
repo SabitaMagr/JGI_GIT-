@@ -181,6 +181,11 @@ return [
                         'action' => 'index',
                     ],
                     [
+                        'label' => 'Pay Value Modified',
+                        'route' => 'salarySheet',
+                        'action' => 'pay-value-modified',
+                    ],
+                    [
                         'label' => 'Payslip',
                         'route' => 'salarySheet',
                         'action' => 'payslip',

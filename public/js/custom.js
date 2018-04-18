@@ -137,6 +137,7 @@ window.app = (function ($, toastr, App) {
                 if (toVal === 'undefined' || toVal == '') {
                     var temp = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                     $fromEnglishDate.val(temp);
+                    $fromEnglishDate.trigger('change');
                     $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                     oldFromNepali = $fromNepaliDate.val();
 
@@ -164,6 +165,7 @@ window.app = (function ($, toastr, App) {
                         if (daysBetween(nepaliDatePickerExt.getDate(fromDate), nepaliDatePickerExt.getDate(toDate)) >= 0) {
                             var temp = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                             $fromEnglishDate.val(temp);
+                            $fromEnglishDate.trigger('change');
                             $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                             oldFromNepali = $fromNepaliDate.val();
 
@@ -1406,8 +1408,15 @@ window.app = (function ($, toastr, App) {
         }
     };
 
-    var setFiscalMonth = function ($year, $month, fn) {
-        var link = document.getFiscalYearMonthLink;
+    var setFiscalMonth = function ($year, $month, fn, l) {
+        var link = l;
+        if (typeof link === 'undefined') {
+            if (typeof document.getFiscalYearMonthLink === 'undefined') {
+                throw "No link to pull Fiscal years and Months is defined.";
+            } else {
+                link = document.getFiscalYearMonthLink;
+            }
+        }
 
         var yearList = null;
         var monthList = null;
