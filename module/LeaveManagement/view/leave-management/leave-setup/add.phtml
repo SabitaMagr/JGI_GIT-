@@ -22,6 +22,8 @@ $isSubstituteMandatory = $form->get('isSubstituteMandatory');
 $assignOnEmployeeSetup = $form->get('assignOnEmployeeSetup');
 $isProdataBasis = $form->get('isProdataBasis');
 $enableSubstitute = $form->get('enableSubstitute');
+$dayOffAsLeave = $form->get('dayOffAsLeave');
+$holidayAsLeave = $form->get('holidayAsLeave');
 
 $remarks = $form->get('remarks');
 $fiscalYear->setValueOptions($fiscalYears);
@@ -201,6 +203,24 @@ print $this->form()->openTag($form);
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($enableSubstitute, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($dayOffAsLeave); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($dayOffAsLeave); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($dayOffAsLeave, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($holidayAsLeave); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($holidayAsLeave); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($holidayAsLeave, ['class' => 'help-block error']); ?>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group">

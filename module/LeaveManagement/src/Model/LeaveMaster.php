@@ -40,6 +40,8 @@ class LeaveMaster extends Model {
     const EMPLOYEE_TYPE = "EMPLOYEE_TYPE";
     const GENDER_ID = "GENDER_ID";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
+    const DAY_OFF_AS_LEAVE = "DAY_OFF_AS_LEAVE";
+    const HOLIDAY_AS_LEAVE = "HOLIDAY_AS_LEAVE";
 
     public $leaveId;
     public $leaveCode;
@@ -74,6 +76,8 @@ class LeaveMaster extends Model {
     public $employeeType;
     public $genderId;
     public $employeeId;
+    public $dayOffAsLeave;
+    public $holidayAsLeave;
     public $mappings = [
         'leaveId' => self::LEAVE_ID,
         'leaveCode' => self::LEAVE_CODE,
@@ -108,6 +112,8 @@ class LeaveMaster extends Model {
         'employeeType' => self::EMPLOYEE_TYPE,
         'genderId' => self::GENDER_ID,
         'employeeId' => self::EMPLOYEE_ID,
+        'dayOffAsLeave' => self::DAY_OFF_AS_LEAVE,
+        'holidayAsLeave' => self::HOLIDAY_AS_LEAVE
     ];
 
 }
