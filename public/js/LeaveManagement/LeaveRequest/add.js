@@ -38,7 +38,16 @@
 
 
         var calculateAvailableDays = function (startDateStr, endDateStr, halfDay, employeeId, leaveId) {
-            app.serverRequest(document.wsFetchAvailableDays, {startDate: startDateStr, endDate: endDateStr, employeeId: employeeId, halfDay: halfDay,leaveId:leaveId}).then(function (response) {
+            if (startDateStr === null || startDateStr == '' || endDateStr === null || endDateStr == '' || employeeId === null || employeeId == '' || leaveId === null || leaveId == '') {
+                return;
+            }
+            app.serverRequest(document.wsFetchAvailableDays, {
+                startDate: startDateStr,
+                endDate: endDateStr,
+                employeeId: employeeId,
+                halfDay: halfDay,
+                leaveId: leaveId
+            }).then(function (response) {
                 if (!response.success) {
                     app.showMessage(response.error, 'error');
                     return;
@@ -73,7 +82,7 @@
             }
             leaveChange($leave[0]);
             var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
-            calculateAvailableDays(startDateStr, endDateStr, halfDayValue, employeeId,leaveId);
+            calculateAvailableDays(startDateStr, endDateStr, halfDayValue, employeeId, leaveId);
             checkForErrors(startDateStr, endDateStr, employeeId);
         });
 
@@ -153,6 +162,7 @@
             if ($this.val() === null || $this.val() === '' || $this.val() === '-1') {
                 return;
             }
+            calculateAvailableDays($startDate.val(), $endDate.val(), $halfDay.val(), $employee.val(), $leave.val());
             App.blockUI({target: "#hris-page-content", message: "Calculating Leave Days"});
             var startDateValue = $startDate.val();
             app.pullDataById(document.wsPullLeaveDetail, {
@@ -204,7 +214,7 @@
 
                 if ($startDate.val() != '' && $endDate.val() != '') {
                     var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
-                    calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $this.val(),$leave.val());
+                    calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $this.val(), $leave.val());
                 }
 
             }, function (failure) {
@@ -219,7 +229,7 @@
         $halfDay.on('change', function () {
             if ($startDate.val() !== '' && $endDate.val() !== '') {
                 var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
-                calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $employee.val(),$leave.val());
+                calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $employee.val(), $leave.val());
             }
         });
     });

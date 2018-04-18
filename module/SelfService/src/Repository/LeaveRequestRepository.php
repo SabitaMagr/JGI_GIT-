@@ -249,7 +249,7 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     public function fetchAvailableDays($fromDate, $toDate, $employeeId, $halfDay, $leaveId) {
-        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_AVAILABLE_LEAVE_DAYS({$fromDate},{$toDate},{$employeeId},'{$halfDay}','{$leaveId}') AS AVAILABLE_DAYS FROM DUAL");
+        $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_AVAILABLE_LEAVE_DAYS({$fromDate},{$toDate},{$employeeId},'{$leaveId}','{$halfDay}') AS AVAILABLE_DAYS FROM DUAL");
         return $rawResult->current();
     }
 
