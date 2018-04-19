@@ -21,6 +21,7 @@ $this->headScript()
     document.ids =<?php echo json_encode(["startDate1" => "", "nepaliStartDate1" => "", "endDate1" => "", "nepaliEndDate1" => ""]) ?>;
     document.url = "<?= $this->url('restful', ['action', 'index']) ?>";
     document.editLink = '<?= $this->url("holidaysetup", ["action" => "edit"]) ?>';
+    document.deleteLink = '<?= $this->url("holidaysetup", ["action" => "delete"]) ?>';
     document.pullHolidayListLink = '<?= $this->url("holidaysetup", ["action" => "pullHolidayList"]) ?>';
 </script>
 <div class="page-bar">
@@ -125,26 +126,4 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
         </div>
     </div>
-
-<!--    <script id="rowTemplate" type="text/x-kendo-tmpl">
-        <tr>
-        <td>
-        #: (HOLIDAY_ENAME == null) ? '-' : HOLIDAY_ENAME #
-        </td>
-        <td>
-        #: (START_DATE == null) ? '-' : START_DATE #
-        </td>
-        <td>
-        #: (END_DATE == null) ? '-' : END_DATE #
-        </td>
-        <td>
-        #: (HALFDAY == null) ? '-' : HALFDAY #
-        </td>
-        <td>
-        <a class="btn-edit"
-        href="`+ document.editLink +`/#:HOLIDAY_ID#" style="height:17px;"> 
-        <i class="fa fa-edit"></i>
-        </a>
-        </tr>
-    </script>-->
 </div>

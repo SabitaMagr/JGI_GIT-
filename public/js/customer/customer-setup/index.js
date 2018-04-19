@@ -45,7 +45,7 @@
             app.exportToPDF($table, map, 'Customer List.pdf');
         });
 
-        app.pullDataById("", {}).then(function (response) {
+        app.serverRequest(document.listLink, {}).then(function (response) {
             app.renderKendoGrid($table, response.data);
         }, function (error) {
 

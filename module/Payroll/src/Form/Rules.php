@@ -44,7 +44,7 @@ class Rules {
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction","V":"View"},"label":"Pay Type"})
+     * @Annotation\Options({"value_options":{"A":"Addition","D":"Deduction","V":"View","T":"Tax"},"label":"Pay Type"})
      * @Annotation\Attributes({ "id":"payTypeFlag","class":"form-control"})
      */
     public $payTypeFlag;
@@ -57,14 +57,6 @@ class Rules {
      * @Annotation\Attributes({ "id":"priorityIndex","class":"form-control"})
      */
     public $priorityIndex;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Is Monthly"})
-     * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"isMonthly"})
-     */
-    public $isMonthly;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
@@ -83,6 +75,38 @@ class Rules {
      * @Annotation\Attributes({ "id":"remarks","class":"form-control"})
      */
     public $remarks;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include In Tax"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include In Tax"})
+     */
+    public $includeInTax;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include In Salary"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include In Salary"})
+     */
+    public $includeInSalary;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Past Value"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include Past Value"})
+     */
+    public $includePastValue;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Future Value"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"Include Future Value"})
+     */
+    public $includeFutureValue;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

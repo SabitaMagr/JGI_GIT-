@@ -10,6 +10,7 @@ use Setup\Model\Department;
 use Setup\Model\Designation;
 use Setup\Model\Gender;
 use Setup\Model\HrEmployees;
+use Setup\Model\Location;
 use Setup\Model\Position;
 use Setup\Model\ServiceEventType;
 use Setup\Model\ServiceType;
@@ -17,6 +18,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Form\Element\Select as Select2;
 
 class EntityHelper {
 
@@ -175,12 +177,10 @@ class EntityHelper {
         $serviceTypeList = self::getTableList($adapter, ServiceType::TABLE_NAME, [ServiceType::SERVICE_TYPE_ID, ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => "E"]);
         $serviceEventTypeList = self::getTableList($adapter, ServiceEventType::TABLE_NAME, [ServiceEventType::SERVICE_EVENT_TYPE_ID, ServiceEventType::SERVICE_EVENT_TYPE_NAME], [ServiceEventType::STATUS => "E"]);
         $genderList = self::getTableList($adapter, Gender::TABLE_NAME, [Gender::GENDER_ID, Gender::GENDER_NAME], [Gender::STATUS => "E"]);
+        $locationList = self::getTableList($adapter, Location::TABLE_NAME, [Location::LOCATION_ID, Location::LOCATION_EDESC], [Location::STATUS => "E"]);
         $employeeList = self::getTableList($adapter, HrEmployees::TABLE_NAME, [
                     HrEmployees::EMPLOYEE_ID,
                     HrEmployees::FULL_NAME,
-                    HrEmployees::FIRST_NAME,
-                    HrEmployees::MIDDLE_NAME,
-                    HrEmployees::LAST_NAME,
                     HrEmployees::COMPANY_ID,
                     HrEmployees::BRANCH_ID,
                     HrEmployees::DEPARTMENT_ID,
@@ -190,6 +190,7 @@ class EntityHelper {
                     HrEmployees::SERVICE_EVENT_TYPE_ID,
                     HrEmployees::GENDER_ID,
                     HrEmployees::EMPLOYEE_TYPE,
+                    HrEmployees::GROUP_ID,
                         ], [HrEmployees::STATUS => "E"]);
 
         $searchValues = [
@@ -202,7 +203,8 @@ class EntityHelper {
             'serviceEventType' => $serviceEventTypeList,
             'gender' => $genderList,
             'employeeType' => [['EMPLOYEE_TYPE_KEY' => 'R', 'EMPLOYEE_TYPE_VALUE' => 'Employee'], ['EMPLOYEE_TYPE_KEY' => 'C', 'EMPLOYEE_TYPE_VALUE' => 'Worker']],
-            'employee' => $employeeList
+            'employee' => $employeeList,
+            'location' => $locationList,
         ];
         /* end of search values */
 
@@ -274,11 +276,12 @@ class EntityHelper {
             }
             return " {$conditonType} {$colName} IN ({$valuesinCSV})";
         } else {
-            return " {$conditonType} {$colName} = {$colValue}";
+            $value = $isString ? "'{$colValue}'" : $colValue;
+            return " {$conditonType} {$colName} = {$value}";
         }
     }
 
-    public static function getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId) {
+    public static function getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId = null, $locationId = null) {
         $conditon = "";
         if ($companyId != null && $companyId != -1) {
             $conditon .= self::conditionBuilder($companyId, "E.COMPANY_ID", "AND");
@@ -297,6 +300,8 @@ class EntityHelper {
         }
         if ($serviceTypeId != null && $serviceTypeId != -1) {
             $conditon .= self::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
+        } else {
+            $conditon .= " AND (E.SERVICE_TYPE_ID IN (SELECT SERVICE_TYPE_ID FROM HRIS_SERVICE_TYPES WHERE TYPE NOT IN ('RESIGNED','RETIRED')) OR E.SERVICE_TYPE_ID IS NULL)";
         }
         if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
             $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
@@ -307,11 +312,17 @@ class EntityHelper {
         if ($employeeId != null && $employeeId != -1) {
             $conditon .= self::conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
         }
+        if ($genderId != null && $genderId != -1) {
+            $conditon .= self::conditionBuilder($genderId, "E.GENDER_ID", "AND");
+        }
+        if ($locationId != null && $locationId != -1) {
+            $conditon .= self::conditionBuilder($locationId, "E.LOCATION_ID", "AND");
+        }
         return $conditon;
     }
 
     public static function getAttendanceStatusSelectElement() {
-        $statusFormElement = new \Zend\Form\Element\Select();
+        $statusFormElement = new Select2();
         $statusFormElement->setName("status");
         $status = array(
             "P" => "Present Only",
@@ -330,7 +341,7 @@ class EntityHelper {
     }
 
     public static function getAttendancePresentStatusSelectElement() {
-        $statusFormElement = new \Zend\Form\Element\Select();
+        $statusFormElement = new Select2();
         $statusFormElement->setName("presentStatus");
         $status = array(
             "LI" => "Late In",

@@ -40,15 +40,14 @@ class TrainingAttendanceRepository implements RepositoryInterface {
     public function fetchAll() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-         $customCols = ["BS_DATE(TO_CHAR(T.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N",
-            "BS_DATE(TO_CHAR(T.END_DATE, 'DD-MON-YYYY')) AS END_DATE_N"];
+        $customCols = ["BS_DATE(TO_CHAR(T.START_DATE, 'DD-MON-YYYY')) AS START_DATE_BS",
+            "BS_DATE(TO_CHAR(T.END_DATE, 'DD-MON-YYYY')) AS END_DATE_BS",
+            "TO_CHAR(T.START_DATE, 'DD-MON-YYYY') AS START_DATE_AD",
+            "TO_CHAR(T.END_DATE, 'DD-MON-YYYY') AS END_DATE_AD"];
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(
                         Training::class, [
                     Training::TRAINING_NAME
-                        ], [
-                    Training::START_DATE,
-                    Training::END_DATE
-                        ], NULL, NULL, NULL, 'T',false,false,NULL,$customCols)
+                        ], NULL, NULL, NULL, NULL, 'T', FALSE, FALSE, NULL, $customCols)
                 , false);
 
 
@@ -58,7 +57,6 @@ class TrainingAttendanceRepository implements RepositoryInterface {
         $select->where(["T.STATUS='E'"]);
         $select->order("T." . Training::TRAINING_NAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
-//        print_r($statement->getSql()); die();
         $result = $statement->execute();
         $arrayList = [];
         foreach ($result as $row) {

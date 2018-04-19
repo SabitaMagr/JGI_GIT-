@@ -12,6 +12,16 @@ class PositionForm {
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}}) 
+     * @Annotation\Options({"label":"Code"})
+     * @Annotation\Attributes({ "id":"positionCode", "class":"form-control" })
+     */
+    public $positionCode;
+
+    /**
+     * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required({"required":"true"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Position Name"})
@@ -29,15 +39,6 @@ class PositionForm {
      * @Annotation\Attributes({"id":"form-remarks","class":"form-remarks form-control","style":"    height: 50px; font-size:12px"})
      */
     public $remarks;
-
-    /**
-     * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
-     * @Annotation\Options({"label":"Status","value_options":{"E":"Enabled","D":"Disabled"}})
-     * @Annotation\Attributes({ "id":"form-status","class":"form-control"})
-     */
-    public $status;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

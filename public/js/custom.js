@@ -148,6 +148,7 @@ window.app = (function ($, toastr, App) {
                 if (toVal === 'undefined' || toVal == '') {
                     var temp = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                     $fromEnglishDate.val(temp);
+                    $fromEnglishDate.trigger('change');
                     $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                     oldFromNepali = $fromNepaliDate.val();
 
@@ -175,6 +176,7 @@ window.app = (function ($, toastr, App) {
                         if (daysBetween(nepaliDatePickerExt.getDate(fromDate), nepaliDatePickerExt.getDate(toDate)) >= 0) {
                             var temp = nepaliDatePickerExt.fromNepaliToEnglish($fromNepaliDate.val());
                             $fromEnglishDate.val(temp);
+                            $fromEnglishDate.trigger('change');
                             $toEnglishDate.datepicker('setStartDate', nepaliDatePickerExt.getDate(temp));
                             oldFromNepali = $fromNepaliDate.val();
 
@@ -698,16 +700,27 @@ window.app = (function ($, toastr, App) {
         return arr;
     };
 
-
+    document.confirmation = {
+        config: null,
+        setConfig: function (config) {
+            this.config = config
+        }};
     (function () {
-        $(".page-content").on("click", ".confirmation", function (e) {
-            e.preventDefault();
+        $(".page-content").on("mouseover", ".confirmation", function (e) {
             var $this = $(this);
             $this.confirmation({
+                placement: 'bottom',
                 onConfirm: function () {
-                    location.href = $this.attr('href');
+                    if (document.confirmation.config == null) {
+                        location.href = $this.attr('href');
+                        return;
+                    }
+                    if (typeof document.confirmation.config.onConfirm !== 'undefined') {
+                        document.confirmation.config.onConfirm($this);
+                    }
                 },
                 onCancel: function () {
+
                 }, });
         });
     })();
@@ -1071,7 +1084,9 @@ window.app = (function ($, toastr, App) {
         if (typeof isMandatory !== 'undefined' && isMandatory !== null && isMandatory) {
             $defaultOption.prop('disabled', true);
         }
-        $element.append($defaultOption);
+        if (!$element.prop('multiple')) {
+            $element.append($defaultOption);
+        }
         var concatArray = function (keyList, list, concatWith) {
             var temp = '';
             if (typeof concatWith === 'undefined') {
@@ -1105,7 +1120,10 @@ window.app = (function ($, toastr, App) {
 
     var lockField = function (flag, fields) {
         $.each(fields, function (k, v) {
-            var $v = $('#' + v);
+            var $v = v;
+            if (!(v instanceof jQuery)) {
+                $v = $('#' + $v);
+            }
             if ($v.prev().is('div')) {
                 $v.css('pointer-events', 'none');
             } else {
@@ -1272,8 +1290,15 @@ window.app = (function ($, toastr, App) {
                 for (var i in iParams) {
                     url += `/#: ${iParams[i]} #`;
                 }
+                var confirmationClass = '';
+                if (typeof config.delete['confirmation'] === 'undefined' || config.delete['confirmation'] === null) {
+                    confirmationClass = 'confirmation'
+                } else {
+                    confirmationClass = (config.delete['confirmation']) ? 'confirmation' : '';
+
+                }
                 var deleteLink = `
-                <a class="confirmation btn-delete" title="Delete" href="${url}" style="height:17px;">
+                <a class="${confirmationClass} btn-delete" title="Delete" href="${url}" style="height:17px;">
                     <i class="fa fa-trash-o"></i>
                 </a>`;
             }
@@ -1296,8 +1321,8 @@ window.app = (function ($, toastr, App) {
         return range;
     }
 
-    var exportDomToPdf = function (divName, cssUrl) {
-        var printContents = document.getElementById(divName).innerHTML;
+    var exportDomToPdf = function (divId, cssUrl) {
+        var printContents = document.getElementById(divId).innerHTML;
         var popupWin = window.open('', '_blank', 'width=1000,height=500,toolbar=0,scrollbars=0,status=0');
         popupWin.document.open();
         popupWin.document.write('<style>@page{size:landscape;}</style><html><head><link rel="stylesheet" type="text/css" href="' + cssUrl + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
@@ -1367,6 +1392,95 @@ window.app = (function ($, toastr, App) {
         });
     };
 
+    var setDropZone = function ($fileId, $dropZone, url) {
+        var dropZone = $dropZone.dropzone({
+            url: url,
+            maxFiles: 1,
+            acceptedFiles: 'image/*',
+            autoProcessQueue: true,
+            addRemoveLinks: true,
+            init: function () {
+                this.on('success', function (file, response) {
+                    if (response.success) {
+                        $fileId.val(response.data.fileId);
+                    }
+                });
+            }
+        });
+        if ($fileId.val() != '') {
+            serverRequest(document.getFileDetailLink, {fileId: $fileId.val()}).then(function (response) {
+                if (response.success) {
+                    var $ul = $('<ul class="list-group"></ul>');
+                    var $li = $('<li class="list-group-item">' + response.data['FILE_NAME'] + '</li>');
+                    $ul.append($li);
+                    $ul.insertBefore($dropZone);
+                }
+            });
+        }
+    };
+
+    var setFiscalMonth = function ($year, $month, fn, l) {
+        var link = l;
+        if (typeof link === 'undefined') {
+            if (typeof document.getFiscalYearMonthLink === 'undefined') {
+                throw "No link to pull Fiscal years and Months is defined.";
+            } else {
+                link = document.getFiscalYearMonthLink;
+            }
+        }
+
+        var yearList = null;
+        var monthList = null;
+        var currentMonth = null;
+        var selectedYearMonthList = null;
+        serverRequest(link, {}).then(function (response) {
+            if (response.success) {
+                yearList = response.data.years;
+                monthList = response.data.months;
+                currentMonth = response.data.currentMonth;
+                if (typeof fn !== 'undefined') {
+                    fn(yearList, monthList, currentMonth);
+                }
+                populateSelect($year, yearList, 'FISCAL_YEAR_ID', 'FISCAL_YEAR_NAME', 'Fiscal Years', null, currentMonth['FISCAL_YEAR_ID']);
+                yearOnChange(currentMonth['FISCAL_YEAR_ID']);
+            }
+        }, function (error) {
+
+        });
+
+        $year.on('change', function () {
+            var value = $(this).val();
+            yearOnChange(value);
+        });
+
+        var yearOnChange = function (fiscalYearId) {
+            selectedYearMonthList = monthList.filter(function (item) {
+                return item['FISCAL_YEAR_ID'] == fiscalYearId;
+            });
+            var currentMonths = selectedYearMonthList.filter(function (item) {
+                return item['MONTH_ID'] == currentMonth['MONTH_ID'];
+            });
+            populateSelect($month, selectedYearMonthList, 'MONTH_ID', 'MONTH_EDESC', 'Months', null, currentMonths.length > 0 ? currentMonth['MONTH_ID'] : null);
+        };
+    };
+    var setEmployeeSearch = function ($employeeId, fn) {
+        var link = document.getSearchDataLink;
+        var searchData = null;
+        var onDataLoad = function (data) {
+            populateSelect($employeeId, data['employee'], 'EMPLOYEE_ID', 'FULL_NAME', 'Select Employee');
+            if (typeof fn !== 'undefined') {
+                fn(data['employee']);
+            }
+        };
+        serverRequest(link, {}).then(function (response) {
+            if (response.success) {
+                searchData = response.data;
+                onDataLoad(searchData);
+            }
+        }, function (error) {
+
+        });
+    };
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1405,8 +1519,9 @@ window.app = (function ($, toastr, App) {
         exportDomToPdf: exportDomToPdf,
         exportDomToPdf2: exportDomToPdf2,
         serverRequest: serverRequest,
-        bulkServerRequest: bulkServerRequest
-
-
+        bulkServerRequest: bulkServerRequest,
+        setDropZone: setDropZone,
+        setFiscalMonth: setFiscalMonth,
+        setEmployeeSearch: setEmployeeSearch,
     };
 })(window.jQuery, window.toastr, window.App);

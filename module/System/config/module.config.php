@@ -74,7 +74,7 @@ return [
             'user-setting' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/system/setting[/:action[/:id]]',
+                    'route' => '/system/user-setting[/:action[/:id]]',
                     'constraint' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+',
@@ -258,11 +258,11 @@ return [
         ],
         'AttendanceDevice' => [
             [
-                'label' => "Attedance Device Setup",
+                'label' => "Attendance Device",
                 'route' => "AttendanceDevice"
             ],
             [
-                'label' => "Attedance Device Setup",
+                'label' => "Attendance Device",
                 'route' => "AttendanceDevice",
                 'pages' => [
                     [
@@ -279,6 +279,11 @@ return [
                         'label' => 'Edit',
                         'route' => 'AttendanceDevice',
                         'action' => 'edit',
+                    ],
+                    [
+                        'label' => 'Log',
+                        'route' => 'AttendanceDevice',
+                        'action' => 'attendanceLog',
                     ],
                 ],
             ],
@@ -358,6 +363,11 @@ return [
                         'route' => 'system-utility',
                         'action' => 'reAttendance',
                     ],
+                    [
+                        'label' => 'Database Backup',
+                        'route' => 'system-utility',
+                        'action' => 'databaseBackup',
+                    ],
                 ],
             ],
         ]
@@ -374,7 +384,6 @@ return [
             Controller\MenuReport::class => ControllerFactory::class,
             Controller\SystemSetting::class => ControllerFactory::class,
             Controller\SystemUtility::class => ControllerFactory::class
-            
         ],
     ],
     'view_manager' => [

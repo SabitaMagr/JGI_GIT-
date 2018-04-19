@@ -5,52 +5,41 @@ namespace Payroll\Repository;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Model\Months;
-use Application\Repository\RepositoryInterface;
+use Application\Repository\HrisRepository;
 use Payroll\Model\SalarySheet;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
-use Zend\Db\TableGateway\TableGateway;
 
-class SalarySheetRepo implements RepositoryInterface {
+class SalarySheetRepo extends HrisRepository {
 
-    private $adapter;
-    private $gateway;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->gateway = new TableGateway(SalarySheet::TABLE_NAME, $adapter);
+    public function __construct(AdapterInterface $adapter, $tableName = null) {
+        parent::__construct($adapter, SalarySheet::TABLE_NAME);
     }
 
     public function add(Model $model) {
-        return $this->gateway->insert($model->getArrayCopyForDB());
+        return $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function delete($id) {
-        return $this->gateway->delete([SalarySheet::MONTH_ID => $id]);
-    }
-
-    public function edit(Model $model, $id) {
-        
+        return $this->tableGateway->delete([SalarySheet::MONTH_ID => $id]);
     }
 
     public function fetchAll() {
-        return $this->gateway->select(function (Select $select) {
+        return $this->tableGateway->select(function (Select $select) {
                     $select->columns(Helper::convertColumnDateFormat($this->adapter, new SalarySheet(), [
                                 'startDate',
                                 'endDate',
                             ]), false);
-
-                    $select->where([Months::STATUS => 'E']);
                 });
     }
 
     public function fetchById($id) {
-        return $this->gateway->select([SalarySheet::SHEET_NO => $id]);
+        return $this->tableGateway->select([SalarySheet::SHEET_NO => $id]);
     }
 
     public function fetchByIds(array $ids) {
-        return $this->gateway->select($ids);
+        return $this->tableGateway->select($ids);
     }
 
     public function joinWithMonth($monthId = null, $employeeJoinDate = null) {
@@ -72,6 +61,12 @@ class SalarySheetRepo implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+    }
+
+    public function generateSalShReport($sheetNo) {
+        $this->executeStatement("BEGIN
+                            HRIS_GEN_SAL_SH_REPORT({$sheetNo});
+                        END;");
     }
 
 }

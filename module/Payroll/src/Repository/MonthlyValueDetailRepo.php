@@ -4,12 +4,11 @@ namespace Payroll\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
 use Payroll\Model\MonthlyValueDetail;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class MonthlyValueDetailRepo implements RepositoryInterface {
+class MonthlyValueDetailRepo {
 
     private $adapter;
     private $gateway;
@@ -27,17 +26,8 @@ class MonthlyValueDetailRepo implements RepositoryInterface {
         $this->gateway->update($model->getArrayCopyForDB(), [MonthlyValueDetail::EMPLOYEE_ID => $id[0], MonthlyValueDetail::MTH_ID => $id[1]]);
     }
 
-    public function fetchAll() {
-        
-    }
-
-    public function delete($id) {
-        
-    }
-
     public function fetchById($id) {
-        $sql = "
-                SELECT MTH_VALUE
+        $sql = "SELECT MTH_VALUE
                 FROM HRIS_MONTHLY_VALUE_DETAIL
                 WHERE EMPLOYEE_ID = {$id['employeeId']}
                 AND MONTH_ID      = {$id['monthId']}
@@ -49,9 +39,10 @@ class MonthlyValueDetailRepo implements RepositoryInterface {
         return $result != null ? $result['MTH_VALUE'] : 0;
     }
 
-    public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $employeeFilter, $monthId = null) {
-        $employeeIn = EntityHelper::employeesIn($employeeFilter['companyId'], $employeeFilter['branchId'], $employeeFilter['departmentId'], $employeeFilter['positionId'], $employeeFilter['designationId'], $employeeFilter['serviceTypeId'], $employeeFilter['serviceEventTypeId'], $employeeFilter['employeeTypeId'], $employeeFilter['employeeId']);
-        $sql = "SELECT * FROM HRIS_MONTHLY_VALUE_DETAIL WHERE MTH_ID = {$monthlyValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$employeeIn} )";
+    public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $emp, $monthId = null) {
+        $searchConditon = EntityHelper::getSearchConditon($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'], $emp['locationId']);
+        $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}";
+        $sql = "SELECT * FROM HRIS_MONTHLY_VALUE_DETAIL WHERE MTH_ID = {$monthlyValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$empQuery} )";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
@@ -105,7 +96,5 @@ class MonthlyValueDetailRepo implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
-
-
 
 }

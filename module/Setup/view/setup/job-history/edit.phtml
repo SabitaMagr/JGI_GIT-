@@ -2,6 +2,9 @@
 $this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 $this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/albe-timeline/style-albe-timeline.css'));
 
+$this->headLink()->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
+$this->headScript()->appendFile($this->basePath('dropzone/dropzone.min.js'));
+
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
@@ -51,6 +54,7 @@ $toPositionId->setValueOptions($positions);
 $retiredFlag = $form->get('retiredFlag');
 $disabledFlag = $form->get('disabledFlag');
 $eventDate = $form->get('eventDate');
+$fileId = $form->get('fileId');
 
 $retiredFlag->setAttribute('checked', $retiredFlagValue === "Y");
 $disabledFlag->setAttribute('checked', $disabledFlagValue === "Y");
@@ -85,6 +89,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <script>
     document.wsGetHistoryList = '<?php echo $this->url('jobHistory', ['action' => 'getHistoryList']); ?>';
+    document.uploadFileLink = '<?php echo $this->url('jobHistory', ['action' => 'uploadFile']); ?>';
+    document.getFileDetailLink = '<?php echo $this->url('jobHistory', ['action' => 'getFileDetail']); ?>';
 </script>
 
 <div class="row margin-top-20">
@@ -96,6 +102,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
             <div class="portlet-body">
+                <?php print $this->formElement($fileId); ?>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
@@ -212,6 +219,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formLabel($disabledFlag); ?>
                             <?php print $this->formElement($disabledFlag); ?>
                             <?php print $this->formElementErrors()->render($disabledFlag, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="border-dotted border-bottom border-left border-right" style="height: 300px;width:300px;" id="dropZone">
+                            <h4>Drop files here or click to upload.</h4>  
                         </div>
                     </div>
                 </div>

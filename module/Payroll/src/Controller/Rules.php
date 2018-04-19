@@ -10,6 +10,7 @@ use Payroll\Model\Rules as RulesModel;
 use Payroll\Repository\FlatValueRepository;
 use Payroll\Repository\MonthlyValueRepository;
 use Payroll\Repository\RulesRepository;
+use Payroll\Service\PayrollGenerator;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;

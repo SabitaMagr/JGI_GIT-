@@ -14,7 +14,10 @@ $payEdesc = $form->get('payEdesc');
 $payLdesc = $form->get('payLdesc');
 $payTypeFlag = $form->get('payTypeFlag');
 $priorityIndex = $form->get('priorityIndex');
-$isMonthly = $form->get('isMonthly');
+$includeInTax = $form->get('includeInTax');
+$includeInSalary = $form->get('includeInSalary');
+$includePastValue = $form->get('includePastValue');
+$includeFutureValue = $form->get('includeFutureValue');
 $remarks = $form->get('remarks');
 $formula = $form->get('formula');
 $submit = $form->get('submit');
@@ -81,7 +84,7 @@ $form->prepare();
                         <div class="form-group">
                             <?php print $this->formLabel($payTypeFlag); ?>
                             <div class="md-radio-inline">
-                                <?php $customRenderer($payTypeFlag); ?>
+                                <?php $customRenderer($payTypeFlag); ?>Past
                             </div>
                             <?php print $this->formElementErrors()->render($payTypeFlag, ['class' => 'help-block']); ?>
                         </div>
@@ -89,11 +92,38 @@ $form->prepare();
 
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
-                            <?php print $this->formLabel($isMonthly); ?>
+                            <?php print $this->formLabel($includeInTax); ?>
                             <div class="md-radio-inline">
-                                <?php $customRenderer($isMonthly); ?>
+                                <?php $customRenderer($includeInTax); ?>
                             </div>
-                            <?php print $this->formElementErrors()->render($isMonthly, ['class' => 'help-block']); ?>
+                            <?php print $this->formElementErrors()->render($includeInTax, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($includeInSalary); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includeInSalary); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($includeInSalary, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($includePastValue); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includePastValue); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($includePastValue, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($includeFutureValue); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includeFutureValue); ?>
+                            </div>
+                            <?php print $this->formElementErrors()->render($includeFutureValue, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">

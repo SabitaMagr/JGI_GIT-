@@ -3,8 +3,8 @@
 namespace Advance\Controller;
 
 use Advance\Form\AdvanceRequestForm;
-use Advance\model\AdvanceRequestModel;
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvanceRequestModel;
+use Advance\Model\AdvanceSetupModel;
 use Advance\Repository\AdvanceRequestRepository;
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;

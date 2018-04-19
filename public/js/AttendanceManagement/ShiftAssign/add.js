@@ -24,7 +24,7 @@
             {field: "EMPLOYEE_TYPE", title: "Employee Type", width: 150},
             {field: "FULL_NAME", title: "Name", width: 150},
         ], function (e) {
-            app.pullDataById(document.employeeShiftsWS, {employeeId: e.data.EMPLOYEE_ID}).then(function (response) {
+            app.serverRequest(document.employeeShiftsWS, {employeeId: e.data.EMPLOYEE_ID}).then(function (response) {
                 if (!response.success) {
                     app.showMessage(response.error, 'error');
                     return;
@@ -79,7 +79,7 @@
             $nepaliToDate.val('');
             $bulkActionDiv.hide();
             var search = document.searchManager.getSearchValues();
-            app.pullDataById(document.employeeListWS, search).then(function (response) {
+            app.serverRequest(document.employeeListWS, search).then(function (response) {
                 app.renderKendoGrid($shiftAssignTable, response.data);
             }, function (error) {
                 app.showMessage(error, 'error');
@@ -87,7 +87,19 @@
         });
 
         app.populateSelect($shiftId, document.shiftList, 'SHIFT_ID', 'SHIFT_ENAME', 'Select Shift', -1);
+        $shiftId.on('change', function () {
+            var $this = $(this);
+            var value = $this.val();
+            var filList = document.shiftList.filter(function (shift) {
+                return shift['SHIFT_ID'] == value;
+            });
 
+            if (filList.length > 0) {
+                $fromDate.val(filList[0]['START_DATE']);
+                $toDate.val(filList[0]['END_DATE']);
+            }
+
+        });
         $bulkAdd.on('click', function () {
             var shiftId = $shiftId.val();
             if (shiftId == -1) {
@@ -114,7 +126,7 @@
                 var counter = 0;
                 var length = employeeIdList.length;
                 var addShift = function (employeeId) {
-                    app.pullDataById(document.addWs, {
+                    app.serverRequest(document.addWs, {
                         shiftId: shiftId,
                         fromDate: fromDate,
                         toDate: toDate,

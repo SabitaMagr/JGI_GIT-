@@ -64,7 +64,7 @@
             }
             initialize($table, kendoConfig);
             getRoaster(function (rData) {
-                var employees = document.searchManager.getEmployee();
+                var employees = document.searchManager.getSelectedEmployee();
                 var data = [];
                 var searchInRData = function (on, by) {
                     for (var i in on) {

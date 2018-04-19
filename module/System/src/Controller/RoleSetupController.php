@@ -2,6 +2,7 @@
 
 namespace System\Controller;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use System\Form\RoleSetupForm;
@@ -72,7 +73,11 @@ class RoleSetupController extends AbstractActionController {
                 return $this->redirect()->toRoute("rolesetup");
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'customRenderer' => Helper::renderCustomView(),]);
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
     }
 
     public function editAction() {
@@ -101,7 +106,8 @@ class RoleSetupController extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 

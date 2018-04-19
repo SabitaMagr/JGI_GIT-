@@ -3,7 +3,6 @@
 namespace ManagerService\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Helper\NumberHelper;
@@ -32,7 +31,7 @@ class TravelApproveController extends HrisController {
             try {
                 $search['employeeId'] = $this->employeeId;
                 $search['status'] = ['RQ', 'RC'];
-                $rawList = $this->repository->getAllFiltered($search);
+                $rawList = $this->repository->getPendingList($this->employeeId);
                 $list = Helper::extractDbData($rawList);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
@@ -51,52 +50,9 @@ class TravelApproveController extends HrisController {
         $request = $this->getRequest();
         $travelRequestModel = new TravelRequest();
         if ($request->isPost()) {
-            $getData = $request->getPost();
-            $action = $getData->submit;
-
-            if ($role == 2) {
-                $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                $travelRequestModel->recommendedBy = (int) $this->employeeId;
-                if ($action == "Reject") {
-                    $travelRequestModel->status = "R";
-                    $this->flashmessenger()->addMessage("Travel Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $travelRequestModel->status = "RC";
-                    $this->flashmessenger()->addMessage("Travel Request Approved!!!");
-                }
-                $travelRequestModel->recommendedRemarks = $getData->recommendedRemarks;
-                $this->repository->edit($travelRequestModel, $id);
-                $travelRequestModel->travelId = $id;
-                try {
-                    HeadNotification::pushNotification(($travelRequestModel->status == 'RC') ? NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED : NotificationEvents::TRAVEL_RECOMMEND_REJECTED, $travelRequestModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            } else if ($role == 3 || $role == 4) {
-                $travelRequestModel->approvedDate = Helper::getcurrentExpressionDate();
-                $travelRequestModel->approvedBy = (int) $this->employeeId;
-                if ($action == "Reject") {
-                    $travelRequestModel->status = "R";
-                    $this->flashmessenger()->addMessage("Travel Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $travelRequestModel->status = "AP";
-                    $this->flashmessenger()->addMessage("Travel Request Approved");
-                }
-                if ($role == 4) {
-                    $travelRequestModel->recommendedBy = $this->employeeId;
-                    $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                }
-
-                $travelRequestModel->approvedRemarks = $getData->approvedRemarks;
-                $this->repository->edit($travelRequestModel, $id);
-                $travelRequestModel->travelId = $id;
-
-                try {
-                    HeadNotification::pushNotification(($travelRequestModel->status == 'AP') ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED, $travelRequestModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            }
+            $postedData = (array) $request->getPost();
+            $action = $postedData['submit'];
+            $this->makeDecision($id, $role, $action == 'Approve', $postedData[$role == 2 ? 'recommendedRemarks' : 'approvedRemarks'], true);
             return $this->redirect()->toRoute("travelApprove");
         }
 
@@ -192,79 +148,48 @@ class TravelApproveController extends HrisController {
     public function batchApproveRejectAction() {
         $request = $this->getRequest();
         try {
-            if (!$request->ispost()) {
-                throw new Exception('the request is not post');
-            }
-            $postData = $request->getPost()['data'];
-            $postBtnAction = $request->getPost()['btnAction'];
-            if ($postBtnAction == 'btnApprove') {
-                $action = 'Approve';
-            } elseif ($postBtnAction == 'btnReject') {
-                $action = 'Reject';
-            } else {
-                throw new Exception('no action defined');
-            }
-
-            if ($postData == null) {
-                throw new Exception('no selected rows');
-            } else {
-                $this->adapter->getDriver()->getConnection()->beginTransaction();
-                try {
-
-                    foreach ($postData as $data) {
-                        $travelRequestModel = new TravelRequest();
-                        $id = $data['id'];
-                        $role = $data['role'];
-                        $detail = $this->repository->fetchById($id);
-
-                        if ($role == 2) {
-                            $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                            $travelRequestModel->recommendedBy = (int) $this->employeeId;
-                            if ($action == "Reject") {
-                                $travelRequestModel->status = "R";
-                            } else if ($action == "Approve") {
-                                $travelRequestModel->status = "RC";
-                            }
-                            $this->repository->edit($travelRequestModel, $id);
-                            $travelRequestModel->travelId = $id;
-                            try {
-                                HeadNotification::pushNotification(($travelRequestModel->status == 'RC') ? NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED : NotificationEvents::TRAVEL_RECOMMEND_REJECTED, $travelRequestModel, $this->adapter, $this);
-                            } catch (Exception $e) {
-                                
-                            }
-                        } else if ($role == 3 || $role == 4) {
-                            $travelRequestModel->approvedDate = Helper::getcurrentExpressionDate();
-                            $travelRequestModel->approvedBy = (int) $this->employeeId;
-                            if ($action == "Reject") {
-                                $travelRequestModel->status = "R";
-                            } else if ($action == "Approve") {
-                                $travelRequestModel->status = "AP";
-                            }
-                            if ($role == 4) {
-                                $travelRequestModel->recommendedBy = $this->employeeId;
-                                $travelRequestModel->recommendedDate = Helper::getcurrentExpressionDate();
-                            }
-
-                            $this->repository->edit($travelRequestModel, $id);
-                            $travelRequestModel->travelId = $id;
-
-
-                            try {
-                                HeadNotification::pushNotification(($travelRequestModel->status == 'AP') ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED, $travelRequestModel, $this->adapter, $this);
-                            } catch (Exception $e) {
-                                
-                            }
-                        }
-                    }
-                    $this->adapter->getDriver()->getConnection()->commit();
-                } catch (Exception $ex) {
-                    $this->adapter->getDriver()->getConnection()->rollback();
-                }
-            }
-            $listData = $this->getAllList();
-            return new CustomViewModel(['success' => true, 'data' => $listData]);
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['role'], $postData['btnAction'] == "btnApprove");
+            return new JsonModel(['success' => true, 'data' => null]);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $role, $approve, $remarks = null, $enableFlashNotification = false) {
+        $notificationEvent = null;
+        $message = null;
+        $model = new TravelRequest();
+        $model->travelId = $id;
+        switch ($role) {
+            case 2:
+                $model->recommendedRemarks = $remarks;
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+                $model->status = $approve ? "RC" : "R";
+                $message = $approve ? "Travel Request Recommended" : "Travel Request Rejected";
+                $notificationEvent = $approve ? NotificationEvents::TRAVEL_RECOMMEND_ACCEPTED : NotificationEvents::TRAVEL_RECOMMEND_REJECTED;
+                break;
+            case 4:
+                $model->recommendedDate = Helper::getcurrentExpressionDate();
+                $model->recommendedBy = $this->employeeId;
+            case 3:
+                $model->approvedRemarks = $remarks;
+                $model->approvedDate = Helper::getcurrentExpressionDate();
+                $model->approvedBy = $this->employeeId;
+                $model->status = $approve ? "AP" : "R";
+                $message = $approve ? "Travel Request Approved" : "Travel Request Rejected";
+                $notificationEvent = $approve ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED;
+                break;
+        }
+        $this->repository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
         }
     }
 

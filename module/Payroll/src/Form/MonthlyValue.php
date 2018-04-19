@@ -41,6 +41,13 @@ class MonthlyValue {
     public $mthLdesc;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"P":"Position Wise","E":"Employee Wise"},"label":"Assign Type"})
+     * @Annotation\Attributes({ "id":"assignType","class":"form-control"})
+     */
+    public $assignType;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})

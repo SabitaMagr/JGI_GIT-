@@ -97,6 +97,10 @@ class HrEmployees extends Model {
     public $addrTempDistrictId;
     public $addrPermZoneId;
     public $addrPermDistrictId;
+    public $locationId;
+    public $functionalTypeId;
+    public $functionalLevelId;
+    public $groupId;
 
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -189,6 +193,10 @@ class HrEmployees extends Model {
     const ADDR_PERM_DISTRICT_ID = "ADDR_PERM_DISTRICT_ID";
     const ADDR_TEMP_ZONE_ID = "ADDR_TEMP_ZONE_ID";
     const ADDR_TEMP_DISTRICT_ID = "ADDR_TEMP_DISTRICT_ID";
+    const LOCATION_ID = "LOCATION_ID";
+    const FUNCTIONAL_TYPE_ID = "FUNCTIONAL_TYPE_ID";
+    const FUNCTIONAL_LEVEL_ID = "FUNCTIONAL_LEVEL_ID";
+    const GROUP_ID = "GROUP_ID";
 
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -276,11 +284,15 @@ class HrEmployees extends Model {
         'modifiedBy' => self::MODIFIED_BY,
         'modifiedDt' => self::MODIFIED_DT,
         'fullName' => self::FULL_NAME,
-        'isHR'=>self::IS_HR,
+        'isHR' => self::IS_HR,
         'addrTempZoneId' => self::ADDR_TEMP_ZONE_ID,
         'addrTempDistrictId' => self::ADDR_TEMP_DISTRICT_ID,
         'addrPermZoneId' => self::ADDR_PERM_ZONE_ID,
         'addrPermDistrictId' => self::ADDR_PERM_DISTRICT_ID,
+        'locationId' => self::LOCATION_ID,
+        'functionalTypeId' => self::FUNCTIONAL_TYPE_ID,
+        'functionalLevelId' => self::FUNCTIONAL_LEVEL_ID,
+        'groupId' => self::GROUP_ID,
     ];
 
 }

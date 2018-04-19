@@ -10,7 +10,7 @@
                 $("#duration").val(newValue);
             }
         });
-        var $holidayId = $('#form-holidayId');
+        var $holidayId = $('#holidayId');
         var $fromDate = $("#fromDate");
         var $toDate = $("#toDate");
 

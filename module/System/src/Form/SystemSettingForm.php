@@ -73,14 +73,40 @@ class SystemSettingForm {
      */
     public $noticeType;
 
-    
-
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Options({"value_options":{"O":"Oracle","M":"Mysql","N":"None"},"label":"Old Payslip Type"})
      * @Annotation\Attributes({ "id":"oldPayslipType"})
      */
     public $oldPayslipType;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Options({"label":"Late Penalty Leave Deduction"})
+     * @Annotation\Attributes({ "id":"latePenaltyLeaveDeduction", "class":" form-control","step":"0.5","min":"0","max":"100"})
+     */
+    public $latePenaltyLeaveDeduction;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Enable Previous Month Leave Request"})
+     * @Annotation\Attributes({ "id":"enablePrevMthLeaveReq"})
+     */
+    public $enablePrevMthLeaveReq;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Dayoff As Leave"})
+     * @Annotation\Attributes({ "id":"includeDayoffAsLeave"})
+     */
+    public $includeDayoffAsLeave;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Include Holiday As Leave"})
+     * @Annotation\Attributes({ "id":"includeHolidayAsLeave"})
+     */
+    public $includeHolidayAsLeave;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

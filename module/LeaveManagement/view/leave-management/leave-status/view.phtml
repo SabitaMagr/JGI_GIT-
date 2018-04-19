@@ -48,6 +48,7 @@ print $this->form()->openTag($form);
 <script>
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.employeeId =<?= json_encode($employeeId) ?>;
+    document.isHalfDay =<?php echo (!in_array($halfDay->getValue(), [null, '', 'N'])) ? 'true' : 'false'; ?>;
 </script>
 
 <div class="page-bar">
@@ -238,36 +239,35 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
                     <div class="row">
                         <div class="col-sm-4">
-                            <div
-                                class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
-                                    <?php print $this->formLabel($noOfDays); ?>
-                                    <?php print $this->formElement($noOfDays); ?>
-                                <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                            <div class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($noOfDays); ?>
+                                <?php print $this->formElement($noOfDays); ?>
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
-                        <?php
-                        if ($gracePeriod->getValue() != ""):
-                            ?>
+                        <?php if (!in_array($halfDay->getValue(), [null, '', 'N'])): ?>
                             <div class="col-sm-4">
-                                <div
-                                    class="form-group">
-                                        <?php print $this->formLabel($gracePeriod); ?>
-                                        <?php print $this->formElement($gracePeriod); ?>
+                                <div class="form-group">
+                                    <?php print $this->formLabel($halfDay); ?>
+                                    <?php print $this->formElement($halfDay); ?>
                                 </div>
                             </div>
-                        <?php endif;
-                        ?>
+                        <?php endif; ?>
+                        <?php if ($gracePeriod->getValue() != ""): ?>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($gracePeriod); ?>
+                                    <?php print $this->formElement($gracePeriod); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
 
                     </div>
-
-                    <?php if ($remarkDtl != null) { ?>
-                        <div class="form-group padding-0">
-                            <?php print $this->formLabel($remarks); ?>
-                            <?php print $this->formElement($remarks); ?>
-                        </div>
-                        <?php
-                    }
+                    <div class="form-group padding-0">
+                        <?php print $this->formLabel($remarks); ?>
+                        <?php print $this->formElement($remarks); ?>
+                    </div>
+                    <?php
                     if ($subEmployeeId != null) {
                         $disabled = ($subApprovedFlag != null) ? "disabled" : "";
                         if ($subApprovedFlag == 'Y') {

@@ -3,7 +3,6 @@
 namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
-use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\FiscalYear;
@@ -12,6 +11,8 @@ use Payroll\Form\FlatValue as FlatValueForm;
 use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\FlatValueRepository;
+use Payroll\Repository\PositionFlatValueRepo;
+use Setup\Model\Position;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -101,9 +102,9 @@ class FlatValue extends HrisController {
     }
 
     public function detailAction() {
-        $flatValues = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_ID, FlatValueModel::FLAT_EDESC]);
+        $flatValues = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_ID, FlatValueModel::FLAT_EDESC], [FlatValueModel::STATUS => EntityHelper::STATUS_ENABLED, FlatValueModel::ASSIGN_TYPE => 'E']);
         $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'flatValues' => $flatValues,
                     'fiscalYears' => $fiscalYears,
@@ -123,9 +124,9 @@ class FlatValue extends HrisController {
             $detailRepo = new FlatValueDetailRepo($this->adapter);
             $result = $detailRepo->getFlatValuesDetailById($flatId, $fiscalYearId, $employeeFilter);
 
-            return new CustomViewModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -140,9 +141,53 @@ class FlatValue extends HrisController {
             $detailRepo = new FlatValueDetailRepo($this->adapter);
             $detailRepo->postFlatValuesDetail($data);
 
-            return new CustomViewModel(['success' => true, 'data' => $data, 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function positionWiseAction() {
+        $fiscalYears = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
+        $flatValues = EntityHelper::getTableList($this->adapter, FlatValueModel::TABLE_NAME, [FlatValueModel::FLAT_ID, FlatValueModel::FLAT_EDESC], [FlatValueModel::STATUS => EntityHelper::STATUS_ENABLED, FlatValueModel::ASSIGN_TYPE => 'P']);
+        $positions = EntityHelper::getTableList($this->adapter, Position::TABLE_NAME, [Position::POSITION_ID, Position::POSITION_NAME, Position::LEVEL_NO]);
+        return $this->stickFlashMessagesTo([
+                    'fiscalYears' => $fiscalYears,
+                    'flatValues' => $flatValues,
+                    'positions' => $positions,
+        ]);
+    }
+
+    public function getPositionFlatValueAction() {
+        try {
+            $request = $this->getRequest();
+            $postedData = $request->getPost();
+            $fiscalYearId = $postedData['fiscalYearId'];
+
+            $detailRepo = new PositionFlatValueRepo($this->adapter);
+            $result = $detailRepo->getPositionFlatValue($fiscalYearId);
+
+            return new JsonModel(['success' => true, 'data' => Helper::extractDbData($result), 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function setPositionFlatValueAction() {
+        try {
+            $request = $this->getRequest();
+            $postedData = $request->getPost();
+            $fiscalYearId = $postedData['fiscalYearId'];
+            $positionId = $postedData['positionId'];
+            $flatId = $postedData['flatId'];
+            $assignedValue = $postedData['assignedValue'];
+
+            $detailRepo = new PositionFlatValueRepo($this->adapter);
+            $detailRepo->setPositionFlatValue($fiscalYearId, $positionId, $flatId, $assignedValue);
+
+            return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

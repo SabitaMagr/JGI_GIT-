@@ -1,22 +1,3 @@
-<?php if ($this->messages): ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php endif; ?>
-<?php
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
-?>
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\system-utility')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
-
-
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
@@ -33,11 +14,29 @@ $this->headScript()
 
 $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-attendance.js'));
 ?>
-
+<?php if ($this->messages): ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php endif; ?>
+<?php
+if ($this->messages) {
+    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
+    foreach ($this->messages as $message) {
+        print '<li>' . $message . '</li>';
+    }
+    print '</ul>';
+}
+?>
 <script>
     document.employeeList =<?= json_encode($employeeList); ?>;
+    document.searchValues =<?= json_encode($searchValues); ?>;
+    document.employeeFilter = '<?= $this->url('system-utility', ['action' => 'pullEmployeeFilter']); ?>';
+    document.regenAttendanceLink = '<?php echo $this->url('system-utility', ['action' => 'regen-attendance']); ?>';
 </script>
-
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\system-utility')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
 
 <div class="row margin-top-30">
     <div class="col-sm-12">
@@ -54,11 +53,11 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
 
             <div class="portlet-body">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group required  ">
-                                    <label for="fromDate">Attendance Date</label>                                    
+                                    <label for="fromDate">From</label>                                    
                                     <span class="required" aria-required="true">*</span>
                                     <input type="text" name="fromDate" required="required" id="fromDate" class="form-control" vstartDatealue="">                                
                                 </div>
@@ -67,7 +66,25 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nepalifromDate">&nbsp;</label>
-                                    <input type="text" name="nepalifromDate" id="nepalifromDate" class="form-control " value="" >
+                                    <input type="text" name="nepalifromDate" id="nepaliFromDate" class="form-control " value="" >
+                                </div>
+                            </div>     
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group required  ">
+                                    <label for="toDate">To</label>                                    
+                                    <span class="required" aria-required="true">*</span>
+                                    <input type="text" name="toDate" required="required" id="toDate" class="form-control" vstartDatealue="">                                
+                                </div>
+
+                            </div>     
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nepalitoDate">&nbsp;</label>
+                                    <input type="text" name="nepalitoDate" id="nepaliToDate" class="form-control " value="" >
                                 </div>
                             </div>     
                         </div>
@@ -79,15 +96,27 @@ $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-att
                             <select multiple name="employeeId" required="required" id="employeeId" class="form-control">
                             </select>
                         </div>
+
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <input type="button" name="submit" class="btn btn-success pull-right" id="btn-reAttendnace" value="Submit">
+                    <div class="col-sm-2">
+                        <div class="col-sm-6">
+
+                            <a id="btn-filter" class="btn-edit" style="margin-top: 24px; height:28px; padding: 2px 7px !important;">
+                                <i class="fa fa-filter" style="height:17px;"></i>      
+                            </a>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="button" name="submit" class="btn btn-success pull-right" style="margin-top: 24px; height:28px !important;" id="btn-reAttendnace" value="Submit">
+                        </div>
                     </div>
+
+
                 </div>
+
             </div>
 
         </div>
     </div>
 </div>
+
+<?php print $this->partial('partials/re-attendance-modal.phtml'); ?>

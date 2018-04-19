@@ -2,8 +2,13 @@
 
 namespace Payroll;
 
-use Zend\Router\Http\Segment;
 use Application\Controller\ControllerFactory;
+use Payroll\Controller\FlatValue;
+use Payroll\Controller\MonthlyValue;
+use Payroll\Controller\Rules;
+use Payroll\Controller\SalarySheetController;
+use Payroll\Controller\TaxSheetController;
+use Zend\Router\Http\Segment;
 
 return [
     'router' => [
@@ -13,7 +18,7 @@ return [
                 'options' => [
                     'route' => '/payroll/monthlyValue[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\MonthlyValue::class,
+                        'controller' => MonthlyValue::class,
                         'action' => 'index'
                     ]
                 ]
@@ -23,7 +28,7 @@ return [
                 'options' => [
                     'route' => '/payroll/flatValue[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\FlatValue::class,
+                        'controller' => FlatValue::class,
                         'action' => 'index'
                     ]
                 ]
@@ -33,17 +38,27 @@ return [
                 'options' => [
                     'route' => '/payroll/rules[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\Rules::class,
+                        'controller' => Rules::class,
                         'action' => 'index'
                     ]
                 ]
             ],
-            'generate' => [
+            'salarySheet' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/payroll/generate[/:action[/:id]]',
+                    'route' => '/payroll/salarysheet[/:action[/:id]]',
                     'defaults' => [
-                        'controller' => Controller\Generate::class,
+                        'controller' => SalarySheetController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'taxSheet' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/taxsheet[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => TaxSheetController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -76,9 +91,14 @@ return [
                         'action' => 'edit',
                     ],
                     [
-                        'label' => 'Detail',
+                        'label' => 'Employee Wise',
                         'route' => 'monthlyValue',
                         'action' => 'detail',
+                    ],
+                    [
+                        'label' => 'Position Wise',
+                        'route' => 'monthlyValue',
+                        'action' => 'position-wise',
                     ],
                 ]
             ]
@@ -108,9 +128,14 @@ return [
                         'action' => 'edit',
                     ],
                     [
-                        'label' => 'Detail',
+                        'label' => 'Employee Wise',
                         'route' => 'flatValue',
                         'action' => 'detail',
+                    ],
+                    [
+                        'label' => 'Position Wise',
+                        'route' => 'flatValue',
+                        'action' => 'position-wise',
                     ],
                 ]
             ]
@@ -141,34 +166,64 @@ return [
                     ],
                 ]
             ]
-        ],'generate' => [
+        ], 'salarySheet' => [
             [
-                'label' => 'Generate',
-                'route' => 'generate',
+                'label' => 'Salary',
+                'route' => 'salarySheet',
             ],
             [
-                'label' => 'Generate',
-                'route' => 'generate',
+                'label' => 'Salary',
+                'route' => 'salarySheet',
                 'pages' => [
                     [
-                        'label' => 'List',
-                        'route' => 'generate',
+                        'label' => 'Generate',
+                        'route' => 'salarySheet',
                         'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Pay Value Modified',
+                        'route' => 'salarySheet',
+                        'action' => 'pay-value-modified',
+                    ],
+                    [
+                        'label' => 'Payslip',
+                        'route' => 'salarySheet',
+                        'action' => 'payslip',
                     ],
                 ]
             ]
-        ],
+        ], 'taxSheet' => [
+            [
+                'label' => 'Tax',
+                'route' => 'taxSheet',
+            ],
+            [
+                'label' => 'Tax',
+                'route' => 'taxSheet',
+                'pages' => [
+                    [
+                        'label' => 'Tax Sheet',
+                        'route' => 'taxSheet',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Taxslip',
+                        'route' => 'taxSheet',
+                        'action' => 'taxslip',
+                    ],
+                ]
+            ]
+        ]
     ],
-
     'controllers' => [
         'factories' => [
-            Controller\MonthlyValue::class => ControllerFactory::class,
-            Controller\FlatValue::class => ControllerFactory::class,
-            Controller\Rules::class => ControllerFactory::class,
-            Controller\Generate::class => ControllerFactory::class,
+            MonthlyValue::class => ControllerFactory::class,
+            FlatValue::class => ControllerFactory::class,
+            Rules::class => ControllerFactory::class,
+            SalarySheetController::class => ControllerFactory::class,
+            TaxSheetController::class => ControllerFactory::class,
         ],
     ],
-
     'view_manager' => [
         'template_path_stack' => [
             __DIR__ . '/../view',

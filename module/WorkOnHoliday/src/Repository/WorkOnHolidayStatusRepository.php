@@ -3,37 +3,15 @@
 namespace WorkOnHoliday\Repository;
 
 use Application\Helper\EntityHelper;
-use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
 use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 
-class WorkOnHolidayStatusRepository implements RepositoryInterface {
+class WorkOnHolidayStatusRepository {
 
     private $adapter;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-    }
-
-    public function add(Model $model) {
-        
-    }
-
-    public function delete($id) {
-        
-    }
-
-    public function edit(Model $model, $id) {
-        
-    }
-
-    public function fetchAll() {
-        
-    }
-
-    public function fetchById($id) {
-        
     }
 
     public function getFilteredRecord($data, $recomApproveId) {
@@ -335,26 +313,4 @@ class WorkOnHolidayStatusRepository implements RepositoryInterface {
                     AND H.START_DATE >= A.MIN_ATTENDANCE_DT ORDER BY H.START_DATE");
     }
 
-//    public function getAttendedHolidayList($employeeId) {
-//        return EntityHelper::rawQueryResult($this->adapter, "
-//                    SELECT H.HOLIDAY_ID,
-//                      H.HOLIDAY_CODE,
-//                      H.HOLIDAY_ENAME,
-//                      H.HOLIDAY_LNAME,
-//                      TO_CHAR(H.START_DATE,'DD-MON-YYYY') AS START_DATE,
-//                      TO_CHAR(H.END_DATE,'DD-MON-YYYY')   AS END_DATE,
-//                      H.HALFDAY,
-//                      H.FISCAL_YEAR
-//                    FROM HRIS_HOLIDAY_MASTER_SETUP H
-//                    JOIN HRIS_EMPLOYEE_HOLIDAY EH
-//                    ON (H.HOLIDAY_ID=EH.HOLIDAY_ID),
-//                      (SELECT MIN(ATTENDANCE_DT) AS MIN_ATTENDANCE_DT,
-//                        MAX(ATTENDANCE_DT)       AS MAX_ATTENDANCE_DT
-//                      FROM HRIS_ATTENDANCE_DETAIL
-//                      WHERE EMPLOYEE_ID={$employeeId}
-//                      )A
-//                    WHERE H.STATUS     ='E'
-//                    AND EH.EMPLOYEE_ID = {$employeeId}
-//                    AND H.START_DATE BETWEEN A.MIN_ATTENDANCE_DT AND A.MAX_ATTENDANCE_DT");
-//    }
 }

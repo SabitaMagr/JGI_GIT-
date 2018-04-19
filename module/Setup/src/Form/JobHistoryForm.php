@@ -133,6 +133,13 @@ class JobHistoryForm {
     public $eventDate;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Hidden")
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({"id":"fileId"})
+     */
+    public $fileId;
+
+    /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */

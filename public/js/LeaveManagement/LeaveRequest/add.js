@@ -1,5 +1,5 @@
 (function ($, app) {
-    'use strict';
+//    'use strict';
     $(document).ready(function () {
         $('select').select2();
 
@@ -37,24 +37,32 @@
         var availableDays = null;
 
 
-        var calculateAvailableDays = function (startDateStr, endDateStr, employeeId) {
-            App.blockUI({target: "#hris-page-content", message: "Calculating Days"});
-            app.pullDataById(document.wsFetchAvailableDays, {startDate: startDateStr, endDate: endDateStr, employeeId: employeeId}).then(function (response) {
-                App.unblockUI("#hris-page-content");
+        var calculateAvailableDays = function (startDateStr, endDateStr, halfDay, employeeId, leaveId) {
+            if (startDateStr === null || startDateStr == '' || endDateStr === null || endDateStr == '' || employeeId === null || employeeId == '' || leaveId === null || leaveId == '') {
+                return;
+            }
+            app.serverRequest(document.wsFetchAvailableDays, {
+                startDate: startDateStr,
+                endDate: endDateStr,
+                employeeId: employeeId,
+                halfDay: halfDay,
+                leaveId: leaveId
+            }).then(function (response) {
                 if (!response.success) {
                     app.showMessage(response.error, 'error');
                     return;
                 }
 
-                var dateDiff = parseInt(response.data['AVAILABLE_DAYS']);
-                var availableDays = parseInt($availableDays.val());
+                var dateDiff = parseFloat(response.data['AVAILABLE_DAYS']);
+                var availableDays = parseFloat($availableDays.val());
 
                 $noOfDays.val(dateDiff);
+                var balanceDiff = dateDiff / (halfDay === 'N' ? 1 : 2);
 
-                if (dateDiff > availableDays) {
+                if (balanceDiff > availableDays) {
                     $errorMsg.html("* Applied days can't be more than available days.");
                     $request.prop("disabled", true);
-                } else if (dateDiff === 0) {
+                } else if (balanceDiff === 0) {
                     $errorMsg.html("* Applied days can't be 0 day.");
                     $request.prop("disabled", true);
                 } else {
@@ -63,16 +71,18 @@
                 }
 
             }, function (error) {
-                App.unblockUI("#hris-page-content");
                 app.showMessage(error, 'error');
             });
         };
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate', function (startDate, endDate, startDateStr, endDateStr) {
             var employeeId = $employee.val();
+            var leaveId = $leave.val();
             if (typeof employeeId === 'undefined' || employeeId === null || employeeId === '' || employeeId === -1) {
                 return;
             }
-            calculateAvailableDays(startDateStr, endDateStr, employeeId);
+            leaveChange($leave[0]);
+            var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
+            calculateAvailableDays(startDateStr, endDateStr, halfDayValue, employeeId, leaveId);
             checkForErrors(startDateStr, endDateStr, employeeId);
         });
 
@@ -152,17 +162,20 @@
             if ($this.val() === null || $this.val() === '' || $this.val() === '-1') {
                 return;
             }
+            calculateAvailableDays($startDate.val(), $endDate.val(), $halfDay.val(), $employee.val(), $leave.val());
             App.blockUI({target: "#hris-page-content", message: "Calculating Leave Days"});
+            var startDateValue = $startDate.val();
             app.pullDataById(document.wsPullLeaveDetail, {
                 'leaveId': $this.val(),
-                'employeeId': $employee.val()
+                'employeeId': $employee.val(),
+                'startDate': (startDateValue == '') ? null : startDateValue
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 var leaveDetail = success.data;
-                availableDays = parseInt(leaveDetail.BALANCE);
+                availableDays = parseFloat(leaveDetail.BALANCE);
                 $availableDays.val(availableDays);
 
-                var noOfDays = parseInt($noOfDays.val());
+                var noOfDays = parseFloat($noOfDays.val());
 
                 if ((availableDays != "" && noOfDays != "") && noOfDays > availableDays) {
                     $("#errorMsg").html("* Applied days can't be more than available days");
@@ -200,7 +213,8 @@
                 app.populateSelect($leave, leaveList, 'id', 'name', 'Select a Leave', null, null, false);
 
                 if ($startDate.val() != '' && $endDate.val() != '') {
-                    calculateAvailableDays($startDate.val(), $endDate.val(), $this.val());
+                    var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
+                    calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $this.val(), $leave.val());
                 }
 
             }, function (failure) {
@@ -211,6 +225,12 @@
 
         $employee.on('change', function () {
             employeeChange(this);
+        });
+        $halfDay.on('change', function () {
+            if ($startDate.val() !== '' && $endDate.val() !== '') {
+                var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
+                calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $employee.val(), $leave.val());
+            }
         });
     });
 })(window.jQuery, window.app);

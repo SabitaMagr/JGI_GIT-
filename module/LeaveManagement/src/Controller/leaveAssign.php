@@ -6,6 +6,7 @@ use Application\Helper\EntityHelper as AppEntityHelper;
 use Application\Helper\Helper;
 use LeaveManagement\Form\ExcelImportForm;
 use LeaveManagement\Form\LeaveAssignForm;
+use LeaveManagement\Model\LeaveAssign as LeaveAssignModel;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use LeaveManagement\Repository\LeaveBalanceRepository;
@@ -18,7 +19,6 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use function Zend\Filter\File\move_uploaded_file;
 
 class leaveAssign extends AbstractActionController {
 
@@ -122,8 +122,7 @@ class leaveAssign extends AbstractActionController {
                     if ($leaveDetail['STATUS'] == 'E') {
                         $empLeaveBalanceDetail = $leaveBalanceRepository->getByEmpIdLeaveId($employeeId, $leaveId);
                         if ($empLeaveBalanceDetail == NULL) {
-                            $leaveAssign = new \LeaveManagement\Model\LeaveAssign();
-                            //$leaveAssign->employeeLeaveAssignId = ((int) Helper::getMaxId($this->adapter, LeaveAssignController::TABLE_NAME, LeaveAssignController::EMPLOYEE_LEAVE_ASSIGN_ID)) + 1;
+                            $leaveAssign = new LeaveAssignModel();
                             $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                             $leaveAssign->createdBy = $this->employeeId;
                             $leaveAssign->employeeId = $employeeId;

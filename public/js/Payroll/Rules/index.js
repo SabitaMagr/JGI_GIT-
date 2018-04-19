@@ -19,18 +19,20 @@
             {field: "PAY_CODE", title: "Pay Code"},
             {field: "PAY_EDESC", title: "Pay Title"},
             {field: "PAY_TYPE", title: "Pay Type"},
-            {field: "IS_MONTHLY_DETAIL", title: "Is Monthly"},
+            {field: "INCLUDE_IN_TAX_DETAIL", title: "Include in Tax"},
+            {field: "INCLUDE_IN_SALARY_DETAIL", title: "Include in Salary"},
             {field: "PRIORITY_INDEX", title: "Priority No"},
             {field: "PAY_ID", title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
 
-        app.searchTable($table, ["PAY_EDESC", "PAY_TYPE", "IS_MONTHLY_DETAIL"]);
+        app.searchTable($table, ["PAY_EDESC", "PAY_TYPE"]);
         var map = {
             "PAY_ID": "Pay Id",
             "PAY_CODE": "Pay Code",
             "PAY_EDESC": "Pay Title",
             "PAY_TYPE": "Pay Type",
-            "IS_MONTHLY_DETAIL": "Is Monthly",
+            "INCLUDE_IN_TAX_DETAIL": "Include In Tax",
+            "INCLUDE_IN_SALARY_DETAIL": "Include In Salary",
             "PRIORITY_INDEX": "Priority No",
         };
 

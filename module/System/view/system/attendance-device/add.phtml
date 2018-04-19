@@ -1,38 +1,21 @@
 <?php
-//$this->headScript()->appendFile($this->basePath('js/system/attendance-device/add.js'));
+$this->headScript()->appendFile($this->basePath('js/system/attendance-device/add.js'));
 
-$form->setAttribute('role', 'form');
-$form->setAttribute('class', 'attendanceDeviceForm');
-
-
-$deviceName = $form->get('deviceName');
 $deviceIp = $form->get('deviceIp');
+$deviceCompany = $form->get('deviceCompany');
+$deviceName = $form->get('deviceName');
+$companyId = $form->get('companyId');
+$branchId = $form->get('branchId');
 $deviceLocation = $form->get('deviceLocation');
 $isActive = $form->get('isActive');
-$deviceCompany = $form->get('deviceCompany');
-
-
+$purpose = $form->get('purpose');
 $submit = $form->get('submit');
-$submit->setAttribute('value', 'SUBMIT');
-
 $form->setAttribute('action', $this->url('AttendanceDevice', ['action' => 'add']));
-
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
 $form->prepare();
 ?>
-
-
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\AttendanceDevice')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
-
-
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
@@ -47,22 +30,43 @@ $form->prepare();
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
-                            <?php print $this->formLabel($deviceName); ?>
-                            <?php print $this->formElement($deviceName); ?>
-                            <?php print $this->formElementErrors()->render($deviceName, ['class' => 'help-block']); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
-                        </div>
-                    </div>
-
-                    <div class="col-sm-4">
-                        <div class="form-group">
                             <?php print $this->formLabel($deviceIp); ?>
                             <?php print $this->formElement($deviceIp); ?>
                             <?php print $this->formElementErrors()->render($deviceIp, ['class' => 'help-block']); ?>
-                            <span class="errorMsg" style="font-size:11px; color:red;"></span>
                         </div>
                     </div>
+                    <div class="col-sm-4 ">
+                        <div class="form-group">
+                            <?php print $this->formLabel($deviceCompany); ?>
+                            <?php print $this->formElement($deviceCompany); ?>
+                            <?php print $this->formElementErrors()->render($deviceCompany, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($deviceName); ?>
+                            <?php print $this->formElement($deviceName); ?>
+                            <?php print $this->formElementErrors()->render($deviceName, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                </div>
 
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($companyId); ?>
+                            <?php print $this->formElement($companyId); ?>
+                            <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($branchId); ?>
+                            <?php print $this->formElement($branchId); ?>
+                            <?php print $this->formElementErrors()->render($branchId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($deviceLocation); ?>
@@ -72,24 +76,19 @@ $form->prepare();
                     </div>
                 </div>
 
-
-                <div class=" row">
-
-                    <div class="col-sm-4 ">
-                        <div class="form-group">
-                            <?php print $this->formLabel($deviceCompany); ?>
-                            <?php print $this->formElement($deviceCompany); ?>
-                            <?php print $this->formElementErrors()->render($deviceCompany, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="row">
-                    <div class="col-sm-1">
+                    <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($isActive); ?>
                             <?php print $this->formElement($isActive); ?>
                             <?php print $this->formElementErrors()->render($isActive, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($purpose); ?>
+                            <?php print $this->formElement($purpose); ?>
+                            <?php print $this->formElementErrors()->render($purpose, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                 </div>

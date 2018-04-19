@@ -341,12 +341,7 @@ class LeaveStatusRepository implements RepositoryInterface {
                     THEN ('E')
                   END
                 OR APRV.STATUS       IS NULL)
-                AND (LS.APPROVED_FLAG =
-                  CASE
-                    WHEN LS.EMPLOYEE_ID IS NOT NULL
-                    THEN ('Y')
-                  END
-                OR LS.EMPLOYEE_ID IS NULL)";
+                ";
         if ($leaveRequestStatusId != -1) {
             $sql .= " AND  LA.STATUS='{$leaveRequestStatusId}'";
         }

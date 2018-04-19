@@ -151,19 +151,22 @@ class AttendanceByHr extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
 
-            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
             $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
             $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
-            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
             $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
             $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
             $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
             $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+            $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
+            $locationId = isset($data['locationId']) ? $data['locationId'] : -1;
+            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
             $fromDate = $data['fromDate'];
             $toDate = $data['toDate'];
             $status = $data['status'];
-            $results = $this->repository->filterRecord($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, $data['presentStatus']);
+            $presentStatus = $data['presentStatus'];
+            $results = $this->repository->filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $locationId, $employeeId, $fromDate, $toDate, $status, $presentStatus);
 
             $result = [];
             $result['success'] = true;
@@ -219,15 +222,10 @@ class AttendanceByHr extends HrisController {
         try {
             $request = $this->getRequest();
             $postedData = $request->getPost();
-
-            $action = $postedData['action'];
-            $data = $postedData['data'];
-            foreach ($data as $item) {
-                $this->repository->manualAttendance($item['EMPLOYEE_ID'], Helper::getExpressionDate($item['ATTENDANCE_DT'])->getExpression(), $action);
-            }
-            return new CustomViewModel(['success' => true, 'data' => [], 'error' => '']);
+            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action']);
+            return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -250,6 +248,46 @@ class AttendanceByHr extends HrisController {
             return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function attendanceReportWithLocationAction() {
+        return Helper::addFlashMessagesToArray($this, [
+                    'status' => $this->getStatusSelect(),
+                    'presentStatus' => $this->getPresentStatusSelect(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
+
+    public function pullAttendanceWithLocationAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+
+            $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+            $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+            $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+            $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+            $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+            $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+            $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+            $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+            $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+            $fromDate = $data['fromDate'];
+            $toDate = $data['toDate'];
+            $status = $data['status'];
+            $results = $this->repository->filterRecordWithLocation($employeeId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $fromDate, $toDate, $status, $companyId, $employeeTypeId, $data['presentStatus']);
+
+            $result = [];
+            $result['success'] = true;
+            $result['data'] = Helper::extractDbData($results);
+            $result['error'] = "";
+
+            return new JsonModel($result);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

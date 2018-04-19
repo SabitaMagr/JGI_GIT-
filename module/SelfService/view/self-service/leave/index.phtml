@@ -12,7 +12,9 @@ $this->headScript()
         ->appendFile($this->basePath('js/SelfService/leave/index.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 ?>
-
+<script>
+    document.getFiscalYearMonthLink = '<?php echo $this->url('leave', ['action' => 'getFiscalYearMonth']); ?>';
+</script>
 
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leave')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -32,9 +34,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     </script>
 <?php } ?>
 <div class="margin-top-20">
-    
     <div class="portlet light bg-inverse">
-        
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -64,7 +64,20 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
 
-    <div id="leaveTable">
+        <div id="leaveTable">
+        </div>
+    </div>    
+    <div>
+        <div class="row margin-top-20">
+            <div class="col-sm-2">
+                <select id="fiscalYear"></select>
+            </div>
+            <div class="col-sm-2">
+                <select id="fiscalMonth"></select>
+            </div>
+        </div>
+        <div id="monthlyLeaveTable">
+
+        </div>
     </div>
-	</div>    
 </div>

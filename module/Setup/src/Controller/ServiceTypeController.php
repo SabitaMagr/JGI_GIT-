@@ -2,8 +2,7 @@
 
 namespace Setup\Controller;
 
-use Application\Custom\CustomViewModel;
-use Application\Helper\ACLHelper;
+use Application\Controller\HrisController;
 use Application\Helper\Helper;
 use Exception;
 use Setup\Form\ServiceTypeForm;
@@ -11,32 +10,14 @@ use Setup\Model\ServiceType;
 use Setup\Repository\ServiceTypeRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class ServiceTypeController extends AbstractActionController {
+class ServiceTypeController extends HrisController {
 
-    private $repository;
-    private $form;
-    private $adapter;
-    private $employeeId;
-    private $storageData;
-    private $acl;
-
-    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->adapter = $adapter;
-        $this->repository = new ServiceTypeRepository($adapter);
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
-        $this->acl = $this->storageData['acl'];
-    }
-
-    private function initializeForm() {
-        $serviceTypeForm = new ServiceTypeForm();
-        $builder = new AnnotationBuilder();
-        if (!$this->form) {
-            $this->form = $builder->createForm($serviceTypeForm);
-        }
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(ServiceTypeRepository::class);
+        $this->initializeForm(ServiceTypeForm::class);
     }
 
     public function indexAction() {
@@ -44,23 +25,25 @@ class ServiceTypeController extends AbstractActionController {
         if ($request->isPost()) {
             try {
                 $result = $this->repository->fetchActiveRecord();
-                $serviceTypeList = Helper::extractDbData($result);
-                return new CustomViewModel(['success' => true, 'data' => $serviceTypeList, 'error' => '']);
+                $serviceTypeList = iterator_to_array($result, false);
+                return new JsonModel(['success' => true, 'data' => $serviceTypeList, 'error' => '']);
             } catch (Exception $e) {
-                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
+        return $this->stickFlashMessagesTo(['acl' => $this->acl]);
+    }
+
+    private function prepareForm() {
+        $type = $this->form->get('type');
+        $typeList = ["PERMANENT" => "Permanent", "PROBATION" => "Probation", "CONTRACT" => "Contract", "TEMPORARY" => "Temporary", "RESIGNED" => "Resigned", "RETIRED" => "Retired"];
+        $type->setValueOptions($typeList);
     }
 
     public function addAction() {
-
-        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
-        $this->initializeForm();
+        $this->prepareForm();
         $request = $this->getRequest();
-
         if ($request->isPost()) {
-
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 try {
@@ -79,20 +62,17 @@ class ServiceTypeController extends AbstractActionController {
                 }
             }
         }
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'messages' => $this->flashmessenger()->getMessages()
+        return $this->stickFlashMessagesTo([
+                    'form' => $this->form
         ]);
     }
 
     public function editAction() {
-
-        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
             return $this->redirect()->toRoute();
         }
-        $this->initializeForm();
+        $this->prepareForm();
         $request = $this->getRequest();
         $serviceType = new ServiceType();
         if (!$request->isPost()) {
@@ -110,15 +90,11 @@ class ServiceTypeController extends AbstractActionController {
                 return $this->redirect()->toRoute("serviceType");
             }
         }
-        return Helper::addFlashMessagesToArray($this, ['form' => $this->form, 'id' => $id]);
+        return $this->stickFlashMessagesTo(['form' => $this->form, 'id' => $id]);
     }
 
     public function deleteAction() {
-        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
-            return;
-        };
         $id = (int) $this->params()->fromRoute("id");
-
         if (!$id) {
             return $this->redirect()->toRoute('serviceType');
         }
@@ -128,8 +104,3 @@ class ServiceTypeController extends AbstractActionController {
     }
 
 }
-
-/* End of file ServiceTypeController.php */
-/* Location: ./Setup/src/Controller/ServiceTypeController.php */
-?>
-

@@ -2,12 +2,20 @@
 
 namespace Application\Controller;
 
+use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
+use Application\Model\Files;
+use Application\Model\FiscalYear;
+use Application\Repository\FileRepository;
+use Application\Repository\MonthRepository;
+use Exception;
 use ReflectionClass;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
 class HrisController extends AbstractActionController {
 
@@ -72,6 +80,102 @@ class HrisController extends AbstractActionController {
             $output[$item[$key]] = $item[$value];
         }
         return $output;
+    }
+
+    protected function getACLFilter() {
+        $filter = [];
+        switch ($this->acl['CONTROL']) {
+            case 'C':
+                $filter['companyId'] = $this->storageData['employee_detail']['COMPANY_ID'];
+                break;
+            case 'B':
+                $filter['branchId'] = $this->storageData['employee_detail']['BRANCH_ID'];
+                break;
+            case 'U':
+                $filter['employeeId'] = $this->storageData['employee_detail']['EMPLOYEE_ID'];
+                break;
+        }
+        return $filter;
+    }
+
+    public function uploadFileAction() {
+        try {
+            $request = $this->getRequest();
+            $files = $request->getFiles()->toArray();
+            if (sizeof($files) <= 0) {
+                throw new Exception("No file is uploaded");
+            }
+            $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
+            $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
+            $unique = Helper::generateUniqueName();
+            $newFileName = $unique . "." . $ext;
+            $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/" . $newFileName);
+            if (!$success) {
+                throw new Exception("Moving uploaded file failed");
+            }
+            $fileRepository = new FileRepository($this->adapter);
+            $file = new Files();
+            $file->fileId = ((int) Helper::getMaxId($this->adapter, Files::TABLE_NAME, Files::FILE_ID)) + 1;
+            $file->fileName = $fileName . "." . $ext;
+            $file->fileInDirName = $newFileName;
+            $file->uploadedDate = Helper::getcurrentExpressionDate();
+            $file->uploadedBy = $this->employeeId;
+            $fileRepository->add($file);
+            return new JsonModel(['success' => true, 'data' => (array) $file, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getFileDetailAction() {
+        try {
+            $request = $this->getRequest();
+            $postedData = (array) $request->getPost();
+            $fileRepository = new FileRepository($this->adapter);
+            $fileDetail = $fileRepository->fetchById($postedData['fileId']);
+            return new JsonModel(['success' => true, 'data' => $fileDetail, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getFiscalYearMonthAction() {
+        try {
+            $data['years'] = EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]);
+            $monthRepo = new MonthRepository($this->adapter);
+            $data['months'] = iterator_to_array($monthRepo->fetchAll(), false);
+            $data['currentMonth'] = $monthRepo->getCurrentMonth();
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function getSearchDataAction() {
+        try {
+            $data = EntityHelper::getSearchData($this->adapter);
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function regenAttendanceAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $fromDate = Helper::getExpressionDate($data['FROM_DATE'])->getExpression();
+            $toDateQuery = "";
+            if (isset($data['TO_DATE'])) {
+                $toDate = Helper::getExpressionDate($data['TO_DATE'])->getExpression();
+                $toDateQuery = $toDateQuery . ",{$toDate}";
+            }
+            $employeeId = $data['EMPLOYEE_ID'];
+            EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_REATTENDANCE({$fromDate},{$employeeId}{$toDateQuery}); END;");
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Reattendance successful."]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
     }
 
 }

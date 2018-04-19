@@ -136,23 +136,45 @@ EOT;
         return EntityHelper::rawQueryResult($this->adapter, "
             SELECT (
               CASE
-                WHEN COUNT(PM.YEAR) > 0
+                WHEN COUNT(PM.FISCAL_YEAR_ID) > 0
                 THEN 'Y'
                 ELSE 'N'
               END) AS IS_DEDUCTED
             FROM HRIS_PENALIZED_MONTHS PM
             JOIN HRIS_MONTH_CODE M
-            ON (PM.YEAR     =M.YEAR
-            AND PM.MONTH_NO = M.MONTH_NO)
+            ON (PM.FISCAL_YEAR_ID     =M.FISCAL_YEAR_ID
+            AND PM.FISCAL_YEAR_MONTH_NO = M.FISCAL_YEAR_MONTH_NO)
             WHERE M.MONTH_ID= {$monthId} ")->current();
     }
 
     public function deduct($data) {
         EntityHelper::rawQueryResult($this->adapter, "
                 BEGIN
-                  HRIS_LATE_LEAVE_DEDUCTION({$data['monthId']},{$data['noOfDays']},{$data['employeeId']});
+                  HRIS_LATE_LEAVE_DEDUCTION({$data['companyId']},{$data['fiscalYearId']},{$data['fiscalYearMonthNo']},{$data['noOfDeductionDays']},{$data['employeeId']},'{$data['action']}');
                 END;
 ");
+    }
+
+    public function penalizedMonthReport($fiscalYearId, $fiscalYearMonthNo): array {
+        $sql = "SELECT CMC.COMPANY_ID,
+                  CMC.COMPANY_NAME,
+                  CMC.FISCAL_YEAR_ID,
+                  CMC.FISCAL_YEAR_MONTH_NO,
+                  CMC.MONTH_EDESC,
+                  PM.NO_OF_DAYS
+                FROM
+                  (SELECT HRIS_COMPANY.*,HRIS_MONTH_CODE.* FROM HRIS_COMPANY , HRIS_MONTH_CODE
+                  ) CMC
+                LEFT JOIN HRIS_PENALIZED_MONTHS PM
+                ON (PM.COMPANY_ID           =CMC.COMPANY_ID
+                AND PM.FISCAL_YEAR_ID       =CMC.FISCAL_YEAR_ID
+                AND PM.FISCAL_YEAR_MONTH_NO = CMC.FISCAL_YEAR_MONTH_NO)
+                WHERE CMC.FISCAL_YEAR_ID    ={$fiscalYearId}
+                AND CMC.FISCAL_YEAR_MONTH_NO={$fiscalYearMonthNo}
+";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return iterator_to_array($result, false);
     }
 
 }

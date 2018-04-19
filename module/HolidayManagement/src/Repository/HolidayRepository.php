@@ -31,10 +31,7 @@ class HolidayRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        $array = $model->getArrayCopyForDB();
-        $this->tableGateway->update($array, [
-            Holiday::HOLIDAY_ID => $id
-        ]);
+        $this->tableGateway->update($model->getArrayCopyForDB(), [Holiday::HOLIDAY_ID => $id]);
     }
 
     public function fetchAll($today = null) {
@@ -72,6 +69,15 @@ class HolidayRepository implements RepositoryInterface {
             new Expression("HALFDAY AS HALFDAY"),
             new Expression("ASSIGN_ON_EMPLOYEE_SETUP AS ASSIGN_ON_EMPLOYEE_SETUP"),
             new Expression("REMARKS AS REMARKS"),
+            new Expression("COMPANY_ID AS COMPANY_ID"),
+            new Expression("BRANCH_ID AS BRANCH_ID"),
+            new Expression("DEPARTMENT_ID AS DEPARTMENT_ID"),
+            new Expression("DESIGNATION_ID AS DESIGNATION_ID"),
+            new Expression("POSITION_ID AS POSITION_ID"),
+            new Expression("SERVICE_TYPE_ID AS SERVICE_TYPE_ID"),
+            new Expression("EMPLOYEE_TYPE AS EMPLOYEE_TYPE"),
+            new Expression("GENDER_ID AS GENDER_ID"),
+            new Expression("EMPLOYEE_ID AS EMPLOYEE_ID"),
                 ], true);
 
         $select->from(Holiday::TABLE_NAME);
@@ -91,26 +97,26 @@ class HolidayRepository implements RepositoryInterface {
 
     public function filterRecords($fromDate, $toDate) {
         $sql = "
-SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
- BS_DATE(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
-  INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE,
-  BS_DATE(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE_N,
-  A.HOLIDAY_ID,
-  A.HOLIDAY_CODE,
-  INITCAP(A.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
-  INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
-  CASE
-    WHEN A.HALFDAY = 'F'
-    THEN 'First Half'
-    ELSE
-      CASE
-        WHEN A.HALFDAY='S'
-        THEN 'Second Half'
-        ELSE 'Full Day'
-      END
-  END AS HALFDAY
-FROM HRIS_HOLIDAY_MASTER_SETUP A
-WHERE A.STATUS ='E'";
+                SELECT INITCAP(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE,
+                 BS_DATE(TO_CHAR(A.START_DATE, 'DD-MON-YYYY')) AS START_DATE_N,
+                  INITCAP(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE,
+                  BS_DATE(TO_CHAR(A.END_DATE, 'DD-MON-YYYY'))  AS END_DATE_N,
+                  A.HOLIDAY_ID,
+                  A.HOLIDAY_CODE,
+                  INITCAP(A.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
+                  INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
+                  CASE
+                    WHEN A.HALFDAY = 'F'
+                    THEN 'First Half'
+                    ELSE
+                      CASE
+                        WHEN A.HALFDAY='S'
+                        THEN 'Second Half'
+                        ELSE 'Full Day'
+                      END
+                  END AS HALFDAY
+                FROM HRIS_HOLIDAY_MASTER_SETUP A
+                WHERE A.STATUS ='E'";
 
         if ($fromDate != null) {
             $sql .= " AND A.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
@@ -152,13 +158,7 @@ WHERE A.STATUS ='E'";
         return $statement->execute();
     }
 
-    public function holidayAssign(int $holidayId, array $assignedTo) {
-        $holidayAssignGateway = new TableGateway("HRIS_HOLIDAY_ASSIGN", $this->adapter);
-        $holidayAssignGateway->delete(["HOLIDAY_ID" => $holidayId]);
-        foreach ($assignedTo as $item) {
-            $item['HOLIDAY_ID'] = $holidayId;
-            $holidayAssignGateway->insert($item);
-        }
+    public function holidayAssign(int $holidayId) {
         EntityHelper::rawQueryResult($this->adapter, "BEGIN HRIS_HOLIDAY_ASSIGN_AUTO({$holidayId}); END;");
     }
 

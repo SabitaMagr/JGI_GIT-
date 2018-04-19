@@ -26,6 +26,9 @@ class Company extends Model {
     CONST CR_ACC_CODE = "CR_ACC_CODE";
     CONST EXCESS_CR_ACC_CODE = "EXCESS_CR_ACC_CODE";
     CONST LESS_DR_ACC_CODE = "LESS_DR_ACC_CODE";
+    CONST EQUAL_CR_ACC_CODE = "EQUAL_CR_ACC_CODE";
+    CONST ADVANCE_DR_ACC_CODE = "ADVANCE_DR_ACC_CODE";
+    CONST ADVANCE_CR_ACC_CODE = "ADVANCE_CR_ACC_CODE";
 
     public $companyId;
     public $companyCode;
@@ -42,10 +45,13 @@ class Company extends Model {
     public $logo;
     public $linkTravelToSynergy = 'N';
     public $formCode = null;
-    public $drAccCode = null;   
+    public $drAccCode = null;
     public $crAccCode = null;
     public $excessCrAccCode = null;
     public $lessDrAccCode = null;
+    public $equalCrAccCode = null;
+    public $advanceDrAccCode = null;
+    public $advanceCrAccCode = null;
     public $mappings = [
         'companyId' => self::COMPANY_ID,
         'companyCode' => self::COMPANY_CODE,
@@ -66,6 +72,9 @@ class Company extends Model {
         'crAccCode' => self::CR_ACC_CODE,
         'excessCrAccCode' => self::EXCESS_CR_ACC_CODE,
         'lessDrAccCode' => self::LESS_DR_ACC_CODE,
+        'equalCrAccCode' => self::EQUAL_CR_ACC_CODE,
+        'advanceDrAccCode' => self::ADVANCE_DR_ACC_CODE,
+        'advanceCrAccCode' => self::ADVANCE_CR_ACC_CODE,
     ];
 
 }

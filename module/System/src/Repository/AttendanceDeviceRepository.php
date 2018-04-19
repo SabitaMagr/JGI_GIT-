@@ -2,13 +2,14 @@
 
 namespace System\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
+use AttendanceManagement\Model\Attendance;
 use System\Model\AttendanceDevice;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Sql\Select;
-use Application\Helper\EntityHelper;
+use Zend\Db\TableGateway\TableGateway;
 
 class AttendanceDeviceRepository implements RepositoryInterface {
 
@@ -44,6 +45,29 @@ class AttendanceDeviceRepository implements RepositoryInterface {
             $select->where([AttendanceDevice::DEVICE_ID => $id]);
         });
         return $result->current();
+    }
+
+    public function fetchByIP($ipList, $fromDate = null, $toDate = null): array {
+        $condition = EntityHelper::conditionBuilder($ipList, "A." . Attendance::IP_ADDRESS, "AND", true);
+        if ($fromDate != null) {
+            $condition .= " AND A.ATTENDANCE_DT >= TO_DATE('{$fromDate}','DD-MON-YYYY') ";
+        };
+        if ($toDate != null) {
+            $condition .= " AND A.ATTENDANCE_DT <= TO_DATE('{$toDate}','DD-MON-YYYY') ";
+        }
+        $sql = "SELECT A.IP_ADDRESS,
+                  A.THUMB_ID,
+                  TO_CHAR(A.ATTENDANCE_DT,'DD-MON-YYYY') AS ATTENDANCE_DATE,
+                  TO_CHAR(A.ATTENDANCE_TIME,'HH:MI:SS AM') AS ATTENDANCE_TIME,
+                  A.EMPLOYEE_ID,
+                  E.FULL_NAME AS EMPLOYEE_NAME
+                FROM HRIS_ATTENDANCE A
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON (A.EMPLOYEE_ID = E.EMPLOYEE_ID)
+                WHERE 1           =1 {$condition} ORDER BY A.ATTENDANCE_DT DESC, A.ATTENDANCE_TIME DESC, A.THUMB_ID ASC";
+        $statement = $this->adapter->query($sql);
+        $iterator = $statement->execute();
+        return iterator_to_array($iterator, false);
     }
 
 }

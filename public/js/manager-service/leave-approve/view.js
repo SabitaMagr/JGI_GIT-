@@ -5,17 +5,20 @@
             try {
                 var recommendRemarksId = $("#form-recommendedRemarks");
                 var approveRemarksId = $("#form-approvedRemarks");
-                
-                if(typeof recommendRemarksId !=="undefined"){
+
+                if (typeof recommendRemarksId !== "undefined") {
                     recommendRemarksId.removeAttr("required");
                 }
-                if(typeof approveRemarksId !=="undefined"){
+                if (typeof approveRemarksId !== "undefined") {
                     approveRemarksId.removeAttr("required");
                 }
                 var id = $(this);
                 var parentId = id.parent(".form-group");
                 var availableBalance = parseFloat($("#availableDays").val());
                 var noOfDays = parseFloat($("#noOfDays").val());
+                if (typeof document.isHalfDay !== 'undefined') {
+                    noOfDays = noOfDays / (document.isHalfDay ? 2 : 1);
+                }
                 if (noOfDays > availableBalance) {
                     var errorMsgSpan = $('<span />', {
                         "class": 'errorMsgNoLeft',
@@ -30,6 +33,7 @@
             } catch (e) {
                 console.log("onApproveBtnClick", e.message);
             }
+            App.blockUI({target: "#hris-page-content"});
         });
     });
 })(window.jQuery, window.app);

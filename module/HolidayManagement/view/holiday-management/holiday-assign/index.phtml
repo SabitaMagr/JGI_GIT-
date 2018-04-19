@@ -1,4 +1,6 @@
 <?php
+$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/nprogress/nprogress.css'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/nprogress/nprogress.js'));
 $this->headScript()
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/search.js'))
@@ -11,6 +13,7 @@ $this->headScript()
     document.wsGetHolidayAssignedEmployees = '<?php echo $this->url('holiday-assign', ['action' => 'getHolidayAssignedEmployees']); ?>';
     document.wsAssignHolidayToEmployees = '<?php echo $this->url('holiday-assign', ['action' => 'assignHolidayToEmployees']); ?>';
     document.holidayList =<?php echo json_encode($holidayList); ?>;
+    document.regenAttendanceLink = '<?php echo $this->url('holiday-assign', ['action' => 'regen-attendance']); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holiday-assign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -82,7 +85,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </select>
                 </div>
             </div>
-            
+
             <div class="row margin-top-10 margin-bottom-20">
                 <div class=" col-sm-offset-8 col-sm-4 ">
                     <button  ng-click="view()" class="btn btn-default btn-sm pull-right">
@@ -160,7 +163,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             <div class="row margin-top-30" >
                 <div class="col-sm-2">
-                    <select  ng-options="key as value for (key,value) in holidayList" ng-model="holiday" ng-change="holidayChangeFn()" class="form-control" name="holiday" id="holidayId">
+                    <select  ng-options="holiday.HOLIDAY_ID as holiday.HOLIDAY_ENAME for holiday in holidayList" ng-model="holiday" ng-change="holidayChangeFn()" class="form-control" name="holiday" id="holidayId">
                         <option value="">Select Holiday</option>
                     </select>
                 </div>

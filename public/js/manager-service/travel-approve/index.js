@@ -56,7 +56,7 @@
         ]);
 
 
-        app.pullDataById('', {}).then(function (response) {
+        app.serverRequest('', {}).then(function (response) {
             if (response.success) {
                 app.renderKendoGrid($table, response.data);
                 selectItems = {};
@@ -136,22 +136,14 @@
             var selectedValues = [];
             for (var i in selectItems) {
                 if (selectItems[i].checked) {
-                    selectedValues.push({id: i, role: selectItems[i]['role']});
+                    selectedValues.push({id: i, role: selectItems[i]['role'], btnAction: btnId});
                 }
             }
-
-            App.blockUI({target: "#hris-page-content"});
-            app.pullDataById(
-                    document.approveRejectUrl,
-                    {data: selectedValues, btnAction: btnId}
-            ).then(function (success) {
-                App.unblockUI("#hris-page-content");
+            app.bulkServerRequest(document.approveRejectUrl, selectedValues, function () {
                 window.location.reload(true);
-            }, function (failure) {
-                App.unblockUI("#hris-page-content");
+            }, function (data, error) {
+
             });
         });
-
-
     });
 })(window.jQuery, window.app);

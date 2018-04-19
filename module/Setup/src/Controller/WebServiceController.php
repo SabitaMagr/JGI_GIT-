@@ -68,9 +68,11 @@ class WebServiceController extends AbstractActionController {
                         $tmp = $leaveAssign->filterByLeaveEmployeeId($ids['leaveId'], $item['EMPLOYEE_ID']);
                         if ($tmp != null) {
                             $item["BALANCE"] = (float) $tmp->BALANCE;
+                            $item["TOTAL_DAYS"] = (float) $tmp->TOTAL_DAYS;
                             $item["LEAVE_ID"] = $tmp->LEAVE_ID;
                         } else {
                             $item["BALANCE"] = "";
+                            $item["TOTAL_DAYS"] = "";
                             $item["LEAVE_ID"] = "";
                         }
                         array_push($tempArray, $item);

@@ -2,8 +2,8 @@
 
 namespace Advance\Repository;
 
-use Advance\model\AdvanceRequestModel;
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvanceRequestModel;
+use Advance\Model\AdvanceSetupModel;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -30,7 +30,20 @@ class AdvanceApproveRepository implements RepositoryInterface {
     }
 
     public function edit(Model $model, $id) {
-        $this->tableGateway->update($model->getArrayCopyForDB(), [AdvanceRequestModel::ADVANCE_REQUEST_ID => $id]);
+        $editData = $model->getArrayCopyForDB();
+        $this->tableGateway->update($editData, [AdvanceRequestModel::ADVANCE_REQUEST_ID => $id]);
+        if ($editData['STATUS'] == 'AP') {
+            $this->hris_advance_request_proc($id);
+        }
+    }
+
+    private function hris_advance_request_proc($id) {
+        $sql = "BEGIN
+                  HRIS_ADVANCE_REQUEST_PROC({$id},'Y');
+                END;";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
     }
 
     public function fetchAll() {
@@ -267,7 +280,5 @@ class AdvanceApproveRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
-
-    
 
 }

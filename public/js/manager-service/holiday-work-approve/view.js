@@ -1,17 +1,18 @@
-(function ($,app) {
+(function ($, app) {
     'use strict';
     $(document).ready(function (e) {
         $("#approve").on("click", function () {
             try {
-                var recommendRemarksId = $("#form-recommendedRemarks");
-                var approveRemarksId = $("#form-approvedRemarks");
+                var $recommendedRemarks = $("#recommendedRemarks");
+                var $approvedRemarks = $("#approvedRemarks");
 
-                if (typeof recommendRemarksId !== "undefined") {
-                    recommendRemarksId.removeAttr("required");
+                if (typeof $recommendedRemarks !== "undefined") {
+                    $recommendedRemarks.removeAttr("required");
                 }
-                if (typeof approveRemarksId !== "undefined") {
-                    approveRemarksId.removeAttr("required");
+                if (typeof $approvedRemarks !== "undefined") {
+                    $approvedRemarks.removeAttr("required");
                 }
+                app.setLoadingOnSubmit('WorkOnHoliday');
             } catch (e) {
                 console.log("onApproveBtnClick", e.message);
             }

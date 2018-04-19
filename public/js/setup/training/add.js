@@ -1,27 +1,21 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        var $duration = $("#duration");
         $('select').select2();
-        app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
-
-        /* prevent past events */
-//        $('#startDate').datepicker("setStartDate", new Date());
-//        $('#endDate').datepicker("setStartDate", new Date());
-        /* end of prevent past events */
-
-        var inputFieldId = "form-trainingName";
-        var formId = "training-form";
-        var tableName = "HRIS_TRAINING_MASTER_SETUP";
-        var columnName = "TRAINING_NAME";
-        var checkColumnName = "TRAINING_ID";
-        var selfId = $("#trainingID").val();
-        if (typeof selfId === "undefined") {
-            selfId = 0;
-        }
-        window.app.checkUniqueConstraints(inputFieldId, formId, tableName, columnName, checkColumnName, selfId, function () {
-            App.blockUI({target: "#hris-page-content"});
+        app.startEndDatePickerWithNepali('nepaliStartDate', 'startDate', 'nepaliEndDate', 'endDate', function (fromDate, toDate) {
+            if (fromDate <= toDate) {
+                var oneDay = 24 * 60 * 60 * 1000;
+                var diffDays = Math.abs((fromDate.getTime() - toDate.getTime()) / (oneDay));
+                var newValue = diffDays + 1;
+                $duration.val(newValue);
+            }
         });
-        window.app.checkUniqueConstraints("form-trainingCode", formId, tableName, "TRAINING_CODE", checkColumnName, selfId);
+        app.lockField(true, [$duration]);
+        app.setLoadingOnSubmit("Training", function () {
+            app.lockField(false, [$duration]);
+            return true;
+        });
     });
 })(window.jQuery, window.app);
 

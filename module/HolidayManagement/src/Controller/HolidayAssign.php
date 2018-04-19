@@ -2,36 +2,30 @@
 
 namespace HolidayManagement\Controller;
 
-use Application\Custom\CustomViewModel;
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use HolidayManagement\Model\EmployeeHoliday;
-use HolidayManagement\Model\Holiday;
 use HolidayManagement\Repository\HolidayAssignRepository;
-use Zend\Authentication\AuthenticationService;
+use HolidayManagement\Repository\HolidayRepository;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 
-class HolidayAssign extends AbstractActionController {
+class HolidayAssign extends HrisController {
 
-    private $adapter;
-    private $storage;
-    private $employeeId;
-    private $repository;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $auth = new AuthenticationService();
-        $this->storage = $auth->getStorage()->read();
-        $this->employeeId = $this->storage['employee_id'];
-        $this->repository = new HolidayAssignRepository($adapter);
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
+        $this->initializeRepository(HolidayAssignRepository::class);
     }
 
     public function indexAction() {
-        return Helper::addFlashMessagesToArray($this, [
+        $holidayRepo = new HolidayRepository($this->adapter);
+        $holidayList = $holidayRepo->fetchAll();
+        return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'holidayList' => EntityHelper::getTableKVList($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => EntityHelper::STATUS_ENABLED], null, null, Holiday::START_DATE)
+                    'holidayList' => iterator_to_array($holidayList, false)
         ]);
     }
 
@@ -52,14 +46,14 @@ class HolidayAssign extends AbstractActionController {
                 $genderId = $postedData['genderId'];
                 $employeeTypeId = $postedData['employeeTypeId'];
 
-                $raw = $this->repository->filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId,$employeeTypeId);
+                $raw = $this->repository->filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId, $employeeTypeId);
                 $reportData = Helper::extractDbData($raw);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage(), 'errorDetail' => $e->getTraceAsString()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage(), 'errorDetail' => $e->getTraceAsString()]);
         }
     }
 
@@ -72,12 +66,12 @@ class HolidayAssign extends AbstractActionController {
 
                 $raw = EntityHelper::getTableKVList($this->adapter, EmployeeHoliday::TABLE_NAME, null, [EmployeeHoliday::EMPLOYEE_ID], [EmployeeHoliday::HOLIDAY_ID => $holidayId], null, null, null, null, TRUE);
                 $reportData = Helper::extractDbData($raw);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 
@@ -93,12 +87,12 @@ class HolidayAssign extends AbstractActionController {
                     $employeeIdList = $postedData['employeeIdList'];
                 }
                 $reportData = $this->repository->multipleEmployeeAssignToHoliday($holidayId, $employeeIdList);
-                return new CustomViewModel(['success' => true, 'data' => $reportData, 'error' => '']);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
         } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
 

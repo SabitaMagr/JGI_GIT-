@@ -2,7 +2,7 @@
 
 namespace Notification\Controller;
 
-use Advance\model\AdvanceRequestModel;
+use Advance\Model\AdvanceRequestModel;
 use Advance\Repository\AdvanceRequestRepository;
 use Application\Helper\EmailHelper;
 use Application\Helper\Helper;
@@ -317,13 +317,10 @@ class HeadNotification {
         $notification->requestedAmount = $request->requestedAmount;
         $notification->deductionRate = $request->deductionRate;
         $notification->deductionIn = $request->deductionIn;
-        $notification->status = $status;
-
 
         $notification->route = json_encode(["route" => "advance-approve", "action" => "view", "id" => $request->advanceRequestId, "role" => $roleAndId['role']]);
         $title = "Advance Request";
         $desc = "Advance Request Applied";
-
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 6, $adapter, $url);
     }
@@ -753,28 +750,12 @@ class HeadNotification {
         $request->exchangeArrayFromDB($trainingRequestDetail);
 
         $recommdAppModel = self::findRecApp($request->employeeId, $adapter);
-
         $notification = self::initializeNotificationModel($recommdAppModel[RecommendApprove::RECOMMEND_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], TrainingReqNotificationModel::class, $adapter);
 
-        if ($trainingRequestDetail['TRAINING_ID'] != 0) {
-            $trainingRequestDetail['START_DATE'] = $trainingRequestDetail['T_START_DATE'];
-            $trainingRequestDetail['END_DATE'] = $trainingRequestDetail['T_END_DATE'];
-            $trainingRequestDetail['DURATION'] = $trainingRequestDetail['T_DURATION'];
-            $trainingRequestDetail['TRAINING_TYPE'] = $trainingRequestDetail['T_TRAINING_TYPE'];
-            $trainingRequestDetail['TITLE'] = $trainingRequestDetail['TRAINING_NAME'];
-        }
-        $getValueComType = function($trainingTypeId) {
-            if ($trainingTypeId == 'CC') {
-                return 'Company Contribution';
-            } else if ($trainingTypeId == 'CP') {
-                return 'Company Personal';
-            }
-        };
-
-        $notification->trainingType = $getValueComType($trainingRequestDetail['TRAINING_TYPE']);
+        $notification->trainingType = $trainingRequestDetail['TRAINING_TYPE_DETAIL'];
         $notification->trainingName = $trainingRequestDetail['TITLE'];
         $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
-        $notification->instructorName = $trainingRequestDetail['INSTRUCTOR_NAME'];
+        $notification->instructorName = $trainingRequestDetail['TRAINING_INSTRUCTOR_NAME'];
         $notification->fromDate = $trainingRequestDetail['START_DATE'];
         $notification->toDate = $trainingRequestDetail['END_DATE'];
         $notification->duration = $trainingRequestDetail['DURATION'];
@@ -801,24 +782,10 @@ class HeadNotification {
         $notification = self::initializeNotificationModel(
                         $recommdAppModel[RecommendApprove::APPROVED_BY], $recommdAppModel[RecommendApprove::EMPLOYEE_ID], TrainingReqNotificationModel::class, $adapter);
 
-        if ($trainingRequestDetail['TRAINING_ID'] != 0) {
-            $trainingRequestDetail['START_DATE'] = $trainingRequestDetail['T_START_DATE'];
-            $trainingRequestDetail['END_DATE'] = $trainingRequestDetail['T_END_DATE'];
-            $trainingRequestDetail['DURATION'] = $trainingRequestDetail['T_DURATION'];
-            $trainingRequestDetail['TRAINING_TYPE'] = $trainingRequestDetail['T_TRAINING_TYPE'];
-            $trainingRequestDetail['TITLE'] = $trainingRequestDetail['TRAINING_NAME'];
-        }
-        $getValueComType = function($trainingTypeId) {
-            if ($trainingTypeId == 'CC') {
-                return 'Company Contribution';
-            } else if ($trainingTypeId == 'CP') {
-                return 'Company Personal';
-            }
-        };
-        $notification->trainingType = $getValueComType($trainingRequestDetail['TRAINING_TYPE']);
+        $notification->trainingType = $trainingRequestDetail['TRAINING_TYPE_DETAIL'];
         $notification->trainingName = $trainingRequestDetail['TITLE'];
         $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
-        $notification->instructorName = $trainingRequestDetail['INSTRUCTOR_NAME'];
+        $notification->instructorName = $trainingRequestDetail['TRAINING_INSTRUCTOR_NAME'];
         $notification->fromDate = $trainingRequestDetail['START_DATE'];
         $notification->toDate = $trainingRequestDetail['END_DATE'];
         $notification->duration = $trainingRequestDetail['DURATION'];
@@ -1424,8 +1391,8 @@ class HeadNotification {
                 self::advanceApplied($model, $adapter, $url, self::RECOMMENDER);
                 break;
             case NotificationEvents::ADVANCE_RECOMMEND_ACCEPTED:
-                self::advanceRecommend($model, $adapter, $url, self::ACCEPTED);
                 self::advanceApplied($model, $adapter, $url, self::APPROVER);
+                self::advanceRecommend($model, $adapter, $url, self::ACCEPTED);
                 break;
             case NotificationEvents::ADVANCE_RECOMMEND_REJECTED:
                 self::advanceRecommend($model, $adapter, $url, self::REJECTED);

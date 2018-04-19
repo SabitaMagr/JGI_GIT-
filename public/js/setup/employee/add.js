@@ -152,6 +152,73 @@
             $(this).find(':disabled').removeAttr('disabled');
         });
 
+        var $addDegree = $('#add-degree');
+        var $addUniversity = $('#add-university');
+        var $addProgram = $('#add-program');
+        var $addCourse = $('#add-course');
+
+        var $modalDegree = $('#modal-degree');
+        var $modalUniversity = $('#modal-university');
+        var $modalProgram = $('#modal-program');
+        var $modalCourse = $('#modal-course');
+
+        $addDegree.on('click', function () {
+            $modalDegree.modal('show');
+        });
+        $addUniversity.on('click', function () {
+            $modalUniversity.modal('show');
+        });
+        $addProgram.on('click', function () {
+            $modalProgram.modal('show');
+        });
+        $addCourse.on('click', function () {
+            $modalCourse.modal('show');
+        });
+
+
+        (function (formList) {
+            $.each(formList, function (key, form) {
+                var $saveBtn = $(form.form.find('.model-save-btn'));
+                var $form = $(form.form.find('form'));
+                $form.on('submit', function () {
+                    var isValid = true;
+                    var requiredInputList = $(this).find('[required]');
+                    $.each(requiredInputList, function (key, value) {
+                        var $value = $(value);
+                        if ($value.val() == "") {
+                            app.showMessage($value.attr('name') + ' is required.', 'error');
+                            $value.focus();
+                            return false;
+                        }
+                    });
+                    if (isValid) {
+                        $modalDegree.modal('hide');
+                        var data = {};
+                        var formDataList = $form.serializeArray();
+                        $.each(formDataList, function (key, formData) {
+                            data[formData['name']] = formData['value'];
+                        });
+                        app.serverRequest(form.url, data).then(function (response) {
+                            if (response.success) {
+                                app.showMessage(response.message);
+                                window.location.reload();
+                            }
+                        });
+                    }
+
+                    return false;
+                })
+                $saveBtn.on('click', function () {
+                    $form.trigger('submit');
+                });
+            });
+        })([
+            {form: $modalDegree, url: document.addDegreeLink},
+            {form: $modalUniversity, url: document.addUniversityLink},
+            {form: $modalProgram, url: document.addProgramLink},
+            {form: $modalCourse, url: document.addCourseLink}
+        ]);
+
     });
 
 })(window.jQuery, window.app);

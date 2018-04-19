@@ -3,9 +3,9 @@
 namespace Advance\Controller;
 
 use Advance\Form\AdvanceRequestForm;
-use Advance\model\AdvancePayment;
-use Advance\model\AdvanceRequestModel;
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvancePayment;
+use Advance\Model\AdvanceRequestModel;
+use Advance\Model\AdvanceSetupModel;
 use Advance\Repository\AdvanceApproveRepository;
 use Advance\Repository\AdvancePaymentRepository;
 use Advance\Repository\AdvanceStatusRepository;
@@ -79,16 +79,16 @@ class AdvanceStatus extends HrisController {
             $advanceRequestModel->approvedBy = $this->employeeId;
             $advanceRequestModel->approvedRemarks = $getData->approvedRemarks;
 
-            $this->advancePaymentAdd($detail);
+//            $this->advancePaymentAdd($detail);
             $advanceApproveRepository->edit($advanceRequestModel, $id);
-            
+
             try {
-                    $advanceRequestModel->advanceRequestId = $id;
-                    HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-                
+                $advanceRequestModel->advanceRequestId = $id;
+                HeadNotification::pushNotification(($advanceRequestModel->status == 'AP') ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED, $advanceRequestModel, $this->adapter, $this);
+            } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
+
             return $this->redirect()->toRoute("advanceStatus");
         }
 
@@ -121,11 +121,9 @@ class AdvanceStatus extends HrisController {
         $advancePaymentRepository = new AdvancePaymentRepository($this->adapter);
 
         $advanceRequestId = $details['ADVANCE_REQUEST_ID'];
-//        $employeeId = $details['EMPLOYEE_ID'];
         $requestedAmt = $details['REQUESTED_AMOUNT'];
         $employeeSalary = $details['SALARY'];
         $monthlyDeductionRate = $details['DEDUCTION_RATE'];
-//        $paymentMonths = $details['DEDUCTION_IN'];
         $advanceDate = $details['DATE_OF_ADVANCE'];
 
         $monthlyDedeuctionAmt = ($monthlyDeductionRate / 100) * $employeeSalary;
@@ -193,7 +191,7 @@ class AdvanceStatus extends HrisController {
                 $data = $request->getPost();
                 $id = (int) $this->params()->fromRoute('id', 0);
                 $paymentRepository = new AdvancePaymentRepository($this->adapter);
-                $paymentRepository->skipAdvance($data['year'],$data['month'],$id,$this->employeeId);
+                $paymentRepository->skipAdvance($data['year'], $data['month'], $id, $this->employeeId);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

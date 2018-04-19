@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: ukesh
- * Date: 9/9/16
- * Time: 10:52 AM
- */
-
 namespace LeaveManagement\Form;
 
 use Zend\Form\Annotation;
@@ -54,20 +47,18 @@ class LeaveApplyForm {
     public $endDate;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Options({"label":"Available Days"})
      * @Annotation\Required(true)
-     * @Annotation\Attributes({ "id":"availableDays","disabled":"disabled", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"availableDays", "class":"form-control","readonly":"true"})
      */
     public $availableDays;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Options({"label":"No of Days"})
      * @Annotation\Required(true)
-     * @Annotation\Attributes({ "id":"noOfDays","min":"1", "class":"form-control","readonly":"true"})
+     * @Annotation\Attributes({ "id":"noOfDays", "class":"form-control","readonly":"true"})
      */
     public $noOfDays;
 

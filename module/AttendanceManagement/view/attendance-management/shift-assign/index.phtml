@@ -13,6 +13,7 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 $this->headScript()->appendFile($this->basePath('js/search.js'));
+$this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
 $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAssign/shiftController.js'));
 ?>
 
@@ -21,6 +22,7 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
     document.shiftList =<?php echo json_encode($shiftList); ?>;
     document.listWS = '<?= $this->url("shiftassign", ["action" => "listWS"]) ?>';
     document.editWs = '<?= $this->url("shiftassign", ["action" => "editWs"]) ?>';
+    document.deleteWs = '<?= $this->url("shiftassign", ["action" => "deleteWs"]) ?>';
 </script>sear
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -157,7 +159,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
                 <div class="col-sm-2">
-                    <button id="bulkEdit" class="btn btn-sm btn-danger pull-right">Edit</button>
+                    <button id="bulkDelete" class="btn btn-sm btn-danger pull-right">Delete</button>
+                    <button id="bulkEdit" class="btn btn-sm btn-info pull-right">Edit</button>
                 </div>
             </div>
         </div>

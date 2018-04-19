@@ -119,7 +119,7 @@
         $('#form_wizard_1').find('.button-previous').hide();
         $('#form_wizard_1 .button-submit').click(function () {
             shiftAdjustment['employeeList'] = shiftAdjustedEmployeeList;
-            app.pullDataById(document.shiftAdjustAddUrl, shiftAdjustment).then(function (response) {
+            app.serverRequest(document.shiftAdjustAddUrl, shiftAdjustment).then(function (response) {
                 if (response.success) {
                     document.location = document.shiftAdjustmentPage;
                 }
@@ -166,7 +166,7 @@
 
         $searchBtn.on('click', function () {
             $table.find('tbody').empty();
-            var filteredEmployeeList = document.searchManager.getEmployee();
+            var filteredEmployeeList = document.searchManager.getSelectedEmployee();
             $.each(filteredEmployeeList, function (k, v) {
                 var appendData = "<tr>"
                         + "<td>" + v.FULL_NAME + "</td>"

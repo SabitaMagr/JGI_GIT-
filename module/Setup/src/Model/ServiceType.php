@@ -16,6 +16,7 @@ class ServiceType extends Model {
     const MODIFIED_DT = "MODIFIED_DT";
     const CREATED_BY = "CREATED_BY";
     const MODIFIED_BY = "MODIFIED_BY";
+    const TYPE = "TYPE";
 
     public $serviceTypeId;
     public $serviceTypeCode;
@@ -26,7 +27,7 @@ class ServiceType extends Model {
     public $modifiedDt;
     public $createdBy;
     public $modifiedBy;
-    
+    public $type;
     public $mappings = [
         'serviceTypeId' => self::SERVICE_TYPE_ID,
         'serviceTypeCode' => self::SERVICE_TYPE_CODE,
@@ -36,7 +37,8 @@ class ServiceType extends Model {
         'createdDt' => self::CREATED_DT,
         'modifiedDt' => self::MODIFIED_DT,
         'createdBy' => self::CREATED_BY,
-        'modifiedBy' => self::MODIFIED_BY
+        'modifiedBy' => self::MODIFIED_BY,
+        'type' => self::TYPE,
     ];
 
 }

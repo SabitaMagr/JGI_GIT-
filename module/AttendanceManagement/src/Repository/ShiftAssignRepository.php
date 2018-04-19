@@ -136,6 +136,16 @@ EOT;
         $statement->execute();
     }
 
+    public function bulkDelete($id) {
+        $sql = <<<EOT
+                BEGIN
+                  HRIS_SHIFT_DELETE({$id});
+                END;
+EOT;
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
+    }
+
     public function bulkAdd($employeeId, $shiftId, $fromDate, $toDate, $createdBy) {
         $sql = <<<EOT
                 BEGIN

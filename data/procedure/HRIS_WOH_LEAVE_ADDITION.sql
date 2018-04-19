@@ -94,13 +94,13 @@ BEGIN
       WHERE SHIFT_ID = V_SHIFT_ID;
     END IF;
     --
-    IF((V_TOTAL_HOUR /60) BETWEEN 2 AND 4) THEN
+    IF((V_TOTAL_HOUR /60) >= 2 AND (V_TOTAL_HOUR /60) < 4) THEN
       V_INCREMENT_DAY         :=.5;
     ELSIF ((V_TOTAL_HOUR /60) >=4) THEN
       V_INCREMENT_DAY         :=1;
     END IF;
   END LOOP;
-  --
+--
   INSERT
   INTO HRIS_EMPLOYEE_LEAVE_ADDITION
     (

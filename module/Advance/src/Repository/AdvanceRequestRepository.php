@@ -2,8 +2,8 @@
 
 namespace Advance\Repository;
 
-use Advance\model\AdvanceRequestModel;
-use Advance\model\AdvanceSetupModel;
+use Advance\Model\AdvanceRequestModel;
+use Advance\Model\AdvanceSetupModel;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -65,7 +65,7 @@ class AdvanceRequestRepository implements RepositoryInterface {
             new Expression("AR.RECOMMENDED_BY AS RECOMMENDED_BY"),
             new Expression("AR.APPROVED_BY AS APPROVED_BY"),
             new Expression("(CASE WHEN AR.DEDUCTION_TYPE = 'M' THEN 'MONTH' ELSE 'SALARY' END) AS DEDUCTION_TYPE_NAME"),
-             new Expression("(CASE
+            new Expression("(CASE
               WHEN AR.OVERRIDE_RECOMMENDER_ID IS NOT NULL THEN OVR.FULL_NAME
               ELSE RECM.FULL_NAME
               END) AS RECOMMENDER_NAME"),
@@ -151,7 +151,5 @@ class AdvanceRequestRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
-
-    
 
 }

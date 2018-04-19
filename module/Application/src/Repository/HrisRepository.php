@@ -17,10 +17,15 @@ class HrisRepository {
         }
     }
 
-    protected function rawQuery($sql) {
+    protected function rawQuery($sql): array {
         $statement = $this->adapter->query($sql);
         $iterator = $statement->execute();
-        return iterator_to_array($iterator);
+        return iterator_to_array($iterator, false);
+    }
+
+    protected function executeStatement($sql) {
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
     }
 
     protected function checkIfTableExists($tableName): bool {

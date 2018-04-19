@@ -41,6 +41,43 @@ class Penalty extends HrisController {
         ]);
     }
 
+    public function penalizedMonthsAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = (array) $request->getPost();
+                $reportData = $this->repository->penalizedMonthReport($data['fiscalYearId'], $data['fiscalYearMonthNo']);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        return $this->stickFlashMessagesTo(['acl' => $this->acl, 'noOfDeductionDays' => $this->storageData['preference']['latePenaltyLeaveDeduction']]);
+    }
+
+    public function selfAction() {
+        $id = (int) $this->params()->fromRoute("id", 0);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $data['employeeId'] = $this->employeeId;
+                $reportData = $this->repository->monthWiseReport($data);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'alreadyPenalized' => $this->repository->checkIfAlreadyDeducted($data['monthId']), 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([
+                    'fiscalYears' => EntityHelper::getTableList($this->adapter, FiscalYear::TABLE_NAME, [FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME]),
+                    'months' => EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'selectedMonthId' => ($id != 0) ? $id : -1
+        ]);
+    }
+
     public function penaltyDetailWSAction() {
         try {
             $request = $this->getRequest();
@@ -56,6 +93,9 @@ class Penalty extends HrisController {
     }
 
     public function deductAction() {
+        $companyId = (int) $this->params()->fromRoute("id", 0);
+        $fiscalYearId = (int) $this->params()->fromRoute("fiscalYearId", 0);
+        $fiscalYearMonthNo = (int) $this->params()->fromRoute("fiscalYearMonthNo", 0);
         try {
             $request = $this->getRequest();
             if (!$request->isPost()) {
@@ -63,8 +103,12 @@ class Penalty extends HrisController {
             }
             $data = $request->getPost();
             $data['employeeId'] = $this->employeeId;
+            $data['companyId'] = $companyId;
+            $data['fiscalYearId'] = $fiscalYearId;
+            $data['fiscalYearMonthNo'] = $fiscalYearMonthNo;
+
             $reportData = $this->repository->deduct($data);
-            return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }

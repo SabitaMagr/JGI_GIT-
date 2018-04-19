@@ -67,6 +67,7 @@ class CompanyForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Required(false)
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Link Travel To Synergy"})
      * @Annotation\Attributes({ "id":"linkTravelToSynergy"})
      */
@@ -111,6 +112,30 @@ class CompanyForm {
      * @Annotation\Attributes({ "id":"formCode","class":"form-control"})
      */
     public $lessDrAccCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Equal Dr Account Code"})
+     * @Annotation\Attributes({ "id":"equalCrAccCode","class":"form-control"})
+     */
+    public $equalCrAccCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Advance Dr Account Code"})
+     * @Annotation\Attributes({ "id":"advanceDrAccCode","class":"form-control"})
+     */
+    public $advanceDrAccCode;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Advance Cr Account Code"})
+     * @Annotation\Attributes({ "id":"advanceCrAccCode","class":"form-control"})
+     */
+    public $advanceCrAccCode;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

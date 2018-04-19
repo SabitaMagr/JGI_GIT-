@@ -30,21 +30,24 @@ class TravelRequestRepository implements RepositoryInterface {
         EntityHelper::rawQueryResult($this->adapter, "
                 DECLARE
                   V_FROM_DATE HRIS_EMPLOYEE_TRAVEL_REQUEST.FROM_DATE%TYPE;
+                  V_TO_DATE HRIS_EMPLOYEE_TRAVEL_REQUEST.TO_DATE%TYPE;
                   V_EMPLOYEE_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.EMPLOYEE_ID%TYPE;
                   V_STATUS HRIS_EMPLOYEE_TRAVEL_REQUEST.STATUS%TYPE;
                   V_TRAVEL_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.TRAVEL_ID%TYPE:= {$id};
                 BEGIN
                   SELECT FROM_DATE ,
+                    TO_DATE,
                     EMPLOYEE_ID,
                     STATUS
                   INTO V_FROM_DATE,
+                    V_TO_DATE,
                     V_EMPLOYEE_ID,
                     V_STATUS
                   FROM HRIS_EMPLOYEE_TRAVEL_REQUEST
                   WHERE TRAVEL_ID =V_TRAVEL_ID;
                   --
                   IF V_STATUS IN ('AP','C') AND V_FROM_DATE < TRUNC(SYSDATE) THEN
-                    HRIS_REATTENDANCE(V_FROM_DATE,V_EMPLOYEE_ID);
+                    HRIS_REATTENDANCE(V_FROM_DATE,V_EMPLOYEE_ID,V_TO_DATE);
                   END IF;
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN
@@ -79,7 +82,7 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(TR.RETURNED_DATE, 'DD-MON-YYYY')) AS RETURNED_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.FROM_DATE, 'DD-MON-YYYY')) AS FROM_DATE"),
             new Expression("INITCAP(TO_CHAR(TR.TO_DATE, 'DD-MON-YYYY')) AS TO_DATE"),
-            new Expression("(TR.TO_DATE)-TRUNC(TR.FROM_DATE) AS DURATION"),
+            new Expression("((TR.TO_DATE)-TRUNC(TR.FROM_DATE))+1 AS DURATION"),
             new Expression("INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE"),
             new Expression("TR.REMARKS AS REMARKS"),
             new Expression("TR.STATUS AS STATUS"),
@@ -148,7 +151,7 @@ class TravelRequestRepository implements RepositoryInterface {
             new Expression("(CASE WHEN LOWER(TR.REQUESTED_TYPE) = 'ad' THEN 'Advance' ELSE 'Expense' END) AS REQUESTED_TYPE"),
             new Expression("(CASE WHEN TR.STATUS = 'RQ' THEN 'Y' ELSE 'N' END) AS ALLOW_EDIT"),
             new Expression("(CASE WHEN TR.STATUS IN ('RQ','RC','AP') THEN 'Y' ELSE 'N' END) AS ALLOW_DELETE"),
-            new Expression("(CASE WHEN (TR.STATUS = 'AP' AND TR.TRAVEL_ID NOT IN (SELECT DISTINCT REFERENCE_TRAVEL_ID FROM HRIS_EMPLOYEE_TRAVEL_REQUEST) ) THEN 'Y' ELSE 'N' END) AS ALLOW_EXPENSE_APPLY"),
+            new Expression("(CASE WHEN (TR.STATUS = 'AP' AND (SELECT COUNT(*) FROM HRIS_EMPLOYEE_TRAVEL_REQUEST WHERE REFERENCE_TRAVEL_ID =TR.TRAVEL_ID AND STATUS !='C' ) =0 ) THEN 'Y' ELSE 'N' END) AS ALLOW_EXPENSE_APPLY"),
                 ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])

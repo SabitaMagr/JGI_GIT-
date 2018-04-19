@@ -3,7 +3,6 @@
 namespace HolidayManagement\Repository;
 
 use Application\Helper\EntityHelper;
-use Exception;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
@@ -25,7 +24,7 @@ class HolidayAssignRepository {
         $this->adapter = $adapter;
     }
 
-    public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId = null,$employeeTypeId=null) {
+    public function filterEmployees($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $companyId, $genderId = null, $employeeTypeId = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
 
@@ -66,7 +65,7 @@ class HolidayAssignRepository {
         } else {
             $select->where(["E.RETIRED_FLAG='N'"]);
         }
-        
+
         if ($employeeTypeId != null && $employeeTypeId != -1) {
             $select->where([
                 "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
@@ -129,16 +128,10 @@ class HolidayAssignRepository {
     }
 
     public function multipleEmployeeAssignToHoliday($holidayId, $employeeIdList) {
-        EntityHelper::rawQueryResult($this->adapter, "SAVEPOINT multipleEmployeeAssign");
-        try {
-            EntityHelper::rawQueryResult($this->adapter, "DELETE FROM HRIS_EMPLOYEE_HOLIDAY WHERE HOLIDAY_ID={$holidayId}");
-            foreach ($employeeIdList as $empId) {
-                EntityHelper::rawQueryResult($this->adapter, "INSERT INTO HRIS_EMPLOYEE_HOLIDAY(HOLIDAY_ID,EMPLOYEE_ID) VALUES({$holidayId},{$empId})");
-            }
-        } catch (Exception $e) {
-            EntityHelper::rawQueryResult($this->adapter, "ROLLBACK TO SAVEPOINT multipleEmployeeAssign");
+        EntityHelper::rawQueryResult($this->adapter, "DELETE FROM HRIS_EMPLOYEE_HOLIDAY WHERE HOLIDAY_ID={$holidayId}");
+        foreach ($employeeIdList as $empId) {
+            EntityHelper::rawQueryResult($this->adapter, "INSERT INTO HRIS_EMPLOYEE_HOLIDAY(HOLIDAY_ID,EMPLOYEE_ID) VALUES({$holidayId},{$empId})");
         }
-        EntityHelper::rawQueryResult($this->adapter, "COMMIT");
     }
 
 }

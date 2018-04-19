@@ -24,7 +24,7 @@ class RoleSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"F":"Full","C":"Company Specific","B":"Branch Specific","DS":"Designation Specific","DP":"Department Specific","P":"Position Specific","U":"User Specific"},"label":"Control"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"control"})
+     * @Annotation\Attributes({ "id":"control","class":"control"})
      */
     public $control;
 
@@ -63,7 +63,16 @@ class RoleSetupForm {
      * @Annotation\Attributes({"id":"remarks","class":"form-control"})
      */
     public $remarks;
-
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"True"})
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"disable_inarray_validator":"true"})
+     * @Annotation\Attributes({ "id":"selectOptions","class":"form-control","multiple":"True"})
+     */
+    public $selectOptions;
+  
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})

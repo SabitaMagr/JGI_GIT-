@@ -39,15 +39,27 @@ $this->headScript()
             <a href="" class="fullscreen" data-original-title="" title=""> </a>
         </div>
         <div class="actions">
+            <a href="<?= $this->url('penalty', ['action' => 'penalizedMonths']) ?>" class="btn default btn-sm">
+                <i class="fa fa-plus-square icon-black"></i>
+                Deduct
+            </a>
             <div class="btn-group">
                 <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-copy"></i> Tools
                     <i class="fa fa-angle-down "></i>
                 </a>
                 <ul class="dropdown-menu pull-right">
-                    <li >
-                        <a id="export" href="javascript:;" class="hris-export-to-excel" hris-export-to-excel-target="withOTReport">
-                            <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
+                    <li>
+                        <a href="javascript:;" id="excelExport">
+                            <i class="fa fa-file-excel-o" ></i> 
+                            Export to Excel 
+                        </a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" id="pdfExport">
+                            <i class="fa fa-file-pdf-o" ></i> 
+                            Export to PDF 
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -120,12 +132,4 @@ $this->headScript()
 </div>
 
 <div id="penalty">
-</div>
-<div style="display: none;" class="row margin-top-20" id="actionDiv" >
-    <div class="col-sm-2 col-sm-offset-8">
-        <input id="noOfDays" type="number" class="form-control" value="0.5" placeholder="No of Days"  />
-    </div>
-    <div class="col-sm-2">
-        <button id="actionBtn" class="btn btn-danger btn-small pull-right">Deduct Leave</button>
-    </div>
 </div>

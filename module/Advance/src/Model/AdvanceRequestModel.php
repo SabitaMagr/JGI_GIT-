@@ -1,6 +1,6 @@
 <?php
 
-namespace Advance\model;
+namespace Advance\Model;
 
 use Application\Model\Model;
 

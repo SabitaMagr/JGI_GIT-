@@ -21,8 +21,9 @@
             {field: "DEPARTMENT_NAME", title: "Department"},
             {field: "DESIGNATION_TITLE", title: "Designation"},
              {field:"TELEPHONE_NO",title:"Telephone"},
-            {field:"EXTENSION_NO",title:"Extention No"},
              {field:"EMAIL_OFFICIAL",title:"Email Official"},
+            {field:"EXTENSION_NO",title:"Extention No"},
+             
            // {field: "EMPLOYEE_ID", title: "Action", template: action}
         ]);
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO','BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE','TELEPHONE_NO','EMAIL_OFFICIAL'], false);

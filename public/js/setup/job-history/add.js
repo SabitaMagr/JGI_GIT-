@@ -3,7 +3,7 @@
         $('select').select2();
         app.startEndDatePickerWithNepali('nepaliStartDate1', 'startDate', 'nepaliEndDate1', 'endDate');
         app.datePickerWithNepali('eventDate', 'eventDateNepali');
-        
+
         var $employeeId = $("#employeeId");
         var $serviceEventTypeId = $("#serviceEventTypeId");
 
@@ -98,6 +98,7 @@
             });
         };
         showHistory($employeeId.val());
+        app.setDropZone($('#fileId'), $('#dropZone'), document.uploadFileLink);
     });
 })(window.jQuery, window.app);
 

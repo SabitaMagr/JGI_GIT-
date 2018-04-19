@@ -50,9 +50,10 @@ class FlatValueDetailRepo implements RepositoryInterface {
         return $rawResult->current();
     }
 
-    public function getFlatValuesDetailById($flatValueId, $fiscalYearId, $employeeFilter, $monthId = null) {
-        $employeeIn = EntityHelper::employeesIn($employeeFilter['companyId'], $employeeFilter['branchId'], $employeeFilter['departmentId'], $employeeFilter['positionId'], $employeeFilter['designationId'], $employeeFilter['serviceTypeId'], $employeeFilter['serviceEventTypeId'], $employeeFilter['employeeTypeId'], $employeeFilter['employeeId']);
-        $sql = "SELECT * FROM HRIS_FLAT_VALUE_DETAIL WHERE FLAT_ID = {$flatValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$employeeIn} )";
+    public function getFlatValuesDetailById($flatValueId, $fiscalYearId, $emp, $monthId = null) {
+        $searchConditon = EntityHelper::getSearchConditon($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'], $emp['locationId']);
+        $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}";
+        $sql = "SELECT * FROM HRIS_FLAT_VALUE_DETAIL WHERE FLAT_ID = {$flatValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ({$empQuery})";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }

@@ -65,12 +65,9 @@
             q['toDate'] = $('#toDate').val();
             q['approverId'] = $('#approverId').val();
 
-            App.blockUI({target: "#hris-page-content"});
-            window.app.pullDataById(document.pullAttendanceRequestStatusListLink, q).then(function (success) {
-                App.unblockUI("#hris-page-content");
+            window.app.serverRequest(document.pullAttendanceRequestStatusListLink, q).then(function (success) {
                 app.renderKendoGrid($tableContainer, success.data);
             }, function (failure) {
-                App.unblockUI("#hris-page-content");
             });
         });
 

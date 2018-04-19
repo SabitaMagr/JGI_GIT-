@@ -7,16 +7,6 @@
         var $monthlyValueId = $("#monthlyValueId");
         var $fiscalYearId = $("#fiscalYearId");
 
-        var $companyId = $("#companyId");
-        var $branchId = $("#branchId");
-        var $departmentId = $("#departmentId");
-        var $designationId = $("#designationId");
-        var $positionId = $("#positionId");
-        var $serviceTypeId = $("#serviceTypeId");
-        var $serviceEventTypeId = $("#serviceEventTypeId");
-        var $employeeTypeId = $("#employeeTypeId");
-        var $employeeId = $("#employeeId");
-
         var $searchEmployeesBtn = $('#searchEmployeesBtn');
         var $assignMonthlyValueBtn = $('#assignMonthlyValueBtn');
 
@@ -29,31 +19,21 @@
         app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
 
         $searchEmployeesBtn.on('click', function () {
-            if ($monthlyValueId.val() == -1) {
-                app.showMessage("No monthly value Selected.", 'error');
-                $monthlyValueId.focus();
-                return;
-            }
             if ($fiscalYearId.val() == -1) {
                 app.showMessage("No fiscal year Selected.", 'error');
                 $fiscalYearId.focus();
                 return;
             }
+            if ($monthlyValueId.val() == -1) {
+                app.showMessage("No monthly value Selected.", 'error');
+                $monthlyValueId.focus();
+                return;
+            }
             app.pullDataById(document.getMonthlyValueDetailWS, {
                 mthId: $monthlyValueId.val(),
                 fiscalYearId: $fiscalYearId.val(),
-                employeeFilter: {
-                    companyId: $companyId.val(),
-                    branchId: $branchId.val(),
-                    departmentId: $departmentId.val(),
-                    designationId: $designationId.val(),
-                    positionId: $positionId.val(),
-                    serviceTypeId: $serviceTypeId.val(),
-                    serviceEventTypeId: $serviceEventTypeId.val(),
-                    employeeTypeId: $employeeTypeId.val(),
-                    employeeId: $employeeId.val()
-                }}).then(function (response) {
-                initTable($fiscalYearId.val(), document.searchManager.getEmployee(), response.data);
+                employeeFilter: document.searchManager.getSearchValues()}).then(function (response) {
+                initTable($fiscalYearId.val(), document.searchManager.getSelectedEmployee(), response.data);
             }, function (error) {
                 console.log(error);
             });

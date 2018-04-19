@@ -1,8 +1,8 @@
 <?php
-$db_host = "localhost";
-$db_user = "root";
-$db_password = "";
-$database = "neohrisrecover";
+$db_host = "192.168.4.52";
+$db_user = "suyashk446";
+$db_password = "Everest@8848";
+$database = "kumari";
 
 
 $connect = mysqli_connect($db_host, $db_user, $db_password, $database) or die("couldn't connect!!! to database");
@@ -258,7 +258,7 @@ $res = mysqli_fetch_assoc($row);
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2"><input type="submit" value="Go"class="btn  btn-go btn-color-green form-control" label="Filter"/></td>
+                            <td colspan="2"><input type="submit" value="Go"class="btn btn-small btn-success" label="Filter"/></td>
                         </tr>           
                     </table>
                 </form>
@@ -443,7 +443,7 @@ $res = mysqli_fetch_assoc($row);
             </table>
 
             <div class="printbutton" style="width:800px;">
-                <a href="<?= $this->url('generate', ['action' => 'printPayslip']) ?>/<?php echo $id; ?>/<?php echo $_POST['mcode']; ?>"><center><button type="print" class="btn btn-color-green btn-sm"  style="width:150px;"/>
+                <a href="<?= $this->url('salarySheet', ['action' => 'printPayslip']) ?>/<?php echo $id; ?>/<?php echo $_POST['mcode']; ?>"><center><button type="print" class="btn btn-color-green btn-sm"  style="width:150px;"/>
                         <strong>Print</strong></a></div>
             </form>
         </div> 

@@ -170,7 +170,8 @@ class JobHistoryRepository implements RepositoryInterface {
             new Expression("H.TO_SALARY AS TO_SALARY"),
             new Expression("H.RETIRED_FLAG AS RETIRED_FLAG"),
             new Expression("H.DISABLED_FLAG AS DISABLED_FLAG"),
-            new Expression("H.EVENT_DATE AS EVENT_DATE"),
+            new Expression("INITCAP(TO_CHAR(H.EVENT_DATE, 'DD-MON-YYYY')) AS EVENT_DATE"),
+            new Expression("H.FILE_ID AS FILE_ID"),
                 ], true);
         $select->from(['H' => "HRIS_JOB_HISTORY"]);
         $select->where(['H.JOB_HISTORY_ID' => $id]);

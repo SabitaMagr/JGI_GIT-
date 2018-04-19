@@ -63,6 +63,7 @@ print $this->form()->openTag($form);
 ?>
 <script>
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
+    document.isHalfDay =<?php echo (!in_array($halfDay->getValue(), [null, '', 'N'])) ? 'true' : 'false'; ?>;
 </script>
 
 <div class="row margin-top-20">
@@ -242,14 +243,21 @@ print $this->form()->openTag($form);
 
                     <div class=" row">
                         <div class="col-sm-4">
-                            <div
-                                class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
-                                    <?php print $this->formLabel($noOfDays); ?>
-                                    <?php print $this->formElement($noOfDays); ?>
+                            <div class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($noOfDays); ?>
+                                <?php print $this->formElement($noOfDays); ?>
                                 <span id="errorMsg" style="font-size:11px; color:red;"></span>
                             </div>
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
+                        <?php if (!in_array($halfDay->getValue(), [null, '', 'N'])): ?>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($halfDay); ?>
+                                    <?php print $this->formElement($halfDay); ?>
+                                </div>
+                            </div>
+                        <?php endif; ?>
                         <?php
                         if ($gracePeriod->getValue() != ""):
                             ?>
@@ -263,14 +271,10 @@ print $this->form()->openTag($form);
                         <?php endif;
                         ?>
                         <div class="col-sm-4">
-                            <?php if ($remarksDtl != null) { ?>
-                                <div
-                                    class="form-group required <?= empty($remarks->getMessages()) ? "" : "error" ?>">
-                                        <?php print $this->formLabel($remarks); ?>
-                                        <?php print $this->formElement($remarks); ?>
-                                </div>
-                            <?php }
-                            ?>
+                            <div class="form-group">
+                                <?php print $this->formLabel($remarks); ?>
+                                <?php print $this->formElement($remarks); ?>
+                            </div>
                         </div>
 
                         <div class="col-sm-4">

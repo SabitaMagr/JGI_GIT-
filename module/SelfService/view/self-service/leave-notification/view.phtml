@@ -1,20 +1,3 @@
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\leaveNotification')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-</div>
-<?php
-if ($this->messages && (sizeof($this->messages) > 1)) {
-    print '<div class="alert alert-warning alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>Warning!</strong> ';
-    print $this->messages[1];
-    print '</div>';
-}
-?>
-<?php if ($this->messages) { ?>
-    <script>
-        document.messages =<?php echo json_encode($this->messages); ?>
-    </script>
-<?php } ?>
 <?php
 /**
  * Load Javascript files here
@@ -52,17 +35,18 @@ $approvedRemarks->setAttributes(['disabled' => 'disabled']);
 
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
+$submit->setAttribute('id', 'approve');
 
 $form->setAttribute('action', $this->url('leaveNotification', ['action' => 'view', 'id' => $id]));
-
-
 $form->prepare();
-print $this->form()->openTag($form);
 ?>
 <script>
     document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
 </script>
-
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\leaveNotification')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+</div>
+<?php print $this->form()->openTag($form); ?>
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">
@@ -279,18 +263,15 @@ print $this->form()->openTag($form);
                                 </select>
                             </div>
                         </div>
-                        <div
-                            class="form-group margin-top-10 required">
+                        <div class="form-group margin-top-10 required">
                             <label>Reason for action [From You] <?php echo $note; ?></label>
-                            <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" class="form-subRemarks form-control" style="height: 50px; font-size:12px"><?php echo $subRemarks; ?></textarea>
+                            <textarea <?php echo $disabled; ?> name="subRemarks" id="form-subRemarks" class="form-subRemarks form-control" style="height: 50px; font-size:12px" required="required"><?php echo $subRemarks; ?></textarea>
                         </div>
                     <?php } ?>
                 </div>
                 <?php if ($subApprovedFlag == null) { ?>
                     <div class="form-group">
-                        <?php
-                        print $this->formSubmit($submit);
-                        ?>
+                        <?php print $this->formSubmit($submit); ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                     </div>
                 <?php } ?>
@@ -298,6 +279,4 @@ print $this->form()->openTag($form);
         </div>
     </div>
 </div>
-<?php
-print $this->form()->closeTag();
-?>
+<?php print $this->form()->closeTag(); ?>

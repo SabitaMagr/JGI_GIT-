@@ -14,15 +14,6 @@ class AttendanceDeviceForm {
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Device name"})
-     * @Annotation\Attributes({ "id":"deviceName", "class":" form-control" })
-     */
-    public $deviceName;
-
-    /**
-     * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Device IP"})
      * @Annotation\Attributes({ "id":"deviceIp", "class":"form-control" })
      */
@@ -32,25 +23,23 @@ class AttendanceDeviceForm {
      * @Annotion\Type("Zend\Form\Element\Text")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Device Location"})
-     * @Annotation\Attributes({ "id":"deviceLocation", "class":" form-control" })
+     * @Annotation\Options({"label":"Device Company"})
+     * @Annotation\Attributes({ "id":"deviceCompany", "class":" form-control" })
      */
-    public $deviceLocation;
+    public $deviceCompany;
 
     /**
-     * @Annotation\Type("Zend\Form\Element\Checkbox")
-     * @Annotation\Required(false)
+     * @Annotion\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Active","checked_value":"Y","unchecked_value":"N"})
-     * @Annotation\Attributes({"id":"isActive","class":"form-control"})
-     * @Annotation\Validator({"name":"StringLength", "options":{"max":"15"}})
+     * @Annotation\Options({"label":"Device name"})
+     * @Annotation\Attributes({ "id":"deviceName", "class":" form-control" })
      */
-    public $isActive;
+    public $deviceName;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Company"})
      * @Annotation\Attributes({ "id":"companyId","class":"form-control"})
      */
@@ -59,7 +48,6 @@ class AttendanceDeviceForm {
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch"})
      * @Annotation\Attributes({ "id":"branchId","class":"form-control"})
      */
@@ -67,12 +55,28 @@ class AttendanceDeviceForm {
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Device Company"})
-     * @Annotation\Attributes({ "id":"$deviceCompany", "class":" form-control" })
+     * @Annotation\Options({"label":"Device Location"})
+     * @Annotation\Attributes({ "id":"deviceLocation", "class":" form-control" })
      */
-    public $deviceCompany;
+    public $deviceLocation;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Checkbox")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"label":"Active","checked_value":"Y","unchecked_value":"N"})
+     * @Annotation\Attributes({"id":"isActive","class":"form-control"})
+     */
+    public $isActive;
+
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(true)
+     * @Annotation\Options({"value_options":{"IN":"In","OUT":"Out","I/O":"In and Out"},"label":"Purpose"})
+     * @Annotation\Attributes({ "id":"purpose","class":"form-control"})
+     */
+    public $purpose;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

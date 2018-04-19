@@ -195,7 +195,8 @@ class LeaveRequest extends HrisController {
                 $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
                 $leaveId = $postedData['leaveId'];
                 $employeeId = $postedData['employeeId'];
-                $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId);
+                $startDate = $postedData['startDate'];
+                $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId, $startDate);
 
                 return new CustomViewModel(['success' => true, 'data' => $leaveDetail, 'error' => '']);
             } else {
@@ -212,7 +213,7 @@ class LeaveRequest extends HrisController {
             if ($request->isPost()) {
                 $postedData = $request->getPost();
                 $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId']);
+                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId'], $postedData['halfDay'], $postedData['leaveId']);
                 return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");

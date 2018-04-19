@@ -43,7 +43,6 @@ class LeaveMasterRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(LeaveMaster::class, [LeaveMaster::LEAVE_ENAME], NULL, NULL, NULL, NULL, 'L', false), false);
         $select->from(['L' => LeaveMaster::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C." . Company::COMPANY_ID . "=" . "L." . LeaveMaster::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
         $select->where(["L.STATUS='E'"]);
         $select->order(LeaveMaster::LEAVE_ENAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);
