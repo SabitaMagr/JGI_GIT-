@@ -236,6 +236,7 @@ class SalarySheetController extends HrisController {
         $data['getGroupListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getGroupList']);
         $data['getFiscalYearMonthLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getFiscalYearMonth']);
         $data['pvmReadLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'pvmRead']);
+        $data['pvmUpdateLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'pvmUpdate']);
 
         $rulesRepo = new RulesRepository($this->adapter);
         $data['ruleList'] = $rulesRepo->fetchSSRules();
@@ -246,25 +247,37 @@ class SalarySheetController extends HrisController {
         $request = $this->getRequest();
         $postData = $request->getPost();
         $sspvmRepo = new SSPayValueModifiedRepo($this->adapter);
-        $sspvmRepo->filter(33);
-        return new JsonModel($postData);
+        $data = $sspvmRepo->filter($postData['monthId'], $postData['companyId'], $postData['groupId']);
+
+        return new JsonModel($data);
     }
 
-//    public function detailUpdateAction() {
-//        $request = $this->getRequest();
-//        $postData = $request->getPost();
-//        $data = json_decode($postData->models)[0];
-//        $data->TOTAL_AMOUNT = $data->FARE + $data->ALLOWANCE + $data->LOCAL_CONVEYENCE + $data->MISC_EXPENSES;
-//
-//        $model = new TravelExpenseDetail();
-//        $model->exchangeArrayFromDB((array) $data);
-//        $model->departureDate = Helper::getExpressionDate($model->departureDate);
-//        $model->departureTime = Helper::getExpressionTime($model->departureTime);
-//        $model->destinationDate = Helper::getExpressionDate($model->destinationDate);
-//        $model->destinationTime = Helper::getExpressionTime($model->destinationTime);
-//        $travelDetailRepo = new TravelExpenseDtlRepository($this->adapter);
-//        $travelDetailRepo->edit($model, $model->id);
-//
-//        return new JsonModel([$data]);
-//    }
+    public function pvmUpdateAction() {
+        $request = $this->getRequest();
+        $postData = $request->getPost();
+
+        $monthId = $postData->monthId;
+        $data = json_decode($postData->models);
+
+        $dataToUpdate = [];
+        foreach ($data as $value) {
+            $item = (array) $value;
+            $common = ['EMPLOYEE_ID' => $item['EMPLOYEE_ID'], 'MONTH_ID' => $monthId];
+            foreach ($item as $k => $v) {
+                if (!in_array($k, ['EMPLOYEE_ID', 'FULL_NAME', 'COMPANY_ID', 'COMPANY_NAME', 'GROUP_ID', 'GROUP_NAME', 'MONTH_ID'])) {
+                    if ($v != null) {
+                        $payId = str_replace('H_', '', $k);
+                        $dataUnit = array_merge($common, []);
+                        $dataUnit['PAY_ID'] = $payId;
+                        $dataUnit['VAL'] = $v;
+                        array_push($dataToUpdate, $dataUnit);
+                    }
+                }
+            }
+        }
+        $sspvmRepo = new SSPayValueModifiedRepo($this->adapter);
+        $sspvmRepo->bulkEdit($dataToUpdate);
+        return new JsonModel($data);
+    }
+
 }

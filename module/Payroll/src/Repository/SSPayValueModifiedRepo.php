@@ -19,19 +19,31 @@ class SSPayValueModifiedRepo extends HrisRepository {
         $csv = $this->fetchCSVSSRules();
         $employeeCondition = "";
         if ($companyId != null) {
-            $employeeCondition = " AND COMPANY_ID = {$companyId}";
+            $employeeCondition = " AND E.COMPANY_ID = {$companyId}";
         }
 
         if ($groupId != null) {
-            $employeeCondition = " AND GROUP_ID = {$groupId}";
+            $employeeCondition = " AND E.GROUP_ID = {$groupId}";
         }
-        $sql = "SELECT * FROM (SELECT *
-                FROM HRIS_SS_PAY_VALUE_MODIFIED
-                WHERE EMPLOYEE_ID IN
-                  (SELECT EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS ='E' {$employeeCondition}
-                  ) AND MONTH_ID ={$monthId}) PIVOT (MAX(VAL) FOR PAY_ID IN ({$csv}))";
-        print $sql;
-        exit;
+        $sql = "SELECT E.EMPLOYEE_ID,
+                  E.FULL_NAME,
+                  C.COMPANY_ID,
+                  C.COMPANY_NAME,
+                  SSG.GROUP_ID,
+                  SSG.GROUP_NAME,
+                  PV.*
+                FROM HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_COMPANY C ON (E.COMPANY_ID=C.COMPANY_ID)
+                LEFT JOIN HRIS_SALARY_SHEET_GROUP SSG ON (E.GROUP_ID=SSG.GROUP_ID)
+                LEFT JOIN
+                  (SELECT *
+                  FROM
+                    (SELECT * FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID ={$monthId}
+                    ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$csv}))
+                  ) PV
+                ON (E.EMPLOYEE_ID=PV.EMPLOYEE_ID)
+                WHERE E.STATUS   ='E' {$employeeCondition} ORDER BY C.COMPANY_NAME,SSG.GROUP_NAME,E.FULL_NAME";
+        return $this->rawQuery($sql);
     }
 
     private function fetchCSVSSRules(): string {
@@ -53,6 +65,53 @@ class SSPayValueModifiedRepo extends HrisRepository {
             }
         }
         return $dbArray;
+    }
+
+    public function bulkEdit($data) {
+        foreach ($data as $value) {
+            $this->createOrUpdate($value['MONTH_ID'], $value['EMPLOYEE_ID'], $value['PAY_ID'], $value['VAL']);
+        }
+    }
+
+    private function createOrUpdate($m, $e, $p, $v) {
+        $sql = "DECLARE
+                  V_MONTH_ID HRIS_SS_PAY_VALUE_MODIFIED.MONTH_ID%TYPE      :={$m};
+                  V_EMPLOYEE_ID HRIS_SS_PAY_VALUE_MODIFIED.EMPLOYEE_ID%TYPE:={$e};
+                  V_PAY_ID HRIS_SS_PAY_VALUE_MODIFIED.PAY_ID%TYPE          :={$p};
+                  V_VAL HRIS_SS_PAY_VALUE_MODIFIED.VAL%TYPE                :={$v};
+                  V_ROW_COUNT NUMBER;
+                BEGIN
+                  SELECT COUNT(*)
+                  INTO V_ROW_COUNT
+                  FROM HRIS_SS_PAY_VALUE_MODIFIED
+                  WHERE MONTH_ID  =V_MONTH_ID
+                  AND EMPLOYEE_ID = V_EMPLOYEE_ID
+                  AND PAY_ID      = V_PAY_ID;
+                  IF (V_ROW_COUNT >0 ) THEN
+                    UPDATE HRIS_SS_PAY_VALUE_MODIFIED
+                    SET VAL         =V_VAL
+                    WHERE MONTH_ID  =V_MONTH_ID
+                    AND EMPLOYEE_ID = V_EMPLOYEE_ID
+                    AND PAY_ID      = V_PAY_ID;
+                  ELSE
+                    INSERT
+                    INTO HRIS_SS_PAY_VALUE_MODIFIED
+                      (
+                        MONTH_ID,
+                        EMPLOYEE_ID,
+                        PAY_ID,
+                        VAL
+                      )
+                      VALUES
+                      (
+                        V_MONTH_ID,
+                        V_EMPLOYEE_ID,
+                        V_PAY_ID,
+                        V_VAL
+                      );
+                  END IF;
+                END;";
+        $this->executeStatement($sql);
     }
 
 }

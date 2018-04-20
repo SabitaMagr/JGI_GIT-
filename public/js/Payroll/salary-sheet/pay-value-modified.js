@@ -6,12 +6,23 @@
         var months = null;
         var companyList = null;
         var groupList = null;
+        var selectedMonth = null;
         /**/
         var $year = $('#fiscalYearId');
         var $month = $('#monthId');
         var $company = $('#companyId');
         var $group = $('#groupId');
         var $table = $('#table');
+
+        $month.on('change', function () {
+            salarySheetChange();
+        });
+        $company.on('change', function () {
+            salarySheetChange();
+        });
+        $group.on('change', function () {
+            salarySheetChange();
+        });
 
         app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
             months = monthList;
@@ -53,15 +64,29 @@
             if (monthId === null && monthId === '') {
                 return;
             }
+            if (typeof $table.data('kendoGrid') === 'undefined') {
+                $table.kendoGrid(kendoConfig);
+            } else {
+                $table.data('kendoGrid').dataSource.read();
+                $table.data('kendoGrid').refresh();
+            }
+
         };
-        var columns = [{field: 'FULL_NAME', title: 'Employee Name', width: 150, locked: true}];
-        var fields = {};
+        var columns = [
+            {field: 'COMPANY_NAME', title: 'Company', width: 150, locked: true},
+            {field: 'GROUP_NAME', title: 'Group', width: 150, locked: true},
+            {field: 'FULL_NAME', title: 'Employee', width: 150, locked: true}
+        ];
+        var fields = {
+            'COMPANY_NAME': {editable: false},
+            'GROUP_NAME': {editable: false},
+            'FULL_NAME': {editable: false},
+        };
 
         $.each(data.ruleList, function (k, v) {
             columns.push({field: v['PAY_ID_COL'], title: v['PAY_EDESC'], width: 100});
             fields[v['PAY_ID_COL']] = {type: "number"};
         });
-        columns.push({command: ["edit"], title: "&nbsp;", width: "150px"});
 
         var kendoConfig = {
             dataSource: {
@@ -72,17 +97,29 @@
                         type: "POST",
                     },
                     update: {
-                        url: '',
+                        url: data.pvmUpdateLink,
                         type: "POST",
                     },
                     parameterMap: function (options, operation) {
+
                         if (operation === "read") {
+                            selectedMonth = $month.val();
+                            var companyId = $company.val();
+                            var groupId = $group.val();
                             return {
-                                monthId: $month.val(),
-                                companyId: $company.val(),
-                                groupId: $group.val()
+                                monthId: selectedMonth,
+                                companyId: (companyId === undefined || companyId == '-1') ? null : companyId,
+                                groupId: (groupId === undefined || groupId == '-1') ? null : groupId
                             };
                         }
+                        if (operation !== "read" && options.models) {
+                            console.log(options.models);
+                            return {
+                                monthId: selectedMonth,
+                                models: kendo.stringify(options.models)};
+                        }
+
+
                     }
                 },
                 batch: true,
@@ -96,9 +133,9 @@
             },
             pageable: true,
             height: 550,
+            toolbar: ["save", "cancel"],
             columns: columns,
-            editable: "inline"
+            editable: true
         };
-        $table.kendoGrid(kendoConfig);
     });
 })(window.jQuery, window.app);

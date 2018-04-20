@@ -1105,6 +1105,7 @@ window.app = (function ($, toastr, App) {
                 $element.append($("<option></option>").val(list[i][id]).text(text));
             }
         }
+        $element.trigger('change');
     };
 
     var lockField = function (flag, fields) {
