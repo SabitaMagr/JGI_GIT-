@@ -42,15 +42,13 @@ class ContractAttendance extends HrisController {
             $customerId = $request->getPost('customerId');
             $monthId = $request->getPost('monthId');
             $locationId = $request->getPost('locationId');
-            
-            $attendnaceDetails = $this->repository->getCutomerEmpAttendnaceMonthly($monthId, $customerId,$locationId);
+
+            $attendnaceDetails = $this->repository->getCutomerEmpAttendnaceMonthly($monthId, $customerId, $locationId);
             return new JsonModel(['success' => true, 'data' => $attendnaceDetails, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-
-
 
     public function billPrintAction() {
 
@@ -110,7 +108,7 @@ class ContractAttendance extends HrisController {
         try {
             $request = $this->getRequest();
             $postData = $request->getPost();
-            
+
 
 
 
@@ -132,11 +130,8 @@ class ContractAttendance extends HrisController {
             $otType = $request->getPost('otType');
 
 
-            $returnData = $this->repository->updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType,
-                    $rate,
-                    $otRate,
-                    $otType
-                    );
+            $returnData = $this->repository->updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType, $rate, $otRate, $otType
+            );
 
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
         } catch (Exception $e) {
@@ -170,7 +165,7 @@ class ContractAttendance extends HrisController {
                     'monthList' => $monthList
         ]);
     }
-    
+
     public function pullCustomerMonthlyAttendanceReportAction() {
         try {
             $request = $this->getRequest();
@@ -179,6 +174,30 @@ class ContractAttendance extends HrisController {
             $locationId = $request->getPost('locationId');
 
             $attendnaceDetails = $this->repository->getCutomerEmpAttendnaceReportMonthly($monthId, $customerId, $locationId);
+            return new JsonModel(['success' => true, 'data' => $attendnaceDetails, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function empWiseReportAction() {
+
+        $monthList = $this->repository->getMonthList();
+
+
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'acl' => $this->acl,
+                    'monthList' => $monthList
+        ]);
+    }
+
+    public function pullEmpWiseMonthlyReportAction() {
+        try {
+            $request = $this->getRequest();
+            $monthId = $request->getPost('monthId');
+
+            $attendnaceDetails = $this->repository->fetchEmpWiseMonthlyReport($monthId);
             return new JsonModel(['success' => true, 'data' => $attendnaceDetails, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

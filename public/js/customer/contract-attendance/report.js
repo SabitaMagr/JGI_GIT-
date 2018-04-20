@@ -160,7 +160,7 @@ function getStausString(status, normal, ot, subEmp) {
 
 
 
-
+  app.searchTable($("#grid"), ['FULL_NAME']);
 
 
 

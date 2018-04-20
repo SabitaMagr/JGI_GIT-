@@ -11,7 +11,13 @@ function setTemplate(temp) {
 }
 
 function getStausString(status, normal, ot, subEmp) {
-    var returnvalue = status + '</br>Normal:' + normal + '</br>Ot:' + ot;
+    console.log(ot);
+    
+        var otClass='';
+    if(ot!='00:00'){
+         otClass='class="attendance-color-ot-red"';
+    }
+    var returnvalue = status + '</br><span>Normal:' + normal + '</span></br><span '+otClass+'>Ot:' + ot + '</span>';
 
     if (subEmp != null) {
         returnvalue += ' (' + subEmp + ')';
@@ -352,6 +358,10 @@ function getStausString(status, normal, ot, subEmp) {
             });
 
         });
+        
+        app.searchTable($("#grid"), ['FULL_NAME']);
+        
+        
     });
 }
 )(window.jQuery);

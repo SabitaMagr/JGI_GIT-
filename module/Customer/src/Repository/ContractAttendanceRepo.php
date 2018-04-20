@@ -228,7 +228,7 @@ FOR DAY_COUNT IN ({$pivotString}))
     }
 
     public function pullMonthlyBillCustomerWise($monthId, $customerId) {
-        $monthDetails = EntityHelper::rawQueryResult($this->adapter, "select from_date,to_date,to_date-from_date+1 as daysCount from hris_month_code where month_id={$monthId}")->current();
+        $monthDetails = $this->getMOnthDetails($monthId);
 
         $fromDate = $monthDetails['FROM_DATE'];
         $toDate = $monthDetails['TO_DATE'];
@@ -450,7 +450,7 @@ GROUP BY EMPLOYEE_ID,FULL_NAME,
         return $result->current();
     }
 
-    public function updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType, $rate, $otRate,$otType) {
+    public function updateAttendanceData($attendanceDate, $customerId, $contractId, $employeeId, $locationId, $dutyTypeId, $designationId, $empAssignId, $status, $normalHour, $otHour, $subEmployeeId, $postingType, $rate, $otRate, $otType) {
 
         if ($subEmployeeId == '' or $subEmployeeId == null) {
             $subEmployeeString = "V_SUB_EMPLOYEE_ID NUMBER:=NULL;";
@@ -589,8 +589,13 @@ END;";
         return $result->current();
     }
 
-    public function getCutomerEmpAttendnaceReportMonthly($monthId, $customerId, $locationId) {
+    public function getMOnthDetails($monthId) {
         $monthDetails = EntityHelper::rawQueryResult($this->adapter, "select from_date,to_date,to_date-from_date+1 as daysCount from hris_month_code where month_id={$monthId}")->current();
+        return $monthDetails;
+    }
+
+    public function getCutomerEmpAttendnaceReportMonthly($monthId, $customerId, $locationId) {
+        $monthDetails = $this->getMOnthDetails($monthId);
 
         $fromDate = $monthDetails['FROM_DATE'];
         $toDate = $monthDetails['TO_DATE'];
@@ -770,6 +775,176 @@ FOR DAY_COUNT IN ({$pivotString}))
         $returnData['attendanceResult'] = Helper::extractDbData($result);
 
         return $returnData;
+    }
+
+    public function fetchEmpWiseMonthlyReport($monthId) {
+        $monthDetails = $this->getMOnthDetails($monthId);
+
+        $fromDate = $monthDetails['FROM_DATE'];
+        $toDate = $monthDetails['TO_DATE'];
+        $daysCount = $monthDetails['DAYSCOUNT'];
+
+        $sql = "
+        select 
+        (TO_DATE('{$toDate}','DD-MON-YY')-TO_DATE('{$fromDate}','DD-MON-YY'))
+            +1-ABSENT_DAYS
+        AS PRESENT_DAYS,
+        EMP_ASSIGN_ID,
+        FULL_NAME,
+        CONTRACT_NAME,
+        LOCATION_NAME,
+        DESIGNATION_TITLE,
+        DUTY_TYPE_NAME,
+        ABSENT_DAYS,
+        DAY_OFF,
+        PAID_HOLIDAY,
+        SUM(NORMAL_HOUR)/60 AS TOTAL_NORMAL_HOUR,
+        SUM(OT_HOUR)/60 AS TOTAL_OT_HOUR
+        from(
+        SELECT (            
+        SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+        WHERE STATUS='AB' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+        ATTENDANCE_DATE BETWEEN 
+        TO_DATE('{$fromDate}','DD-MON-YY')
+        AND TO_DATE('{$toDate}','DD-MON-YY')
+        ) )AS ABSENT_DAYS,
+        (SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+        WHERE STATUS='DO' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+        ATTENDANCE_DATE BETWEEN 
+        TO_DATE('{$fromDate}','DD-MON-YY')
+        AND TO_DATE('{$toDate}','DD-MON-YY')
+        ) )AS DAY_OFF,
+
+        (SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+        WHERE STATUS='PH' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+        ATTENDANCE_DATE BETWEEN 
+        TO_DATE('{$fromDate}','DD-MON-YY')
+        AND TO_DATE('{$toDate}','DD-MON-YY')
+        ) )AS PAID_HOLIDAY,                
+
+        E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
+            D.DAY_COUNT,CE.CONTRACT_ID,CE.CUSTOMER_ID,
+            CE.LOCATION_ID,CE.EMPLOYEE_ID,CE.DESIGNATION_ID,CE.DUTY_TYPE_ID,
+            CE.EMP_ASSIGN_ID,
+            DT.DUTY_TYPE_NAME,
+            CASE
+                  WHEN CA.STATUS IS NULL THEN 'Present'
+                  WHEN CA.STATUS='PR' THEN 'Present'
+                  WHEN CA.STATUS='AB' THEN 'Absent'
+                  WHEN CA.STATUS='DO' THEN 'DayOff'
+                  WHEN CA.STATUS='PH' THEN 'PaidHoliday'
+                END
+              AS STATUS,
+              CASE  
+                    WHEN CA.NORMAL_HOUR IS NULL 
+                    THEN
+                    DT.NORMAL_HOUR
+                    ELSE
+                    CA.NORMAL_HOUR
+                    END AS NORMAL_HOUR,
+                    CASE  
+                    WHEN CA.OT_HOUR IS NULL 
+                    THEN
+                    DT.OT_HOUR
+                    ELSE
+                    CA.OT_HOUR
+                    END AS OT_HOUR,
+              SE.FULL_NAME AS SUB_EMP_NAME
+            from (SELECT   TO_DATE('{$fromDate}','DD-MON-YY') + ROWNUM -1  AS DATES,ROWNUM AS DAY_COUNT,TO_DATE('{$fromDate}','DD-MON-YY') AS FROM_DATE
+                FROM dual d
+                CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YY') -  TO_DATE('{$fromDate}','DD-MON-YY') + 1
+             ) D
+            LEFT JOIN HRIS_CONTRACT_EMP_ASSIGN CE on (1=1 and CE.status='E')
+            LEFT JOIN HRIS_CONTRACT_EMP_ATTENDANCE CA ON (
+                    CE.CUSTOMER_ID=CA.CUSTOMER_ID AND
+                    CE.CONTRACT_ID=CA.CONTRACT_ID AND
+                    CE.EMPLOYEE_ID=CA.EMPLOYEE_ID AND
+                    CE.LOCATION_ID=CA.LOCATION_ID AND
+                    CE.DUTY_TYPE_ID=CA.DUTY_TYPE_ID AND
+                    CE.DESIGNATION_ID=CA.DESIGNATION_ID AND
+                    CE.EMP_ASSIGN_ID=CA.EMP_ASSIGN_ID AND
+                    CA.ATTENDANCE_DATE=D.DATES)
+            LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=CE.EMPLOYEE_ID)
+            LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
+            LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (CC.CONTRACT_ID=CE.CONTRACT_ID)
+            LEFT JOIN HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
+            LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=CE.DESIGNATION_ID)
+             LEFT JOIN HRIS_EMPLOYEES SE ON (SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
+     UNION   
+ SELECT
+     
+    (     
+SELECT (TO_DATE('{$toDate}','DD-MON-YY')-TO_DATE('{$fromDate}','DD-MON-YY'))+1-COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+WHERE STATUS='AB' AND SUB_EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID AND EMP_ASSIGN_ID=CA.EMP_ASSIGN_ID AND (
+ATTENDANCE_DATE BETWEEN 
+TO_DATE('{$fromDate}','DD-MON-YY')
+AND TO_DATE('{$toDate}','DD-MON-YY')
+)
+    )AS ABSENT_DAYS,
+    0 AS DAY_OFF,
+    0 AS PAID_HOLIDAY,
+       
+
+        SE.FULL_NAME||' Sub For '||E.FULL_NAME AS FULL_NAME,
+      CL.LOCATION_NAME,
+      CC.CONTRACT_NAME,
+      D.DESIGNATION_TITLE,
+      (CA.ATTENDANCE_DATE-TO_DATE('{$fromDate}','DD-MON-YY')+1) AS DAY_COUNT,
+      CA.CONTRACT_ID,
+      CA.CUSTOMER_ID,
+      CA.LOCATION_ID,
+      CA.EMPLOYEE_ID,
+      CA.DESIGNATION_ID,
+      CA.DUTY_TYPE_ID,
+      CA.EMP_ASSIGN_ID,
+      DT.DUTY_TYPE_NAME,
+      'Present' AS STATUS,
+      CA.NORMAL_HOUR AS NORMAL_HOUR,
+      CA.OT_HOUR AS OT_HOUR,
+      '' AS  SUB_EMP_NAME 
+FROM  HRIS_CONTRACT_EMP_ATTENDANCE CA
+ LEFT JOIN HRIS_EMPLOYEES E ON (
+        E.EMPLOYEE_ID = CA.EMPLOYEE_ID
+      )
+      LEFT JOIN HRIS_CUSTOMER_LOCATION CL ON (
+        CL.LOCATION_ID = CA.LOCATION_ID
+      )
+      LEFT JOIN HRIS_CUSTOMER_CONTRACT CC ON (
+        CC.CONTRACT_ID = CA.CONTRACT_ID
+      )
+      LEFT JOIN HRIS_DUTY_TYPE DT ON (
+        DT.DUTY_TYPE_ID = CA.DUTY_TYPE_ID
+      )
+      LEFT JOIN HRIS_DESIGNATIONS D ON (
+        D.DESIGNATION_ID = CA.DESIGNATION_ID
+      )
+      LEFT JOIN HRIS_EMPLOYEES SE ON (
+        SE.EMPLOYEE_ID = CA.SUB_EMPLOYEE_ID
+      )
+
+WHERE  CA.STATUS='AB' 
+AND CA.SUB_EMPLOYEE_ID IS NOT NULL
+AND (CA.ATTENDANCE_DATE BETWEEN TO_DATE('{$fromDate}','DD-MON-YY') AND TO_DATE('{$toDate}','DD-MON-YY'))
+                )
+             GROUP BY EMP_ASSIGN_ID,full_name,
+        CONTRACT_NAME,
+        LOCATION_NAME,
+        DESIGNATION_TITLE,
+        DUTY_TYPE_NAME,
+        ABSENT_DAYS,
+        DAY_OFF,
+        PAID_HOLIDAY
+
+                        ";
+
+//echo $sql;
+//die();
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+
+        return Helper::extractDbData($result);
     }
 
 }
