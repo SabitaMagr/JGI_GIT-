@@ -56,55 +56,20 @@ class CustomerContractDetails extends HrisController {
             $postData = $request->getPost();
 
             $designation = $request->getPost('designation');
-            $quantity = $request->getPost('quantity');
-            $rate = $request->getPost('rate');
             $dutyType = $request->getPost('dutyType');
-            $weekDayValue = $request->getPost('weekDayValue');
-            $daysInMonth = $request->getPost('daysInMonth');
+            $rate = $request->getPost('rate');
 
-//            echo '<pre>';
-//            print_r($postData);
-//            print_r($designation);
-//            print_r($quantity);
-//            print_r($rate);
-//            print_r($shift);
-//            print_r($weekDayValue);
-//            print_r($daysInMonth);
-//            die();
-
-
-
-            if ($designation) {
-                $customerContractRepo = new CustomerContractRepo($this->adapter);
-                $contractDetails = $customerContractRepo->fetchById($id);
-
-                $customerId = $contractDetails['CUSTOMER_ID'];
-
+            if ($designation && $dutyType && $rate) {
                 $contractDetailModel = new CustomerContractDetailModel();
-                $contractDetailModel->contractId = $id;
-                $contractDetailModel->status = 'D';
-                $contractDetailModel->modifiedDt = Helper::getcurrentExpressionDate();
-                $contractDetailModel->modifiedBy = $this->employeeId;
-
-                //to delete old assigned
-                $this->repository->edit($contractDetailModel, $id);
-
-                $contractDetailModel->customerId = $customerId;
-
                 $i = 0;
                 foreach ($designation as $designationDetails) {
                     if ($designationDetails > 0) {
-                        $contractDetailModel->designationId = $designationDetails;
-                        $contractDetailModel->quantity = $quantity[$i];
                         $contractDetailModel->rate = $rate[$i];
-                        $contractDetailModel->dutyTypeId = $dutyType[$i];
-                        $contractDetailModel->weekDetails = $weekDayValue[$i];
-                        $contractDetailModel->daysInMonth = $daysInMonth[$i];
-                        $contractDetailModel->status = 'E';
-                        $contractDetailModel->createdBy = $this->employeeId;
-                        $contractDetailModel->modifiedDt = NULL;
-                        $contractDetailModel->modifiedBy = NULL;
-                        $this->repository->add($contractDetailModel);
+                        $this->repository->editWithCondition($contractDetailModel, [
+                            $contractDetailModel::DESIGNATION_ID => $designationDetails,
+                            $contractDetailModel::DUTY_TYPE_ID => $dutyType[$i],
+                            $contractDetailModel::CONTRACT_ID => $id,
+                        ]);
                     }
                     $i++;
                 }

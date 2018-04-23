@@ -83,7 +83,7 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
         <div class="row margin-top-20">
             <div class="col-md-12">
 
-                <div id='assignTableDiv' class="table-responsive">
+                <div style="height:500px;overflow:auto;" id='assignTableDiv' class="table-responsive">
                     <table class="table" id="assignTable">
 
                     </table>
@@ -136,78 +136,28 @@ $this->headScript()->appendFile($this->basePath('js/customer/contract-employees/
 
                 <div class="row">
                     <div class="col-md-5">
-                        <label>Employees :</label>
-                        <select class="form-control"  required='required'  id="addEmployee" name='employee' ></select>
-                    </div>
-                    <div class="col-md-3">
-                        </br>
-                        <span id="addEmployeeRate"></span>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                    <div class="col-md-5">
-                        <label>Location :</label>
-                        <select class="form-control"  required='required'  id="addLocation" name='location' ></select>
-                    </div>
-
-                </div>
-
-
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="startDate">Start Date :</label>
-                            <input type="text" name="startDate" id="startDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliStartDate">&nbsp;</label>
-                            <input type="text" name="nepaliStartDate" id="nepaliStartDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>     
-
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="endDate">End Date :</label>
-                            <input type="text" name="endDate" id="endDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliEndDate">&nbsp;</label>
-                            <input type="text" name="nepaliEndDate" id="nepaliEndDate"
-                                   class="form-control" value="">
-                        </div>
-                    </div>     
-
-                </div>
-
-
-
-                <div class="row">
-                    <div class="col-md-5">
                         <label>Rate</label>
                         <input class="form-control"   id="addRate" name='rate' type='number'></br>
                     </div>
 
                 </div>
 
-<!--                <div class="row">
+                <div class="row">
                     <div class="col-md-5">
-                        <label>Monthly Days</label>
-                        <input class="form-control"   id="addMonthDays" name='monthDays' type='number'></br>
+                        <label>Quantity :</label>
+                        <input type='number'class="form-control" required="required" id='addQauntity' name='qauntity'' >
                     </div>
 
-                </div>-->
+                </div>
+
+
+
+
+
+
+
+
+
 
 
 

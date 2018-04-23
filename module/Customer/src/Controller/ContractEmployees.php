@@ -235,7 +235,10 @@ class ContractEmployees extends HrisController {
 
             $employeeData = $this->repository->getEmployeeAssignedContractWise($contractId);
 
+            $customerContractRepo = new CustomerContractRepo($this->adapter);
+            $contractDetails = $customerContractRepo->fetchById($contractId);
 
+            $returnData['contractDetails'] = $contractDetails;
             $returnData['locationList'] = $locationList;
             $returnData['empDetails'] = $employeeData;
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
@@ -270,70 +273,26 @@ class ContractEmployees extends HrisController {
             $customer = $request->getPost('customer');
             $contract = $request->getPost('contract');
             $designation = $request->getPost('designation');
-            $employee = $request->getPost('employee');
-            $location = $request->getPost('location');
-            $startDate = $request->getPost('startDate');
-            $endDate = $request->getPost('endDate');
-            $startTime = $request->getPost('startTime');
-            $endTime = $request->getPost('endTime');
             $dutyType = $request->getPost('dutyType');
             $rate = $request->getPost('rate');
-//            $monthDays = $request->getPost('monthDays');
+
 
 
             $contractDetails = $this->repository->getContractDetail($contract, $designation, $dutyType);
+            if (!$contractDetails) {
+                $contractDetailModel = new \Customer\Model\CustomerContractDetailModel();
+                $contractDetialRepo = new \Customer\Repository\CustomerContractDetailRepo($this->adapter);
 
-            $contractDetailModel = new \Customer\Model\CustomerContractDetailModel();
-            $contractDetialRepo = new \Customer\Repository\CustomerContractDetailRepo($this->adapter);
-
-
-            if ($contractDetails) {
-                $contractDetailModel->quantity = $contractDetails['QUANTITY'] + 1;
-                $contractDetialRepo->editWithCondition($contractDetailModel, array(
-                    $contractDetailModel::STATUS => 'E',
-                    $contractDetailModel::CONTRACT_ID => $contract,
-                    $contractDetailModel::DESIGNATION_ID => $designation,
-                    $contractDetailModel::DUTY_TYPE_ID => $dutyType
-                ));
-            } else {
                 $contractDetailModel->customerId = $customer;
                 $contractDetailModel->contractId = $contract;
                 $contractDetailModel->designationId = $designation;
                 $contractDetailModel->dutyTypeId = $dutyType;
-                $contractDetailModel->quantity = 1;
                 $contractDetailModel->status = 'E';
                 $contractDetailModel->createdBy = $this->employeeId;
                 $contractDetailModel->rate = $rate;
                 $contractDetialRepo->add($contractDetailModel);
             }
 
-
-
-            $custEmployeeModel = new CustContractEmp();
-
-            $custEmployeeModel->empAssignId = (int) Helper::getMaxId($this->adapter, CustContractEmp::TABLE_NAME, CustContractEmp::EMP_ASSIGN_ID) + 1;
-
-            $custEmployeeModel->customerId = $customer;
-            $custEmployeeModel->contractId = $contract;
-            $custEmployeeModel->employeeId = $employee;
-            $custEmployeeModel->designationId = $designation;
-            $custEmployeeModel->locationId = $location;
-            $custEmployeeModel->startDate = Helper::getExpressionDate($startDate);
-            $custEmployeeModel->endDate = Helper::getExpressionDate($endDate);
-            $custEmployeeModel->startTime = Helper::getExpressionTime($startTime);
-            $custEmployeeModel->endTime = Helper::getExpressionTime($endTime);
-            $custEmployeeModel->status = 'E';
-            $custEmployeeModel->createdBy = $this->employeeId;
-            $custEmployeeModel->dutyTypeId = $dutyType;
-            $custEmployeeModel->monthlyRate = $rate;
-
-
-
-
-
-            $this->repository->add($custEmployeeModel);
-//            $employeeData = $this->repository->getEmployeeAssignedContractWise($contract);
-//            return new JsonModel(['success' => true, 'data' => $employeeData, 'error' => '']);
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -480,13 +439,13 @@ class ContractEmployees extends HrisController {
 
 
             $data = $this->repository->pullEmployeeRate($dutyTypeId, $employeeId);
-            
-            $returnAmt='N/A';
 
-            if($data['HOURLY_AMOUNT']!='' && $data['NORMAL_HOUR']!='') {
-            $returnAmt=($data['NORMAL_HOUR']/60)*$data['HOURLY_AMOUNT']*30;
+            $returnAmt = 'N/A';
+
+            if ($data['HOURLY_AMOUNT'] != '' && $data['NORMAL_HOUR'] != '') {
+                $returnAmt = ($data['NORMAL_HOUR'] / 60) * $data['HOURLY_AMOUNT'] * 30;
             }
-            
+
             return new JsonModel(['success' => true, 'data' => $returnAmt, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

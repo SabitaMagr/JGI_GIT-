@@ -36,42 +36,34 @@ $this->headScript()->appendFile($this->basePath('js/customer/customer-contract-d
                         <tbody>
                             <tr>
                                 <td>Designation</td>
-                                <td>Quantity</td>
-                                <td>Rate</td>
                                 <td>Duty Type</td>
+                                <td>Rate</td>
                                 <td></td>
                             </tr>
-                            <tr>
-                                <td><select required="required" name="designation[]" class="designation"></select></td>
-                                <td><input  required="required"  name="quantity[]" type="number" class="quantity"></td>
-                                <td><input  required="required"  name="rate[]" type="number" class="rate" step="0.01" ></td>
-                                <td><select required="required" name="dutyType[]" class="dutyType"></select></td>
-                                <td>
-                                    <div class="th-inner ">
-                                        <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                            <input class='chkBoxContractDetails' type="checkbox"/>
-                                            <span></span>
-                                        </label>
-                                    </div>
-                                    <div class="fht-cell" style="width: 46px;"></div>
-                                </td>
+                            <?php
+                            foreach ($contractDetail as $data) {
+                                ?>
+                                <tr>
+                            <input type="hidden" value='<?= $data['DESIGNATION_ID'] ?>' name='designation[]' class='designation' >
+                            <input type="hidden" value='<?= $data['DUTY_TYPE_ID'] ?>' name='dutyType[]' class='dutyType'>
+
+                            <td><?= $data['DESIGNATION_TITLE'] ?></td>
+                            <td><?= $data['DUTY_TYPE_NAME'] ?></td>
+                            <td><input  required="required" value='<?= $data['RATE'] ?>'  name="rate[]" type="number" class="rate" step="0.01" ></td>
                             </tr>
+
+                            <?php
+                        }
+                        ?>
                         </tbody>
                     </table>
-
-                    <a id="addContractDetails" class=" btn btn-icon-only default pull-right">
-                        <i class="fa fa-plus"></i>
-                    </a>
-                    <a id="delContractDetails" class="btn btn-icon-only default pull-right">
-                        <i class="fa fa-trash-o"></i>
-                    </a>
 
 
                 </div>
             </div>
 
             <div class="row">
-                <input type="submit" value=" submit">
+                <input type="submit" value="Update">
             </div>
 
 

@@ -147,7 +147,10 @@ EOT;
 
         $sql = "
             select * from (
-                select E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
+                select 
+DT.NORMAL_HOUR AS DT_NORMAL_HOUR,
+DT.OT_HOUR AS DT_OT_HOUR,  
+E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
     D.FROM_DATE,D.DAY_COUNT,CE.CONTRACT_ID,CE.CUSTOMER_ID,
     CE.LOCATION_ID,CE.EMPLOYEE_ID,CE.DESIGNATION_ID,CE.START_DATE,CE.END_DATE,CE.DUTY_TYPE_ID,
     TO_CHAR(CE.START_TIME, 'HH:MI AM') AS START_TIME,
@@ -207,7 +210,7 @@ EOT;
  MAX(OT_HOUR) AS OT_HOUR, 
 MAX (SUB_EMP_NAME) AS SUB_EMP_NAME
 FOR DAY_COUNT IN ({$pivotString})) 
-            
+            ORDER BY FULL_NAME ASC,DT_NORMAL_HOUR DESC,DT_OT_HOUR DESC
                 ";
 
 //        echo $sql;
@@ -622,7 +625,20 @@ WHERE STATUS='AB' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
 ATTENDANCE_DATE BETWEEN 
 TO_DATE('{$fromDate}','DD-MON-YY')
 AND TO_DATE('{$toDate}','DD-MON-YY')
-) )AS ABSENT_DAYS,
+) )
++CASE WHEN CE.START_DATE>TO_DATE('{$fromDate}','DD-MON-YY')
+THEN 
+CE.START_DATE-TO_DATE('{$fromDate}','DD-MON-YY')
+    ELSE
+    0
+END
++CASE WHEN CE.END_DATE<TO_DATE('{$toDate}','DD-MON-YY')
+THEN 
+TO_DATE('{$toDate}','DD-MON-YY')-CE.END_DATE
+    ELSE
+    0
+END
+AS ABSENT_DAYS,
 (SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
 WHERE STATUS='DO' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
 ATTENDANCE_DATE BETWEEN 
@@ -807,7 +823,21 @@ FOR DAY_COUNT IN ({$pivotString}))
         ATTENDANCE_DATE BETWEEN 
         TO_DATE('{$fromDate}','DD-MON-YY')
         AND TO_DATE('{$toDate}','DD-MON-YY')
-        ) )AS ABSENT_DAYS,
+        ) )
+        +CASE WHEN CE.START_DATE>TO_DATE('{$fromDate}','DD-MON-YY')
+        THEN 
+        CE.START_DATE-TO_DATE('{$fromDate}','DD-MON-YY')
+            ELSE
+            0
+        END
+        +CASE WHEN CE.END_DATE<TO_DATE('{$toDate}','DD-MON-YY')
+        THEN 
+        TO_DATE('{$toDate}','DD-MON-YY')-CE.END_DATE
+            ELSE
+            0
+        END
+
+AS ABSENT_DAYS,
         (SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
         WHERE STATUS='DO' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
         ATTENDANCE_DATE BETWEEN 
@@ -839,6 +869,9 @@ FOR DAY_COUNT IN ({$pivotString}))
                     WHEN CA.NORMAL_HOUR IS NULL 
                     THEN
                     DT.NORMAL_HOUR
+                    WHEN CA.NORMAL_HOUR IS NOT NULL AND  CA.STATUS='AB'
+                    THEN
+                    0
                     ELSE
                     CA.NORMAL_HOUR
                     END AS NORMAL_HOUR,
@@ -846,6 +879,9 @@ FOR DAY_COUNT IN ({$pivotString}))
                     WHEN CA.OT_HOUR IS NULL 
                     THEN
                     DT.OT_HOUR
+                    WHEN CA.OT_HOUR IS NOT NULL AND  CA.STATUS='AB'
+                    THEN
+                    0
                     ELSE
                     CA.OT_HOUR
                     END AS OT_HOUR,
@@ -870,6 +906,7 @@ FOR DAY_COUNT IN ({$pivotString}))
             LEFT JOIN HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
             LEFT JOIN HRIS_DESIGNATIONS D ON (D.DESIGNATION_ID=CE.DESIGNATION_ID)
              LEFT JOIN HRIS_EMPLOYEES SE ON (SE.EMPLOYEE_ID=CA.SUB_EMPLOYEE_ID)
+             WHERE D.DATES BETWEEN CE.START_DATE and CE.END_DATE
      UNION   
  SELECT
      

@@ -125,16 +125,19 @@ class CustContractEmpRepo implements RepositoryInterface {
              BS_DATE(ce.START_DATE)               AS START_DATE_BS,
              INITCAP(TO_CHAR(ce.END_DATE, 'DD-MON-YYYY')) AS END_DATE_AD,
              BS_DATE(END_DATE)               AS END_DATE_BS,
-             ce.EMP_ASSIGN_ID AS ID,
+             ce.EMP_ASSIGN_ID AS EMP_ASSIGN_ID,
              CL.LOCATION_NAME,e.full_name,d.designation_title,
-             DT.DUTY_TYPE_ID,DT.DUTY_TYPE_NAME
+             DT.DUTY_TYPE_ID,DT.DUTY_TYPE_NAME,
+             CE.MONTHLY_RATE AS MONTHLY_RATE
              FROM HRIS_CONTRACT_EMP_ASSIGN ce
              left join hris_employees e on (ce.EMPLOYEE_ID=e.employee_id)
              left join HRIS_DESIGNATIONS d on (d.DESIGNATION_ID=ce.designation_id)
              left join HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
              left join HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
              where ce.STATUS='E' and ce.contract_id={$contractId}
-                ";
+                 ORDER BY CE.END_DATE DESC,CE.DESIGNATION_ID";
+//             echo $sql;
+//             die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
