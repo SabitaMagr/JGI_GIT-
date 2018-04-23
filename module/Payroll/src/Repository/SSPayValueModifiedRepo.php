@@ -1,10 +1,10 @@
 <?php
-
 namespace Payroll\Repository;
 
 use Application\Repository\HrisRepository;
 use Payroll\Model\SSPayValueModified;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select;
 
 class SSPayValueModifiedRepo extends HrisRepository {
 
@@ -38,10 +38,10 @@ class SSPayValueModifiedRepo extends HrisRepository {
                 LEFT JOIN
                   (SELECT *
                   FROM
-                    (SELECT * FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID ={$monthId}
+                    (SELECT MONTH_ID, PAY_ID, EMPLOYEE_ID AS E_ID,VAL FROM HRIS_SS_PAY_VALUE_MODIFIED WHERE MONTH_ID ={$monthId}
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$csv}))
                   ) PV
-                ON (E.EMPLOYEE_ID=PV.EMPLOYEE_ID)
+                ON (E.EMPLOYEE_ID=PV.E_ID)
                 WHERE E.STATUS   ='E' {$employeeCondition} ORDER BY C.COMPANY_NAME,SSG.GROUP_NAME,E.FULL_NAME";
         return $this->rawQuery($sql);
     }
@@ -113,20 +113,19 @@ class SSPayValueModifiedRepo extends HrisRepository {
                 END;";
         $this->executeStatement($sql);
     }
-    
-    public function fetch($q){
-          $iterator= $this->tableGateway->select(function(Select $select) use($q) {
-                    $select->where([
-                        SSPayValueModified::MONTH_ID=>$q['MONTH_ID'],
-                        SSPayValueModified::PAY_ID=>$q['PAY_ID'],
-                        SSPayValueModified::EMPLOYEE_ID=>$q['EMPLOYEE_ID']
-                        ]);
-                });
-                $data= iterator_to_array($iterator);
-                if(count($data)==1){
-                  return  $data[0]['VAL'];
-                }
-                return null;
-    }
 
+    public function fetch($q) {
+        $iterator = $this->tableGateway->select(function(Select $select) use($q) {
+            $select->where([
+                SSPayValueModified::MONTH_ID => $q['MONTH_ID'],
+                SSPayValueModified::PAY_ID => $q['PAY_ID'],
+                SSPayValueModified::EMPLOYEE_ID => $q['EMPLOYEE_ID']
+            ]);
+        });
+        $data = iterator_to_array($iterator);
+        if (count($data) == 1) {
+            return $data[0]['VAL'];
+        }
+        return null;
+    }
 }
