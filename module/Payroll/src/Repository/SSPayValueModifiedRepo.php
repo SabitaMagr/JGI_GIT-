@@ -113,5 +113,20 @@ class SSPayValueModifiedRepo extends HrisRepository {
                 END;";
         $this->executeStatement($sql);
     }
+    
+    public function fetch($q){
+          $iterator= $this->tableGateway->select(function(Select $select) use($q) {
+                    $select->where([
+                        SSPayValueModified::MONTH_ID=>$q['MONTH_ID'],
+                        SSPayValueModified::PAY_ID=>$q['PAY_ID'],
+                        SSPayValueModified::EMPLOYEE_ID=>$q['EMPLOYEE_ID']
+                        ]);
+                });
+                $data= iterator_to_array($iterator);
+                if(count($data)==1){
+                  return  $data[0]['VAL'];
+                }
+                return null;
+    }
 
 }
