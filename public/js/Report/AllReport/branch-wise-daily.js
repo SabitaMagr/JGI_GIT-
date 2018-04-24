@@ -2,6 +2,13 @@
     'use strict';
     $(document).ready(function () {
         var $tableContainer = $("#reportTable");
+
+        var $year = $('#fiscalYear');
+        var $month = $('#fiscalMonth');
+
+        app.setFiscalMonth($year, $month);
+
+
         var extractDetailData = function (rawData, branchId) {
             var data = {};
             var column = {};
@@ -136,14 +143,14 @@
                 var leaveDays = parseFloat(data['ON_LEAVE']);
 
                 $present.html(data['IS_PRESENT']);
-                $absent.html( data['IS_ABSENT']);
+                $absent.html(data['IS_ABSENT']);
                 $leave.html(data['ON_LEAVE']);
 
                 var total = presentDays + absentDays + leaveDays;
 
-                $present.attr('title',Number((presentDays * 100 / total).toFixed(1)) );
-                $absent.attr('title',Number((absentDays * 100 / total).toFixed(1)));
-                $leave.attr('title',Number((leaveDays * 100 / total).toFixed(1))) ;
+                $present.attr('title', Number((presentDays * 100 / total).toFixed(1)));
+                $absent.attr('title', Number((absentDays * 100 / total).toFixed(1)));
+                $leave.attr('title', Number((leaveDays * 100 / total).toFixed(1)));
             });
 
         };
@@ -220,8 +227,12 @@
 
         $generateReport.on('click', function () {
             var branchId = $branchList.val();
-            var monthId = $monthList.val();
-            if (branchId == -1 || monthId == -1) {
+            var monthId = $('#fiscalMonth').val();
+            
+            
+            console.log(branchId);
+            console.log(monthId);
+            if (branchId == -1 || monthId == '') {
                 app.errorMessage("No Branch Selected", "Notification");
             } else {
                 initializeReport(monthId, branchId);
@@ -231,9 +242,9 @@
 
 
         if (monthId != 0 && branchId != 0) {
-            initializeReport(monthId, branchId);
-            $monthList.val(monthId);
-            $branchList.val(branchId);
+//            initializeReport(monthId, branchId);
+//            $monthList.val(monthId);
+//            $branchList.val(branchId);
         }
 
     });
