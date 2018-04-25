@@ -24,6 +24,7 @@ AS
   V_WOD_ID HRIS_EMPLOYEE_WORK_DAYOFF.ID%TYPE;
   V_WOH_ID HRIS_EMPLOYEE_WORK_HOLIDAY.ID%TYPE;
   V_TWO_DAY_SHIFT HRIS_SHIFTS.TWO_DAY_SHIFT%TYPE;
+  V_IGNORE_TIME HRIS_SHIFTS.IGNORE_TIME%TYPE;
   V_MAX_ID                NUMBER;
   V_ATTENDANCE_DATA_COUNT NUMBER;
   CURSOR CUR_EMPLOYEE
@@ -78,7 +79,8 @@ BEGIN
           WEEKDAY5,
           WEEKDAY6,
           WEEKDAY7,
-          TWO_DAY_SHIFT
+          TWO_DAY_SHIFT,
+          IGNORE_TIME
         INTO V_SHIFT_ID,
           V_WEEKDAY1,
           V_WEEKDAY2,
@@ -87,7 +89,8 @@ BEGIN
           V_WEEKDAY5,
           V_WEEKDAY6,
           V_WEEKDAY7,
-          V_TWO_DAY_SHIFT
+          V_TWO_DAY_SHIFT,
+          V_IGNORE_TIME
         FROM HRIS_SHIFTS HS
         WHERE HS.SHIFT_ID = P_SHIFT_ID ;
       END;
@@ -102,7 +105,8 @@ BEGIN
           WEEKDAY5,
           WEEKDAY6,
           WEEKDAY7,
-          TWO_DAY_SHIFT
+          TWO_DAY_SHIFT,
+          IGNORE_TIME
         INTO V_SHIFT_ID,
           V_WEEKDAY1,
           V_WEEKDAY2,
@@ -111,7 +115,8 @@ BEGIN
           V_WEEKDAY5,
           V_WEEKDAY6,
           V_WEEKDAY7,
-          V_TWO_DAY_SHIFT
+          V_TWO_DAY_SHIFT,
+          V_IGNORE_TIME
         FROM HRIS_EMPLOYEE_SHIFT_ROASTER ES,
           HRIS_SHIFTS HS
         WHERE 1                = 1
@@ -130,7 +135,8 @@ BEGIN
             WEEKDAY5,
             WEEKDAY6,
             WEEKDAY7,
-            TWO_DAY_SHIFT
+            TWO_DAY_SHIFT,
+            IGNORE_TIME
           INTO V_SHIFT_ID,
             V_WEEKDAY1,
             V_WEEKDAY2,
@@ -139,7 +145,8 @@ BEGIN
             V_WEEKDAY5,
             V_WEEKDAY6,
             V_WEEKDAY7,
-            V_TWO_DAY_SHIFT
+            V_TWO_DAY_SHIFT,
+            V_IGNORE_TIME
           FROM
             (SELECT *
             FROM
@@ -171,7 +178,8 @@ BEGIN
               WEEKDAY5,
               WEEKDAY6,
               WEEKDAY7,
-              TWO_DAY_SHIFT
+              TWO_DAY_SHIFT,
+              IGNORE_TIME
             INTO V_SHIFT_ID,
               V_WEEKDAY1,
               V_WEEKDAY2,
@@ -180,7 +188,8 @@ BEGIN
               V_WEEKDAY5,
               V_WEEKDAY6,
               V_WEEKDAY7,
-              V_TWO_DAY_SHIFT
+              V_TWO_DAY_SHIFT,
+              V_IGNORE_TIME
             FROM HRIS_SHIFTS
             WHERE V_ATTENDANCE_DATE BETWEEN START_DATE AND END_DATE
             AND DEFAULT_SHIFT = 'Y'
@@ -426,7 +435,8 @@ BEGIN
           TRAINING_ID,
           TRAINING_TYPE,
           OVERALL_STATUS,
-          TWO_DAY_SHIFT
+          TWO_DAY_SHIFT,
+          IGNORE_TIME
         )
         VALUES
         (
@@ -454,7 +464,8 @@ BEGIN
             WHEN V_TWO_DAY_SHIFT IS NULL
             THEN 'D'
             ELSE V_TWO_DAY_SHIFT
-          END)
+          END),
+          V_IGNORE_TIME
         );
     END;
   END LOOP;

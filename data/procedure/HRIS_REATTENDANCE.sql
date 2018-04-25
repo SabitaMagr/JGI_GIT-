@@ -17,6 +17,7 @@ AS
   V_HALFDAY_PERIOD HRIS_ATTENDANCE_DETAIL.HALFDAY_PERIOD%TYPE;
   V_GRACE_PERIOD HRIS_ATTENDANCE_DETAIL.GRACE_PERIOD%TYPE;
   V_TWO_DAY_SHIFT HRIS_ATTENDANCE_DETAIL.TWO_DAY_SHIFT%TYPE;
+  V_IGNORE_TIME HRIS_ATTENDANCE_DETAIL.IGNORE_TIME%TYPE;
   --
   V_FROM_DATE DATE;
   V_TO_DATE   DATE;
@@ -25,11 +26,12 @@ AS
   V_EARLY_OUT HRIS_SHIFTS.EARLY_OUT%TYPE;
   V_LATE_START_TIME TIMESTAMP;
   V_EARLY_END_TIME  TIMESTAMP;
-  V_ADJUSTED_START_TIME HRIS_SHIFT_ADJUSTMENT.START_TIME%TYPE:=NULL;
-  V_ADJUSTED_END_TIME HRIS_SHIFT_ADJUSTMENT.END_TIME%TYPE    :=NULL;
   --
   V_LATE_COUNT NUMBER;
   V_SHIFT_ID   NUMBER;
+  --
+  V_HALF_INTERVAL      DATE;
+  v_NEXT_HALF_INTERVAL DATE;
 BEGIN
   IF P_TO_ATTENDANCE_DT IS NOT NULL THEN
     V_TO_ATTENDANCE_DT  :=P_TO_ATTENDANCE_DT;
@@ -81,6 +83,7 @@ BEGIN
       V_HALFDAY_PERIOD :=employee.HALFDAY_PERIOD;
       V_GRACE_PERIOD   :=employee.GRACE_PERIOD;
       V_TWO_DAY_SHIFT  := employee.TWO_DAY_SHIFT;
+      V_IGNORE_TIME    :=employee.IGNORE_TIME;
       V_SHIFT_ID       := employee.SHIFT_ID;
       --
       DELETE
@@ -94,18 +97,79 @@ BEGIN
       END IF;
       HRIS_PRELOAD_ATTENDANCE(employee.ATTENDANCE_DT,employee.EMPLOYEE_ID,V_SHIFT_ID);
       --
-      IF V_TWO_DAY_SHIFT ='E' THEN
-        HRIS_REATTENDANCE_TWO_DAY(employee.ATTENDANCE_DT,employee.EMPLOYEE_ID,V_SHIFT_ID,V_FROM_DATE,V_TO_DATE);
+      HRIS_ATTD_IN_OUT(employee.EMPLOYEE_ID,TRUNC(employee.ATTENDANCE_DT),TRUNC(employee.ATTENDANCE_DT+1),V_IN_TIME,V_OUT_TIME);
+      --
+      IF (V_IGNORE_TIME ='Y') THEN
+        IF V_IN_TIME   IS NOT NULL THEN
+          --
+          IF V_IN_TIME  = V_OUT_TIME THEN
+            V_OUT_TIME := NULL;
+          END IF;
+          --
+          IF V_OUT_TIME IS NOT NULL THEN
+            SELECT SUM(ABS(EXTRACT( HOUR FROM DIFF ))*60 + ABS(EXTRACT( MINUTE FROM DIFF )))
+            INTO V_DIFF_IN_MIN
+            FROM
+              (SELECT V_OUT_TIME -V_IN_TIME AS DIFF FROM DUAL
+              ) ;
+          END IF;
+          IF(V_OVERALL_STATUS     ='DO') THEN
+            V_OVERALL_STATUS     :='WD';
+          ELSIF (V_OVERALL_STATUS ='HD') THEN
+            V_OVERALL_STATUS     :='WH';
+          ELSIF (V_OVERALL_STATUS ='LV') THEN
+            IF(V_HALFDAY_FLAG     ='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
+              V_OVERALL_STATUS   :='LP';
+            END IF;
+          ELSIF (V_OVERALL_STATUS ='TV') THEN
+            NULL;
+          ELSIF (V_OVERALL_STATUS ='TN') THEN
+            NULL;
+          ELSIF (V_OVERALL_STATUS = 'AB') THEN
+            V_OVERALL_STATUS     :='PR';
+          END IF;
+          UPDATE HRIS_ATTENDANCE_DETAIL
+          SET IN_TIME         = V_IN_TIME,
+            OUT_TIME          =V_OUT_TIME,
+            OVERALL_STATUS    = V_OVERALL_STATUS,
+            LATE_STATUS       = V_LATE_STATUS,
+            TOTAL_HOUR        = V_DIFF_IN_MIN
+          WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
+          AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
+        END IF;
         CONTINUE;
       END IF;
       --
-      SELECT MIN(TO_DATE(TO_CHAR(ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM')) AS IN_TIME,
-        MAX(TO_DATE(TO_CHAR(ATTENDANCE_TIME,'HH:MI AM'),'HH:MI AM')) OUT_TIME
-      INTO V_IN_TIME,
-        V_OUT_TIME
-      FROM HRIS_ATTENDANCE
-      WHERE ATTENDANCE_DT =TRUNC(employee.ATTENDANCE_DT)
-      AND EMPLOYEE_ID     = employee.EMPLOYEE_ID ;
+      IF V_TWO_DAY_SHIFT ='E' THEN
+        --
+        SELECT LATE_IN,
+          EARLY_OUT,
+          LATE_START_TIME,
+          EARLY_END_TIME,
+          EARLY_END_TIME + (LATE_START_TIME -EARLY_END_TIME)/2
+        INTO V_LATE_IN,
+          V_EARLY_OUT,
+          V_LATE_START_TIME,
+          V_EARLY_END_TIME,
+          V_HALF_INTERVAL
+        FROM
+          (SELECT S.LATE_IN,
+            S.EARLY_OUT,
+            TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+            ||' '
+            ||TO_CHAR(S.START_TIME+((1/1440)*NVL(S.LATE_IN,0)),'HH:MI AM'),'DD-MON-YYYY HH:MI AM') AS LATE_START_TIME,
+            TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+            ||' '
+            || TO_CHAR(S.END_TIME -((1/1440)*NVL(S.EARLY_OUT,0)),'HH:MI AM'),'DD-MON-YYYY HH:MI AM') AS EARLY_END_TIME
+          FROM HRIS_SHIFTS S
+          WHERE S.SHIFT_ID=V_SHIFT_ID
+          );
+        V_NEXT_HALF_INTERVAL:=V_HALF_INTERVAL+1;
+        --
+        V_EARLY_END_TIME:=V_EARLY_END_TIME+1;
+        HRIS_ATTD_IN_OUT(employee.EMPLOYEE_ID,V_HALF_INTERVAL,V_NEXT_HALF_INTERVAL,V_IN_TIME,V_OUT_TIME);
+        --
+      END IF;
       --
       IF V_IN_TIME IS NOT NULL THEN
         --
@@ -123,58 +187,88 @@ BEGIN
         --
         BEGIN
           IF V_HALFDAY_PERIOD IS NOT NULL THEN
-            SELECT S.LATE_IN,
-              S.EARLY_OUT,
-              (
-              CASE
-                WHEN V_HALFDAY_PERIOD ='F'
-                THEN S.HALF_DAY_IN_TIME
-                ELSE S.START_TIME
-              END )+((1/1440)*NVL(S.LATE_IN,0)),
-              (
-              CASE
-                WHEN V_HALFDAY_PERIOD ='F'
-                THEN S.END_TIME
-                ELSE S.HALF_DAY_OUT_TIME
-              END ) -((1/1440)*NVL(S.EARLY_OUT,0))
+            SELECT LATE_IN,
+              EARLY_OUT,
+              TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+              ||' '
+              ||TO_CHAR(LATE_START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
+              TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+              ||' '
+              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM')
             INTO V_LATE_IN,
               V_EARLY_OUT,
               V_LATE_START_TIME,
               V_EARLY_END_TIME
-            FROM HRIS_SHIFTS S
-            WHERE S.SHIFT_ID    =V_SHIFT_ID ;
+            FROM
+              (SELECT S.LATE_IN,
+                S.EARLY_OUT,
+                (
+                CASE
+                  WHEN V_HALFDAY_PERIOD ='F'
+                  THEN S.HALF_DAY_IN_TIME
+                  ELSE S.START_TIME
+                END ) +((1/1440)*NVL(S.LATE_IN,0)) AS LATE_START_TIME,
+                (
+                CASE
+                  WHEN V_HALFDAY_PERIOD ='F'
+                  THEN S.END_TIME
+                  ELSE S.HALF_DAY_OUT_TIME
+                END ) -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME
+              FROM HRIS_SHIFTS S
+              WHERE S.SHIFT_ID =V_SHIFT_ID
+              );
           ELSIF V_GRACE_PERIOD IS NOT NULL THEN
-            SELECT S.LATE_IN,
-              S.EARLY_OUT,
-              (
-              CASE
-                WHEN V_GRACE_PERIOD ='E'
-                THEN S.GRACE_START_TIME
-                ELSE S.START_TIME
-              END)+((1/1440)*NVL(S.LATE_IN,0)),
-              (
-              CASE
-                WHEN V_GRACE_PERIOD ='E'
-                THEN S.END_TIME
-                ELSE S.GRACE_END_TIME
-              END) -((1/1440)*NVL(S.EARLY_OUT,0))
+            SELECT LATE_IN,
+              EARLY_OUT,
+              TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+              ||' '
+              ||TO_CHAR(LATE_START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
+              TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+              ||' '
+              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM')
             INTO V_LATE_IN,
               V_EARLY_OUT,
               V_LATE_START_TIME,
               V_EARLY_END_TIME
-            FROM HRIS_SHIFTS S
-            WHERE S.SHIFT_ID=V_SHIFT_ID ;
+            FROM
+              (SELECT S.LATE_IN,
+                S.EARLY_OUT,
+                (
+                CASE
+                  WHEN V_GRACE_PERIOD ='E'
+                  THEN S.GRACE_START_TIME
+                  ELSE S.START_TIME
+                END) +((1/1440)*NVL(S.LATE_IN,0)) AS LATE_START_TIME,
+                (
+                CASE
+                  WHEN V_GRACE_PERIOD ='E'
+                  THEN S.END_TIME
+                  ELSE S.GRACE_END_TIME
+                END) -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME
+              FROM HRIS_SHIFTS S
+              WHERE S.SHIFT_ID=V_SHIFT_ID
+              );
           ELSE
-            SELECT S.LATE_IN,
-              S.EARLY_OUT,
-              S.START_TIME+((1/1440)*NVL(S.LATE_IN,0)),
-              S.END_TIME  -((1/1440)*NVL(S.EARLY_OUT,0))
+            SELECT LATE_IN,
+              EARLY_OUT,
+              TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+              ||' '
+              ||TO_CHAR(LATE_START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
+              TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+              ||' '
+              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM')
             INTO V_LATE_IN,
               V_EARLY_OUT,
               V_LATE_START_TIME,
               V_EARLY_END_TIME
-            FROM HRIS_SHIFTS S
-            WHERE S.SHIFT_ID=V_SHIFT_ID ;
+            FROM
+              (SELECT S.LATE_IN,
+                S.EARLY_OUT,
+                S.START_TIME+((1/1440)*NVL(S.LATE_IN,0))   AS LATE_START_TIME,
+                S.END_TIME  -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME
+              FROM HRIS_SHIFTS S
+              WHERE S.SHIFT_ID=V_SHIFT_ID
+              );
           END IF;
         EXCEPTION
         WHEN NO_DATA_FOUND THEN
@@ -182,23 +276,23 @@ BEGIN
         END;
         --   CHECK FOR ADJUSTED SHIFT
         BEGIN
-          SELECT SA.START_TIME,
-            SA.END_TIME
-          INTO V_ADJUSTED_START_TIME,
-            V_ADJUSTED_END_TIME
-          FROM HRIS_SHIFT_ADJUSTMENT SA
-          JOIN HRIS_EMPLOYEE_SHIFT_ADJUSTMENT ESA
-          ON (SA.ADJUSTMENT_ID=ESA.ADJUSTMENT_ID)
-          WHERE (TRUNC(employee.ATTENDANCE_DT) BETWEEN TRUNC(SA.ADJUSTMENT_START_DATE) AND TRUNC(SA.ADJUSTMENT_END_DATE) )
-          AND ESA.EMPLOYEE_ID       =employee.EMPLOYEE_ID;
-          IF(V_ADJUSTED_START_TIME IS NOT NULL) THEN
-            V_LATE_START_TIME      :=V_ADJUSTED_START_TIME;
-            V_LATE_START_TIME      := V_LATE_START_TIME+((1/1440)*NVL(V_LATE_IN,0));
-          END IF;
-          IF(V_ADJUSTED_END_TIME IS NOT NULL) THEN
-            V_EARLY_END_TIME     :=V_ADJUSTED_END_TIME;
-            V_EARLY_END_TIME     := V_EARLY_END_TIME -((1/1440)*NVL(V_EARLY_OUT,0));
-          END IF;
+          SELECT TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+            ||' '
+            ||TO_CHAR(LATE_START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
+            TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
+            ||' '
+            ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM')
+          INTO V_LATE_START_TIME,
+            V_EARLY_END_TIME
+          FROM
+            (SELECT SA.START_TIME + ((1/1440)*NVL(V_LATE_IN,0))  AS LATE_START_TIME,
+              SA.END_TIME         -((1/1440)*NVL(V_EARLY_OUT,0)) AS EARLY_END_TIME
+            FROM HRIS_SHIFT_ADJUSTMENT SA
+            JOIN HRIS_EMPLOYEE_SHIFT_ADJUSTMENT ESA
+            ON (SA.ADJUSTMENT_ID=ESA.ADJUSTMENT_ID)
+            WHERE (TRUNC(employee.ATTENDANCE_DT) BETWEEN TRUNC(SA.ADJUSTMENT_START_DATE) AND TRUNC(SA.ADJUSTMENT_END_DATE) )
+            AND ESA.EMPLOYEE_ID =employee.EMPLOYEE_ID
+            );
         EXCEPTION
         WHEN NO_DATA_FOUND THEN
           DBMS_OUTPUT.PUT_LINE('NO ADJUSTMENT FOUND FOR EMPLOYEE =>'|| employee.EMPLOYEE_ID || 'ON THE DATE'||employee.ATTENDANCE_DT);
@@ -209,24 +303,22 @@ BEGIN
         ELSIF (V_OVERALL_STATUS ='HD') THEN
           V_OVERALL_STATUS     :='WH';
         ELSIF (V_OVERALL_STATUS ='LV') THEN
-          NULL;
+          IF(V_HALFDAY_FLAG     ='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
+            V_OVERALL_STATUS   :='LP';
+          END IF;
         ELSIF (V_OVERALL_STATUS ='TV') THEN
           NULL;
         ELSIF (V_OVERALL_STATUS ='TN') THEN
           NULL;
-        ELSIF(V_HALFDAY_FLAG    ='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
-          V_OVERALL_STATUS     :='LP';
         ELSIF (V_OVERALL_STATUS = 'AB') THEN
           V_OVERALL_STATUS     :='PR';
         END IF;
         --
-        IF V_OVERALL_STATUS ='PR' AND (V_LATE_START_TIME-TRUNC(V_LATE_START_TIME))<(V_IN_TIME-TRUNC(V_IN_TIME)) THEN
+        IF V_OVERALL_STATUS ='PR' AND (V_LATE_START_TIME<V_IN_TIME) THEN
           V_LATE_STATUS    :='L';
         END IF;
         --
-        DBMS_OUTPUT.PUT_LINE('SHIFT OUT TIME:'||TO_CHAR(V_EARLY_END_TIME,'DD-MON-YYYY HH:MI AM'));
-        DBMS_OUTPUT.PUT_LINE('EMPLOYEE OUT TIME:'||TO_CHAR(V_OUT_TIME,'DD-MON-YYYY HH:MI AM'));
-        IF V_OVERALL_STATUS ='PR' AND (V_EARLY_END_TIME-TRUNC(V_EARLY_END_TIME))>(V_OUT_TIME-TRUNC(V_OUT_TIME)) THEN
+        IF V_OVERALL_STATUS ='PR' AND (V_EARLY_END_TIME>V_OUT_TIME) THEN
           IF (V_LATE_STATUS = 'L') THEN
             V_LATE_STATUS  :='B';
           ELSE
@@ -280,14 +372,9 @@ BEGIN
         INTO V_ID
         FROM HRIS_EMPLOYEE_WORK_DAYOFF
         WHERE EMPLOYEE_ID = employee.EMPLOYEE_ID
-        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT-(
-          CASE
-            WHEN (employee.TWO_DAY_SHIFT ='E')
-            THEN 1
-            ELSE 0
-          END))
-        AND STATUS ='AP'
-        AND ROWNUM =1;
+        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT)
+        AND STATUS        ='AP'
+        AND ROWNUM        =1;
         --
         HRIS_WOD_REWARD(V_ID);
       EXCEPTION
@@ -302,14 +389,9 @@ BEGIN
         INTO V_ID
         FROM HRIS_EMPLOYEE_WORK_HOLIDAY
         WHERE EMPLOYEE_ID =employee.EMPLOYEE_ID
-        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT-(
-          CASE
-            WHEN (employee.TWO_DAY_SHIFT ='E')
-            THEN 1
-            ELSE 0
-          END))
-        AND STATUS = 'AP'
-        AND ROWNUM =1;
+        AND TO_DATE       = TRUNC(employee.ATTENDANCE_DT)
+        AND STATUS        = 'AP'
+        AND ROWNUM        =1;
         --
         HRIS_WOH_REWARD(V_ID);
       EXCEPTION
