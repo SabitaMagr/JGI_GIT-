@@ -29,6 +29,9 @@ if ($this->messages) {
 }
 $form->prepare();
 ?>
+<script>
+    document.checkUserName = '<?= $this->url("usersetup", ["action" => "checkUserName"]) ?>';
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\usersetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -72,6 +75,7 @@ $form->prepare();
                             <span class="required" aria-required="true">*</span>
                             <?php print $this->formElement($userName); ?>
                             <input type="hidden" id="userId" value="<?php echo $id; ?>"/>
+                            <span id="userNameAvailability"></span>
                         </div>
                         <?php print $this->formElementErrors()->render($userName, ['class' => 'help-block error']); ?>
                     </div>
