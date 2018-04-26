@@ -1,5 +1,4 @@
 <?php
-
 namespace ManagerService\Repository;
 
 use Application\Helper\EntityHelper;
@@ -60,7 +59,7 @@ class TravelApproveRepository implements RepositoryInterface {
             new Expression("TR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("TR.PURPOSE AS PURPOSE"),
             new Expression("TR.TRANSPORT_TYPE AS TRANSPORT_TYPE"),
-            new Expression("(CASE WHEN TR.TRANSPORT_TYPE = 'AP' THEN 'Aeroplane' WHEN TR.TRANSPORT_TYPE = 'OV' THEN 'Office Vehicles' WHEN TR.TRANSPORT_TYPE = 'TI' THEN 'Taxi' WHEN TR.TRANSPORT_TYPE = 'BS' THEN 'Bus' END) AS TRANSPORT_TYPE_DETAIL"),
+            new Expression("INITCAP(HRIS_GET_FULL_FORM(TR.TRANSPORT_TYPE,'TRANSPORT_TYPE')) AS TRANSPORT_TYPE_DETAIL"),
             new Expression("TR.REQUESTED_TYPE AS REQUESTED_TYPE"),
             new Expression("(CASE WHEN LOWER(TR.REQUESTED_TYPE) = 'ap' THEN 'Advance' ELSE 'Expense' END) AS REQUESTED_TYPE_DETAIL"),
             new Expression("INITCAP(TO_CHAR(TR.DEPARTURE_DATE, 'DD-MON-YYYY')) AS DEPARTURE_DATE"),
@@ -79,27 +78,27 @@ class TravelApproveRepository implements RepositoryInterface {
             new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("TR.REFERENCE_TRAVEL_ID AS REFERENCE_TRAVEL_ID"),
-                ], true);
+            ], true);
 
         $select->from(['TR' => TravelRequest::TABLE_NAME])
-                ->join(['TS' => "HRIS_TRAVEL_SUBSTITUTE"], "TR.TRAVEL_ID=TS.TRAVEL_ID", [
-                    'SUB_EMPLOYEE_ID' => 'EMPLOYEE_ID',
-                    'SUB_APPROVED_DATE' => new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"),
-                    'SUB_REMARKS' => "REMARKS",
-                    'SUB_APPROVED_FLAG' => "APPROVED_FLAG",
-                    'SUB_APPROVED_FLAG_DETAIL' => new Expression("(CASE WHEN APPROVED_FLAG = 'Y' THEN 'Approved' WHEN APPROVED_FLAG = 'N' THEN 'Rejected' ELSE 'Pending' END)")
-                        ], "left")
-                ->join(['TSE' => 'HRIS_EMPLOYEES'], 'TS.EMPLOYEE_ID=TSE.EMPLOYEE_ID', ["SUB_EMPLOYEE_NAME" => new Expression("INITCAP(TSE.FULL_NAME)")], "left")
-                ->join(['TSED' => 'HRIS_DESIGNATIONS'], 'TSE.DESIGNATION_ID=TSED.DESIGNATION_ID', ["SUB_DESIGNATION_TITLE" => "DESIGNATION_TITLE"], "left")
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=TR.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
-                ->join(['ED' => 'HRIS_DESIGNATIONS'], 'E.DESIGNATION_ID=ED.DESIGNATION_ID', ["DESIGNATION_TITLE" => "DESIGNATION_TITLE"], "left")
-                ->join(['EC' => 'HRIS_COMPANY'], 'E.COMPANY_ID=EC.COMPANY_ID', ["COMPANY_NAME" => "COMPANY_NAME"], "left")
-                ->join(['ECF' => 'HRIS_EMPLOYEE_FILE'], 'EC.LOGO=ECF.FILE_CODE', ["COMPANY_FILE_PATH" => "FILE_PATH"], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
-                ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=TR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
-                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
-                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
+            ->join(['TS' => "HRIS_TRAVEL_SUBSTITUTE"], "TR.TRAVEL_ID=TS.TRAVEL_ID", [
+                'SUB_EMPLOYEE_ID' => 'EMPLOYEE_ID',
+                'SUB_APPROVED_DATE' => new Expression("INITCAP(TO_CHAR(TS.APPROVED_DATE, 'DD-MON-YYYY'))"),
+                'SUB_REMARKS' => "REMARKS",
+                'SUB_APPROVED_FLAG' => "APPROVED_FLAG",
+                'SUB_APPROVED_FLAG_DETAIL' => new Expression("(CASE WHEN APPROVED_FLAG = 'Y' THEN 'Approved' WHEN APPROVED_FLAG = 'N' THEN 'Rejected' ELSE 'Pending' END)")
+                ], "left")
+            ->join(['TSE' => 'HRIS_EMPLOYEES'], 'TS.EMPLOYEE_ID=TSE.EMPLOYEE_ID', ["SUB_EMPLOYEE_NAME" => new Expression("INITCAP(TSE.FULL_NAME)")], "left")
+            ->join(['TSED' => 'HRIS_DESIGNATIONS'], 'TSE.DESIGNATION_ID=TSED.DESIGNATION_ID', ["SUB_DESIGNATION_TITLE" => "DESIGNATION_TITLE"], "left")
+            ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=TR.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+            ->join(['ED' => 'HRIS_DESIGNATIONS'], 'E.DESIGNATION_ID=ED.DESIGNATION_ID', ["DESIGNATION_TITLE" => "DESIGNATION_TITLE"], "left")
+            ->join(['EC' => 'HRIS_COMPANY'], 'E.COMPANY_ID=EC.COMPANY_ID', ["COMPANY_NAME" => "COMPANY_NAME"], "left")
+            ->join(['ECF' => 'HRIS_EMPLOYEE_FILE'], 'EC.LOGO=ECF.FILE_CODE', ["COMPANY_FILE_PATH" => "FILE_PATH"], "left")
+            ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+            ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=TR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
+            ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+            ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+            ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
         $select->where(["TR.TRAVEL_ID" => $id]);
         $select->order("TR.REQUESTED_DATE DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -133,38 +132,28 @@ class TravelApproveRepository implements RepositoryInterface {
             }
         }
 
-        $sql = "SELECT TR.TRAVEL_ID                   AS TRAVEL_ID,
-                  TR.TRAVEL_CODE                      AS TRAVEL_CODE,
-                  TR.EMPLOYEE_ID                      AS EMPLOYEE_ID,
-                  E.FULL_NAME                         AS EMPLOYEE_NAME,
+        $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,
+                  TR.TRAVEL_CODE                           AS TRAVEL_CODE,
+                  TR.EMPLOYEE_ID                           AS EMPLOYEE_ID,
+                  E.FULL_NAME                              AS EMPLOYEE_NAME,
                   TO_CHAR(TR.REQUESTED_DATE,'DD-MON-YYYY') AS REQUESTED_DATE_AD,
                   BS_DATE(TR.REQUESTED_DATE)               AS REQUESTED_DATE_BS,
-                  TO_CHAR(TR.FROM_DATE,'DD-MON-YYYY') AS FROM_DATE_AD,
-                  BS_DATE(TR.FROM_DATE)               AS FROM_DATE_BS,
-                  TO_CHAR(TR.TO_DATE,'DD-MON-YYYY')   AS TO_DATE_AD,
-                  BS_DATE(TR.TO_DATE)                 AS TO_DATE_BS,
-                  TR.DESTINATION                      AS DESTINATION,
-                  TR.PURPOSE                          AS PURPOSE,
-                  TR.REQUESTED_TYPE                   AS REQUESTED_TYPE,
+                  TO_CHAR(TR.FROM_DATE,'DD-MON-YYYY')      AS FROM_DATE_AD,
+                  BS_DATE(TR.FROM_DATE)                    AS FROM_DATE_BS,
+                  TO_CHAR(TR.TO_DATE,'DD-MON-YYYY')        AS TO_DATE_AD,
+                  BS_DATE(TR.TO_DATE)                      AS TO_DATE_BS,
+                  TR.DESTINATION                           AS DESTINATION,
+                  TR.PURPOSE                               AS PURPOSE,
+                  TR.REQUESTED_TYPE                        AS REQUESTED_TYPE,
                   (
                   CASE
                     WHEN TR.REQUESTED_TYPE = 'ad'
                     THEN 'Advance'
                     ELSE 'Expense'
-                  END)                       AS REQUESTED_TYPE_DETAIL,
-                  NVL(TR.REQUESTED_AMOUNT,0) AS REQUESTED_AMOUNT,
-                  TR.TRANSPORT_TYPE          AS TRANSPORT_TYPE,
-                  (
-                  CASE
-                    WHEN TR.TRANSPORT_TYPE = 'AP'
-                    THEN 'Aeroplane'
-                    WHEN TR.TRANSPORT_TYPE = 'OV'
-                    THEN 'Office Vehicles'
-                    WHEN TR.TRANSPORT_TYPE = 'TI'
-                    THEN 'Taxi'
-                    WHEN TR.TRANSPORT_TYPE = 'BS'
-                    THEN 'Bus'
-                  END)                                                            AS TRANSPORT_TYPE_DETAIL,
+                  END)                                                            AS REQUESTED_TYPE_DETAIL,
+                  NVL(TR.REQUESTED_AMOUNT,0)                                      AS REQUESTED_AMOUNT,
+                  TR.TRANSPORT_TYPE                                               AS TRANSPORT_TYPE,
+                  INITCAP(HRIS_GET_FULL_FORM(TR.TRANSPORT_TYPE,'TRANSPORT_TYPE')) AS TRANSPORT_TYPE_DETAIL,
                   TO_CHAR(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_AD,
                   BS_DATE(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_BS,
                   TO_CHAR(TR.RETURNED_DATE)                                       AS RETURNED_DATE_AD,
@@ -190,7 +179,7 @@ class TravelApproveRepository implements RepositoryInterface {
                   REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                 FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
                 LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
-                ON TR.TRAVEL_ID              = TS.TRAVEL_ID
+                ON TR.TRAVEL_ID = TS.TRAVEL_ID
                 LEFT JOIN HRIS_EMPLOYEES E
                 ON (E.EMPLOYEE_ID =TR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RE
@@ -204,52 +193,42 @@ class TravelApproveRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES U
-                ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
-                OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
-                WHERE 1=1
+                ON(U.EMPLOYEE_ID      = RA.RECOMMEND_BY
+                OR U.EMPLOYEE_ID      =RA.APPROVED_BY)
+                WHERE 1               =1
                 AND (TS.APPROVED_FLAG =
                   CASE
                     WHEN TS.EMPLOYEE_ID IS NOT NULL
                     THEN ('Y')
                   END
                 OR TS.EMPLOYEE_ID IS NULL)
-                AND U.EMPLOYEE_ID={$search['employeeId']} {$condition}";
+                AND U.EMPLOYEE_ID  ={$search['employeeId']} {$condition}";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
     public function getPendingList($employeeId) {
-        $sql = "SELECT TR.TRAVEL_ID                   AS TRAVEL_ID,
-                  TR.TRAVEL_CODE                      AS TRAVEL_CODE,
-                  TR.EMPLOYEE_ID                      AS EMPLOYEE_ID,
-                  E.FULL_NAME                         AS EMPLOYEE_NAME,
+        $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,
+                  TR.TRAVEL_CODE                           AS TRAVEL_CODE,
+                  TR.EMPLOYEE_ID                           AS EMPLOYEE_ID,
+                  E.FULL_NAME                              AS EMPLOYEE_NAME,
                   TO_CHAR(TR.REQUESTED_DATE,'DD-MON-YYYY') AS REQUESTED_DATE_AD,
                   BS_DATE(TR.REQUESTED_DATE)               AS REQUESTED_DATE_BS,
-                  TO_CHAR(TR.FROM_DATE,'DD-MON-YYYY') AS FROM_DATE_AD,
-                  BS_DATE(TR.FROM_DATE)               AS FROM_DATE_BS,
-                  TO_CHAR(TR.TO_DATE,'DD-MON-YYYY')   AS TO_DATE_AD,
-                  BS_DATE(TR.TO_DATE)                 AS TO_DATE_BS,
-                  TR.DESTINATION                      AS DESTINATION,
-                  TR.PURPOSE                          AS PURPOSE,
-                  TR.REQUESTED_TYPE                   AS REQUESTED_TYPE,
+                  TO_CHAR(TR.FROM_DATE,'DD-MON-YYYY')      AS FROM_DATE_AD,
+                  BS_DATE(TR.FROM_DATE)                    AS FROM_DATE_BS,
+                  TO_CHAR(TR.TO_DATE,'DD-MON-YYYY')        AS TO_DATE_AD,
+                  BS_DATE(TR.TO_DATE)                      AS TO_DATE_BS,
+                  TR.DESTINATION                           AS DESTINATION,
+                  TR.PURPOSE                               AS PURPOSE,
+                  TR.REQUESTED_TYPE                        AS REQUESTED_TYPE,
                   (
                   CASE
                     WHEN TR.REQUESTED_TYPE = 'ad'
                     THEN 'Advance'
                     ELSE 'Expense'
-                  END)                       AS REQUESTED_TYPE_DETAIL,
-                  NVL(TR.REQUESTED_AMOUNT,0) AS REQUESTED_AMOUNT,
-                  TR.TRANSPORT_TYPE          AS TRANSPORT_TYPE,
-                  (
-                  CASE
-                    WHEN TR.TRANSPORT_TYPE = 'AP'
-                    THEN 'Aeroplane'
-                    WHEN TR.TRANSPORT_TYPE = 'OV'
-                    THEN 'Office Vehicles'
-                    WHEN TR.TRANSPORT_TYPE = 'TI'
-                    THEN 'Taxi'
-                    WHEN TR.TRANSPORT_TYPE = 'BS'
-                    THEN 'Bus'
-                  END)                                                            AS TRANSPORT_TYPE_DETAIL,
+                  END)                                                            AS REQUESTED_TYPE_DETAIL,
+                  NVL(TR.REQUESTED_AMOUNT,0)                                      AS REQUESTED_AMOUNT,
+                  TR.TRANSPORT_TYPE                                               AS TRANSPORT_TYPE,
+                  INITCAP(HRIS_GET_FULL_FORM(TR.TRANSPORT_TYPE,'TRANSPORT_TYPE')) AS TRANSPORT_TYPE_DETAIL,
                   TO_CHAR(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_AD,
                   BS_DATE(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_BS,
                   TO_CHAR(TR.RETURNED_DATE)                                       AS RETURNED_DATE_AD,
@@ -274,8 +253,8 @@ class TravelApproveRepository implements RepositoryInterface {
                   REC_APP_ROLE(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY)      AS ROLE,
                   REC_APP_ROLE_NAME(U.EMPLOYEE_ID,RA.RECOMMEND_BY,RA.APPROVED_BY) AS YOUR_ROLE
                 FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
-                  LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
-                ON TR.TRAVEL_ID              = TS.TRAVEL_ID
+                LEFT JOIN HRIS_TRAVEL_SUBSTITUTE TS
+                ON TR.TRAVEL_ID = TS.TRAVEL_ID
                 LEFT JOIN HRIS_EMPLOYEES E
                 ON (E.EMPLOYEE_ID =TR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RE
@@ -289,13 +268,16 @@ class TravelApproveRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES U
-                ON(U.EMPLOYEE_ID   = RA.RECOMMEND_BY
-                OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
-                WHERE 1=1
-                AND E.STATUS        ='E'
+                ON(U.EMPLOYEE_ID      = RA.RECOMMEND_BY
+                OR U.EMPLOYEE_ID      =RA.APPROVED_BY)
+                WHERE 1               =1
+                AND E.STATUS          ='E'
                 AND E.RETIRED_FLAG    ='N'
-                AND ((RA.RECOMMEND_BY= U.EMPLOYEE_ID AND TR.STATUS='RQ') OR (RA.APPROVED_BY= U.EMPLOYEE_ID AND TR.STATUS='RC') )
-                AND U.EMPLOYEE_ID={$employeeId}
+                AND ((RA.RECOMMEND_BY = U.EMPLOYEE_ID
+                AND TR.STATUS         ='RQ')
+                OR (RA.APPROVED_BY    = U.EMPLOYEE_ID
+                AND TR.STATUS         ='RC') )
+                AND U.EMPLOYEE_ID     ={$employeeId}
                 AND (TS.APPROVED_FLAG =
                   CASE
                     WHEN TS.EMPLOYEE_ID IS NOT NULL
@@ -304,5 +286,4 @@ class TravelApproveRepository implements RepositoryInterface {
                 OR TS.EMPLOYEE_ID IS NULL)";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
-
 }

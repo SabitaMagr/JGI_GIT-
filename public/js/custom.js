@@ -1471,6 +1471,27 @@ window.app = (function ($, toastr, App) {
 
         });
     };
+    (function () {
+        var reset = function ($fe) {
+            if ($fe.is('input:text')) {
+                $fe.val('').trigger('change');
+            } else if ($fe.is('select')) {
+                if ($fe.find("[value='-1']")) {
+                    $fe.val('-1').trigger('change');
+                } else {
+                    $fe.val('').trigger('change');
+                }
+            }
+        };
+
+        $('.hris-filter-container').on('click', '.hris-filter-reset-btn', function (e) {
+            var $formElementList = $('.hris-filter-container').find('.form-control');
+            $.each($formElementList, function (k, item) {
+                reset($(item));
+            });
+        });
+    })();
+
     return {
         format: format,
         pullDataById: pullDataById,

@@ -50,6 +50,7 @@
             {field: "DESTINATION", title: "Destination"},
             {field: "REQUESTED_AMOUNT", title: "Request Amt."},
             {field: "REQUESTED_TYPE_DETAIL", title: "Request For"},
+            {field: "TRANSPORT_TYPE_DETAIL", title: "Transport"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: action}
         ]);
@@ -80,6 +81,7 @@
             'DESTINATION': 'Destination',
             'REQUESTED_AMOUNT': 'Request Amt',
             'REQUESTED_TYPE_DETAIL': 'Request Type',
+            'TRANSPORT_TYPE_DETAIL': 'Transport',
             'STATUS_DETAIL': 'Status',
             'PURPOSE': 'Purpose',
             'REMARKS': 'Remarks',
