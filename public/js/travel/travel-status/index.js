@@ -1,12 +1,15 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         var $table = $('#table');
         var $search = $('#search');
         var $status = $('#status');
         var $fromDate = $('#fromDate');
         var $toDate = $('#toDate');
+        var $bulkActionDiv = $('#bulkActionDiv');
+        var $bulkBtns = $(".btnApproveReject");
         var action = `
             <div class="clearfix">
                 #if(REQUESTED_TYPE=='ad'){#
@@ -20,7 +23,7 @@
                 #}#
             </div>
         `;
-        app.initializeKendoGrid($table, [
+        var columns = [
             {field: "EMPLOYEE_NAME", title: "Employee"},
             {title: "Start Date",
                 columns: [{
@@ -53,7 +56,15 @@
             {field: "TRANSPORT_TYPE_DETAIL", title: "Transport"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: action}
-        ]);
+        ];
+        var pk = 'TRAVEL_ID';
+        var grid = app.initializeKendoGrid($table, columns, null, {id: pk, atLast: false, fn: function (selected) {
+                if (selected) {
+                    $bulkActionDiv.show();
+                } else {
+                    $bulkActionDiv.hide();
+                }
+            }});
         $search.on('click', function () {
             var search = document.searchManager.getSearchValues();
             search['status'] = $status.val();
@@ -99,6 +110,21 @@
         });
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'Travel Request List.pdf');
+        });
+
+        $bulkBtns.bind("click", function () {
+            var list = grid.getSelected();
+            var action = $(this).attr('action');
+
+            var selectedValues = [];
+            for (var i in list) {
+                selectedValues.push({id: list[i][pk], action: action});
+            }
+            app.bulkServerRequest(document.bulkLink, selectedValues, function () {
+                window.location.reload(true);
+            }, function (data, error) {
+
+            });
         });
     });
 })(window.jQuery, window.app);

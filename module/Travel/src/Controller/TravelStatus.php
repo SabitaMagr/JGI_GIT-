@@ -1,5 +1,4 @@
 <?php
-
 namespace Travel\Controller;
 
 use Application\Controller\HrisController;
@@ -8,6 +7,8 @@ use Application\Helper\Helper;
 use Application\Helper\NumberHelper;
 use Exception;
 use ManagerService\Repository\TravelApproveRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\TravelRequestForm;
 use SelfService\Model\TravelRequest;
 use SelfService\Repository\TravelExpenseDtlRepository;
@@ -43,10 +44,10 @@ class TravelStatus extends HrisController {
 
         $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "status", "class" => "form-control", 'label' => 'status']);
         return Helper::addFlashMessagesToArray($this, [
-                    'travelStatus' => $statusSE,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'travelStatus' => $statusSE,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
@@ -91,13 +92,13 @@ class TravelStatus extends HrisController {
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
         return Helper::addFlashMessagesToArray($this, [
-                    'id' => $id,
-                    'form' => $this->form,
-                    'recommender' => $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'],
-                    'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
-                    'detail' => $detail,
-                    'todayDate' => date('d-M-Y'),
-                    'advanceAmount' => $advanceAmount,
+                'id' => $id,
+                'form' => $this->form,
+                'recommender' => $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'],
+                'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
+                'detail' => $detail,
+                'todayDate' => date('d-M-Y'),
+                'advanceAmount' => $advanceAmount,
         ]);
     }
 
@@ -131,20 +132,20 @@ class TravelStatus extends HrisController {
         $totalAmountInWords = $numberInWord->toText($totalAmount);
         $balance = $detail['REQUESTED_AMOUNT'] - $totalAmount;
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'recommendedBy' => $recommenderId,
-                    'employeeId' => $this->employeeId,
-                    'expenseDtlList' => $expenseDtlList,
-                    'transportType' => $transportType,
-                    'todayDate' => date('d-M-Y'),
-                    'detail' => $detail,
-                    'totalAmount' => $totalAmount,
-                    'totalAmountInWords' => $totalAmountInWords,
-                    'balance' => $balance
-                        ]
+                'form' => $this->form,
+                'id' => $id,
+                'recommender' => $authRecommender,
+                'approver' => $authApprover,
+                'recommendedBy' => $recommenderId,
+                'employeeId' => $this->employeeId,
+                'expenseDtlList' => $expenseDtlList,
+                'transportType' => $transportType,
+                'todayDate' => date('d-M-Y'),
+                'detail' => $detail,
+                'totalAmount' => $totalAmount,
+                'totalAmountInWords' => $totalAmountInWords,
+                'balance' => $balance
+                ]
         );
     }
 
@@ -162,4 +163,36 @@ class TravelStatus extends HrisController {
         return [];
     }
 
+    public function bulkAction() {
+        $request = $this->getRequest();
+        try {
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            return new JsonModel(['success' => true, 'data' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+        $model = new TravelRequest();
+        $model->travelId = $id;
+        $model->recommendedDate = Helper::getcurrentExpressionDate();
+        $model->recommendedBy = $this->employeeId;
+        $model->approvedRemarks = $remarks;
+        $model->approvedDate = Helper::getcurrentExpressionDate();
+        $model->approvedBy = $this->employeeId;
+        $model->status = $approve ? "AP" : "R";
+        $message = $approve ? "Travel Request Approved" : "Travel Request Rejected";
+        $notificationEvent = $approve ? NotificationEvents::TRAVEL_APPROVE_ACCEPTED : NotificationEvents::TRAVEL_APPROVE_REJECTED;
+        $this->travelApproveRepository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+    }
 }

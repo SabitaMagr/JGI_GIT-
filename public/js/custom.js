@@ -1198,7 +1198,7 @@ window.app = (function ($, toastr, App) {
             }
 
             if (typeof bulkOptions !== 'undefined' && bulkOptions !== null && typeof bulkOptions.fn !== 'undefined' && bulkOptions.fn !== null) {
-                var checkedNo = $('.k-state-selected').length;
+                var checkedNo = $('.k-grid-content .k-state-selected').length;
                 if (checkedNo > 0) {
                     bulkOptions.fn(true);
                 } else {
@@ -1223,12 +1223,14 @@ window.app = (function ($, toastr, App) {
 
         return {
             getSelected: function () {
+                var selectedRowList = $('.k-grid-content .k-state-selected');
+                var grid = $table.data("kendoGrid");
                 var cleanData = [];
-                for (var key in  selectedRows) {
-                    var cleanItem = selectedRows[key];
-                    delete cleanItem.uid;
-                    cleanData.push(cleanItem);
-                }
+                $.each(selectedRowList, function (k, v) {
+                    var dataItem = grid.dataItem(v);
+                    delete dataItem.uid;
+                    cleanData.push(dataItem);
+                });
                 return JSON.parse(JSON.stringify(cleanData));
             }, clearSelected: function () {
                 selectedRows = {};
