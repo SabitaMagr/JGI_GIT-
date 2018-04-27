@@ -63,7 +63,7 @@ class AdvanceSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Advance even last Advance Uncleared"})
      * @Annotation\Required(true)
-     * @Annotation\Attributes({"id":"allowUncleardAdvance"})
+     * @Annotation\Attributes({"id":"allowUncleardAdvance","value":"N"})
      */
     public $allowUncleardAdvance;
 
@@ -96,7 +96,7 @@ class AdvanceSetupForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Monthly Deduction Rate"})
      * @Annotation\Attributes({ "id":"deductionRate","class":"form-control","step":"0.01","min":"0","max":"100"})
@@ -105,7 +105,7 @@ class AdvanceSetupForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":" Max Deduction Month"})
      * @Annotation\Attributes({ "id":"deductionIn","class":"form-control","min":"0"})
@@ -117,7 +117,7 @@ class AdvanceSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Override Rate"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({"id":"allowOverrideRate"})
+     * @Annotation\Attributes({"id":"allowOverrideRate","value":"N"})
      */
     public $allowOverrideRate;
 
@@ -135,7 +135,7 @@ class AdvanceSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Allow Override Month"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({"id":"allowOverrideMonth"})
+     * @Annotation\Attributes({"id":"allowOverrideMonth","value":"N"})
      */
     public $allowOverrideMonth;
 
@@ -153,7 +153,7 @@ class AdvanceSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Override Recommender"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({"id":"overrideRecommenderFlag"})
+     * @Annotation\Attributes({"id":"overrideRecommenderFlag","value":"N"})
      */
     public $overrideRecommenderFlag;
 
@@ -162,7 +162,7 @@ class AdvanceSetupForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Override Approver"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({"id":"overrideApproverFlag"})
+     * @Annotation\Attributes({"id":"overrideApproverFlag","value":"N"})
      */
     public $overrideApproverFlag;
     
