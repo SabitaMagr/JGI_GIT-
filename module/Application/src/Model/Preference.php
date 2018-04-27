@@ -18,6 +18,9 @@ class Preference extends Model {
     public $enablePrevMthLeaveReq = 'Y';
     public $includeDayoffAsLeave = 'Y';
     public $includeHolidayAsLeave = 'Y';
+    public $includeEmployeeCode = 'Y';
+    public $includeCompany = 'Y';
+    public $includeBranch = 'Y';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -33,6 +36,9 @@ class Preference extends Model {
     CONST ENABLE_PREV_MTH_LEAVE_REQ = "ENABLE_PREV_MTH_LEAVE_REQ";
     CONST INCLUDE_DAYOFF_AS_LEAVE = "INCLUDE_DAYOFF_AS_LEAVE";
     CONST INCLUDE_HOLIDAY_AS_LEAVE = "INCLUDE_HOLIDAY_AS_LEAVE";
+    CONST INCLUDE_EMPLOYEE_CODE = "INCLUDE_EMPLOYEE_CODE";
+    CONST INCLUDE_COMPANY= "INCLUDE_COMPANY";
+    CONST INCLUDE_BRANCH= "INCLUDE_BRANCH";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -49,6 +55,9 @@ class Preference extends Model {
         'enablePrevMthLeaveReq' => self::ENABLE_PREV_MTH_LEAVE_REQ,
         'includeDayoffAsLeave' => self::INCLUDE_DAYOFF_AS_LEAVE,
         'includeHolidayAsLeave' => self::INCLUDE_HOLIDAY_AS_LEAVE,
+        'includeEmployeeCode' => self::INCLUDE_EMPLOYEE_CODE,
+        'includeCompany' => self::INCLUDE_COMPANY,
+        'includeBranch' => self::INCLUDE_BRANCH,
     ];
 
 }

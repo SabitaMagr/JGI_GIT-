@@ -50,7 +50,7 @@
         ];
 
         var pk = 'ADVANCE_REQUEST_ID';
-        var grid = app.initializeKendoGrid($table, columns, null, {id: pk, atLast: false, fn: function (selected) {
+        var grid = app.initializeKendoGrid($table, app.prependPrefColumns(columns), null, {id: pk, atLast: false, fn: function (selected) {
                 if (selected) {
                     $bulkActionDiv.show();
                 } else {
@@ -59,7 +59,7 @@
             }});
 
         app.searchTable($table, ['EMPLOYEE_NAME']);
-        var exportMap = {
+        var exportMap = app.prependPrefExportMap({
             'EMPLOYEE_NAME': 'Employee Name',
             'ADVANCE_ENAME': 'Advance',
             'REQUESTED_DATE_AD': 'Request Date(AD)',
@@ -67,7 +67,7 @@
             'DATE_OF_ADVANCE_AD': 'Advance Date(AD)',
             'DATE_OF_ADVANCE_BS': 'Advance Date(BS)',
             'STATUS_DETAIL': 'Status',
-        };
+        });
 
         $('#excelExport').on('click', function () {
             app.excelExport($table, exportMap, 'Advance Request List.xlsx');

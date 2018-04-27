@@ -13,6 +13,9 @@ $latePenaltyLeaveDeduction = $form->get('latePenaltyLeaveDeduction');
 $enablePrevMthLeaveReq = $form->get('enablePrevMthLeaveReq');
 $includeDayoffAsLeave = $form->get('includeDayoffAsLeave');
 $includeHolidayAsLeave = $form->get('includeHolidayAsLeave');
+$includeEmployeeCode = $form->get('includeEmployeeCode');
+$includeCompany = $form->get('includeCompany');
+$includeBranch = $form->get('includeBranch');
 
 $submit = $form->get('submit');
 
@@ -168,6 +171,36 @@ if ($this->messages) {
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($includeHolidayAsLeave, ['class' => 'help-block error']); ?>
+                    </div>
+                </div>
+                    <h3 class="form-section">Report</h3>
+                <div class="row">
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($includeEmployeeCode); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includeEmployeeCode); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($includeEmployeeCode, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($includeCompany); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includeCompany); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($includeCompany, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($includeBranch); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($includeBranch); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($includeBranch, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
                 <div class="">

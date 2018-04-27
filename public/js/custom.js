@@ -1493,6 +1493,48 @@ window.app = (function ($, toastr, App) {
             });
         });
     })();
+    
+    var prependPrefColumns=function(columns){
+        if(typeof document.preference ==='undefined'){
+            throw "no preference defined.";
+        }
+        var preference=document.preference;
+        var list=[];
+        if(preference['includeEmployeeCode']=='Y'){
+            list.push({field: "EMPLOYEE_CODE", title: "Code"},);
+        }
+        if(preference['includeCompany']=='Y'){
+            list.push({field: "COMPANY_NAME", title: "Company"},);
+        }
+        if(preference['includeBranch']=='Y'){
+            list.push({field: "BRANCH_NAME", title: "Branch"},);
+        }
+        for(var i in columns){
+            list.push(columns[i]);
+        }
+        return list;
+    };
+    
+    var prependPrefExportMap=function(map){
+         if(typeof document.preference ==='undefined'){
+            throw "no preference defined.";
+        }
+        var preference=document.preference;
+        var finalMap={};
+        if(preference['includeEmployeeCode']=='Y'){
+            finalMap['EMPLOYEE_CODE']="Code";
+        }
+        if(preference['includeCompany']=='Y'){
+            finalMap['COMPANY_NAME']="Company";
+        }
+        if(preference['includeBranch']=='Y'){
+            finalMap['BRANCH_NAME']="Branch";
+        }
+        for(var i in map){
+            finalMap[i]=map[i];
+        }
+        return finalMap;
+    }
 
     return {
         format: format,
@@ -1536,5 +1578,7 @@ window.app = (function ($, toastr, App) {
         setDropZone: setDropZone,
         setFiscalMonth: setFiscalMonth,
         setEmployeeSearch: setEmployeeSearch,
+        prependPrefColumns: prependPrefColumns,
+        prependPrefExportMap: prependPrefExportMap,
     };
 })(window.jQuery, window.toastr, window.App);

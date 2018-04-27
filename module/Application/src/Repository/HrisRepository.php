@@ -91,4 +91,18 @@ class HrisRepository {
         }
         return $conditon;
     }
+    
+    protected  function getPrefReportQuery($sql){
+        $finalSql="SELECT R.*,
+                  C.COMPANY_NAME,
+                  B.BRANCH_NAME
+                FROM ({$sql}) R
+                LEFT JOIN HRIS_EMPLOYEES E
+                ON (R.EMPLOYEE_ID=E.EMPLOYEE_ID)
+                LEFT JOIN HRIS_COMPANY C
+                ON (E.COMPANY_ID=C.COMPANY_ID)
+                LEFT JOIN HRIS_BRANCHES B
+                ON (E.BRANCH_ID = B.BRANCH_ID)";
+        return $finalSql;
+    }
 }

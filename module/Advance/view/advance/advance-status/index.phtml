@@ -18,6 +18,7 @@ $this->headScript()
 
 <script>
     document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.preference =<?php echo json_encode($preference) ?>;
     document.viewLink = '<?= $this->url("advanceStatus", ["action" => "view"]) ?>';
     document.pullAdvanceRequestStatusListLink = '<?= $this->url("advanceStatus", ["action" => "pullAdvanceRequestStatusList"]) ?>';
     document.paymentViewLink = '<?= $this->url("advanceStatus", ["action" => "paymentView"]) ?>';

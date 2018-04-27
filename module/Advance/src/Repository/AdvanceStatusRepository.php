@@ -1,40 +1,11 @@
 <?php
-
 namespace Advance\Repository;
 
 use Application\Helper\EntityHelper;
-use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
+use Application\Repository\HrisRepository;
 use Setup\Model\HrEmployees;
-use Zend\Db\Adapter\AdapterInterface;
 
-class AdvanceStatusRepository implements RepositoryInterface {
-
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-    }
-
-    public function add(Model $model) {
-        
-    }
-
-    public function delete($id) {
-        
-    }
-
-    public function edit(Model $model, $id) {
-        
-    }
-
-    public function fetchAll() {
-        
-    }
-
-    public function fetchById($id) {
-        
-    }
+class AdvanceStatusRepository extends HrisRepository {
 
     public function getFilteredRecord($data) {
         $fromDate = $data['fromDate'];
@@ -49,25 +20,26 @@ class AdvanceStatusRepository implements RepositoryInterface {
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $status = $data['status'];
         $employeeTypeId = $data['employeeTypeId'];
-        
+
         $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
         $fromDateCondition = "";
         $toDateCondition = "";
         $statusCondition = '';
-        
+
         if ($fromDate != null) {
             $fromDateCondition = " AND AR.REQUESTED_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
         }
         if ($toDate != null) {
             $toDateCondition = " AND AR.REQUESTED_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
         }
-        
-        if($status!=-1 && $status!=null){
-            $statusCondition="AND AR.STATUS='".$status."' ";
+
+        if ($status != -1 && $status != null) {
+            $statusCondition = "AND AR.STATUS='" . $status . "' ";
         }
-        
+
 
         $sql = "SELECT
+          AR.EMPLOYEE_ID AS EMPLOYEE_ID,
           AR.ADVANCE_REQUEST_ID AS ADVANCE_REQUEST_ID,
           INITCAP(TO_CHAR(AR.REQUESTED_DATE,'DD-MON-YYYY') ) AS REQUESTED_DATE,
           INITCAP(TO_CHAR(AR.REQUESTED_DATE,'DD-MON-YYYY') ) AS REQUESTED_DATE_AD,
@@ -86,7 +58,6 @@ class AdvanceStatusRepository implements RepositoryInterface {
           AR.DEDUCTION_TYPE AS DEDUCTION_TYPE,
           AR.DEDUCTION_RATE AS DEDUCTION_RATE,
           AR.DEDUCTION_IN AS DEDUCTION_IN,
-          AR.DEDUCTION_TYPE AS DEDUCTION_TYPE,
           (
             CASE
               WHEN AR.DEDUCTION_TYPE = 'M' THEN 'MONTH'
@@ -148,8 +119,8 @@ class AdvanceStatusRepository implements RepositoryInterface {
           {$toDateCondition}
           {$statusCondition}";
         $sql .= " ORDER BY AR.REQUESTED_DATE DESC";
-        
-        $statement = $this->adapter->query($sql);
+        $finalQuery=$this->getPrefReportQuery($sql);
+        $statement = $this->adapter->query( $finalQuery);
         $result = $statement->execute();
         return $result;
     }
@@ -287,5 +258,4 @@ class AdvanceStatusRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result;
     }
-    
 }

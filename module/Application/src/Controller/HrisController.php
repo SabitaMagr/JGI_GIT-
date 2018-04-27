@@ -23,6 +23,7 @@ class HrisController extends AbstractActionController {
     protected $employeeId;
     protected $storageData;
     protected $acl;
+    protected $preference;
     protected $form;
     protected $repository;
     protected $status = [
@@ -38,6 +39,7 @@ class HrisController extends AbstractActionController {
         $this->adapter = $adapter;
         $this->storageData = $storage->read();
         $this->acl = $this->storageData['acl'];
+        $this->preference = $this->storageData['preference'];
         $this->employeeId = $this->storageData['employee_id'];
     }
 
