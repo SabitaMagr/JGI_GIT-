@@ -1,9 +1,7 @@
 <?php
-
 namespace Training\Repository;
 
 use Application\Repository\HrisRepository;
-use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 
 class TrainingStatusRepository extends HrisRepository {
@@ -13,8 +11,6 @@ class TrainingStatusRepository extends HrisRepository {
     }
 
     public function getTrainingRequestList($data) {
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -23,10 +19,26 @@ class TrainingStatusRepository extends HrisRepository {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
-        $requestStatusId = $data['requestStatusId'];
         $employeeTypeId = $data['employeeTypeId'];
+        $requestStatusId = $data['requestStatusId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
 
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $statusCondition = "";
+        $fromDateCondition = "";
+        $toDateCondition = "";
+        if ($requestStatusId != -1) {
+            $statusCondition = " AND TR.STATUS ='{$requestStatusId }'";
+        }
 
+        if ($fromDate != null) {
+            $fromDateCondition = " AND ((TR.START_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')) OR (T.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')))";
+        }
+
+        if ($toDate != null) {
+            $toDateCondition = "AND ((TR.END_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')) OR (T.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')))";
+        }
 
         $sql = "SELECT TR.REQUEST_ID,
                   TR.EMPLOYEE_ID,
@@ -129,53 +141,14 @@ class TrainingStatusRepository extends HrisRepository {
                     WHEN APRV.STATUS IS NOT NULL
                     THEN ('E')
                   END
-                OR APRV.STATUS   IS NULL)";
-        if ($requestStatusId != -1) {
-            $sql .= " AND TR.STATUS ='" . $requestStatusId . "'";
-        }
-
-        if ($fromDate != null) {
-            $sql .= " AND ((TR.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')) OR (T.START_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')))";
-        }
-
-        if ($toDate != null) {
-            $sql .= "AND ((TR.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')) OR (T.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')))";
-        }
-
-        if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $sql .= "AND E.EMPLOYEE_TYPE='" . $employeeTypeId . "' ";
-        }
-
-        if ($employeeId != -1) {
-            $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
-        }
-        if ($companyId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
-        }
-        if ($branchId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
-        }
-        if ($departmentId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DEPARTMENT_ID . "= $departmentId)";
-        }
-        if ($designationId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DESIGNATION_ID . "= $designationId)";
-        }
-        if ($positionId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::POSITION_ID . "= $positionId)";
-        }
-        if ($serviceTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)";
-        }
-        if ($serviceEventTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
-        }
-
-        $sql .= " ORDER BY TR.REQUESTED_DATE DESC";
-
+                OR APRV.STATUS   IS NULL)
+                {$searchCondition}
+                {$statusCondition}
+                {$fromDateCondition}
+                {$toDateCondition}
+                ORDER BY TR.REQUESTED_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
     }
-
 }

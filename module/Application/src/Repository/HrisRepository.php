@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Repository;
 
 use Zend\Db\Adapter\AdapterInterface;
@@ -35,4 +34,61 @@ class HrisRepository {
         return $iterator->count() > 0;
     }
 
+    private function conditionBuilder($colValue, $colName, $conditonType, $isString = false) {
+        if (gettype($colValue) === "array") {
+            $valuesinCSV = "";
+            for ($i = 0; $i < sizeof($colValue); $i++) {
+                $value = $isString ? "'{$colValue[$i]}'" : $colValue[$i];
+                if ($i + 1 == sizeof($colValue)) {
+                    $valuesinCSV .= "{$value}";
+                } else {
+                    $valuesinCSV .= "{$value},";
+                }
+            }
+            return " {$conditonType} {$colName} IN ({$valuesinCSV})";
+        } else {
+            $value = $isString ? "'{$colValue}'" : $colValue;
+            return " {$conditonType} {$colName} = {$value}";
+        }
+    }
+
+    protected function getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId = null, $locationId = null) {
+        $conditon = "";
+        if ($companyId != null && $companyId != -1) {
+            $conditon .= $this->conditionBuilder($companyId, "E.COMPANY_ID", "AND");
+        }
+        if ($branchId != null && $branchId != -1) {
+            $conditon .= $this->conditionBuilder($branchId, "E.BRANCH_ID", "AND");
+        }
+        if ($departmentId != null && $departmentId != -1) {
+            $conditon .= $this->conditionBuilder($departmentId, "E.DEPARTMENT_ID", "AND");
+        }
+        if ($positionId != null && $positionId != -1) {
+            $conditon .= $this->conditionBuilder($positionId, "E.POSITION_ID", "AND");
+        }
+        if ($designationId != null && $designationId != -1) {
+            $conditon .= $this->conditionBuilder($designationId, "E.DESIGNATION_ID", "AND");
+        }
+        if ($serviceTypeId != null && $serviceTypeId != -1) {
+            $conditon .= $this->conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
+        } else {
+            $conditon .= " AND (E.SERVICE_TYPE_ID IN (SELECT SERVICE_TYPE_ID FROM HRIS_SERVICE_TYPES WHERE TYPE NOT IN ('RESIGNED','RETIRED')) OR E.SERVICE_TYPE_ID IS NULL)";
+        }
+        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
+            $conditon .= $this->conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
+        }
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $conditon .= $this->conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND", true);
+        }
+        if ($employeeId != null && $employeeId != -1) {
+            $conditon .= $this->conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
+        }
+        if ($genderId != null && $genderId != -1) {
+            $conditon .= $this->conditionBuilder($genderId, "E.GENDER_ID", "AND");
+        }
+        if ($locationId != null && $locationId != -1) {
+            $conditon .= $this->conditionBuilder($locationId, "E.LOCATION_ID", "AND");
+        }
+        return $conditon;
+    }
 }
