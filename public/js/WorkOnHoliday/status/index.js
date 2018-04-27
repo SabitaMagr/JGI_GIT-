@@ -5,6 +5,8 @@
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         var $tableContainer = $("#holidayWorkRequestStatusTable");
         var $search = $('#search');
+        var $bulkActionDiv = $('#bulkActionDiv');
+        var $bulkBtns = $(".btnApproveReject");
         var columns = [
             {field: "FULL_NAME", title: "Employee"},
             {field: "HOLIDAY_ENAME", title: "Holiday"},
@@ -59,7 +61,14 @@
             'APPROVED_DATE': 'Approved Date'
 
         };
-        app.initializeKendoGrid($tableContainer, columns);
+        var pk = 'ID';
+        var grid = app.initializeKendoGrid($tableContainer, columns, null, {id: pk, atLast: false, fn: function (selected) {
+                if (selected) {
+                    $bulkActionDiv.show();
+                } else {
+                    $bulkActionDiv.hide();
+                }
+            }});
         app.searchTable('holidayWorkRequestStatusTable', ['FULL_NAME', 'HOLIDAY_ENAME', 'REQUESTED_DATE_AD', 'FROM_DATE_AD', 'TO_DATE_AD', 'REQUESTED_DATE_BS', 'FROM_DATE_BS', 'TO_DATE_BS', 'DURATION', 'YOUR_ROLE', 'STATUS']);
 
         $search.on('click', function () {
@@ -83,6 +92,19 @@
         $('#pdfExport').on("click", function () {
             app.exportToPDF($tableContainer, map, "Work on Holiday Request List.pdf");
         });
+        $bulkBtns.bind("click", function () {
+            var list = grid.getSelected();
+            var action = $(this).attr('action');
 
+            var selectedValues = [];
+            for (var i in list) {
+                selectedValues.push({id: list[i][pk], action: action});
+            }
+            app.bulkServerRequest(document.bulkLink, selectedValues, function () {
+                $search.trigger('click');
+            }, function (data, error) {
+
+            });
+        });
     });
 })(window.jQuery, window.app);

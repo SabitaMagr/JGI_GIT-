@@ -1,5 +1,4 @@
 <?php
-
 namespace WorkOnHoliday\Repository;
 
 use Application\Helper\EntityHelper;
@@ -238,7 +237,7 @@ class WorkOnHolidayStatusRepository {
                   END
                 OR APRV.STATUS  IS NULL)";
         if ($requestStatusId != -1) {
-            $sql .= " AND  WH.STATUS='{$requestStatusId}') ";
+            $sql .= " AND  WH.STATUS='{$requestStatusId}' ";
         }
 
         if ($holidayId != -1) {
@@ -284,7 +283,6 @@ class WorkOnHolidayStatusRepository {
         }
 
         $sql .= " ORDER BY WH.REQUESTED_DATE DESC";
-
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -312,5 +310,4 @@ class WorkOnHolidayStatusRepository {
                     AND EH.EMPLOYEE_ID = {$employeeId}
                     AND H.START_DATE >= A.MIN_ATTENDANCE_DT ORDER BY H.START_DATE");
     }
-
 }

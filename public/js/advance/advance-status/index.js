@@ -1,10 +1,16 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+        var $status = $('#status');
         var $search = $('#searchAdvance');
         var $table = $('#table');
+        var $bulkActionDiv = $('#bulkActionDiv');
+        var $bulkBtns = $(".btnApproveReject");
+        $.each(document.searchManager.getIds(), function (key, value) {
+            $('#' + value).select2();
+        });
+        $status.select2();
         var action = `
             <div class="clearfix">
                 <a class="btn btn-icon-only green" href="${document.viewLink}/#:ADVANCE_REQUEST_ID#" style="height:17px;" title="View Detail">
@@ -43,8 +49,14 @@
             {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: action}
         ];
 
-
-        app.initializeKendoGrid($table, columns, "Advance List.xlsx");
+        var pk = 'ADVANCE_REQUEST_ID';
+        var grid = app.initializeKendoGrid($table, columns, null, {id: pk, atLast: false, fn: function (selected) {
+                if (selected) {
+                    $bulkActionDiv.show();
+                } else {
+                    $bulkActionDiv.hide();
+                }
+            }});
 
         app.searchTable($table, ['EMPLOYEE_NAME']);
         var exportMap = {
@@ -68,18 +80,27 @@
 
 
         $search.on('click', function () {
-
             var data = document.searchManager.getSearchValues();
-            data['status'] = $('#status').val();
+            data['status'] = $status.val();
             data['fromDate'] = $('#fromDate').val();
             data['toDate'] = $('#toDate').val();
-            App.blockUI({target: "#hris-page-content"});
-            app.pullDataById("", data).then(function (response) {
-                App.unblockUI("#hris-page-content");
-                console.log(response.data);
+            app.serverRequest("", data).then(function (response) {
                 app.renderKendoGrid($table, response.data, "AdvanceRequestList.xlsx");
             }, function (failure) {
-                App.unblockUI("#hris-page-content");
+            });
+        });
+        $bulkBtns.bind("click", function () {
+            var list = grid.getSelected();
+            var action = $(this).attr('action');
+
+            var selectedValues = [];
+            for (var i in list) {
+                selectedValues.push({id: list[i][pk], action: action});
+            }
+            app.bulkServerRequest(document.bulkLink, selectedValues, function () {
+                $search.trigger('click');
+            }, function (data, error) {
+
             });
         });
 

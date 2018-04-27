@@ -1,28 +1,27 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
-
+    ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/advance/advance-status/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-        ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+    ->appendFile($this->basePath('js/search.js'))
+    ->appendFile($this->basePath('js/advance/advance-status/index.js'));
+
 ?>
 
 <script>
-    document.ids =<?php echo json_encode(["advanceRequestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("advanceStatus", ["action" => "view"]) ?>';
     document.pullAdvanceRequestStatusListLink = '<?= $this->url("advanceStatus", ["action" => "pullAdvanceRequestStatusList"]) ?>';
     document.paymentViewLink = '<?= $this->url("advanceStatus", ["action" => "paymentView"]) ?>';
+    document.bulkLink = '<?php echo $this->url('advanceStatus', ['action' => 'bulk']); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\advanceStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -35,6 +34,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     print $this->messages[1];
     print '</div>';
 }
+
 ?>
 <?php if ($this->messages) { ?>
     <script>
@@ -158,7 +158,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
                 <div class="col-sm-2 ">
-                    <button id="reset" class="btn default btn-sm pull-right">
+                    <button class="btn default btn-sm pull-right hris-reset-btn">
                         Reset
                         <i class="fa fa-refresh"></i>
                     </button>
@@ -171,10 +171,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
 
-
-
     <div id="table">
     </div>
-
+    <div style="display: none;" class="row margin-top-20" id="bulkActionDiv" >
+        <div class="col-sm-2 ">
+            <button action="reject" class="btn btn-danger btnApproveReject">Reject</button>
+        </div>
+        <div class="col-sm-2 col-sm-offset-8">
+            <button action="approve" class="btn btn-info btnApproveReject pull-right">Approve</button>
+        </div>
+    </div>
 
 </div>

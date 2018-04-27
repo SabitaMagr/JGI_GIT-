@@ -121,7 +121,7 @@
                 selectedValues.push({id: list[i][pk], action: action});
             }
             app.bulkServerRequest(document.bulkLink, selectedValues, function () {
-                window.location.reload(true);
+                $search.trigger('click');
             }, function (data, error) {
 
             });

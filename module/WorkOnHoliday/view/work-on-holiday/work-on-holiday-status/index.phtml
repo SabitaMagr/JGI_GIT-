@@ -1,19 +1,19 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-        ->appendFile($this->basePath('js/WorkOnHoliday/status/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/angular.min.js'))
+    ->appendFile($this->basePath('js/search.js'))
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+    ->appendFile($this->basePath('js/WorkOnHoliday/status/index.js'));
+
 ?>
 
 <script>
@@ -22,6 +22,7 @@ $this->headScript()
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("workOnHolidayStatus", ["action" => "view"]) ?>';
     document.pullHoliayWorkRequestStatusListLink = '<?= $this->url("workOnHolidayStatus", ["action" => "pullHoliayWorkRequestStatusList"]) ?>';
+    document.bulkLink = '<?php echo $this->url('workOnHolidayStatus', ['action' => 'bulk']); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnHolidayStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -34,6 +35,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     print $this->messages[1];
     print '</div>';
 }
+
 ?>
 <?php if ($this->messages) { ?>
     <script>
@@ -135,7 +137,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
         <div class="row margin-top-10">
             <div class=" col-sm-offset-8 col-sm-4">
-                <button id="reset" class="btn default btn-sm pull-right">
+                <button class="btn default btn-sm pull-right hris-reset-btn">
                     Reset
                     <i class="fa fa-refresh"></i>
                 </button>
@@ -149,8 +151,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 </div>
 
 <div class="margin-top-20">  
-
     <div id="holidayWorkRequestStatusTable">
+    </div>
+    <div style="display: none;" class="row margin-top-20" id="bulkActionDiv" >
+        <div class="col-sm-2 ">
+            <button action="reject" class="btn btn-danger btnApproveReject">Reject</button>
+        </div>
+        <div class="col-sm-2 col-sm-offset-8">
+            <button action="approve" class="btn btn-info btnApproveReject pull-right">Approve</button>
+        </div>
     </div>
 </div>
 

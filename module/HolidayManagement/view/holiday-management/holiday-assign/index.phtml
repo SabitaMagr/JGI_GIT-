@@ -1,10 +1,9 @@
 <?php
-$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/nprogress/nprogress.css'));
-$this->headScript()->appendFile($this->basePath('assets/global/plugins/nprogress/nprogress.js'));
 $this->headScript()
-        ->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/HolidayManagement/HolidayAssign/index.js'));
+    ->appendFile($this->basePath('js/angular.min.js'))
+    ->appendFile($this->basePath('js/search.js'))
+    ->appendFile($this->basePath('js/HolidayManagement/HolidayAssign/index.js'));
+
 ?>
 
 <script>
@@ -16,7 +15,7 @@ $this->headScript()
     document.regenAttendanceLink = '<?php echo $this->url('holiday-assign', ['action' => 'regen-attendance']); ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\holiday-assign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\holiday-assign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -26,6 +25,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     print $this->messages[1];
     print '</div>';
 }
+
 ?>
 <?php if ($this->messages) { ?>
     <script>

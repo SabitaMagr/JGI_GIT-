@@ -1,5 +1,4 @@
 <?php
-
 namespace ManagerService\Repository;
 
 use Application\Model\Model;
@@ -20,7 +19,7 @@ class TrainingApproveRepository extends HrisRepository {
     public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [TrainingRequest::REQUEST_ID => $id]);
-        $this->rawQuery("
+        $this->executeStatement("
                 DECLARE
                   V_TRAINING_ID HRIS_EMPLOYEE_TRAINING_REQUEST.TRAINING_ID%TYPE;
                   V_START_DATE HRIS_EMPLOYEE_TRAINING_REQUEST.START_DATE%TYPE;
@@ -116,23 +115,23 @@ class TrainingApproveRepository extends HrisRepository {
             new Expression("INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY')) AS APPROVED_DATE"),
             new Expression("TR.APPROVED_REMARKS AS APPROVED_REMARKS"),
             new Expression("INITCAP(TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY')) AS MODIFIED_DATE"),
-                ], true);
+            ], true);
 
         $select->from(['TR' => TrainingRequest::TABLE_NAME])
-                ->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TR." . TrainingRequest::TRAINING_ID, [
-                    Training::TRAINING_CODE,
-                    "TRAINING_INSTRUCTOR_NAME" => new Expression("INITCAP(T.INSTRUCTOR_NAME)"),
-                    "TRAINING_NAME" => new Expression("INITCAP(T.TRAINING_NAME)"),
-                    "TRAINING_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),
-                    "TRAINING_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),
-                    "TRAINING_DURATION" => Training::DURATION,
-                    "TRAINING_TRAINING_TYPE" => Training::TRAINING_TYPE], "left")
-                ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=TR.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
-                ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
-                ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=TR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
-                ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
-                ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
+            ->join(['T' => Training::TABLE_NAME], "T." . Training::TRAINING_ID . "=TR." . TrainingRequest::TRAINING_ID, [
+                Training::TRAINING_CODE,
+                "TRAINING_INSTRUCTOR_NAME" => new Expression("INITCAP(T.INSTRUCTOR_NAME)"),
+                "TRAINING_NAME" => new Expression("INITCAP(T.TRAINING_NAME)"),
+                "TRAINING_START_DATE" => new Expression("INITCAP(TO_CHAR(T.START_DATE, 'DD-MON-YYYY'))"),
+                "TRAINING_END_DATE" => new Expression("INITCAP(TO_CHAR(T.END_DATE, 'DD-MON-YYYY'))"),
+                "TRAINING_DURATION" => Training::DURATION,
+                "TRAINING_TRAINING_TYPE" => Training::TRAINING_TYPE], "left")
+            ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=TR.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
+            ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=TR.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
+            ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=TR.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
+            ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=TR.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
+            ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
+            ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
 
         $select->where(["TR.REQUEST_ID" => $id]);
         $select->order(["TR.REQUESTED_DATE" => Select::ORDER_DESCENDING]);
@@ -468,5 +467,4 @@ class TrainingApproveRepository extends HrisRepository {
                 {$condition}";
         return $this->rawQuery($sql);
     }
-
 }

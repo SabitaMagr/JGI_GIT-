@@ -1,5 +1,4 @@
 <?php
-
 namespace WorkOnHoliday\Controller;
 
 use Application\Helper\EntityHelper;
@@ -7,6 +6,8 @@ use Application\Helper\Helper;
 use Exception;
 use HolidayManagement\Model\Holiday;
 use ManagerService\Repository\HolidayWorkApproveRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\HolidayRepository;
@@ -64,9 +65,9 @@ class WorkOnHolidayStatus extends AbstractActionController {
         $statusFormElement->setLabel("Status");
 
         return Helper::addFlashMessagesToArray($this, [
-                    'holidays' => $holidayFormElement,
-                    'status' => $statusFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'holidays' => $holidayFormElement,
+                'status' => $statusFormElement,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 
@@ -120,19 +121,19 @@ class WorkOnHolidayStatus extends AbstractActionController {
         }
         $holidays = $this->getHolidayList($requestedEmployeeID);
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'employeeId' => $employeeId,
-                    'employeeName' => $employeeName,
-                    'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approvedDT' => $detail['APPROVED_DATE'],
-                    'approver' => $authApprover,
-                    'status' => $status,
-                    'holidays' => $holidays["holidayKVList"],
-                    'holidayObjList' => $holidays["holidayList"],
-                    'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove' => $recommApprove
+                'form' => $this->form,
+                'id' => $id,
+                'employeeId' => $employeeId,
+                'employeeName' => $employeeName,
+                'requestedDt' => $detail['REQUESTED_DATE'],
+                'recommender' => $authRecommender,
+                'approvedDT' => $detail['APPROVED_DATE'],
+                'approver' => $authApprover,
+                'status' => $status,
+                'holidays' => $holidays["holidayKVList"],
+                'holidayObjList' => $holidays["holidayList"],
+                'customRenderer' => Helper::renderCustomView(),
+                'recommApprove' => $recommApprove
         ]);
     }
 
@@ -169,4 +170,36 @@ class WorkOnHolidayStatus extends AbstractActionController {
         }
     }
 
+    public function bulkAction() {
+        $request = $this->getRequest();
+        try {
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            return new JsonModel(['success' => true, 'data' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+        $model = new WorkOnHoliday();
+        $model->id = $id;
+        $model->recommendedDate = Helper::getcurrentExpressionDate();
+        $model->recommendedBy = $this->employeeId;
+        $model->approvedRemarks = $remarks;
+        $model->approvedDate = Helper::getcurrentExpressionDate();
+        $model->approvedBy = $this->employeeId;
+        $model->status = $approve ? "AP" : "R";
+        $message = $approve ? "WOH Request Approved" : "WOH Request Rejected";
+        $notificationEvent = $approve ? NotificationEvents::WORKONHOLIDAY_APPROVE_ACCEPTED : NotificationEvents::WORKONHOLIDAY_APPROVE_REJECTED;
+        $this->holidayWorkApproveRepository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+    }
 }

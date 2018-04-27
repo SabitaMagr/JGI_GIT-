@@ -1,5 +1,4 @@
 <?php
-
 namespace Training\Controller;
 
 use Application\Controller\HrisController;
@@ -36,10 +35,10 @@ class TrainingStatusController extends HrisController {
         }
         $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'status', 'class' => 'form-control', 'label' => 'Status']);
         return $this->stickFlashMessagesTo([
-                    'status' => $statusSE,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'status' => $statusSE,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
@@ -78,11 +77,43 @@ class TrainingStatusController extends HrisController {
         $trainingRequestModel->exchangeArrayFromDB($detail);
         $this->form->bind($trainingRequestModel);
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'detail' => $detail,
-                    'customRenderer' => Helper::renderCustomView()
+                'form' => $this->form,
+                'id' => $id,
+                'detail' => $detail,
+                'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
+    public function bulkAction() {
+        $request = $this->getRequest();
+        try {
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            return new JsonModel(['success' => true, 'data' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+        $model = new TrainingRequest();
+        $model->requestId = $id;
+        $model->recommendedDate = Helper::getcurrentExpressionDate();
+        $model->recommendedBy = $this->employeeId;
+        $model->approvedRemarks = $remarks;
+        $model->approvedDate = Helper::getcurrentExpressionDate();
+        $model->approvedBy = $this->employeeId;
+        $model->status = $approve ? "AP" : "R";
+        $message = $approve ? "Training Request Approved" : "Training Request Rejected";
+        $notificationEvent = $approve ? NotificationEvents::TRAINING_APPROVE_ACCEPTED : NotificationEvents::TRAINING_APPROVE_REJECTED;
+        $this->repository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+    }
 }

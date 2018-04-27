@@ -1,12 +1,11 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
 
-$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/nprogress/nprogress.css'));
-$this->headScript()->appendFile($this->basePath('assets/global/plugins/nprogress/nprogress.js'));
 $this->headScript()->appendFile($this->basePath('js/angular.min.js'))
-        ->appendFile($this->basePath('js/search.js'));
+    ->appendFile($this->basePath('js/search.js'));
 $this->headScript()->appendFile($this->basePath('js/training/training-assign/assign.js'));
+
 ?>
 
 <script>
@@ -15,14 +14,14 @@ $this->headScript()->appendFile($this->basePath('js/training/training-assign/ass
     document.searchValues =<?php echo json_encode($searchValues); ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\trainingAssign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\trainingAssign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="" ng-app="hris" ng-controller="trainingAssignController">
     <div id="hris-page-content">
         <div class="row margin-top-20">
             <div class="col-sm-4">
-                <?php print $this->formElement($trainings); ?>
+<?php print $this->formElement($trainings); ?>
             </div>
         </div>
         <div class="portlet light bg-inverse margin-top-10">

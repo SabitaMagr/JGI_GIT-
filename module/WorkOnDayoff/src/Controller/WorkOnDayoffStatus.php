@@ -1,5 +1,4 @@
 <?php
-
 namespace WorkOnDayoff\Controller;
 
 use Application\Controller\HrisController;
@@ -7,6 +6,8 @@ use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use ManagerService\Repository\DayoffWorkApproveRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\WorkOnDayoffForm;
 use SelfService\Model\WorkOnDayoff;
 use WorkOnDayoff\Repository\WorkOnDayoffStatusRepository;
@@ -29,10 +30,10 @@ class WorkOnDayoffStatus extends HrisController {
     public function indexAction() {
         $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "requestStatusId", "class" => "form-control", 'label' => 'Status']);
         return $this->stickFlashMessagesTo([
-                    'status' => $statusSE,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'status' => $statusSE,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
@@ -84,17 +85,17 @@ class WorkOnDayoffStatus extends HrisController {
             return $this->redirect()->toRoute("workOnDayoffStatus");
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'employeeId' => $employeeId,
-                    'employeeName' => $employeeName,
-                    'requestedDt' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approvedDT' => $detail['APPROVED_DATE'],
-                    'approver' => $authApprover,
-                    'status' => $status,
-                    'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove' => $recommApprove
+                'form' => $this->form,
+                'id' => $id,
+                'employeeId' => $employeeId,
+                'employeeName' => $employeeName,
+                'requestedDt' => $detail['REQUESTED_DATE'],
+                'recommender' => $authRecommender,
+                'approvedDT' => $detail['APPROVED_DATE'],
+                'approver' => $authApprover,
+                'status' => $status,
+                'customRenderer' => Helper::renderCustomView(),
+                'recommApprove' => $recommApprove
         ]);
     }
 
@@ -118,4 +119,36 @@ class WorkOnDayoffStatus extends HrisController {
         }
     }
 
+    public function bulkAction() {
+        $request = $this->getRequest();
+        try {
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            return new JsonModel(['success' => true, 'data' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+        $model = new WorkOnDayoff();
+        $model->id = $id;
+        $model->recommendedDate = Helper::getcurrentExpressionDate();
+        $model->recommendedBy = $this->employeeId;
+        $model->approvedRemarks = $remarks;
+        $model->approvedDate = Helper::getcurrentExpressionDate();
+        $model->approvedBy = $this->employeeId;
+        $model->status = $approve ? "AP" : "R";
+        $message = $approve ? "WOD Request Approved" : "WOD Request Rejected";
+        $notificationEvent = $approve ? NotificationEvents::WORKONDAYOFF_APPROVE_ACCEPTED : NotificationEvents::WORKONDAYOFF_APPROVE_REJECTED;
+        $this->dayoffWorkApproveRepository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+    }
 }

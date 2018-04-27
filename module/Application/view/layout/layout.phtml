@@ -53,10 +53,9 @@
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.css') ?>" rel="stylesheet" type="text/css"/>
+        <link href="<?= $this->basePath('assets/global/plugins/nprogress/nprogress.css') ?>" rel="stylesheet" type="text/css"/>
         <!--End of mandatory plugins-->
-        <?php
-        print $this->headLink();
-        ?>
+        <?php print $this->headLink(); ?>
 
         <link href="<?= $this->basePath('css/listpage.css') ?>" rel="stylesheet" type="text/css"/>
         <link href="<?= $this->basePath('css/custom.css') ?>" rel="stylesheet" type="text/css"/>
@@ -70,38 +69,44 @@
             document.basePath = '<?= $this->basePath() ?>';
             document.settingUrl = '<?= $this->url("user-setting", ["action" => "index"]) ?>';
             document.updateSettingUrl = '<?= $this->url("user-setting", ["action" => "update"]) ?>';
-<?php if ($displayGlobalSearch) { ?>
+<?php if ($displayGlobalSearch) : ?>
                 document.globalSearchemployeeList = <?php echo json_encode($employeeList); ?>;
-<?php } ?>
+<?php endif; ?>
             document.globalSearchEmployeeProfileUrl = '<?= $this->url("employee", ["action" => "view"]) ?>';
             document.selfEmployeeId =<?php echo isset($selfEmployeeId) ? $selfEmployeeId : 'null'; ?>;
         </script>
         <div class="page-wrapper" id="hris-page-content">
             <?php
             print $this->partial('partials/header.phtml');
+
             ?>
             <div class="clearfix"></div>
             <div class="page-container">
                 <?php
                 $this->navigation('navigation-menu')->menu()->setPartial('partials/sidebar');
                 echo $this->navigation('navigation-menu')->menu()->render();
+
                 ?>
                 <div class="page-content-wrapper">
                     <div  class="page-content">
                         <?php
                         print $this->content;
+
                         ?>
                     </div>
                 </div>
                 <?php
                 print $this->partial('partials/quick-sidebar.phtml');
+
                 ?>
             </div>
             <?php
             print $this->partial('partials/footer.phtml');
+
             ?>
             <?php
             print $this->partial('partials/profile.phtml');
+
             ?>
 
         </div>
@@ -113,68 +118,78 @@
         <![endif]-->
 
         <?php
+        $this->headScript()->prependFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        $this->headScript()->prependFile($this->basePath('assets/global/plugins/nprogress/nprogress.js'));
         // plugin to export  pdf
         $this->headScript()
-                ->prependFile($this->basePath('assets/global/plugins/pdf/build/vfs_fonts.js'))
-                ->prependFile($this->basePath('assets/global/plugins/pdf/build/pdfmake.min.js'));
+            ->prependFile($this->basePath('assets/global/plugins/pdf/build/vfs_fonts.js'))
+            ->prependFile($this->basePath('assets/global/plugins/pdf/build/pdfmake.min.js'));
 
 
         $this->headScript()
-                ->prependFile($this->basePath('js/application/globalSearch.js'));
+            ->prependFile($this->basePath('js/application/globalSearch.js'));
         $this->headScript()
-                ->prependFile($this->basePath('js/user-setting.js'));
+            ->prependFile($this->basePath('js/user-setting.js'));
         $this->headScript()
-                ->prependFile($this->basePath('js/application/changePassword/index.js'));
+            ->prependFile($this->basePath('js/application/changePassword/index.js'));
         $this->headScript()
-                ->prependFile($this->basePath('js/custom.js'));
+            ->prependFile($this->basePath('js/custom.js'));
+
         ?>
         <?php
         $this->headScript()->prependFile($this->basePath('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'));
         $this->headScript()->prependFile($this->basePath('assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js'));
+
         ?>
 
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <?php
         $this->headScript()
-                ->prependFile($this->basePath('assets/layouts/global/scripts/quick-nav.min.js'))
-                ->prependFile($this->basePath('assets/layouts/global/scripts/quick-sidebar.min.js'))
-                ->prependFile($this->basePath('assets/layouts/layout/scripts/demo.min.js'))
-                ->prependFile($this->basePath('assets/layouts/layout/scripts/layout.min.js'));
+            ->prependFile($this->basePath('assets/layouts/global/scripts/quick-nav.min.js'))
+            ->prependFile($this->basePath('assets/layouts/global/scripts/quick-sidebar.min.js'))
+            ->prependFile($this->basePath('assets/layouts/layout/scripts/demo.min.js'))
+            ->prependFile($this->basePath('assets/layouts/layout/scripts/layout.min.js'));
+
         ?>
         <!-- END THEME LAYOUT SCRIPTS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <?php
         $this->headScript()
-                ->prependFile($this->basePath('assets/global/scripts/app.min.js'));
+            ->prependFile($this->basePath('assets/global/scripts/app.min.js'));
+
         ?>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BLOCK UI -->
         <?php
         $this->headScript()->prependFile($this->basePath('assets/global/plugins/jquery.blockui.min.js'));
+
         ?>
         <!-- BLOCK UI -->
         <!--Select 2-->
         <?php
         $this->headScript()
-                ->prependFile($this->basePath('assets/global/plugins/select2/js/select2.full.min.js'));
+            ->prependFile($this->basePath('assets/global/plugins/select2/js/select2.full.min.js'));
+
         ?>
         <!--End Select 2-->
         <!-- BEGIN CORE PLUGINS -->
         <?php
         print $this->headScript()
-                        ->prependFile($this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/js.cookie.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/bootstrap/js/bootstrap.min.js'))
-                        ->prependFile($this->basePath('assets/global/plugins/jquery.min.js'));
+                ->prependFile($this->basePath('assets/global/plugins/jquery-ui/jquery-ui.min.js'))
+                ->prependFile($this->basePath('assets/global/plugins/bootstrap-toastr/toastr.min.js'))
+                ->prependFile($this->basePath('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js'))
+                ->prependFile($this->basePath('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js'))
+                ->prependFile($this->basePath('assets/global/plugins/js.cookie.min.js'))
+                ->prependFile($this->basePath('assets/global/plugins/bootstrap/js/bootstrap.min.js'))
+                ->prependFile($this->basePath('assets/global/plugins/jquery.min.js'));
+
         ?>
         <!-- END CORE PLUGINS -->
         <!-- End -->
 
         <?php
         print $this->partial('partials/change-password.phtml');
+
         ?>
 
         <div id='pdfExportTable'></div>

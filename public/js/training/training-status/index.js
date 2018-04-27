@@ -1,12 +1,15 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
+        $('select').select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         var $table = $('#table');
         var $search = $('#search');
         var $status = $('#status');
         var $fromDate = $('#fromDate');
         var $toDate = $('#toDate');
+        var $bulkActionDiv = $('#bulkActionDiv');
+        var $bulkBtns = $(".btnApproveReject");
         var action = `
             <div class="clearfix">
                 <a class="btn btn-icon-only green" href="${document.viewLink}/#:REQUEST_ID#" style="height:17px;" title="View Detail">
@@ -14,7 +17,7 @@
                 </a>
             </div>
         `;
-        app.initializeKendoGrid($table, [
+        var columns = [
             {field: "FULL_NAME", title: "Employee"},
             {field: "TITLE", title: "Training"},
             {field: "TRAINING_TYPE", title: "Type"},
@@ -50,7 +53,15 @@
                     }]},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["REQUEST_ID"], title: "Action", template: action}
-        ]);
+        ];
+        var pk = 'REQUEST_ID';
+        var grid = app.initializeKendoGrid($table, columns, null, {id: pk, atLast: false, fn: function (selected) {
+                if (selected) {
+                    $bulkActionDiv.show();
+                } else {
+                    $bulkActionDiv.hide();
+                }
+            }});
 
         $search.on('click', function () {
             app.serverRequest('', {
@@ -93,6 +104,21 @@
         });
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'Travel Request List.pdf');
+        });
+
+        $bulkBtns.bind("click", function () {
+            var list = grid.getSelected();
+            var action = $(this).attr('action');
+
+            var selectedValues = [];
+            for (var i in list) {
+                selectedValues.push({id: list[i][pk], action: action});
+            }
+            app.bulkServerRequest(document.bulkLink, selectedValues, function () {
+                $search.trigger('click');
+            }, function (data, error) {
+
+            });
         });
     });
 })(window.jQuery, window.app);

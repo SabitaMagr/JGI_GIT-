@@ -1,24 +1,24 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
 
 
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/appraisal/default-rating/index.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/appraisal/default-rating/index.js'));
+
 ?>
 
 <?php if ($this->messages) { ?>
     <script>
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
-<?php } 
+<?php }
 
 ?>
 
@@ -26,14 +26,14 @@ $this->headScript()
     document.defaultRating =<?= json_encode($defaultRating) ?>;
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\defaultRating')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+<?= $this->navigation('Zend\Navigation\defaultRating')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <div class="margin-top-20">
-    
-    
+
+
     <div class="portlet light bg-inverse">
-        
+
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -57,11 +57,11 @@ $this->headScript()
             </div>
         </div>
 
-    <div id="defaultRatingTable">
+        <div id="defaultRatingTable">
 
+        </div>
     </div>
-	</div>
-    
+
 
     <script id="rowTemplate" type="text/x-kendo-tmpl">
         <tr>
@@ -78,11 +78,11 @@ $this->headScript()
         #: (APPRAISAL_TYPE_EDESC == null) ? '-' : APPRAISAL_TYPE_EDESC #
         </td>
         <td> 
-            <ul style="padding-left:10px;">
-            # for (var i = 0; i < DESIGNATION_LIST.length; i++) { #
-                <li>#= DESIGNATION_LIST[i] #</li>
-            # } #
-            </ul>
+        <ul style="padding-left:10px;">
+        # for (var i = 0; i < DESIGNATION_LIST.length; i++) { #
+        <li>#= DESIGNATION_LIST[i] #</li>
+        # } #
+        </ul>
         </td>
         <td>
         <a class="btn-edit"
