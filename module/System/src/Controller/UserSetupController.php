@@ -107,4 +107,22 @@ class UserSetupController extends HrisController {
         return $this->redirect()->toRoute('usersetup');
     }
 
+    public function checkUserNameAction() {
+        try {
+            $request = $this->getRequest();
+            $userName = $request->getPost('userName');
+            $userId = $request->getPost('userId');
+            
+            $returnData = $this->repository->checkUserNameAvailability($userName,$userId);
+
+            $availability = 'YES';
+            if ($returnData) {
+                $availability = 'NO';
+            }
+            return new JsonModel(['success' => true, 'data' => $availability, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
 }

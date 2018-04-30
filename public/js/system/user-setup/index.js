@@ -31,7 +31,7 @@
         }
         app.initializeKendoGrid($table, columns);
 
-        app.searchTable($table, ['COMPANY_NAME', 'ROLE_NAME', 'FULL_NAME']);
+        app.searchTable($table, ['COMPANY_NAME', 'ROLE_NAME', 'FULL_NAME','USER_NAME']);
 
         $('#excelExport').on('click', function () {
             app.excelExport($table, map, 'User List.xlsx');

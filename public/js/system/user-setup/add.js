@@ -4,12 +4,46 @@
         $('select').select2();
 
         var $employeeId = $("#employeeID");
+        var $userName = $("#form-userName");
+        var $userNameAvailability = $("#userNameAvailability");
+
+        var userNameAvailable;
+
+        function checkIsUserAvailable() {
+            app.serverRequest(document.checkUserName, {
+                userName: $userName.val(),
+                userId: $('#userId').val()
+            }).then(function (response) {
+                console.log(response);
+                if (response.success == true && response.data == 'YES') {
+                    $userNameAvailability.html('Available');
+                    $userNameAvailability.css('color', 'green');
+                    userNameAvailable = true;
+
+                } else {
+                    $userNameAvailability.html('Not Available');
+                    $userNameAvailability.css('color', 'red');
+                    userNameAvailable = false;
+                }
+            });
+        }
+
+
+        $userName.on("blur", function () {
+            checkIsUserAvailable();
+        });
+
         $employeeId.on("change", function () {
             window.app.floatingProfile.setDataFromRemote($(this).val());
         });
 
 
+
         $("#btnSubmit").click(function () {
+            $userName.blur();
+            if (typeof userNameAvailable == 'undefined' || userNameAvailable == false) {
+                return false;
+            }
             var password = $("#form-password").val();
             var confirmPassword = $("#form-repassword").val();
             var formGroup = $("#rePasswordDiv");

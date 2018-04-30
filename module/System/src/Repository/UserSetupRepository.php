@@ -106,7 +106,7 @@ class UserSetupRepository implements RepositoryInterface {
         $sql = "SELECT FULL_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND RETIRED_FLAG='N' AND EMPLOYEE_ID NOT IN (SELECT EMPLOYEE_ID FROM HRIS_USERS WHERE STATUS='E'AND EMPLOYEE_ID IS NOT NULL)";
 
         if ($employeeId != null) {
-            $sql .= " UNION 
+            $sql = " 
         SELECT FULL_NAME,EMPLOYEE_ID FROM HRIS_EMPLOYEES WHERE STATUS='E' AND EMPLOYEE_ID IN (" . $employeeId . ")";
         }
 
@@ -197,6 +197,18 @@ class UserSetupRepository implements RepositoryInterface {
         ]);
 
         $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
+    }
+
+    public function checkUserNameAvailability($userName,$userId) {
+        $sql = "SELECT * FROM HRIS_USERS WHERE LOWER(USER_NAME)=LOWER('{$userName}') ";
+        
+        if($userId){
+        $sql .= "AND USER_ID!={$userId}";
+        }
+        
+        $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
     }

@@ -126,7 +126,7 @@ class LeaveApply extends HrisController {
             if ($request->isPost()) {
                 $postedData = $request->getPost();
                 $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
-                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId'], $postedData['halfDay']);
+                $availableDays = $leaveRequestRepository->fetchAvailableDays(Helper::getExpressionDate($postedData['startDate'])->getExpression(), Helper::getExpressionDate($postedData['endDate'])->getExpression(), $postedData['employeeId'], $postedData['halfDay'], $postedData['leaveId']);
                 return new CustomViewModel(['success' => true, 'data' => $availableDays, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");

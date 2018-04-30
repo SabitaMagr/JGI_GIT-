@@ -21,9 +21,9 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/branch-wise
 <script>
     document.wsBranchWiseDailyReport = '<?php echo $this->url('allreport', ['action' => 'branchWiseDailyReport']); ?>';
     document.comBraDepList =<?php echo json_encode($comBraList); ?>;
-    document.monthList =<?php echo json_encode($monthList); ?>;
     document.monthId =<?php echo $monthId; ?>;
     document.branchId =<?php echo $branchId; ?>;
+    document.getFiscalYearMonthLink = '<?php echo $this->url('allreport', ['action' => 'getFiscalYearMonth']); ?>';
 
 </script>
 
@@ -59,25 +59,27 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/branch-wise
         </div>
     </div>
     <div class="portlet-body">
-        <div class="row">
-            <div class="col-sm-3 bottomgap">
-                <select id="monthList" class="">
-
-                </select> 
+        
+        <div class="row margin-top-10">
+            <div class="col-sm-2">
+                <select class="form-control"  id="fiscalYear" >
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <select class="form-control" id="fiscalMonth" >
+                </select>
             </div>
             <div class="  col-sm-3  bottomgap">
-                <select id="branchList">
+               <select id="branchList">
 
                 </select> 
-
             </div>
-            <div class="col-sm-offset-3  col-sm-3 bottomgap">
+            <div class=" col-sm-3 bottomgap">
                 <button id="generateReport" class="btn btn-block btn-customized">
                     Generate Report
                 </button>
 
             </div>
-
         </div>
         <div class="row">
             <div class="col-sm-12">
