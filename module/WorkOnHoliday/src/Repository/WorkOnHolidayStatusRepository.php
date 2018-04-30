@@ -177,6 +177,7 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
                   WH.REMARKS                                                      AS REMARKS,
                   INITCAP(TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
                   INITCAP(TO_CHAR(WH.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+                  E.EMPLOYEE_CODE                                                 AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                                           AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                                           AS APPROVED_BY_NAME,
@@ -234,9 +235,8 @@ class WorkOnHolidayStatusRepository extends HrisRepository {
                 {$holidayCondition}
                 {$fromDateCondition}
                 {$toDateCondition} ORDER BY WH.REQUESTED_DATE DESC";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
 
     public function getAttendedHolidayList($employeeId) {

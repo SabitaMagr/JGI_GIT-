@@ -39,8 +39,7 @@ class OvertimeStatus extends HrisController {
                 $result = $this->repository->getOTRequestList($data);
                 $recordList = [];
                 foreach ($result as $row) {
-                    $overtimeDetailResult = $this->detailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
-                    $row['DETAILS'] = Helper::extractDbData($overtimeDetailResult);
+                    $row['DETAILS'] = $this->detailRepo->fetchByOvertimeId($row['OVERTIME_ID']);
                     array_push($recordList, $row);
                 }
                 return new JsonModel(["success" => "true", "data" => $recordList]);
@@ -53,7 +52,8 @@ class OvertimeStatus extends HrisController {
                 'status' => $statusSE,
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 

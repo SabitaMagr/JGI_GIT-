@@ -57,6 +57,7 @@
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: action}
         ];
+        columns=app.prependPrefColumns(columns);
         var pk = 'TRAVEL_ID';
         var grid = app.initializeKendoGrid($table, columns, null, {id: pk, atLast: false, fn: function (selected) {
                 if (selected) {
@@ -105,6 +106,7 @@
             'APPROVED_REMARKS': 'Approved Remarks',
             'APPROVED_DATE': 'Approved Date'
         };
+        exportMap=app.prependPrefExportMap(exportMap);
         $('#excelExport').on('click', function () {
             app.excelExport($table, exportMap, 'Travel Request List.xlsx');
         });

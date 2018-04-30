@@ -36,7 +36,8 @@ class LeaveStatus extends HrisController {
                 'leaveStatus' => $leaveStatusSE,
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 
@@ -117,9 +118,7 @@ class LeaveStatus extends HrisController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $result = $this->repository->getLeaveRequestList($data);
-
-            $recordList = Helper::extractDbData($result);
+            $recordList = $this->repository->getLeaveRequestList($data);
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,

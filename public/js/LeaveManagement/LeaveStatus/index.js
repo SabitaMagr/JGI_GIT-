@@ -51,6 +51,7 @@
                 </a>
             </span>`}
         ];
+        columns = app.prependPrefColumns(columns);
         var pk = 'ID';
         var grid = app.initializeKendoGrid($tableContainer, columns, null, {id: pk, atLast: false, fn: function (selected) {
                 if (selected) {
@@ -81,8 +82,8 @@
             'APPROVED_REMARKS': 'Approved Remarks',
             'RECOMMENDED_DT': 'Approved Date',
             'APPROVED_DT': 'Approved Date'
-
         };
+        map = app.prependPrefExportMap(map);
 
         $search.on('click', function () {
             var q = document.searchManager.getSearchValues();

@@ -382,11 +382,10 @@ class TrainingApproveRepository extends HrisRepository {
 
         $sql = "SELECT TR.REQUEST_ID,
                   TR.EMPLOYEE_ID,
-                  E.FULL_NAME                                            AS FULL_NAME,
+                  E.EMPLOYEE_CODE,
+                  E.FULL_NAME                                        AS FULL_NAME,
                   INITCAP(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE,
                   BS_DATE(TO_CHAR(TR.REQUESTED_DATE, 'DD-MON-YYYY')) AS REQUESTED_DATE_BS,
-                  TR.APPROVED_BY,
-                  TR.RECOMMENDED_BY,
                   TR.REMARKS,
                   (
                   CASE
@@ -401,7 +400,6 @@ class TrainingApproveRepository extends HrisRepository {
                     THEN TR.TITLE
                     ELSE T.TRAINING_NAME
                   END) AS TITLE,
-                  TR.STATUS,
                   TR.TRAINING_ID,
                   TRAINING_TYPE_DESC(
                   CASE
@@ -434,20 +432,20 @@ class TrainingApproveRepository extends HrisRepository {
                     WHEN TR.TRAINING_ID IS NULL
                     THEN BS_DATE(TR.END_DATE)
                     ELSE BS_DATE(T.END_DATE)
-                  END)                                                            AS END_DATE_BS,
-                  TR.RECOMMENDED_BY                                               AS RECOMMENDED_BY,
-                  RE.FULL_NAME                                                    AS RECOMMENDED_BY_NAME,
-                  INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
-                  TR.APPROVED_BY                                                  AS APPROVED_BY,
-                  AE.FULL_NAME                                                    AS APPROVED_BY_NAME,
-                  INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
-                  INITCAP(TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY'))               AS MODIFIED_DATE,
-                  RAR.EMPLOYEE_ID                                                 AS RECOMMENDER_ID,
-                  RAR.FULL_NAME                                                   AS RECOMMENDER_NAME,
-                  RAA.EMPLOYEE_ID                                                 AS APPROVER_ID,
-                  RAA.FULL_NAME                                                   AS APPROVER_NAME,
-                  TR.STATUS                                                       AS STATUS ,
-                  LEAVE_STATUS_DESC(TR.STATUS)                                    AS STATUS_DETAIL 
+                  END)                                                 AS END_DATE_BS,
+                  TR.RECOMMENDED_BY                                    AS RECOMMENDED_BY,
+                  RE.FULL_NAME                                         AS RECOMMENDED_BY_NAME,
+                  INITCAP(TO_CHAR(TR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
+                  TR.APPROVED_BY                                       AS APPROVED_BY,
+                  AE.FULL_NAME                                         AS APPROVED_BY_NAME,
+                  INITCAP(TO_CHAR(TR.APPROVED_DATE, 'DD-MON-YYYY'))    AS APPROVED_DATE,
+                  INITCAP(TO_CHAR(TR.MODIFIED_DATE, 'DD-MON-YYYY'))    AS MODIFIED_DATE,
+                  RAR.EMPLOYEE_ID                                      AS RECOMMENDER_ID,
+                  RAR.FULL_NAME                                        AS RECOMMENDER_NAME,
+                  RAA.EMPLOYEE_ID                                      AS APPROVER_ID,
+                  RAA.FULL_NAME                                        AS APPROVER_NAME,
+                  TR.STATUS                                            AS STATUS ,
+                  LEAVE_STATUS_DESC(TR.STATUS)                         AS STATUS_DETAIL
                 FROM HRIS_EMPLOYEE_TRAINING_REQUEST TR
                 LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
                 ON T.TRAINING_ID=TR.TRAINING_ID
@@ -463,8 +461,8 @@ class TrainingApproveRepository extends HrisRepository {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
-                WHERE 1          =1
-                {$condition}";
-        return $this->rawQuery($sql);
+                WHERE 1          =1 {$condition}";
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
 }

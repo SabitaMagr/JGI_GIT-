@@ -23,6 +23,7 @@ $this->headScript()
     document.viewLink = '<?= $this->url("leavestatus", ["action" => "view"]) ?>';
     document.pullLeaveRequestStatusListLink = '<?= $this->url("leavestatus", ["action" => "pullLeaveRequestStatusList"]) ?>';
     document.bulkLink = '<?php echo $this->url('leavestatus', ['action' => 'bulk']); ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leavestatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

@@ -21,6 +21,7 @@ $this->headScript()
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.bulkLink = '<?php echo $this->url('travelStatus', ['action' => 'bulk']); ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\travelStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

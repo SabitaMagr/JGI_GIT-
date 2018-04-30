@@ -58,6 +58,8 @@
             'APPROVED_DATE': 'Approved Date'
 
         };
+        columns=app.prependPrefColumns(columns);
+        map=app.prependPrefExportMap(map);
         var pk = 'ID';
         var grid = app.initializeKendoGrid($tableContainer, columns, null, {id: pk, atLast: false, fn: function (selected) {
                 if (selected) {

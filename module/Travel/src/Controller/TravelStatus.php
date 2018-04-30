@@ -34,8 +34,7 @@ class TravelStatus extends HrisController {
         if ($request->isPost()) {
             try {
                 $search = $request->getPost();
-                $rawList = $this->travelStatusRepository->getFilteredRecord($search);
-                $list = Helper::extractDbData($rawList);
+                $list = $this->travelStatusRepository->getFilteredRecord($search);
                 return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -47,7 +46,8 @@ class TravelStatus extends HrisController {
                 'travelStatus' => $statusSE,
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference'=>$this->preference
         ]);
     }
 

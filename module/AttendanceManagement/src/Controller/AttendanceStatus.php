@@ -25,11 +25,12 @@ class AttendanceStatus extends HrisController {
 
     public function indexAction() {
         $statusSE = $this->getStatusSelectElement(['name' => 'attendanceStatus', 'id' => 'attendanceRequestStatusId', "class" => "form-control", 'label' => 'Status']);
-        return Helper::addFlashMessagesToArray($this, [
+        return $this->stickFlashMessagesTo([
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'attendanceStatus' => $statusSE,
                 'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 
@@ -101,8 +102,7 @@ class AttendanceStatus extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
             $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);
-            $result = $attendanceStatusRepository->getAttenReqList($data);
-            $recordList = Helper::extractDbData($result);
+            $recordList = $attendanceStatusRepository->getAttenReqList($data);
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,

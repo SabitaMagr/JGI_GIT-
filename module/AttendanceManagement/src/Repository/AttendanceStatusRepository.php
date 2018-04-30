@@ -176,7 +176,7 @@ class AttendanceStatusRepository extends HrisRepository {
         return $result;
     }
 
-    public function getAttenReqList($data) {
+    public function getAttenReqList($data): array {
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -225,6 +225,7 @@ class AttendanceStatusRepository extends HrisRepository {
                   AR.RECOMMENDED_BY                                    AS RECOMMENDED_BY,
                   AR.RECOMMENDED_REMARKS                               AS RECOMMENDED_REMARKS,
                   INITCAP(TO_CHAR(AR.RECOMMENDED_DATE, 'DD-MON-YYYY')) AS RECOMMENDED_DATE,
+                  E.EMPLOYEE_CODE                                      AS EMPLOYEE_CODE,                  
                   INITCAP(E.FULL_NAME)                                 AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                                AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                                AS APPROVED_BY_NAME,
@@ -271,9 +272,7 @@ class AttendanceStatusRepository extends HrisRepository {
                     THEN ('E')
                   END
                 OR APRV.STATUS IS NULL) {$searchCondition} {$statusCondition} {$fromDateCondition} {$toDateCondition}";
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        $finalQuery = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalQuery);
     }
 }

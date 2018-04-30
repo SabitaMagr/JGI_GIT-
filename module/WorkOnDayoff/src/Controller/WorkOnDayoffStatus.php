@@ -33,7 +33,8 @@ class WorkOnDayoffStatus extends HrisController {
                 'status' => $statusSE,
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference'=>$this->preference
         ]);
     }
 
@@ -108,8 +109,7 @@ class WorkOnDayoffStatus extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
             $dayoffWorkStatusRepo = new WorkOnDayoffStatusRepository($this->adapter);
-            $result = $dayoffWorkStatusRepo->getWODReqList($data);
-            $recordList = Helper::extractDbData($result);
+            $recordList = $dayoffWorkStatusRepo->getWODReqList($data);
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,

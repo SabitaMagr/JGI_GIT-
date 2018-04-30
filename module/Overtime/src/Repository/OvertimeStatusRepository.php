@@ -207,7 +207,7 @@ class OvertimeStatusRepository extends HrisRepository {
         return $result;
     }
 
-    public function getOTRequestList($data) {
+    public function getOTRequestList($data): array {
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -255,6 +255,7 @@ class OvertimeStatusRepository extends HrisRepository {
                   OT.RECOMMENDED_REMARKS                                 AS RECOMMENDED_REMARKS,
                   OT.APPROVED_REMARKS                                    AS APPROVED_REMARKS,
                   TRUNC(OT.TOTAL_HOUR/60,2)                              AS TOTAL_HOUR,
+                  E.EMPLOYEE_CODE                                        AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)                                   AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                                  AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                                  AS APPROVED_BY_NAME,
@@ -301,9 +302,7 @@ class OvertimeStatusRepository extends HrisRepository {
                   END
                 OR APRV.STATUS IS NULL) {$searchCondition} {$statusConditon} {$fromDateCondition} {$toDateCondition}
                 ORDER BY OT.REQUESTED_DATE DESC";
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
 }

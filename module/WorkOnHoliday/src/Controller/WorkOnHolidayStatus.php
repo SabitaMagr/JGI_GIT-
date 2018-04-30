@@ -1,6 +1,7 @@
 <?php
 namespace WorkOnHoliday\Controller;
 
+use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
@@ -12,62 +13,32 @@ use SelfService\Form\WorkOnHolidayForm;
 use SelfService\Model\WorkOnHoliday;
 use SelfService\Repository\HolidayRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
-use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Element\Select;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
-class WorkOnHolidayStatus extends AbstractActionController {
+class WorkOnHolidayStatus extends HrisController {
 
-    private $adapter;
     private $holidayWorkApproveRepository;
     private $workOnHolidayStatusRepository;
-    private $form;
-    private $employeeId;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
         $this->holidayWorkApproveRepository = new HolidayWorkApproveRepository($adapter);
         $this->workOnHolidayStatusRepository = new WorkOnHolidayStatusRepository($adapter);
-        $auth = new AuthenticationService();
-        $this->employeeId = $auth->getStorage()->read()['employee_id'];
-    }
-
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new WorkOnHolidayForm();
-        $this->form = $builder->createForm($form);
+        $this->initializeForm(WorkOnHolidayForm::class);
     }
 
     public function indexAction() {
-        $holidayFormElement = new Select();
-        $holidayFormElement->setName("holiday");
-        $holidays = EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC", null, false, true);
-        $holidays1 = [-1 => "All"] + $holidays;
-        $holidayFormElement->setValueOptions($holidays1);
-        $holidayFormElement->setAttributes(["id" => "holidayId", "class" => "form-control"]);
-        $holidayFormElement->setLabel("Holiday Type");
+        $holidayList = EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], [Holiday::STATUS => 'E'], Holiday::HOLIDAY_ENAME, "ASC", NULL, [-1 => 'All Holiday'], TRUE);
+        $holidaySE = $this->getSelectElement(['name' => 'holiday', 'id' => 'holidayId', 'class' => 'form-control', 'label' => 'Holiday'], $holidayList);
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "requestStatusId", "class" => "form-control", 'label' => 'Status']);
 
-        $status = [
-            '-1' => 'All Status',
-            'RQ' => 'Pending',
-            'RC' => 'Recommended',
-            'AP' => 'Approved',
-            'R' => 'Rejected',
-            'C' => 'Cancelled'
-        ];
-        $statusFormElement = new Select();
-        $statusFormElement->setName("status");
-        $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "requestStatusId", "class" => "form-control"]);
-        $statusFormElement->setLabel("Status");
-
-        return Helper::addFlashMessagesToArray($this, [
-                'holidays' => $holidayFormElement,
-                'status' => $statusFormElement,
+        return $this->stickFlashMessagesTo([
+                'holidays' => $holidaySE,
+                'status' => $statusSE,
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'preference'=>$this->preference
         ]);
     }
 
@@ -159,8 +130,7 @@ class WorkOnHolidayStatus extends AbstractActionController {
             $request = $this->getRequest();
             $data = $request->getPost();
             $holidayWorkStatusRepo = new WorkOnHolidayStatusRepository($this->adapter);
-            $result = $holidayWorkStatusRepo->getWOHRequestList($data);
-            $recordList = Helper::extractDbData($result);
+            $recordList = $holidayWorkStatusRepo->getWOHRequestList($data);
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,

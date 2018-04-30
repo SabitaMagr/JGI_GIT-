@@ -11,7 +11,7 @@ class TravelStatusRepository extends HrisRepository {
         parent::__construct($adapter, $tableName);
     }
 
-    public function getFilteredRecord($search) {
+    public function getFilteredRecord($search):array {
         $condition = "";
         $condition = EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
@@ -41,6 +41,7 @@ class TravelStatusRepository extends HrisRepository {
         $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,
                   TR.TRAVEL_CODE                           AS TRAVEL_CODE,
                   TR.EMPLOYEE_ID                           AS EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE                          AS EMPLOYEE_CODE,
                   E.FULL_NAME                              AS EMPLOYEE_NAME,
                   TO_CHAR(TR.REQUESTED_DATE,'DD-MON-YYYY') AS REQUESTED_DATE_AD,
                   BS_DATE(TR.REQUESTED_DATE)               AS REQUESTED_DATE_BS,
@@ -95,7 +96,8 @@ class TravelStatusRepository extends HrisRepository {
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
                 WHERE 1          =1 {$condition}";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
 
     public function notSettled(): array {

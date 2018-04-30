@@ -23,6 +23,7 @@ $this->headScript()
     document.viewLink = '<?= $this->url("workOnHolidayStatus", ["action" => "view"]) ?>';
     document.pullHoliayWorkRequestStatusListLink = '<?= $this->url("workOnHolidayStatus", ["action" => "pullHoliayWorkRequestStatusList"]) ?>';
     document.bulkLink = '<?php echo $this->url('workOnHolidayStatus', ['action' => 'bulk']); ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\workOnHolidayStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

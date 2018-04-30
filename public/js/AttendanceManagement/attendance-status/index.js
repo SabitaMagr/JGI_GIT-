@@ -42,8 +42,8 @@
                         <i class="fa fa-search-plus"></i>
                     </a>
                 </span>
-`}
-        ];
+`}];
+        columns = app.prependPrefColumns(columns);
         var map = {
             'FULL_NAME': 'Name',
             'REQUESTED_DT_AD': 'Req.Date(AD)',
@@ -60,6 +60,7 @@
             'APPROVED_REMARKS': 'Approved Remarks',
 
         };
+        map = app.prependPrefExportMap(map);
         var pk = 'ID';
         var grid = app.initializeKendoGrid($tableContainer, columns, null, {id: pk, atLast: false, fn: function (selected) {
                 if (selected) {

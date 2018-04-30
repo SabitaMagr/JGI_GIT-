@@ -129,7 +129,8 @@ class LeaveStatusRepository extends HrisRepository {
                   LA.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
                   INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY'))              AS RECOMMENDED_DT,
                   INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY'))                 AS APPROVED_DT,
-                  INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
+                    E.EMPLOYEE_CODE AS EMPLOYEE_CODE,                  
+                    INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                                           AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                                           AS APPROVED_BY_NAME,
                   RA.RECOMMEND_BY                                                 AS RECOMMENDER_ID,
@@ -203,7 +204,7 @@ class LeaveStatusRepository extends HrisRepository {
         return $result;
     }
 
-    public function getLeaveRequestList($data) {
+    public function getLeaveRequestList($data): array {
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -255,6 +256,7 @@ class LeaveStatusRepository extends HrisRepository {
                   LA.EMPLOYEE_ID                                     AS EMPLOYEE_ID,
                   INITCAP(TO_CHAR(LA.RECOMMENDED_DT, 'DD-MON-YYYY')) AS RECOMMENDED_DT,
                   INITCAP(TO_CHAR(LA.APPROVED_DT, 'DD-MON-YYYY'))    AS APPROVED_DT,
+                  E.EMPLOYEE_CODE AS EMPLOYEE_CODE,                  
                   INITCAP(E.FULL_NAME)                               AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                              AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                              AS APPROVED_BY_NAME,
@@ -314,8 +316,7 @@ class LeaveStatusRepository extends HrisRepository {
                 OR APRV.STATUS IS NULL)
                 {$searchCondition} {$statusCondition} {$leaveCondition} {$fromDateCondition} {$toDateCondition}
                 ORDER BY LA.REQUESTED_DT DESC";
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
 }
