@@ -51,7 +51,6 @@ class AdvanceStatusRepository extends HrisRepository {
           INITCAP(TO_CHAR(AR.APPROVED_DATE,'DD-MON-YYYY') ) AS APPROVED_DATE,
           AR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT,
           AR.REASON AS REASON,
-          AR.REASON AS REASON,
           AR.STATUS AS STATUS,
           AR.RECOMMENDED_REMARKS AS RECOMMENDED_REMARKS,
           AR.APPROVED_REMARKS AS APPROVED_REMARKS,
@@ -119,8 +118,8 @@ class AdvanceStatusRepository extends HrisRepository {
           {$toDateCondition}
           {$statusCondition}";
         $sql .= " ORDER BY AR.REQUESTED_DATE DESC";
-        $finalQuery=$this->getPrefReportQuery($sql);
-        $statement = $this->adapter->query( $finalQuery);
+        $finalQuery = $this->getPrefReportQuery($sql);
+        $statement = $this->adapter->query($finalQuery);
         $result = $statement->execute();
         return $result;
     }
