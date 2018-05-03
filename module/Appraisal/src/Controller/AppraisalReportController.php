@@ -192,7 +192,7 @@ class AppraisalReportController extends HrisController {
             'reviewerQuestionTemplate' => $reviewerQuestionTemplate,
             'questionForCurStage' => $questionForCurStage,
             'performanceAppraisalObj' => CustomFormElement::formElement(),
-            'customRenderer' => Helper::renderCustomView(),
+            'customRenderer' => Helper::renderCustomRadioButton(),
             'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox(),
             'appraisalId' => $appraisalId,
             'employeeId' => $employeeId,

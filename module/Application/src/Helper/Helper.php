@@ -246,6 +246,36 @@ class Helper {
             }
         };
     }
+    public static function renderCustomRadioButton() {
+        return function ($object) {
+            $elems = $object->getValueOptions();
+            $counter = 1;
+            $name = $object->getName();
+            $atts = $object->getAttributes();
+            $disabled = '';
+            if (in_array('disabled', $atts)) {
+                $disabled = 'disabled';
+            }
+            foreach ($elems as $key => $value) {
+                $temp = '';
+                if ($object->getValue() == "") {
+                    if ($counter == $object->getCheckedValue()) {
+                        $temp = 'checked=checked';
+                    }
+                } else {
+                    if ($object->getValue() == $key) {
+                        $temp = 'checked=checked';
+                    }
+                }
+
+                echo "<div>";
+                echo "<input $temp $disabled type = 'radio' value = '$key' name = '$name' id = '$name+$value' class = 'md-radiobtn radioButton'>";
+                echo $value;
+                echo "</div>";
+                $counter++;
+            }
+        };
+    }
 
     public static function renderCustomViewForCheckbox() {
         return function ($object) {
