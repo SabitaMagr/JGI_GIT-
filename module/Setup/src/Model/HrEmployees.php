@@ -101,6 +101,8 @@ class HrEmployees extends Model {
     public $functionalTypeId;
     public $functionalLevelId;
     public $groupId;
+    public $deletedDate;
+    public $deletedBy;
 
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
@@ -197,6 +199,8 @@ class HrEmployees extends Model {
     const FUNCTIONAL_TYPE_ID = "FUNCTIONAL_TYPE_ID";
     const FUNCTIONAL_LEVEL_ID = "FUNCTIONAL_LEVEL_ID";
     const GROUP_ID = "GROUP_ID";
+    const DELETED_DATE = "DELETED_DATE";
+    const DELETED_BY = "DELETED_BY";
 
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -293,6 +297,8 @@ class HrEmployees extends Model {
         'functionalTypeId' => self::FUNCTIONAL_TYPE_ID,
         'functionalLevelId' => self::FUNCTIONAL_LEVEL_ID,
         'groupId' => self::GROUP_ID,
+        'deletedDate' => self::DELETED_DATE,
+        'deletedBy' => self::DELETED_BY,
     ];
 
 }

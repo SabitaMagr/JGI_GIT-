@@ -430,7 +430,11 @@ class EmployeeController extends HrisController {
 
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute("id");
-        $this->repository->delete($id);
+        $employee=new HrEmployees();
+        $employee->employeeId=$id;
+        $employee->deletedBy=$this->employeeId;
+        $employee->deletedDate= Helper::getcurrentExpressionDateTime();
+        $this->repository->delete($employee);
         $this->flashmessenger()->addMessage("Employee Successfully Deleted!!!");
         return $this->redirect()->toRoute('employee');
     }
