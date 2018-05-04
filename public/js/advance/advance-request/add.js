@@ -34,8 +34,6 @@
         function advanceConfig() {
             console.log(advanceDetails);
 
-
-
             /*to show recommeder approver accpording to setip value start*/
             $recommender.prop('disabled', true);
             $('#overrideRecommenderDiv').hide();
@@ -82,8 +80,8 @@
                 if (advanceDetails.ALLOW_OVERRIDE_RATE === 'Y') {
                     $deductionRate.prop('readonly', false);
                     $overrideDeductionPer.text('Min Payment Override rate=' + advanceDetails.MIN_OVERRIDE_RATE);
+                    $deductionRate.attr('max', advanceDetails.DEDUCTION_RATE);
                     $deductionRate.attr('min', advanceDetails.MIN_OVERRIDE_RATE);
-                    $deductionRate.attr('max', advanceDetails.MIN_OVERRIDE_RATE);
 //                    $deductionRate.val('');
                 }else{
                     
@@ -94,69 +92,16 @@
             //TO VIEW ADVANCE DETAILS START
             var selectedAdvanceDtl = advanceDetails.DEDUCTION_RATE + ' % of ' + monthlySalary + ' up to ' + advanceDetails.DEDUCTION_IN + ' months.'
             $('#defaultValues').text(selectedAdvanceDtl);
-            
             //TO VIEW ADVANCE DETAILS END
 
 
             //calculate MaxRequestAmt Start
-
             maxRequestAmt = (advanceDetails.MAX_SALARY_RATE * advanceDetails.DEDUCTION_IN * monthlySalary) / 100;
             $('#maxReqAmt').text("Max Request Amount=Rs " + maxRequestAmt);
 
             $requestAmt.attr('max', maxRequestAmt);
             //caculate MaxRequestAmt End
 
-
-
-
-
-//            $overrideDeductionMonth.text('');
-//            $deductionIn.attr('max', advanceDetails.MAX_OVERRIDE_MONTH);
-//            $deductionIn.prop('readonly', true);
-//            /* */
-//            $overrideDeductionPer.text('');
-//            $deductionRate.attr('min', advanceDetails.DEDUCTION_RATE);
-//            $deductionRate.prop('readonly', true);
-//            /**/
-//            $recommender.prop('disabled', true);
-//            $('#overrideRecommenderDiv').hide();
-//            /**/
-//            $approver.prop('disabled', true);
-//            $('#overrideApproverDiv').hide();
-
-
-//            
-//            $deductionType.val(advanceDetails.DEDUCTION_TYPE);
-//            if (advanceDetails.DEDUCTION_TYPE === 'M') {
-//                $deductionIn.val(advanceDetails.DEDUCTION_IN);
-//                if (advanceDetails.ALLOW_OVERRIDE_MONTH === 'Y') {
-//                    $overrideDeductionMonth.text('Max Override Payment months=' + advanceDetails.MAX_OVERRIDE_MONTH);
-//                    $deductionIn.attr('max', advanceDetails.MAX_OVERRIDE_MONTH);
-//                    $deductionIn.prop('readonly', false);
-//                    $deductionIn.val('');
-//                }
-//            }
-
-//            if (advanceDetails.DEDUCTION_TYPE === 'S') {
-//                $deductionRate.val(advanceDetails.DEDUCTION_RATE);
-//                if (advanceDetails.ALLOW_OVERRIDE_RATE === 'Y') {
-//                    $overrideDeductionPer.text('Min Payment Override rate=' + advanceDetails.MIN_OVERRIDE_RATE);
-//                    $deductionRate.prop('readonly', false);
-//                    $deductionRate.attr('min', advanceDetails.MIN_OVERRIDE_RATE);
-//                    $deductionRate.val('');
-//                }
-//            }
-
-//to overide recommend and approver if available start
-
-//to overide recommend and approver if available start
-
-//            maxRequestAmt = (advanceDetails.MAX_SALARY_RATE * advanceDetails.MAX_ADVANCE_MONTH * monthlySalary) / 100;
-//            $requestAmt.attr('max', maxRequestAmt);
-//            $('#maxReqAmt').text("Max Request Amount=Rs " + maxRequestAmt);
-//
-//            $deductionRate.prop('readonly', !(advanceDetails.DEDUCTION_TYPE === 'S' && advanceDetails.ALLOW_OVERRIDE_RATE === 'Y'));
-//            $deductionIn.prop('readonly', !(advanceDetails.DEDUCTION_TYPE === 'M' && advanceDetails.ALLOW_OVERRIDE_MONTH === 'Y'));
         }
 
 

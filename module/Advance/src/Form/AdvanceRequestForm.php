@@ -84,7 +84,7 @@ class AdvanceRequestForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Number")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":" Repayment Months"})
      * @Annotation\Attributes({ "id":"deductionIn","class":"form-control","min":"0"})
