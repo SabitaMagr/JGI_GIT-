@@ -42,7 +42,7 @@ class PayslipPreviousRepository extends HrisRepository {
                 AND SHEET_NO                =(SELECT HSS.SHEET_NO
                     FROM HR_SALARY_SHEET HSS
                     JOIN HR_EMPLOYEE_SETUP HES
-                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE)
+                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE OR HSS.SAL_SHEET_CODE IS NULL)
                     WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
                     AND HSS.COMPANY_CODE     ='{$companyCode}'
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
@@ -65,7 +65,7 @@ class PayslipPreviousRepository extends HrisRepository {
                 AND SHEET_NO                =(SELECT HSS.SHEET_NO
                     FROM HR_SALARY_SHEET HSS
                     JOIN HR_EMPLOYEE_SETUP HES
-                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE)
+                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE OR HSS.SAL_SHEET_CODE IS NULL)
                     WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
                     AND HSS.COMPANY_CODE     ='{$companyCode}'
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'

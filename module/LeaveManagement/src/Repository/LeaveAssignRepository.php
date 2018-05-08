@@ -1,25 +1,20 @@
 <?php
-
 namespace LeaveManagement\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
+use Application\Repository\HrisRepository;
 use LeaveManagement\Model\LeaveAssign;
-use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
-use Zend\Db\TableGateway\TableGateway;
 
-class LeaveAssignRepository implements RepositoryInterface {
+class LeaveAssignRepository extends HrisRepository {
 
-    private $tableGateway;
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->tableGateway = new TableGateway(LeaveAssign::TABLE_NAME, $adapter);
-        $this->adapter = $adapter;
+    public function __construct(AdapterInterface $adapter, $tableName = null) {
+        if ($tableName == null) {
+            $tableName = LeaveAssign::TABLE_NAME;
+        }
+        parent::__construct($adapter, $tableName);
     }
 
     public function add(Model $model) {
@@ -42,58 +37,38 @@ class LeaveAssignRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->from(['A' => LeaveAssign::TABLE_NAME])
-                ->join(['S' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=S.LEAVE_ID');
+            ->join(['S' => 'HRIS_LEAVE_MASTER_SETUP'], 'A.LEAVE_ID=S.LEAVE_ID');
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
     }
 
-    public function filter($branchId, $departmentId, $genderId, $designationId, $serviceTypeId, $employeeId, $companyId, $positionId,$employeeTypeId) {
-        $sql = new Sql($this->adapter);
-        $select = $sql->select();
-
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], NULL, NULL, NULL, NULL, 'E'), true);
-        $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], null, null, null, [new Expression("E.EMPLOYEE_ID")], "E"), true);
-        $select->from(['E' => "HRIS_EMPLOYEES"])
-                ->join(['DE' => 'HRIS_DESIGNATIONS'], 'DE.DESIGNATION_ID=E.DESIGNATION_ID', ["DESIGNATION_ID", "DESIGNATION_TITLE" => new Expression("INITCAP(DE.DESIGNATION_TITLE)")], "left")
-                ->join(['B' => 'HRIS_BRANCHES'], 'B.BRANCH_ID=E.BRANCH_ID', ["BRANCH_ID", "BRANCH_NAME" => new Expression("INITCAP(B.BRANCH_NAME)")], "left");
-        $select->where(["E.STATUS='E'"]);
-        $select->where(["E.RETIRED_FLAG='N'"]);
-        
-        if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $select->where([
-                "E.EMPLOYEE_TYPE= '{$employeeTypeId}'"
-            ]);
-        }
-        
-        if ($employeeId != -1) {
-            $select->where(["E.EMPLOYEE_ID=$employeeId"]);
-        }
-        if ($companyId != -1) {
-            $select->where(["E.COMPANY_ID=$companyId"]);
-        }
-        if ($branchId != -1) {
-            $select->where(["E.BRANCH_ID=$branchId"]);
-        }
-        if ($departmentId != -1) {
-            $select->where(["E.DEPARTMENT_ID=$departmentId"]);
-        }
-        if ($genderId != -1) {
-            $select->where(["E.GENDER_ID= $genderId"]);
-        }
-        if ($designationId != -1) {
-            $select->where(["E.DESIGNATION_ID=$designationId"]);
-        }
-        if ($positionId != -1) {
-            $select->where(["E.POSITION_ID=$positionId"]);
-        }
-        if ($serviceTypeId != -1) {
-            $select->where(["E.SERVICE_TYPE_ID=$serviceTypeId"]);
-        }
-        $select->order("E.FIRST_NAME ASC");
-        $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result;
+    public function filter($branchId, $departmentId, $genderId, $designationId, $serviceTypeId, $employeeId, $companyId, $positionId, $employeeTypeId, $leaveId): array {
+        $searchCondition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, null, $employeeTypeId, $employeeId, $genderId);
+        $sql = "SELECT C.COMPANY_NAME,
+                  B.BRANCH_NAME,
+                  DEP.DEPARTMENT_NAME,
+                  E.EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE,
+                  E.FULL_NAME,
+                  ELA.LEAVE_ID,
+                  ELA.PREVIOUS_YEAR_BAL,
+                  ELA.TOTAL_DAYS,
+                  ELA.BALANCE
+                FROM HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_EMPLOYEE_LEAVE_ASSIGN ELA
+                ON (E.EMPLOYEE_ID = ELA.EMPLOYEE_ID)
+                LEFT JOIN HRIS_COMPANY C
+                ON (E.COMPANY_ID=C.COMPANY_ID)
+                LEFT JOIN HRIS_BRANCHES B
+                ON (E.BRANCH_ID=B.BRANCH_ID)
+                LEFT JOIN HRIS_DEPARTMENTS DEP
+                ON (E.DEPARTMENT_ID=DEP.DEPARTMENT_ID)
+                WHERE 1            =1 
+                AND ELA.LEAVE_ID   ={$leaveId}
+                {$searchCondition}
+                ORDER BY C.COMPANY_NAME,B.BRANCH_NAME,DEP.DEPARTMENT_NAME,E.FULL_NAME";
+        return $this->rawQuery($sql);
     }
 
     public function filterByLeaveEmployeeId($leaveId, $employeeId) {
@@ -113,5 +88,4 @@ class LeaveAssignRepository implements RepositoryInterface {
     public function updatePreYrBalance($employeeId, $leaveId, $preYrBalance, $totalDays, $balance) {
         $this->tableGateway->update([LeaveAssign::PREVIOUS_YEAR_BAL => $preYrBalance, LeaveAssign::TOTAL_DAYS => $totalDays, LeaveAssign::BALANCE => $balance], [LeaveAssign::EMPLOYEE_ID => $employeeId, LeaveAssign::LEAVE_ID => $leaveId]);
     }
-
 }

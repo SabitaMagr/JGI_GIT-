@@ -1493,48 +1493,105 @@ window.app = (function ($, toastr, App) {
             });
         });
     })();
-    
-    var prependPrefColumns=function(columns){
-        if(typeof document.preference ==='undefined'){
-            throw "no preference defined.";
+
+    var prependPrefColumns = function (columns) {
+        if (typeof document.preference === 'undefined') {
+            console.log("no preference defined.");
+            return;
         }
-        var preference=document.preference;
-        var list=[];
-        if(preference['includeEmployeeCode']=='Y'){
-            list.push({field: "EMPLOYEE_CODE", title: "Code"},);
+        var preference = document.preference;
+        var list = [];
+        if (preference['includeEmployeeCode'] == 'Y') {
+            list.push({field: "EMPLOYEE_CODE", title: "Code"}, );
         }
-        if(preference['includeCompany']=='Y'){
-            list.push({field: "COMPANY_NAME", title: "Company"},);
+        if (preference['includeCompany'] == 'Y') {
+            list.push({field: "COMPANY_NAME", title: "Company"}, );
         }
-        if(preference['includeBranch']=='Y'){
-            list.push({field: "BRANCH_NAME", title: "Branch"},);
+        if (preference['includeBranch'] == 'Y') {
+            list.push({field: "BRANCH_NAME", title: "Branch"}, );
         }
-        for(var i in columns){
+        for (var i in columns) {
             list.push(columns[i]);
         }
         return list;
     };
-    
-    var prependPrefExportMap=function(map){
-         if(typeof document.preference ==='undefined'){
-            throw "no preference defined.";
+
+    var prependPrefExportMap = function (map) {
+        if (typeof document.preference === 'undefined') {
+            console.log("no preference defined.");
+            return;
         }
-        var preference=document.preference;
-        var finalMap={};
-        if(preference['includeEmployeeCode']=='Y'){
-            finalMap['EMPLOYEE_CODE']="Code";
+        var preference = document.preference;
+        var finalMap = {};
+        if (preference['includeEmployeeCode'] == 'Y') {
+            finalMap['EMPLOYEE_CODE'] = "Code";
         }
-        if(preference['includeCompany']=='Y'){
-            finalMap['COMPANY_NAME']="Company";
+        if (preference['includeCompany'] == 'Y') {
+            finalMap['COMPANY_NAME'] = "Company";
         }
-        if(preference['includeBranch']=='Y'){
-            finalMap['BRANCH_NAME']="Branch";
+        if (preference['includeBranch'] == 'Y') {
+            finalMap['BRANCH_NAME'] = "Branch";
         }
-        for(var i in map){
-            finalMap[i]=map[i];
+        for (var i in map) {
+            finalMap[i] = map[i];
         }
         return finalMap;
     }
+
+//    (function () {
+//        $('#hris-page-content').on('blur', '.hris-unique-form-input', function () {
+//            var $this = $(this);
+//            var $form = $this.closest("form");
+//            var dbTableName = $this.prop('hris-unique-table');
+//            var dbColumnName = $this.prop('hris-unique-column');
+//            var url = $this.prop('hris-unique-url');
+//            var dbColumnValue = $this.val();
+//
+//            var $parentThis = $this.parent(".form-group");
+//
+//            var showError = function (message, show) {
+//                if (show) {
+//                    if ($parentThis.has('.errorMsg').length == 0) {
+//                        var errorMsgSpan = $('<span />', {
+//                            class: 'errorMsg',
+//                            text: message
+//                        });
+//                        $parentThis.append(errorMsgSpan);
+//                        $this.focus();
+//                    }
+//                } else {
+//                    $parentThis.remove('.errorMsg');
+//                }
+//            };
+//
+//            serverRequest(url, {
+//                tableName: dbTableName,
+//                columnName: dbColumnName,
+//                columnValue: dbColumnValue
+//            }).then(function (response) {
+//                showError(response.message, response.success);
+//            }, function (failure) {
+////                throw failure;
+//            });
+//
+//            $form.submit(function (e) {
+//                var err = [];
+//                $form.find(".errorMsg").each(function () {
+//                    var erroMsg = $.trim($(this).html());
+//                    if (erroMsg !== "") {
+//                        err.push("error");
+//                    }
+//                });
+//                if (err.length > 0)
+//                {
+//                    return false;
+//                }
+//            });
+//
+//        });
+//    })();
+
+
 
     return {
         format: format,
