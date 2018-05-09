@@ -125,11 +125,11 @@ class HolidayRepository implements RepositoryInterface {
         if ($toDate != null) {
             $sql .= " AND A.END_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
         }
-        if ($fromDate == null && $toDate == null) {
-            $sql .= " AND A.FISCAL_YEAR=" . $this->fiscalYr;
-        }
+//        if ($fromDate == null && $toDate == null) {
+//            $sql .= " AND A.FISCAL_YEAR=" . $this->fiscalYr;
+//        }
 
-        $sql .= " ORDER BY A.START_DATE";
+        $sql .= " ORDER BY A.START_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
