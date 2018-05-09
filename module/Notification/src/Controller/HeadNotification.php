@@ -736,7 +736,6 @@ class HeadNotification {
         $notification->trainingType = $trainingRequestDetail['TRAINING_TYPE_DETAIL'];
         $notification->trainingName = $trainingRequestDetail['TITLE'];
         $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
-        $notification->instructorName = $trainingRequestDetail['TRAINING_INSTRUCTOR_NAME'];
         $notification->fromDate = $trainingRequestDetail['START_DATE'];
         $notification->toDate = $trainingRequestDetail['END_DATE'];
         $notification->duration = $trainingRequestDetail['DURATION'];
@@ -766,7 +765,6 @@ class HeadNotification {
         $notification->trainingType = $trainingRequestDetail['TRAINING_TYPE_DETAIL'];
         $notification->trainingName = $trainingRequestDetail['TITLE'];
         $notification->trainingCode = $trainingRequestDetail['TRAINING_CODE'];
-        $notification->instructorName = $trainingRequestDetail['TRAINING_INSTRUCTOR_NAME'];
         $notification->fromDate = $trainingRequestDetail['START_DATE'];
         $notification->toDate = $trainingRequestDetail['END_DATE'];
         $notification->duration = $trainingRequestDetail['DURATION'];

@@ -1,26 +1,19 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-multiselect/css/bootstrap-multiselect.css'));
 
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js'));
 
 $this->headScript()
-        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-        ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/edit.js'));
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+    ->appendFile($this->basePath('js/search.js'))
+    ->appendFile($this->basePath('js/HolidayManagement/HolidaySetup/edit.js'));
+
 ?>
-
-<script>
-    document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.searchSelectedValues =<?php echo json_encode($searchSelectedValues); ?>;
-</script>
-
-
-
 <?php
 $holidayEname = $form->get('holidayEname');
 $holidayLname = $form->get('holidayLname');
@@ -28,18 +21,23 @@ $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
 $halfday = $form->get('halfday');
 $remarks = $form->get('remarks');
-
 $assignOnEmployeeSetup = $form->get('assignOnEmployeeSetup');
-
+$fiscalYear = $form->get('fiscalYear');
+$fiscalYear->setValueOptions($fiscalYearKV);
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
-?>
 
-<?php
 $form->setAttribute('id', 'holiday-Form');
 $form->setAttribute('action', $this->url('holidaysetup', ['action' => 'edit', 'id' => $id]));
 $form->prepare();
+
 ?>
+
+<script>
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.searchSelectedValues =<?php echo json_encode($searchSelectedValues); ?>;
+</script>
+
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\holidaysetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -55,10 +53,16 @@ $form->prepare();
                 </div>
             </div>
             <div class="portlet-body">
-                <?php
-                print $this->form()->openTag($form);
-                ?>
-
+                <?php print $this->form()->openTag($form); ?>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <?php print $this->formLabel($fiscalYear); ?>
+                            <?php print $this->formElement($fiscalYear); ?>
+                            <?php print $this->formElementErrors()->render($fiscalYear, ['class' => 'help-block error']); ?>                        
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group <?= empty($holidayEname->getMessages()) ? "" : "error" ?>">

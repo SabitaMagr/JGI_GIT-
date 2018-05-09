@@ -45,11 +45,11 @@ class HolidayRepository implements RepositoryInterface {
             INITCAP(A.HOLIDAY_LNAME) AS HOLIDAY_LNAME,
             A.HALFDAY
                 FROM HRIS_HOLIDAY_MASTER_SETUP A 
-                WHERE A.STATUS='E' AND A.FISCAL_YEAR=" . $this->fiscalYr;
+                WHERE A.STATUS='E' " ;
         if ($today != null) {
             $sql .= " AND (" . $today->getExpression() . " between A.START_DATE AND A.END_DATE) OR " . $today->getExpression() . " <= A.START_DATE";
         }
-        $sql .= " ORDER BY A.START_DATE";
+        $sql .= " ORDER BY A.START_DATE DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
