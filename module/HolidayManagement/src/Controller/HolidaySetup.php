@@ -1,5 +1,4 @@
 <?php
-
 namespace HolidayManagement\Controller;
 
 use Application\Controller\HrisController;
@@ -7,6 +6,7 @@ use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\EntityHelper as ApplicationEntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
 use Exception;
 use HolidayManagement\Form\HolidayForm;
 use HolidayManagement\Model\Holiday;
@@ -36,10 +36,10 @@ class HolidaySetup extends HrisController {
         $holidayFormElement->setLabel("Holiday");
         $holidayList = $this->repository->fetchAll();
         $viewModel = new ViewModel(Helper::addFlashMessagesToArray($this, [
-                    'holidayList' => $holidayList,
-                    'holidayFormElement' => $holidayFormElement,
-                    'form' => $this->form,
-                    'customRenderer' => Helper::renderCustomView(),
+                'holidayList' => $holidayList,
+                'holidayFormElement' => $holidayFormElement,
+                'form' => $this->form,
+                'customRenderer' => Helper::renderCustomView(),
         ]));
         return $viewModel;
     }
@@ -57,7 +57,6 @@ class HolidaySetup extends HrisController {
                 $holiday->createdDt = Helper::getcurrentExpressionDate();
                 $holiday->createdBy = $this->employeeId;
                 $holiday->status = 'E';
-                $holiday->fiscalYear = (int) Helper::getMaxId($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID");
                 $holiday->holidayId = ((int) Helper::getMaxId($this->adapter, 'HRIS_HOLIDAY_MASTER_SETUP', 'HOLIDAY_ID')) + 1;
                 $this->repository->add($holiday);
                 $this->repository->holidayAssign($holiday->holidayId);
@@ -65,10 +64,12 @@ class HolidaySetup extends HrisController {
                 return $this->redirect()->toRoute("holidaysetup");
             }
         }
+        $fiscalYearKV = EntityHelper::getTableKVList($this->adapter, FiscalYear::TABLE_NAME, FiscalYear::FISCAL_YEAR_ID, [FiscalYear::FISCAL_YEAR_NAME]);
         return $this->stickFlashMessagesTo([
-                    'form' => $this->form,
-                    'customRenderer' => Helper::renderCustomView(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'form' => $this->form,
+                'customRenderer' => Helper::renderCustomView(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'fiscalYearKV' => $fiscalYearKV
         ]);
     }
 
@@ -138,12 +139,15 @@ class HolidaySetup extends HrisController {
         $holiday->exchangeArrayFromDB($resultSet);
         $this->form->bind($holiday);
         $searchSelectedValues = $this->csvToArray($resultSet);
+        $fiscalYearKV = EntityHelper::getTableKVList($this->adapter, FiscalYear::TABLE_NAME, FiscalYear::FISCAL_YEAR_ID, [FiscalYear::FISCAL_YEAR_NAME]);
+
         return $this->stickFlashMessagesTo([
-                    'id' => $id,
-                    'form' => $this->form,
-                    'customRenderer' => Helper::renderCustomView(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'searchSelectedValues' => $searchSelectedValues
+                'id' => $id,
+                'form' => $this->form,
+                'customRenderer' => Helper::renderCustomView(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'searchSelectedValues' => $searchSelectedValues,
+                'fiscalYearKV' => $fiscalYearKV
         ]);
     }
 
@@ -162,7 +166,7 @@ class HolidaySetup extends HrisController {
         $list = $this->repository->fetchAll();
 
         return Helper::addFlashMessagesToArray($this, [
-                    'holidayList' => $list,
+                'holidayList' => $list,
         ]);
     }
 
@@ -221,5 +225,4 @@ class HolidaySetup extends HrisController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
-
 }
