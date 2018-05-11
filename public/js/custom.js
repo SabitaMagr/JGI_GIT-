@@ -1536,60 +1536,65 @@ window.app = (function ($, toastr, App) {
             finalMap[i] = map[i];
         }
         return finalMap;
-    }
+    };
 
-//    (function () {
-//        $('#hris-page-content').on('blur', '.hris-unique-form-input', function () {
-//            var $this = $(this);
-//            var $form = $this.closest("form");
-//            var dbTableName = $this.prop('hris-unique-table');
-//            var dbColumnName = $this.prop('hris-unique-column');
-//            var url = $this.prop('hris-unique-url');
-//            var dbColumnValue = $this.val();
-//
-//            var $parentThis = $this.parent(".form-group");
-//
-//            var showError = function (message, show) {
-//                if (show) {
-//                    if ($parentThis.has('.errorMsg').length == 0) {
-//                        var errorMsgSpan = $('<span />', {
-//                            class: 'errorMsg',
-//                            text: message
-//                        });
-//                        $parentThis.append(errorMsgSpan);
-//                        $this.focus();
-//                    }
-//                } else {
-//                    $parentThis.remove('.errorMsg');
-//                }
-//            };
-//
-//            serverRequest(url, {
-//                tableName: dbTableName,
-//                columnName: dbColumnName,
-//                columnValue: dbColumnValue
-//            }).then(function (response) {
-//                showError(response.message, response.success);
-//            }, function (failure) {
-////                throw failure;
-//            });
-//
-//            $form.submit(function (e) {
-//                var err = [];
-//                $form.find(".errorMsg").each(function () {
-//                    var erroMsg = $.trim($(this).html());
-//                    if (erroMsg !== "") {
-//                        err.push("error");
-//                    }
-//                });
-//                if (err.length > 0)
-//                {
-//                    return false;
-//                }
-//            });
-//
-//        });
-//    })();
+    (function () {
+        var $thisForm = null;
+        $('#hris-page-content').on('blur', '.hris-unique-form-input', function () {
+            var $this = $(this);
+            var $form = $this.closest("form");
+            var dbTableName = $this.attr('table');
+            var dbColumnName = $this.attr('column');
+            var dbPkName = $this.attr('pk');
+            var dbPkValue = $this.attr('pk-value');
+            var url = $this.attr('url');
+            var dbColumnValue = $this.val();
+
+            var $parentThis = $this.closest(".form-group");
+
+            var showError = function (message, show) {
+                if (show) {
+                    if ($parentThis.has('.errorMsg').length == 0) {
+                        var errorMsgSpan = $('<span />', {
+                            class: 'errorMsg',
+                            text: message
+                        });
+                        $parentThis.append(errorMsgSpan);
+                        $this.focus();
+                    }
+                } else {
+                    $parentThis.find('.errorMsg').remove();
+                }
+            };
+
+            serverRequest(url, {
+                tableName: dbTableName,
+                columnName: dbColumnName,
+                columnValue: dbColumnValue,
+                pkName: dbPkName,
+                pkValue: dbPkValue
+            }).then(function (response) {
+                showError(response.data.message, response.data.notUnique);
+            }, function (failure) {
+            });
+            if ($thisForm === null) {
+                $form.submit(function (e) {
+                    var err = [];
+                    $form.find(".errorMsg").each(function () {
+                        var erroMsg = $.trim($(this).html());
+                        if (erroMsg !== "") {
+                            err.push("error");
+                        }
+                    });
+                    if (err.length > 0)
+                    {
+                        return false;
+                    }
+                });
+                $thisForm = $form;
+            }
+        });
+    })();
 
 
 

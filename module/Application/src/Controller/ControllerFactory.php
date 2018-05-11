@@ -1,10 +1,10 @@
 <?php
-
 namespace Application\Controller;
 
 use Application\Factory\ApplicationConfig;
 use Application\Factory\ConfigInterface;
 use Application\Factory\HrLogger;
+use Application\Repository\HrisRepository;
 use Interop\Container\ContainerInterface;
 use ReflectionClass;
 use Zend\Authentication\AuthenticationService;
@@ -38,6 +38,15 @@ class ControllerFactory implements FactoryInterface {
                     $storage = $auth->getStorage();
                     $output = $storage;
                     break;
+                default:
+                    $reflClass = new ReflectionClass($className);
+                    $object = $reflClass->newInstanceWithoutConstructor();
+                    if ($object instanceof HrisRepository) {
+                        $output = new $className($container->get(AdapterInterface::class));
+                    } else {
+                        $output = null;
+                    }
+                    break;
             }
             return $output;
         };
@@ -56,5 +65,4 @@ class ControllerFactory implements FactoryInterface {
         }
         return $refl->newInstanceArgs($initParams);
     }
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Controller;
 
 use Application\Helper\EntityHelper;
@@ -180,4 +179,23 @@ class HrisController extends AbstractActionController {
         }
     }
 
+    public function checkUniqueAction() {
+        try {
+            $request = $this->getRequest();
+            $postedData = $request->getPost();
+            $sql = "SELECT {$postedData['columnName']}
+                    FROM {$postedData['tableName']}
+                    WHERE {$postedData['columnName']} = {$postedData['columnName']}
+                    AND {$postedData['columnValue']}  !=
+                      (SELECT {$postedData['columnName']}
+                      FROM {$postedData['tableName']}
+                      WHERE {$postedData['pkName']} = {$postedData['pkValue']})";
+            $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+            $data['notUnique'] = count($result) > 0;
+            $data['message'] = "Already Reserved";
+            return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
 }
