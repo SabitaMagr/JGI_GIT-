@@ -23,20 +23,14 @@
                 <label style="font-size:12px !important; font-weight:600;">
                     I agree with the Appraiser's overall performance assessment. Agree? 
                 </label>
-                <div class="md-radio-inline">
-                    <div class="md-radio">
-                        <input disabled='disabled' type="radio" id="radio14" name="superReviewerAgree" value="Y" class="md-radiobtn" <?= ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE'] == 'Y' || $assignedAppraisalDetail['SUPER_REVIEWER_AGREE'] == null) ? "checked" : ""; ?>>
-                        <label for="radio14">
-                            <span class="inc"></span>
-                            <span class="check"></span>
-                            <span class="box"></span> Yes </label>
+                <div>
+                    <div class="radio-inline">
+                        <input disabled='disabled' type="radio" id="radio14" name="superReviewerAgree" value="Y"  <?= ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE'] == 'Y' || $assignedAppraisalDetail['SUPER_REVIEWER_AGREE'] == null) ? "checked" : ""; ?>>
+                        <label for="radio14"> Yes </label>
                     </div>
-                    <div class="md-radio">
-                        <input disabled='disabled' type="radio" id="radio15" name="superReviewerAgree" value="N" class="md-radiobtn" <?= ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE'] == 'N') ? "checked" : ""; ?>>
-                        <label for="radio15">
-                            <span class="inc"></span>
-                            <span class="check"></span>
-                            <span class="box"></span> No </label>
+                    <div class="radio-inline">
+                        <input disabled='disabled' type="radio" id="radio15" name="superReviewerAgree" value="N"  <?= ($assignedAppraisalDetail['SUPER_REVIEWER_AGREE'] == 'N') ? "checked" : ""; ?>>
+                        <label for="radio15"> No </label>
                     </div>
                 </div>
             </div>
