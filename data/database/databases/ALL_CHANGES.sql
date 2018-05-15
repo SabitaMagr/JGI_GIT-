@@ -1144,3 +1144,41 @@ UPDATE HRIS_FISCAL_YEARS
 SET FISCAL_YEAR_NAME=REGEXP_SUBSTR(BS_DATE(TRUNC(START_DATE)), '[^-]+', 1, 1)
   ||'/'
   ||REGEXP_SUBSTR(BS_DATE(TRUNC(END_DATE)), '[^-]+', 1, 1);
+
+INSERT
+INTO hris_menus
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Report Only',
+    4,
+    NULL,
+    'attendancebyhr',
+    'E',
+    to_date('07-MAY-18','DD-MON-RR'),
+    to_date('07-MAY-18','DD-MON-RR'),
+    'fa fa-pencil',
+    'report',
+    (select max(MENU_INDEX)+1 from hris_menus where parent_menu=4),
+    NULL,
+    NULL,
+    'Y'
+  );
