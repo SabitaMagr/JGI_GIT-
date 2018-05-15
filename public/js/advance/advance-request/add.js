@@ -94,13 +94,13 @@
 
 
             //TO VIEW ADVANCE DETAILS START
-            var selectedAdvanceDtl = advanceDetails.DEDUCTION_RATE + ' % of ' + monthlySalary + ' up to ' + advanceDetails.DEDUCTION_IN + ' months.'
+            var selectedAdvanceDtl = advanceDetails.MAX_SALARY_RATE + ' % of ' + monthlySalary + ' up to ' + advanceDetails.MAX_ADVANCE_MONTH + ' months.'
             $('#defaultValues').text(selectedAdvanceDtl);
             //TO VIEW ADVANCE DETAILS END
 
 
             //calculate MaxRequestAmt Start
-            maxRequestAmt = (advanceDetails.MAX_SALARY_RATE * advanceDetails.DEDUCTION_IN * monthlySalary) / 100;
+            maxRequestAmt = (advanceDetails.MAX_SALARY_RATE * advanceDetails.MAX_ADVANCE_MONTH * monthlySalary) / 100;
             $('#maxReqAmt').text("Max Request Amount=Rs " + maxRequestAmt);
 
             $requestAmt.attr('max', maxRequestAmt);
