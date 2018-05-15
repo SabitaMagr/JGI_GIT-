@@ -308,9 +308,9 @@ BEGIN
       IF V_LEAVE_ID      IS NOT NULL AND V_LEAVE_HALFDAY_PERIOD IS NULL AND V_LEAVE_GRACE_PERIOD IS NULL THEN
         V_OVERALL_STATUS :='LV';
       END IF;
-      IF V_LEAVE_HALFDAY_PERIOD IS NOT NULL THEN
-        V_HALFDAY               := 'Y';
-      END IF;
+      --       IF V_LEAVE_HALFDAY_PERIOD IS NOT NULL THEN
+      --         V_HALFDAY               := 'Y';
+      --       END IF;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
       NULL;

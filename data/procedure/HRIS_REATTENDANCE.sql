@@ -118,15 +118,17 @@ BEGIN
           ELSIF (V_OVERALL_STATUS ='HD') THEN
             V_OVERALL_STATUS     :='WH';
           ELSIF (V_OVERALL_STATUS ='LV') THEN
-            IF(V_HALFDAY_FLAG     ='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
-              V_OVERALL_STATUS   :='LP';
-            END IF;
+            NULL;
           ELSIF (V_OVERALL_STATUS ='TV') THEN
             NULL;
           ELSIF (V_OVERALL_STATUS ='TN') THEN
             NULL;
           ELSIF (V_OVERALL_STATUS = 'AB') THEN
-            V_OVERALL_STATUS     :='PR';
+            IF V_HALFDAY_FLAG     ='N' AND (V_HALFDAY_PERIOD IS NOT NULL OR V_GRACE_PERIOD IS NOT NULL) THEN
+              V_OVERALL_STATUS   :='LP';
+            ELSE
+              V_OVERALL_STATUS :='PR';
+            END IF;
           END IF;
           UPDATE HRIS_ATTENDANCE_DETAIL
           SET IN_TIME         = V_IN_TIME,
@@ -303,15 +305,17 @@ BEGIN
         ELSIF (V_OVERALL_STATUS ='HD') THEN
           V_OVERALL_STATUS     :='WH';
         ELSIF (V_OVERALL_STATUS ='LV') THEN
-          IF(V_HALFDAY_FLAG     ='Y' AND V_HALFDAY_PERIOD IS NOT NULL) OR V_GRACE_PERIOD IS NOT NULL THEN
-            V_OVERALL_STATUS   :='LP';
-          END IF;
+          NULL;
         ELSIF (V_OVERALL_STATUS ='TV') THEN
           NULL;
         ELSIF (V_OVERALL_STATUS ='TN') THEN
           NULL;
         ELSIF (V_OVERALL_STATUS = 'AB') THEN
-          V_OVERALL_STATUS     :='PR';
+          IF V_HALFDAY_FLAG     ='N' AND (V_HALFDAY_PERIOD IS NOT NULL OR V_GRACE_PERIOD IS NOT NULL) THEN
+            V_OVERALL_STATUS   :='LP';
+          ELSE
+            V_OVERALL_STATUS :='PR';
+          END IF;
         END IF;
         --
         IF V_OVERALL_STATUS ='PR' AND (V_LATE_START_TIME<V_IN_TIME) THEN
