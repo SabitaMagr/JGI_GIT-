@@ -1,19 +1,23 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()
-        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/system/attendance-device/attendance-log.js'));
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/system/attendance-device/attendance-log.js'));
+
 ?>
+<script>
+    document.checkExeStatusLink = '<?= $this->url("AttendanceDevice", ["action" => "checkExeStatus"]) ?>';
+</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\AttendanceDevice')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -48,45 +52,58 @@ $this->headScript()
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class='col-sm-2'>
-                <?php print $this->formLabel($deviceIPSE); ?>
-                <?php print $this->formElement($deviceIPSE); ?>
-            </div>
-            <div class="col-sm-6">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="fromDate">From Date</label>
-                            <input type="text" id="fromDate" name="fromDate"  class="form-control"/>
+        <div class="portlet-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <a id="device-status-color" class="dashboard-stat dashboard-stat-v2">
+                        <div class="visual">
+                            <i class="fa fa-comments"></i>
                         </div>
-
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliFromDate">&nbsp;</label>
-                            <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                        <div class="details">
+                            <div class="number">
+                                <span id="device-status-text"></span>
+                            </div>
                         </div>
+                    </a>
+                </div>
+                <div class='col-sm-3'>
+                    <?php print $this->formLabel($deviceIPSE); ?>
+                    <?php print $this->formElement($deviceIPSE); ?>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="fromDate">From Date</label>
+                                <input type="text" id="fromDate" name="fromDate"  class="form-control"/>
+                            </div>
 
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="toDate">To Date</label>
-                            <input type="text"  id="toDate" name="toDate"  class="form-control"/>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="form-group">
-                            <label for="nepaliToDate">&nbsp;</label>
-                            <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="nepaliFromDate">&nbsp;</label>
+                                <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="toDate">To Date</label>
+                                <input type="text"  id="toDate" name="toDate"  class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="nepaliToDate">&nbsp;</label>
+                                <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div id="table">
+            </div>
         </div>
-        <div id="table">
-        </div>
-    </div>
 
+    </div>
 </div>

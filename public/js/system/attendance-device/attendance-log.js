@@ -54,5 +54,33 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, map, 'Attendance.pdf');
         });
+        var status = null;
+        var $deviceStatusColor = $('#device-status-color');
+        var $deviceStatusText = $('#device-status-text');
+        var checkExeStatus = function ($action) {
+            app.serverRequest(document.checkExeStatusLink, {'action': $action}).then(function (response) {
+                if (response.success) {
+                    status = response.data.isRunning;
+                    if (response.data.isRunning) {
+                        $deviceStatusColor.removeClass('red').addClass('green');
+                        $deviceStatusText.html('Online');
+                    } else {
+                        $deviceStatusColor.removeClass('green').addClass('red');
+                        $deviceStatusText.html('Offline');
+                    }
+                }
+            });
+        };
+        $deviceStatusColor.on('click', function (e) {
+            e.preventDefault();
+            if (status != null && !status) {
+                checkExeStatus('start-service');
+            }
+
+        });
+
+        checkExeStatus('check-exe-status');
+
+
     });
 })(window.jQuery, window.app);

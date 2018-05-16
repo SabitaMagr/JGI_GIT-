@@ -1,5 +1,4 @@
 <?php
-
 namespace System\Controller;
 
 use Application\Controller\HrisController;
@@ -40,7 +39,7 @@ class AttendanceDeviceController extends HrisController {
         }
 
         return $this->stickFlashMessagesTo([
-                    'acl' => $this->acl
+                'acl' => $this->acl
         ]);
     }
 
@@ -63,7 +62,7 @@ class AttendanceDeviceController extends HrisController {
         }
         $this->prepareForm();
         return $this->stickFlashMessagesTo([
-                    'form' => $this->form,
+                'form' => $this->form,
         ]);
     }
 
@@ -85,8 +84,8 @@ class AttendanceDeviceController extends HrisController {
         $this->form->bind($attendanceDevice);
         $this->prepareForm();
         return $this->stickFlashMessagesTo([
-                    'id' => $id,
-                    'form' => $this->form,
+                'id' => $id,
+                'form' => $this->form,
         ]);
     }
 
@@ -157,8 +156,32 @@ class AttendanceDeviceController extends HrisController {
         $deviceIPSE = $this->getSelectElement(['name' => 'deviceIP', 'id' => 'deviceIP', 'class' => 'form-control', 'label' => 'Device IP'], $deviceIPKV);
         $deviceIPSE->setAttributes(['multiple' => 'multiple']);
         return $this->stickFlashMessagesTo([
-                    'deviceIPSE' => $deviceIPSE
+                'deviceIPSE' => $deviceIPSE
         ]);
     }
 
+    function checkExeStatusAction() {
+        try {
+            $request = $this->getRequest();
+            if (!$request->isPost()) {
+                throw new Exception("should be a post request.");
+            }
+            $postData = (array) $request->getPost();
+            if ($postData['action'] == 'start-service') {
+                exec('Start ');
+            }
+            $taskList = [];
+            $isRunning = false;
+            exec('tasklist', $taskList);
+            foreach ($taskList as $task) {
+                if (strpos(strtolower($task), strtolower('NEO')) !== false) {
+                    $isRunning = true;
+                }
+            }
+
+            return new JsonModel(['success' => true, 'data' => ['isRunning'=>$isRunning], 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
 }
