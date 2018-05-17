@@ -258,7 +258,7 @@
 <div><input style='width: 88px;' id="employeeEndDateNepali` + uniqueId + `" name='employeeEndDateNepali[]' type='text' class='employeeEndDateNepali' >
                         </div>
 </td>
-                        <td><input style='width: 88px;' name='monthlyRate[]' type='number' step="0.01" class='monthlyRate' data-rate='`+rate+`' ></td>
+                        <td><input style='width: 88px;' name='monthlyRate[]' type='number' step="0.01" class='monthlyRate' data-rate='` + rate + `' ></td>
                         <td>
                         <input type='button' class='btn assignEditBtn  button-sm' value='Edit'>
                         <button class='btn assignCancelBtn button-sm'><i class="fa fa-close"></i></button>
@@ -267,7 +267,12 @@
                     
                         </tr>`;
 
-                        $("#assignTable tbody").prepend(appendData);
+                        if ($("#assignTable tbody").length > 0) {
+                            $("#assignTable tbody").prepend(appendData);
+                        } else {
+                            $assignTable.append(appendData);
+                        }
+
 
                         var $selectedstartDate = $('#assignTable tbody').find('.employeeStartDate:first');
                         var $selectedstartDateNepali = $('#assignTable tbody').find('.employeeStartDateNepali:first');
