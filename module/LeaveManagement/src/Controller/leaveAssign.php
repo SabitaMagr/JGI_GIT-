@@ -86,10 +86,7 @@ class leaveAssign extends HrisController {
                 $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']]);
             }
 
-            return new JsonModel([
-                "success" => "true",
-                "data" => null,
-            ]);
+            return new JsonModel(["success" => "true", "data" => null,]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }

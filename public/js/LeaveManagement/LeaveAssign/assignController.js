@@ -6,6 +6,8 @@ angular.module('hris', [])
             $scope.daysForAll = 0;
             $scope.prevBalForAll = 0;
             $scope.daysForAllFlag = false;
+            var leaveId;
+            $scope.leaveName;
 
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.leaveList.length; i++) {
@@ -59,14 +61,14 @@ angular.module('hris', [])
                     window.toastr.success("Leave assigned successfully", "Notifications");
                 });
             };
-            var leaveId;
-            $scope.leaveName;
+
             $scope.view = function () {
                 $scope.daysForAllFlag = false;
                 $scope.all = false;
                 $scope.leaveName = $('#leaveId>option:selected').text();
+                leaveId = $('#leaveId').val();
                 var q = document.searchManager.getSearchValues();
-                q['leaveId'] = $('#leaveId').val();
+                q['leaveId'] = leaveId;
                 window.app.serverRequest(document.pullEmployeeLeaveLink, q).then(function (success) {
                     $scope.$apply(function () {
                         $scope.leaveList = success.data;
