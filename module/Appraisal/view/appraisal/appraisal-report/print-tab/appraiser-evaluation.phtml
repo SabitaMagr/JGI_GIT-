@@ -14,15 +14,17 @@
                             <?php foreach ($appraiserQuestionRow['QUESTIONS'] as $questionRow) { ?>
                                 <div  class="col-md-12 margin-bottom-5 appQuestion"> 
                                     <div class="row">
-                                        <div class="<?= ($questionRow['REVIEWER_FLAG'] == 'Y') ? "col-sm-3" : "col-sm-8"; ?>">
-                                            <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7> </label>  
-                                            <?php
-                                            $keyForQuestion = ($questionRow['ANSWER'] == null || count($questionRow['ANSWER']) == 0) ? $questionRow['QUESTION_ID'] : array_keys($questionRow['ANSWER'])[0];
-                                            if ($questionRow['APPRAISER_FLAG'] == 'Y') {
-                                                print_r($this->formElement($performanceAppraisalObj("answer[" . $keyForQuestion . "]", $questionRow['ANSWER_TYPE'], (count($questionRow['QUESTION_OPTIONS']) > 0) ? $questionRow['QUESTION_OPTIONS'] : null, ($questionRow['ANSWER'] != null && count($questionRow['ANSWER']) > 0) ? array_values($questionRow['ANSWER'])[0]['ANSWER'] : null, "disabled")));
-                                            }
+                                        <div class="col-sm-12">
+                                            <b style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></b>  
+                                            <div>
+                                                <?php
+                                                $keyForQuestion = ($questionRow['ANSWER'] == null || count($questionRow['ANSWER']) == 0) ? $questionRow['QUESTION_ID'] : array_keys($questionRow['ANSWER'])[0];
+                                                if ($questionRow['APPRAISER_FLAG'] == 'Y') {
+                                                    print_r($this->formElement($performanceAppraisalObj("answer[" . $keyForQuestion . "]", $questionRow['ANSWER_TYPE'], (count($questionRow['QUESTION_OPTIONS']) > 0) ? $questionRow['QUESTION_OPTIONS'] : null, ($questionRow['ANSWER'] != null && count($questionRow['ANSWER']) > 0) ? array_values($questionRow['ANSWER'])[0]['ANSWER'] : null, "disabled")));
+                                                }
 
-                                            ?>
+                                                ?>
+                                            </div>
                                         </div>
                                         <?php if ($questionRow['APPRAISER_RATING'] == 'Y') { ?>
                                             <div class="col-sm-1">

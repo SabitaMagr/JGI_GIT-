@@ -25,7 +25,7 @@ $this->headScript()
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
 <div class="page-bar">
-<?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 
 <?php
@@ -57,7 +57,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
                 <a href="<?= $this->url('attendancebyhr', ['action' => 'add']) ?>" class="btn default btn-sm">
                     <i class="fa fa-plus-square icon-black"></i> New </a>
-<?php endif; ?>
+            <?php endif; ?>
 
             <div class="btn-group">
                 <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
@@ -141,8 +141,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </select>
             </div>
             <div class="col-sm-2">
-<?php print $this->formLabel($status); ?>
-<?php print $this->formElement($status); ?>
+                <?php print $this->formLabel($status); ?>
+                <?php print $this->formElement($status); ?>
             </div> 
         </div>
         <div class="row margin-top-10">
@@ -171,8 +171,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </div>
             </div>
             <div class="col-sm-2">
-<?php print $this->formLabel($presentStatus); ?>
-<?php print $this->formElement($presentStatus); ?>
+                <?php print $this->formLabel($presentStatus); ?>
+                <?php print $this->formElement($presentStatus); ?>
             </div> 
         </div>
         <div class="row margin-top-10">

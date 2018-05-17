@@ -198,4 +198,5 @@ class HrisController extends AbstractActionController {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+    
 }
