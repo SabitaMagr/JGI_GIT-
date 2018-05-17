@@ -1,12 +1,6 @@
 <?php
-
 namespace Setup\Controller;
 
-use Application\Helper\Helper;
-use HolidayManagement\Repository\HolidayRepository;
-use LeaveManagement\Model\LeaveAssign;
-use LeaveManagement\Repository\LeaveAssignRepository;
-use SelfService\Repository\AttendanceRepository;
 use Setup\Helper\EntityHelper;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
@@ -32,45 +26,7 @@ class WebServiceController extends AbstractActionController {
         if ($request->isPost()) {
             $postedData = $request->getPost();
             switch ($postedData->action) {
-                case "assignedLeaves":
-                    $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-                    $result = $leaveAssignRepo->fetchByEmployeeId($postedData->id);
-                    $tempArray = [];
-                    foreach ($result as $item) {
-                        array_push($tempArray, $item);
-                    }
-                    $responseData = [
-                        "success" => true,
-                        "data" => $tempArray
-                    ];
-                    break;
-                case "assignList":
-                    $assignRepo = new LeaveAssignRepository($this->adapter);
-                    $assignList = $assignRepo->fetchByEmployeeId($postedData->id);
-                    $tempArray = [];
-                    foreach ($assignList as $item) {
-                        array_push($tempArray, $item);
-                    }
-                    $responseData = [
-                        "success" => true,
-                        "data" => $tempArray
-                    ];
-                    break;
 
-                case "pullHolidayList":
-                    $holidayRepository = new HolidayRepository($this->adapter);
-                    $inputData = $postedData->id;
-                    $resultSet = $holidayRepository->filterRecords($inputData['holidayId'], $inputData['branchId'], $inputData['genderId']);
-
-                    $tempArray = [];
-                    foreach ($resultSet as $item) {
-                        array_push($tempArray, $item);
-                    }
-                    $responseData = [
-                        "success" => true,
-                        "data" => $tempArray
-                    ];
-                    break;
                 case "pullRecommendApproveList":
                     $employeeRepository = new EmployeeRepository($this->adapter);
                     $recommendApproveRepository = new RecommendApproveRepository($this->adapter);
@@ -130,29 +86,6 @@ class WebServiceController extends AbstractActionController {
                         "data" => $result
                     ];
                     break;
-                case "pullAttendanceList":
-                    $attendanceRepository = new AttendanceRepository($this->adapter);
-                    $filtersDetail = $postedData->data;
-                    $employeeId = $filtersDetail['employeeId'];
-                    $fromDate = $filtersDetail['fromDate'];
-                    $toDate = $filtersDetail['toDate'];
-                    $status = $filtersDetail['status'];
-                    $missPunchOnly = ((int) $filtersDetail['missPunchOnly'] == 1) ? true : false;
-
-                    $result = $attendanceRepository->attendanceReport($fromDate, $toDate, $employeeId, $status, $missPunchOnly);
-                    $temArray = Helper::extractDbData($result);
-
-                    $responseData = [
-                        "success" => true,
-                        "data" => $temArray
-                    ];
-                    break;
-
-                case "menuList":
-
-
-                    break;
-
                 default:
                     $responseData = [
                         "success" => false
@@ -172,7 +105,7 @@ class WebServiceController extends AbstractActionController {
         if ($request->isPost()) {
             $id = $request->getPost()->id;
             $jsonModel = new JsonModel(
-                    EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS, ["ZONE_ID" => $id])
+                EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS, ["ZONE_ID" => $id])
             );
             return $jsonModel;
         } else {
@@ -190,5 +123,4 @@ class WebServiceController extends AbstractActionController {
             
         }
     }
-
 }
