@@ -1,10 +1,10 @@
 <?php
-
 namespace Setup\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
+use Application\Repository\HrisRepository;
 use Application\Repository\RepositoryInterface;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Model\ShiftAssign;
@@ -24,17 +24,14 @@ use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
-class EmployeeRepository implements RepositoryInterface {
+class EmployeeRepository extends HrisRepository implements RepositoryInterface {
 
-    private $gateway;
-    private $adapter;
     private $vdcGateway;
     private $districtGateway;
     private $zoneGateway;
 
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-        $this->gateway = new TableGateway('HRIS_EMPLOYEES', $adapter);
+    public function __construct(AdapterInterface $adapter, $tableName = null) {
+        parent::__construct($adapter, HrEmployees::TABLE_NAME);
         $this->vdcGateway = new TableGateway('HRIS_VDC_MUNICIPALITIES', $adapter);
         $this->districtGateway = new TableGateway('HRIS_DISTRICTS', $adapter);
         $this->zoneGateway = new TableGateway('HRIS_ZONES', $adapter);
@@ -108,16 +105,16 @@ class EmployeeRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        $rowset = $this->gateway->select(function (Select $select) use ($id) {
+        $rowset = $this->tableGateway->select(function (Select $select) use ($id) {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME, HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
-                        HrEmployees::BIRTH_DATE,
-                        HrEmployees::FAM_SPOUSE_BIRTH_DATE,
-                        HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
-                        HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
-                        HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
-                        HrEmployees::ID_PASSPORT_EXPIRY,
-                        HrEmployees::JOIN_DATE
-                    ]), false);
+                    HrEmployees::BIRTH_DATE,
+                    HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+                    HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                    HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+                    HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+                    HrEmployees::ID_PASSPORT_EXPIRY,
+                    HrEmployees::JOIN_DATE
+                ]), false);
             $select->where(['EMPLOYEE_ID' => $id]);
         });
         return $rowset->current();
@@ -128,31 +125,31 @@ class EmployeeRepository implements RepositoryInterface {
         $select = $sql->select();
         $E = 'E';
         $columns = EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME, HrEmployees::FULL_NAME], [
-                    HrEmployees::BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
-                    HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
-                    HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
-                    HrEmployees::ID_PASSPORT_EXPIRY,
-                    HrEmployees::JOIN_DATE
-                        ], NULL, NULL, NULL, $E);
+                HrEmployees::BIRTH_DATE,
+                HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+                HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+                HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+                HrEmployees::ID_PASSPORT_EXPIRY,
+                HrEmployees::JOIN_DATE
+                ], NULL, NULL, NULL, $E);
         $select->columns($columns, false);
 
         $select->from(['E' => HrEmployees::TABLE_NAME]);
         $select
-                ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME' => new Expression('INITCAP(B.BRANCH_NAME)')], 'left')
-                ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME' => new Expression('INITCAP(C.COMPANY_NAME)')], 'left')
-                ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME' => new Expression('INITCAP(G.GENDER_NAME)')], 'left')
-                ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
-                ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME' => new Expression('INITCAP(RG.RELIGION_NAME)')], 'left')
-                ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(CN.COUNTRY_NAME)')], 'left')
-                ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME' => new Expression('INITCAP(VM.VDC_MUNICIPALITY_NAME)')], 'left')
-                ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
-                ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME' => new Expression('INITCAP(D1.DEPARTMENT_NAME)')], 'left')
-                ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE' => new Expression('INITCAP(DES1.DESIGNATION_TITLE)')], 'left')
-                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)'), "LEVEL_NO" => "P1.LEVEL_NO"], 'left')
-                ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
-                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
+            ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME' => new Expression('INITCAP(B.BRANCH_NAME)')], 'left')
+            ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME' => new Expression('INITCAP(C.COMPANY_NAME)')], 'left')
+            ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME' => new Expression('INITCAP(G.GENDER_NAME)')], 'left')
+            ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
+            ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME' => new Expression('INITCAP(RG.RELIGION_NAME)')], 'left')
+            ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(CN.COUNTRY_NAME)')], 'left')
+            ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME' => new Expression('INITCAP(VM.VDC_MUNICIPALITY_NAME)')], 'left')
+            ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
+            ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME' => new Expression('INITCAP(D1.DEPARTMENT_NAME)')], 'left')
+            ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE' => new Expression('INITCAP(DES1.DESIGNATION_TITLE)')], 'left')
+            ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)'), "LEVEL_NO" => "P1.LEVEL_NO"], 'left')
+            ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
+            ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
         $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -338,16 +335,16 @@ class EmployeeRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        $this->gateway->insert($model->getArrayCopyForDB());
+        $this->tableGateway->insert($model->getArrayCopyForDB());
     }
 
     public function delete($model) {
-        $this->gateway->update(['STATUS' => 'D','DELETED_DATE'=>$model->deletedDate,'DELETED_BY'=>$model->deletedBy], ['EMPLOYEE_ID' => $model->employeeId]);
+        $this->tableGateway->update(['STATUS' => 'D', 'DELETED_DATE' => $model->deletedDate, 'DELETED_BY' => $model->deletedBy], ['EMPLOYEE_ID' => $model->employeeId]);
     }
 
     public function edit(Model $model, $id) {
         $tempArray = $model->getArrayCopyForDB();
-        $this->gateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
+        $this->tableGateway->update($tempArray, ['EMPLOYEE_ID' => $id]);
     }
 
     public function branchEmpCount() {
@@ -542,8 +539,8 @@ class EmployeeRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
-                    HrEmployees::BIRTH_DATE
-                ]), false);
+                HrEmployees::BIRTH_DATE
+            ]), false);
 
         $select->from("HRIS_EMPLOYEES");
         $select->where(["STATUS='E' AND RETIRED_FLAG='N'"]);
@@ -581,28 +578,28 @@ class EmployeeRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
-                    HrEmployees::BIRTH_DATE
-                        ], null, null, null, 'E'), false);
+                HrEmployees::BIRTH_DATE
+                ], null, null, null, 'E'), false);
         $select->from(['E' => "HRIS_EMPLOYEES"])
-                ->join(['SA' => ShiftAssign::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=SA." . ShiftAssign::EMPLOYEE_ID, ['EMPLOYEE_ID', 'SHIFT_ID'], 'left')
-                ->join(['S' => ShiftSetup::TABLE_NAME], "SA." . ShiftAssign::SHIFT_ID . "=S." . ShiftSetup::SHIFT_ID, ['SHIFT_CODE',
-                    'SHIFT_ENAME' => new Expression('INITCAP(S.SHIFT_ENAME)'),
-                    'SHIFT_LNAME' => new Expression('INITCAP(S.SHIFT_LNAME)'),
-                    'START_DATE' => new Expression("INITCAP(TO_CHAR(S.START_DATE, 'DD-MON-YYYY'))"),
-                    'END_DATE' => new Expression("INITCAP(TO_CHAR(S.END_DATE, 'DD-MON-YYYY'))"),
-                    'START_TIME' => new Expression("TO_CHAR(S.START_TIME, 'HH:MI AM')"),
-                    'END_TIME' => new Expression("TO_CHAR(S.END_TIME, 'HH:MI AM')"),
-                    'HALF_TIME' => new Expression("TO_CHAR(S.HALF_TIME, 'HH:MI AM')"),
-                    'HALF_DAY_END_TIME' => new Expression("TO_CHAR(S.HALF_DAY_END_TIME, 'HH:MI AM')"),
-                    'LATE_IN' => new Expression("TO_CHAR(S.LATE_IN, 'HH24:MI')"),
-                    'EARLY_OUT' => new Expression("TO_CHAR(S.EARLY_OUT, 'HH24:MI')"),
-                    'TOTAL_WORKING_HR' => new Expression("TO_CHAR(S.TOTAL_WORKING_HR, 'HH24:MI')"),
-                    'ACTUAL_WORKING_HR' => new Expression("TO_CHAR(S.ACTUAL_WORKING_HR, 'HH24:MI')"),
-                        ], 'left')
-                ->join(['AD' => AttendanceDetail::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AD." . AttendanceDetail::EMPLOYEE_ID, [
-                    'IN_TIME' => new Expression("TO_CHAR(AD.IN_TIME, 'HH:MI AM')"),
-                    'OUT_TIME' => new Expression("TO_CHAR(AD.OUT_TIME, 'HH:MI AM')"),
-                        ], "left");
+            ->join(['SA' => ShiftAssign::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=SA." . ShiftAssign::EMPLOYEE_ID, ['EMPLOYEE_ID', 'SHIFT_ID'], 'left')
+            ->join(['S' => ShiftSetup::TABLE_NAME], "SA." . ShiftAssign::SHIFT_ID . "=S." . ShiftSetup::SHIFT_ID, ['SHIFT_CODE',
+                'SHIFT_ENAME' => new Expression('INITCAP(S.SHIFT_ENAME)'),
+                'SHIFT_LNAME' => new Expression('INITCAP(S.SHIFT_LNAME)'),
+                'START_DATE' => new Expression("INITCAP(TO_CHAR(S.START_DATE, 'DD-MON-YYYY'))"),
+                'END_DATE' => new Expression("INITCAP(TO_CHAR(S.END_DATE, 'DD-MON-YYYY'))"),
+                'START_TIME' => new Expression("TO_CHAR(S.START_TIME, 'HH:MI AM')"),
+                'END_TIME' => new Expression("TO_CHAR(S.END_TIME, 'HH:MI AM')"),
+                'HALF_TIME' => new Expression("TO_CHAR(S.HALF_TIME, 'HH:MI AM')"),
+                'HALF_DAY_END_TIME' => new Expression("TO_CHAR(S.HALF_DAY_END_TIME, 'HH:MI AM')"),
+                'LATE_IN' => new Expression("TO_CHAR(S.LATE_IN, 'HH24:MI')"),
+                'EARLY_OUT' => new Expression("TO_CHAR(S.EARLY_OUT, 'HH24:MI')"),
+                'TOTAL_WORKING_HR' => new Expression("TO_CHAR(S.TOTAL_WORKING_HR, 'HH24:MI')"),
+                'ACTUAL_WORKING_HR' => new Expression("TO_CHAR(S.ACTUAL_WORKING_HR, 'HH24:MI')"),
+                ], 'left')
+            ->join(['AD' => AttendanceDetail::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AD." . AttendanceDetail::EMPLOYEE_ID, [
+                'IN_TIME' => new Expression("TO_CHAR(AD.IN_TIME, 'HH:MI AM')"),
+                'OUT_TIME' => new Expression("TO_CHAR(AD.OUT_TIME, 'HH:MI AM')"),
+                ], "left");
         if ($currentDate != null) {
             $startDate = " AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') >= S.START_DATE AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') <= S.END_DATE";
         } else {
@@ -617,12 +614,12 @@ class EmployeeRepository implements RepositoryInterface {
     }
 
     public function fetchByAdminFlag() {
-        $result = $this->gateway->select(["IS_ADMIN='Y'"]);
+        $result = $this->tableGateway->select(["IS_ADMIN='Y'"]);
         return $result->current()->getArrayCopy();
     }
 
     public function fetchByAdminFlagList() {
-        $result = $this->gateway->select(["IS_ADMIN='Y' AND STATUS='E'"]);
+        $result = $this->tableGateway->select(["IS_ADMIN='Y' AND STATUS='E'"]);
         return $result;
     }
 
@@ -682,7 +679,7 @@ class EmployeeRepository implements RepositoryInterface {
     }
 
     public function fetchByHRFlagList() {
-        $result = $this->gateway->select(["IS_HR='Y' AND STATUS='E'"]);
+        $result = $this->tableGateway->select(["IS_HR='Y' AND STATUS='E'"]);
         $list = [];
         foreach ($result as $row) {
             array_push($list, $row['EMPLOYEE_ID']);
@@ -853,4 +850,19 @@ class EmployeeRepository implements RepositoryInterface {
         $statement->execute();
     }
 
+    public function fetchBankAccountList(): array {
+        if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
+            $sql = "SELECT ACC_CODE,
+                  ACC_EDESC,
+                  TRANSACTION_TYPE
+                FROM FA_CHART_OF_ACCOUNTS_SETUP
+                WHERE ACC_NATURE  = 'AC'
+                AND COMPANY_CODE  = '01'
+                AND DELETED_FLAG  = 'N'
+                AND ACC_TYPE_FLAG = 'T'";
+            return $this->rawQuery($sql);
+        } else {
+            return [];
+        }
+    }
 }

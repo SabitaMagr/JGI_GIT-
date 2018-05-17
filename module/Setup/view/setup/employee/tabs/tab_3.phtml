@@ -8,6 +8,7 @@ $idDrivingLicenseNo = $formThree->get('idDrivingLicenseNo');
 $idDrivingLicenseType = $formThree->get('idDrivingLicenseType');
 $idDrivingLicenseExpiry = $formThree->get('idDrivingLicenseExpiry');
 $idThumbId = $formThree->get('idThumbId');
+$idAccCode= $formThree->get('idAccCode');
 $idPanNo = $formThree->get('idPanNo');
 $idAccountId = $formThree->get('idAccountId');
 $idRetirementNo = $formThree->get('idRetirementNo');
@@ -186,6 +187,17 @@ $formThree->prepare();
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                 <?php print $this->formElement($idPanNo); ?></div>
                             <?php print $this->formElementErrors()->render($idPanNo, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                <?php print $this->formLabel($idAccCode); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                <?php print $this->formElement($idAccCode); ?></div>
+                            <?php print $this->formElementErrors()->render($idAccCode, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>
