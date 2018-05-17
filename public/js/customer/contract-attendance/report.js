@@ -1,6 +1,6 @@
 function setTemplate(temp) {
     var returnvalue = '';
-    if (temp == 'Absent') {
+    if (temp == 'Absent' || temp == 'Leave') {
         returnvalue = 'attendance-color-red';
     } else if (temp == 'Present') {
         returnvalue = 'attendance-color-green';
@@ -96,13 +96,19 @@ function getStausString(status, normal, ot, subEmp) {
             cols.push({
                 field: 'PAID_HOLIDAY',
                 title: "Present",
-                template: '<span>#='+dayCount+'-ABSENT_DAYS#</span>',
+                template: '<span>#='+dayCount+'-ABSENT_DAYS-LEAVE#</span>',
                 width: 100
             });
             cols.push({
                 field: 'ABSENT_DAYS',
                 title: "Absent",
                 template: '<span>#:ABSENT_DAYS#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'LEAVE',
+                title: "Leave",
+                template: '<span>#:LEAVE#</span>',
                 width: 100
             });
             cols.push({
@@ -113,7 +119,7 @@ function getStausString(status, normal, ot, subEmp) {
             });
             cols.push({
                 field: 'PAID_HOLIDAY',
-                title: "Paid Holiday",
+                title: "Public Holiday",
                 template: '<span>#:PAID_HOLIDAY#</span>',
                 width: 100
             });

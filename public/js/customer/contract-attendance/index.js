@@ -1,6 +1,6 @@
 function setTemplate(temp) {
     var returnvalue = '';
-    if (temp == 'Absent') {
+    if (temp == 'Absent' || temp == 'Leave') {
         returnvalue = 'attendance-color-red';
     } else if (temp == 'Present') {
         returnvalue = 'attendance-color-green';

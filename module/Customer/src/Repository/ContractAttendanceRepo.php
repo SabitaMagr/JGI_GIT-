@@ -161,6 +161,7 @@ E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
           WHEN CA.STATUS IS NULL THEN 'Present'
           WHEN CA.STATUS='PR' THEN 'Present'
           WHEN CA.STATUS='AB' THEN 'Absent'
+          WHEN CA.STATUS='LV' THEN 'Leave'
           WHEN CA.STATUS='DO' THEN 'DayOff'
           WHEN CA.STATUS='PH' THEN 'PaidHoliday'
         END
@@ -639,6 +640,14 @@ TO_DATE('{$toDate}','DD-MON-YY')-CE.END_DATE
     0
 END
 AS ABSENT_DAYS,
+
+(SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+WHERE STATUS='LV' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+ATTENDANCE_DATE BETWEEN 
+TO_DATE('{$fromDate}','DD-MON-YY')
+AND TO_DATE('{$toDate}','DD-MON-YY')
+) )AS LEAVE,
+
 (SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
 WHERE STATUS='DO' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
 ATTENDANCE_DATE BETWEEN 
@@ -662,6 +671,7 @@ E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
           WHEN CA.STATUS IS NULL THEN 'Present'
           WHEN CA.STATUS='PR' THEN 'Present'
           WHEN CA.STATUS='AB' THEN 'Absent'
+          WHEN CA.STATUS='LV' THEN 'Leave'
           WHEN CA.STATUS='DO' THEN 'DayOff'
           WHEN CA.STATUS='PH' THEN 'PaidHoliday'
         END
@@ -718,6 +728,7 @@ TO_DATE('{$fromDate}','DD-MON-YY')
 AND TO_DATE('{$toDate}','DD-MON-YY')
 )
     )AS ABSENT_DAYS,
+    0 AS LEAVE,
     0 AS DAY_OFF,
     0 AS PAID_HOLIDAY,
        
@@ -803,7 +814,7 @@ FOR DAY_COUNT IN ({$pivotString}))
         $sql = "
         select 
         (TO_DATE('{$toDate}','DD-MON-YY')-TO_DATE('{$fromDate}','DD-MON-YY'))
-            +1-ABSENT_DAYS
+            +1-ABSENT_DAYS-LEAVE
         AS PRESENT_DAYS,
         EMP_ASSIGN_ID,
         FULL_NAME,
@@ -812,6 +823,7 @@ FOR DAY_COUNT IN ({$pivotString}))
         DESIGNATION_TITLE,
         DUTY_TYPE_NAME,
         ABSENT_DAYS,
+        LEAVE,
         DAY_OFF,
         PAID_HOLIDAY,
         SUM(NORMAL_HOUR)/60 AS TOTAL_NORMAL_HOUR,
@@ -838,6 +850,14 @@ FOR DAY_COUNT IN ({$pivotString}))
         END
 
 AS ABSENT_DAYS,
+
+(SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
+        WHERE STATUS='LV' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
+        ATTENDANCE_DATE BETWEEN 
+        TO_DATE('{$fromDate}','DD-MON-YY')
+        AND TO_DATE('{$toDate}','DD-MON-YY')
+        ) )AS LEAVE,
+        
         (SELECT COUNT(STATUS) FROM HRIS_CONTRACT_EMP_ATTENDANCE
         WHERE STATUS='DO' AND EMP_ASSIGN_ID=CE.EMP_ASSIGN_ID AND (
         ATTENDANCE_DATE BETWEEN 
@@ -861,6 +881,7 @@ AS ABSENT_DAYS,
                   WHEN CA.STATUS IS NULL THEN 'Present'
                   WHEN CA.STATUS='PR' THEN 'Present'
                   WHEN CA.STATUS='AB' THEN 'Absent'
+                  WHEN CA.STATUS='LV' THEN 'LEAVE'
                   WHEN CA.STATUS='DO' THEN 'DayOff'
                   WHEN CA.STATUS='PH' THEN 'PaidHoliday'
                 END
@@ -869,7 +890,7 @@ AS ABSENT_DAYS,
                     WHEN CA.NORMAL_HOUR IS NULL 
                     THEN
                     DT.NORMAL_HOUR
-                    WHEN CA.NORMAL_HOUR IS NOT NULL AND  CA.STATUS='AB'
+                    WHEN CA.NORMAL_HOUR IS NOT NULL AND  (CA.STATUS='AB' OR CA.STATUS='LV')
                     THEN
                     0
                     ELSE
@@ -918,6 +939,7 @@ TO_DATE('{$fromDate}','DD-MON-YY')
 AND TO_DATE('{$toDate}','DD-MON-YY')
 )
     )AS ABSENT_DAYS,
+    0 AS LEAVE,
     0 AS DAY_OFF,
     0 AS PAID_HOLIDAY,
        
@@ -970,6 +992,7 @@ AND (CA.ATTENDANCE_DATE BETWEEN TO_DATE('{$fromDate}','DD-MON-YY') AND TO_DATE('
         DUTY_TYPE_NAME,
         ABSENT_DAYS,
         DAY_OFF,
+        LEAVE,
         PAID_HOLIDAY
 
                         ";
