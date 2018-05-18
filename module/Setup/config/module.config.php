@@ -10,7 +10,6 @@ use Setup\Controller\BranchController;
 use Setup\Controller\CompanyController;
 use Setup\Controller\DepartmentController;
 use Setup\Controller\DesignationController;
-use Setup\Controller\EmpCurrentPostingController;
 use Setup\Controller\EmployeeController;
 use Setup\Controller\ExperienceController;
 use Setup\Controller\FunctionalLevelsController;
@@ -130,20 +129,6 @@ return [
                     ],
                     'defaults' => [
                         'controller' => JobHistoryController::class,
-                        'action' => 'index',
-                    ]
-                ],
-            ],
-            'empCurrentPosting' => [
-                'type' => segment::class,
-                'options' => [
-                    'route' => '/setup/empCurrentPosting[/:action[/:id]]',
-                    'constant' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => EmpCurrentPostingController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -524,33 +509,6 @@ return [
                     [
                         'label' => 'Edit',
                         'route' => 'serviceType',
-                        'action' => 'edit',
-                    ],
-                ]
-            ]
-        ],
-        'empCurrentPosting' => [
-            [
-                'label' => 'Employee Current Posting',
-                'route' => 'empCurrentPosting',
-            ],
-            [
-                'label' => 'Employee Current Posting',
-                'route' => 'empCurrentPosting',
-                'pages' => [
-                    [
-                        'label' => 'List',
-                        'route' => 'empCurrentPosting',
-                        'action' => 'index',
-                    ],
-                    [
-                        'label' => 'Add',
-                        'route' => 'empCurrentPosting',
-                        'action' => 'add',
-                    ],
-                    [
-                        'label' => 'Edit',
-                        'route' => 'empCurrentPosting',
                         'action' => 'edit',
                     ],
                 ]
@@ -971,7 +929,6 @@ return [
             DepartmentController::class => ControllerFactory::class,
             PositionController::class => ControllerFactory::class,
             ServiceTypeController::class => ControllerFactory::class,
-            EmpCurrentPostingController::class => ControllerFactory::class,
             JobHistoryController::class => ControllerFactory::class,
             RecommendApproveController::class => ControllerFactory::class,
             ServiceEventTypeController::class => ControllerFactory::class,
