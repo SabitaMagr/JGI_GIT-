@@ -5,6 +5,7 @@ use Application\Controller\HrisController;
 use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
+use Application\Model\HrisQuery;
 use Asset\Repository\IssueRepository;
 use AttendanceManagement\Model\ShiftSetup;
 use AttendanceManagement\Repository\ShiftAssignRepository;
@@ -1023,5 +1024,35 @@ class EmployeeController extends HrisController {
 
         $this->repository->setupEmployee($id);
         return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]);
+    }
+
+    public function districtAction() {
+        $request = $this->getRequest();
+        $post = $request->getPost();
+        $zoneId = $post->id;
+        $districtKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName("HRIS_DISTRICTS")
+            ->setColumnList(["DISTRICT_ID", "DISTRICT_NAME"])
+            ->setWhere(["ZONE_ID" => $zoneId])
+            ->setKeyValue("DISTRICT_ID", "DISTRICT_NAME")
+            ->setIncludeEmptyRow(true)
+            ->result();
+        return new JsonModel($districtKV);
+    }
+
+    public function municipalityAction() {
+        $request = $this->getRequest();
+        $post = $request->getPost();
+        $districtId = $post->id;
+        $districtKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName("HRIS_VDC_MUNICIPALITIES")
+            ->setColumnList(["VDC_MUNICIPALITY_ID", "VDC_MUNICIPALITY_NAME"])
+            ->setWhere(["DISTRICT_ID" => $districtId])
+            ->setKeyValue("VDC_MUNICIPALITY_ID", "VDC_MUNICIPALITY_NAME")
+            ->setIncludeEmptyRow(true)
+            ->result();
+        return new JsonModel($districtKV);
     }
 }

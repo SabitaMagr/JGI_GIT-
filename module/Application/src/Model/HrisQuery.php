@@ -92,6 +92,8 @@ class HrisQuery {
             $select->columns($columnList, false);
             if ($where != null) {
                 $select->where($where, $predicate);
+            }
+            if ($order != null) {
                 $select->order($order);
             }
         });

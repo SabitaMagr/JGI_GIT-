@@ -100,27 +100,7 @@ class WebServiceController extends AbstractActionController {
         return new JsonModel($responseData);
     }
 
-    public function districtAction() {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $id = $request->getPost()->id;
-            $jsonModel = new JsonModel(
-                EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_DISTRICTS, ["ZONE_ID" => $id])
-            );
-            return $jsonModel;
-        } else {
-            
-        }
-    }
+    
 
-    public function municipalityAction() {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $id = $request->getPost()->id;
-            return new JsonModel(EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_VDC_MUNICIPALITY, ["DISTRICT_ID" => $id])
-            );
-        } else {
-            
-        }
-    }
+   
 }
