@@ -1,37 +1,20 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/setup/designation/add.js'));
 
-$form->setAttribute('role', 'form');
-$form->setAttribute('id', 'designation-form');
-
+?>
+<?php
 $designationTitle = $form->get("designationTitle");
 $parentDesignation = $form->get("parentDesignation");
+$companyId = $form->get('companyId');
 $withinBranch = $form->get("withinBranch");
 $withinDepartment = $form->get("withinDepartment");
-
 $basicSalary = $form->get("basicSalary");
-$companyId = $form->get('companyId');
-$companyId->setValueOptions($companies);
-
 $submit = $form->get("submit");
-$submit->setAttribute('value', 'SUBMIT');
 
 $form->setAttribute('action', $this->url('designation', ['action' => 'add']));
-
-if ($this->messages) {
-    print '<ul class="help-block bg-danger" style="background:#f3e250;">';
-    foreach ($this->messages as $message) {
-        print '<li>' . $message . '</li>';
-    }
-    print '</ul>';
-}
-
 $form->prepare();
+
 ?>
-<script>
-    document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.designationListCompanyWise = <?php echo json_encode($designationListCompanyWise); ?>;
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\Designation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -48,10 +31,8 @@ $form->prepare();
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
-
                 <div class=" row">
-
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                         <div class="form-group">
                             <?= $this->formLabel($designationTitle) ?>
                             <span class="required" aria-required="true">*</span>
@@ -61,26 +42,22 @@ $form->prepare();
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                         <div class="form-group">
                             <?= $this->formLabel($basicSalary) ?>
-                            <span class="required" aria-required="true">*</span>
                             <?= $this->formElement($basicSalary); ?>
                             <?= $this->formElementErrors()->render($basicSalary, ['class' => 'help-block']) ?>
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                         <div class="form-group">
                             <?php print $this->formLabel($companyId); ?>
                             <?php print $this->formElement($companyId); ?>
                             <?php print $this->formElementErrors()->render($companyId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                </div>
-
-                <div class=" row">
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                         <div class="form-group">
                             <?= $this->formLabel($parentDesignation) ?>
                             <?= $this->formElement($parentDesignation); ?>
@@ -113,10 +90,10 @@ $form->prepare();
                         </div>
                     </div>
                 </div>
-
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();
+
                 ?>
             </div>
         </div>
