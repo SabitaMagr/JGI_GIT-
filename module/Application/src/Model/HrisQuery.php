@@ -100,7 +100,13 @@ class HrisQuery {
 
         $output = [];
         if ($this->includeEmptyRow) {
-            $output[null] = "----";
+            if (gettype($this->includeEmptyRow) == 'array') {
+                foreach ($this->includeEmptyRow as $key => $value) {
+                    $output[$key] = $value;
+                }
+            } else {
+                $output[null] = "----";
+            }
         }
         foreach ($iterator as $item) {
             if ($this->key != null && $this->value != null) {
