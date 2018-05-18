@@ -40,9 +40,6 @@ $submit->setAttribute('id', 'approve');
 $form->setAttribute('action', $this->url('leaveNotification', ['action' => 'view', 'id' => $id]));
 $form->prepare();
 ?>
-<script>
-    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
-</script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveNotification')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
 </div>

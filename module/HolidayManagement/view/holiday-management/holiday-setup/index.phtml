@@ -5,11 +5,6 @@ $this->headScript()->appendFile($this->basePath('js/HolidayManagement/HolidaySet
 
 ?>
 
-<script>
-    document.urlBranchList = '<?= $this->url("webService", ["action" => "branchList"]) ?>';
-    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
-</script>
-
 <?php
 $holidayFormElement->setAttributes(["ng-model" => "holidayId"]);
 $branchFormElement->setAttribute("ng-model", "branchId");

@@ -59,7 +59,6 @@ print $this->form()->openTag($form);
 ?>
 <script>
     document.holidayList =<?= json_encode($holidayObjList) ?>;
-    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
     document.employeeId =<?= json_encode($employeeId) ?>;
 </script>
 

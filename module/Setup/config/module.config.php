@@ -1,5 +1,4 @@
 <?php
-
 namespace Setup;
 
 use Application\Controller\ControllerFactory;
@@ -26,7 +25,6 @@ use Setup\Controller\ServiceEventTypeController;
 use Setup\Controller\ServiceQuestionController;
 use Setup\Controller\ServiceTypeController;
 use Setup\Controller\TrainingController;
-use Setup\Controller\WebServiceController;
 use Zend\Router\Http\Segment;
 
 return [
@@ -146,20 +144,6 @@ return [
                     ],
                     'defaults' => [
                         'controller' => EmpCurrentPostingController::class,
-                        'action' => 'index',
-                    ]
-                ],
-            ],
-            'webService' => [
-                'type' => segment::class,
-                'options' => [
-                    'route' => '/setup/webService[/:action[/:id]]',
-                    'constants' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => WebServiceController::class,
                         'action' => 'index',
                     ]
                 ],
@@ -614,11 +598,6 @@ return [
                         'action' => 'index',
                     ],
                     [
-                        'label' => 'Add',
-                        'route' => 'recommendapprove',
-                        'action' => 'add',
-                    ],
-                    [
                         'label' => 'Edit',
                         'route' => 'recommendapprove',
                         'action' => 'edit',
@@ -955,7 +934,7 @@ return [
                 ]
             ]
         ],
-            'functionalLevels' => [
+        'functionalLevels' => [
             [
                 'label' => 'FunctionalLevels',
                 'route' => 'functionalLevels',
@@ -994,7 +973,6 @@ return [
             ServiceTypeController::class => ControllerFactory::class,
             EmpCurrentPostingController::class => ControllerFactory::class,
             JobHistoryController::class => ControllerFactory::class,
-            WebServiceController::class => ControllerFactory::class,
             RecommendApproveController::class => ControllerFactory::class,
             ServiceEventTypeController::class => ControllerFactory::class,
             AcademicDegreeController::class => ControllerFactory::class,
