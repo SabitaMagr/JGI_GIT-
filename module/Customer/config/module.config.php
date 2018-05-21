@@ -116,34 +116,6 @@ return [
                     ],
                 ],
             ],
-            'contract-absent-details' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/contract/absent/details[/:action[/:id]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => ContractAbsentDetails::class,
-                        'action' => 'index'
-                    ],
-                ],
-            ],
-            'contract-added-details' => [
-                'type' => Segment::class,
-                'options' => [
-                    'route' => '/contract/added/details[/:action[/:id]]',
-                    'constraints' => [
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+',
-                    ],
-                    'defaults' => [
-                        'controller' => ContractEmpAddedDetails::class,
-                        'action' => 'index'
-                    ],
-                ],
-            ],
             'duty-type' => [
                 'type' => Segment::class,
                 'options' => [
