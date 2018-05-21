@@ -1,5 +1,4 @@
 <?php
-
 namespace AttendanceManagement\Controller;
 
 use Application\Controller\HrisController;
@@ -8,6 +7,8 @@ use Application\Helper\Helper;
 use AttendanceManagement\Repository\AttendanceStatusRepository;
 use Exception;
 use ManagerService\Repository\AttendanceApproveRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Form\AttendanceRequestForm;
 use SelfService\Model\AttendanceRequestModel;
 use Zend\Authentication\Storage\StorageInterface;
@@ -24,11 +25,12 @@ class AttendanceStatus extends HrisController {
 
     public function indexAction() {
         $statusSE = $this->getStatusSelectElement(['name' => 'attendanceStatus', 'id' => 'attendanceRequestStatusId', "class" => "form-control", 'label' => 'Status']);
-        return Helper::addFlashMessagesToArray($this, [
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'attendanceStatus' => $statusSE,
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+        return $this->stickFlashMessagesTo([
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'attendanceStatus' => $statusSE,
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 
@@ -73,24 +75,24 @@ class AttendanceStatus extends HrisController {
                 return $this->redirect()->toRoute("attendancestatus");
             }
             return Helper::addFlashMessagesToArray($this, [
-                        'form' => $this->form,
-                        'id' => $id,
-                        'employeeName' => $employeeName,
-                        'approver' => $authApprover,
-                        'employeeId' => $employeeId,
-                        'status' => $status,
-                        'requestedDt' => $detail['REQUESTED_DT'],
+                    'form' => $this->form,
+                    'id' => $id,
+                    'employeeName' => $employeeName,
+                    'approver' => $authApprover,
+                    'employeeId' => $employeeId,
+                    'status' => $status,
+                    'requestedDt' => $detail['REQUESTED_DT'],
             ]);
         } catch (\Exception $e) {
             $this->flashmessenger()->addMessage($e->getMessage());
             return Helper::addFlashMessagesToArray($this, [
-                        'form' => $this->form,
-                        'id' => $id,
-                        'employeeName' => $employeeName,
-                        'approver' => $authApprover,
-                        'employeeId' => $employeeId,
-                        'status' => $status,
-                        'requestedDt' => $detail['REQUESTED_DT'],
+                    'form' => $this->form,
+                    'id' => $id,
+                    'employeeName' => $employeeName,
+                    'approver' => $authApprover,
+                    'employeeId' => $employeeId,
+                    'status' => $status,
+                    'requestedDt' => $detail['REQUESTED_DT'],
             ]);
         }
     }
@@ -100,8 +102,7 @@ class AttendanceStatus extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
             $attendanceStatusRepository = new AttendanceStatusRepository($this->adapter);
-            $result = $attendanceStatusRepository->getAttenReqList($data);
-            $recordList = Helper::extractDbData($result);
+            $recordList = $attendanceStatusRepository->getAttenReqList($data);
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,
@@ -112,4 +113,37 @@ class AttendanceStatus extends HrisController {
         }
     }
 
+    public function bulkAction() {
+        $request = $this->getRequest();
+        try {
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            return new JsonModel(['success' => true, 'data' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+        $model = new AttendanceRequestModel();
+        $model->id = $id;
+        $model->recommendedDate = Helper::getcurrentExpressionDate();
+        $model->recommendedBy = $this->employeeId;
+        $model->approvedRemarks = $remarks;
+        $model->approvedDate = Helper::getcurrentExpressionDate();
+        $model->approvedBy = $this->employeeId;
+        $model->status = $approve ? "AP" : "R";
+        $message = $approve ? "Leave Request Approved" : "Leave Request Rejected";
+        $notificationEvent = $approve ? NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED : NotificationEvents::ATTENDANCE_APPROVE_REJECTED;
+        $attendanceRequestRepository = new AttendanceApproveRepository($this->adapter);
+        $attendanceRequestRepository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+    }
 }

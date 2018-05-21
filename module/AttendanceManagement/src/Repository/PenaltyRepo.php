@@ -1,18 +1,11 @@
 <?php
-
 namespace AttendanceManagement\Repository;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
-use Zend\Db\Adapter\AdapterInterface;
+use Application\Repository\HrisRepository;
 
-class PenaltyRepo {
-
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-    }
+class PenaltyRepo extends HrisRepository {
 
     public function monthWiseReport($data) {
         $companyCondition = "";
@@ -81,9 +74,7 @@ class PenaltyRepo {
                 {$condition}
 EOT;
 
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
+        return $this->rawQuery($sql);
     }
 
     public function penaltyDetail($employeeId, $attendanceDt, $type) {
@@ -176,5 +167,4 @@ EOT;
         $result = $statement->execute();
         return iterator_to_array($result, false);
     }
-
 }

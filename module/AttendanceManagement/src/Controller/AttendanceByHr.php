@@ -67,6 +67,15 @@ class AttendanceByHr extends HrisController {
         ]);
     }
 
+     public function reportAction() {
+        return Helper::addFlashMessagesToArray($this, [
+                    'status' => $this->getStatusSelect(),
+                    'presentStatus' => $this->getPresentStatusSelect(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
     public function addAction() {
         $request = $this->getRequest();
         try {

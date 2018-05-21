@@ -1,5 +1,4 @@
 <?php
-
 namespace LeaveManagement\Controller;
 
 use Application\Controller\HrisController;
@@ -11,6 +10,8 @@ use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveStatusRepository;
 use ManagerService\Repository\LeaveApproveRepository;
+use Notification\Controller\HeadNotification;
+use Notification\Model\NotificationEvents;
 use SelfService\Repository\LeaveRequestRepository;
 use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
@@ -31,11 +32,12 @@ class LeaveStatus extends HrisController {
         $leaveStatusSE = $this->getStatusSelectElement(['name' => 'leaveStatus', 'id' => 'leaveRequestStatusId', 'class' => 'form-control', 'label' => 'Status']);
 
         return $this->stickFlashMessagesTo([
-                    'leaves' => $leaveSE,
-                    'leaveStatus' => $leaveStatusSE,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'leaves' => $leaveSE,
+                'leaveStatus' => $leaveStatusSE,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 
@@ -88,27 +90,27 @@ class LeaveStatus extends HrisController {
         $leaveApply->exchangeArrayFromDB($detail);
         $this->form->bind($leaveApply);
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'employeeId' => $requestedEmployeeID,
-                    'employeeName' => $employeeName,
-                    'requestedDt' => $detail['REQUESTED_DT'],
-                    'availableDays' => $preBalance,
-                    'totalDays' => $detail['TOTAL_DAYS'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'approvedDT' => $detail['APPROVED_DT'],
-                    'remarkDtl' => $detail['REMARKS'],
-                    'status' => $status,
-                    'allowHalfDay' => $detail['ALLOW_HALFDAY'],
-                    'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
-                    'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove' => $recommApprove,
-                    'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
-                    'subRemarks' => $detail['SUB_REMARKS'],
-                    'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
-                    'gp' => $detail['GRACE_PERIOD']
+                'form' => $this->form,
+                'id' => $id,
+                'employeeId' => $requestedEmployeeID,
+                'employeeName' => $employeeName,
+                'requestedDt' => $detail['REQUESTED_DT'],
+                'availableDays' => $preBalance,
+                'totalDays' => $detail['TOTAL_DAYS'],
+                'recommender' => $authRecommender,
+                'approver' => $authApprover,
+                'approvedDT' => $detail['APPROVED_DT'],
+                'remarkDtl' => $detail['REMARKS'],
+                'status' => $status,
+                'allowHalfDay' => $detail['ALLOW_HALFDAY'],
+                'leave' => $leaveRequestRepository->getLeaveList($detail['EMPLOYEE_ID']),
+                'customRenderer' => Helper::renderCustomView(),
+                'recommApprove' => $recommApprove,
+                'subEmployeeId' => $detail['SUB_EMPLOYEE_ID'],
+                'subRemarks' => $detail['SUB_REMARKS'],
+                'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
+                'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
+                'gp' => $detail['GRACE_PERIOD']
         ]);
     }
 
@@ -116,9 +118,7 @@ class LeaveStatus extends HrisController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $result = $this->repository->getLeaveRequestList($data);
-
-            $recordList = Helper::extractDbData($result);
+            $recordList = $this->repository->getLeaveRequestList($data);
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList,
@@ -129,4 +129,37 @@ class LeaveStatus extends HrisController {
         }
     }
 
+    public function bulkAction() {
+        $request = $this->getRequest();
+        try {
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            return new JsonModel(['success' => true, 'data' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+        $model = new LeaveApply();
+        $model->id = $id;
+        $model->recommendedDate = Helper::getcurrentExpressionDate();
+        $model->recommendedBy = $this->employeeId;
+        $model->approvedRemarks = $remarks;
+        $model->approvedDate = Helper::getcurrentExpressionDate();
+        $model->approvedBy = $this->employeeId;
+        $model->status = $approve ? "AP" : "R";
+        $message = $approve ? "Leave Request Approved" : "Leave Request Rejected";
+        $notificationEvent = $approve ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED;
+        $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
+        $leaveApproveRepository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+    }
 }

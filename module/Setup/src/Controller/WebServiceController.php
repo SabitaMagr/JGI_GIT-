@@ -7,7 +7,6 @@ use HolidayManagement\Repository\HolidayRepository;
 use LeaveManagement\Model\LeaveAssign;
 use LeaveManagement\Repository\LeaveAssignRepository;
 use SelfService\Repository\AttendanceRepository;
-use SelfService\Repository\LeaveRequestRepository;
 use Setup\Helper\EntityHelper;
 use Setup\Repository\EmployeeRepository;
 use Setup\Repository\RecommendApproveRepository;
@@ -58,57 +57,6 @@ class WebServiceController extends AbstractActionController {
                     ];
                     break;
 
-                case "pullEmployeeLeave":
-                    $leaveAssign = new LeaveAssignRepository($this->adapter);
-                    $ids = $postedData->id;
-                    $temp = $leaveAssign->filter($ids['branchId'], $ids['departmentId'], $ids['genderId'], $ids['designationId'], $ids['serviceTypeId'], $ids['employeeId'], $ids['companyId'], $ids['positionId'], $ids['employeeTypeId']);
-
-                    $tempArray = [];
-                    foreach ($temp as $item) {
-                        $tmp = $leaveAssign->filterByLeaveEmployeeId($ids['leaveId'], $item['EMPLOYEE_ID']);
-                        if ($tmp != null) {
-                            $item["BALANCE"] = (float) $tmp->BALANCE;
-                            $item["TOTAL_DAYS"] = (float) $tmp->TOTAL_DAYS;
-                            $item["LEAVE_ID"] = $tmp->LEAVE_ID;
-                        } else {
-                            $item["BALANCE"] = "";
-                            $item["TOTAL_DAYS"] = "";
-                            $item["LEAVE_ID"] = "";
-                        }
-                        array_push($tempArray, $item);
-                    }
-                    $responseData = [
-                        "success" => true,
-                        "data" => $tempArray
-                    ];
-                    break;
-
-                case "pushEmployeeLeave":
-                    $data = $postedData->data;
-                    $leaveAssign = new LeaveAssign();
-                    $leaveAssign->totalDays = $data['balance'];
-                    $leaveAssign->balance = $data['balance'];
-                    $leaveAssign->employeeId = $data['employeeId'];
-                    $leaveAssign->leaveId = $data['leave'];
-
-                    $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
-                    if (empty($data['leaveId'])) {
-                        $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
-                        $leaveAssign->createdBy = $this->loggedInEmployeeId;
-                        $leaveAssignRepo->add($leaveAssign);
-                    } else {
-                        $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
-                        $leaveAssign->modifiedBy = $this->loggedInEmployeeId;
-                        unset($leaveAssign->employeeId);
-                        unset($leaveAssign->leaveId);
-                        $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']]);
-                    }
-
-                    $responseData = [
-                        "success" => true,
-                        "data" => $postedData
-                    ];
-                    break;
                 case "pullHolidayList":
                     $holidayRepository = new HolidayRepository($this->adapter);
                     $inputData = $postedData->id;

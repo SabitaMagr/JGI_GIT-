@@ -341,15 +341,25 @@ class AllReportController extends HrisController {
     }
 
     public function branchWiseDailyAction() {
+//         $monthId = (int) $this->params()->fromRoute('id1');
+//        $departmentId = (int) $this->params()->fromRoute('id2');
+//        $monthList = $this->repository->getMonthList();
+//        return $this->stickFlashMessagesTo([
+//                    'comBraDepList' => [
+//                        'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
+//                    ],
+//                    'monthList' => $monthList,
+//                    'monthId' => $monthId,
+//                    'departmentId' => $departmentId
+//        ]);
+        
         $monthId = (int) $this->params()->fromRoute('id1');
         $branchId = (int) $this->params()->fromRoute('id2');
-        $monthList = $this->repository->getMonthList();
 
         return Helper::addFlashMessagesToArray($this, [
                     'comBraList' => [
                         'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
                     ],
-                    'monthList' => $monthList,
                     'monthId' => $monthId,
                     'branchId' => $branchId
         ]);

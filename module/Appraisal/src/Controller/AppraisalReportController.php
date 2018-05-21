@@ -1,5 +1,4 @@
 <?php
-
 namespace Appraisal\Controller;
 
 use Application\Controller\HrisController;
@@ -51,10 +50,10 @@ class AppraisalReportController extends HrisController {
         $appraisalStageSE = $this->getSelectElement(['name' => 'Appraisal Stage', 'id' => 'appraisalStageId', 'class' => 'form-control', 'label' => 'Appraisal Stage'], $appraisalStageList);
 
         return $this->stickFlashMessagesTo([
-                    'appraisals' => $appraisalSE,
-                    'appraisalStages' => $appraisalStageSE,
-                    'userId' => $this->employeeId,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                'appraisals' => $appraisalSE,
+                'appraisalStages' => $appraisalStageSE,
+                'userId' => $this->employeeId,
+                'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -77,10 +76,10 @@ class AppraisalReportController extends HrisController {
         $appraisalStageSE = $this->getSelectElement(['name' => 'Appraisal Stage', 'id' => 'appraisalStageId', 'class' => 'form-control', 'label' => 'Appraisal Stage'], $appraisalStageList);
 
         return $this->stickFlashMessagesTo([
-                    'appraisals' => $appraisalSE,
-                    'appraisalStages' => $appraisalStageSE,
-                    'userId' => $this->employeeId,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                'appraisals' => $appraisalSE,
+                'appraisalStages' => $appraisalStageSE,
+                'userId' => $this->employeeId,
+                'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -192,8 +191,6 @@ class AppraisalReportController extends HrisController {
             'reviewerQuestionTemplate' => $reviewerQuestionTemplate,
             'questionForCurStage' => $questionForCurStage,
             'performanceAppraisalObj' => CustomFormElement::formElement(),
-            'customRenderer' => Helper::renderCustomView(),
-            'customRendererForCheckbox' => Helper::renderCustomViewForCheckbox(),
             'appraisalId' => $appraisalId,
             'employeeId' => $employeeId,
             'appraiseeAvailableAnswer' => $appraiseeAvailableAnswer,
@@ -232,7 +229,23 @@ class AppraisalReportController extends HrisController {
         $returnData['appCompetenciesRatingDtlNum'] = $appCompetenciesRatingDtlNum;
         $returnData['defaultRatingDtl'] = $defaultRatingDtl;
         $returnData['listUrl'] = $this->url()->fromRoute("appraisalReport", $action);
+        $returnData['kpiList'] = iterator_to_array($appraisalKPI->fetchByAppEmpId($employeeId, $appraisalId), false);
+        $returnData['calculatedAnnualRating'] = $this->calculateAnnualRating($returnData['kpiList']);
+        $returnData['competenciesList'] = iterator_to_array($appraisalCompetencies->fetchByAppEmpId($employeeId, $appraisalId), false);
         return Helper::addFlashMessagesToArray($this, $returnData);
+    }
+
+    private function calculateAnnualRating($list) {
+        $total = 0;
+        if (count($list) > 0) {
+            foreach ($list as $item) {
+                $weight = (float) $item['WEIGHT'];
+                $appraiserRating = $item['APPRAISER_RATING'];
+                $total += $appraiserRating * ($weight / 100);
+            }
+
+            return round($total, 2);
+        }
     }
 
     public function reportAction() {
@@ -335,5 +348,4 @@ class AppraisalReportController extends HrisController {
         $returnData['defaultRatingDtl'] = $defaultRatingDtl;
         return Helper::addFlashMessagesToArray($this, $returnData);
     }
-
 }

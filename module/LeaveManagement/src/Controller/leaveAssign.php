@@ -1,9 +1,9 @@
 <?php
-
 namespace LeaveManagement\Controller;
 
 use Application\Helper\EntityHelper as AppEntityHelper;
 use Application\Helper\Helper;
+use Exception;
 use LeaveManagement\Form\ExcelImportForm;
 use LeaveManagement\Form\LeaveAssignForm;
 use LeaveManagement\Model\LeaveAssign as LeaveAssignModel;
@@ -18,6 +18,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Form\Element\Select;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class leaveAssign extends AbstractActionController {
@@ -62,10 +63,10 @@ class leaveAssign extends AbstractActionController {
         $genderFormElement->setLabel("Gender");
 
         return Helper::addFlashMessagesToArray($this, [
-                    'leaveFormElement' => $leaveFormElement,
-                    'genderFormElement' => $genderFormElement,
-                    'form' => $this->excelImportForm,
-                    'searchValues' => AppEntityHelper::getSearchData($this->adapter)
+                'leaveFormElement' => $leaveFormElement,
+                'genderFormElement' => $genderFormElement,
+                'form' => $this->excelImportForm,
+                'searchValues' => AppEntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -77,7 +78,7 @@ class leaveAssign extends AbstractActionController {
 
         if ($request->isPost()) {
             $post = array_merge_recursive(
-                    $request->getPost()->toArray(), $request->getFiles()->toArray()
+                $request->getPost()->toArray(), $request->getFiles()->toArray()
             );
             $this->excelImportForm->setData($post);
 
@@ -148,4 +149,58 @@ class leaveAssign extends AbstractActionController {
         }
     }
 
+    public function pullEmployeeLeaveAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $leaveAssign = new LeaveAssignRepository($this->adapter);
+            $temp = $leaveAssign->filter($data['branchId'], $data['departmentId'], $data['genderId'], $data['designationId'], $data['serviceTypeId'], $data['employeeId'], $data['companyId'], $data['positionId'], $data['employeeTypeId'], $data['leaveId']);
+
+            $list = [];
+            foreach ($temp as $item) {
+                $item["BALANCE"] = (float) $item["BALANCE"];
+                $item["TOTAL_DAYS"] = (float) $item["TOTAL_DAYS"];
+                $item["PREVIOUS_YEAR_BAL"] = (float) $item["PREVIOUS_YEAR_BAL"];
+                array_push($list, $item);
+            }
+            return new JsonModel([
+                "success" => "true",
+                "data" => $list,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function pushEmployeeLeaveAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $leaveAssign = new LeaveAssignModel();
+            $leaveAssign->totalDays = $data['balance'];
+            $leaveAssign->balance = $data['balance'];
+            $leaveAssign->employeeId = $data['employeeId'];
+            $leaveAssign->leaveId = $data['leave'];
+
+            $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
+            if (empty($data['leaveId'])) {
+                $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
+                $leaveAssign->createdBy = $this->employeeId;
+                $leaveAssignRepo->add($leaveAssign);
+            } else {
+                $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
+                $leaveAssign->modifiedBy = $this->employeeId;
+                unset($leaveAssign->employeeId);
+                unset($leaveAssign->leaveId);
+                $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']]);
+            }
+
+            return new JsonModel([
+                "success" => "true",
+                "data" => null,
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
 }

@@ -341,8 +341,8 @@ class EmployeeRepository implements RepositoryInterface {
         $this->gateway->insert($model->getArrayCopyForDB());
     }
 
-    public function delete($id) {
-        $this->gateway->update(['STATUS' => 'D'], ['EMPLOYEE_ID' => $id]);
+    public function delete($model) {
+        $this->gateway->update(['STATUS' => 'D','DELETED_DATE'=>$model->deletedDate,'DELETED_BY'=>$model->deletedBy], ['EMPLOYEE_ID' => $model->employeeId]);
     }
 
     public function edit(Model $model, $id) {

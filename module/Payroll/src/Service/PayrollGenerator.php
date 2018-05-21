@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Service;
 
 use Application\Helper\Helper;
@@ -16,6 +15,7 @@ class PayrollGenerator {
     private $positionFlatValueDetRepo;
     private $positionMonthlyValueRepo;
     private $ruleRepo;
+    private $sspvmRepo;
     private $employeeId;
     private $monthId = 0;
     private $sheetNo;
@@ -58,6 +58,7 @@ class PayrollGenerator {
         $this->positionFlatValueDetRepo = new PositionFlatValueRepo($adapter);
         $this->positionMonthlyValueRepo = new PositionMonthlyValueRepo($adapter);
         $this->ruleRepo = new RulesRepository($adapter);
+        $this->sspvmRepo = new \Payroll\Repository\SSPayValueModifiedRepo($adapter);
         $monthlyValueList = $this->getMonthlyValues();
         $flatValuesList = $this->getFlatValues();
 
@@ -94,26 +95,30 @@ class PayrollGenerator {
         foreach ($payList as $ruleDetail) {
             $ruleId = $ruleDetail[Rules::PAY_ID];
             $formula = $ruleDetail[Rules::FORMULA];
-            $refRules = $this->ruleRepo->fetchReferencingRules($ruleId);
+            $q = ['MONTH_ID' => $this->monthId, 'PAY_ID' => $ruleId, 'EMPLOYEE_ID' => $this->employeeId];
+            $ruleValue = $this->sspvmRepo->fetch($q);
+            if ($ruleValue == null) {
+                $refRules = $this->ruleRepo->fetchReferencingRules($ruleId);
 
-            foreach ($this->formattedMonthlyvalueList as $monthlyKey => $monthlyValue) {
-                $formula = $this->convertMonthlyToValue($formula, $monthlyKey, $monthlyValue);
+                foreach ($this->formattedMonthlyvalueList as $monthlyKey => $monthlyValue) {
+                    $formula = $this->convertMonthlyToValue($formula, $monthlyKey, $monthlyValue);
+                }
+
+                foreach ($this->formattedFlatValueList as $flatKey => $flatValue) {
+                    $formula = $this->convertFlatToValue($formula, $flatKey, $flatValue);
+                }
+
+                foreach ($this->formattedVariableList as $key => $variable) {
+                    $formula = $this->convertVariableToValue($formula, $key, $variable);
+                }
+
+                foreach ($this->formattedSystemRuleList as $key => $systemRule) {
+                    $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule, $ruleId);
+                }
+
+                $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
+                $ruleValue = eval("return {$processedformula} ;");
             }
-
-            foreach ($this->formattedFlatValueList as $flatKey => $flatValue) {
-                $formula = $this->convertFlatToValue($formula, $flatKey, $flatValue);
-            }
-
-            foreach ($this->formattedVariableList as $key => $variable) {
-                $formula = $this->convertVariableToValue($formula, $key, $variable);
-            }
-
-            foreach ($this->formattedSystemRuleList as $key => $systemRule) {
-                $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule, $ruleId);
-            }
-
-            $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
-            $ruleValue = eval("return {$processedformula} ;");
             $rule = ["ruleValue" => $ruleValue, "rule" => $ruleDetail];
             array_push($this->ruleDetailList, $rule);
             $ruleValueMap[$ruleId] = $ruleValue;
@@ -205,5 +210,4 @@ class PayrollGenerator {
         }
         return $payValue;
     }
-
 }

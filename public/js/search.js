@@ -172,7 +172,7 @@
             getSelectedEmployee: function () {
                 var selectedValues = $('#employeeId').val();
                 var employeeList = this.getEmployee();
-                if (selectedValues === null) {
+                if (selectedValues === null || selectedValues === "-1") {
                     return employeeList;
                 }
                 return employeeList.filter(function (item) {

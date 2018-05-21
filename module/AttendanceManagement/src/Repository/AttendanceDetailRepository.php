@@ -749,7 +749,40 @@ class AttendanceDetailRepository implements RepositoryInterface {
             $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
         }
         $sql = "
-               SELECT * FROM (SELECT 
+               SELECT 
+DISTINCT
+			   EMPLOYEE_ID,ATTENDANCE_DT ,
+               
+                IN_DEVICE_NAME,
+                  OUT_DEVICE_NAME,
+                  ID,
+                  ATTENDANCE_DT_N,
+                  IN_TIME,
+                  OUT_TIME,
+                  IN_REMARKS,
+                  OUT_REMARKS,
+                  TOTAL_HOUR,
+                  LEAVE_ID,
+                  HOLIDAY_ID,
+                  TRAINING_ID,
+                  TRAVEL_ID,
+                  SHIFT_ID,
+                  DAYOFF_FLAG,
+                  LATE_STATUS,
+                  COMPANY_NAME,
+                 DEPARTMENT_NAME,
+                  EMPLOYEE_NAME,
+                  HOLIDAY_ENAME,
+                  LEAVE_ENAME,
+                  TRAINING_NAME,
+                  TRAVEL_DESTINATION,
+                  STATUS,
+               
+                SHIFT_ENAME,
+                  START_TIME,
+                  END_TIME               
+
+FROM (SELECT 
                   ROWNUM                                           AS R,
                   ADMSIN.DEVICE_LOCATION AS IN_DEVICE_NAME,
                   ADMSOUT.DEVICE_LOCATION AS OUT_DEVICE_NAME,

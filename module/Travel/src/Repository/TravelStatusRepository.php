@@ -1,5 +1,4 @@
 <?php
-
 namespace Travel\Repository;
 
 use Application\Helper\EntityHelper;
@@ -12,7 +11,7 @@ class TravelStatusRepository extends HrisRepository {
         parent::__construct($adapter, $tableName);
     }
 
-    public function getFilteredRecord($search) {
+    public function getFilteredRecord($search):array {
         $condition = "";
         $condition = EntityHelper::getSearchConditon($search['companyId'], $search['branchId'], $search['departmentId'], $search['positionId'], $search['designationId'], $search['serviceTypeId'], $search['serviceEventTypeId'], $search['employeeTypeId'], $search['employeeId']);
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
@@ -39,38 +38,29 @@ class TravelStatusRepository extends HrisRepository {
             }
         }
 
-        $sql = "SELECT TR.TRAVEL_ID                   AS TRAVEL_ID,
-                  TR.TRAVEL_CODE                      AS TRAVEL_CODE,
-                  TR.EMPLOYEE_ID                      AS EMPLOYEE_ID,
-                  E.FULL_NAME                         AS EMPLOYEE_NAME,
+        $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,
+                  TR.TRAVEL_CODE                           AS TRAVEL_CODE,
+                  TR.EMPLOYEE_ID                           AS EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE                          AS EMPLOYEE_CODE,
+                  E.FULL_NAME                              AS EMPLOYEE_NAME,
                   TO_CHAR(TR.REQUESTED_DATE,'DD-MON-YYYY') AS REQUESTED_DATE_AD,
                   BS_DATE(TR.REQUESTED_DATE)               AS REQUESTED_DATE_BS,
-                  TO_CHAR(TR.FROM_DATE,'DD-MON-YYYY') AS FROM_DATE_AD,
-                  BS_DATE(TR.FROM_DATE)               AS FROM_DATE_BS,
-                  TO_CHAR(TR.TO_DATE,'DD-MON-YYYY')   AS TO_DATE_AD,
-                  BS_DATE(TR.TO_DATE)                 AS TO_DATE_BS,
-                  TR.DESTINATION                      AS DESTINATION,
-                  TR.PURPOSE                          AS PURPOSE,
-                  TR.REQUESTED_TYPE                   AS REQUESTED_TYPE,
+                  TO_CHAR(TR.FROM_DATE,'DD-MON-YYYY')      AS FROM_DATE_AD,
+                  BS_DATE(TR.FROM_DATE)                    AS FROM_DATE_BS,
+                  TO_CHAR(TR.TO_DATE,'DD-MON-YYYY')        AS TO_DATE_AD,
+                  BS_DATE(TR.TO_DATE)                      AS TO_DATE_BS,
+                  TR.DESTINATION                           AS DESTINATION,
+                  TR.PURPOSE                               AS PURPOSE,
+                  TR.REQUESTED_TYPE                        AS REQUESTED_TYPE,
                   (
                   CASE
                     WHEN TR.REQUESTED_TYPE = 'ad'
                     THEN 'Advance'
                     ELSE 'Expense'
-                  END)                       AS REQUESTED_TYPE_DETAIL,
-                  NVL(TR.REQUESTED_AMOUNT,0) AS REQUESTED_AMOUNT,
-                  TR.TRANSPORT_TYPE          AS TRANSPORT_TYPE,
-                  (
-                  CASE
-                    WHEN TR.TRANSPORT_TYPE = 'AP'
-                    THEN 'Aeroplane'
-                    WHEN TR.TRANSPORT_TYPE = 'OV'
-                    THEN 'Office Vehicles'
-                    WHEN TR.TRANSPORT_TYPE = 'TI'
-                    THEN 'Taxi'
-                    WHEN TR.TRANSPORT_TYPE = 'BS'
-                    THEN 'Bus'
-                  END)                                                            AS TRANSPORT_TYPE_DETAIL,
+                  END)                                                            AS REQUESTED_TYPE_DETAIL,
+                  NVL(TR.REQUESTED_AMOUNT,0)                                      AS REQUESTED_AMOUNT,
+                  TR.TRANSPORT_TYPE                                               AS TRANSPORT_TYPE,
+                  INITCAP(HRIS_GET_FULL_FORM(TR.TRANSPORT_TYPE,'TRANSPORT_TYPE')) AS TRANSPORT_TYPE_DETAIL,
                   TO_CHAR(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_AD,
                   BS_DATE(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_BS,
                   TO_CHAR(TR.RETURNED_DATE)                                       AS RETURNED_DATE_AD,
@@ -105,9 +95,9 @@ class TravelStatusRepository extends HrisRepository {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
-                WHERE 1=1
-                {$condition}";
-        return EntityHelper::rawQueryResult($this->adapter, $sql);
+                WHERE 1          =1 {$condition}";
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
 
     public function notSettled(): array {
@@ -193,5 +183,4 @@ class TravelStatusRepository extends HrisRepository {
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID) ORDER BY TR.REQUESTED_DATE DESC";
         return $this->rawQuery($sql);
     }
-
 }

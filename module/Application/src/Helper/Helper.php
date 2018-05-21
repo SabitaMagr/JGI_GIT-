@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Helper;
 
 use Application\Model\Model;
@@ -222,26 +221,13 @@ class Helper {
                 $disabled = 'disabled';
             }
             foreach ($elems as $key => $value) {
-                $temp = '';
-                if ($object->getValue() == "") {
-                    if ($counter == $object->getCheckedValue()) {
-                        $temp = 'checked=checked';
-                    }
-                } else {
-                    if ($object->getValue() == $key) {
-                        $temp = 'checked=checked';
-                    }
-                }
+                $temp = (($object->getValue() == "") && ($counter == $object->getCheckedValue())) || ($object->getValue() == $key) ? 'checked=checked' : '';
 
-                echo "<div class = 'md-radio'>";
-                echo "<input $temp $disabled type = 'radio' value = '$key' name = '$name' id = '$name+$value' class = 'md-radiobtn radioButton'>";
-
-                echo "<label for = '$name+$value'>
-                <span></span>
-                <span class = 'check'></span>
-                <span class = 'box'></span> $value
-                </label>";
-                echo "</div>";
+                echo "<div class = 'md-radio'> <input {$temp} {$disabled} type = 'radio' value = '{$key}' name = '{$name}' id = '{$name}+{$value}' class = 'md-radiobtn radioButton'><label for = '$name+$value'>
+                            <span></span>
+                            <span class = 'check'></span>
+                            <span class = 'box'></span> $value
+                        </label> </div>";
                 $counter++;
             }
         };
@@ -287,12 +273,11 @@ class Helper {
         foreach ($resultSet as $item) {
             $model = new $class();
             $model->exchangeArrayFromDB(
-                    $item->getArrayCopy());
+                $item->getArrayCopy());
             array_push($tempArray, $model);
         }
         return $tempArray;
     }
-
     /*
      * This function return the raw result in array or object array form
      */
@@ -347,5 +332,4 @@ class Helper {
     public static function encryptPassword($password) {
         return new Expression("FN_ENCRYPT_PASSWORD('$password')");
     }
-
 }

@@ -9,8 +9,7 @@ $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/angular.min.js'))
         ->appendFile($this->basePath('js/setup/employee/contact.js'))
-        ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('assets/global/plugins/bootstrap-confirmation/bootstrap-confirmation.min.js'));
+        ->appendFile($this->basePath('js/search.js'));
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';

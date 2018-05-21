@@ -1,14 +1,20 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
-
-
         var $tableContainer = $("#attendanceRequestStatusTable");
+        var $status = $('#attendanceRequestStatusId');
         var $search = $("#search");
         var $excelExport = $("#excelExport");
         var $pdfExport = $("#pdfExport");
+        var $bulkActionDiv = $('#bulkActionDiv');
+        var $bulkBtns = $(".btnApproveReject");
+
+        $.each(document.searchManager.getIds(), function (key, value) {
+            $('#' + value).select2();
+        });
+        $status.select2();
+
         var columns = [
             {field: "FULL_NAME", title: "Employee", template: "<span>#: (FULL_NAME == null) ? '-' : FULL_NAME #</span>"},
             {title: "Requested Date",
@@ -36,8 +42,8 @@
                         <i class="fa fa-search-plus"></i>
                     </a>
                 </span>
-`}
-        ];
+`}];
+        columns = app.prependPrefColumns(columns);
         var map = {
             'FULL_NAME': 'Name',
             'REQUESTED_DT_AD': 'Req.Date(AD)',
@@ -54,13 +60,21 @@
             'APPROVED_REMARKS': 'Approved Remarks',
 
         };
-        app.initializeKendoGrid($tableContainer, columns);
+        map = app.prependPrefExportMap(map);
+        var pk = 'ID';
+        var grid = app.initializeKendoGrid($tableContainer, columns, null, {id: pk, atLast: false, fn: function (selected) {
+                if (selected) {
+                    $bulkActionDiv.show();
+                } else {
+                    $bulkActionDiv.hide();
+                }
+            }});
         app.searchTable('attendanceRequestStatusTable', ['FULL_NAME', 'REQUESTED_DT_AD', 'ATTENDANCE_DT_AD', 'REQUESTED_DT_BS', 'ATTENDANCE_DT_BS', 'IN_TIME', 'OUT_TIME', 'YOUR_ROLE', 'STATUS']);
 
 
         $search.on("click", function () {
             var q = document.searchManager.getSearchValues();
-            q['attendanceRequestStatusId'] = $('#attendanceRequestStatusId').val();
+            q['attendanceRequestStatusId'] = $status.val();
             q['fromDate'] = $('#fromDate').val();
             q['toDate'] = $('#toDate').val();
             q['approverId'] = $('#approverId').val();
@@ -77,7 +91,20 @@
         $pdfExport.on('click', function () {
             app.exportToPDF($tableContainer, map, "AttendanceRequestList.pdf");
         });
+        $bulkBtns.bind("click", function () {
+            var list = grid.getSelected();
+            var action = $(this).attr('action');
 
+            var selectedValues = [];
+            for (var i in list) {
+                selectedValues.push({id: list[i][pk], action: action});
+            }
+            app.bulkServerRequest(document.bulkLink, selectedValues, function () {
+                $search.trigger('click');
+            }, function (data, error) {
+
+            });
+        });
 
     });
 })(window.jQuery, window.app);

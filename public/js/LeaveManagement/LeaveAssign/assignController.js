@@ -5,6 +5,7 @@ angular.module('hris', ['ui.bootstrap'])
             $scope.leaveList = [];
             $scope.all = false;
             $scope.daysForAll = 0;
+            $scope.prevBalForAll = 0;
             $scope.daysForAllFlag = false;
 
             $scope.checkAll = function (item) {
@@ -22,6 +23,13 @@ angular.module('hris', ['ui.bootstrap'])
                     }
                 }
             };
+            $scope.prevBalForAllChange = function (days) {
+                for (var i = 0; i < $scope.leaveList.length; i++) {
+                    if ($scope.leaveList[i].checked) {
+                        $scope.leaveList[i].PREVIOUS_YEAR_BAL = days;
+                    }
+                }
+            };
 
             $scope.checkUnit = function (item) {
                 for (var i = 0; i < $scope.leaveList.length; i++) {
@@ -33,27 +41,22 @@ angular.module('hris', ['ui.bootstrap'])
                 }
             };
             $scope.assign = function () {
-                App.blockUI({target: "#hris-page-content"});
                 var promises = [];
                 for (var index in $scope.leaveList) {
                     if ($scope.leaveList[index].checked) {
-                        promises.push(window.app.pullDataById(document.url, {
-                            action: 'pushEmployeeLeave',
-                            data: {
-                                leaveId: $scope.leaveList[index].LEAVE_ID,
-                                employeeId: $scope.leaveList[index].EMPLOYEE_ID,
-                                balance: $scope.leaveList[index].TOTAL_DAYS,
-                                leave: leaveId
-                            }
+                        promises.push(window.app.pullDataById(document.pushEmployeeLeaveLink, {
+                            leaveId: $scope.leaveList[index].LEAVE_ID,
+                            employeeId: $scope.leaveList[index].EMPLOYEE_ID,
+                            leave: leaveId,
+                            balance: $scope.leaveList[index].TOTAL_DAYS,
+                            previousYearBal: $scope.leaveList[index].PREVIOUS_YEAR_BAL,
                         }));
                     }
                 }
                 Promise.all(promises).then(function (success) {
-                    console.log(success);
                     $scope.$apply(function () {
                         $scope.view();
                     });
-                    App.unblockUI("#hris-page-content");
                     window.toastr.success("Leave assigned successfully", "Notifications");
                 });
             };
@@ -65,7 +68,6 @@ angular.module('hris', ['ui.bootstrap'])
                 leaveId = angular.element(document.getElementById('leaveId')).val();
                 var leaveList = document.querySelector('#leaveId');
                 $scope.leaveName = leaveList.options[leaveList.selectedIndex].text;
-                console.log($scope.leaveName);
                 var companyId = angular.element(document.getElementById('companyId')).val();
                 var positionId = angular.element(document.getElementById('positionId')).val();
                 var branchId = angular.element(document.getElementById('branchId')).val();
@@ -75,24 +77,18 @@ angular.module('hris', ['ui.bootstrap'])
                 var serviceTypeId = angular.element(document.getElementById('serviceTypeId')).val();
                 var employeeId = angular.element(document.getElementById('employeeId')).val();
                 var employeeTypeId = angular.element(document.getElementById('employeeTypeId')).val();
-                console.log(serviceTypeId);
-                App.blockUI({target: "#hris-page-content"});
-                window.app.pullDataById(document.url, {
-                    action: 'pullEmployeeLeave',
-                    id: {
-                        leaveId: leaveId,
-                        branchId: branchId,
-                        departmentId: departmentId,
-                        genderId: genderId,
-                        designationId: designationId,
-                        serviceTypeId: serviceTypeId,
-                        employeeId: employeeId,
-                        companyId: companyId,
-                        positionId: positionId,
-                        employeeTypeId: employeeTypeId
-                    }
+                window.app.serverRequest(document.pullEmployeeLeaveLink, {
+                    leaveId: leaveId,
+                    branchId: branchId,
+                    departmentId: departmentId,
+                    genderId: genderId,
+                    designationId: designationId,
+                    serviceTypeId: serviceTypeId,
+                    employeeId: employeeId,
+                    companyId: companyId,
+                    positionId: positionId,
+                    employeeTypeId: employeeTypeId
                 }).then(function (success) {
-                    App.unblockUI("#hris-page-content");
                     $scope.$apply(function () {
                         $scope.leaveList = success.data;
                         for (var i = 0; i < $scope.leaveList.length; i++) {
@@ -101,9 +97,7 @@ angular.module('hris', ['ui.bootstrap'])
                     });
 
                 }, function (failure) {
-                    App.unblockUI("#hris-page-content");
-                    console.log(failure);
-
+                    throw failure;
                 });
             };
             var employeeIdFromParam = window.location.href.substr(window.location.href.lastIndexOf('/') + 1);
@@ -144,11 +138,7 @@ angular.module('hris', ['ui.bootstrap'])
                         addRemoveLinks: true
                     });
                     document.myDropzone.on("success", function (file, success) {
-                        console.log("File Upload Response", success);
                         modalInstance.close({test: "test"});
-//                        $scope.$apply(function () {
-//
-//                        });
                     });
                 });
                 modalInstance.result.then(function (response) {

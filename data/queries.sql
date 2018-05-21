@@ -234,3 +234,110 @@ BEGIN
   END LOOP;
 END;
 /
+
+SELECT 'UPDATE HRIS_ATTENDANCE SET EMPLOYEE_ID= '||EMPLOYEE_ID||' WHERE THUMB_ID = '||ID_THUMB_ID||';' FROM HRIS_EMPLOYEES WHERE ID_THUMB_ID IN (3189,3190,3188,3088,3089); 
+
+SELECT 'BEGIN HRIS_REATTENDANCE(''16-JUL-17'','||EMPLOYEE_ID||'); END;' FROM HRIS_EMPLOYEES WHERE ID_THUMB_ID IN (3189,3190,3188,3088,3089); 
+
+-- ON MISSED LEAVE REQUEST NOTIFICATION
+BEGIN
+  FOR lr IN
+  (SELECT LR.*
+  FROM hris_employee_leave_request lr
+  LEFT JOIN hris_notification n
+  ON ( n.route LIKE ( '%'
+    || lr.id
+    || '%' )
+  AND n.route LIKE ( '%leaveapprove%' ) )
+  WHERE lr.status   = 'RQ'
+  AND n.MESSAGE_ID IS NULL
+  AND REQUESTED_DT  > TRUNC(SYSDATE-10)
+  )
+  LOOP
+    INSERT
+    INTO HRIS_NOTIFICATION
+      (
+        MESSAGE_ID,
+        MESSAGE_DATETIME,
+        MESSAGE_TITLE,
+        MESSAGE_DESC,
+        MESSAGE_FROM,
+        MESSAGE_TO,
+        STATUS,
+        EXPIRY_TIME,
+        ROUTE
+      )
+      VALUES
+      (
+        (SELECT MAX(MESSAGE_ID)+1 FROM HRIS_NOTIFICATION
+        )
+        ,
+        sysdate,
+        'Leave Request',
+        'Leave Request of '
+        ||
+        (SELECT FULL_NAME FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID= lr.EMPLOYEE_ID
+        )
+        ||' from '
+        ||lr.START_DATE
+        ||' to '
+        ||lr.end_date,
+        lr.EMPLOYEE_ID,
+        (SELECT RECOMMEND_BY
+        FROM HRIS_RECOMMENDER_APPROVER
+        WHERE EMPLOYEE_ID =lr.EMPLOYEE_ID
+        ),
+        'U',
+        TRUNC(sysdate+14),
+        '{"route":"leaveapprove","action":"view","id":"'
+        ||lr.id
+        ||'","role":2}'
+      );
+  END LOOP;
+END;
+/
+
+-- JGI leave transfer query 
+SELECT
+    elr.*
+FROM
+    hris_employee_leave_request elr
+    LEFT JOIN hris_employee_leave_assign ela ON (
+            elr.employee_id = ela.employee_id
+        AND
+            elr.leave_id = ela.leave_id
+    )
+WHERE
+    ela.employee_id IS NULL;
+--   
+BEGIN
+  FOR elr IN
+  (SELECT elr.*
+  FROM hris_employee_leave_request elr
+  LEFT JOIN hris_employee_leave_assign ela
+  ON ( elr.employee_id   = ela.employee_id
+  AND elr.leave_id       = ela.leave_id )
+  WHERE ela.employee_id IS NULL
+  )
+  LOOP
+    IF(elr.LEAVE_ID=1) THEN
+      UPDATE HRIS_EMPLOYEE_LEAVE_REQUEST SET LEAVE_ID=11 WHERE ID=elr.ID;
+    END IF;
+    IF(elr.LEAVE_ID=2) THEN
+      UPDATE HRIS_EMPLOYEE_LEAVE_REQUEST SET LEAVE_ID=12 WHERE ID=elr.ID;
+    END IF;
+    IF(elr.LEAVE_ID=6) THEN
+      UPDATE HRIS_EMPLOYEE_LEAVE_REQUEST SET LEAVE_ID=16 WHERE ID=elr.ID;
+    END IF;
+    IF(elr.LEAVE_ID=11) THEN
+      UPDATE HRIS_EMPLOYEE_LEAVE_REQUEST SET LEAVE_ID=1 WHERE ID=elr.ID;
+    END IF;
+    IF(elr.LEAVE_ID=12) THEN
+      UPDATE HRIS_EMPLOYEE_LEAVE_REQUEST SET LEAVE_ID=2 WHERE ID=elr.ID;
+    END IF;
+    IF(elr.LEAVE_ID=16) THEN
+      UPDATE HRIS_EMPLOYEE_LEAVE_REQUEST SET LEAVE_ID=6 WHERE ID=elr.ID;
+    END IF;
+  END LOOP;
+END;
+/

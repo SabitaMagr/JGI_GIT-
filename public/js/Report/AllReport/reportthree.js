@@ -239,9 +239,9 @@
 
 
         if (monthId != 0 && departmentId != 0) {
-            initializeReport(monthId, departmentId);
-            $monthList.val(monthId);
-            $departmentList.val(departmentId);
+//            initializeReport(monthId, departmentId);
+//            $monthList.val(monthId);
+//            $departmentList.val(departmentId);
         }
 
     });

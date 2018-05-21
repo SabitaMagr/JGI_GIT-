@@ -1,43 +1,12 @@
 <?php
-
 namespace WorkOnDayoff\Repository;
 
-use Application\Model\Model;
-use Application\Repository\RepositoryInterface;
+use Application\Repository\HrisRepository;
 use Setup\Model\HrEmployees;
-use Zend\Db\Adapter\AdapterInterface;
 
-class WorkOnDayoffStatusRepository implements RepositoryInterface {
-
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-    }
-
-    public function add(Model $model) {
-        
-    }
-
-    public function delete($id) {
-        
-    }
-
-    public function edit(Model $model, $id) {
-        
-    }
-
-    public function fetchAll() {
-        
-    }
-
-    public function fetchById($id) {
-        
-    }
+class WorkOnDayoffStatusRepository extends HrisRepository {
 
     public function getFilteredRecord($data, $recomApproveId) {
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -46,13 +15,26 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
-        $requestStatusId = $data['requestStatusId'];
         $employeeTypeId = $data['employeeTypeId'];
+        $requestStatusId = $data['requestStatusId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
 
-        if ($serviceEventTypeId == 5 || $serviceEventTypeId == 8 || $serviceEventTypeId == 14) {
-            $retiredFlag = " AND E.RETIRED_FLAG='Y' ";
-        } else {
-            $retiredFlag = " AND E.RETIRED_FLAG='N' ";
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $statusCondition = "";
+        $fromDateCondition = "";
+        $toDateCondition = "";
+
+        if ($requestStatusId != -1) {
+            $statusCondition = " AND WD.STATUS ='{$requestStatusId}'";
+        }
+
+        if ($fromDate != null) {
+            $fromDateCondition = " AND WD.FROM_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
+        }
+
+        if ($toDate != null) {
+            $toDateCondition = "AND WD.TO_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
         }
 
         $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))              AS FROM_DATE_AD,
@@ -122,59 +104,20 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface {
                     WHEN APRV.STATUS IS NOT NULL
                     THEN ('E')
                   END
-                OR APRV.STATUS IS NULL)
-                AND U.EMPLOYEE_ID= {$recomApproveId}";
-        if ($requestStatusId != -1) {
-            $sql .= " AND WD.STATUS ='" . $requestStatusId . "'";
-        }
-
-        if ($fromDate != null) {
-            $sql .= " AND WD.FROM_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
-        }
-
-        if ($toDate != null) {
-            $sql .= "AND WD.TO_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
-        }
-
-        if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $sql .= "AND E.EMPLOYEE_TYPE='" . $employeeTypeId . "' ";
-        }
-
-        if ($employeeId != -1) {
-            $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
-        }
-        if ($companyId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
-        }
-        if ($branchId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
-        }
-        if ($departmentId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DEPARTMENT_ID . "= $departmentId)";
-        }
-        if ($designationId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DESIGNATION_ID . "= $designationId)";
-        }
-        if ($positionId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::POSITION_ID . "= $positionId)";
-        }
-        if ($serviceTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)";
-        }
-        if ($serviceEventTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
-        }
-
-        $sql .= " ORDER BY WD.REQUESTED_DATE DESC";
+                OR APRV.STATUS  IS NULL)
+                AND U.EMPLOYEE_ID= {$recomApproveId}
+                {$searchCondition}
+                {$statusCondition}
+                {$fromDateCondition}
+                {$toDateCondition}
+                ORDER BY WD.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
     }
 
-    public function getWODReqList($data) {
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
+    public function getWODReqList($data): array {
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -183,10 +126,27 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
-        $requestStatusId = $data['requestStatusId'];
         $employeeTypeId = $data['employeeTypeId'];
+        $requestStatusId = $data['requestStatusId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
 
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $statusCondition = "";
+        $fromDateCondition = "";
+        $toDateCondition = "";
 
+        if ($requestStatusId != -1) {
+            $statusCondition = " AND WD.STATUS ='{$requestStatusId}'";
+        }
+
+        if ($fromDate != null) {
+            $fromDateCondition = " AND WD.FROM_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
+        }
+
+        if ($toDate != null) {
+            $toDateCondition = "AND WD.TO_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
+        }
         $sql = "SELECT INITCAP(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))              AS FROM_DATE_AD,
                   BS_DATE(TO_CHAR(WD.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_BS,
                   INITCAP(TO_CHAR(WD.TO_DATE, 'DD-MON-YYYY'))                     AS TO_DATE_AD,
@@ -201,6 +161,7 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface {
                   WD.MODIFIED_DATE                                                AS MODIFIED_DATE,
                   INITCAP(TO_CHAR(WD.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
                   INITCAP(TO_CHAR(WD.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+                  E.EMPLOYEE_CODE                                                 AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                                           AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                                           AS APPROVED_BY_NAME,
@@ -249,53 +210,13 @@ class WorkOnDayoffStatusRepository implements RepositoryInterface {
                     WHEN APRV.STATUS IS NOT NULL
                     THEN ('E')
                   END
-                OR APRV.STATUS IS NULL) ";
-        if ($requestStatusId != -1) {
-            $sql .= " AND WD.STATUS ='" . $requestStatusId . "'";
-        }
-
-        if ($fromDate != null) {
-            $sql .= " AND WD.FROM_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
-        }
-
-        if ($toDate != null) {
-            $sql .= "AND WD.TO_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
-        }
-
-        if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $sql .= "AND E.EMPLOYEE_TYPE='" . $employeeTypeId . "' ";
-        }
-
-        if ($employeeId != -1) {
-            $sql .= "AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
-        }
-        if ($companyId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
-        }
-        if ($branchId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
-        }
-        if ($departmentId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DEPARTMENT_ID . "= $departmentId)";
-        }
-        if ($designationId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DESIGNATION_ID . "= $designationId)";
-        }
-        if ($positionId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::POSITION_ID . "= $positionId)";
-        }
-        if ($serviceTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)";
-        }
-        if ($serviceEventTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
-        }
-
-        $sql .= " ORDER BY WD.REQUESTED_DATE DESC";
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+                OR APRV.STATUS IS NULL)
+                {$searchCondition}
+                {$statusCondition}
+                {$fromDateCondition}
+                {$toDateCondition}
+                ORDER BY WD.REQUESTED_DATE DESC";
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
-
 }
