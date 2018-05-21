@@ -1,5 +1,5 @@
 <?php
-$dirList = ["procedure", "triggers", "function"];
+$dirList = ["procedure", "triggers", "function", "procedure/SYNERGY"];
 $fileDataAll = "";
 
 foreach ($dirList as $dir) {

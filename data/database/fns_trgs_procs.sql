@@ -6105,4 +6105,1273 @@ BEGIN
     END);
   RETURN V_WORKING_CYCLE_DESC;
 END; /
+            CREATE OR REPLACE PROCEDURE hris_advance_request_proc(
+    p_adv_req_id hris_employee_advance_request.advance_request_id%TYPE,
+    p_link_to_synergy CHAR := 'N' )
+AS
+  v_employee_id hris_employee_advance_request.employee_id%TYPE;
+  v_status hris_employee_advance_request.status%TYPE;
+  v_requested_amount hris_employee_advance_request.requested_amount%TYPE;
+  v_date_of_advance hris_employee_advance_request.date_of_advance%TYPE;
+  v_deduction_in hris_employee_advance_request.deduction_in%TYPE;
+  --
+  v_form_code hris_preferences.value%TYPE;
+  v_dr_acc_code hris_preferences.value%TYPE;
+  v_cr_acc_code hris_preferences.value%TYPE; --
+  v_company_code VARCHAR2(255 BYTE) := '07';
+  v_branch_code  VARCHAR2(255 BYTE) :=-'07.01';
+  v_created_by   VARCHAR2(255 BYTE) := 'ADMIN';
+  v_voucher_no   VARCHAR2(255 BYTE);
+BEGIN
+  BEGIN
+    SELECT tr.employee_id,
+      tr.status,
+      tr.requested_amount,
+      tr.date_of_advance,
+      tr.deduction_in,
+      c.company_code,
+      c.company_code
+      || '.01',
+      c.form_code,
+      c.advance_dr_acc_code,
+      c.advance_cr_acc_code
+    INTO v_employee_id,
+      v_status,
+      v_requested_amount,
+      v_date_of_advance,
+      v_deduction_in,
+      v_company_code,
+      v_branch_code,
+      v_form_code,
+      v_dr_acc_code ,
+      v_cr_acc_code
+    FROM hris_employee_advance_request tr
+    JOIN hris_employees e
+    ON ( tr.employee_id = e.employee_id )
+    JOIN hris_company c
+    ON ( e.company_id           = c.company_id )
+    WHERE tr.advance_request_id = p_adv_req_id;
+  EXCEPTION
+  WHEN no_data_found THEN
+    dbms_output.put('NO DATA FOUND FOR ID =>' || p_adv_req_id);
+    RETURN;
+  END;
+  --
+  --
+  IF p_link_to_synergy = 'Y' THEN
+    SELECT fn_new_voucher_no( v_company_code, v_form_code, TRUNC(SYSDATE), 'FA_DOUBLE_VOUCHER' )
+    INTO v_voucher_no
+    FROM dual;
+    --
+    hris_travel_advance( v_company_code, v_form_code, TRUNC(SYSDATE), v_branch_code, v_created_by, TRUNC(SYSDATE), v_dr_acc_code, v_cr_acc_code, 'TEST', v_requested_amount, 'E' || v_employee_id, v_voucher_no );
+    --
+    hris_advance_to_empower( v_company_code, v_branch_code, v_date_of_advance, v_date_of_advance, v_created_by, v_requested_amount, v_deduction_in, v_requested_amount / v_deduction_in, v_employee_id, v_dr_acc_code, v_cr_acc_code );
+    --
+    UPDATE hris_employee_advance_request
+    SET voucher_no           = v_voucher_no
+    WHERE advance_request_id = p_adv_req_id;
+  END IF;
+  --
+END;/
+            CREATE OR REPLACE PROCEDURE hris_advance_to_empower(
+    company_code_v    VARCHAR2,
+    branch_code_v     VARCHAR2,
+    transaction_date  DATE,
+    installment_date  DATE,
+    created_by        VARCHAR2,
+    advance_amount    NUMBER,
+    no_of_installment NUMBER,
+    per_month         VARCHAR2,
+    vemployeecode     VARCHAR2,
+    vdraccount        VARCHAR2,
+    vcraccount        VARCHAR2 )
+IS
+  ireqno    NUMBER;
+  dadvpfrom DATE;
+  dadvpto   DATE;
+  idays     NUMBER;
+  vbsmonth  VARCHAR2(10);
+  ddate     DATE;
+BEGIN
+  BEGIN
+    SELECT NVL( MAX(NVL(to_number(request_no),0) ),0) + 1
+    INTO ireqno
+    FROM hr_advance_request
+    WHERE company_code = company_code_v;
+  EXCEPTION
+  WHEN OTHERS THEN
+    ireqno := 1;
+  END;
+  BEGIN
+    SELECT start_date,
+      end_date
+    INTO dadvpfrom,
+      dadvpto
+    FROM hr_period_detail
+    WHERE TO_DATE(transaction_date) BETWEEN start_date AND end_date
+    AND company_code = company_code_v;
+  EXCEPTION
+  WHEN OTHERS THEN
+    NULL;
+  END;
+  INSERT
+  INTO hr_advance_request
+    (
+      request_no,
+      request_date,
+      employee_code,
+      advance_type,
+      request_amount,
+      acc_code,
+      repayment_start_date,
+      repayment_count,
+      repayment_period_flag,
+      company_code,
+      branch_code,
+      created_by,
+      created_date,
+      deleted_flag,
+      premium_type,
+      acc_code_cr
+    )
+    VALUES
+    (
+      ireqno,
+      transaction_date,
+      vemployeecode,
+      'R271',
+      advance_amount,
+      vdraccount,
+      transaction_date,
+      no_of_installment,
+      'M',
+      company_code_v,
+      branch_code_v,
+      created_by,
+      SYSDATE,
+      'N',
+      0,
+      vcraccount
+    );
+  INSERT
+  INTO hr_advance_request_detail
+    (
+      request_no,
+      serial_no,
+      from_date,
+      TO_DATE,
+      amount,
+      paid_flag,
+      company_code,
+      branch_code,
+      created_by,
+      created_date,
+      deleted_flag
+    )
+    VALUES
+    (
+      ireqno,
+      1,
+      dadvpfrom,
+      dadvpto,
+      per_month,
+      'N',
+      company_code_v,
+      branch_code_v,
+      created_by,
+      SYSDATE,
+      'N'
+    );
+  FOR i IN 2..no_of_installment
+  LOOP
+    dadvpto := dadvpto + 1;
+    SELECT bs_month,
+      ad_date,
+      days_no
+    INTO vbsmonth,
+      ddate,
+      idays
+    FROM calendar_setup
+    WHERE bs_month = SUBSTR( bs_date(dadvpto), 1, 7 );
+    SELECT ad_date(vbsmonth || '-01') INTO dadvpfrom FROM dual;
+    SELECT ad_date(vbsmonth || '-' || idays) INTO dadvpto FROM dual;
+    INSERT
+    INTO hr_advance_request_detail
+      (
+        request_no,
+        serial_no,
+        from_date,
+        TO_DATE,
+        amount,
+        paid_flag,
+        company_code,
+        branch_code,
+        created_by,
+        created_date,
+        deleted_flag
+      )
+      VALUES
+      (
+        ireqno,
+        i,
+        dadvpfrom,
+        dadvpto,
+        per_month,
+        'N',
+        company_code_v,
+        branch_code_v,
+        created_by,
+        SYSDATE,
+        'N'
+      );
+  END LOOP;
+EXCEPTION
+WHEN OTHERS THEN
+  raise_application_error( -20001, 'An error was encountered - ' || SQLCODE || ' -ERROR- ' || sqlerrm );
+END;/
+            CREATE OR REPLACE PROCEDURE HRIS_TRAVEL_ADVANCE(
+    COMPANY_CODE     VARCHAR2,
+    FORM_CODE        VARCHAR2,
+    TRANSACTION_DATE DATE,
+    BRANCH_CODE      VARCHAR2,
+    CREATED_BY       VARCHAR2,
+    CREATED_DATE     DATE,
+    DR_ACC_CODE      VARCHAR2,
+    CR_ACC_CODE      VARCHAR2,
+    PARTICULARS      VARCHAR2,
+    AMOUNT           NUMBER,
+    SUB_CODE         VARCHAR2,
+    VOUCHER_NO       VARCHAR2)
+IS
+  SESSION_ROWID NUMBER           :=-1;
+  CURRENCY_CODE VARCHAR2(3 BYTE) :='NRS';
+  EXCHANGE_RATE NUMBER           :=1;
+  SERIAL_NO_1   NUMBER(5)        :=1;
+  SERIAL_NO_2   NUMBER(5)        :=2;
+BEGIN
+  SAVEPOINT START_OF_FUNCTION;
+  SELECT MYSEQUENCE.NEXTVAL INTO SESSION_ROWID FROM DUAL;
+  INSERT
+  INTO MASTER_TRANSACTION
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      VOUCHER_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_1,
+      DR_ACC_CODE,
+      PARTICULARS,
+      'DR',
+      AMOUNT ,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_VOUCHER_SUB_DETAIL
+    (
+      VOUCHER_NO,
+      SERIAL_NO,
+      ACC_CODE,
+      TRANSACTION_TYPE,
+      SUB_CODE,
+      PARTICULARS,
+      DR_AMOUNT,
+      CR_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      SERIAL_NO_1 ,
+      DR_ACC_CODE,
+      'DR',
+      SUB_CODE,
+      PARTICULARS,
+      AMOUNT,
+      0,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_2 ,
+      CR_ACC_CODE,
+      PARTICULARS,
+      'CR',
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+EXCEPTION
+WHEN OTHERS THEN
+  ROLLBACK TO START_OF_FUNCTION;
+  raise_application_error(-20001,'An error was encountered - '||SQLCODE||' -ERROR- '||SQLERRM);
+END;/
+            CREATE OR REPLACE PROCEDURE HRIS_TRAVEL_REQUEST_PROC(
+    P_TRAVEL_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.TRAVEL_ID%TYPE,
+    P_LINK_TO_SYNERGY CHAR := 'N')
+AS
+  V_FROM_DATE HRIS_EMPLOYEE_TRAVEL_REQUEST.FROM_DATE%TYPE;
+  V_TO_DATE HRIS_EMPLOYEE_TRAVEL_REQUEST.TO_DATE%TYPE;
+  V_EMPLOYEE_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.EMPLOYEE_ID%TYPE;
+  V_STATUS HRIS_EMPLOYEE_TRAVEL_REQUEST.STATUS%TYPE;
+  V_REQUESTED_AMOUNT HRIS_EMPLOYEE_TRAVEL_REQUEST.REQUESTED_AMOUNT%TYPE;
+  V_SETTLEMENT_AMOUNT FLOAT;
+  V_REQUEST_TYPE HRIS_EMPLOYEE_TRAVEL_REQUEST.REQUESTED_TYPE%TYPE;
+  --
+  V_LINK_TRAVEL_TO_SYNERGY HRIS_PREFERENCES.VALUE%TYPE;
+  V_FORM_CODE HRIS_PREFERENCES.VALUE%TYPE;
+  V_DR_ACC_CODE HRIS_PREFERENCES.VALUE%TYPE;
+  V_CR_ACC_CODE HRIS_PREFERENCES.VALUE%TYPE;
+  V_EXCESS_CR_ACC_CODE HRIS_PREFERENCES.VALUE%TYPE;
+  V_LESS_DR_ACC_CODE HRIS_PREFERENCES.VALUE%TYPE;
+  --
+  V_COMPANY_CODE VARCHAR2(255 BYTE);
+  V_BRANCH_CODE  VARCHAR2(255 BYTE);
+  V_CREATED_BY   VARCHAR2(255 BYTE):='ADMIN';
+  V_VOUCHER_NO   VARCHAR2(255 BYTE);
+BEGIN
+  BEGIN
+    SELECT TR.FROM_DATE ,
+      TR.TO_DATE,
+      TR.EMPLOYEE_ID,
+      TR.STATUS,
+      TR.REQUESTED_AMOUNT,
+      TR.REQUESTED_TYPE,
+      C.COMPANY_CODE,
+      C.COMPANY_CODE
+      ||'.01',
+      C.LINK_TRAVEL_TO_SYNERGY,
+      C.FORM_CODE,
+      C.DR_ACC_CODE,
+      C.CR_ACC_CODE,
+      C.EXCESS_CR_ACC_CODE,
+      C.LESS_DR_ACC_CODE
+    INTO V_FROM_DATE,
+      V_TO_DATE,
+      V_EMPLOYEE_ID,
+      V_STATUS,
+      V_REQUESTED_AMOUNT,
+      V_REQUEST_TYPE,
+      V_COMPANY_CODE,
+      V_BRANCH_CODE,
+      V_LINK_TRAVEL_TO_SYNERGY,
+      V_FORM_CODE,
+      V_DR_ACC_CODE,
+      V_CR_ACC_CODE,
+      V_EXCESS_CR_ACC_CODE,
+      V_LESS_DR_ACC_CODE
+    FROM HRIS_EMPLOYEE_TRAVEL_REQUEST TR
+    JOIN HRIS_EMPLOYEES E
+    ON (TR.EMPLOYEE_ID = E.EMPLOYEE_ID )
+    JOIN HRIS_COMPANY C
+    ON (E.COMPANY_ID= C.COMPANY_ID)
+    WHERE TRAVEL_ID =P_TRAVEL_ID;
+  EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| P_TRAVEL_ID);
+    RETURN;
+  END;
+  --
+  IF V_STATUS IN ('AP','C') AND V_FROM_DATE <TRUNC(SYSDATE) THEN
+    HRIS_REATTENDANCE(V_FROM_DATE,V_EMPLOYEE_ID,V_TO_DATE);
+  END IF;
+  --
+  IF(LOWER(V_REQUEST_TYPE) ='ep') THEN
+    SELECT SUM(TOTAL_AMOUNT)
+    INTO V_SETTLEMENT_AMOUNT
+    FROM HRIS_EMP_TRAVEL_EXPENSE_DTL
+    WHERE TRAVEL_ID = P_TRAVEL_ID;
+  END IF;
+  --
+  IF V_LINK_TRAVEL_TO_SYNERGY = 'Y' AND P_LINK_TO_SYNERGY = 'Y' THEN
+    SELECT FN_NEW_VOUCHER_NO(V_COMPANY_CODE,V_FORM_CODE,TRUNC(SYSDATE),'FA_DOUBLE_VOUCHER')
+    INTO V_VOUCHER_NO
+    FROM DUAL;
+    IF LOWER(V_REQUEST_TYPE) = 'ad' THEN
+      HRIS_TRAVEL_ADVANCE(V_COMPANY_CODE,V_FORM_CODE,TRUNC(SYSDATE),V_BRANCH_CODE,V_CREATED_BY,TRUNC(SYSDATE),V_DR_ACC_CODE,V_CR_ACC_CODE,'TEST',V_REQUESTED_AMOUNT,'E'||V_EMPLOYEE_ID,V_VOUCHER_NO);
+    END IF;
+    IF (LOWER(V_REQUEST_TYPE) ='ep') AND (V_REQUESTED_AMOUNT = V_SETTLEMENT_AMOUNT) THEN
+      HRIS_TRAVEL_SETTLEMENT_EQUAL(V_COMPANY_CODE,V_FORM_CODE,TRUNC(SYSDATE),V_BRANCH_CODE,V_CREATED_BY,TRUNC(SYSDATE),V_DR_ACC_CODE,V_CR_ACC_CODE,'TEST',V_SETTLEMENT_AMOUNT,'E'||V_EMPLOYEE_ID,V_VOUCHER_NO);
+    END IF;
+    IF (LOWER(V_REQUEST_TYPE) ='ep') AND (V_REQUESTED_AMOUNT < V_SETTLEMENT_AMOUNT) THEN
+      HRIS_TRAVEL_SETTLEMENT_EXCESS(V_COMPANY_CODE,V_FORM_CODE,TRUNC(SYSDATE),V_BRANCH_CODE,V_CREATED_BY,TRUNC(SYSDATE),V_DR_ACC_CODE,V_CR_ACC_CODE,V_EXCESS_CR_ACC_CODE,V_SETTLEMENT_AMOUNT,V_SETTLEMENT_AMOUNT-V_REQUESTED_AMOUNT,'TEST','E'||V_EMPLOYEE_ID,V_VOUCHER_NO);
+    END IF;
+    IF (LOWER(V_REQUEST_TYPE) ='ep') AND (V_REQUESTED_AMOUNT > V_SETTLEMENT_AMOUNT) THEN
+      HRIS_TRAVEL_SETTLEMENT_LESS(V_COMPANY_CODE,V_FORM_CODE,TRUNC(SYSDATE),V_BRANCH_CODE,V_CREATED_BY,TRUNC(SYSDATE),V_DR_ACC_CODE,V_LESS_DR_ACC_CODE,V_CR_ACC_CODE,V_SETTLEMENT_AMOUNT,V_REQUESTED_AMOUNT-V_SETTLEMENT_AMOUNT,'TEST','E'||V_EMPLOYEE_ID,V_VOUCHER_NO);
+    END IF;
+    UPDATE HRIS_EMPLOYEE_TRAVEL_REQUEST
+    SET VOUCHER_NO  = V_VOUCHER_NO
+    WHERE TRAVEL_ID = P_TRAVEL_ID;
+  END IF;
+  --
+END;/
+            CREATE OR REPLACE PROCEDURE HRIS_TRAVEL_SETTLEMENT_EQUAL(
+    COMPANY_CODE      VARCHAR2,
+    FORM_CODE         VARCHAR2,
+    TRANSACTION_DATE  DATE,
+    BRANCH_CODE       VARCHAR2,
+    CREATED_BY        VARCHAR2,
+    CREATED_DATE      DATE,
+    DR_ACC_CODE       VARCHAR2,
+    CR_ACC_CODE       VARCHAR2,
+    PARTICULARS       VARCHAR2,
+    SETTLEMENT_AMOUNT NUMBER,
+    SUB_CODE          VARCHAR2,
+    VOUCHER_NO        VARCHAR2)
+IS
+  SESSION_ROWID NUMBER           :=-1;
+  CURRENCY_CODE VARCHAR2(3 BYTE) :='NRS';
+  EXCHANGE_RATE NUMBER           :=1;
+  SERIAL_NO_1   NUMBER(5)        :=1;
+  SERIAL_NO_2   NUMBER(5)        :=2;
+BEGIN
+  SAVEPOINT START_OF_FUNCTION;
+  SELECT MYSEQUENCE.NEXTVAL INTO SESSION_ROWID FROM DUAL;
+  INSERT
+  INTO MASTER_TRANSACTION
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      VOUCHER_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SETTLEMENT_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_1,
+      DR_ACC_CODE,
+      PARTICULARS,
+      'DR',
+      SETTLEMENT_AMOUNT ,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_2 ,
+      CR_ACC_CODE,
+      PARTICULARS,
+      'CR',
+      SETTLEMENT_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_VOUCHER_SUB_DETAIL
+    (
+      VOUCHER_NO,
+      SERIAL_NO,
+      ACC_CODE,
+      TRANSACTION_TYPE,
+      SUB_CODE,
+      PARTICULARS,
+      DR_AMOUNT,
+      CR_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      SERIAL_NO_2 ,
+      CR_ACC_CODE,
+      'CR',
+      SUB_CODE,
+      PARTICULARS,
+      0,
+      SETTLEMENT_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+EXCEPTION
+WHEN OTHERS THEN
+  ROLLBACK TO START_OF_FUNCTION;
+  raise_application_error(-20001,'An error was encountered - '||SQLCODE||' -ERROR- '||SQLERRM);
+END;/
+            CREATE OR REPLACE PROCEDURE HRIS_TRAVEL_SETTLEMENT_EXCESS(
+    COMPANY_CODE      VARCHAR2,
+    FORM_CODE         VARCHAR2,
+    TRANSACTION_DATE  DATE,
+    BRANCH_CODE       VARCHAR2,
+    CREATED_BY        VARCHAR2,
+    CREATED_DATE      DATE,
+    DR_ACC_CODE       VARCHAR2,
+    CR_ACC_CODE1      VARCHAR2,
+    CR_ACC_CODE2      VARCHAR2,
+    SETTLEMENT_AMOUNT NUMBER,
+    EXCESS_AMOUNT     NUMBER,
+    PARTICULARS       VARCHAR2,
+    SUB_CODE          VARCHAR2,
+    VOUCHER_NO        VARCHAR2)
+IS
+  SESSION_ROWID NUMBER           :=-1;
+  CURRENCY_CODE VARCHAR2(3 BYTE) :='NRS';
+  EXCHANGE_RATE NUMBER           :=1;
+  SERIAL_NO_1   NUMBER(5)        :=1;
+  SERIAL_NO_2   NUMBER(5)        :=2;
+BEGIN
+  SAVEPOINT START_OF_FUNCTION;
+  SELECT MYSEQUENCE.NEXTVAL INTO SESSION_ROWID FROM DUAL;
+  INSERT
+  INTO MASTER_TRANSACTION
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      VOUCHER_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SETTLEMENT_AMOUNT + EXCESS_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_1,
+      DR_ACC_CODE,
+      PARTICULARS,
+      'DR',
+      SETTLEMENT_AMOUNT + EXCESS_AMOUNT ,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_2 ,
+      CR_ACC_CODE1,
+      PARTICULARS,
+      'CR',
+      SETTLEMENT_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_VOUCHER_SUB_DETAIL
+    (
+      VOUCHER_NO,
+      SERIAL_NO,
+      ACC_CODE,
+      TRANSACTION_TYPE,
+      SUB_CODE,
+      PARTICULARS,
+      DR_AMOUNT,
+      CR_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      SERIAL_NO_2 ,
+      CR_ACC_CODE1,
+      'CR',
+      SUB_CODE,
+      PARTICULARS,
+      0,
+      SETTLEMENT_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      3 ,
+      CR_ACC_CODE2,
+      PARTICULARS,
+      'CR',
+      EXCESS_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+EXCEPTION
+WHEN OTHERS THEN
+  ROLLBACK TO START_OF_FUNCTION;
+  raise_application_error(-20001,'An error was encountered - '||SQLCODE||' -ERROR- '||SQLERRM);
+END;/
+            CREATE OR REPLACE PROCEDURE HRIS_TRAVEL_SETTLEMENT_LESS(
+    COMPANY_CODE      VARCHAR2,
+    FORM_CODE         VARCHAR2,
+    TRANSACTION_DATE  DATE,
+    BRANCH_CODE       VARCHAR2,
+    CREATED_BY        VARCHAR2,
+    CREATED_DATE      DATE,
+    DR_ACC_CODE1      VARCHAR2,
+    DR_ACC_CODE2      VARCHAR2,
+    CR_ACC_CODE       VARCHAR2,
+    SETTLEMENT_AMOUNT NUMBER,
+    LESS_AMOUNT       NUMBER,
+    PARTICULARS       VARCHAR2,
+    SUB_CODE          VARCHAR2,
+    VOUCHER_NO        VARCHAR2)
+IS
+  SESSION_ROWID   NUMBER           :=-1;
+  CURRENCY_CODE   VARCHAR2(3 BYTE) :='NRS';
+  EXCHANGE_RATE   NUMBER           :=1;
+  SERIAL_NO_1     NUMBER(5)        :=1;
+  SERIAL_NO_2     NUMBER(5)        :=2;
+  nSubLedgerCount NUMBER;
+  iReqNo          NUMBER;
+  dAdvPFrom       VARCHAR2(15);
+  dAdvPTo         VARCHAR2(15);
+BEGIN
+  SAVEPOINT START_OF_FUNCTION;
+  SELECT MYSEQUENCE.NEXTVAL INTO SESSION_ROWID FROM DUAL;
+  INSERT
+  INTO MASTER_TRANSACTION
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      VOUCHER_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SETTLEMENT_AMOUNT + LESS_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_1,
+      DR_ACC_CODE1,
+      PARTICULARS,
+      'DR',
+      SETTLEMENT_AMOUNT ,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      SERIAL_NO_2,
+      DR_ACC_CODE2,
+      PARTICULARS,
+      'DR',
+      LESS_AMOUNT ,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  BEGIN
+    SELECT COUNT(*)
+    INTO nSubLedgerCount
+    FROM FA_SUB_LEDGER_MAP
+    WHERE ACC_CODE   = DR_ACC_CODE2
+    AND COMPANY_CODE = COMPANY_CODE;
+  EXCEPTION
+  WHEN OTHERS THEN
+    nSubLedgerCount := 0;
+  END;
+  IF nSubLedgerCount > 0 THEN
+    INSERT
+    INTO FA_VOUCHER_SUB_DETAIL
+      (
+        VOUCHER_NO,
+        SERIAL_NO,
+        ACC_CODE,
+        TRANSACTION_TYPE,
+        SUB_CODE,
+        PARTICULARS,
+        DR_AMOUNT,
+        CR_AMOUNT,
+        FORM_CODE,
+        COMPANY_CODE,
+        BRANCH_CODE,
+        CREATED_BY,
+        CREATED_DATE,
+        DELETED_FLAG,
+        CURRENCY_CODE,
+        EXCHANGE_RATE,
+        SESSION_ROWID
+      )
+      VALUES
+      (
+        VOUCHER_NO,
+        SERIAL_NO_2 ,
+        DR_ACC_CODE2,
+        'DR',
+        SUB_CODE,
+        PARTICULARS,
+        LESS_AMOUNT,
+        0,
+        FORM_CODE,
+        COMPANY_CODE,
+        BRANCH_CODE,
+        CREATED_BY,
+        CREATED_DATE,
+        'N',
+        CURRENCY_CODE,
+        EXCHANGE_RATE,
+        SESSION_ROWID
+      );
+    BEGIN
+      SELECT MAX(NVL(TO_NUMBER(REQUEST_NO),0)) + 1
+      INTO IREQNO
+      FROM HR_ADVANCE_REQUEST
+      WHERE COMPANY_CODE = COMPANY_CODE;
+    EXCEPTION
+    WHEN OTHERS THEN
+      IREQNO := 1;
+    END;
+    BEGIN
+      IF TO_NUMBER(SUBSTR(BS_DATE(TRANSACTION_DATE),8,2)) > 25 THEN
+        SELECT START_DATE ,
+          END_DATE
+        INTO dAdvPFrom,
+          dAdvPTo
+        FROM HR_PERIOD_DETAIL
+        WHERE TRANSACTION_DATE BETWEEN START_DATE AND END_DATE
+        AND COMPANY_CODE = '01';
+      ELSE
+        SELECT START_DATE ,
+          END_DATE
+        INTO dAdvPFrom,
+          dAdvPTo
+        FROM HR_PERIOD_DETAIL
+        WHERE TO_DATE(TRANSACTION_DATE) + 10 BETWEEN START_DATE AND END_DATE
+        AND COMPANY_CODE = '01';
+      END IF ;
+    EXCEPTION
+    WHEN OTHERS THEN
+      IREQNO := 1;
+    END;
+    INSERT
+    INTO HR_ADVANCE_REQUEST
+      (
+        REQUEST_NO,
+        REQUEST_DATE,
+        EMPLOYEE_CODE,
+        ADVANCE_TYPE,
+        REQUEST_AMOUNT,
+        ACC_CODE,
+        REPAYMENT_START_DATE,
+        REPAYMENT_COUNT,
+        REPAYMENT_PERIOD_FLAG,
+        COMPANY_CODE,
+        BRANCH_CODE,
+        CREATED_BY,
+        CREATED_DATE,
+        DELETED_FLAG,
+        PREMIUM_TYPE,
+        ACC_CODE_CR
+      )
+      VALUES
+      (
+        IREQNO,
+        TRANSACTION_DATE,
+        REPLACE(SUB_CODE,'E','') ,
+        'R019',
+        LESS_AMOUNT,
+        DR_ACC_CODE2,
+        TRANSACTION_DATE ,
+        1,
+        'M',
+        COMPANY_CODE,
+        BRANCH_CODE,
+        CREATED_BY,
+        SYSDATE,
+        'N',
+        0 ,
+        '1000'
+      );
+    INSERT
+    INTO HR_ADVANCE_REQUEST_DETAIL
+      (
+        REQUEST_NO,
+        SERIAL_NO,
+        FROM_DATE,
+        TO_DATE,
+        AMOUNT,
+        PAID_FLAG,
+        COMPANY_CODE,
+        BRANCH_CODE,
+        CREATED_BY,
+        CREATED_DATE,
+        DELETED_FLAG
+      )
+      VALUES
+      (
+        IREQNO,
+        1,
+        dAdvPFrom,
+        dAdvPTo,
+        LESS_AMOUNT,
+        'N',
+        COMPANY_CODE ,
+        BRANCH_CODE,
+        CREATED_BY,
+        SYSDATE,
+        'N'
+      );
+  END IF;
+  INSERT
+  INTO FA_DOUBLE_VOUCHER
+    (
+      VOUCHER_NO,
+      VOUCHER_DATE,
+      SERIAL_NO,
+      ACC_CODE,
+      PARTICULARS,
+      TRANSACTION_TYPE,
+      AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      TRANSACTION_DATE,
+      3 ,
+      CR_ACC_CODE,
+      PARTICULARS,
+      'CR',
+      SETTLEMENT_AMOUNT + LESS_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+  INSERT
+  INTO FA_VOUCHER_SUB_DETAIL
+    (
+      VOUCHER_NO,
+      SERIAL_NO,
+      ACC_CODE,
+      TRANSACTION_TYPE,
+      SUB_CODE,
+      PARTICULARS,
+      DR_AMOUNT,
+      CR_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      DELETED_FLAG,
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    )
+    VALUES
+    (
+      VOUCHER_NO,
+      3 ,
+      CR_ACC_CODE,
+      'CR',
+      SUB_CODE,
+      PARTICULARS,
+      0,
+      SETTLEMENT_AMOUNT + LESS_AMOUNT,
+      FORM_CODE,
+      COMPANY_CODE,
+      BRANCH_CODE,
+      CREATED_BY,
+      CREATED_DATE,
+      'N',
+      CURRENCY_CODE,
+      EXCHANGE_RATE,
+      SESSION_ROWID
+    );
+EXCEPTION
+WHEN OTHERS THEN
+  ROLLBACK TO START_OF_FUNCTION;
+  raise_application_error(-20001,'An error was encountered - '||SQLCODE||' -ERROR- '||SQLERRM);
+END;/
             
