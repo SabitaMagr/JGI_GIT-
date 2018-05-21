@@ -226,6 +226,7 @@ function getStausString(status, normal, ot, subEmp) {
                         $('#otType').val(attdOtType);
                         app.populateSelect($('#subEmployee'), document.employeeList, 'EMPLOYEE_ID', 'FULL_NAME', 'No Substitute', '', attdSubEmp);
                         lockSubEmployee();
+                        setDefaultDuty();
                         if (attdSubEmp) {
                             $('#subRateDiv').show();
                         } else {
