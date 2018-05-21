@@ -163,7 +163,7 @@ E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
           WHEN CA.STATUS='AB' THEN 'Absent'
           WHEN CA.STATUS='LV' THEN 'Leave'
           WHEN CA.STATUS='DO' THEN 'DayOff'
-          WHEN CA.STATUS='PH' THEN 'PaidHoliday'
+          WHEN CA.STATUS='PH' THEN 'PublicHoliday'
         END
       AS STATUS,
       CASE  
@@ -567,8 +567,9 @@ END;";
           WHEN CA.STATUS IS NULL THEN 'Present'
           WHEN CA.STATUS='PR' THEN 'Present'
           WHEN CA.STATUS='AB' THEN 'Absent'
+          WHEN CA.STATUS='LV' THEN 'Leave'
           WHEN CA.STATUS='DO' THEN 'DayOff'
-          WHEN CA.STATUS='PH' THEN 'PaidHoliday'
+          WHEN CA.STATUS='PH' THEN 'PublicHoliday'
         END
       AS STATUS,
       TO_CHAR(to_date(CA.NORMAL_HOUR*60,'sssss'),'hh24:mi') AS NORMAL_HOUR,
@@ -587,6 +588,8 @@ END;";
                     CA.DESIGNATION_ID={$designationId} AND
                     CA.EMP_ASSIGN_ID={$empAssignId} AND
                     CA.ATTENDANCE_DATE=TO_DATE('{$attendanceDate}','DD-MON-YY')";
+
+                    
 
         $statement1 = $this->adapter->query($sql1);
         $result = $statement1->execute();
@@ -673,7 +676,7 @@ E.FULL_NAME,CL.LOCATION_NAME,CC.CONTRACT_NAME,D.DESIGNATION_TITLE,
           WHEN CA.STATUS='AB' THEN 'Absent'
           WHEN CA.STATUS='LV' THEN 'Leave'
           WHEN CA.STATUS='DO' THEN 'DayOff'
-          WHEN CA.STATUS='PH' THEN 'PaidHoliday'
+          WHEN CA.STATUS='PH' THEN 'PublicHoliday'
         END
       AS STATUS,
       CASE  
@@ -883,7 +886,7 @@ AS ABSENT_DAYS,
                   WHEN CA.STATUS='AB' THEN 'Absent'
                   WHEN CA.STATUS='LV' THEN 'LEAVE'
                   WHEN CA.STATUS='DO' THEN 'DayOff'
-                  WHEN CA.STATUS='PH' THEN 'PaidHoliday'
+                  WHEN CA.STATUS='PH' THEN 'PublicHoliday'
                 END
               AS STATUS,
               CASE  

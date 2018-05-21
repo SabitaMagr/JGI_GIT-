@@ -4,7 +4,7 @@ function setTemplate(temp) {
         returnvalue = 'attendance-color-red';
     } else if (temp == 'Present') {
         returnvalue = 'attendance-color-green';
-    } else if (temp == 'DayOff' || temp == 'PaidHoliday') {
+    } else if (temp == 'DayOff' || temp == 'PublicHoliday') {
         returnvalue = 'attendance-color-yellow';
     }
     return returnvalue;
