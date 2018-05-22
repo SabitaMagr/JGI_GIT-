@@ -1,18 +1,16 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
-
-$this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/nprogress/nprogress.css'));
-$this->headScript()->appendFile($this->basePath('assets/global/plugins/nprogress/nprogress.js'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/ladda/ladda-themeless.min.css'));
 
 $this->headLink()
-        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+    ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()
-        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 $this->headScript()->appendFile($this->basePath('js/system/system-utility/re-attendance.js'));
+
 ?>
 <?php if ($this->messages): ?>
     <script>
@@ -27,6 +25,7 @@ if ($this->messages) {
     }
     print '</ul>';
 }
+
 ?>
 <script>
     document.employeeList =<?= json_encode($employeeList); ?>;

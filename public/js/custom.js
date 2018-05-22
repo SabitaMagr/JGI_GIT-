@@ -1198,7 +1198,7 @@ window.app = (function ($, toastr, App) {
             }
 
             if (typeof bulkOptions !== 'undefined' && bulkOptions !== null && typeof bulkOptions.fn !== 'undefined' && bulkOptions.fn !== null) {
-                var checkedNo = $('.k-state-selected').length;
+                var checkedNo = $('.k-grid-content .k-state-selected').length;
                 if (checkedNo > 0) {
                     bulkOptions.fn(true);
                 } else {
@@ -1223,12 +1223,14 @@ window.app = (function ($, toastr, App) {
 
         return {
             getSelected: function () {
+                var selectedRowList = $('.k-grid-content .k-state-selected');
+                var grid = $table.data("kendoGrid");
                 var cleanData = [];
-                for (var key in  selectedRows) {
-                    var cleanItem = selectedRows[key];
-                    delete cleanItem.uid;
-                    cleanData.push(cleanItem);
-                }
+                $.each(selectedRowList, function (k, v) {
+                    var dataItem = grid.dataItem(v);
+                    delete dataItem.uid;
+                    cleanData.push(dataItem);
+                });
                 return JSON.parse(JSON.stringify(cleanData));
             }, clearSelected: function () {
                 selectedRows = {};
@@ -1315,7 +1317,7 @@ window.app = (function ($, toastr, App) {
         var printContents = document.getElementById(divId).innerHTML;
         var popupWin = window.open('', '_blank', 'width=1000,height=500,toolbar=0,scrollbars=0,status=0');
         popupWin.document.open();
-        popupWin.document.write('<style>@page{size:landscape;}</style><html><head><link rel="stylesheet" type="text/css" href="' + cssUrl + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.write('<style>@page{size:portlet;}</style><html><head><link rel="stylesheet" type="text/css" href="' + cssUrl + '" /></head><body onload="window.print()">' + printContents + '</body></html>');
         popupWin.document.close();
     };
 
@@ -1332,7 +1334,7 @@ window.app = (function ($, toastr, App) {
         $.each($linkList, function (index, item) {
             links = links + item.outerHTML;
         });
-        popupWin.document.write('<style>@page{size:landscape;}</style><html><head>' + links + '</head><body onload="window.print()">' + printContents + '</body></html>');
+        popupWin.document.write('<style>@page{size:portlet;}</style><html><head>' + links + '</head><body onload="window.print()">' + printContents + '</body></html>');
         popupWin.document.close();
     };
 
@@ -1471,6 +1473,131 @@ window.app = (function ($, toastr, App) {
 
         });
     };
+    (function () {
+        var reset = function ($fe) {
+            if ($fe.is('input:text')) {
+                $fe.val('').trigger('change');
+            } else if ($fe.is('select')) {
+                if ($fe.find("[value='-1']")) {
+                    $fe.val('-1').trigger('change');
+                } else {
+                    $fe.val('').trigger('change');
+                }
+            }
+        };
+
+        $('.hris-filter-container').on('click', '.hris-filter-reset-btn', function (e) {
+            var $formElementList = $('.hris-filter-container').find('.form-control');
+            $.each($formElementList, function (k, item) {
+                reset($(item));
+            });
+        });
+    })();
+
+    var prependPrefColumns = function (columns) {
+        if (typeof document.preference === 'undefined') {
+            console.log("no preference defined.");
+            return;
+        }
+        var preference = document.preference;
+        var list = [];
+        if (preference['includeEmployeeCode'] == 'Y') {
+            list.push({field: "EMPLOYEE_CODE", title: "Code"}, );
+        }
+        if (preference['includeCompany'] == 'Y') {
+            list.push({field: "COMPANY_NAME", title: "Company"}, );
+        }
+        if (preference['includeBranch'] == 'Y') {
+            list.push({field: "BRANCH_NAME", title: "Branch"}, );
+        }
+        for (var i in columns) {
+            list.push(columns[i]);
+        }
+        return list;
+    };
+
+    var prependPrefExportMap = function (map) {
+        if (typeof document.preference === 'undefined') {
+            console.log("no preference defined.");
+            return;
+        }
+        var preference = document.preference;
+        var finalMap = {};
+        if (preference['includeEmployeeCode'] == 'Y') {
+            finalMap['EMPLOYEE_CODE'] = "Code";
+        }
+        if (preference['includeCompany'] == 'Y') {
+            finalMap['COMPANY_NAME'] = "Company";
+        }
+        if (preference['includeBranch'] == 'Y') {
+            finalMap['BRANCH_NAME'] = "Branch";
+        }
+        for (var i in map) {
+            finalMap[i] = map[i];
+        }
+        return finalMap;
+    };
+
+    (function () {
+        var $thisForm = null;
+        $('#hris-page-content').on('blur', '.hris-unique-form-input', function () {
+            var $this = $(this);
+            var $form = $this.closest("form");
+            var dbTableName = $this.attr('table');
+            var dbColumnName = $this.attr('column');
+            var dbPkName = $this.attr('pk');
+            var dbPkValue = $this.attr('pk-value');
+            var url = $this.attr('url');
+            var dbColumnValue = $this.val();
+
+            var $parentThis = $this.closest(".form-group");
+
+            var showError = function (message, show) {
+                if (show) {
+                    if ($parentThis.has('.errorMsg').length == 0) {
+                        var errorMsgSpan = $('<span />', {
+                            class: 'errorMsg',
+                            text: message
+                        });
+                        $parentThis.append(errorMsgSpan);
+                        $this.focus();
+                    }
+                } else {
+                    $parentThis.find('.errorMsg').remove();
+                }
+            };
+
+            serverRequest(url, {
+                tableName: dbTableName,
+                columnName: dbColumnName,
+                columnValue: dbColumnValue,
+                pkName: dbPkName,
+                pkValue: dbPkValue
+            }).then(function (response) {
+                showError(response.data.message, response.data.notUnique);
+            }, function (failure) {
+            });
+            if ($thisForm === null) {
+                $form.submit(function (e) {
+                    var err = [];
+                    $form.find(".errorMsg").each(function () {
+                        var erroMsg = $.trim($(this).html());
+                        if (erroMsg !== "") {
+                            err.push("error");
+                        }
+                    });
+                    if (err.length > 0)
+                    {
+                        return false;
+                    }
+                });
+                $thisForm = $form;
+            }
+        });
+    })();
+
+
+
     return {
         format: format,
         pullDataById: pullDataById,
@@ -1513,5 +1640,7 @@ window.app = (function ($, toastr, App) {
         setDropZone: setDropZone,
         setFiscalMonth: setFiscalMonth,
         setEmployeeSearch: setEmployeeSearch,
+        prependPrefColumns: prependPrefColumns,
+        prependPrefExportMap: prependPrefExportMap,
     };
 })(window.jQuery, window.toastr, window.App);

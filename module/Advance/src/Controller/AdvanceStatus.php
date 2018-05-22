@@ -1,5 +1,4 @@
 <?php
-
 namespace Advance\Controller;
 
 use Advance\Form\AdvanceRequestForm;
@@ -42,10 +41,11 @@ class AdvanceStatus extends HrisController {
 
         $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'status', 'class' => 'form-control', 'label' => 'Status']);
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $statusSE,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'status' => $statusSE,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 
@@ -101,18 +101,18 @@ class AdvanceStatus extends HrisController {
         $this->form->bind($advanceRequestModel);
 
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'employeeName' => $detail['FULL_NAME'],
-                    'employeeId' => $detail['EMPLOYEE_ID'],
-                    'status' => $detail['STATUS'],
-                    'statusDetail' => $detail['STATUS_DETAIL'],
-                    'requestedDate' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'], AdvanceSetupModel::ADVANCE_ENAME, "ASC", " ", FALSE, TRUE),
-                    'advanceRequestData' => $detail,
-                    'recommApprove' => $recommApprove
+                'form' => $this->form,
+                'id' => $id,
+                'employeeName' => $detail['FULL_NAME'],
+                'employeeId' => $detail['EMPLOYEE_ID'],
+                'status' => $detail['STATUS'],
+                'statusDetail' => $detail['STATUS_DETAIL'],
+                'requestedDate' => $detail['REQUESTED_DATE'],
+                'recommender' => $authRecommender,
+                'approver' => $authApprover,
+                'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'], AdvanceSetupModel::ADVANCE_ENAME, "ASC", " ", FALSE, TRUE),
+                'advanceRequestData' => $detail,
+                'recommApprove' => $recommApprove
         ]);
     }
 
@@ -179,8 +179,8 @@ class AdvanceStatus extends HrisController {
         }
 
         return Helper::addFlashMessagesToArray($this, [
-                    'id' => $id,
-                    'acl' => $this->acl
+                'id' => $id,
+                'acl' => $this->acl
         ]);
     }
 
@@ -199,4 +199,37 @@ class AdvanceStatus extends HrisController {
         }
     }
 
+    public function bulkAction() {
+        $request = $this->getRequest();
+        try {
+            $postData = $request->getPost();
+            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            return new JsonModel(['success' => true, 'data' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+        $model = new AdvanceRequestModel();
+        $model->advanceRequestId = $id;
+        $model->recommendedDate = Helper::getcurrentExpressionDate();
+        $model->recommendedBy = $this->employeeId;
+        $model->approvedRemarks = $remarks;
+        $model->approvedDate = Helper::getcurrentExpressionDate();
+        $model->approvedBy = $this->employeeId;
+        $model->status = $approve ? "AP" : "R";
+        $message = $approve ? "WOD Request Approved" : "WOD Request Rejected";
+        $notificationEvent = $approve ? NotificationEvents::ADVANCE_APPROVE_ACCEPTED : NotificationEvents::ADVANCE_APPROVE_REJECTED;
+        $advanceApproveRepository = new AdvanceApproveRepository($this->adapter);
+        $advanceApproveRepository->edit($model, $id);
+        if ($enableFlashNotification) {
+            $this->flashmessenger()->addMessage($message);
+        }
+        try {
+            HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+        } catch (Exception $e) {
+            $this->flashmessenger()->addMessage($e->getMessage());
+        }
+    }
 }

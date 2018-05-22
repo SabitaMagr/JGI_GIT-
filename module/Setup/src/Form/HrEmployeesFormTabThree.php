@@ -1,5 +1,4 @@
 <?php
-
 namespace Setup\Form;
 
 use Application\Model\Model;
@@ -96,6 +95,14 @@ class HrEmployeesFormTabThree extends Model {
     public $idPanNo;
 
     /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"label":"Chart of Account"})
+     * @Annotation\Attributes({ "id":"idAccCode", "class":"form-control" })
+     */
+    public $idAccCode;
+
+    /**
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
@@ -161,7 +168,6 @@ class HrEmployeesFormTabThree extends Model {
      * @Annotation\Attributes({"class":"form-control","id":"idPassportExpiry" })
      */
     public $idPassportExpiry;
-   
     public $modifiedBy;
     public $modifiedDt;
     public $mappings = [
@@ -174,6 +180,7 @@ class HrEmployeesFormTabThree extends Model {
         'idDrivingLicenseExpiry' => 'ID_DRIVING_LICENCE_EXPIRY',
         'idThumbId' => 'ID_THUMB_ID',
         'idPanNo' => 'ID_PAN_NO',
+        'idAccCode' => 'ID_ACC_CODE',
         'idAccountId' => 'ID_ACCOUNT_NO',
         'idRetirementNo' => 'ID_RETIREMENT_NO',
         'idCitizenshipNo' => 'ID_CITIZENSHIP_NO',

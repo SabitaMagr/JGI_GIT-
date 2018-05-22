@@ -4,14 +4,6 @@
         $("select").select2();
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
 
-        $("#reset").on("click", function () {
-            if (typeof document.ids !== "undefined") {
-                $.each(document.ids, function (key, value) {
-                    $("#" + key).val(value).change();
-                });
-            }
-        });
-
         var $table = $('#table');
         var action = `
             <div class="clearfix">
@@ -64,6 +56,7 @@
             {field: "DESTINATION", title: "Destination"},
             {field: "REQUESTED_AMOUNT", title: "Request Amt."},
             {field: "REQUESTED_TYPE", title: "Request For"},
+            {field: "TRANSPORT_TYPE_DETAIL", title: "Transport"},
             {field: "STATUS_DETAIL", title: "Status"},
             {field: ["TRAVEL_ID", "ALLOW_EDIT", "ALLOW_DELETE", "ALLOW_EXPENSE_APPLY"], title: "Action", template: action}
         ]);
@@ -104,6 +97,7 @@
             'DESTINATION': 'Destination',
             'REQUESTED_AMOUNT': 'Request Amt',
             'REQUESTED_TYPE_DETAIL': 'Request Type',
+            'TRANSPORT_TYPE_DETAIL': 'Transport',
             'STATUS_DETAIL': 'Status',
             'PURPOSE': 'Purpose',
             'REMARKS': 'Remarks',

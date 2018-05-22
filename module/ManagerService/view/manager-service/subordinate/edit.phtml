@@ -234,10 +234,10 @@ if ($this->messages) {
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.urlDistrict = '<?= $this->url("webService", ["action" => "district"]) ?>';
+    document.urlDistrict = '<?= $this->url("subordinate", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
     document.urlSubmitTraining = '<?= $this->url('subordinate', ['action' => 'edit', 'id' => $id, 'tab' => 9]) ?>';
-    document.urlMunicipality = '<?= $this->url("webService", ["action" => "municipality"]) ?>';
+    document.urlMunicipality = '<?= $this->url("subordinate", ["action" => "municipality"]) ?>';
     document.urlEmployeeList = '<?= $this->url("employee", ["action" => "index"]) ?>';
     document.currentTab = '<?= $tab ?>';
     document.urlQualificationDtl = '<?= $this->url('restful', ["action" => 'index']); ?>';

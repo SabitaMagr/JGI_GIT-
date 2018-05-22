@@ -28,8 +28,6 @@ BEGIN
       JOIN_DATE
     FROM HRIS_EMPLOYEES
     WHERE STATUS     ='E'
-    AND RETIRED_FLAG ='N'
-    AND IS_ADMIN     ='N'
     )
     LOOP
       SELECT COUNT(*)

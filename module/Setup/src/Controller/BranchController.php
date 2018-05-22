@@ -1,20 +1,17 @@
 <?php
-
 namespace Setup\Controller;
 
 use Application\Custom\CustomViewModel;
 use Application\Helper\ACLHelper;
-use Application\Helper\EntityHelper as EntityHelper2;
 use Application\Helper\Helper;
+use Application\Model\HrisQuery;
 use Exception;
 use Setup\Form\BranchForm;
-use Setup\Helper\EntityHelper;
 use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Repository\BranchRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Select;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -77,12 +74,27 @@ class BranchController extends AbstractActionController {
                 return $this->redirect()->toRoute("branch");
             }
         }
+        $countryKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName("HRIS_COUNTRIES")
+            ->setColumnList(["COUNTRY_ID", "COUNTRY_NAME"])
+            ->setKeyValue("COUNTRY_ID", "COUNTRY_NAME")
+            ->setIncludeEmptyRow(true)
+            ->result();
+        $companyKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName(Company::TABLE_NAME)
+            ->setColumnList([Company::COMPANY_ID, Company::COMPANY_NAME])
+            ->setWhere([Company::STATUS => 'E'])
+            ->setKeyValue(Company::COMPANY_ID, Company::COMPANY_NAME)
+            ->setIncludeEmptyRow(true)
+            ->result();
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, Select::ORDER_ASCENDING, null, true, true),
-                    'customRenderer' => Helper::renderCustomView()
-                        ]
+                'form' => $this->form,
+                'countries' => $countryKV,
+                'companies' => $companyKV,
+                'customRenderer' => Helper::renderCustomView()
+                ]
         );
     }
 
@@ -108,12 +120,27 @@ class BranchController extends AbstractActionController {
                 return $this->redirect()->toRoute("branch");
             }
         }
+        $countryKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName("HRIS_COUNTRIES")
+            ->setColumnList(["COUNTRY_ID", "COUNTRY_NAME"])
+            ->setKeyValue("COUNTRY_ID", "COUNTRY_NAME")
+            ->setIncludeEmptyRow(true)
+            ->result();
+        $companyKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName(Company::TABLE_NAME)
+            ->setColumnList([Company::COMPANY_ID, Company::COMPANY_NAME])
+            ->setWhere([Company::STATUS => 'E'])
+            ->setKeyValue(Company::COMPANY_ID, Company::COMPANY_NAME)
+            ->setIncludeEmptyRow(true)
+            ->result();
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-                    'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, true, TRUE),
-                    'customRenderer' => Helper::renderCustomView()
+                'form' => $this->form,
+                'id' => $id,
+                'countries' => $countryKV,
+                'companies' => $companyKV,
+                'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
@@ -130,5 +157,4 @@ class BranchController extends AbstractActionController {
         $this->flashmessenger()->addMessage("Branch Successfully Deleted!!!");
         return $this->redirect()->toRoute('branch');
     }
-
 }

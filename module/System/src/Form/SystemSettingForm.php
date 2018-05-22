@@ -107,6 +107,27 @@ class SystemSettingForm {
      * @Annotation\Attributes({ "id":"includeHolidayAsLeave"})
      */
     public $includeHolidayAsLeave;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Employee Code"})
+     * @Annotation\Attributes({ "id":"includeEmployeeCode"})
+     */
+    public $includeEmployeeCode;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Company"})
+     * @Annotation\Attributes({ "id":"includeCompany"})
+     */
+    public $includeCompany;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Branch"})
+     * @Annotation\Attributes({ "id":"includeBranch"})
+     */
+    public $includeBranch;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

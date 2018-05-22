@@ -1,22 +1,14 @@
 <?php
-
 namespace WorkOnHoliday\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Repository\HrisRepository;
 use Setup\Model\HrEmployees;
 use Zend\Db\Adapter\AdapterInterface;
 
-class WorkOnHolidayStatusRepository {
-
-    private $adapter;
-
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
-    }
+class WorkOnHolidayStatusRepository extends HrisRepository {
 
     public function getFilteredRecord($data, $recomApproveId) {
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -25,10 +17,32 @@ class WorkOnHolidayStatusRepository {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
         $holidayId = $data['holidayId'];
         $requestStatusId = $data['requestStatusId'];
-        $employeeTypeId = $data['employeeTypeId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
 
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $statusCondition = '';
+        $holidayCondition = '';
+        $fromDateCondition = '';
+        $toDateCondition = '';
+        if ($requestStatusId != -1) {
+            $statusCondition = " AND  WH.STATUS='{$requestStatusId}') ";
+        }
+
+        if ($holidayId != -1) {
+            $holidayCondition = " AND WH.HOLIDAY_ID ='{$holidayId}'";
+        }
+
+        if ($fromDate != null) {
+            $fromDateCondition = " AND WH.FROM_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
+        }
+
+        if ($toDate != null) {
+            $toDateCondition = " AND WH.TO_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
+        }
 
         $sql = "SELECT INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
                   WH.DURATION,
@@ -101,54 +115,13 @@ class WorkOnHolidayStatusRepository {
                     THEN ('E')
                   END
                 OR APRV.STATUS  IS NULL)
-                AND U.EMPLOYEE_ID= {$recomApproveId}";
-        if ($requestStatusId != -1) {
-            $sql .= " AND  WH.STATUS='{$requestStatusId}') ";
-        }
-
-        if ($holidayId != -1) {
-            $sql .= " AND WH.HOLIDAY_ID ='" . $holidayId . "'";
-        }
-
-        if ($fromDate != null) {
-            $sql .= " AND WH.FROM_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
-        }
-
-        if ($toDate != null) {
-            $sql .= " AND WH.TO_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
-        }
-
-        if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $sql .= "AND E.EMPLOYEE_TYPE='" . $employeeTypeId . "' ";
-        }
-
-        if ($employeeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
-        }
-        if ($companyId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
-        }
-
-        if ($branchId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
-        }
-        if ($departmentId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DEPARTMENT_ID . "= $departmentId)";
-        }
-        if ($designationId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DESIGNATION_ID . "= $designationId)";
-        }
-        if ($positionId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::POSITION_ID . "= $positionId)";
-        }
-        if ($serviceTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)";
-        }
-        if ($serviceEventTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
-        }
-
-        $sql .= " ORDER BY WH.REQUESTED_DATE DESC";
+                AND U.EMPLOYEE_ID= {$recomApproveId}
+                {$searchCondition}
+                {$statusCondition}
+                {$holidayCondition}
+                {$fromDateCondition}
+                {$toDateCondition}
+                ORDER BY WH.REQUESTED_DATE DESC";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
@@ -156,8 +129,6 @@ class WorkOnHolidayStatusRepository {
     }
 
     public function getWOHRequestList($data) {
-        $fromDate = $data['fromDate'];
-        $toDate = $data['toDate'];
         $employeeId = $data['employeeId'];
         $companyId = $data['companyId'];
         $branchId = $data['branchId'];
@@ -166,11 +137,32 @@ class WorkOnHolidayStatusRepository {
         $positionId = $data['positionId'];
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
         $holidayId = $data['holidayId'];
         $requestStatusId = $data['requestStatusId'];
-        $employeeTypeId = $data['employeeTypeId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
 
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $statusCondition = '';
+        $holidayCondition = '';
+        $fromDateCondition = '';
+        $toDateCondition = '';
+        if ($requestStatusId != -1) {
+            $statusCondition = " AND  WH.STATUS='{$requestStatusId}') ";
+        }
 
+        if ($holidayId != -1) {
+            $holidayCondition = " AND WH.HOLIDAY_ID ='{$holidayId}'";
+        }
+
+        if ($fromDate != null) {
+            $fromDateCondition = " AND WH.FROM_DATE>=TO_DATE('{$fromDate}','DD-MM-YYYY')";
+        }
+
+        if ($toDate != null) {
+            $toDateCondition = " AND WH.TO_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
+        }
         $sql = "SELECT INITCAP(H.HOLIDAY_ENAME) AS HOLIDAY_ENAME,
                   WH.DURATION,
                   INITCAP(TO_CHAR(WH.FROM_DATE, 'DD-MON-YYYY'))                   AS FROM_DATE_AD,
@@ -185,6 +177,7 @@ class WorkOnHolidayStatusRepository {
                   WH.REMARKS                                                      AS REMARKS,
                   INITCAP(TO_CHAR(WH.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
                   INITCAP(TO_CHAR(WH.APPROVED_DATE, 'DD-MON-YYYY'))               AS APPROVED_DATE,
+                  E.EMPLOYEE_CODE                                                 AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)                                            AS FULL_NAME,
                   INITCAP(E1.FULL_NAME)                                           AS RECOMMENDED_BY_NAME,
                   INITCAP(E2.FULL_NAME)                                           AS APPROVED_BY_NAME,
@@ -236,58 +229,14 @@ class WorkOnHolidayStatusRepository {
                     WHEN APRV.STATUS IS NOT NULL
                     THEN ('E')
                   END
-                OR APRV.STATUS  IS NULL)";
-        if ($requestStatusId != -1) {
-            $sql .= " AND  WH.STATUS='{$requestStatusId}') ";
-        }
-
-        if ($holidayId != -1) {
-            $sql .= " AND WH.HOLIDAY_ID ='" . $holidayId . "'";
-        }
-
-        if ($fromDate != null) {
-            $sql .= " AND WH.FROM_DATE>=TO_DATE('" . $fromDate . "','DD-MM-YYYY')";
-        }
-
-        if ($toDate != null) {
-            $sql .= " AND WH.TO_DATE<=TO_DATE('" . $toDate . "','DD-MM-YYYY')";
-        }
-
-        if ($employeeTypeId != null && $employeeTypeId != -1) {
-            $sql .= "AND E.EMPLOYEE_TYPE='" . $employeeTypeId . "' ";
-        }
-
-        if ($employeeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " = $employeeId";
-        }
-        if ($companyId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::COMPANY_ID . "= $companyId)";
-        }
-
-        if ($branchId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::BRANCH_ID . "= $branchId)";
-        }
-        if ($departmentId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DEPARTMENT_ID . "= $departmentId)";
-        }
-        if ($designationId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::DESIGNATION_ID . "= $designationId)";
-        }
-        if ($positionId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::POSITION_ID . "= $positionId)";
-        }
-        if ($serviceTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_TYPE_ID . "= $serviceTypeId)";
-        }
-        if ($serviceEventTypeId != -1) {
-            $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
-        }
-
-        $sql .= " ORDER BY WH.REQUESTED_DATE DESC";
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return $result;
+                OR APRV.STATUS  IS NULL)
+                {$searchCondition}
+                {$statusCondition}
+                {$holidayCondition}
+                {$fromDateCondition}
+                {$toDateCondition} ORDER BY WH.REQUESTED_DATE DESC";
+        $finalSql = $this->getPrefReportQuery($sql);
+        return $this->rawQuery($finalSql);
     }
 
     public function getAttendedHolidayList($employeeId) {
@@ -312,5 +261,4 @@ class WorkOnHolidayStatusRepository {
                     AND EH.EMPLOYEE_ID = {$employeeId}
                     AND H.START_DATE >= A.MIN_ATTENDANCE_DT ORDER BY H.START_DATE");
     }
-
 }

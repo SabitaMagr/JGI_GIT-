@@ -5,7 +5,8 @@
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         var $tableContainer = $("#overtimeRequestStatusTable");
         var $search = $('#search');
-
+        var $bulkActionDiv = $('#bulkActionDiv');
+        var $bulkBtns = $(".btnApproveReject");
         var columns = [
             {field: "FULL_NAME", title: "Employee"},
             {title: "Requested Date",
@@ -59,7 +60,16 @@
             'APPROVED_DATE': 'Approved Date'
 
         };
-        app.initializeKendoGrid($tableContainer, columns);
+        columns=app.prependPrefColumns(columns);
+        map=app.prependPrefExportMap(map);
+        var pk = 'OVERTIME_ID';
+        var grid = app.initializeKendoGrid($tableContainer, columns, null, {id: pk, atLast: false, fn: function (selected) {
+                if (selected) {
+                    $bulkActionDiv.show();
+                } else {
+                    $bulkActionDiv.hide();
+                }
+            }});
         app.searchTable($tableContainer, ["FULL_NAME"]);
 
         $('#excelExport').on('click', function () {
@@ -95,6 +105,21 @@
                 app.renderKendoGrid($tableContainer, success.data);
                 data = success.data;
             }, function (failure) {
+            });
+        });
+
+        $bulkBtns.bind("click", function () {
+            var list = grid.getSelected();
+            var action = $(this).attr('action');
+
+            var selectedValues = [];
+            for (var i in list) {
+                selectedValues.push({id: list[i][pk], action: action});
+            }
+            app.bulkServerRequest(document.bulkLink, selectedValues, function () {
+                $search.trigger('click');
+            }, function (data, error) {
+
             });
         });
 

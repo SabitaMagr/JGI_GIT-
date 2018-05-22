@@ -1,5 +1,4 @@
 <?php
-
 namespace System\Controller;
 
 use Application\Helper\EntityHelper;
@@ -49,7 +48,7 @@ class RoleSetupController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'acl' => $this->acl
+                'acl' => $this->acl
         ]);
     }
 
@@ -74,9 +73,9 @@ class RoleSetupController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'customRenderer' => Helper::renderCustomView(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                'form' => $this->form,
+                'customRenderer' => Helper::renderCustomView(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -104,10 +103,10 @@ class RoleSetupController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'customRenderer' => Helper::renderCustomView(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'form' => $this->form,
+                'id' => $id,
+                'customRenderer' => Helper::renderCustomView(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 
@@ -122,4 +121,7 @@ class RoleSetupController extends AbstractActionController {
         return $this->redirect()->toRoute('rolesetup');
     }
 
+    public function fetchRuleControls() {
+        
+    }
 }

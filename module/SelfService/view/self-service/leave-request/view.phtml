@@ -64,10 +64,6 @@ $form->setAttribute('action', $this->url('leaveapprove', ['action' => 'view', 'i
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
-<script>
-    document.url = '<?= $this->url("webService", ["action" => "index"]) ?>';
-</script>
-
 <div class="row margin-top-20">
     <div class="col-sm-12">
         <div class="portlet box custom-box">

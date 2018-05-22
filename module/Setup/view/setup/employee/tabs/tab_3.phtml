@@ -8,6 +8,7 @@ $idDrivingLicenseNo = $formThree->get('idDrivingLicenseNo');
 $idDrivingLicenseType = $formThree->get('idDrivingLicenseType');
 $idDrivingLicenseExpiry = $formThree->get('idDrivingLicenseExpiry');
 $idThumbId = $formThree->get('idThumbId');
+$idAccCode= $formThree->get('idAccCode');
 $idPanNo = $formThree->get('idPanNo');
 $idAccountId = $formThree->get('idAccountId');
 $idRetirementNo = $formThree->get('idRetirementNo');
@@ -39,6 +40,7 @@ if ($countryId->getValue() == 168) {
 $formThree->setAttribute('action', $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 3]));
 $formThree->setAttribute("name", "employeeForm");
 $formThree->prepare();
+
 ?>
 <div class="tab-pane" id="tab3">
     <?php print $this->form()->openTag($formThree); ?>
@@ -158,11 +160,20 @@ $formThree->prepare();
 
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="row bottomgap">
-                        <div class="form-group  <?= empty($idThumbId->getMessages()) ? "" : "error" ?>">
+                        <div class="form-group">
                             <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
-                                <?php print $this->formLabel($idThumbId); ?></div>
+                                <?php print $this->formLabel($idThumbId); ?>
+                            </div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
-                                <?php print $this->formElement($idThumbId); ?></div>
+                                <input type="text" name="idThumbId" id="idThumbId" 
+                                       class="form-control hris-unique-form-input" 
+                                       table="HRIS_EMPLOYEES" 
+                                       column="ID_THUMB_ID"
+                                       pk="EMPLOYEE_ID"
+                                       pk-value="<?php echo $id; ?>"
+                                       url="<?= $this->url("employee", ["action" => "checkUnique"]) ?>"
+                                       value="<?php echo $idThumbId->getValue(); ?>" />
+                            </div>
                             <?php print $this->formElementErrors()->render($idThumbId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
@@ -176,6 +187,17 @@ $formThree->prepare();
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
                                 <?php print $this->formElement($idPanNo); ?></div>
                             <?php print $this->formElementErrors()->render($idPanNo, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                <?php print $this->formLabel($idAccCode); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                <?php print $this->formElement($idAccCode); ?></div>
+                            <?php print $this->formElementErrors()->render($idAccCode, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>
@@ -286,6 +308,7 @@ $formThree->prepare();
         <input type="submit" class="hidden" id="btnform3" value="submit">
         <?php
         print $this->form()->closeTag();
+
         ?>
     </div>
 </div>

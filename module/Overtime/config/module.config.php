@@ -1,10 +1,10 @@
 <?php
-
 namespace Overtime;
 
 use Application\Controller\ControllerFactory;
 use Overtime\Controller\OvertimeApply;
 use Overtime\Controller\OvertimeAutomation;
+use Overtime\Controller\OvertimeReport;
 use Overtime\Controller\OvertimeStatus;
 use Zend\Router\Http\Segment;
 
@@ -49,6 +49,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => OvertimeAutomation::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'overtime-report' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/overtime/report[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => OvertimeReport::class,
                         'action' => 'index'
                     ],
                 ],
@@ -138,6 +152,7 @@ return [
             OvertimeStatus::class => ControllerFactory::class,
             OvertimeApply::class => ControllerFactory::class,
             OvertimeAutomation::class => ControllerFactory::class,
+            OvertimeReport::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
