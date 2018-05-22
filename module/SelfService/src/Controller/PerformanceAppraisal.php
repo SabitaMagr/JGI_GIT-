@@ -195,11 +195,11 @@ class PerformanceAppraisal extends AbstractActionController {
                 }
                 $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::APPRAISEE_AGREE => $appraiseeAgree], $appraisalId, $this->employeeId);
 
-                if ($assignedAppraisalDetail['HR_FEEDBACK_ENABLE'] != null && $assignedAppraisalDetail['HR_FEEDBACK_ENABLE'] == 'Y') {
-                    $nextStageId = 9; //hr comment stage
-                } else {
+//                if ($assignedAppraisalDetail['HR_FEEDBACK_ENABLE'] != null && $assignedAppraisalDetail['HR_FEEDBACK_ENABLE'] == 'Y') {
+//                    $nextStageId = 9; //hr comment stage
+//                } else {
                     $nextStageId = AppraisalHelper::getNextStageId($this->adapter, $assignedAppraisalDetail['STAGE_ORDER_NO'] + 1);
-                }
+//                }
                 $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $this->employeeId);
                 if ($assignedAppraisalDetail['STAGE_ID'] != 1) {
                     HeadNotification::pushNotification(NotificationEvents::APPRAISEE_FEEDBACK, $appraisalStatus, $this->adapter, $this, null, ['ID' => ($assignedAppraisalDetail['REVIEWED_BY'] != null) ? $assignedAppraisalDetail['REVIEWED_BY'] : $assignedAppraisalDetail['REVIEWER_ID'], 'USER_TYPE' => "REVIEWER"]);

@@ -257,8 +257,8 @@ class AppraisalReview extends HrisController {
                         break;
                     case 3:
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE => $reviewerAgree, AppraisalStatus::REVIEWED_BY => $this->employeeId], $appraisalId, $employeeId);
-//                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
-                        $nextStageId = ($reviewerAgree == 'N') ? 5 : 6; //super reviewer evaluation : appraisee stage
+                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
+//                        $nextStageId = ($reviewerAgree == 'N') ? 5 : 6; //super reviewer evaluation : appraisee stage
                         $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
 
                         if ($reviewerAgree === 'Y' && $assignedAppraisalDetail['KPI_SETTING'] == 'Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING'] == 'Y') {
