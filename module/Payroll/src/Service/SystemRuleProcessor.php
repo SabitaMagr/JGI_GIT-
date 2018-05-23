@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Service;
 
 use Application\Model\Months;
@@ -52,7 +51,7 @@ class SystemRuleProcessor {
             case PayrollGenerator::SYSTEM_RULE[0]:
                 $calculatedValue = 0;
                 foreach ($this->ruleDetailList as $ruleDetail) {
-                    if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
+                    if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] == 'Y')) {
                         $past = 0;
                         if ($ruleDetail['rule']['INCLUDE_PAST_VALUE'] === 'Y') {
                             $past = (($this->multiplicationFactor == 11) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]);
@@ -62,14 +61,14 @@ class SystemRuleProcessor {
                             $future = $ruleDetail['ruleValue'] * $this->multiplicationFactor;
                         }
                         $ruleValue = $past + $ruleDetail['ruleValue'] + $future;
-                    }
-                    switch ($ruleDetail['rule']['PAY_TYPE_FLAG']) {
-                        case "A":
-                            $calculatedValue = $calculatedValue + $ruleValue;
-                            break;
-                        case "D":
-                            $calculatedValue = $calculatedValue - $ruleValue;
-                            break;
+                        switch ($ruleDetail['rule']['PAY_TYPE_FLAG']) {
+                            case "A":
+                                $calculatedValue = $calculatedValue + $ruleValue;
+                                break;
+                            case "D":
+                                $calculatedValue = $calculatedValue - $ruleValue;
+                                break;
+                        }
                     }
                 }
                 $processedValue = $calculatedValue;
@@ -104,7 +103,7 @@ class SystemRuleProcessor {
     }
 
     public function getTaxValue($ruleDetail) {
-        if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D','T']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
+        if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D', 'T']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
             $past = 0;
             if ($ruleDetail['rule']['INCLUDE_PAST_VALUE'] === 'Y') {
                 $past = (($this->multiplicationFactor == 11) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]);
@@ -117,5 +116,4 @@ class SystemRuleProcessor {
         }
         return null;
     }
-
 }
