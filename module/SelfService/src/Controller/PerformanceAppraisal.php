@@ -4,10 +4,12 @@ namespace SelfService\Controller;
 
 use Application\Helper\AppraisalHelper;
 use Application\Helper\CustomFormElement;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Appraisal\Model\AppraisalAnswer;
 use Appraisal\Model\AppraisalStatus;
 use Appraisal\Model\Question;
+use Appraisal\Model\Stage;
 use Appraisal\Repository\AppraisalAnswerRepository;
 use Appraisal\Repository\AppraisalAssignRepository;
 use Appraisal\Repository\AppraisalStatusRepository;
@@ -221,6 +223,11 @@ class PerformanceAppraisal extends AbstractActionController {
         $keyAchievementDtlNum = $appraisalKPI->countKeyAchievementDtl($this->employeeId, $appraisalId)['NUM'];
         $appraiserRatingDtlNum = $appraisalKPI->countAppraiserRatingDtl($this->employeeId, $appraisalId)['NUM'];
         $appCompetenciesRatingDtlNum = $appraisalCompetencies->countCompetenciesRatingDtl($this->employeeId, $appraisalId)['NUM'];
+        
+        $stagesInstrunction= EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::INSTRUCTION]);
+        
+//        print_r($stagesInstrunction);
+//        die();
 
         return Helper::addFlashMessagesToArray($this, [
                     'assignedAppraisalDetail' => $assignedAppraisalDetail,
@@ -241,6 +248,7 @@ class PerformanceAppraisal extends AbstractActionController {
                     'appraiserRatingDtlNum' => $appraiserRatingDtlNum,
                     'appCompetenciesRatingDtlNum' => $appCompetenciesRatingDtlNum,
                     'defaultRatingDtl' => $defaultRatingDtl,
+                    'stagesInstrunction' => $stagesInstrunction,
                     'listUrl' => $this->url()->fromRoute('performanceAppraisal', $action)
         ]);
     }

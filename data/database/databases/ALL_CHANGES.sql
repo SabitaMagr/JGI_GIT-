@@ -800,3 +800,11 @@ SET FISCAL_YEAR_NAME=REGEXP_SUBSTR(BS_DATE(TRUNC(START_DATE)), '[^-]+', 1, 1)
 
 
 ALTER TABLE HRIS_EMPLOYEES ADD ID_ACC_CODE VARCHAR2(30);
+
+
+-- for apprisal start
+
+alter table HRIS_APPRAISAL_STAGE 
+add instruction VARCHAR2 (4000);
+
+-- for apprisal end
