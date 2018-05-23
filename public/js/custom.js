@@ -120,11 +120,22 @@ window.app = (function ($, toastr, App) {
     };
 
     var startEndDatePickerWithNepali = function (fromNepali, fromEnglish, toNepali, toEnglish, fn, setToDate) {
-
-        var $fromNepaliDate = $('#' + fromNepali);
-        var $fromEnglishDate = $('#' + fromEnglish);
-        var $toNepaliDate = $('#' + toNepali);
-        var $toEnglishDate = $('#' + toEnglish);
+        var $fromNepaliDate = fromNepali;
+        if (!(fromNepali instanceof jQuery)) {
+            $fromNepaliDate = $('#' + fromNepali);
+        }
+        var $fromEnglishDate = fromEnglish;
+        if (!(fromEnglish instanceof jQuery)) {
+            var $fromEnglishDate = $('#' + fromEnglish);
+        }
+        var $toNepaliDate = toNepali;
+        if (!(toNepali instanceof jQuery)) {
+            var $toNepaliDate = $('#' + toNepali);
+        }
+        var $toEnglishDate = toEnglish;
+        if (!(toEnglish instanceof jQuery)) {
+            var $toEnglishDate = $('#' + toEnglish);
+        }
 
         var oldFromNepali = null;
         var oldtoNepali = null;

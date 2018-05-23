@@ -2,14 +2,13 @@
 $this->headScript()->appendFile($this->basePath('js/customer/customer-setup/edit.js'));
 ?>
 <?php
-$customerCode = $form->get('customerCode');
 $customerEname = $form->get('customerEname');
-$customerLname = $form->get('customerLname');
 $address = $form->get('address');
 $phoneNo = $form->get('phoneNo');
 $contactPersonName = $form->get('contactPersonName');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
+$panNo = $form->get('panNo');
 
 $form->setAttribute('action', $this->url('customer-setup', ['action' => 'edit', "id" => $id]));
 $form->prepare();
@@ -33,13 +32,6 @@ $form->prepare();
                 <?php print $this->form()->openTag($form); ?>
 
                 <div class=" row">
-                    <div class="col-sm-12 col-md-6 col-lg-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($customerCode); ?>
-                            <?php print $this->formElement($customerCode); ?>
-                            <?php print $this->formElementErrors()->render($customerCode, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
@@ -51,16 +43,16 @@ $form->prepare();
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
-                            <?php print $this->formLabel($customerLname); ?>
-                            <?php print $this->formElement($customerLname); ?>
-                            <?php print $this->formElementErrors()->render($customerLname, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($address); ?>
+                            <?php print $this->formElement($address); ?>
+                            <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
-                            <?php print $this->formLabel($address); ?>
-                            <?php print $this->formElement($address); ?>
-                            <?php print $this->formElementErrors()->render($address, ['class' => 'help-block']); ?>
+                            <?php print $this->formLabel($panNo); ?>
+                            <?php print $this->formElement($panNo); ?>
+                            <?php print $this->formElementErrors()->render($panNo, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6 col-lg-4">

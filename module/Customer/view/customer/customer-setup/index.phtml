@@ -17,6 +17,7 @@ $this->headScript()
 <script>
     document.editLink = '<?= $this->url("customer-setup", ["action" => "edit"]); ?>';
     document.deleteLink = '<?= $this->url("customer-setup", ["action" => "delete"]); ?>';
+    document.locationSetupLink = '<?= $this->url("customer-location", ["action" => "view"]); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">

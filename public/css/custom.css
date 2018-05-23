@@ -1911,105 +1911,105 @@ div#ndp-nepali-box{
 
 
 .infomation-data {
-        white-space: nowrap;
-        border: 1px solid #ddd;
-        width:100%;
-        overflow-x: auto;
-        padding:10px;
-    }
-    .databox {
-        box-shadow: 2px 2px 2px 1px #eee;
-        border:solid #ddd 1px;
-        width:30%;
-        min-height:185px;
-         
-        margin-right:10px;
-        padding:10px;
-        /* for IE6/7, remove if you don't need to support those browsers */
-        *display: inline;
-        zoom: 1;
-            display:inline-grid;
-    }
-    .databox:last-child
-    {
-        margin-right:0px;
-    }
+    white-space: nowrap;
+    border: 1px solid #ddd;
+    width:100%;
+    overflow-x: auto;
+    padding:10px;
+}
+.databox {
+    box-shadow: 2px 2px 2px 1px #eee;
+    border:solid #ddd 1px;
+    width:30%;
+    min-height:185px;
 
-    .databox span {
-        padding: 5px 0px 5px 0px;
-    }
-    .infobox span
-    {
+    margin-right:10px;
+    padding:10px;
+    /* for IE6/7, remove if you don't need to support those browsers */
+    *display: inline;
+    zoom: 1;
+    display:inline-grid;
+}
+.databox:last-child
+{
+    margin-right:0px;
+}
 
-        display: inline-block;
+.databox span {
+    padding: 5px 0px 5px 0px;
+}
+.infobox span
+{
 
-        font-weight:600;
+    display: inline-block;
 
-
-    }  
-    .infodata span
-    {
-
-        display: inline-block;
+    font-weight:600;
 
 
+}  
+.infodata span
+{
 
-    }
-    .name
-    {
-        width:65%;  
-    }
-
-
-    h4.title
-    {
-        margin-top:5px;
-        color:#2F9E1E;
-        font-weight:400;
-        background-color: #eee;
-        padding: 5px;
-        font-size:16px;
-    }
-    .databox h4:before{
-        content: "\f007";
-        font-family:fontawesome;
-        color:#2F9E1E;
-        padding-right:5px;
-    }
+    display: inline-block;
 
 
-    .changes
-    {
-     display:inline-block;
+
+}
+.name
+{
+    width:65%;  
+}
+
+
+h4.title
+{
+    margin-top:5px;
+    color:#2F9E1E;
+    font-weight:400;
+    background-color: #eee;
+    padding: 5px;
+    font-size:16px;
+}
+.databox h4:before{
+    content: "\f007";
+    font-family:fontawesome;
+    color:#2F9E1E;
+    padding-right:5px;
+}
+
+
+.changes
+{
+    display:inline-block;
     width: 5%;
     margin-right: 10px;
     font-size: 13px;
     font-weight: 600;
     text-align:center;
     vertical-align:top;
-        margin-top:7%;
-    }
-    .changes:before
-    {
-        content: "\f178";
-        font-family:fontawesome;
-        font-size: 20px;
-        
-       
-    }
-    .fontbold
-    {
-        font-weight:600;
-    }
-    .hire-change{
-        padding-bottom: 5px;
-    }
+    margin-top:7%;
+}
+.changes:before
+{
+    content: "\f178";
+    font-family:fontawesome;
+    font-size: 20px;
+
+
+}
+.fontbold
+{
+    font-weight:600;
+}
+.hire-change{
+    padding-bottom: 5px;
+}
 
 .month h3
 {
-margin-top: 0;
-font-size: 17px;
-font-weight: 400;
+    margin-top: 0;
+    font-size: 17px;
+    font-weight: 400;
 }
 
 
@@ -2054,14 +2054,14 @@ font-weight: 400;
         /*max-width: 20%;*/
         border:solid #ddd 2px;
     }
-        .databox
+    .databox
     {
         width:40%;
     }
     .changes{
         width:15%;
     }
-    
+
 
 }
 
@@ -2089,14 +2089,14 @@ font-weight: 400;
         float:none !important;
 
     }
-        .databox
+    .databox
     {
         width:40%;
     }
     .changes{
         width:15%;
     }
-    
+
 
 }
 
@@ -2164,7 +2164,7 @@ font-weight: 400;
     {
         margin-top:25px;
     }
-      .databox
+    .databox
     {
         width:60%;
     }
@@ -2366,29 +2366,43 @@ div#ndp-nepali-box{
 }
 
 .truncate {
-  width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
 }
 
+.attendance-color-red{
+    background-color: #f9a0a0;
+}
+
+.attendance-color-green{
+    background-color: #d6f7d6;
+}
+.attendance-color-yellow{
+    background-color: #efef8d;
+}
+
+.attendance-color-ot-red{
+    color: red;
+}
 
 /*custom news panel start*/
 
 
-  
-    .fixed-height
-    {
-        max-height:120px;
-        overflow:auto;
-        min-height:120px;
-        margin-bottom:0px !important;
-    }
-    .custompanel .list-group.panel-group li:before
-    {
-        content:"";
-    }
+
+.fixed-height
+{
+    max-height:120px;
+    overflow:auto;
+    min-height:120px;
+    margin-bottom:0px !important;
+}
+.custompanel .list-group.panel-group li:before
+{
+    content:"";
+}
 .panel-green .panel-heading
 {
     background-color:#2F9E1E;
@@ -2405,5 +2419,17 @@ div#ndp-nepali-box{
     color:#666;
 }
 
+#assignTableDiv tr th
+{
+    font-size:12px !important;
+}
+#assignTableDiv tr td{
+    padding:5px !important;
+    font-size:12px !important;
+} 
+.button-sm
+{
+    padding: 4px 13px 1px !important;
+}
 
 /*custom news panel end*/
