@@ -1,5 +1,4 @@
 <?php
-
 namespace Setup\Form;
 
 use Zend\Form\Annotation;
@@ -22,7 +21,7 @@ class BranchForm {
 
     /**
      * @Annotion\Type("Zend\Form\Element\Text")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Street Address"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"255"}})
@@ -32,8 +31,7 @@ class BranchForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Required(false)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Country"})
      * @Annotation\Attributes({ "id":"countryId","class":"form-control"})
      */
@@ -50,7 +48,7 @@ class BranchForm {
 
     /**
      * @Annotation\Type("Application\Custom\FormElement\Telephone")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Telephone"})
      * @Annotation\Attributes({ "id":"form-telephone", "placeholder":"xxx-xxxxxxx", "pattern":"^\(?\d{2,3}\)?[- ]?\d{7}$", "class":"form-control","title"="Enter your mobile number(xx-xxxxxxx)"})
@@ -69,7 +67,7 @@ class BranchForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Email")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Email"})
      * @Annotation\Attributes({ "id":"email", "class":"form-control" })
@@ -79,7 +77,6 @@ class BranchForm {
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
      * @Annotation\Required(false)
-     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Remarks"})
      * @Annotation\Attributes({"id":"remarks","class":"form-control"})
      */
@@ -92,6 +89,3 @@ class BranchForm {
     public $submit;
 
 }
-
-/* End of file BranchForm.php */
-/* Location: ./Setup/src/Form/BranchForm.php */

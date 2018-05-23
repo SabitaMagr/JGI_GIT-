@@ -462,7 +462,7 @@ EOT;
                 SUM(
                 CASE
                   WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
-                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_PERIOD IS NOT NULL THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS PRESENT,
                 SUM(
@@ -474,19 +474,19 @@ EOT;
                 SUM(
                 CASE
                   WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL
-                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_PERIOD IS NOT NULL THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS LEAVE,
                 SUM(
                 CASE
                   WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL AND L.PAID = 'Y' 
-                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_PERIOD IS NOT NULL THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS PAID_LEAVE,
                 SUM(
                 CASE
                   WHEN A.OVERALL_STATUS IN ('LV','LP') AND A.GRACE_PERIOD IS NULL AND L.PAID = 'N'
-                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_FLAG ='Y' THEN 0.5 ELSE 1 END)
+                  THEN (CASE WHEN A.OVERALL_STATUS = 'LP' AND A.HALFDAY_PERIOD IS NOT NULL THEN 0.5 ELSE 1 END)
                   ELSE 0
                 END) AS UNPAID_LEAVE,
                 SUM(
@@ -1084,7 +1084,7 @@ EOT;
                         THEN (
                           CASE
                             WHEN A.OVERALL_STATUS = 'LP'
-                            AND A.HALFDAY_FLAG    ='Y'
+                            AND A.HALFDAY_PERIOD IS NOT NULL
                             THEN 0.5
                             ELSE 1
                           END)
@@ -1103,7 +1103,7 @@ EOT;
                         THEN (
                           CASE
                             WHEN A.OVERALL_STATUS = 'LP'
-                            AND A.HALFDAY_FLAG    ='Y'
+                            AND A.HALFDAY_PERIOD IS NOT NULL
                             THEN 0.5
                             ELSE 1
                           END)
@@ -1117,7 +1117,7 @@ EOT;
                         THEN (
                           CASE
                             WHEN A.OVERALL_STATUS = 'LP'
-                            AND A.HALFDAY_FLAG    ='Y'
+                            AND A.HALFDAY_PERIOD IS NOT NULL
                             THEN 0.5
                             ELSE 1
                           END)
@@ -1131,7 +1131,7 @@ EOT;
                         THEN (
                           CASE
                             WHEN A.OVERALL_STATUS = 'LP'
-                            AND A.HALFDAY_FLAG    ='Y'
+                            AND A.HALFDAY_PERIOD IS NOT NULL
                             THEN 0.5
                             ELSE 1
                           END)

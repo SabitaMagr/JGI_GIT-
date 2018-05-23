@@ -20,7 +20,7 @@ $this->headScript()
         <?php print $this->partial('print-tab/reviewer-evaluation.phtml'); ?>
         <?php print $this->partial('print-tab/super-reviewer-evaluation.phtml'); ?>
         <?php print $this->partial('print-tab/appraisee-feedback.phtml'); ?>
-        <?php print $this->partial('print-tab/hr-feedback.phtml'); ?>
+        <?php print $this->partial('tab/hr-feedback.phtml'); ?>
     </div>
     <?php if (in_array($assignedAppraisalDetail['STAGE_ID'], ['2', '9', '4'])) { ?>
         <div class="col-md-12" style="text-align:center;">

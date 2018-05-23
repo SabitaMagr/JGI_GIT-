@@ -56,7 +56,7 @@ class LeaveAssignRepository extends HrisRepository {
                   ELA.TOTAL_DAYS,
                   ELA.BALANCE
                 FROM HRIS_EMPLOYEES E
-                LEFT JOIN HRIS_EMPLOYEE_LEAVE_ASSIGN ELA
+                LEFT JOIN (SELECT * FROM HRIS_EMPLOYEE_LEAVE_ASSIGN WHERE LEAVE_ID   ={$leaveId}) ELA
                 ON (E.EMPLOYEE_ID = ELA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_COMPANY C
                 ON (E.COMPANY_ID=C.COMPANY_ID)
@@ -65,9 +65,9 @@ class LeaveAssignRepository extends HrisRepository {
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON (E.DEPARTMENT_ID=DEP.DEPARTMENT_ID)
                 WHERE 1            =1 
-                AND ELA.LEAVE_ID   ={$leaveId}
                 {$searchCondition}
                 ORDER BY C.COMPANY_NAME,B.BRANCH_NAME,DEP.DEPARTMENT_NAME,E.FULL_NAME";
+
         return $this->rawQuery($sql);
     }
 

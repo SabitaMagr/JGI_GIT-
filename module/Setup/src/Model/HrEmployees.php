@@ -1,5 +1,4 @@
 <?php
-
 namespace Setup\Model;
 
 use Application\Model\Model;
@@ -32,7 +31,6 @@ class HrEmployees extends Model {
     public $addrPermWardNo;
     public $addrPermStreetAddress;
     public $addrPermCountryId;
-//25
     public $addrPermVdcMunicipalityId;
     public $addrTempHouseNo;
     public $addrTempWardNo;
@@ -59,6 +57,7 @@ class HrEmployees extends Model {
     public $idDrivingLicenseExpiry;
     public $idThumbId;
     public $idPanNo;
+    public $idAccCode;
     public $idAccountId;
     public $idRetirementNo;
     public $idCitizenshipNo;
@@ -156,6 +155,7 @@ class HrEmployees extends Model {
     const ID_THUMB_ID = "ID_THUMB_ID";
     const ID_PAN_NO = "ID_PAN_NO";
     const ID_ACCOUNT_NO = "ID_ACCOUNT_NO";
+    const ID_ACC_CODE = "ID_ACC_CODE";
     const ID_RETIREMENT_NO = "ID_RETIREMENT_NO";
     const ID_CITIZENSHIP_NO = "ID_CITIZENSHIP_NO";
     const ID_CITIZENSHIP_ISSUE_DATE = "ID_CITIZENSHIP_ISSUE_DATE";
@@ -254,6 +254,7 @@ class HrEmployees extends Model {
         'idThumbId' => self::ID_THUMB_ID,
         'idPanNo' => self::ID_PAN_NO,
         'idAccountId' => self::ID_ACCOUNT_NO,
+        'idAccCode' => self::ID_ACC_CODE,
         'idRetirementNo' => self::ID_RETIREMENT_NO,
         'idCitizenshipNo' => self::ID_CITIZENSHIP_NO,
         'idCitizenshipIssueDate' => self::ID_CITIZENSHIP_ISSUE_DATE,

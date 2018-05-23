@@ -1,46 +1,26 @@
 <?php
-
 namespace Setup\Controller;
 
-use Application\Custom\CustomViewModel;
-use Application\Helper\ACLHelper;
-use Application\Helper\EntityHelper as ApplicationEntityHelper;
+use Application\Controller\HrisController;
 use Application\Helper\Helper;
+use Application\Model\HrisQuery;
 use Exception;
 use Setup\Form\DepartmentForm;
-use Setup\Helper\EntityHelper;
+use Setup\Model\Branch;
 use Setup\Model\Company;
 use Setup\Model\Department;
 use Setup\Repository\DepartmentRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Form\Annotation\AnnotationBuilder;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
+use Zend\Db\Sql\Select;
+use Zend\View\Model\JsonModel;
 
-class DepartmentController extends AbstractActionController {
+class DepartmentController extends HrisController {
 
-    private $form;
-    private $repository;
-    private $adapter;
-    private $employeeId;
-    private $storageData;
-    private $acl;
-
-    function __construct(AdapterInterface $adapter, StorageInterface $storage) {
-        $this->repository = new DepartmentRepository($adapter);
-        $this->adapter = $adapter;
-        $this->storageData = $storage->read();
-        $this->employeeId = $this->storageData['employee_id'];
-        $this->acl = $this->storageData['acl'];
-    }
-
-    public function initializeForm() {
-        $departmentForm = new DepartmentForm();
-        $builder = new AnnotationBuilder();
-        if (!$this->form) {
-            $this->form = $builder->createForm($departmentForm);
-        }
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage, DepartmentRepository $repository) {
+        parent::__construct($adapter, $storage);
+        $this->repository = $repository;
+        $this->initializeForm(DepartmentForm::class);
     }
 
     public function indexAction() {
@@ -49,23 +29,67 @@ class DepartmentController extends AbstractActionController {
             try {
                 $result = $this->repository->fetchAll();
                 $departmentList = Helper::extractDbData($result);
-                return new CustomViewModel(['success' => true, 'data' => $departmentList, 'error' => '']);
+                return new JsonModel(['success' => true, 'data' => $departmentList, 'error' => '']);
             } catch (Exception $e) {
-                return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
         return Helper::addFlashMessagesToArray($this, ['acl' => $this->acl]);
     }
 
+    private function prepareForm($id = null) {
+        $countryId = $this->form->get('countryId');
+        $companyId = $this->form->get('companyId');
+        $branchId = $this->form->get('branchId');
+        $parentDepartment = $this->form->get('parentDepartment');
+
+        $countryKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName("HRIS_COUNTRIES")
+            ->setColumnList(["COUNTRY_ID", "COUNTRY_NAME"])
+            ->setKeyValue("COUNTRY_ID", "COUNTRY_NAME")
+//            ->setIncludeEmptyRow(true)
+            ->result();
+        $companyKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName(Company::TABLE_NAME)
+            ->setColumnList([Company::COMPANY_ID, Company::COMPANY_NAME])
+            ->setWhere([Company::STATUS => 'E'])
+            ->setKeyValue(Company::COMPANY_ID, Company::COMPANY_NAME)
+            ->setIncludeEmptyRow(true)
+            ->result();
+        $branchKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName(Branch::TABLE_NAME)
+            ->setColumnList([Branch::BRANCH_ID, Branch::BRANCH_NAME])
+            ->setWhere([Branch::STATUS => 'E'])
+            ->setKeyValue(Branch::BRANCH_ID, Branch::BRANCH_NAME)
+            ->setIncludeEmptyRow(true)
+            ->result();
+        $depWhere = [Department::STATUS => 'E'];
+        if ($id != null) {
+            $depWhere[] = Department::DEPARTMENT_ID . " != {$id}";
+        }
+        $departmentKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName(Department::TABLE_NAME)
+            ->setColumnList([Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME])
+            ->setWhere($depWhere)
+            ->setOrder([Department::DEPARTMENT_NAME => Select::ORDER_ASCENDING])
+            ->setKeyValue(Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME)
+            ->setIncludeEmptyRow(true)
+            ->result();
+
+        $countryId->setValueOptions($countryKV);
+        $companyId->setValueOptions($companyKV);
+        $branchId->setValueOptions($branchKV);
+        $parentDepartment->setValueOptions($departmentKV);
+    }
+
     public function addAction() {
-        ACLHelper::checkFor(ACLHelper::ADD, $this->acl, $this);
-        $this->initializeForm();
         $request = $this->getRequest();
-
         if ($request->isPost()) {
-
             $this->form->setData($request->getPost());
-
             if ($this->form->isValid()) {
                 $department = new Department();
                 $department->exchangeArrayFromForm($this->form->getData());
@@ -78,60 +102,37 @@ class DepartmentController extends AbstractActionController {
                 return $this->redirect()->toRoute("department");
             }
         }
-        return new ViewModel(Helper::addFlashMessagesToArray(
-                        $this, [
-                    'form' => $this->form,
-                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC", null, false, true),
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, true, true),
-                    'branch' => $this->repository->fetchAllBranchAndCompany(),
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES)
-                        ]
-        ));
+        $this->prepareForm();
+        return ['form' => $this->form];
     }
 
     public function editAction() {
-        ACLHelper::checkFor(ACLHelper::UPDATE, $this->acl, $this);
         $id = (int) $this->params()->fromRoute("id");
         if ($id === 0) {
-            return $this->redirect()->
-                            toRoute('department');
+            return $this->redirect()->toRoute('department');
         }
-        $this->initializeForm();
         $request = $this->getRequest();
-
         $department = new Department();
         $detail = $this->repository->fetchById($id)->getArrayCopy();
-        if (!$request->isPost()) {
-            $department->exchangeArrayFromDb($detail);
-            $this->form->bind($department);
-        } else {
+        if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $department->exchangeArrayFromForm($this->form->getData());
                 $department->modifiedDt = Helper::getcurrentExpressionDate();
                 $department->modifiedBy = $this->employeeId;
-
                 $this->repository->edit($department, $id);
                 $this->flashmessenger()->addMessage("Department Successfully Updated!!!");
                 return $this->redirect()->toRoute("department");
             }
         }
+        $department->exchangeArrayFromDb($detail);
+        $this->form->bind($department);
+        $this->prepareForm($id);
 
-        return Helper::addFlashMessagesToArray(
-                        $this, [
-                    'form' => $this->form, 'id' => $id,
-                    'departments' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Department::TABLE_NAME, Department::DEPARTMENT_ID, [Department::DEPARTMENT_NAME], ["STATUS" => "E"], "DEPARTMENT_NAME", "ASC", null, false, true),
-                    'company' => ApplicationEntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, true, true),
-                    'branch' => $this->repository->fetchAllBranchAndCompany(),
-                    'countries' => EntityHelper::getTableKVList($this->adapter, EntityHelper::HRIS_COUNTRIES),
-                        ]
-        );
+        return ['form' => $this->form, 'id' => $id];
     }
 
     public function deleteAction() {
-        if (!ACLHelper::checkFor(ACLHelper::DELETE, $this->acl, $this)) {
-            return;
-        };
         $id = (int) $this->params()->fromRoute("id");
         if (!$id) {
             return $this->redirect()->toRoute('department');
@@ -140,7 +141,4 @@ class DepartmentController extends AbstractActionController {
         $this->flashmessenger()->addMessage("Department Successfully Deleted!!!");
         return $this->redirect()->toRoute('department');
     }
-
 }
-
-?>

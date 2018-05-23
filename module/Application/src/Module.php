@@ -105,7 +105,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             $adapter = $app->getServiceManager()->get(DbAdapterInterface::class);
             $menus = $identity['menus'];
             $allowFlag = false;
-            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'webService', 'registerAttendance', 'news-status'];
+            $allowedRoutes = ['application', "home", 'auth', 'login', 'logout', 'checkout', 'restful', 'user-setting', 'registerAttendance', 'news-status'];
             if (in_array($route, $allowedRoutes)) {
                 $allowFlag = true;
             }

@@ -1,5 +1,4 @@
 <?php
-
 namespace ManagerService\Controller;
 
 use Application\Controller\HrisController;
@@ -7,6 +6,7 @@ use Application\Custom\CustomViewModel;
 use Application\Factory\ConfigInterface;
 use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
+use Application\Model\HrisQuery;
 use Asset\Repository\IssueRepository;
 use AttendanceManagement\Model\ShiftAssign;
 use AttendanceManagement\Model\ShiftSetup;
@@ -78,7 +78,7 @@ class Subordinate extends HrisController {
             }
         }
         return $this->stickFlashMessagesTo([
-                    'acl' => $this->acl,
+                'acl' => $this->acl,
         ]);
     }
 
@@ -338,42 +338,42 @@ class Subordinate extends HrisController {
         );
 
         return Helper::addFlashMessagesToArray($this, [
-                    'tab' => $tab,
-                    "id" => $id,
-                    'formOne' => $this->formOne,
-                    'formTwo' => $this->formTwo,
-                    'formThree' => $this->formThree,
-                    'formFour' => $this->formFour,
-                    'formSix' => $this->formSix,
-                    'formSeven' => $this->formSeven,
-                    'formEight' => $this->formEight,
-                    "bloodGroups" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_BLOOD_GROUPS', 'BLOOD_GROUP_ID', ['BLOOD_GROUP_CODE'], NULL, NULL, TRUE),
-                    "genders" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Gender::TABLE_NAME, \Setup\Model\Gender::GENDER_ID, [\Setup\Model\Gender::GENDER_NAME], null, null, true),
-                    "zones" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Zones::TABLE_NAME, \Setup\Model\Zones::ZONE_ID, [\Setup\Model\Zones::ZONE_NAME], null, null, true),
-                    "religions" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_RELIGIONS', 'RELIGION_ID', ['RELIGION_NAME'], null, null, true),
-                    "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
-                    "countries" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_COUNTRIES', 'COUNTRY_ID', ['COUNTRY_NAME'], null, null, true),
-                    'filetypes' => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_FILE_TYPE', 'FILETYPE_CODE', ['NAME']),
-                    'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
-                    'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
-                    'designations' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true, true),
-                    'departments' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true, true),
-                    'branches' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true, true),
-                    'academicDegree' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E'], "ACADEMIC_DEGREE_NAME", "ASC", null, false, true),
-                    'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC", null, false, true),
-                    'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC", null, false, true),
-                    'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC", null, false, true),
-                    'rankTypes' => $rankTypes,
-                    'profilePictureId' => $profilePictureId,
-                    'address' => $address,
-                    'shiftId' => ($getEmpShiftDtl != null) ? $getEmpShiftDtl['SHIFT_ID'] : 0,
-                    'recommenderId' => ($employeePreDtl != null) ? $employeePreDtl['RECOMMEND_BY'] : 0,
-                    'approverId' => ($employeePreDtl != null) ? $employeePreDtl['APPROVED_BY'] : 0,
-                    'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC", null, false, true),
-                    'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
-                    'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-                    'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
-                    'customRender' => Helper::renderCustomView()
+                'tab' => $tab,
+                "id" => $id,
+                'formOne' => $this->formOne,
+                'formTwo' => $this->formTwo,
+                'formThree' => $this->formThree,
+                'formFour' => $this->formFour,
+                'formSix' => $this->formSix,
+                'formSeven' => $this->formSeven,
+                'formEight' => $this->formEight,
+                "bloodGroups" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_BLOOD_GROUPS', 'BLOOD_GROUP_ID', ['BLOOD_GROUP_CODE'], NULL, NULL, TRUE),
+                "genders" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Gender::TABLE_NAME, \Setup\Model\Gender::GENDER_ID, [\Setup\Model\Gender::GENDER_NAME], null, null, true),
+                "zones" => ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Zones::TABLE_NAME, \Setup\Model\Zones::ZONE_ID, [\Setup\Model\Zones::ZONE_NAME], null, null, true),
+                "religions" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_RELIGIONS', 'RELIGION_ID', ['RELIGION_NAME'], null, null, true),
+                "companies" => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true),
+                "countries" => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_COUNTRIES', 'COUNTRY_ID', ['COUNTRY_NAME'], null, null, true),
+                'filetypes' => ApplicationHelper::getTableKVList($this->adapter, 'HRIS_FILE_TYPE', 'FILETYPE_CODE', ['NAME']),
+                'serviceTypes' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_SERVICE_TYPES", "SERVICE_TYPE_ID", ["SERVICE_TYPE_NAME"], ["STATUS" => 'E'], "SERVICE_TYPE_NAME", "ASC", null, true, true),
+                'positions' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_POSITIONS", "POSITION_ID", ["POSITION_NAME"], ["STATUS" => 'E'], "POSITION_NAME", "ASC", null, true, true),
+                'designations' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DESIGNATIONS", "DESIGNATION_ID", ["DESIGNATION_TITLE"], ["STATUS" => 'E'], "DESIGNATION_TITLE", "ASC", null, true, true),
+                'departments' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_DEPARTMENTS", "DEPARTMENT_ID", ["DEPARTMENT_NAME"], ["STATUS" => 'E'], "DEPARTMENT_NAME", "ASC", null, true, true),
+                'branches' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_BRANCHES", "BRANCH_ID", ["BRANCH_NAME"], ["STATUS" => 'E'], "BRANCH_NAME", "ASC", null, true, true),
+                'academicDegree' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_DEGREES", "ACADEMIC_DEGREE_ID", ["ACADEMIC_DEGREE_NAME"], ["STATUS" => 'E'], "ACADEMIC_DEGREE_NAME", "ASC", null, false, true),
+                'academicUniversity' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_UNIVERSITY", "ACADEMIC_UNIVERSITY_ID", ["ACADEMIC_UNIVERSITY_NAME"], ["STATUS" => 'E'], "ACADEMIC_UNIVERSITY_NAME", "ASC", null, false, true),
+                'academicProgram' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_PROGRAMS", "ACADEMIC_PROGRAM_ID", ["ACADEMIC_PROGRAM_NAME"], ["STATUS" => 'E'], "ACADEMIC_PROGRAM_NAME", "ASC", null, false, true),
+                'academicCourse' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_ACADEMIC_COURSES", "ACADEMIC_COURSE_ID", ["ACADEMIC_COURSE_NAME"], ["STATUS" => 'E'], "ACADEMIC_COURSE_NAME", "ASC", null, false, true),
+                'rankTypes' => $rankTypes,
+                'profilePictureId' => $profilePictureId,
+                'address' => $address,
+                'shiftId' => ($getEmpShiftDtl != null) ? $getEmpShiftDtl['SHIFT_ID'] : 0,
+                'recommenderId' => ($employeePreDtl != null) ? $employeePreDtl['RECOMMEND_BY'] : 0,
+                'approverId' => ($employeePreDtl != null) ? $employeePreDtl['APPROVED_BY'] : 0,
+                'shifts' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, ShiftSetup::TABLE_NAME, ShiftSetup::SHIFT_ID, [ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => 'E'], ShiftSetup::SHIFT_ENAME, "ASC", null, false, true),
+                'leaves' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", null, false, true),
+                'recommenders' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
+                'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
+                'customRender' => Helper::renderCustomView()
         ]);
     }
 
@@ -416,28 +416,28 @@ class Subordinate extends HrisController {
 
 
         return $this->stickFlashMessagesTo([
-                    'formOne' => $this->formOne,
-                    'formTwo' => $this->formTwo,
-                    'formThree' => $this->formThree,
-                    'formFour' => $this->formFour,
-                    'formSix' => $this->formSix,
-                    "formSeven" => $this->formSeven,
-                    'formEight' => $this->formEight,
-                    "id" => $id,
-                    'profilePictureId' => $profilePictureId,
-                    'employeeData' => $employeeData,
-                    'filePath' => $filePath,
-                    'perDistrictName' => $perDistrictDtl['DISTRICT_NAME'],
-                    'perZoneName' => $perZoneDtl['ZONE_NAME'],
-                    'tempDistrictName' => $tempDistrictDtl['DISTRICT_NAME'],
-                    'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
-                    'empQualificationList' => $empQualificationDtl,
-                    'empExperienceList' => $empExperienceList,
-                    'empTrainingList' => $empTrainingList,
-                    'jobHistoryList' => $jobHistoryList,
-                    "employeeFile" => $employeeFile,
-                    "assetDetails" => $assetDetails,
-                    'acl' => $this->acl
+                'formOne' => $this->formOne,
+                'formTwo' => $this->formTwo,
+                'formThree' => $this->formThree,
+                'formFour' => $this->formFour,
+                'formSix' => $this->formSix,
+                "formSeven" => $this->formSeven,
+                'formEight' => $this->formEight,
+                "id" => $id,
+                'profilePictureId' => $profilePictureId,
+                'employeeData' => $employeeData,
+                'filePath' => $filePath,
+                'perDistrictName' => $perDistrictDtl['DISTRICT_NAME'],
+                'perZoneName' => $perZoneDtl['ZONE_NAME'],
+                'tempDistrictName' => $tempDistrictDtl['DISTRICT_NAME'],
+                'tempZoneName' => $tempZoneDtl['ZONE_NAME'],
+                'empQualificationList' => $empQualificationDtl,
+                'empExperienceList' => $empExperienceList,
+                'empTrainingList' => $empTrainingList,
+                'jobHistoryList' => $jobHistoryList,
+                "employeeFile" => $employeeFile,
+                "assetDetails" => $assetDetails,
+                'acl' => $this->acl
         ]);
     }
 
@@ -939,4 +939,33 @@ class Subordinate extends HrisController {
         }
     }
 
+    public function districtAction() {
+        $request = $this->getRequest();
+        $post = $request->getPost();
+        $zoneId = $post->id;
+        $districtKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName("HRIS_DISTRICTS")
+            ->setColumnList(["DISTRICT_ID", "DISTRICT_NAME"])
+            ->setWhere(["ZONE_ID" => $zoneId])
+            ->setKeyValue("DISTRICT_ID", "DISTRICT_NAME")
+            ->setIncludeEmptyRow(true)
+            ->result();
+        return new JsonModel($districtKV);
+    }
+
+    public function municipalityAction() {
+        $request = $this->getRequest();
+        $post = $request->getPost();
+        $districtId = $post->id;
+        $districtKV = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName("HRIS_VDC_MUNICIPALITIES")
+            ->setColumnList(["VDC_MUNICIPALITY_ID", "VDC_MUNICIPALITY_NAME"])
+            ->setWhere(["DISTRICT_ID" => $districtId])
+            ->setKeyValue("VDC_MUNICIPALITY_ID", "VDC_MUNICIPALITY_NAME")
+            ->setIncludeEmptyRow(true)
+            ->result();
+        return new JsonModel($districtKV);
+    }
 }

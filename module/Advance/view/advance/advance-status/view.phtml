@@ -46,6 +46,11 @@ $form->setAttribute('action', $this->url('advanceStatus', ['action' => 'view', '
 
 $form->prepare();
 print $this->form()->openTag($form);
+
+//echo '<pre>';
+//print_r($advanceRequestData);
+//echo $advanceRequestData['DEDUCTION_TYPE'];
+//die();
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
@@ -190,8 +195,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
 
+                    
 
                     <div class=" row">
+                        
+                    <?php
+                    if($advanceRequestData['DEDUCTION_TYPE']=='S'){
+                    ?>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($deductionRate); ?>
@@ -203,6 +213,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 ?></span>
                             </div>
                         </div>
+                    <?php
+                    }
+                    ?>
+                        
+                    <?php
+                    if($advanceRequestData['DEDUCTION_TYPE']=='M'){
+                    ?>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($deductionIn); ?>
@@ -210,6 +227,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <?php print $this->formElementErrors()->render($deductionIn, ['class' => 'help-block']); ?>
                             </div>
                         </div>
+                    <?php
+                    }
+                    ?>
 
                         <div class="col-sm-4">
                             <div class="form-group">
