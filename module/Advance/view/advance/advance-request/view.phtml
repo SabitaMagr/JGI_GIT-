@@ -178,25 +178,41 @@ $form->setAttribute('action', $this->url('advance-request', ['action' => 'add'])
                     </div>
 
                     <div class=" row">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($deductionRate); ?>
-                                <?php print $this->formElement($deductionRate); ?>
-                                <?php print $this->formElementErrors()->render($deductionRate, ['class' => 'help-block']); ?>
-                                <span ><?php 
-                                $monthlyDeductAmt=($advanceRequestData['DEDUCTION_RATE']/100)*$advanceRequestData['SALARY'];
-                                        echo 'RS.'.$monthlyDeductAmt;
-                                ?></span>
-                            
+                        <?php
+                        if ($advanceRequestData['DEDUCTION_TYPE'] == 'S') {
+                            ?>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($deductionRate); ?>
+                                    <?php print $this->formElement($deductionRate); ?>
+                                    <?php print $this->formElementErrors()->render($deductionRate, ['class' => 'help-block']); ?>
+                                    <span ><?php
+                                        $monthlyDeductAmt = ($advanceRequestData['DEDUCTION_RATE'] / 100) * $advanceRequestData['SALARY'];
+                                        echo 'RS.' . $monthlyDeductAmt;
+                                        ?></span>
+
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <?php print $this->formLabel($deductionIn); ?>
-                                <?php print $this->formElement($deductionIn); ?>
-                                <?php print $this->formElementErrors()->render($deductionIn, ['class' => 'help-block']); ?>
+                            <?php
+                        }
+                        ?>
+
+                        <?php
+                        if ($advanceRequestData['DEDUCTION_TYPE'] == 'M') {
+                            ?>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <?php print $this->formLabel($deductionIn); ?>
+                                    <?php print $this->formElement($deductionIn); ?>
+                                    <?php print $this->formElementErrors()->render($deductionIn, ['class' => 'help-block']); ?>
+                                </div>
                             </div>
-                        </div>
+
+                            <?php
+                        }
+                        ?>
 
                         <div class="col-sm-4">
                             <div class="form-group">

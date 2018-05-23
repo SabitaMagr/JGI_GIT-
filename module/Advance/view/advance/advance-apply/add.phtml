@@ -61,6 +61,7 @@ print $this->form()->openTag($form);
 <script>
     document.advanceList =<?=json_encode($advance);?>;
     document.employeeList =<?=json_encode($employeeList);?>;
+    document.pullEmployeeAdvance = '<?php echo $this->url('advanceApply', ['action' => 'pullEmployeeAdvance']); ?>';
 </script>
 
 
@@ -140,7 +141,7 @@ print $this->form()->openTag($form);
 
 
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div id="deductionRateDiv" class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
                             <?php print $this->formLabel($deductionRate); ?>
                             <?php print $this->formElement($deductionRate); ?>
@@ -148,7 +149,7 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div id="deductionInDiv" class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
                             <?php print $this->formLabel($deductionIn); ?>
                             <?php print $this->formElement($deductionIn); ?>

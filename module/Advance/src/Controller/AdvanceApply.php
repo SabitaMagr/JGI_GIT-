@@ -15,6 +15,7 @@ use Notification\Model\NotificationEvents;
 use Setup\Model\HrEmployees;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 
 class AdvanceApply extends HrisController {
 
@@ -63,6 +64,17 @@ class AdvanceApply extends HrisController {
                     'customRenderer' => Helper::renderCustomView(),
                     'employeeList' => EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME, HrEmployees::SALARY], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"]),
         ]);
+    }
+
+    public function pullEmployeeAdvanceAction() {
+        try {
+            $request = $this->getRequest();
+            $employeeId = $request->getPost('employeeId');
+            $advanceList = $this->repository->fetchAvailableAdvacenList($this->employeeId);
+            return new JsonModel(['success' => true, 'data' => $advanceList, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

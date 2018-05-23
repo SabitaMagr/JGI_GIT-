@@ -171,6 +171,9 @@ $form->prepare();
                     </div>
 
                     <div class=" row">
+                         <?php
+                        if ($detail['DEDUCTION_TYPE'] == 'S') {
+                            ?>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($deductionRate); ?>
@@ -182,6 +185,13 @@ $form->prepare();
                                     ?></span>
                             </div>
                         </div>
+                         <?php
+                        }
+                        ?>
+                        
+                         <?php
+                        if ($detail['DEDUCTION_TYPE'] == 'M') {
+                            ?>
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($deductionIn); ?>
@@ -189,12 +199,16 @@ $form->prepare();
                                 <?php print $this->formElementErrors()->render($deductionIn, ['class' => 'help-block']); ?>
                             </div>
                         </div>
+                         <?php
+                        }
+                        ?>
+                        
 
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <?php print $this->formLabel($reason); ?>
                                 <?php print $this->formElement($reason); ?>
-                                <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>overtimeRequest-form
+                                <?php print $this->formElementErrors()->render($reason, ['class' => 'help-block']); ?>
                             </div>
                         </div>
 
