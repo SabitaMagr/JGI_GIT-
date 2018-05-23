@@ -97,7 +97,7 @@ class HrEmployeesFormTabThree extends Model {
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
-     * @Annotation\Options({"label":"Chart of Account"})
+     * @Annotation\Options({"label":"Bank Account"})
      * @Annotation\Attributes({ "id":"idAccCode", "class":"form-control" })
      */
     public $idAccCode;
