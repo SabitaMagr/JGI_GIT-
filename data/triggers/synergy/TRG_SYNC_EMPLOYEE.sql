@@ -43,7 +43,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     IF :NEW.MARITAL_STATUS = 'M' THEN
       V_MARITAL_STATUS    := 'Married';
     ELSE
-      V_MARITAL_STATUS := 'Married';
+      V_MARITAL_STATUS := 'Unmarried';
     END IF;
     IF :NEW.RETIRED_FLAG = 'N' THEN
       V_EMPLOYEE_STATUS := 'Working';
