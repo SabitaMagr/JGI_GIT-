@@ -46,7 +46,7 @@ class Stage extends Model{
     public $approved;
     public $status;
     public $remarks;
-    public $instrunction;
+    public $instruction;
     
     public $mappings = [
         'stageId'=>self::STAGE_ID,

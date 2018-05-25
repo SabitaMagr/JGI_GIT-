@@ -1,6 +1,13 @@
 <?php if (count($questionTemplate) > 0) { ?>
     <h3>Appraisee's Evaluation</h3>
     <div class="row">
+        <div class="col-md-12">
+        <i>
+        <?php
+        echo $stagesInstrunction[1];
+        ?>
+        </i>
+        </div>
         <?php
         $disabled = 'disabled';
         $questionOnPreTab = 0;
@@ -15,8 +22,9 @@
                             <?php foreach ($questionTemplateRow['QUESTIONS'] as $questionRow) { ?>
                                 <div class="col-md-12 margin-bottom-5 appQuestion">
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label>   
+                                        <div class="col-sm-12">
+                                           <b style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></b>  
+                                           <div>
                                             <?php
                                             $keyForQuestion = ($questionRow['ANSWER'] == null || count($questionRow['ANSWER']) == 0) ? $questionRow['QUESTION_ID'] : array_keys($questionRow['ANSWER'])[0];
                                             if ($questionRow['APPRAISEE_FLAG'] == 'Y') {
@@ -24,6 +32,7 @@
                                             }
 
                                             ?>
+                                           </div>
                                         </div>
                                         <?php if ($questionRow['APPRAISEE_RATING'] == 'Y') { ?>
                                             <div class="col-sm-1">

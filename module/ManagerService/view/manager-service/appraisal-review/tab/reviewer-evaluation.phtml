@@ -12,8 +12,9 @@
                         <?php foreach ($reviewerQuestionList['QUESTIONS'] as $reviewerQuestionRow) { ?>
                             <div  class="col-md-12 margin-bottom-5 appQuestion"> 
                                 <div class="row">
-                                    <div class="col-sm-8">
-                                        <label> <h7 style="font-size:12px;"><?php echo $reviewerQuestionRow['QUESTION_EDESC']; ?></h7>  </label> 
+                                    <div class="col-sm-12">
+                                        <b style="font-size:12px;"><?php echo $reviewerQuestionRow['QUESTION_EDESC']; ?></b>  
+                                        <div>
                                         <?php 
                                         $keyForRQuestion = ($reviewerQuestionRow['ANSWER']==null || count($reviewerQuestionRow['ANSWER'])==0)?$reviewerQuestionRow['QUESTION_ID']:array_keys($reviewerQuestionRow['ANSWER'])[0];
                                         if($reviewerQuestionRow['REVIEWER_FLAG']=='Y'){ ?>
@@ -31,6 +32,7 @@
                                             }
                                         }
                                         ?>
+                                        </div>
                                     </div>
                                     <?php if($reviewerQuestionRow['REVIEWER_RATING']=='Y'){ 
                                         if($reviewerQuestionRow['REVIEWER_FLAG']=='N'){?>

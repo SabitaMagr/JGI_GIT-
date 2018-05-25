@@ -1,14 +1,13 @@
 <div class="tab-pane <?= (($assignedAppraisalDetail['KPI_SETTING']=='N') &&  ($assignedAppraisalDetail['COMPETENCIES_SETTING']=='N')) ?'active':''?>" id="portlet_tab2_1">
     <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation">
     <div class="row">
+        <div class="col-md-12">
         <i>
         <?php
-        echo '<Pre>';
-        print_r($stagesInstrunction);
-        die();
-        
+        echo $stagesInstrunction[1];
         ?>
-        <i>
+        </i>
+        </div>
         <?php 
 //      $selfDisabled = ($questionForCurStage==0 && $appraiserAvailableAnswer===true)?'disabled':'';
         $selfDisabled = ($questionForCurStage==0)?'disabled':'';
@@ -21,8 +20,9 @@
                         <?php foreach ($questionTemplateRow['QUESTIONS'] as $questionRow) { ?>
                             <div class="col-md-12 margin-bottom-5 appQuestion">
                                 <div class="row">
-                                    <div class="col-sm-3">
-                                        <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7></label>
+                                    <div class="col-sm-12">
+                                        <b style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></b>  
+                                           <div>
                                         <?php 
                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                         if($questionRow['APPRAISEE_FLAG']=='Y'){?>
@@ -39,6 +39,7 @@
                                                 print_r($this->formElement($performanceAppraisalObj("answer[".$keyForQuestion."]", $questionRow['ANSWER_TYPE'],(count($questionRow['QUESTION_OPTIONS'])>0)?$questionRow['QUESTION_OPTIONS']:null,($questionRow['ANSWER']!=null||count($questionRow['ANSWER'])>0)?array_values($questionRow['ANSWER'])[0]['ANSWER']:null,$selfDisabled)));
                                             }
                                         }?>  
+                                           </div>
                                     </div>
                                     <?php if($questionRow['APPRAISEE_RATING']=='Y'){
                                         if($questionRow['APPRAISEE_FLAG']=='N'){?>

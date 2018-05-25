@@ -1,6 +1,13 @@
 <div class="tab-pane" id="portlet_tab2_4">
     <form method="post" action="<?= $this->url('performanceAppraisal',['action'=>"view",'appraisalId'=>$appraisalId]) ?>" name="performanceAppraisalForm" id="selfEvaluation1">
     <div class="row">
+        <div class="col-md-12">
+        <i>
+        <?php
+        echo $stagesInstrunction[10];
+        ?>
+        </i>
+        </div>
         <?php
         $selfDisabled1 = ($questionForCurStageAppraisee==0)?'disabled':'';
         foreach ($appraiseeQuestionTemplate as $appraiseeQuestionRow) { ?>

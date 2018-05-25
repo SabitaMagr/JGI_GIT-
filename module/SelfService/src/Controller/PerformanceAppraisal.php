@@ -224,11 +224,7 @@ class PerformanceAppraisal extends AbstractActionController {
         $appraiserRatingDtlNum = $appraisalKPI->countAppraiserRatingDtl($this->employeeId, $appraisalId)['NUM'];
         $appCompetenciesRatingDtlNum = $appraisalCompetencies->countCompetenciesRatingDtl($this->employeeId, $appraisalId)['NUM'];
         
-        $stagesInstrunction= EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::INSTRUCTION]);
         
-//        print_r($stagesInstrunction);
-//        die();
-
         return Helper::addFlashMessagesToArray($this, [
                     'assignedAppraisalDetail' => $assignedAppraisalDetail,
                     'employeeDetail' => $employeeDetail,
@@ -248,7 +244,7 @@ class PerformanceAppraisal extends AbstractActionController {
                     'appraiserRatingDtlNum' => $appraiserRatingDtlNum,
                     'appCompetenciesRatingDtlNum' => $appCompetenciesRatingDtlNum,
                     'defaultRatingDtl' => $defaultRatingDtl,
-                    'stagesInstrunction' => $stagesInstrunction,
+                    'stagesInstrunction' => EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::INSTRUCTION]),
                     'listUrl' => $this->url()->fromRoute('performanceAppraisal', $action)
         ]);
     }
