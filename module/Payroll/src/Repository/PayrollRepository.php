@@ -155,8 +155,8 @@ class PayrollRepository extends HrisRepository {
     public function isPermanent($employeeId, $sheetNo) {
         $sql = "SELECT (
                   CASE
-                    WHEN PERMANENT_FLAG ='Y'
-                    AND PERMANENT_DATE <= START_DATE
+                    WHEN (PERMANENT_FLAG ='Y'
+                    AND ( PERMANENT_DATE IS NULL OR PERMANENT_DATE <= START_DATE))
                     THEN 1
                     ELSE 0
                   END) AS IS_PERMANENT

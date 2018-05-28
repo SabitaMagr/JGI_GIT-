@@ -71,6 +71,13 @@ class RulesRepository extends HrisRepository {
                     THEN 'Yes'
                     ELSE 'No'
                   END ) AS INCLUDE_FUTURE_VALUE_DETAIL,
+                  DEDUCTION_LIMIT_FLAG,
+                  (
+                  CASE
+                    WHEN DEDUCTION_LIMIT_FLAG = 'Y'
+                    THEN 'Yes'
+                    ELSE 'No'
+                  END ) AS DEDUCTION_LIMIT_FLAG_DETAIL,
                   FORMULA,
                   REMARKS,
                   STATUS

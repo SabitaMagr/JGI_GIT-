@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Model;
 
 use Application\Model\Model;
@@ -24,6 +23,7 @@ class Rules extends Model {
     const INCLUDE_IN_SALARY = "INCLUDE_IN_SALARY";
     const INCLUDE_PAST_VALUE = "INCLUDE_PAST_VALUE";
     const INCLUDE_FUTURE_VALUE = "INCLUDE_FUTURE_VALUE";
+    const DEDUCTION_LIMIT_FLAG = "DEDUCTION_LIMIT_FLAG";
 
     public $payId;
     public $payCode;
@@ -42,6 +42,7 @@ class Rules extends Model {
     public $includeInSalary;
     public $includePastValue;
     public $includeFutureValue;
+    public $deductionLimitFlag;
     public $mappings = [
         'payId' => self::PAY_ID,
         'payCode' => self::PAY_CODE,
@@ -60,6 +61,7 @@ class Rules extends Model {
         'includeInSalary' => self::INCLUDE_IN_SALARY,
         'includePastValue' => self::INCLUDE_PAST_VALUE,
         'includeFutureValue' => self::INCLUDE_FUTURE_VALUE,
+        'deductionLimitFlag' => self::DEDUCTION_LIMIT_FLAG,
     ];
 
 }

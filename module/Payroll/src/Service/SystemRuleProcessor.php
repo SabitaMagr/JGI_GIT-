@@ -49,7 +49,9 @@ class SystemRuleProcessor {
         switch ($systemRule) {
 //            "TOTAL_ANNUAL_AMOUNT"
             case PayrollGenerator::SYSTEM_RULE[0]:
-                $calculatedValue = 0;
+                $addition = 0;
+                $deductionWithLimit = 0;
+                $deduction = 0;
                 foreach ($this->ruleDetailList as $ruleDetail) {
                     if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] == 'Y')) {
                         $past = 0;
@@ -63,14 +65,22 @@ class SystemRuleProcessor {
                         $ruleValue = $past + $ruleDetail['ruleValue'] + $future;
                         switch ($ruleDetail['rule']['PAY_TYPE_FLAG']) {
                             case "A":
-                                $calculatedValue = $calculatedValue + $ruleValue;
+                                $addition = $addition + $ruleValue;
                                 break;
                             case "D":
-                                $calculatedValue = $calculatedValue - $ruleValue;
+                                if ($ruleDetail['rule']['DEDUCTION_LIMIT_FLAG'] == 'Y') {
+                                    $deductionWithLimit = $deductionWithLimit + $ruleValue;
+                                } else {
+                                    $deduction = $deduction + $ruleValue;
+                                }
                                 break;
                         }
                     }
                 }
+                $totalIncomeBy3 = $addition / 3;
+                $eligibleDeduction = 300000;
+                $minDeduction = min([$totalIncomeBy3, $deductionWithLimit, $eligibleDeduction]);
+                $calculatedValue = $addition - ($minDeduction + $deduction);
                 $processedValue = $calculatedValue;
                 break;
 //       TOTAL_AMOUNT
