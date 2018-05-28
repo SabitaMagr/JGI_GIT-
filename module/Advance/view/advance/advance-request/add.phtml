@@ -112,19 +112,21 @@ print $this->form()->openTag($form);
 
 
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div id="deductionRateDiv"  class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
                             <?php print $this->formLabel($deductionRate); ?>
                             <?php print $this->formElement($deductionRate); ?>
                             <?php print $this->formElementErrors()->render($deductionRate, ['class' => 'help-block']); ?>
+                            <span id="withinMonths"></span>
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6 col-lg-4" >
+                    <div id="deductionInDiv"  class="col-sm-12 col-md-6 col-lg-4" >
                         <div class="form-group">
                             <?php print $this->formLabel($deductionIn); ?>
                             <?php print $this->formElement($deductionIn); ?>
                             <?php print $this->formElementErrors()->render($deductionIn, ['class' => 'help-block']); ?>
+                            <span id="span"></span>
                         </div>
                     </div>
 

@@ -92,7 +92,8 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           LICENSE_TYPE ,
           OVERTIME_APPLICABLE ,
           PF_NUMBER ,
-          SAL_SHEET_CODE
+          SAL_SHEET_CODE,
+          DEPOSIT_ACCOUNT
         )
         VALUES
         (
@@ -140,7 +141,8 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           'None' ,
           :NEW.OVERTIME_FLAG ,
           :NEW.ID_PROVIDENT_FUND_NO ,
-          '001'
+          '001',
+          :NEW.ID_ACC_CODE
         );
       V_EMPSUB_CODE := 'E'||:NEW.EMPLOYEE_ID;
       SELECT COUNT(*)
@@ -229,7 +231,8 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           PAN_NO                  = :NEW.ID_PAN_NO ,
           THUMB_ID                = :NEW.ID_THUMB_ID ,
           PF_NUMBER               = :NEW.ID_PROVIDENT_FUND_NO ,
-          OVERTIME_APPLICABLE     = :NEW.OVERTIME_FLAG
+          OVERTIME_APPLICABLE     = :NEW.OVERTIME_FLAG,
+          DEPOSIT_ACCOUNT         = :NEW.ID_ACC_CODE
         WHERE TRIM(EMPLOYEE_CODE) = TO_CHAR(:OLD.EMPLOYEE_ID);
         BEGIN
           UPDATE FA_SUB_LEDGER_SETUP

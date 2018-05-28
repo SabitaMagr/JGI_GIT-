@@ -4,6 +4,7 @@ namespace Advance\Repository;
 
 use Advance\Model\AdvanceRequestModel;
 use Advance\Model\AdvanceSetupModel;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -150,6 +151,23 @@ class AdvanceRequestRepository implements RepositoryInterface {
 //        die();
         $result = $statement->execute();
         return $result;
+    }
+
+    public function fetchAvailableAdvacenList($employee_id) {
+        $sql = "SELECT 
+                A.*
+                FROM HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_SERVICE_TYPES ST ON(E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
+                LEFT JOIN HRIS_ADVANCE_MASTER_SETUP A ON (  (CASE A.ALLOWED_TO 
+                        WHEN 'PER' THEN 'PERMANENT'
+                        WHEN 'PRO' THEN 'PROBATION'
+                        WHEN 'CON' THEN 'CONTRACT'
+                        END=ST.TYPE) OR ALLOWED_TO='ALL')
+                WHERE E.EMPLOYEE_ID={$employee_id}";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }
