@@ -1,6 +1,13 @@
 <div class="tab-pane <?= ($tab==2 || (count($questionTemplate)==0 && $assignedAppraisalDetail['KPI_SETTING']=='N'))?"active":"" ?>" id="portlet_tab2_2">
     <form method="post" action="<?= $this->url("appraisal-evaluation",['action'=>"view",'appraisalId'=>$appraisalId,'employeeId'=>$employeeId,'tab'=>2]); ?>" name="performanceAppraisalForm" id="appraisalEvaluation1">
     <div class="row">
+        <div class="col-md-12">
+        <i>
+        <?php
+        echo $stagesInstrunction[5];
+        ?>
+        </i>
+        </div>
         <?php
         $disabled = ($questionForCurStage==0)?'disabled':'';
         foreach ($appraiserQuestionTemplate as $appraiserQuestionRow) { ?>
@@ -12,8 +19,9 @@
                         <?php foreach ($appraiserQuestionRow['QUESTIONS'] as $questionRow) { ?>
                             <div  class="col-md-12 margin-bottom-5 appQuestion">  
                                 <div class="row">
-                                    <div class="<?= ($questionRow['REVIEWER_FLAG']=='Y')?"col-sm-3":"col-sm-8"; ?>">
-                                        <label><h7 style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></h7> </label>  
+                                    <div class="col-sm-12"">
+                                        <b style="font-size:12px;"><?php echo $questionRow['QUESTION_EDESC']; ?></b>  
+                                        <div>
                                         <?php 
                                         $keyForQuestion = ($questionRow['ANSWER']==null || count($questionRow['ANSWER'])==0)?$questionRow['QUESTION_ID']:array_keys($questionRow['ANSWER'])[0];
                                         if($questionRow['APPRAISER_FLAG']=='Y'){ ?>
@@ -31,6 +39,7 @@
                                             }
                                         }
                                         ?>
+                                        </div>
                                     </div>
                                     <?php if($questionRow['APPRAISER_RATING']=='Y'){ 
                                         if($questionRow['APPRAISER_FLAG']=='N'){?>

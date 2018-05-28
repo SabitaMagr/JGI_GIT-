@@ -25,6 +25,7 @@ class Stage extends Model{
     const APPROVED = "APPROVED";
     const STATUS = "STATUS";
     const REMARKS = "REMARKS";
+    const INSTRUCTION = "INSTRUCTION";
    
     public $stageId;
     public $stageCode;
@@ -45,6 +46,7 @@ class Stage extends Model{
     public $approved;
     public $status;
     public $remarks;
+    public $instruction;
     
     public $mappings = [
         'stageId'=>self::STAGE_ID,
@@ -65,6 +67,7 @@ class Stage extends Model{
         'approvedDate'=>self::APPROVED_DATE,
         'approved'=>self::APPROVED,
         'status'=>self::STATUS,
-        'remarks'=>self::REMARKS
+        'remarks'=>self::REMARKS,
+        'instruction'=>self::INSTRUCTION
     ];
 }

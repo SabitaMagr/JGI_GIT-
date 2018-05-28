@@ -130,7 +130,7 @@ class AppraisalReportRepository implements RepositoryInterface {
               ON APS.APPRAISAL_ID  =AKPI.APPRAISAL_ID
               AND APS.EMPLOYEE_ID  =AKPI.EMPLOYEE_ID
               LEFT JOIN HRIS_EMPLOYEES APR
-              ON APR.EMPLOYEE_ID = AA.APPRAISAL_ID
+              ON APR.EMPLOYEE_ID = AA.APPRAISER_ID
               LEFT JOIN HRIS_EMPLOYEES AAPR
               ON AAPR.EMPLOYEE_ID = AA.ALT_APPRAISER_ID
               LEFT JOIN HRIS_EMPLOYEES REV

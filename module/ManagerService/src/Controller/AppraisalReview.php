@@ -258,7 +258,9 @@ class AppraisalReview extends HrisController {
                     case 3:
                         $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::REVIEWER_AGREE => $reviewerAgree, AppraisalStatus::REVIEWED_BY => $this->employeeId], $appraisalId, $employeeId);
 //                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+1);
-                        $nextStageId = ($reviewerAgree == 'N') ? 5 : 6; //super reviewer evaluation : appraisee stage
+                        //to directly send to hr
+                        $nextStageId = ($reviewerAgree=='N')?5:AppraisalHelper::getNextStageId($this->adapter,$assignedAppraisalDetail['STAGE_ORDER_NO']+2);
+//                        $nextStageId = ($reviewerAgree == 'N') ? 5 : 6; //super reviewer evaluation : appraisee stage
                         $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
 
                         if ($reviewerAgree === 'Y' && $assignedAppraisalDetail['KPI_SETTING'] == 'Y' && $assignedAppraisalDetail['COMPETENCIES_SETTING'] == 'Y') {
@@ -291,6 +293,7 @@ class AppraisalReview extends HrisController {
         $returnData['appraiserRatingDtlNum'] = $appraiserRatingDtlNum;
         $returnData['appCompetenciesRatingDtlNum'] = $appCompetenciesRatingDtlNum;
         $returnData['defaultRatingDtl'] = $defaultRatingDtl;
+        $returnData['stagesInstrunction'] =  EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::INSTRUCTION]);
         $returnData['listUrl'] = $this->url()->fromRoute("appraisal-review", $action);
         return Helper::addFlashMessagesToArray($this, $returnData);
     }

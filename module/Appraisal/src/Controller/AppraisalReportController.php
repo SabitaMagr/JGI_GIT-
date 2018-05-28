@@ -203,7 +203,14 @@ class AppraisalReportController extends HrisController {
                 $appraisalStatusRepo = new AppraisalStatusRepository($this->adapter);
                 $appraisalStatus->exchangeArrayFromDB($appraisalStatusRepo->fetchByEmpAppId($employeeId, $appraisalId)->getArrayCopy());
                 $postData = $request->getPost()->getArrayCopy();
-                $appraisalStatusRepo->updateColumnByEmpAppId([AppraisalStatus::HR_FEEDBACK => $postData['hrComment']], $appraisalId, $employeeId);
+                $appraisalStatusRepo->updateColumnByEmpAppId(
+                        [AppraisalStatus::HR_FEEDBACK => $postData['hrComment'],
+                            AppraisalStatus::HR_STRENGTH => $postData['hrStrength'],
+                            AppraisalStatus::HR_WEAKNESS => $postData['hrWeakness'],
+                            AppraisalStatus::HR_AREAS_OF_IMPROVEMENT => $postData['hrAreasOfImprovement'],
+                            AppraisalStatus::HR_STEPS_FOR_IMPROVEMENT => $postData['hrStepsForImprovement']
+                            ],
+                        $appraisalId, $employeeId);
                 $nextStageId = 2; // completed stage
                 $appraisalAssignRepo->updateCurrentStageByAppId($nextStageId, $appraisalId, $employeeId);
                 HeadNotification::pushNotification(NotificationEvents::HR_FEEDBACK, $appraisalStatus, $this->adapter, $this, ['ID' => $this->employeeId], ['ID' => $employeeId, 'USER_TYPE' => "APPRAISEE"]);
@@ -232,6 +239,7 @@ class AppraisalReportController extends HrisController {
         $returnData['kpiList'] = iterator_to_array($appraisalKPI->fetchByAppEmpId($employeeId, $appraisalId), false);
         $returnData['calculatedAnnualRating'] = $this->calculateAnnualRating($returnData['kpiList']);
         $returnData['competenciesList'] = iterator_to_array($appraisalCompetencies->fetchByAppEmpId($employeeId, $appraisalId), false);
+        $returnData['stagesInstrunction'] = EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::INSTRUCTION]);
         return Helper::addFlashMessagesToArray($this, $returnData);
     }
 

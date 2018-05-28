@@ -287,6 +287,7 @@ class AppraisalEvaluation extends HrisController {
                     'appraiserRatingDtlNum' => $appraiserRatingDtlNum,
                     'appCompetenciesRatingDtlNum' => $appCompetenciesRatingDtlNum,
                     'defaultRatingDtl' => $defaultRatingDtl,
+                    'stagesInstrunction' => EntityHelper::getTableKVListWithSortOption($this->adapter, Stage::TABLE_NAME, Stage::STAGE_ID, [Stage::INSTRUCTION]),
                     'listUrl' => $this->url()->fromRoute('appraisal-evaluation', $action)
         ]);
     }
