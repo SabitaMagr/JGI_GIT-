@@ -733,7 +733,7 @@ class DashboardRepository {
      */
 
     public function fetchAllNews($employeeId) {
-        $sql = "select * from HRIS_NEWS_TYPE ORDER BY NEWS_TYPE_ID";
+        $sql = "select * from HRIS_NEWS_TYPE WHERE STATUS='E' ORDER BY NEWS_TYPE_ID";
         $statement = $this->adapter->query($sql);
         $newsTypeResult = $statement->execute();
 
