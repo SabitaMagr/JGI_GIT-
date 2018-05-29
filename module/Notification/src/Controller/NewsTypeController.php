@@ -93,5 +93,15 @@ class NewsTypeController extends HrisController {
             "id" => $id
         ]);
     }
+    
+    public function deleteAction() {
+        $id = $this->params()->fromRoute('id');
+        if ($id == 0) {
+            $this->redirect()->toRoute('news-type');
+        }
+        $this->repository->delete($id);
+        $this->flashmessenger()->addMessage("News Type Successfully Deleted!!!");
+        return $this->redirect()->toRoute("news-type");
+    }
 
 }
