@@ -32,7 +32,6 @@ class SystemRuleProcessor {
         $ssdRepo = new SalarySheetDetailRepo($adapter);
         $prevSummedRaw = $ssdRepo->fetchPrevSumPayValue($employeeId, $this->month->fiscalYearId, $this->month->fiscalYearMonthNo);
         $this->prevSummedSSD = $this->listValueToKV($prevSummedRaw, "PAY_ID", "PREV_SUM_VAL");
-
         $this->ruleId = $ruleId;
     }
 
@@ -56,7 +55,7 @@ class SystemRuleProcessor {
                     if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] == 'Y')) {
                         $past = 0;
                         if ($ruleDetail['rule']['INCLUDE_PAST_VALUE'] === 'Y') {
-                            $past = (($this->multiplicationFactor == 11) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]);
+                            $past = (($this->multiplicationFactor == 11) ? 0 : (isset($this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]) ? $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']] : 0) );
                         }
                         $future = 0;
                         if ($ruleDetail['rule']['INCLUDE_FUTURE_VALUE'] === 'Y') {
@@ -116,7 +115,7 @@ class SystemRuleProcessor {
         if (in_array($ruleDetail['rule']['PAY_TYPE_FLAG'], ['A', 'D', 'T']) && ($ruleDetail['rule']['INCLUDE_IN_TAX'] === 'Y')) {
             $past = 0;
             if ($ruleDetail['rule']['INCLUDE_PAST_VALUE'] === 'Y') {
-                $past = (($this->multiplicationFactor == 11) ? 0 : $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]);
+                $past = (($this->multiplicationFactor == 11) ? 0 : (isset($this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']]) ? $this->prevSummedSSD[$ruleDetail['rule']['PAY_ID']] : 0));
             }
             $future = 0;
             if ($ruleDetail['rule']['INCLUDE_FUTURE_VALUE'] === 'Y') {
