@@ -1,5 +1,4 @@
 <?php
-
 namespace Report\Repository;
 
 use Application\Helper\EntityHelper;
@@ -149,77 +148,6 @@ EOT;
         return Helper::extractDbData($result);
     }
 
-    public function departmentWiseEmployeeMonthReport($departmentId) {
-        $sql = <<<EOT
-                SELECT J.*,
-                  JE.FIRST_NAME AS FIRST_NAME,
-                    JE.MIDDLE_NAME AS MIDDLE_NAME,
-                    JE.LAST_NAME AS LAST_NAME,
-                    CONCAT(CONCAT(CONCAT(JE.FIRST_NAME,' '),CONCAT(JE.MIDDLE_NAME, '')),JE.LAST_NAME) AS FULL_NAME,
-                  JM.MONTH_EDESC
-                FROM
-                  (SELECT I.EMPLOYEE_ID,
-                    I.MONTH_ID ,
-                    SUM(I.ON_LEAVE)    AS ON_LEAVE,
-                    SUM (I.IS_PRESENT) AS IS_PRESENT,
-                    SUM(I.IS_ABSENT)   AS IS_ABSENT
-                  FROM
-                    (SELECT E.EMPLOYEE_ID AS EMPLOYEE_ID,
-                      (SELECT M.MONTH_ID
-                      FROM HRIS_MONTH_CODE M
-                      WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-                      ) AS MONTH_ID,
-                      (
-                  CASE 
-                    WHEN AD.DAYOFF_FLAG ='N'
-                    AND AD.HOLIDAY_ID  IS NULL
-                    AND AD.TRAINING_ID IS NULL
-                    AND AD.TRAVEL_ID   IS NULL
-                    AND AD.IN_TIME     IS NULL
-                    AND AD.LEAVE_ID IS NOT NULL
-                    THEN 1
-                    ELSE 0
-                  END) AS ON_LEAVE,
-                      (
-                  CASE
-                    WHEN AD.DAYOFF_FLAG ='N'
-                    AND AD.LEAVE_ID    IS NULL
-                    AND AD.HOLIDAY_ID  IS NULL
-                    AND AD.TRAINING_ID IS NULL
-                    AND AD.TRAVEL_ID   IS NULL
-                    AND AD.IN_TIME     IS NOT NULL
-                    THEN 1
-                    ELSE 0
-                  END) AS IS_PRESENT,
-                     (
-                  CASE
-                    WHEN AD.DAYOFF_FLAG ='N'
-                    AND AD.LEAVE_ID   IS NULL
-                    AND AD.HOLIDAY_ID  IS NULL
-                    AND AD.TRAINING_ID IS NULL
-                    AND AD.TRAVEL_ID   IS NULL
-                    AND AD.IN_TIME     IS NULL
-                    THEN 1
-                    ELSE 0
-                  END) AS IS_ABSENT
-                    FROM HRIS_ATTENDANCE_DETAIL AD
-                    JOIN HRIS_EMPLOYEES E
-                    ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
-                    WHERE E.DEPARTMENT_ID=$departmentId
-                    ) I
-                  GROUP BY I.EMPLOYEE_ID,
-                    I.MONTH_ID
-                  ) J
-                JOIN HRIS_EMPLOYEES JE
-                ON (J.EMPLOYEE_ID = JE.EMPLOYEE_ID)
-                JOIN HRIS_MONTH_CODE JM
-                ON (J.MONTH_ID = JM.MONTH_ID)
-EOT;
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
-    }
-
     public function branchWiseEmployeeMonthReport($branchId) {
         $sql = <<<EOT
                 SELECT J.*,
@@ -286,76 +214,6 @@ EOT;
                 JOIN HRIS_MONTH_CODE JM
                 ON (J.MONTH_ID = JM.MONTH_ID)
 EOT;
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
-    }
-
-    public function departmentMonthReport() {
-        $sql = <<<EOT
-            SELECT J.*,
-              JD.DEPARTMENT_NAME AS DEPARTMENT_NAME,
-              JM.MONTH_EDESC
-            FROM
-              (SELECT I.DEPARTMENT_ID ,
-                I.MONTH_ID ,
-                SUM(I.ON_LEAVE)    AS ON_LEAVE,
-                SUM (I.IS_PRESENT) AS IS_PRESENT,
-                SUM(I.IS_ABSENT)   AS IS_ABSENT
-              FROM
-                (SELECT D.DEPARTMENT_ID AS DEPARTMENT_ID,
-                  (SELECT M.MONTH_ID
-                  FROM HRIS_MONTH_CODE M
-                  WHERE AD.ATTENDANCE_DT BETWEEN M.FROM_DATE AND M.TO_DATE
-                  ) AS MONTH_ID,
-                  (
-              CASE 
-                WHEN AD.DAYOFF_FLAG ='N'
-                AND AD.HOLIDAY_ID  IS NULL
-                AND AD.TRAINING_ID IS NULL
-                AND AD.TRAVEL_ID   IS NULL
-                AND AD.IN_TIME     IS NULL
-                AND AD.LEAVE_ID IS NOT NULL
-                THEN 1
-                ELSE 0
-              END) AS ON_LEAVE,
-                  (
-              CASE
-                WHEN AD.DAYOFF_FLAG ='N'
-                AND AD.LEAVE_ID    IS NULL
-                AND AD.HOLIDAY_ID  IS NULL
-                AND AD.TRAINING_ID IS NULL
-                AND AD.TRAVEL_ID   IS NULL
-                AND AD.IN_TIME     IS NOT NULL
-                THEN 1
-                ELSE 0
-              END) AS IS_PRESENT,
-                 (
-              CASE
-                WHEN AD.DAYOFF_FLAG ='N'
-                AND AD.LEAVE_ID   IS NULL
-                AND AD.HOLIDAY_ID  IS NULL
-                AND AD.TRAINING_ID IS NULL
-                AND AD.TRAVEL_ID   IS NULL
-                AND AD.IN_TIME     IS NULL
-                THEN 1
-                ELSE 0
-              END) AS IS_ABSENT
-                FROM HRIS_ATTENDANCE_DETAIL AD
-                JOIN HRIS_EMPLOYEES E
-                ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
-                JOIN HRIS_DEPARTMENTS D
-                ON(E.DEPARTMENT_ID=D.DEPARTMENT_ID)
-                ) I
-              GROUP BY I.DEPARTMENT_ID,
-                I.MONTH_ID
-              ) J
-            JOIN HRIS_DEPARTMENTS JD
-            ON (J.DEPARTMENT_ID = JD.DEPARTMENT_ID)
-            JOIN HRIS_MONTH_CODE JM
-            ON (J.MONTH_ID = JM.MONTH_ID)            
-EOT;
-
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
@@ -910,7 +768,7 @@ EOT;
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Months::class, NULL, [Months::FROM_DATE, Months::TO_DATE], NULL, NULL, NULL, 'M', true), false);
         $select->from(['M' => Months::TABLE_NAME])
-                ->join(['FY' => FiscalYear::TABLE_NAME], 'FY.' . FiscalYear::FISCAL_YEAR_ID . '=M.' . Months::FISCAL_YEAR_ID, ["MONTH_NAME" => new Expression('CONCAT(FY.FISCAL_YEAR_NAME,M.MONTH_EDESC)')], "left");
+            ->join(['FY' => FiscalYear::TABLE_NAME], 'FY.' . FiscalYear::FISCAL_YEAR_ID . '=M.' . Months::FISCAL_YEAR_ID, ["MONTH_NAME" => new Expression('CONCAT(FY.FISCAL_YEAR_NAME,M.MONTH_EDESC)')], "left");
         $select->where(["M.STATUS='E'", "FY.STATUS='E'", "TRUNC(SYSDATE)>M.FROM_DATE"]);
         $select->order("M." . Months::FROM_DATE . " DESC");
         $statement = $sql->prepareStatementForSqlObject($select);
@@ -1379,4 +1237,178 @@ EOT;
         $this->executeStatement($sql);
     }
 
+    public function departmentMonthReport($fiscalYearId) {
+        $sql = <<<EOT
+            SELECT D.DEPARTMENT_NAME,
+              R.*
+            FROM
+              (SELECT *
+              FROM
+                (SELECT EMC.FISCAL_YEAR_MONTH_NO,
+                  EMC.DEPARTMENT_ID,
+                  SUM(
+                  CASE
+                    WHEN A.OVERALL_STATUS IN( 'DO','WD')
+                    THEN 1
+                    ELSE 0
+                  END) AS DAYOFF,
+                  SUM(
+                  CASE
+                    WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
+                    THEN (
+                      CASE
+                        WHEN A.OVERALL_STATUS = 'LP'
+                        AND A.HALFDAY_PERIOD IS NOT NULL
+                        THEN 0.5
+                        ELSE 1
+                      END)
+                    ELSE 0
+                  END) AS PRESENT,
+                  SUM(
+                  CASE
+                    WHEN A.OVERALL_STATUS IN ('HD','WH')
+                    THEN 1
+                    ELSE 0
+                  END) AS HOLIDAY,
+                  SUM(
+                  CASE
+                    WHEN A.OVERALL_STATUS IN ('LV','LP')
+                    AND A.GRACE_PERIOD    IS NULL
+                    THEN (
+                      CASE
+                        WHEN A.OVERALL_STATUS = 'LP'
+                        AND A.HALFDAY_PERIOD IS NOT NULL
+                        THEN 0.5
+                        ELSE 1
+                      END)
+                    ELSE 0
+                  END) AS LEAVE,
+                  SUM(
+                  CASE
+                    WHEN A.OVERALL_STATUS = 'AB'
+                    THEN 1
+                    ELSE 0
+                  END) AS ABSENT,
+                  SUM(
+                  CASE
+                    WHEN A.OVERALL_STATUS = 'WH'
+                    THEN 1
+                    ELSE 0
+                  END) WORK_ON_HOLIDAY,
+                  SUM(
+                  CASE
+                    WHEN A.OVERALL_STATUS ='WD'
+                    THEN 1
+                    ELSE 0
+                  END) WORK_ON_DAYOFF
+                FROM
+                  (SELECT * FROM HRIS_MONTH_CODE,HRIS_EMPLOYEES
+                  ) EMC
+                LEFT JOIN HRIS_ATTENDANCE_DETAIL A
+                ON ((A.ATTENDANCE_DT BETWEEN EMC.FROM_DATE AND EMC.TO_DATE)
+                AND (EMC.EMPLOYEE_ID=A.EMPLOYEE_ID))
+                LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+                ON (A.LEAVE_ID          = L.LEAVE_ID)
+                WHERE EMC.FISCAL_YEAR_ID={$fiscalYearId}
+                GROUP BY EMC.DEPARTMENT_ID,
+                  EMC.FISCAL_YEAR_MONTH_NO
+                ) PIVOT (MAX(PRESENT) AS PRESENT,MAX(ABSENT) AS ABSENT,MAX(LEAVE) AS LEAVE,MAX(DAYOFF) AS DAYOFF,MAX(HOLIDAY) AS HOLIDAY,MAX(WORK_ON_HOLIDAY) AS WOH,MAX(WORK_ON_DAYOFF) AS WOD FOR FISCAL_YEAR_MONTH_NO IN (1 AS one,2 AS two,3 AS three,4 AS four,5 AS five,6 AS six,7 AS seven,8 AS eight,9 AS nine,10 AS ten,11 AS eleven,12 AS twelve))
+              ) R
+            JOIN HRIS_DEPARTMENTS D
+            ON (R.DEPARTMENT_ID=D.DEPARTMENT_ID)       
+EOT;
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function employeeMonthlyReport($searchQuery) {
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $sql = <<<EOT
+                SELECT D.FULL_NAME,
+                  R.*
+                FROM
+                  (SELECT *
+                  FROM
+                    (SELECT EMC.FISCAL_YEAR_MONTH_NO,
+                      EMC.EMPLOYEE_ID,
+                      SUM(
+                      CASE
+                        WHEN A.OVERALL_STATUS IN( 'DO','WD')
+                        THEN 1
+                        ELSE 0
+                      END) AS DAYOFF,
+                      SUM(
+                      CASE
+                        WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_PERIOD IS NOT NULL
+                            THEN 0.5
+                            ELSE 1
+                          END)
+                        ELSE 0
+                      END) AS PRESENT,
+                      SUM(
+                      CASE
+                        WHEN A.OVERALL_STATUS IN ('HD','WH')
+                        THEN 1
+                        ELSE 0
+                      END) AS HOLIDAY,
+                      SUM(
+                      CASE
+                        WHEN A.OVERALL_STATUS IN ('LV','LP')
+                        AND A.GRACE_PERIOD    IS NULL
+                        THEN (
+                          CASE
+                            WHEN A.OVERALL_STATUS = 'LP'
+                            AND A.HALFDAY_PERIOD IS NOT NULL
+                            THEN 0.5
+                            ELSE 1
+                          END)
+                        ELSE 0
+                      END) AS LEAVE,
+                      SUM(
+                      CASE
+                        WHEN A.OVERALL_STATUS = 'AB'
+                        THEN 1
+                        ELSE 0
+                      END) AS ABSENT,
+                      SUM(
+                      CASE
+                        WHEN A.OVERALL_STATUS = 'WH'
+                        THEN 1
+                        ELSE 0
+                      END) WORK_ON_HOLIDAY,
+                      SUM(
+                      CASE
+                        WHEN A.OVERALL_STATUS ='WD'
+                        THEN 1
+                        ELSE 0
+                      END) WORK_ON_DAYOFF
+                    FROM
+                      (SELECT * FROM HRIS_MONTH_CODE MC,HRIS_EMPLOYEES E
+                            WHERE 1=1 
+                            {$searchConditon}
+                      ) EMC
+                    LEFT JOIN HRIS_ATTENDANCE_DETAIL A
+                    ON ((A.ATTENDANCE_DT BETWEEN EMC.FROM_DATE AND EMC.TO_DATE)
+                    AND (EMC.EMPLOYEE_ID=A.EMPLOYEE_ID))
+                    LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+                    ON (A.LEAVE_ID          = L.LEAVE_ID)
+                    WHERE EMC.FISCAL_YEAR_ID={$searchQuery['fiscalYearId']}
+                    GROUP BY EMC.EMPLOYEE_ID,
+                      EMC.FISCAL_YEAR_MONTH_NO
+                    ) PIVOT (MAX(PRESENT) AS PRESENT,MAX(ABSENT) AS ABSENT,MAX(LEAVE) AS LEAVE,MAX(DAYOFF) AS DAYOFF,MAX(HOLIDAY) AS HOLIDAY,MAX(WORK_ON_HOLIDAY) AS WOH,MAX(WORK_ON_DAYOFF) AS WOD FOR FISCAL_YEAR_MONTH_NO IN (1 AS one,2 AS two,3 AS three,4 AS four,5 AS five,6 AS six,7 AS seven,8 AS eight,9 AS nine,10 AS ten,11 AS eleven,12 AS twelve))
+                  ) R
+                JOIN HRIS_EMPLOYEES D
+                ON (R.EMPLOYEE_ID=D.EMPLOYEE_ID)                   
+EOT;
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
 }

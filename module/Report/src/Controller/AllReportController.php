@@ -1,17 +1,19 @@
 <?php
-
 namespace Report\Controller;
 
 use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
+use Application\Model\HrisQuery;
 use Exception;
 use Report\Repository\ReportRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select as Select2;
 use Zend\Form\Element\Select;
 use Zend\View\Model\JsonModel;
 
@@ -22,32 +24,122 @@ class AllReportController extends HrisController {
         $this->initializeRepository(ReportRepository::class);
     }
 
-    public function indexAction() {
-        
-    }
+    public function branchWiseDailyAction() {
+        $monthId = (int) $this->params()->fromRoute('id1');
+        $branchId = (int) $this->params()->fromRoute('id2');
 
-    public function departmentAllAction() {
-        
-    }
-
-    public function departmentWiseAction() {
-        $departmentId = (int) $this->params()->fromRoute('id1');
-        return $this->stickFlashMessagesTo([
-                    'comBraDepList' => [
-                        'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
-                    ],
-                    'departmentId' => $departmentId
+        return Helper::addFlashMessagesToArray($this, [
+                'comBraList' => [
+                    'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
+                ],
+                'monthId' => $monthId,
+                'branchId' => $branchId
         ]);
+    }
+
+    public function branchWiseDailyReportAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $branchId = $postedData['branchId'];
+                if (!isset($branchId)) {
+                    throw new Exception("parameter branchId is required");
+                }
+                $monthId = $postedData['monthId'];
+                if (!isset($monthId)) {
+                    throw new Exception("parameter monthId is required");
+                }
+
+                $reportData = $this->repository->branchWiseDailyReport($monthId, $branchId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
     public function branchWiseAction() {
         $branchId = (int) $this->params()->fromRoute('id1');
         return $this->stickFlashMessagesTo([
-                    'comBraDepList' => [
-                        'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME], [Branch::STATUS => "E"])
-                    ],
-                    'branchId' => $branchId
+                'comBraDepList' => [
+                    'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME], [Branch::STATUS => "E"])
+                ],
+                'branchId' => $branchId
         ]);
+    }
+
+    public function branchWiseMonthReportAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $branchId = $postedData['branchId'];
+                if (!isset($branchId)) {
+                    throw new Exception("parameter branchId is required");
+                }
+                $reportData = $this->repository->branchWiseEmployeeMonthReport($branchId);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    private function getFiscalYearSE() {
+        $fiscalYearList = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName(FiscalYear::TABLE_NAME)
+            ->setColumnList([FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME])
+            ->setWhere([FiscalYear::STATUS => 'E'])
+            ->setOrder([FiscalYear::START_DATE => Select2::ORDER_DESCENDING])
+            ->setKeyValue(FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME)
+            ->result();
+        $config = [
+            'name' => 'fiscalYear',
+            'id' => 'fiscalYearId',
+            'class' => 'form-control',
+            'label' => 'Type'
+        ];
+
+        return $this->getSelectElement($config, $fiscalYearList);
+    }
+
+    public function departmentAllAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $data = $this->repository->departmentMonthReport($postedData['fiscalYearId']);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => null]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }
+
+
+        return ['fiscalYearSE' => $this->getFiscalYearSE()];
+    }
+
+    public function departmentWiseAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $postedData = $request->getPost();
+                $data = $this->repository->employeeMonthlyReport($postedData);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => null]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }
+
+        return ['fiscalYearSE' => $this->getFiscalYearSE()];
     }
 
     public function departmentWiseDailyAction() {
@@ -55,12 +147,12 @@ class AllReportController extends HrisController {
         $departmentId = (int) $this->params()->fromRoute('id2');
         $monthList = $this->repository->getMonthList();
         return $this->stickFlashMessagesTo([
-                    'comBraDepList' => [
-                        'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
-                    ],
-                    'monthList' => $monthList,
-                    'monthId' => $monthId,
-                    'departmentId' => $departmentId
+                'comBraDepList' => [
+                    'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
+                ],
+                'monthList' => $monthList,
+                'monthId' => $monthId,
+                'departmentId' => $departmentId
         ]);
     }
 
@@ -70,9 +162,9 @@ class AllReportController extends HrisController {
         $employeeList = $this->repository->getEmployeeList();
 
         return $this->stickFlashMessagesTo([
-                    'comBraDepList' => $this->getComBraDepList(),
-                    'employeeList' => $employeeList,
-                    'employeeId' => $employeeId
+                'comBraDepList' => $this->getComBraDepList(),
+                'employeeList' => $employeeList,
+                'employeeId' => $employeeId
         ]);
     }
 
@@ -89,8 +181,8 @@ class AllReportController extends HrisController {
         }
 
         return $this->stickFlashMessagesTo([
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0
         ]);
     }
 
@@ -174,51 +266,6 @@ class AllReportController extends HrisController {
         }
     }
 
-    public function departmentWiseMonthReportAction() {
-        try {
-            $request = $this->getRequest();
-            if ($request->isPost()) {
-                $postedData = $request->getPost();
-
-                $departmentId = $postedData['departmentId'];
-                if (!isset($departmentId)) {
-                    throw new Exception("parameter departmentId is required");
-                }
-                $reportData = $this->repository->departmentWiseEmployeeMonthReport($departmentId);
-                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
-            } else {
-                throw new Exception("The request should be of type post");
-            }
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-        }
-    }
-
-    public function branchWiseMonthReportAction() {
-        try {
-            $request = $this->getRequest();
-            if ($request->isPost()) {
-                $postedData = $request->getPost();
-
-                $branchId = $postedData['branchId'];
-                if (!isset($branchId)) {
-                    throw new Exception("parameter branchId is required");
-                }
-                $reportData = $this->repository->branchWiseEmployeeMonthReport($branchId);
-                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
-            } else {
-                throw new Exception("The request should be of type post");
-            }
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-        }
-    }
-
-    public function departmentMonthReportAction() {
-        $data = $this->repository->departmentMonthReport();
-        return new JsonModel(['success' => true, 'data' => $data, 'error' => null]);
-    }
-
     private function getComBraDepList() {
         $cbd = $this->repository->getCompanyBranchDepartment();
         $comBraDepList = [];
@@ -280,16 +327,16 @@ class AllReportController extends HrisController {
 
         $allLeave = $this->repository->fetchAllLeave();
         return Helper::addFlashMessagesToArray($this, [
-                    'customWise' => $customFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'allLeave' => $allLeave
+                'customWise' => $customFormElement,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'allLeave' => $allLeave
         ]);
     }
 
     public function HireAndFireReportAction() {
         $nepaliMonth = $this->repository->FetchNepaliMonth();
         return Helper::addFlashMessagesToArray($this, [
-                    'nepaliMonth' => $nepaliMonth
+                'nepaliMonth' => $nepaliMonth
         ]);
     }
 
@@ -339,55 +386,4 @@ class AllReportController extends HrisController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-
-    public function branchWiseDailyAction() {
-//         $monthId = (int) $this->params()->fromRoute('id1');
-//        $departmentId = (int) $this->params()->fromRoute('id2');
-//        $monthList = $this->repository->getMonthList();
-//        return $this->stickFlashMessagesTo([
-//                    'comBraDepList' => [
-//                        'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
-//                    ],
-//                    'monthList' => $monthList,
-//                    'monthId' => $monthId,
-//                    'departmentId' => $departmentId
-//        ]);
-        
-        $monthId = (int) $this->params()->fromRoute('id1');
-        $branchId = (int) $this->params()->fromRoute('id2');
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'comBraList' => [
-                        'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
-                    ],
-                    'monthId' => $monthId,
-                    'branchId' => $branchId
-        ]);
-    }
-
-    public function branchWiseDailyReportAction() {
-        try {
-            $request = $this->getRequest();
-            if ($request->isPost()) {
-                $postedData = $request->getPost();
-
-                $branchId = $postedData['branchId'];
-                if (!isset($branchId)) {
-                    throw new Exception("parameter branchId is required");
-                }
-                $monthId = $postedData['monthId'];
-                if (!isset($monthId)) {
-                    throw new Exception("parameter monthId is required");
-                }
-
-                $reportData = $this->repository->branchWiseDailyReport($monthId, $branchId);
-                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
-            } else {
-                throw new Exception("The request should be of type post");
-            }
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-        }
-    }
-
 }
