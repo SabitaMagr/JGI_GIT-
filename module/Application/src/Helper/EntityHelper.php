@@ -167,8 +167,8 @@ class EntityHelper {
         return "NVL2({$pre}{$columnName},LPAD(TRUNC({$pre}{$columnName}/60,0),2, 0)||':'||LPAD(MOD({$pre}{$columnName},60),2, 0),null) AS {$columnName}";
     }
 
-    public static function getSearchData($adapter) {
-        /* search values */
+    public static function getSearchData($adapter, $getDisabled = false) {
+        $employeeWhere = (!$getDisabled) ? [HrEmployees::STATUS => "E"] : [];
         $companyList = self::getTableList($adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME], [Company::STATUS => "E"]);
         $branchList = self::getTableList($adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"]);
         $departmentList = self::getTableList($adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"]);
@@ -191,7 +191,7 @@ class EntityHelper {
                     HrEmployees::GENDER_ID,
                     HrEmployees::EMPLOYEE_TYPE,
                     HrEmployees::GROUP_ID,
-                        ], [HrEmployees::STATUS => "E"]);
+                        ], $employeeWhere);
 
         $searchValues = [
             'company' => $companyList,
