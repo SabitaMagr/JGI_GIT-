@@ -827,11 +827,12 @@ window.app = (function ($, toastr, App) {
         } else {
             $kendoId = $("#" + kendoId);
         }
-        var $searchHtml = $("<div class='row search' id='searchFieldDiv'>"
-                + "<div class='col-sm-12'>"
-                + "<input class='form-group pull-right' placeholder='search here' type='text' id='kendoSearchField' style='width:136px;padding:2px;font-size:12px;'/>"
-                + "</div>"
-                + "</div>");
+        var $searchHtml = $(`
+            <div class='row search margin-bottom-5 margin-top-10' id='searchFieldDiv'>
+                <div class='col-xs-12 col-sm-6 col-md-4 col-lg-3'>
+                    <input class='form-control' placeholder='search here' type='text' id='kendoSearchField' />
+                </div>
+            </div>`);
 
 
         $searchHtml.insertBefore($kendoId);

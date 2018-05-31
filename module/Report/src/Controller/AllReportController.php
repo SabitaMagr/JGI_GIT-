@@ -5,12 +5,15 @@ use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Model\FiscalYear;
+use Application\Model\HrisQuery;
 use Exception;
 use Report\Repository\ReportRepository;
 use Setup\Model\Branch;
 use Setup\Model\Department;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Select as Select2;
 use Zend\Form\Element\Select;
 use Zend\View\Model\JsonModel;
 
@@ -89,17 +92,39 @@ class AllReportController extends HrisController {
         }
     }
 
+    private function getFiscalYearSE() {
+        $fiscalYearList = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName(FiscalYear::TABLE_NAME)
+            ->setColumnList([FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME])
+            ->setWhere([FiscalYear::STATUS => 'E'])
+            ->setOrder([FiscalYear::START_DATE => Select2::ORDER_DESCENDING])
+            ->setKeyValue(FiscalYear::FISCAL_YEAR_ID, FiscalYear::FISCAL_YEAR_NAME)
+            ->result();
+        $config = [
+            'name' => 'fiscalYear',
+            'id' => 'fiscalYearId',
+            'class' => 'form-control',
+            'label' => 'Type'
+        ];
+
+        return $this->getSelectElement($config, $fiscalYearList);
+    }
+
     public function departmentAllAction() {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
                 $postedData = $request->getPost();
-                $data = $this->repository->departmentMonthReport();
+                $data = $this->repository->departmentMonthReport($postedData['fiscalYearId']);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => null]);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
             }
         }
+
+
+        return ['fiscalYearSE' => $this->getFiscalYearSE()];
     }
 
     public function departmentWiseAction() {
@@ -107,13 +132,14 @@ class AllReportController extends HrisController {
         if ($request->isPost()) {
             try {
                 $postedData = $request->getPost();
-                $data = $this->repository->employeeMonthlyReport();
+                $data = $this->repository->employeeMonthlyReport($postedData);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => null]);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
             }
         }
-        
+
+        return ['fiscalYearSE' => $this->getFiscalYearSE()];
     }
 
     public function departmentWiseDailyAction() {

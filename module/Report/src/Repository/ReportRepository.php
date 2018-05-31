@@ -1237,7 +1237,7 @@ EOT;
         $this->executeStatement($sql);
     }
 
-    public function departmentMonthReport() {
+    public function departmentMonthReport($fiscalYearId) {
         $sql = <<<EOT
             SELECT D.DEPARTMENT_NAME,
               R.*
@@ -1309,7 +1309,7 @@ EOT;
                 AND (EMC.EMPLOYEE_ID=A.EMPLOYEE_ID))
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON (A.LEAVE_ID          = L.LEAVE_ID)
-                WHERE EMC.FISCAL_YEAR_ID=3
+                WHERE EMC.FISCAL_YEAR_ID={$fiscalYearId}
                 GROUP BY EMC.DEPARTMENT_ID,
                   EMC.FISCAL_YEAR_MONTH_NO
                 ) PIVOT (MAX(PRESENT) AS PRESENT,MAX(ABSENT) AS ABSENT,MAX(LEAVE) AS LEAVE,MAX(DAYOFF) AS DAYOFF,MAX(HOLIDAY) AS HOLIDAY,MAX(WORK_ON_HOLIDAY) AS WOH,MAX(WORK_ON_DAYOFF) AS WOD FOR FISCAL_YEAR_MONTH_NO IN (1 AS one,2 AS two,3 AS three,4 AS four,5 AS five,6 AS six,7 AS seven,8 AS eight,9 AS nine,10 AS ten,11 AS eleven,12 AS twelve))
@@ -1323,7 +1323,8 @@ EOT;
         return Helper::extractDbData($result);
     }
 
-    public function employeeMonthlyReport() {
+    public function employeeMonthlyReport($searchQuery) {
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
         $sql = <<<EOT
                 SELECT D.FULL_NAME,
                   R.*
@@ -1388,14 +1389,16 @@ EOT;
                         ELSE 0
                       END) WORK_ON_DAYOFF
                     FROM
-                      (SELECT * FROM HRIS_MONTH_CODE,HRIS_EMPLOYEES
+                      (SELECT * FROM HRIS_MONTH_CODE MC,HRIS_EMPLOYEES E
+                            WHERE 1=1 
+                            {$searchConditon}
                       ) EMC
                     LEFT JOIN HRIS_ATTENDANCE_DETAIL A
                     ON ((A.ATTENDANCE_DT BETWEEN EMC.FROM_DATE AND EMC.TO_DATE)
                     AND (EMC.EMPLOYEE_ID=A.EMPLOYEE_ID))
                     LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                     ON (A.LEAVE_ID          = L.LEAVE_ID)
-                    WHERE EMC.FISCAL_YEAR_ID=3
+                    WHERE EMC.FISCAL_YEAR_ID={$searchQuery['fiscalYearId']}
                     GROUP BY EMC.EMPLOYEE_ID,
                       EMC.FISCAL_YEAR_MONTH_NO
                     ) PIVOT (MAX(PRESENT) AS PRESENT,MAX(ABSENT) AS ABSENT,MAX(LEAVE) AS LEAVE,MAX(DAYOFF) AS DAYOFF,MAX(HOLIDAY) AS HOLIDAY,MAX(WORK_ON_HOLIDAY) AS WOH,MAX(WORK_ON_DAYOFF) AS WOD FOR FISCAL_YEAR_MONTH_NO IN (1 AS one,2 AS two,3 AS three,4 AS four,5 AS five,6 AS six,7 AS seven,8 AS eight,9 AS nine,10 AS ten,11 AS eleven,12 AS twelve))

@@ -47,11 +47,6 @@
             columns.push(column);
         }
         app.initializeKendoGrid($table, columns);
-        app.serverRequest('', {}).then(function (response) {
-            app.renderKendoGrid($table, response.data);
-        }, function (error) {
-
-        });
 
         app.searchTable($table, ['DEPARTMENT_NAME']);
         $('#excelExport').on('click', function () {
@@ -61,5 +56,17 @@
             app.exportToPDF($table, exportMap, 'Department_Wise_Attendance_Report');
         });
 
+        var $fiscalYearId = $('#fiscalYearId');
+        $fiscalYearId.select2();
+
+        $fiscalYearId.on('change', function () {
+            var $this = $(this);
+            app.serverRequest('', {fiscalYearId: $this.val()}).then(function (response) {
+                app.renderKendoGrid($table, response.data);
+            }, function (error) {
+
+            });
+        });
+        $fiscalYearId.trigger('change');
     });
 })(window.jQuery, window.app);

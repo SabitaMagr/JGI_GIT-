@@ -47,11 +47,6 @@
             columns.push(column);
         }
         app.initializeKendoGrid($table, columns);
-        app.serverRequest('', {}).then(function (response) {
-            app.renderKendoGrid($table, response.data);
-        }, function (error) {
-
-        });
 
         app.searchTable($table, ['FULL_NAME']);
         $('#excelExport').on('click', function () {
@@ -61,5 +56,19 @@
             app.exportToPDF($table, exportMap, 'Employee_Wise_Attendance_Report');
         });
 
+        $('.hris-filter-container select').select2();
+        var $search = $('#search');
+
+        $search.on('click', function () {
+            var data = document.searchManager.getSearchValues();
+            data['fiscalYearId'] = $fiscalYearId.val();
+            app.serverRequest('', data).then(function (response) {
+                app.renderKendoGrid($table, response.data);
+            }, function (error) {
+
+            });
+        });
+
+        var $fiscalYearId = $('#fiscalYearId');
     });
 })(window.jQuery, window.app);
