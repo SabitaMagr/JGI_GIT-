@@ -50,7 +50,7 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
         $response = $event->getResponse();
 
         /* Offline pages not needed authentication */
-        $whiteListRoutes = ["api-auth", "api-leave", "api-employee", "api-notification"];
+        $whiteListRoutes = ["api-auth", "api-leave", "api-employee", "api-notification","apiAttendance"];
 
         $whiteList = [
             AuthController::class . '-login',
@@ -70,6 +70,8 @@ class Module implements AutoloaderProviderInterface, ConsoleUsageProviderInterfa
             Controller\ApiController::class . "-index",
             Controller\ApiController::class . "-employee",
             Controller\ApiController::class . "-setup",
+            Controller\AttendanceApiController::class . "-index",
+            Controller\AttendanceApiController::class . "-daily",
             AuthController::class . '-changePwd',
             \Setup\Controller\EmployeeController::class . '-contact',
         ];

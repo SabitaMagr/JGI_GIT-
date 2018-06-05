@@ -37,7 +37,7 @@ class RoleSetupRepository implements RepositoryInterface {
                   BOOLEAN_DESC(ALLOW_UPDATE) AS ALLOW_UPDATE,
                   BOOLEAN_DESC(ALLOW_DELETE) AS ALLOW_DELETE,
                   REMARKS
-                FROM HRIS_ROLES";
+                FROM HRIS_ROLES WHERE STATUS='E'";
         $rowset = EntityHelper::rawQueryResult($this->adapter, $sql);
         $result = Helper::extractDbData($rowset);
         return $result;

@@ -9,6 +9,7 @@
 namespace Application\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Exception;
@@ -148,6 +149,98 @@ class ApiRepository implements RepositoryInterface {
         } catch (Exception $e) {
             return ['success' => false, 'error' => $e->getMessage()];
         }
+    }
+    
+    public function fetchAttendance($date,$employeeCode=null){
+        
+        $whereCondition=($employeeCode==null)? " ":" AND E.EMPLOYEE_CODE='{$employeeCode}'";
+        $sql="select E.FULL_NAME,A.EMPLOYEE_ID,E.EMPLOYEE_CODE,
+            A.ATTENDANCE_DT,
+            INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'YYYY-MM-DD')) AS ATTENDANCE_DT,
+          BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_NEPALI,
+       INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI:SS AM'))          AS IN_TIME,
+      INITCAP(TO_CHAR(A.OUT_TIME, 'HH:MI:SS AM'))         AS OUT_TIME,
+        A.IN_REMARKS,A.OUT_REMARKS,
+        MIN_TO_HOUR(TOTAL_HOUR) AS TOTAL_HOUR,
+     DEP.DEPARTMENT_NAME                              AS DEPARTMENT_NAME,
+      A.LATE_STATUS                                    AS LATE_STATUS,
+      (
+                  CASE
+                    WHEN A.OVERALL_STATUS = 'DO'
+                    THEN 'Day Off'
+                    WHEN A.OVERALL_STATUS ='HD'
+                    THEN 'On Holiday ('
+                      ||H.HOLIDAY_ENAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='LV'
+                    THEN 'On Leave ('
+                      ||L.LEAVE_ENAME
+                      || ')'
+                    WHEN A.OVERALL_STATUS ='TV'
+                    THEN 'On Travel ('
+                      ||TVL.DESTINATION
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='TN'
+                    THEN 'On Training ('
+                      || (CASE WHEN A.TRAINING_TYPE = 'A' THEN T.TRAINING_NAME ELSE ETN.TITLE END)
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='WD'
+                    THEN 'Work On Dayoff'
+                    WHEN A.OVERALL_STATUS ='WH'
+                    THEN 'Work on Holiday ('
+                      ||H.HOLIDAY_ENAME
+                      ||')'
+                    WHEN A.OVERALL_STATUS ='LP'
+                    THEN 'On Partial Leave ('
+                      ||L.LEAVE_ENAME
+                      ||') '
+                      ||LATE_STATUS_DESC(A.LATE_STATUS) 
+                    WHEN A.OVERALL_STATUS ='VP'
+                    THEN 'Work on Travel ('
+                      ||TVL.DESTINATION
+                      ||')'
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='TP'
+                    THEN 'Present ('
+                      ||T.TRAINING_NAME
+                      ||')'
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='PR'
+                    THEN 'Present '
+                      ||LATE_STATUS_DESC(A.LATE_STATUS)
+                    WHEN A.OVERALL_STATUS ='AB'
+                    THEN 'Absent'
+                    WHEN A.OVERALL_STATUS ='BA'
+                    THEN 'Present(Late In and Early Out)'
+                    WHEN A.OVERALL_STATUS ='LA'
+                    THEN 'Present(Late Penalty)'
+                  END) AS STATUS
+        
+
+        from 
+        HRIS_ATTENDANCE_DETAIL A
+        LEFT JOIN HRIS_EMPLOYEES E
+        ON (E.EMPLOYEE_ID=A.EMPLOYEE_ID)
+        LEFT JOIN HRIS_DEPARTMENTS DEP
+        ON E.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+        LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP H
+        ON A.HOLIDAY_ID=H.HOLIDAY_ID
+        LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+        ON A.LEAVE_ID=L.LEAVE_ID
+        LEFT JOIN HRIS_TRAINING_MASTER_SETUP T
+        ON (A.TRAINING_ID=T.TRAINING_ID AND A.TRAINING_TYPE='A')
+        LEFT JOIN HRIS_EMPLOYEE_TRAINING_REQUEST ETN
+        ON (ETN.REQUEST_ID=A.TRAINING_ID AND A.TRAINING_TYPE ='R')
+        LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TVL
+        ON A.TRAVEL_ID      =TVL.TRAVEL_ID
+        
+
+        WHERE A.ATTENDANCE_DT=TO_DATE('{$date}','YYYY-MM-DD') {$whereCondition}";
+        
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+        
     }
     
     

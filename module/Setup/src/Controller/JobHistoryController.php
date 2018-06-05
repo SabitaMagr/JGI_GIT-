@@ -40,7 +40,7 @@ class JobHistoryController extends HrisController {
                 ], $serviceEventTypes);
         return $this->stickFlashMessagesTo([
                     'serviceEventType' => $serviceEventTypeSE,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter,true),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
         ]);
