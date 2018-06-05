@@ -141,6 +141,16 @@ return [
                     ],
                 ],
             ],
+            'apiAttendance' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/api/attendnace[/:action[/:year][/:month][/:day][/:employeeCode]]',
+                    'defaults' => [
+                        'controller' => Controller\ApiAttendanceController::class,
+                        'action' => 'index',
+                    ],
+                ],
+            ],
             'updatePwd' => [
                 'type' => Segment::class,
                 'options' => [
@@ -205,6 +215,7 @@ return [
             Controller\ForgotPasswordController::class => Controller\ControllerFactory::class,
             Controller\ChangePassword::class => Controller\ControllerFactory::class,
             Controller\ApiController::class => Controller\ControllerFactory::class,
+            Controller\ApiAttendanceController::class => Controller\ControllerFactory::class,
         ],
     ],
     'view_manager' => [
