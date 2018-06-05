@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Repository;
 
 use Application\Helper\Helper;
@@ -27,11 +26,11 @@ class SalarySheetRepo extends HrisRepository {
 
     public function fetchAll() {
         return $this->tableGateway->select(function (Select $select) {
-                    $select->columns(Helper::convertColumnDateFormat($this->adapter, new SalarySheet(), [
-                                'startDate',
-                                'endDate',
-                            ]), false);
-                });
+                $select->columns(Helper::convertColumnDateFormat($this->adapter, new SalarySheet(), [
+                        'startDate',
+                        'endDate',
+                    ]), false);
+            });
     }
 
     public function fetchById($id) {
@@ -42,12 +41,16 @@ class SalarySheetRepo extends HrisRepository {
         return $this->tableGateway->select($ids);
     }
 
+    public function fetchOneBy(array $ids) {
+        return $this->tableGateway->select($ids)->current();
+    }
+
     public function joinWithMonth($monthId = null, $employeeJoinDate = null) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns([]);
         $select->from(['S' => SalarySheet::TABLE_NAME])
-                ->join(['M' => Months::TABLE_NAME], 'S.' . SalarySheet::MONTH_ID . '=M.' . Months::MONTH_ID);
+            ->join(['M' => Months::TABLE_NAME], 'S.' . SalarySheet::MONTH_ID . '=M.' . Months::MONTH_ID);
         if ($monthId != null) {
             $select->where([Months::MONTH_ID => $monthId]);
         }
@@ -68,5 +71,4 @@ class SalarySheetRepo extends HrisRepository {
                             HRIS_GEN_SAL_SH_REPORT({$sheetNo});
                         END;");
     }
-
 }

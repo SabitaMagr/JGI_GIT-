@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Repository;
 
 use Application\Helper\EntityHelper;
@@ -22,7 +21,7 @@ class SalarySheetDetailRepo extends HrisRepository {
     }
 
     public function delete($id) {
-        return $this->tableGateway->delete([SalarySheetDetail::MONTH_ID => $id]);
+        return $this->tableGateway->delete([SalarySheetDetail::SHEET_NO => $id]);
     }
 
     public function fetchById($id) {
@@ -108,5 +107,4 @@ class SalarySheetDetailRepo extends HrisRepository {
                 AND EMPLOYEE_ID ={$employeeId} ORDER BY P.PRIORITY_INDEX";
         return $this->rawQuery($sql);
     }
-
 }

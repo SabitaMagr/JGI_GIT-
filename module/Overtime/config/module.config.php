@@ -146,6 +146,23 @@ return [
                 ],
             ],
         ],
+        'overtime-report' => [
+            [
+                'label' => "Overtime",
+                'route' => "overtime-report"
+            ],
+            [
+                'label' => "Overtime",
+                'route' => "overtime-report",
+                'pages' => [
+                    [
+                        'label' => 'Report',
+                        'route' => 'overtime-report',
+                        'action' => 'index',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [

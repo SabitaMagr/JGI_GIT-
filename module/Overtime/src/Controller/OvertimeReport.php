@@ -2,7 +2,6 @@
 namespace Overtime\Controller;
 
 use Application\Controller\HrisController;
-use Application\Helper\EntityHelper;
 use Exception;
 use Overtime\Repository\OvertimeReportRepo;
 use Zend\Authentication\Storage\StorageInterface;
@@ -20,19 +19,52 @@ class OvertimeReport extends HrisController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $data = $request->getPost();
-                $list = $this->repository->fetch($data['monthId']);
-                $columnList = $this->repository->fetchColumns($data['monthId']);
-                return new JsonModel(["success" => "true", "data" => ['columnList' => $columnList, 'gridData' => $list]]);
+                $postedData = $request->getPost();
+                $list = $this->repository->fetchColumns($postedData['monthId']);
+                return new JsonModel(['success' => true, 'data' => $list, 'error' => '']);
             } catch (Exception $e) {
-                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return $this->stickFlashMessagesTo([
-                'searchValues' => EntityHelper::getSearchData($this->adapter),
-                'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail'],
-                'preference' => $this->preference
-        ]);
+        $data['getSearchDataLink'] = $this->url()->fromRoute('overtime-report', ['action' => 'getSearchData']);
+        $data['getFiscalYearMonthLink'] = $this->url()->fromRoute('overtime-report', ['action' => 'getFiscalYearMonth']);
+        $data['gridReadLink'] = $this->url()->fromRoute('overtime-report', ['action' => 'pvmRead']);
+        $data['gridUpdateLink'] = $this->url()->fromRoute('overtime-report', ['action' => 'pvmUpdate']);
+
+        return ['data' => json_encode($data)];
+    }
+
+    public function pvmReadAction() {
+        $request = $this->getRequest();
+        $postData = $request->getPost();
+        $data = $this->repository->fetchMonthlyForGrid($postData);
+
+        return new JsonModel($data);
+    }
+
+    public function pvmUpdateAction() {
+        $request = $this->getRequest();
+        $postData = $request->getPost();
+        $monthId = $postData->monthId;
+        $data = json_decode($postData->models);
+
+        $dataToUpdate = [];
+        foreach ($data as $value) {
+            $item = (array) $value;
+            $common = ['EMPLOYEE_ID' => $item['EMPLOYEE_ID'], 'MONTH_ID' => $monthId];
+            foreach ($item as $k => $v) {
+                if (!in_array($k, ['EMPLOYEE_ID', 'FULL_NAME', 'MONTH_ID'])) {
+                    if ($v != null) {
+                        $monthDay = str_replace('D_', '', $k);
+                        $dataUnit = array_merge($common, []);
+                        $dataUnit['MONTH_DAY'] = $monthDay;
+                        $dataUnit['OVERTIME_HOUR'] = $v;
+                        array_push($dataToUpdate, $dataUnit);
+                    }
+                }
+            }
+        }
+        $this->repository->bulkEdit($dataToUpdate);
+        return new JsonModel($data);
     }
 }

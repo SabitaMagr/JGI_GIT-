@@ -1,60 +1,115 @@
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
-        var $table = $('#table');
-        var exportMap = null;
-        var columns = null;
-
-        var onLoad = function (columnList, dataList) {
-            exportMap = {"FULL_NAME": "Employee"};
-            columns = [
-                {field: "FULL_NAME", title: "Employee", width: 150}
-            ];
-            $.each(columnList, function (key, value) {
-                columns.push({field: value['MONTH_DAY'], title: value['MONTH_DAY'], width: 50});
-                exportMap[value['MONTH_DAY']] = value['MONTH_DAY'];
-            });
-            app.initializeKendoGrid($table, columns);
-            app.renderKendoGrid($table, dataList);
-        };
-
-        app.searchTable($table, ['COMPANY_NAME']);
-        $('#excelExport').on('click', function () {
-            app.excelExport($table, exportMap, 'Penalty List');
-        });
-        $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, exportMap, 'Penalty List');
-        });
+        $('select').select2();
+        /**/
         var months = null;
-        var $year = $('#fiscalYear');
-        var $month = $('#fiscalMonth');
-        var $noOfDeductionDays = $('#noOfDeductionDays');
-        $noOfDeductionDays.val(document.noOfDeductionDays);
+        var selectedMonth = null;
+        /**/
+        var $year = $('#fiscalYearId');
+        var $month = $('#monthId');
+        var $table = $('#table');
+        var $search = $('#search');
+
+        $month.on('change', function () {
+            changeGrid();
+        });
+        $search.on('click', function () {
+            changeGrid();
+        });
+
         app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
             months = monthList;
-        });
+        }, data.getFiscalYearMonthLink);
 
-        var monthChange = function ($this) {
-            var value = $this.val();
-            if (value == null) {
+        var changeGrid = function () {
+            var monthId = $month.val();
+
+            if (monthId === null && monthId === '') {
                 return;
             }
-            var selectedMonthList = months.filter(function (item) {
-                return item['MONTH_ID'] === value;
+
+            fetchGridColumns({monthId: monthId}, function (kendoConfig) {
+                if (typeof $table.data('kendoGrid') === 'undefined') {
+                    $table.kendoGrid(kendoConfig);
+                    app.searchTable($table, ['FULL_NAME']);
+                } else {
+                    $table.kendoGrid('destroy').empty();
+                    $table.kendoGrid(kendoConfig);
+                }
             });
-            if (selectedMonthList.length <= 0) {
-                return;
-            }
-            app.serverRequest("", {monthId: selectedMonthList[0]['MONTH_ID']}).then(function (response) {
-                console.log(response.data);
-                onLoad(response.data.columnList, response.data.gridData)
+
+        };
+        var columns = null;
+        var fields = null;
+        var fetchGridColumns = function (q, fn) {
+            app.serverRequest('', q).then(function (response) {
+                var columnList = response.data;
+                columns = [
+                    {field: 'FULL_NAME', title: 'Employee', width: 150, locked: true}
+                ];
+                fields = {
+                    'FULL_NAME': {editable: false},
+                };
+                $.each(columnList, function (k, v) {
+                    columns.push({field: v['MONTH_DAY_FIELD'], title: v['MONTH_DAY_TITLE'], width: 50});
+                    fields[v['MONTH_DAY_FIELD']] = {type: "number"};
+                });
+
+                fn(getkendoConfig(columns, fields));
+
             }, function (error) {
 
             });
-        };
-        $month.on('change', function () {
-            monthChange($(this));
-        });
 
+
+        }
+
+        var getkendoConfig = function (c, f) {
+            return {
+                dataSource: {
+                    transport: {
+                        type: "json",
+                        read: {
+                            url: data.gridReadLink,
+                            type: "POST",
+                        },
+                        update: {
+                            url: data.gridUpdateLink,
+                            type: "POST",
+                        },
+                        parameterMap: function (options, operation) {
+
+                            if (operation === "read") {
+                                selectedMonth = $month.val();
+                                var q = document.searchManager.getSearchValues();
+                                q['monthId'] = selectedMonth;
+                                return q;
+                            }
+                            if (operation !== "read" && options.models) {
+                                return {
+                                    monthId: selectedMonth,
+                                    models: kendo.stringify(options.models)};
+                            }
+
+
+                        }
+                    },
+                    batch: true,
+                    schema: {
+                        model: {
+                            id: "EMPLOYEE_ID",
+                            fields: f
+                        }
+                    },
+                    pageSize: 20
+                },
+                pageable: true,
+                height: 550,
+                toolbar: ["save", "cancel"],
+                columns: c,
+                editable: true
+            };
+        };
     });
 })(window.jQuery, window.app);

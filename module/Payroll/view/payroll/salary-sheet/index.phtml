@@ -1,18 +1,19 @@
 <?php
 $this->headLink()
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 $this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 $this->headLink()->appendStylesheet($this->basePath('assets/global/plugins/please-wait/build/please-wait.css'));
 $this->headLink()->appendStylesheet($this->basePath('css/please-wait-custom.css'));
 $this->headScript()
-        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 $this->headScript()->appendFile($this->basePath('assets/global/plugins/please-wait/build/please-wait.min.js'));
 $this->headScript()
-        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/Payroll/salary-sheet/index.js'));
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('js/Payroll/salary-sheet/index.js'));
+
 ?>
 <script>
     document.data =<?php echo $data; ?>;
@@ -98,9 +99,11 @@ $this->headScript()
                 </div>
             </div>
 
-            <div class="col-sm-2">
-                <button id="viewBtn" class="btn btn-info pull-right">View</button>
-                <button id="generateBtn" class="btn btn-info pull-right">Generate</button>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <button id="generateBtn" class="btn blue-hoki pull-right">Generate</button>
+                <button id="viewBtn" class="btn yellow-saffron pull-right">View</button>
             </div>
         </div>
         <div id="table" class="margin-top-10">

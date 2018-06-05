@@ -98,7 +98,6 @@
         $groupId.select2();
 
         $viewBtn.hide();
-        $generateBtn.hide();
 
         app.setFiscalMonth($fiscalYear, $month, function (years, months, currentMonth) {
             monthList = months;
@@ -125,10 +124,8 @@
             }
             if (selectedSalarySheetList.length > 0) {
                 $viewBtn.show();
-                $generateBtn.hide();
             } else {
                 $viewBtn.hide();
-                $generateBtn.show();
             }
             $fromDate.val(selectedMonth['FROM_DATE']);
             $nepaliFromDate.val(nepaliDatePickerExt.fromEnglishToNepali(selectedMonth['FROM_DATE']));
@@ -140,6 +137,13 @@
             monthChangeAction();
         });
 
+        $companyId.on('change', function () {
+            monthChangeAction();
+        });
+
+        $groupId.on('change', function () {
+            monthChangeAction();
+        });
 
         var exportMap = {"EMPLOYEE_NAME": "Employee"};
         var employeeNameColumn = {field: "EMPLOYEE_NAME", title: "Employee", width: 150};
