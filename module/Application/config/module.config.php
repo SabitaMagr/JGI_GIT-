@@ -144,7 +144,7 @@ return [
             'apiAttendance' => [
                 'type' => Segment::class,
                 'options' => [
-                    'route' => '/api/attendnace[/:action[/:year][/:month][/:day][/:employeeCode]]',
+                    'route' => '/api/attendance[/:action[/:year][/:month][/:day][/:employeeCode]]',
                     'defaults' => [
                         'controller' => Controller\ApiAttendanceController::class,
                         'action' => 'index',
