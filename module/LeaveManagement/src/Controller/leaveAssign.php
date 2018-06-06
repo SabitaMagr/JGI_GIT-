@@ -72,11 +72,13 @@ class leaveAssign extends HrisController {
             $leaveAssign->balance = $data['balance'];
             $leaveAssign->employeeId = $data['employeeId'];
             $leaveAssign->leaveId = $data['leave'];
+            $leaveAssign->previousYearBalance = $data['previousYearBal'];
 
             $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
             if (empty($data['leaveId'])) {
                 $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->createdBy = $this->employeeId;
+                $leaveAssign->balance = $data['balance']+$leaveAssign->previousYearBalance;
                 $leaveAssignRepo->add($leaveAssign);
             } else {
                 $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
