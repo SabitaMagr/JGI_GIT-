@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Service;
 
 use Application\Helper\EntityHelper;
@@ -83,7 +82,23 @@ class SalarySheetService {
         }
     }
 
+    private function findSalarySheetNo($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId) {
+        $by = [
+            SalarySheetModel::MONTH_ID => $monthId,
+            SalarySheetModel::COMPANY_ID => $companyId,
+            SalarySheetModel::GROUP_ID => $groupId,
+        ];
+        $data = $this->salarySheetRepo->fetchOneBy($by);
+
+        return $data == null ? null : $data[SalarySheetModel::SHEET_NO];
+    }
+
     public function newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId) {
+        $sheetNo = $this->findSalarySheetNo($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId);
+        if ($sheetNo != null) {
+            return $sheetNo;
+        }
+
         $salarySheetModal = new SalarySheetModel();
         $salarySheetModal->sheetNo = ((int) Helper::getMaxId($this->adapter, SalarySheetModel::TABLE_NAME, SalarySheetModel::SHEET_NO)) + 1;
         $salarySheetModal->monthId = $monthId;
@@ -104,5 +119,4 @@ class SalarySheetService {
         $rawList = EntityHelper::getTableList($this->adapter, HrEmployees::TABLE_NAME, [HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME], [HrEmployees::STATUS => EntityHelper::STATUS_ENABLED, HrEmployees::COMPANY_ID => $companyId, HrEmployees::GROUP_ID => $groupId]);
         return Helper::extractDbData($rawList);
     }
-
 }

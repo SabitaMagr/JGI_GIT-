@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Repository;
 
 use Application\Helper\EntityHelper;
@@ -78,4 +77,7 @@ class TaxSheetRepo extends HrisRepository {
         return $this->rawQuery($sql);
     }
 
+    public function delete($id) {
+        return $this->tableGateway->delete([TaxSheet::SHEET_NO => $id]);
+    }
 }

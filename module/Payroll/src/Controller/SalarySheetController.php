@@ -1,5 +1,4 @@
 <?php
-
 namespace Payroll\Controller;
 
 use Application\Controller\HrisController;
@@ -95,6 +94,8 @@ class SalarySheetController extends HrisController {
                         foreach ($groupIdList as $groupId) {
                             $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId);
                             $this->salarySheetRepo->generateSalShReport($sheetNo);
+                            $salarySheetDetailRepo->delete($sheetNo);
+                            $taxSheetRepo->delete($sheetNo);
                             $employeeList = $salarySheet->fetchEmployeeList($companyId, $groupId);
                             $data = null;
                             $data['sheetNo'] = $sheetNo;
@@ -279,5 +280,4 @@ class SalarySheetController extends HrisController {
         $sspvmRepo->bulkEdit($dataToUpdate);
         return new JsonModel($data);
     }
-
 }

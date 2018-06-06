@@ -1,6 +1,7 @@
 <?php
 namespace Overtime\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Repository\HrisRepository;
 
 class OvertimeReportRepo extends HrisRepository {
@@ -53,10 +54,11 @@ class OvertimeReportRepo extends HrisRepository {
 
     public function fetchColumns($monthId): array {
         $sql = "SELECT 'D_'
-                  ||ROWNUM AS MONTH_DAY
+                  ||ROWNUM AS MONTH_DAY_FIELD,
+                  ROWNUM AS MONTH_DAY_TITLE
                 FROM DUAL
                   CONNECT BY ROWNUM <=
-                  (SELECT (TO_DATE-FROM_DATE)+1 FROM HRIS_MONTH_CODE WHERE MONTH_ID=30
+                  (SELECT (TO_DATE-FROM_DATE)+1 FROM HRIS_MONTH_CODE WHERE MONTH_ID={$monthId}
                   )";
 
         return $this->rawQuery($sql);
@@ -77,5 +79,85 @@ class OvertimeReportRepo extends HrisRepository {
                   )";
 
         return $this->rawQuery($sql)[0]['MONTH_DAY_IN'];
+    }
+
+    public function fetchMonthlyForGrid($by): array {
+        $monthId = $by['monthId'];
+        $pivotIn = $this->fetchColumnsForPivot($monthId);
+        $searchConditon = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId']);
+        $sql = "SELECT *
+                FROM
+                  (SELECT AD.EMPLOYEE_ID,
+                    E.FULL_NAME,
+                    'D_'
+                    ||TO_NUMBER(regexp_substr(BS_DATE(TRUNC(AD.ATTENDANCE_DATE)),'[^-]+', 1, 3)) AS MONTH_DAY,
+                    OM.OVERTIME_HOUR
+                  FROM
+                    (SELECT AD.EMPLOYEE_ID,
+                      AD.ATTENDANCE_DT AS ATTENDANCE_DATE
+                    FROM HRIS_ATTENDANCE_DETAIL AD
+                    JOIN HRIS_MONTH_CODE MC
+                    ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
+                    WHERE MC.MONTH_ID={$monthId}
+                    ) AD
+                  LEFT JOIN HRIS_OVERTIME_MANUAL OM
+                  ON (AD.EMPLOYEE_ID    =OM.EMPLOYEE_ID
+                  AND AD.ATTENDANCE_DATE=OM.ATTENDANCE_DATE)
+                  JOIN HRIS_EMPLOYEES E
+                  ON (AD.EMPLOYEE_ID                         =E.EMPLOYEE_ID)
+                  WHERE 1=1 
+                  {$searchConditon}
+                  ) PIVOT (MAX(OVERTIME_HOUR) FOR MONTH_DAY IN ({$pivotIn}))";
+        return $this->rawQuery($sql);
+    }
+
+    public function bulkEdit($data) {
+        foreach ($data as $value) {
+            $this->createOrUpdate($value['MONTH_ID'], $value['MONTH_DAY'], $value['EMPLOYEE_ID'], $value['OVERTIME_HOUR']);
+        }
+    }
+
+    private function createOrUpdate($m, $d, $e, $h) {
+        $sql = "DECLARE
+                  V_MONTH_ID HRIS_MONTH_CODE.MONTH_ID%TYPE                :={$m};
+                  V_MONTH_DAY NUMBER                                      :={$d};
+                  V_EMPLOYEE_ID HRIS_OVERTIME_MANUAL.EMPLOYEE_ID%TYPE     :={$e};
+                  V_OVERTIME_HOUR HRIS_OVERTIME_MANUAL.OVERTIME_HOUR%TYPE :={$h};
+                  V_ATTENDANCE_DATE HRIS_OVERTIME_MANUAL.ATTENDANCE_DATE%TYPE;
+                  V_ROW_COUNT NUMBER;
+                BEGIN
+                  SELECT FROM_DATE+V_MONTH_DAY -1
+                  INTO V_ATTENDANCE_DATE
+                  FROM HRIS_MONTH_CODE
+                  WHERE MONTH_ID =V_MONTH_ID;
+                  --
+                  SELECT COUNT(*)
+                  INTO V_ROW_COUNT
+                  FROM HRIS_OVERTIME_MANUAL
+                  WHERE ATTENDANCE_DATE =V_ATTENDANCE_DATE
+                  AND EMPLOYEE_ID       = V_EMPLOYEE_ID
+                  AND OVERTIME_HOUR     = V_OVERTIME_HOUR;
+                  IF (V_ROW_COUNT       >0 ) THEN
+                    UPDATE HRIS_OVERTIME_MANUAL
+                    SET OVERTIME_HOUR     =V_OVERTIME_HOUR
+                    WHERE ATTENDANCE_DATE =V_ATTENDANCE_DATE
+                    AND EMPLOYEE_ID       = V_EMPLOYEE_ID ;
+                  ELSE
+                    INSERT
+                    INTO HRIS_OVERTIME_MANUAL
+                      (
+                        ATTENDANCE_DATE,
+                        EMPLOYEE_ID,
+                        OVERTIME_HOUR
+                      )
+                      VALUES
+                      (
+                        V_ATTENDANCE_DATE,
+                        V_EMPLOYEE_ID,
+                        V_OVERTIME_HOUR
+                      );
+                  END IF;
+                END;";
+        $this->executeStatement($sql);
     }
 }
