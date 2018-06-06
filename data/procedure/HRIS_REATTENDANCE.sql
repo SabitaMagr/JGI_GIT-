@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_REATTENDANCE(
+create or replace PROCEDURE HRIS_REATTENDANCE(
     P_FROM_ATTENDANCE_DT HRIS_ATTENDANCE.ATTENDANCE_DT%TYPE,
     P_EMPLOYEE_ID HRIS_ATTENDANCE.EMPLOYEE_ID%TYPE:=NULL,
     P_TO_ATTENDANCE_DT DATE                       :=NULL)
@@ -24,8 +24,9 @@ AS
   --
   V_LATE_IN HRIS_SHIFTS.LATE_IN%TYPE;
   V_EARLY_OUT HRIS_SHIFTS.EARLY_OUT%TYPE;
-  V_LATE_START_TIME TIMESTAMP;
-  V_EARLY_END_TIME  TIMESTAMP;
+  V_LATE_START_TIME   TIMESTAMP;
+  V_EARLY_END_TIME    TIMESTAMP;
+  V_TOTAL_WORKING_MIN NUMBER;
   --
   V_LATE_COUNT NUMBER;
   V_SHIFT_ID   NUMBER;
@@ -148,12 +149,14 @@ BEGIN
           EARLY_OUT,
           LATE_START_TIME,
           EARLY_END_TIME,
-          EARLY_END_TIME + (LATE_START_TIME -EARLY_END_TIME)/2
+          EARLY_END_TIME + (LATE_START_TIME -EARLY_END_TIME)/2,
+          TOTAL_WORKING_HR
         INTO V_LATE_IN,
           V_EARLY_OUT,
           V_LATE_START_TIME,
           V_EARLY_END_TIME,
-          V_HALF_INTERVAL
+          V_HALF_INTERVAL,
+          V_TOTAL_WORKING_MIN
         FROM
           (SELECT S.LATE_IN,
             S.EARLY_OUT,
@@ -162,7 +165,8 @@ BEGIN
             ||TO_CHAR(S.START_TIME+((1/1440)*NVL(S.LATE_IN,0)),'HH:MI AM'),'DD-MON-YYYY HH:MI AM') AS LATE_START_TIME,
             TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
             ||' '
-            || TO_CHAR(S.END_TIME -((1/1440)*NVL(S.EARLY_OUT,0)),'HH:MI AM'),'DD-MON-YYYY HH:MI AM') AS EARLY_END_TIME
+            || TO_CHAR(S.END_TIME -((1/1440)*NVL(S.EARLY_OUT,0)),'HH:MI AM'),'DD-MON-YYYY HH:MI AM') AS EARLY_END_TIME,
+            S.TOTAL_WORKING_HR
           FROM HRIS_SHIFTS S
           WHERE S.SHIFT_ID=V_SHIFT_ID
           );
@@ -196,11 +200,13 @@ BEGIN
               ||TO_CHAR(LATE_START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
               TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
               ||' '
-              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM')
+              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
+              TOTAL_WORKING_HR
             INTO V_LATE_IN,
               V_EARLY_OUT,
               V_LATE_START_TIME,
-              V_EARLY_END_TIME
+              V_EARLY_END_TIME,
+              V_TOTAL_WORKING_MIN
             FROM
               (SELECT S.LATE_IN,
                 S.EARLY_OUT,
@@ -215,7 +221,8 @@ BEGIN
                   WHEN V_HALFDAY_PERIOD ='F'
                   THEN S.END_TIME
                   ELSE S.HALF_DAY_OUT_TIME
-                END ) -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME
+                END ) -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME,
+                S.TOTAL_WORKING_HR
               FROM HRIS_SHIFTS S
               WHERE S.SHIFT_ID =V_SHIFT_ID
               );
@@ -227,11 +234,13 @@ BEGIN
               ||TO_CHAR(LATE_START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
               TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
               ||' '
-              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM')
+              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
+              TOTAL_WORKING_HR
             INTO V_LATE_IN,
               V_EARLY_OUT,
               V_LATE_START_TIME,
-              V_EARLY_END_TIME
+              V_EARLY_END_TIME,
+              V_TOTAL_WORKING_MIN
             FROM
               (SELECT S.LATE_IN,
                 S.EARLY_OUT,
@@ -246,7 +255,8 @@ BEGIN
                   WHEN V_GRACE_PERIOD ='E'
                   THEN S.END_TIME
                   ELSE S.GRACE_END_TIME
-                END) -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME
+                END) -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME,
+                S.TOTAL_WORKING_HR
               FROM HRIS_SHIFTS S
               WHERE S.SHIFT_ID=V_SHIFT_ID
               );
@@ -258,16 +268,19 @@ BEGIN
               ||TO_CHAR(LATE_START_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
               TO_DATE(TO_CHAR(employee.ATTENDANCE_DT,'DD-MON-YYYY')
               ||' '
-              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM')
+              ||TO_CHAR(EARLY_END_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
+              TOTAL_WORKING_HR
             INTO V_LATE_IN,
               V_EARLY_OUT,
               V_LATE_START_TIME,
-              V_EARLY_END_TIME
+              V_EARLY_END_TIME,
+              V_TOTAL_WORKING_MIN
             FROM
               (SELECT S.LATE_IN,
                 S.EARLY_OUT,
                 S.START_TIME+((1/1440)*NVL(S.LATE_IN,0))   AS LATE_START_TIME,
-                S.END_TIME  -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME
+                S.END_TIME  -((1/1440)*NVL(S.EARLY_OUT,0)) AS EARLY_END_TIME,
+                S.TOTAL_WORKING_HR
               FROM HRIS_SHIFTS S
               WHERE S.SHIFT_ID=V_SHIFT_ID
               );
@@ -363,7 +376,8 @@ BEGIN
           OUT_TIME          =V_OUT_TIME,
           OVERALL_STATUS    = V_OVERALL_STATUS,
           LATE_STATUS       = V_LATE_STATUS,
-          TOTAL_HOUR        = V_DIFF_IN_MIN
+          TOTAL_HOUR        = V_DIFF_IN_MIN,
+          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN)
         WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
         AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
         --

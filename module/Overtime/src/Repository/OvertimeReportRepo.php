@@ -118,46 +118,8 @@ class OvertimeReportRepo extends HrisRepository {
     }
 
     private function createOrUpdate($m, $d, $e, $h) {
-        $sql = "DECLARE
-                  V_MONTH_ID HRIS_MONTH_CODE.MONTH_ID%TYPE                :={$m};
-                  V_MONTH_DAY NUMBER                                      :={$d};
-                  V_EMPLOYEE_ID HRIS_OVERTIME_MANUAL.EMPLOYEE_ID%TYPE     :={$e};
-                  V_OVERTIME_HOUR HRIS_OVERTIME_MANUAL.OVERTIME_HOUR%TYPE :={$h};
-                  V_ATTENDANCE_DATE HRIS_OVERTIME_MANUAL.ATTENDANCE_DATE%TYPE;
-                  V_ROW_COUNT NUMBER;
-                BEGIN
-                  SELECT FROM_DATE+V_MONTH_DAY -1
-                  INTO V_ATTENDANCE_DATE
-                  FROM HRIS_MONTH_CODE
-                  WHERE MONTH_ID =V_MONTH_ID;
-                  --
-                  SELECT COUNT(*)
-                  INTO V_ROW_COUNT
-                  FROM HRIS_OVERTIME_MANUAL
-                  WHERE ATTENDANCE_DATE =V_ATTENDANCE_DATE
-                  AND EMPLOYEE_ID       = V_EMPLOYEE_ID
-                  AND OVERTIME_HOUR     = V_OVERTIME_HOUR;
-                  IF (V_ROW_COUNT       >0 ) THEN
-                    UPDATE HRIS_OVERTIME_MANUAL
-                    SET OVERTIME_HOUR     =V_OVERTIME_HOUR
-                    WHERE ATTENDANCE_DATE =V_ATTENDANCE_DATE
-                    AND EMPLOYEE_ID       = V_EMPLOYEE_ID ;
-                  ELSE
-                    INSERT
-                    INTO HRIS_OVERTIME_MANUAL
-                      (
-                        ATTENDANCE_DATE,
-                        EMPLOYEE_ID,
-                        OVERTIME_HOUR
-                      )
-                      VALUES
-                      (
-                        V_ATTENDANCE_DATE,
-                        V_EMPLOYEE_ID,
-                        V_OVERTIME_HOUR
-                      );
-                  END IF;
-                END;";
+        $hour = $h == null ? 'NULL' : $h;
+        $sql = "BEGIN HRIS_OT_MANUAL_CR_OR_UP({$m},{$d},{$e},{$hour}); END;";
         $this->executeStatement($sql);
     }
 }

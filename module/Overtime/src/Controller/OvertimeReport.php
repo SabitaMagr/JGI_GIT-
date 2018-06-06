@@ -54,13 +54,13 @@ class OvertimeReport extends HrisController {
             $common = ['EMPLOYEE_ID' => $item['EMPLOYEE_ID'], 'MONTH_ID' => $monthId];
             foreach ($item as $k => $v) {
                 if (!in_array($k, ['EMPLOYEE_ID', 'FULL_NAME', 'MONTH_ID'])) {
-                    if ($v != null) {
+//                    if ($v != null) {
                         $monthDay = str_replace('D_', '', $k);
                         $dataUnit = array_merge($common, []);
                         $dataUnit['MONTH_DAY'] = $monthDay;
                         $dataUnit['OVERTIME_HOUR'] = $v;
                         array_push($dataToUpdate, $dataUnit);
-                    }
+//                    }
                 }
             }
         }
