@@ -1,5 +1,4 @@
 <?php
-
 namespace Application\Helper;
 
 use Zend\Mail\Message;
@@ -7,9 +6,9 @@ use Zend\Mail\Transport\Smtp;
 use Zend\Mail\Transport\SmtpOptions;
 
 class EmailHelper {
-    
-    const maxMassMail=50;
-    const massEmailId='mhrpravin@gmail.com';
+
+    const maxMassMail = 50;
+    const massEmailId = 'mhrpravin@gmail.com';
 
     public static function getSmtpTransport(): Smtp {
         $transport = new Smtp();
@@ -37,5 +36,4 @@ class EmailHelper {
         $transport->send($mail);
         return true;
     }
-
 }

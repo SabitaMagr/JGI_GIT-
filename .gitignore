@@ -19,3 +19,4 @@ composer.lock
 #phpunit.xml
 web.config
 data/database/fns_trgs_procs.sql
+public/uploads/*
