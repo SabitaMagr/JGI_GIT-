@@ -113,7 +113,7 @@ class HeadNotification {
             throw new Exception('Email template not set.');
         }
         $mail = new Message();
-        $mail->setSubject($template['SUBJECT']);
+        $mail->setSubject($model->processString($template['SUBJECT'], $url));
         $htmlDescription = self::mailHeader();
         $htmlDescription .= $model->processString($template['DESCRIPTION'], $url);
         $htmlDescription .= self::mailFooter();
@@ -1796,4 +1796,65 @@ class HeadNotification {
         self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 11, $adapter, $url);
     }
+    
+    
+    public static function sendMassMail(AdapterInterface $adapter, $postData, $subject, $description) {
+        $bcc = true;
+
+        $sendList = [];
+        if (!isset($postData['company']) &&
+                !isset($postData['branch']) &&
+                !isset($postData['department']) &&
+                !isset($postData['position']) &&
+                !isset($postData['designation']) &&
+                !isset($postData['serviceType']) &&
+                !isset($postData['serviceEventType']) &&
+                !isset($postData['employeeType']) &&
+                !isset($postData['employee'])
+        ) {
+            $bcc = false;
+            array_push($sendList, ['FULL_NAME' => 'All Staff',
+                'EMAIL_OFFICIAL' => EmailHelper::massEmailId]);
+        } else {
+            $notiRepo = new NotificationRepo($adapter);
+            $sendList = $notiRepo->fetchAllEmployeeEmail($postData);
+        }
+
+        $mail = new Message();
+        $mail->setSubject($subject);
+        $htmlDescription = $description;
+        $htmlPart = new MimePart($htmlDescription);
+        $htmlPart->type = "text/html";
+        $body = new MimeMessage();
+        $body->setParts(array($htmlPart));
+        $mail->setBody($body);
+
+
+        if (EmailHelper::maxMassMail != 0 && $sendList > EmailHelper::maxMassMail) {
+            $serial = 1;
+            $MaxMailCounter = EmailHelper::maxMassMail;
+            foreach ($sendList as $emailList) {
+
+                $mail->addBcc($emailList['EMAIL_OFFICIAL'], $emailList['FULL_NAME']);
+
+                if ($serial == $MaxMailCounter) {
+                    $MaxMailCounter = $MaxMailCounter + EmailHelper::maxMassMail;
+                    EmailHelper::sendEmail($mail);
+                    $mail->setBcc([]);
+                }
+                $serial++;
+            }
+            EmailHelper::sendEmail($mail);
+        } else {
+
+            foreach ($sendList as $emailList) {
+                (!$bcc) ?
+                                $mail->addTo($emailList['EMAIL_OFFICIAL'], $emailList['FULL_NAME']) :
+                                $mail->addBcc($emailList['EMAIL_OFFICIAL'], $emailList['FULL_NAME']);
+            }
+
+            EmailHelper::sendEmail($mail);
+        }
+    }
+
 }

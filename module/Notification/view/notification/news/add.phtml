@@ -1,5 +1,7 @@
 <?php
 $this->headLink()
+        ->appendStylesheet($this->basePath('dropzone/dropzone.min.css'));
+$this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()
@@ -7,7 +9,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
 $this->headScript()->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/Notification/news/add.js'));
+        ->appendFile($this->basePath('js/Notification/news/add.js'))
+        ->appendFile($this->basePath('dropzone/dropzone.min.js'));
 
 
 $form->setAttribute('role', 'form');
@@ -39,6 +42,8 @@ $form->prepare();
 
 <script>
     document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.uploadUrl = '<?= $this->url('news', ['action' => 'fileUpload']); ?>';
+    document.pushNewsFileLink = '<?php echo $this->url('news', ['action' => 'pushNewsFile']); ?>';
 </script>
 
 <div class="page-bar">
@@ -58,6 +63,8 @@ $form->prepare();
             </div>
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
+                
+<!--                <input id="fileUploadList" type="hidden" name="fileUploadList[]">-->
 
                 <div class=" row">
                     <div class="col-sm-4">
@@ -200,6 +207,23 @@ $form->prepare();
                         </select>
                     </div>
                 </div>
+                
+                <div class="row margin-top-20">
+                    <div class=" col-md-6 form-group">
+                        <table id="fileDetailsTbl" class="table">
+                            <tr>
+                                <th>Document</th>
+                                <th>&nbsp;</th>
+                                <th>Action</th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-3">
+                        <button id="addDocument" type="button" class="btn btn-primary">
+                            Add
+                        </button>
+                    </div>
+                </div>
 
 
 
@@ -211,6 +235,42 @@ $form->prepare();
                 </div>
 
             </div>
+        </div>
+    </div>
+</div>
+
+
+<!--bootstrap modal-->
+<div id="documentUploadModel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Document Upload</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="modal-body" id="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <!--<div id="dropZoneContainer" >-->
+                            <div id="dropZoneContainer"  class="dropzone">
+                            </div>
+                            <div id="uploadErr">Please upload Image.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+            <button id='uploadSubmitBtn' class="btn btn-primary" type="button" >OK</button>
+            <button id='uploadCancelBtn' class="btn btn-warning" type="button" >Cancel</button>
+            <!--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
         </div>
     </div>
 </div>

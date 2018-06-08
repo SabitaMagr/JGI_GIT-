@@ -2,6 +2,7 @@
 
 namespace Notification\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
@@ -87,6 +88,17 @@ class NotificationRepo implements RepositoryInterface {
 
     public function fetchById($id) {
         return $this->tableGateway->select([Notification::MESSAGE_ID => $id])->current();
+    }
+    
+    public function fetchAllEmployeeEmail($postData) {
+        $whereCondition = EntityHelper::getSearchConditon($postData['company'], $postData['branch'], $postData['department'], $postData['position'], $postData['designation'], $postData['serviceType'], $postData['serviceEventType'], $postData['employeeType'], $postData['employee']);
+        $sql = 'SELECT E.FULL_NAME,E.EMAIL_OFFICIAL FROM HRIS_EMPLOYEES E where E.EMAIL_OFFICIAL IS NOT NULL';
+        $sql.=$whereCondition;
+        
+        
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }

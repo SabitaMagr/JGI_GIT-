@@ -53,6 +53,8 @@ class NewsController extends AbstractActionController {
         if ($request->isPost()) {
             $postData = $request->getPost();
             $this->form->setData($postData);
+            
+            echo '<Pre>';
             if ($this->form->isValid()) {
                 $newsModel = new NewsModel();
                 $newsModel->exchangeArrayFromForm($this->form->getData());
@@ -62,11 +64,27 @@ class NewsController extends AbstractActionController {
                 $newsModel->createdDt = Helper::getcurrentExpressionDate();
                 $newsModel->approvedDt = Helper::getcurrentExpressionDate();
                 $newsModel->status = 'E';
-
+                
+                
+                
+                $subject=$newsModel->newsTitle;
+                $description=$newsModel->newsEdesc;
+                
                 $this->repository->add($newsModel);
                 $this->assignTo($newsModel->newsId, $postData);
+                
+                if(isset($postData['fileUploadList'])){
+                    $this->repository->updateNewsFileUploads($newsModel->newsId,$postData['fileUploadList']);
+                }
+                
+                try {
+                 HeadNotification::sendMassMail($this->adapter,$postData,$subject, $description);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                
                 $this->flashmessenger()->addMessage("News Successfully added!!!");
-                return $this->redirect()->toRoute('news', ['action' => 'edit', 'id' => $newsModel->newsId]);
+                return $this->redirect()->toRoute('news');
             }
         }
 
@@ -152,6 +170,20 @@ class NewsController extends AbstractActionController {
 
                 $this->repository->edit($newsModel, $id);
                 $this->assignTo($id, $postData);
+                
+                isset($postData['fileUploadList'])?
+                    $this->repository->updateNewsFileUploads($id,$postData['fileUploadList'])
+                :$this->repository->updateNewsFileUploads($id,[]);
+                
+                
+                $subject=$newsModel->newsTitle;
+                $description=$newsModel->newsEdesc;
+                try {
+                 HeadNotification::sendMassMail($this->adapter,$postData,$subject, $description);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
+                
                 $this->flashmessenger()->addMessage("News Successfully Updated!!!");
                 return $this->redirect()->toRoute("news");
             }
@@ -225,32 +257,20 @@ class NewsController extends AbstractActionController {
                 $newsFileRepo = new NewsFileRepository($this->adapter);
                 $newsFileRepo->add($newsFile);
 
-                $return = ["success" => true, "data" => ['newsFileId' => $newsFile->newsFileId]];
+                $returnData= ['newsFileId' => $newsFile->newsFileId,'filePath'=>$newsFile->filePath];
             } else {
                 $newsFile->filePath = $data['filePath'];
                 $newsFileRepo = new NewsFileRepository($this->adapter);
                 $newsFileRepo->edit($newsFile, $data['newsTypeId']);
-                $return = ["success" => true, "data" => ['newsFileId' => $data['newsTypeId']]];
+                $returnData=['newsFileId' => $data['newsTypeId']];
             }
 
-            return new JsonModel(['success' => true, 'data' => $return, 'message' => null]);
+            return new JsonModel(['success' => true, 'data' => $returnData, 'message' => null]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
 
-    public function deleteFileAction() {
-        try {
-            $request = $this->getRequest();
-            $data = $request->getPost();
-            $id = $data['id'];
-            $newsfileRepo = new NewsFileRepository($this->adapter);
-            $newsFiles = $newsfileRepo->delete($id);
-            return new JsonModel(['success' => true, 'data' => $newsFiles, 'message' => null]);
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
-        }
-    }
 
     public function pullNewsFileAction() {
         try {

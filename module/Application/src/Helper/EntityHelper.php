@@ -168,7 +168,7 @@ class EntityHelper {
     }
 
     public static function getSearchData($adapter, $getDisabled = false) {
-        $employeeWhere = (!$getDisabled) ? [HrEmployees::STATUS => "E"] : [];
+        $employeeWhere = (!$getDisabled) ? [HrEmployees::STATUS => "E"] : ["status='E' or employee_id in (select employee_id from HRIS_JOB_HISTORY)"];
         $companyList = self::getTableList($adapter, Company::TABLE_NAME, [Company::COMPANY_ID, Company::COMPANY_NAME], [Company::STATUS => "E"]);
         $branchList = self::getTableList($adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"]);
         $departmentList = self::getTableList($adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"]);

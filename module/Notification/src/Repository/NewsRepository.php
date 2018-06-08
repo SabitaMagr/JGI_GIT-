@@ -222,4 +222,23 @@ class NewsRepository implements RepositoryInterface {
         return $return;
     }
 
+    public function updateNewsFileUploads($newsId, $fileList) {
+        $id = '';
+        $noOfUploads = sizeof($fileList);
+        ;
+        $counter = 1;
+        foreach ($fileList as $data) {
+            $id .= ($counter == $noOfUploads) ? $data : $data . ',';
+            $counter++;
+        }
+        $updateSql = ($noOfUploads == 0) ? "" : "UPDATE HRIS_NEWS_FILE SET NEWS_ID={$newsId} WHERE NEWS_FILE_ID IN ({$id});";
+
+        $sql = "BEGIN
+            UPDATE HRIS_NEWS_FILE SET NEWS_ID=NULL WHERE NEWS_ID={$newsId};
+            {$updateSql}
+            END;";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+    }
+
 }

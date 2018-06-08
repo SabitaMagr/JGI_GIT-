@@ -42,10 +42,9 @@ $form->prepare();
 ?>
 
 <script>
-    document.deleteFile = '<?= $this->url('news', ['action' => 'deleteFile']); ?>';
     document.pullNewsFile = '<?= $this->url('news', ['action' => 'pullNewsFile', 'id' => $id]); ?>';
     document.uploadUrl = '<?= $this->url('news', ['action' => 'fileUpload']); ?>';
-    document.pushNewsFileLink = '<?php echo $this->url('news', ['action' => 'pushNewsFile', 'id' => $id]); ?>';
+    document.pushNewsFileLink = '<?php echo $this->url('news', ['action' => 'pushNewsFile']); ?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.newsToList =<?php echo json_encode($newsToList); ?>
 </script>
@@ -221,11 +220,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row margin-top-20">
                     <div class=" col-md-6 form-group">
                         <table id="fileDetailsTbl" class="table">
                             <tr>
                                 <th>Document</th>
+                                <th>&nbsp;</th>
                                 <th>Action</th>
                             </tr>
                         </table>

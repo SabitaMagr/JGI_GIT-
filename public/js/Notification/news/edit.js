@@ -18,6 +18,25 @@
 
 
         var myDropzone;
+        Dropzone.autoDiscover = false;
+        myDropzone = new Dropzone("div#dropZoneContainer", {
+            url: document.uploadUrl,
+            autoProcessQueue: false,
+            maxFiles: 1,
+            addRemoveLinks: true,
+            init: function () {
+                this.on("success", function (file, success) {
+                    if (success.success) {
+                        imageUpload(success.data);
+                    }
+                });
+                this.on("complete", function (file) {
+                    this.removeAllFiles(true);
+                });
+
+            }
+        });
+
         var $fileListTable = $('#fileDetailsTbl');
 
         var fileDetails = function () {
@@ -25,10 +44,10 @@
             }).then(function (success) {
                 $fileListTable.find("tr:not(:first)").remove();
                 $.each(success.data, function (index, value) {
-                    console.log(value);
-                    $fileListTable.append("<tr><td>" + value.FILE_NAME + "</td><td><button class=' btn btn-danger deleteFile' type='button' data-id=" + value.NEWS_FILE_ID + ">DELETE</button></td><tr>");
+                    $fileListTable.append('<tr><input  type="hidden" name="fileUploadList[]" value="' + value.NEWS_FILE_ID + '"><td>' + value.FILE_NAME + '</td>'
+                            +'<td><a href="'+document.basePath+'/uploads/news/'+value.FILE_PATH+'"><i class="fa fa-download"></i></a></td>'
+                            +'<td><button type="button" class="btn btn-danger deleteFile">DELETE</button></td></tr>');
                 });
-
             }, function (failure) {
             });
         }
@@ -37,37 +56,17 @@
 
 
         $fileListTable.on("click", "td .deleteFile", function () {
-            var selectedDeleteBtnId = $(this).attr('data-id');
-            window.app.pullDataById(document.deleteFile, {
-                id: selectedDeleteBtnId
-            }).then(function (success) {
-                fileDetails();
-            }, function (failure) {
-            });
-
+             var selectedtr = $(this).parent().parent();
+             selectedtr.remove();
         });
 
 
 
-        var fileData = {
-            newsTypeId: null,
-            filePath: null,
-            editMode: false,
-            fileName: null
-        };
 
-        Dropzone.autoDiscover = false;
 
 
         $('#addDocument').on('click', function () {
-            $('#uploadErr').hide();
             $('#documentUploadModel').modal('show');
-            myDropzone = new Dropzone("#dropZoneContainer", {
-                url: document.uploadUrl,
-                autoProcessQueue: false,
-                maxFiles: 1,
-                addRemoveLinks: true
-            });
         });
 
 
@@ -80,16 +79,6 @@
             }
             $('#documentUploadModel').modal('hide');
             myDropzone.processQueue();
-            myDropzone.on("success", function (file, success) {
-                if (success.success) {
-                    imageUpload(success.data);
-                }
-            });
-
-            myDropzone.on("complete", function (file) {
-//                location.reload();
-            });
-
         });
 
 
@@ -104,15 +93,15 @@
                 'filePath': data.fileName,
                 'fileName': data.oldFileName
             }).then(function (success) {
-                if (success.data != null) {
-                    console.log('added sucessfully');
+                if (success.success) {
+                     $('#fileDetailsTbl').append('<tr>'
+                    +'<input  type="hidden" name="fileUploadList[]" value="'+success.data.newsFileId+'"><td>' + data.oldFileName + '</td>'
+                    +'<td><a href="'+document.basePath+'/uploads/news/'+success.data.filePath+'"><i class="fa fa-download"></i></a></td>'
+                    +'<td><button type="button" class="btn btn-danger deleteFile">DELETE</button></td></tr>');
                 }
             }, function (failure) {
             });
         }
-
-
-
 
     });
 })(window.jQuery, window.app);
