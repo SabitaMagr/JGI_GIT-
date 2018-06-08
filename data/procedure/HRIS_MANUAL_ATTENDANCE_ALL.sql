@@ -1,0 +1,64 @@
+CREATE OR REPLACE PROCEDURE HRIS_MANUAL_ATTENDANCE_ALL(
+    P_EMPLOYEE_ID HRIS_ATTENDANCE_DETAIL.EMPLOYEE_ID%TYPE ,
+    P_ATTENDANCE_DT HRIS_ATTENDANCE_DETAIL.ATTENDANCE_DT%TYPE,
+    P_STATUS CHAR )
+AS
+BEGIN
+  FOR attendance IN
+  (SELECT A.EMPLOYEE_ID,
+    A.ATTENDANCE_DT,
+    S.START_TIME,
+    S.END_TIME,
+    A.OVERALL_STATUS
+  FROM HRIS_ATTENDANCE_DETAIL A
+  JOIN HRIS_SHIFTS S
+  ON (A.SHIFT_ID     =S.SHIFT_ID)
+  WHERE A.EMPLOYEE_ID=P_EMPLOYEE_ID
+  AND A.ATTENDANCE_DT= P_ATTENDANCE_DT
+  )
+  LOOP
+    IF P_STATUS ='P' THEN
+      INSERT
+      INTO HRIS_ATTENDANCE
+        (
+          EMPLOYEE_ID,
+          ATTENDANCE_DT,
+          ATTENDANCE_TIME,
+          ATTENDANCE_FROM
+        )
+        VALUES
+        (
+          attendance.EMPLOYEE_ID,
+          attendance.ATTENDANCE_DT,
+          TO_DATE(TO_CHAR(attendance.ATTENDANCE_DT,'DD-MON-YYYY')
+          ||' '
+          ||TO_CHAR(attendance.START_TIME,'HH24:MI'),'DD-MON-YYYY HH24:MI' ),
+          'SYSTEM'
+        );
+      INSERT
+      INTO HRIS_ATTENDANCE
+        (
+          EMPLOYEE_ID,
+          ATTENDANCE_DT,
+          ATTENDANCE_TIME,
+          ATTENDANCE_FROM
+        )
+        VALUES
+        (
+          attendance.EMPLOYEE_ID,
+          attendance.ATTENDANCE_DT,
+          TO_DATE(TO_CHAR(attendance.ATTENDANCE_DT,'DD-MON-YYYY')
+          ||' '
+          ||TO_CHAR(attendance.END_TIME,'HH24:MI'),'DD-MON-YYYY HH24:MI' ),
+          'SYSTEM'
+        );
+    END IF;
+    IF P_STATUS ='A' THEN
+      DELETE
+      FROM HRIS_ATTENDANCE
+      WHERE EMPLOYEE_ID=P_EMPLOYEE_ID
+      AND ATTENDANCE_DT= P_ATTENDANCE_DT;
+    END IF ;
+    HRIS_REATTENDANCE(attendance.ATTENDANCE_DT,attendance.EMPLOYEE_ID,attendance.ATTENDANCE_DT);
+  END LOOP;
+END;

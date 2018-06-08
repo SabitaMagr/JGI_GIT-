@@ -143,11 +143,8 @@ angular.module('hris', ['ui.bootstrap'])
                 });
             };
             if ($scope.recommenderAssign || $scope.approverAssign) {
-                //l.stop();
             }
             $scope.assign = function () {
-//                l.start();
-//                l.setProgress(0.5);
                 var recommenderElement = angular.element(document.getElementById('recommenderId'));
                 var recommenderId = recommenderElement.val();
                 var recommenderName = document.getElementById('recommenderId').options[document.getElementById('recommenderId').selectedIndex].text;
@@ -158,7 +155,6 @@ angular.module('hris', ['ui.bootstrap'])
                 var errorFlagR = false;
                 if ($scope.recommenderAssign) {
                     if (recommenderId == "?") {
-//                        l.stop();
                         window.app.errorMessage(
                                 "Recommender is required!!!",
                                 "Application Error"
@@ -168,12 +164,10 @@ angular.module('hris', ['ui.bootstrap'])
                         errorFlagR = false;
                     }
                 } else {
-//                    l.stop();
                 }
                 var errorFlagA = false;
                 if ($scope.approverAssign) {
                     if (approverId == "?") {
-//                        l.stop();
                         window.app.errorMessage(
                                 "Approver is required!!!"
                                 ,
@@ -184,7 +178,6 @@ angular.module('hris', ['ui.bootstrap'])
                         errorFlagA = false;
                     }
                 } else {
-//                    l.stop();
                 }
 
                 if (!errorFlagR && !errorFlagA) {

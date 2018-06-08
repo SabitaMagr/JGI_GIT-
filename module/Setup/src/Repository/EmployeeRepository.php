@@ -535,6 +535,135 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         }
     }
 
+    public function fetchBy($by) {
+        $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
+        $sql = "SELECT E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
+                  INITCAP(E.FULL_NAME)                                              AS FULL_NAME,
+                  INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
+                  TO_CHAR(E.BIRTH_DATE, 'DD-MON-YYYY')                              AS BIRTH_DATE_AD,
+                  BS_DATE(E.BIRTH_DATE)                                             AS BIRTH_DATE_BS,
+                  TO_CHAR(E.JOIN_DATE, 'DD-MON-YYYY')                               AS JOIN_DATE_AD,
+                  BS_DATE(E.JOIN_DATE)                                              AS JOIN_DATE_BS,
+                  INITCAP(CN.COUNTRY_NAME)                                          AS COUNTRY_NAME,
+                  RG.RELIGION_NAME                                                  AS RELIGION_NAME,
+                  BG.BLOOD_GROUP_CODE                                               AS BLOOD_GROUP_CODE,
+                  E.MOBILE_NO                                                       AS MOBILE_NO,
+                  E.TELEPHONE_NO                                                    AS TELEPHONE_NO,
+                  E.SOCIAL_ACTIVITY                                                 AS SOCIAL_ACTIVITY,
+                  E.EXTENSION_NO                                                    AS EXTENSION_NO,
+                  E.EMAIL_OFFICIAL                                                  AS EMAIL_OFFICIAL,
+                  E.EMAIL_PERSONAL                                                  AS EMAIL_PERSONAL,
+                  E.SOCIAL_NETWORK                                                  AS SOCIAL_NETWORK,
+                  E.ADDR_PERM_HOUSE_NO                                              AS ADDR_PERM_HOUSE_NO,
+                  E.ADDR_PERM_WARD_NO                                               AS ADDR_PERM_WARD_NO,
+                  E.ADDR_PERM_STREET_ADDRESS                                        AS ADDR_PERM_STREET_ADDRESS,
+                  CNP.COUNTRY_NAME                                                  AS ADDR_PERM_COUNTRY_NAME,
+                  ZP.ZONE_NAME                                                      AS ADDR_PERM_ZONE_NAME,
+                  DP.DISTRICT_NAME                                                  AS ADDR_PERM_DISTRICT_NAME,
+                  INITCAP(VMP.VDC_MUNICIPALITY_NAME)                                AS VDC_MUNICIPALITY_NAME_PERM,
+                  E.ADDR_TEMP_HOUSE_NO                                              AS ADDR_TEMP_HOUSE_NO,
+                  E.ADDR_TEMP_WARD_NO                                               AS ADDR_TEMP_WARD_NO,
+                  E.ADDR_TEMP_STREET_ADDRESS                                        AS ADDR_TEMP_STREET_ADDRESS,
+                  CNT.COUNTRY_NAME                                                  AS ADDR_TEMP_COUNTRY_NAME,
+                  ZT.ZONE_NAME                                                      AS ADDR_TEMP_ZONE_NAME,
+                  DT.DISTRICT_NAME                                                  AS ADDR_TEMP_DISTRICT_NAME,
+                  VMT.VDC_MUNICIPALITY_NAME                                         AS VDC_MUNICIPALITY_NAME_TEMP,
+                  E.EMRG_CONTACT_NAME                                               AS EMRG_CONTACT_NAME,
+                  E.EMERG_CONTACT_RELATIONSHIP                                      AS EMERG_CONTACT_RELATIONSHIP,
+                  E.EMERG_CONTACT_ADDRESS                                           AS EMERG_CONTACT_ADDRESS,
+                  E.EMERG_CONTACT_NO                                                AS EMERG_CONTACT_NO,
+                  E.FAM_FATHER_NAME                                                 AS FAM_FATHER_NAME,
+                  E.FAM_FATHER_OCCUPATION                                           AS FAM_FATHER_OCCUPATION,
+                  E.FAM_MOTHER_NAME                                                 AS FAM_MOTHER_NAME,
+                  E.FAM_MOTHER_OCCUPATION                                           AS FAM_MOTHER_OCCUPATION,
+                  E.FAM_GRAND_FATHER_NAME                                           AS FAM_GRAND_FATHER_NAME,
+                  E.FAM_GRAND_MOTHER_NAME                                           AS FAM_GRAND_MOTHER_NAME,
+                  E.MARITAL_STATUS                                                  AS MARITAL_STATUS,
+                  E.FAM_SPOUSE_NAME                                                 AS FAM_SPOUSE_NAME,
+                  E.FAM_SPOUSE_OCCUPATION                                           AS FAM_SPOUSE_OCCUPATION,
+                  INITCAP(TO_CHAR(E.FAM_SPOUSE_BIRTH_DATE, 'DD-MON-YYYY'))          AS FAM_SPOUSE_BIRTH_DATE,
+                  INITCAP(TO_CHAR(E.FAM_SPOUSE_WEDDING_ANNIVERSARY, 'DD-MON-YYYY')) AS FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                  E.ID_CARD_NO                                                      AS ID_CARD_NO,
+                  E.ID_LBRF                                                         AS ID_LBRF,
+                  E.ID_BAR_CODE                                                     AS ID_BAR_CODE,
+                  E.ID_PROVIDENT_FUND_NO                                            AS ID_PROVIDENT_FUND_NO,
+                  E.ID_DRIVING_LICENCE_NO                                           AS ID_DRIVING_LICENCE_NO,
+                  E.ID_DRIVING_LICENCE_TYPE                                         AS ID_DRIVING_LICENCE_TYPE,
+                  INITCAP(TO_CHAR(E.ID_DRIVING_LICENCE_EXPIRY, 'DD-MON-YYYY'))      AS ID_DRIVING_LICENCE_EXPIRY,
+                  E.ID_THUMB_ID                                                     AS ID_THUMB_ID,
+                  E.ID_PAN_NO                                                       AS ID_PAN_NO,
+                  E.ID_ACCOUNT_NO                                                   AS ID_ACCOUNT_NO,
+                  E.ID_RETIREMENT_NO                                                AS ID_RETIREMENT_NO,
+                  E.ID_CITIZENSHIP_NO                                               AS ID_CITIZENSHIP_NO,
+                  INITCAP(TO_CHAR(E.ID_CITIZENSHIP_ISSUE_DATE, 'DD-MON-YYYY'))      AS ID_CITIZENSHIP_ISSUE_DATE,
+                  E.ID_CITIZENSHIP_ISSUE_PLACE                                      AS ID_CITIZENSHIP_ISSUE_PLACE,
+                  E.ID_PASSPORT_NO                                                  AS ID_PASSPORT_NO,
+                  INITCAP(TO_CHAR(E.ID_PASSPORT_EXPIRY, 'DD-MON-YYYY'))             AS ID_PASSPORT_EXPIRY,
+                  INITCAP(C.COMPANY_NAME)                                           AS COMPANY_NAME,
+                  INITCAP(B.BRANCH_NAME)                                            AS BRANCH_NAME,
+                  INITCAP(D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
+                  INITCAP(DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
+                  INITCAP(P.POSITION_NAME)                                          AS POSITION_NAME,
+                  P.LEVEL_NO                                                        AS LEVEL_NO,
+                  INITCAP(ST.SERVICE_TYPE_NAME)                                     AS SERVICE_TYPE_NAME,
+                  (CASE WHEN E.EMPLOYEE_TYPE='R' THEN 'REGULAR' ELSE 'WORKER' END)  AS EMPLOYEE_TYPE,
+                  LOC.LOCATION_EDESC                                                AS LOCATION_EDESC,
+                  FUNT.FUNCTIONAL_TYPE_EDESC                                        AS FUNCTIONAL_TYPE_EDESC,
+                  FUNL.FUNCTIONAL_LEVEL_NO                                          AS FUNCTIONAL_LEVEL_NO,
+                  FUNL.FUNCTIONAL_LEVEL_EDESC                                       AS FUNCTIONAL_LEVEL_EDESC,
+                  E.SALARY                                                          AS SALARY,
+                  E.SALARY_PF                                                       AS SALARY_PF,
+                  E.REMARKS                                                         AS REMARKS
+                FROM HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_COMPANY C
+                ON E.COMPANY_ID=C.COMPANY_ID
+                LEFT JOIN HRIS_BRANCHES B
+                ON E.BRANCH_ID=B.BRANCH_ID
+                LEFT JOIN HRIS_DEPARTMENTS D
+                ON E.DEPARTMENT_ID=D.DEPARTMENT_ID
+                LEFT JOIN HRIS_DESIGNATIONS DES
+                ON E.DESIGNATION_ID=DES.DESIGNATION_ID
+                LEFT JOIN HRIS_POSITIONS P
+                ON E.POSITION_ID=P.POSITION_ID
+                LEFT JOIN HRIS_SERVICE_TYPES ST
+                ON E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID
+                LEFT JOIN HRIS_GENDERS G
+                ON E.GENDER_ID=G.GENDER_ID
+                LEFT JOIN HRIS_BLOOD_GROUPS BG
+                ON E.BLOOD_GROUP_ID=BG.BLOOD_GROUP_ID
+                LEFT JOIN HRIS_RELIGIONS RG
+                ON E.RELIGION_ID=RG.RELIGION_ID
+                LEFT JOIN HRIS_COUNTRIES CN
+                ON E.COUNTRY_ID=CN.COUNTRY_ID
+                LEFT JOIN HRIS_COUNTRIES CNP
+                ON (E.ADDR_PERM_COUNTRY_ID=CNP.COUNTRY_ID)
+                LEFT JOIN HRIS_ZONES ZP
+                ON (E.ADDR_PERM_ZONE_ID=ZP.ZONE_ID)
+                LEFT JOIN HRIS_DISTRICTS DP
+                ON (E.ADDR_PERM_DISTRICT_ID=DP.DISTRICT_ID)
+                LEFT JOIN HRIS_VDC_MUNICIPALITIES VMP
+                ON E.ADDR_PERM_VDC_MUNICIPALITY_ID=VMP.VDC_MUNICIPALITY_ID
+                LEFT JOIN HRIS_COUNTRIES CNT
+                ON (E.ADDR_TEMP_COUNTRY_ID=CNT.COUNTRY_ID)
+                LEFT JOIN HRIS_ZONES ZT
+                ON (E.ADDR_TEMP_ZONE_ID=ZT.ZONE_ID)
+                LEFT JOIN HRIS_DISTRICTS DT
+                ON (E.ADDR_TEMP_DISTRICT_ID=DT.DISTRICT_ID)
+                LEFT JOIN HRIS_VDC_MUNICIPALITIES VMT
+                ON E.ADDR_TEMP_VDC_MUNICIPALITY_ID=VMT.VDC_MUNICIPALITY_ID
+                LEFT JOIN HRIS_LOCATIONS LOC
+                ON E.LOCATION_ID=LOC.LOCATION_ID
+                LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
+                ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID
+                LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
+                ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
+                WHERE 1                 =1
+                {$condition}
+                ORDER BY E.FULL_NAME ASC";
+        return $this->rawQuery($sql);
+    }
+
     public function getEmployeeListOfBirthday() {
         $sql = new Sql($this->adapter);
         $select = $sql->select();

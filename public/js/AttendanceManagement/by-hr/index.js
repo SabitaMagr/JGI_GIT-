@@ -235,9 +235,10 @@
         $bulkBtns.bind("click", function () {
             var btnId = $(this).attr('id');
             var selectedValues = [];
+            var impactOtherDays = $impactOtherDays.prop('checked');
             for (var i in selectItems) {
                 if (selectItems[i].checked) {
-                    selectedValues.push({id: i, employeeId: selectItems[i]['employeeId'], attendanceDt: selectItems[i]['attendanceDt'], action: btnId});
+                    selectedValues.push({id: i, employeeId: selectItems[i]['employeeId'], attendanceDt: selectItems[i]['attendanceDt'], action: btnId, impactOtherDays: impactOtherDays});
                 }
             }
             app.bulkServerRequest(document.bulkAttendanceWS, selectedValues, function () {
@@ -246,7 +247,7 @@
 
             });
         });
-
+        var $impactOtherDays = $('#impact_other_days');
 
 
 //            start to get the current Date in  DD-MON-YYY format
