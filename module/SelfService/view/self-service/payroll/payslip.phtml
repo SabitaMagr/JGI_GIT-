@@ -1,5 +1,6 @@
 <?php
 $this->headScript()->appendFile($this->basePath('js/SelfService/payroll/payslip.js'));
+
 ?>
 <script>
     document.getFiscalYearMonthLink = '<?php echo $this->url('payroll', ['action' => 'getFiscalYearMonth']); ?>';
@@ -47,11 +48,36 @@ $this->headScript()->appendFile($this->basePath('js/SelfService/payroll/payslip.
                 <select id="monthId">
                 </select>
             </div>
-            <div class="col-sm-2 col-sm-offset-4">
+            <div class="col-sm-2 col-sm-offset-6">
+                <button id="printBtn" class="btn btn-outline pull-right">Print</button>
                 <button id="viewBtn" class="btn btn-info pull-right">View</button>
             </div>
         </div>
         <div id="paySlipView" class="margin-top-10">
+            <table class="table table-bordered" id="employee-detail">
+                <tr>
+                    <td>Employee Id</td>
+                    <td key="EMPLOYEE_ID"></td>
+                    <td>Employee Name</td>
+                    <td key="FULL_NAME"></td>
+                </tr>
+                <tr>
+                    <td>Marital Status</td>
+                    <td key="MARITAL_STATUS_DESC"></td>
+                    <td>Department</td>
+                    <td key="DEPARTMENT_NAME"></td>
+                </tr>
+                <tr>
+                    <td>Present Days</td>
+                    <td key="PRESENT"></td>
+                    <td>Absent Days</td>
+                    <td key="ABSENT"></td>
+                </tr>
+                <tr>
+                    <td>Salary</td>
+                    <td key="SALARY"></td>
+                </tr>
+            </table>
             <table class="table table-bordered">
                 <thead>
                 <th colspan="2">Addition</th>

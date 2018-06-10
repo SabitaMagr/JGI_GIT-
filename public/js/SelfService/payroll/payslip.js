@@ -7,6 +7,7 @@
         var $month = $('#monthId');
         var $employeeId = $('#employeeId');
         var $viewBtn = $('#viewBtn');
+        var $printBtn = $('#printBtn');
         var $paySlipBody = $('#paySlipBody');
         var $excelExport = $('#excelExport');
         var $pdfExport = $('#pdfExport');
@@ -54,6 +55,11 @@
                                 <td>${deductionSum}</td>
                                 </tr>`));
 
+        };
+        var showEmpDetail = function ($data) {
+            for (var i in $data) {
+                $(`td[key='${i}'] `).html($data[i]);
+            }
         }
         $viewBtn.on('click', function () {
             var monthId = $month.val();
@@ -62,10 +68,15 @@
                 monthId: monthId,
                 employeeId: employeeId,
             }).then(function (response) {
-                showPaySlip(response.data);
+                showPaySlip(response.data['pay-detail']);
+                showEmpDetail(response.data['emp-detail']);
             }, function (error) {
 
             });
+        });
+
+        $printBtn.on('click', function () {
+            app.exportDomToPdf2($('#paySlipView'));
         });
 
         $pdfExport.on('click', function () {
