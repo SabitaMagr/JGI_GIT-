@@ -23,6 +23,9 @@ class SalarySheetDetailRepo extends HrisRepository {
     public function delete($id) {
         return $this->tableGateway->delete([SalarySheetDetail::SHEET_NO => $id]);
     }
+    public function deleteBy($by) {
+        return $this->tableGateway->delete($by);
+    }
 
     public function fetchById($id) {
         return $this->tableGateway->select($id);
@@ -34,7 +37,8 @@ class SalarySheetDetailRepo extends HrisRepository {
                 FROM
                   (SELECT *
                   FROM
-                    (SELECT EMPLOYEE_ID,
+                    (SELECT SHEET_NO,
+                      EMPLOYEE_ID,
                       PAY_ID,
                       VAL
                     FROM HRIS_SALARY_SHEET_DETAIL

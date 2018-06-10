@@ -80,4 +80,8 @@ class TaxSheetRepo extends HrisRepository {
     public function delete($id) {
         return $this->tableGateway->delete([TaxSheet::SHEET_NO => $id]);
     }
+
+    public function deleteBy($by) {
+        return $this->tableGateway->delete($by);
+    }
 }

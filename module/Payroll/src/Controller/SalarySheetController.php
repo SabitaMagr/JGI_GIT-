@@ -41,6 +41,7 @@ class SalarySheetController extends HrisController {
         $links['getSalarySheetListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSalarySheetList']);
         $links['getSearchDataLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSearchData']);
         $links['getGroupListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getGroupList']);
+        $links['regenEmpSalSheLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'regenEmpSalShe']);
         $data['links'] = $links;
         return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
     }
@@ -132,6 +133,45 @@ class SalarySheetController extends HrisController {
                     break;
                 case 3:
                     break;
+            }
+
+            return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage(), 'stackTrace' => $e->getTrace()]);
+        }
+    }
+
+    public function regenEmpSalSheAction() {
+        try {
+            $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
+            $taxSheetRepo = new TaxSheetRepo($this->adapter);
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $employeeId = $data['employeeId'];
+            $monthId = $data['monthId'];
+            $sheetNo = $data['sheetNo'];
+            $salarySheetDetailRepo->deleteBy([SalarySheetDetail::SHEET_NO => $sheetNo, SalarySheetDetail::EMPLOYEE_ID => $employeeId]);
+            $taxSheetRepo->deleteBy([TaxSheet::SHEET_NO => $sheetNo, TaxSheet::EMPLOYEE_ID => $employeeId]);
+            $payrollGenerator = new PayrollGenerator($this->adapter);
+            $returnData = $payrollGenerator->generate($employeeId, $monthId, $sheetNo);
+
+            $salarySheetDetail = new SalarySheetDetail();
+            $salarySheetDetail->sheetNo = $sheetNo;
+            $salarySheetDetail->employeeId = $employeeId;
+
+            foreach ($returnData['ruleValueKV'] as $key => $value) {
+                $salarySheetDetail->payId = $key;
+                $salarySheetDetail->val = $value;
+                $salarySheetDetailRepo->add($salarySheetDetail);
+            }
+
+            $taxSheet = new TaxSheet();
+            $taxSheet->sheetNo = $sheetNo;
+            $taxSheet->employeeId = $employeeId;
+            foreach ($returnData['ruleTaxValueKV'] as $key => $value) {
+                $taxSheet->payId = $key;
+                $taxSheet->val = $value;
+                $taxSheetRepo->add($taxSheet);
             }
 
             return new JsonModel(['success' => true, 'data' => $returnData, 'error' => '']);
@@ -265,7 +305,7 @@ class SalarySheetController extends HrisController {
             $item = (array) $value;
             $common = ['EMPLOYEE_ID' => $item['EMPLOYEE_ID'], 'MONTH_ID' => $monthId];
             foreach ($item as $k => $v) {
-                if (!in_array($k, ['EMPLOYEE_ID', 'FULL_NAME', 'COMPANY_ID', 'COMPANY_NAME', 'GROUP_ID', 'GROUP_NAME', 'MONTH_ID'])) {
+                if (!in_array($k, ['EMPLOYEE_ID', 'FULL_NAME', 'COMPANY_ID', 'COMPANY_NAME', 'GROUP_ID', 'GROUP_NAME', 'MONTH_ID', 'E_ID'])) {
                     if ($v != null) {
                         $payId = str_replace('H_', '', $k);
                         $dataUnit = array_merge($common, []);

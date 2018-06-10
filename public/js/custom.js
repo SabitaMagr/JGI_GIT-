@@ -1608,6 +1608,22 @@ window.app = (function ($, toastr, App) {
         });
     })();
 
+    var findOneBy = function (list, by) {
+        for (var i in list) {
+            var matched = true;
+            for (var j in by) {
+                if (list[i][j] != by[j]) {
+                    matched = false;
+                    break;
+                }
+            }
+            if (matched) {
+                return list[i];
+            }
+        }
+        return null;
+    };
+
 
 
     return {
@@ -1654,5 +1670,6 @@ window.app = (function ($, toastr, App) {
         setEmployeeSearch: setEmployeeSearch,
         prependPrefColumns: prependPrefColumns,
         prependPrefExportMap: prependPrefExportMap,
+        findOneBy: findOneBy
     };
 })(window.jQuery, window.toastr, window.App);

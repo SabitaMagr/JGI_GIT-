@@ -10,6 +10,7 @@
         var getSalarySheetListLink = data['links']['getSalarySheetListLink'];
         var getSearchDataLink = data['links']['getSearchDataLink'];
         var getGroupListLink = data['links']['getGroupListLink'];
+        var regenEmpSalSheLink = data['links']['regenEmpSalSheLink'];
         var loadingLogoLink = data['loading-icon'];
         var companyList = [];
         var groupList = [];
@@ -146,12 +147,24 @@
         });
 
         var exportMap = {"EMPLOYEE_NAME": "Employee"};
-        var employeeNameColumn = {field: "EMPLOYEE_NAME", title: "Employee", width: 150};
+        var employeeNameColumn = {
+            field: "EMPLOYEE_NAME",
+            title: "Employee",
+            width: 150
+        };
+        var actionColumn = {
+            field: ["EMPLOYEE_ID", "SHEET_NO"],
+            title: "Action",
+            width: 50,
+            template: `<a class="btn-edit hris-regenerate-salarysheet" title="Regenerate" sheet-no="#: SHEET_NO #" employee-id="#: EMPLOYEE_ID #" style="height:17px;"> <i class="fa fa-recycle"></i></a>`
+        };
         if (data.ruleList.length > 0) {
             employeeNameColumn.locked = true;
+            actionColumn.locked = true;
         }
         var columns = [
-            employeeNameColumn
+            employeeNameColumn,
+            actionColumn
         ];
 
         $.each(data.ruleList, function (key, value) {
@@ -319,6 +332,23 @@
         });
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'Salary Sheet');
+        });
+
+        $('#hris-page-content').on('click', '.hris-regenerate-salarysheet', function () {
+            var $this = $(this);
+            var employeeId = $this.attr('employee-id');
+            var sheetNo = $this.attr('sheet-no');
+            var salarySheet = app.findOneBy(salarySheetList, {SHEET_NO: sheetNo});
+            var monthId = salarySheet['MONTH_ID'];
+            app.serverRequest(regenEmpSalSheLink, {
+                employeeId: employeeId,
+                monthId: monthId,
+                sheetNo: sheetNo,
+            }).then(function (response) {
+                $viewBtn.trigger('click');
+            }, function (error) {
+
+            });
         });
 
     });
