@@ -52,7 +52,7 @@ class LeaveMasterForm {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Default Days"})
      * @Annotation\Required(false)
-     * @Annotation\Attributes({ "id":"defaultDays", "class":"form-control"})
+     * @Annotation\Attributes({ "id":"defaultDays", "class":"form-control","step":"0.1"})
      */
     public $defaultDays;
 
