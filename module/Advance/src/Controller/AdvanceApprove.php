@@ -1,5 +1,4 @@
 <?php
-
 namespace Advance\Controller;
 
 use Advance\Form\AdvanceRequestForm;
@@ -67,18 +66,18 @@ class AdvanceApprove extends HrisController {
         $this->form->bind($advanceRequestModel);
 
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'role' => $role,
-                    'employeeName' => $detail['FULL_NAME'],
-                    'employeeId' => $detail['EMPLOYEE_ID'],
-                    'status' => $detail['STATUS'],
-                    'statusDetail' => $detail['STATUS_DETAIL'],
-                    'requestedDate' => $detail['REQUESTED_DATE'],
-                    'recommender' => $authRecommender,
-                    'approver' => $authApprover,
-                    'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'], AdvanceSetupModel::ADVANCE_ENAME, "ASC", " ", FALSE, TRUE),
-                    'detail' => $detail
+                'form' => $this->form,
+                'id' => $id,
+                'role' => $role,
+                'employeeName' => $detail['FULL_NAME'],
+                'employeeId' => $detail['EMPLOYEE_ID'],
+                'status' => $detail['STATUS'],
+                'statusDetail' => $detail['STATUS_DETAIL'],
+                'requestedDate' => $detail['REQUESTED_DATE'],
+                'recommender' => $authRecommender,
+                'approver' => $authApprover,
+                'advances' => EntityHelper::getTableKVListWithSortOption($this->adapter, AdvanceSetupModel::TABLE_NAME, AdvanceSetupModel::ADVANCE_ID, [AdvanceSetupModel::ADVANCE_ENAME], ["STATUS" => 'E'], AdvanceSetupModel::ADVANCE_ENAME, "ASC", " ", false, true),
+                'detail' => $detail
         ]);
     }
 
@@ -152,7 +151,7 @@ class AdvanceApprove extends HrisController {
                             $advanceRequestModel->recommendedBy = (int) $this->employeeId;
                             if ($action == "Reject") {
                                 $advanceRequestModel->status = "R";
-                            } else if ($action == "Approve") {
+                            } elseif ($action == "Approve") {
                                 $advanceRequestModel->status = "RC";
                             }
                             $this->repository->edit($advanceRequestModel, $id);
@@ -162,12 +161,12 @@ class AdvanceApprove extends HrisController {
                             } catch (Exception $e) {
                                 
                             }
-                        } else if ($role == 3 || $role == 4) {
+                        } elseif ($role == 3 || $role == 4) {
                             $advanceRequestModel->approvedDate = Helper::getcurrentExpressionDate();
                             $advanceRequestModel->approvedBy = (int) $this->employeeId;
                             if ($action == "Reject") {
                                 $advanceRequestModel->status = "R";
-                            } else if ($action == "Approve") {
+                            } elseif ($action == "Approve") {
                                 $advanceRequestModel->status = "AP";
                             }
                             if ($role == 4) {
@@ -210,22 +209,19 @@ class AdvanceApprove extends HrisController {
         }
         $statusSE = $this->getStatusSelectElement(['name' => 'status', 'id' => 'advanceRequestStatusId', 'class' => 'form-control', 'label' => 'Status']);
         return $this->stickFlashMessagesTo([
-                    'advanceStatus' => $statusSE,
-                    'recomApproveId' => $this->employeeId,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'advanceStatus' => $statusSE,
+                'recomApproveId' => $this->employeeId,
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 
     public function advancePaymentAdd($details) {
-
         $advancePaymentRepository = new AdvancePaymentRepository($this->adapter);
 
         $advanceRequestId = $details['ADVANCE_REQUEST_ID'];
-//        $employeeId = $details['EMPLOYEE_ID'];
         $requestedAmt = $details['REQUESTED_AMOUNT'];
         $employeeSalary = $details['SALARY'];
         $monthlyDeductionRate = $details['DEDUCTION_RATE'];
-//        $paymentMonths = $details['DEDUCTION_IN'];
         $advanceDate = $details['DATE_OF_ADVANCE'];
 
         $monthlyDedeuctionAmt = ($monthlyDeductionRate / 100) * $employeeSalary;
@@ -243,10 +239,8 @@ class AdvanceApprove extends HrisController {
         $advancePayment->status = 'PE';
 
         for ($i = 1; $i <= $actualPyamentMonths; $i++) {
-            $paymentAmt;
-            ($requestedAmt > $monthlyDedeuctionAmt) ? $paymentAmt = $monthlyDedeuctionAmt : $paymentAmt = $requestedAmt;
 
-            $advancePayment->amount = $paymentAmt;
+            $advancePayment->amount = ($requestedAmt > $monthlyDedeuctionAmt) ? $monthlyDedeuctionAmt : $requestedAmt;
             $advancePayment->nepYear = $nepYear;
             $advancePayment->nepMonth = $nepMonth;
 
@@ -260,5 +254,4 @@ class AdvanceApprove extends HrisController {
             $advancePaymentRepository->add($advancePayment);
         }
     }
-
 }
