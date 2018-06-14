@@ -46,6 +46,64 @@ INTO HRIS_MENUS
   VALUES
   (
     (SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+    'add',
+    (select menu_id from hris_menus where route='advance-setup' and action='index'),
+    'advance-setup',
+    'E',
+    trunc(sysdate),
+    'fa fa-pencil',
+    'add',
+    (select nvl(max(menu_index),0)+1 from hris_menus where parent_menu=(select menu_id from hris_menus where route='advance-setup' and action='index')),
+    'Y'
+  );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    (SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
+    'edit',
+    (select menu_id from hris_menus where route='advance-setup' and action='index'),
+    'advance-setup',
+    'E',
+    trunc(sysdate),
+    'fa fa-pencil',
+    'edit',
+    (select nvl(max(menu_index),0)+1 from hris_menus where parent_menu=(select menu_id from hris_menus where route='advance-setup' and action='index')),
+    'Y'
+  );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    (SELECT MAX(MENU_ID)+1 FROM HRIS_MENUS),
     'Advance Request',
     6,
     'advance-request',
