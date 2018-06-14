@@ -10,7 +10,6 @@ nbproject
 vendor/*
 data/cache/*
 data/logs/*
-data/database/databases/*
 composer.lock
 #config/autoload/global.php
 #config/autoload/doctrine.global.php

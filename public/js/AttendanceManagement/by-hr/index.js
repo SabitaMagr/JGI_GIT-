@@ -242,7 +242,6 @@
                 }
             }
             app.bulkServerRequest(document.bulkAttendanceWS, selectedValues, function () {
-//                window.location.reload(true);
                 $search.trigger('click');
             }, function (data, error) {
 
