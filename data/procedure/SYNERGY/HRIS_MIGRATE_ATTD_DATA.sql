@@ -1,19 +1,8 @@
-create or replace PROCEDURE HRIS_MIGRATE_ATTD_DATA
+CREATE OR REPLACE PROCEDURE HRIS_MIGRATE_ATTD_DATA
 AS
-  V_MAX_TIME       TIMESTAMP;
-  V_ALREADY_EXISTS NUMBER;
 BEGIN
-  SELECT MAX(ATTENDANCE_TIME)
-  INTO V_MAX_TIME
-  FROM HRIS_ATTENDANCE
-  WHERE ATTENDANCE_FROM='DATA_CARD';
-  IF V_MAX_TIME       IS NULL THEN
-    SELECT TO_TIMESTAMP ('01-01-17 14:10:10.123000', 'DD-MM-YY HH24:MI:SS.FF')
-    INTO V_MAX_TIME
-    FROM dual;
-  END IF;
   FOR attd_data IN
-  (SELECT        *
+  (SELECT HR.*
   FROM
     (SELECT dc.card_no AS thumb_id,
       d_card           AS attendance_dt,
@@ -23,20 +12,19 @@ BEGIN
     FROM data_card dc
     JOIN device_setup ds
     ON dc.NODE_NO =ds.DEVICE_NO
-    )
-  WHERE ATTENDANCE_TIME > V_MAX_TIME ORDER BY ATTENDANCE_TIME
+    ) HR
+  JOIN
+    (SELECT A.IP_ADDRESS,
+      MAX(A.ATTENDANCE_TIME) AS ATTENDANCE_TIME
+    FROM HRIS_ATTD_DEVICE_MASTER ADM
+    LEFT JOIN HRIS_ATTENDANCE A
+    ON(A.IP_ADDRESS=ADM.DEVICE_IP)
+    GROUP BY A.IP_ADDRESS
+    ) HRIS ON (HR.IP_ADDRESS=HRIS.IP_ADDRESS
+  AND (HR.ATTENDANCE_TIME   > HRIS.ATTENDANCE_TIME
+  OR HRIS.IP_ADDRESS       IS NULL) )
   )
   LOOP
-    SELECT COUNT(*)
-    INTO V_ALREADY_EXISTS
-    FROM HRIS_ATTENDANCE
-    WHERE THUMB_ID     =attd_data.thumb_id
-    AND ATTENDANCE_DT  =attd_data.attendance_dt
-    AND IP_ADDRESS     =attd_data.IP_ADDRESS
-    AND ATTENDANCE_FROM='DATA_CARD'
-    AND ATTENDANCE_TIME=attd_data.attendance_time;
-    IF V_ALREADY_EXISTS=0 THEN
-      HRIS_ATTENDANCE_INSERT( attd_data.thumb_id,attd_data.attendance_dt,attd_data.IP_ADDRESS,'DATA_CARD',attd_data.attendance_time,'from data_card');
-    END IF;
+    HRIS_ATTENDANCE_INSERT( attd_data.thumb_id,attd_data.attendance_dt,attd_data.IP_ADDRESS,'DATA_CARD',attd_data.attendance_time,'from data_card');
   END LOOP attd_data;
 END;
