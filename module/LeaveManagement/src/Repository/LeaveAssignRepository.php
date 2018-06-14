@@ -88,4 +88,56 @@ class LeaveAssignRepository extends HrisRepository {
     public function updatePreYrBalance($employeeId, $leaveId, $preYrBalance, $totalDays, $balance) {
         $this->tableGateway->update([LeaveAssign::PREVIOUS_YEAR_BAL => $preYrBalance, LeaveAssign::TOTAL_DAYS => $totalDays, LeaveAssign::BALANCE => $balance], [LeaveAssign::EMPLOYEE_ID => $employeeId, LeaveAssign::LEAVE_ID => $leaveId]);
     }
+    
+    public function addMonthlyLeave($employeeId,$leaveDetails,$totalDays=null){
+        $monthlyDays=($totalDays !=null && $totalDays !=0)?$totalDays:$leaveDetails['DEFAULT_DAYS'];
+        $sql="DECLARE
+            V_DEFAULT_LEAVE_DAYS NUMBER:={$monthlyDays};
+            V_LEAVE_ID NUMBER:={$leaveDetails['LEAVE_ID']};
+     V_COUNT NUMBER;
+     V_FISCAL_YEAR_MONTH_NO NUMBER:=1;
+     V_FISCAL_YEAR_ID HRIS_FISCAL_YEARS.FISCAL_YEAR_ID%TYPE:={$leaveDetails['FISCAL_YEAR']};
+     V_EMPLOYEE_ID NUMBER:={$employeeId};
+    BEGIN
+
+
+    FOR i IN V_FISCAL_YEAR_MONTH_NO..12
+            LOOP
+              SELECT COUNT(*)
+              INTO V_COUNT
+              FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
+              WHERE EMPLOYEE_ID       =V_EMPLOYEE_ID
+              AND LEAVE_ID            = V_LEAVE_ID
+              AND FISCAL_YEAR_MONTH_NO=i ;
+              IF ( V_COUNT            =0 )THEN
+                INSERT
+                INTO HRIS_EMPLOYEE_LEAVE_ASSIGN
+                  (
+                    EMPLOYEE_ID,
+                    LEAVE_ID,
+                    PREVIOUS_YEAR_BAL,
+                    TOTAL_DAYS,
+                    BALANCE,
+                    FISCAL_YEAR,
+                    FISCAL_YEAR_MONTH_NO,
+                    CREATED_DT
+                  )
+                  VALUES
+                  (
+                    V_EMPLOYEE_ID,
+                    V_LEAVE_ID,
+                    0,
+                    V_DEFAULT_LEAVE_DAYS*i,
+                    V_DEFAULT_LEAVE_DAYS*i,
+                    V_FISCAL_YEAR_ID,
+                    i,
+                    TRUNC(SYSDATE)
+                  );
+              END IF;
+            END LOOP;
+        
+        END;";
+         $this->executeStatement($sql);
+    }
+    
 }

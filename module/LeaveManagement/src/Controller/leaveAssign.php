@@ -2,13 +2,13 @@
 namespace LeaveManagement\Controller;
 
 use Application\Controller\HrisController;
-use Application\Helper\EntityHelper as AppEntityHelper;
 use Application\Helper\Helper;
 use Application\Model\HrisQuery;
 use Exception;
 use LeaveManagement\Model\LeaveAssign as LeaveAssignModel;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveAssignRepository;
+use LeaveManagement\Repository\LeaveMasterRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select;
@@ -73,13 +73,19 @@ class leaveAssign extends HrisController {
             $leaveAssign->employeeId = $data['employeeId'];
             $leaveAssign->leaveId = $data['leave'];
             $leaveAssign->previousYearBalance = $data['previousYearBal'];
-
+            
             $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
             if (empty($data['leaveId'])) {
                 $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->createdBy = $this->employeeId;
                 $leaveAssign->balance = $data['balance']+$leaveAssign->previousYearBalance;
-                $leaveAssignRepo->add($leaveAssign);
+                
+                $leaveSetupRepo=new LeaveMasterRepository($this->adapter);
+                $leaveDetails=$leaveSetupRepo->fetchById($leaveAssign->leaveId);
+                
+                ($leaveDetails['IS_MONTHLY']=='N')?
+                $leaveAssignRepo->add($employeeId,$leaveDetails)
+                :$leaveAssignRepo->addMonthlyLeave($leaveAssign->employeeId,$leaveDetails,$leaveAssign->totalDays);
             } else {
                 $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->modifiedBy = $this->employeeId;
