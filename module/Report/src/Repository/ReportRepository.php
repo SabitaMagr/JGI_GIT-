@@ -889,7 +889,15 @@ EOT;
                     ELSE OTM.OVERTIME_HOUR*60
                   END ) AS TOTAL_MIN
               FROM HRIS_ATTENDANCE_PAYROLL A
-              LEFT JOIN HRIS_OVERTIME OT
+              LEFT JOIN (SELECT
+    employee_id,
+    overtime_date,
+    AVG(total_hour) AS total_hour
+FROM
+    hris_overtime where status ='AP'
+GROUP BY
+    employee_id,
+    overtime_date) OT
               ON (A.EMPLOYEE_ID   =OT.EMPLOYEE_ID
               AND A.ATTENDANCE_DT =OT.OVERTIME_DATE)
               LEFT JOIN HRIS_OVERTIME_MANUAL OTM
