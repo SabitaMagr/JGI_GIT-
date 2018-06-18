@@ -97,6 +97,8 @@
             'EMERG_CONTACT_RELATIONSHIP': 'Emergency Contact Relationship',
             'EMERG_CONTACT_ADDRESS': 'Emergency Contact Address',
             'EMERG_CONTACT_NO': 'Emergency Contact No',
+            'ID_ACCOUNT_NO': 'Account No',
+            'BANK_ACCOUNT': 'BANK',
         };
         $('#excelExport').on('click', function () {
             app.excelExport($employeeTable, map, 'Employee List.xlsx');
@@ -109,6 +111,7 @@
             var data = document.searchManager.getSearchValues();
             app.serverRequest(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
                 if (response.success) {
+                    console.log(response);
                     app.renderKendoGrid($employeeTable, response.data);
                 } else {
                     app.showMessage(response.error, 'error');
