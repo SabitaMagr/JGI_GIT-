@@ -74,24 +74,28 @@ class leaveAssign extends HrisController {
             $leaveAssign->leaveId = $data['leave'];
             $leaveAssign->previousYearBalance = $data['previousYearBal'];
             
+                $leaveSetupRepo=new LeaveMasterRepository($this->adapter);
+                $leaveDetails=$leaveSetupRepo->fetchById($leaveAssign->leaveId);
+                
             $leaveAssignRepo = new LeaveAssignRepository($this->adapter);
             if (empty($data['leaveId'])) {
                 $leaveAssign->createdDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->createdBy = $this->employeeId;
                 $leaveAssign->balance = $data['balance']+$leaveAssign->previousYearBalance;
                 
-                $leaveSetupRepo=new LeaveMasterRepository($this->adapter);
-                $leaveDetails=$leaveSetupRepo->fetchById($leaveAssign->leaveId);
                 
                 ($leaveDetails['IS_MONTHLY']=='N')?
                 $leaveAssignRepo->add($employeeId,$leaveDetails)
-                :$leaveAssignRepo->addMonthlyLeave($leaveAssign->employeeId,$leaveDetails,$leaveAssign->totalDays);
+                :$leaveAssignRepo->editMonthlyLeave($leaveAssign->employeeId,$leaveDetails,$data['month'],$leaveAssign->totalDays);
             } else {
                 $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
                 $leaveAssign->modifiedBy = $this->employeeId;
                 unset($leaveAssign->employeeId);
                 unset($leaveAssign->leaveId);
-                $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']]);
+                ($leaveDetails['IS_MONTHLY']=='N')?
+                $leaveAssignRepo->edit($leaveAssign, [$data['leaveId'], $data['employeeId']])
+                :$leaveAssignRepo->editMonthlyLeave($data['employeeId'],$leaveDetails,$data['month'],$leaveAssign->totalDays);
+                
             }
 
             return new JsonModel(["success" => "true", "data" => null,]);

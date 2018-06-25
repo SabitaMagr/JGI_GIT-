@@ -107,6 +107,26 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
             </div>
         </div>
     </div>
+    
+    <div class="row"  ng-show="monthSelect">
+    <div class="col-sm-2">
+        <select id="monthId">
+            <option value="1">Shrawan</option>
+            <option value="2">Bhadra</option>
+            <option value="3">Ashwin</option>
+            <option value="4">Kartik</option>
+            <option value="5">Mangsir</option>
+            <option value="6">Paush</option>
+            <option value="7">Magh</option>
+            <option value="8">Falgun</option>
+            <option value="9">Chaitra</option>
+            <option value="10">Baishakh</option>
+            <option value="11">Jestha</option>
+            <option value="12">Ashadh</option>
+        </select>
+    </div>
+    </div>
+    
     <div class="margin-top-20">
         <div class="table-responsive scrollbar-vertical" id="loadingDiv">
             <table class="table table-striped table-bordered table-hover no-footer customTable">
@@ -118,6 +138,7 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
                         <th>Code</th>
                         <th>Name</th>
                         <th>Leave</th>
+                        <th>Month</th>
                         <th>Prev Bal</th>
                         <th>Total Days</th>
                         <th>Balance</th>
@@ -140,12 +161,13 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
                         <td ng-bind="item.EMPLOYEE_CODE"></td>
                         <td ng-bind="item.FULL_NAME"></td>
                         <td ng-bind="leaveName">
+                        <td ng-bind="item.MONTH_EDESC"></td>
                         </td>
                         <td>
-                            <input class="form-control input-sm" id="previousYearBal" style="width: 100px;" type="number" min="0" ng-model="item.PREVIOUS_YEAR_BAL"/>
+                            <input class="form-control input-sm" id="previousYearBal" style="width: 100px;" type="number" min="0" ng-disabled="monthSelect" ng-model="item.PREVIOUS_YEAR_BAL"/>
                         </td>
                         <td>
-                            <input class="form-control input-sm" id="totalDays" style="width: 100px;" type="number" min="0" ng-model="item.TOTAL_DAYS"/>
+                            <input class="form-control input-sm" id="totalDays" style="width: 100px;" type="number" min="0" ng-disabled="monthSelect" ng-model="item.TOTAL_DAYS"/>
                         </td>
                         <td>
                             <input class="form-control input-sm" disabled="disabled" id="balance" style="width: 100px;" type="number" min="0" ng-model="item.BALANCE"/>
