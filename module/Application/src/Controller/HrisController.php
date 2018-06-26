@@ -185,8 +185,8 @@ class HrisController extends AbstractActionController {
             $postedData = $request->getPost();
             $sql = "SELECT {$postedData['columnName']}
                     FROM {$postedData['tableName']}
-                    WHERE {$postedData['columnName']} = {$postedData['columnName']}
-                    AND {$postedData['columnValue']}  !=
+                    WHERE {$postedData['columnName']} = {$postedData['columnValue']}
+                    AND {$postedData['columnName']}  !=
                       (SELECT {$postedData['columnName']}
                       FROM {$postedData['tableName']}
                       WHERE {$postedData['pkName']} = {$postedData['pkValue']})";

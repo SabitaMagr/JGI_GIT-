@@ -7,9 +7,10 @@ $database = "kumari";
 
 $connect = mysqli_connect($db_host, $db_user, $db_password, $database) or die("couldn't connect!!! to database");
 
-$employeeQuery = mysqli_query($connect, "SELECT * FROM EMPLOYEE_MASTER_SETUP WHERE OFFICIAL_CODE='$employeeCode'");
-$employeeDetail = mysqli_fetch_array($employeeQuery);
-$id = $employeeDetail['employee_code'];
+//$employeeQuery = mysqli_query($connect, "SELECT * FROM EMPLOYEE_MASTER_SETUP WHERE OFFICIAL_CODE='$employeeCode'");
+//$employeeDetail = mysqli_fetch_array($employeeQuery);
+//$id = $employeeDetail['employee_code'];
+$id = $employeeCode;
 
 function getMonthcode($currentMonth) {
 
@@ -52,7 +53,6 @@ function getMonthcode($currentMonth) {
         }
     }
 }
-
 if (!isset($_POST['mcode'])) {
 //    $monthCode=getMonthcode($currentMonth);
     $monthCode = "";
@@ -62,6 +62,7 @@ if (!isset($_POST['mcode'])) {
 } else {
     $monthCode = $_POST['mcode'];
 }
+
 ?>
 
 
@@ -174,7 +175,6 @@ function Period($connect) {
     }
     return $recs;
 }
-
 $statuses = Period($connect);
 
 function getMonthName($id) {
@@ -193,6 +193,7 @@ function getMonthName($id) {
     );
     echo $months[$id];
 }
+
 ?>
 
 <?php
@@ -230,6 +231,7 @@ if (isset($_POST['mcode'])) {
 // var_dump($sql); exit;
 $row = mysqli_query($connect, $sql);
 $res = mysqli_fetch_assoc($row);
+
 ?>
 <div class="panel panel-default margin-top-20">
     <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
@@ -251,9 +253,11 @@ $res = mysqli_fetch_assoc($row);
                                                 echo "selected";
                                             }
                                         }
+
                                         ?> > <?php echo $month['mname']; ?></option>
-                                            <?php }
-                                            ?>
+<?php }
+
+?>
                                 </select>
                             </td>
                         </tr>
@@ -263,7 +267,7 @@ $res = mysqli_fetch_assoc($row);
                     </table>
                 </form>
             </div>
-            <?php $salary_sheet = isset($res['SHEET_NO']) ? $res['SHEET_NO'] : null; ?>
+                    <?php $salary_sheet = isset($res['SHEET_NO']) ? $res['SHEET_NO'] : null; ?>
             <table class="table" style="width:800px;margin-bottom:0px ">
                 <tr>
                     <?php
@@ -277,6 +281,7 @@ $res = mysqli_fetch_assoc($row);
                     $result = mysqli_fetch_assoc($row);
                     $employee = strtolower($result['employee_name']);
                     $employee_name = ucwords($employee);
+
                     ?>
                     <td colspan="12" class="responsive-box">
                         <table class="table payslip-table">
@@ -362,6 +367,7 @@ $res = mysqli_fetch_assoc($row);
                                         // var_dump($qry); 
                                         $result = mysqli_query($connect, $qry);
                                         while ($branch = mysqli_fetch_assoc($result)) {
+
                                             ?>
                                         <td> <?php echo $counter++; ?></td>   
                                         <td> <?php echo $branch['pay_edesc']; ?></td>
@@ -372,10 +378,11 @@ $res = mysqli_fetch_assoc($row);
                                                 }
 
                                                 $sum1 += $branch['amount'];
+
                                                 ?></span></td>
                                         </tr>
 
-                                    <?php } ?>
+    <?php } ?>
                                     </hr>
                                     <td></td>
                                     <tr>
@@ -383,7 +390,7 @@ $res = mysqli_fetch_assoc($row);
                                     <tr></tr>
                                     <tr> <td><b>Total</b></td><td></td>
                                         <td><span style="float:right;padding-right:5px;"><b><?php echo number_format($sum1, 2, '.', ',') ?></b></span></td></tr>
-                                <?php endif; ?>
+<?php endif; ?>
 
                                 </tbody>                                
                             </table>
@@ -422,19 +429,21 @@ $res = mysqli_fetch_assoc($row);
 
                                         $result = mysqli_query($connect, $sql);
                                         while ($branch = mysqli_fetch_assoc($result)) {
+
                                             ?>
                                         <td> <?php echo $counter++; ?></td>   
                                         <td> <?php echo $branch['pay_edesc']; ?></td>
                                         <td> <span style="float:right;padding-right:5px;"><?php
-                                                echo number_format($branch['amount'], 2, '.', ',');
-                                                $sum += $branch['amount'];
-                                                ?></span></td>
+                                echo number_format($branch['amount'], 2, '.', ',');
+                                $sum += $branch['amount'];
+
+                                ?></span></td>
                                         </tr>
-                                    <?php } ?>
+    <?php } ?>
                                     </hr>
                                     <td><b>Total</b></td><td></td>
                                     <td><span style="float:right;padding-right:5px;"><b><?php echo number_format($sum, 2, '.', ','); ?></b></span></td>
-                                <?php endif; ?>
+<?php endif; ?>
                                 </tbody>                                
                             </table>
                         </fieldset>

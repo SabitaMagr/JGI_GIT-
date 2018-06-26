@@ -29,9 +29,10 @@ $db_user = "suyashk446";
 $db_password = "Everest@8848";
 $database = "kumari";
 $connect = mysqli_connect($db_host, $db_user, $db_password, $database) or die("couldn't connect!!! to database");
-$employeeQuery = mysqli_query($connect, "SELECT * FROM EMPLOYEE_MASTER_SETUP WHERE OFFICIAL_CODE='$employeeCode'");
-$employeeDetail = mysqli_fetch_array($employeeQuery);
-$id = $employeeDetail['employee_code'];
+//$employeeQuery = mysqli_query($connect, "SELECT * FROM EMPLOYEE_MASTER_SETUP WHERE OFFICIAL_CODE='$employeeCode'");
+//$employeeDetail = mysqli_fetch_array($employeeQuery);
+//$id = $employeeDetail['employee_code'];
+$id = $employeeCode;
 $monthCode = 01;
 if (isset($_POST['mcode'])) {
     $monthCode = $_POST['mcode'];

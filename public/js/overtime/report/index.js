@@ -42,18 +42,21 @@
         };
         var columns = null;
         var fields = null;
+        var exportMap = null;
         var fetchGridColumns = function (q, fn) {
             app.serverRequest('', q).then(function (response) {
                 var columnList = response.data;
                 columns = [
                     {field: 'FULL_NAME', title: 'Employee', width: 150, locked: true}
                 ];
+                exportMap = {'FULL_NAME': "Employee"};
                 fields = {
                     'FULL_NAME': {editable: false},
                 };
                 $.each(columnList, function (k, v) {
                     columns.push({field: v['MONTH_DAY_FIELD'], title: v['MONTH_DAY_TITLE'], width: 50});
                     fields[v['MONTH_DAY_FIELD']] = {type: "number"};
+                    exportMap[v['MONTH_DAY_FIELD']] = v['MONTH_DAY_TITLE'];
                 });
 
                 fn(getkendoConfig(columns, fields));
@@ -61,8 +64,6 @@
             }, function (error) {
 
             });
-
-
         }
 
         var getkendoConfig = function (c, f) {
@@ -111,5 +112,14 @@
                 editable: true
             };
         };
+
+        $('#excelExport').on('click', function () {
+            var month = app.findOneBy(months, {'MONTH_ID': selectedMonth})
+            app.excelExport($table, exportMap, `OT Monthly  ${month['MONTH_EDESC']}.xlsx`);
+        });
+        $('#pdfExport').on('click', function () {
+            var month = app.findOneBy(months, {'MONTH_ID': selectedMonth})
+            app.exportToPDF($table, exportMap, `OT Monthly ${month['MONTH_EDESC']}.pdf`);
+        });
     });
 })(window.jQuery, window.app);

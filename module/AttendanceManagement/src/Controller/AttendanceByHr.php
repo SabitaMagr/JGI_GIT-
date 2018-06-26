@@ -1,5 +1,4 @@
 <?php
-
 namespace AttendanceManagement\Controller;
 
 use Application\Controller\HrisController;
@@ -59,23 +58,24 @@ class AttendanceByHr extends HrisController {
 
     public function indexAction() {
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $this->getStatusSelect(),
-                    'presentStatus' => $this->getPresentStatusSelect(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'status' => $this->getStatusSelect(),
+                'presentStatus' => $this->getPresentStatusSelect(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
-     public function reportAction() {
+    public function reportAction() {
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $this->getStatusSelect(),
-                    'presentStatus' => $this->getPresentStatusSelect(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'status' => $this->getStatusSelect(),
+                'presentStatus' => $this->getPresentStatusSelect(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
+
     public function addAction() {
         $request = $this->getRequest();
         try {
@@ -106,17 +106,17 @@ class AttendanceByHr extends HrisController {
                 }
             }
             return Helper::addFlashMessagesToArray($this, [
-                        'form' => $this->form,
-                        'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE)
-                            ]
+                    'form' => $this->form,
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE)
+                    ]
             );
         } catch (Exception $e) {
             $this->flashmessenger()->addMessage("Attendance Submit Failed!!");
             $this->flashmessenger()->addMessage($e->getMessage());
             return Helper::addFlashMessagesToArray($this, [
-                        'form' => $this->form,
-                        'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE)
-                            ]
+                    'form' => $this->form,
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", " ", FALSE, TRUE)
+                    ]
             );
         }
     }
@@ -144,10 +144,10 @@ class AttendanceByHr extends HrisController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", NULL, FALSE, TRUE)
-                        ]
+                'form' => $this->form,
+                'id' => $id,
+                'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", NULL, FALSE, TRUE)
+                ]
         );
     }
 
@@ -231,7 +231,7 @@ class AttendanceByHr extends HrisController {
         try {
             $request = $this->getRequest();
             $postedData = $request->getPost();
-            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action'],$postedData['impactOtherDays']);
+            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action'], $postedData['impactOtherDays'] === 'true');
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -262,11 +262,11 @@ class AttendanceByHr extends HrisController {
 
     public function attendanceReportWithLocationAction() {
         return Helper::addFlashMessagesToArray($this, [
-                    'status' => $this->getStatusSelect(),
-                    'presentStatus' => $this->getPresentStatusSelect(),
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                'status' => $this->getStatusSelect(),
+                'presentStatus' => $this->getPresentStatusSelect(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
@@ -299,5 +299,4 @@ class AttendanceByHr extends HrisController {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-
 }
