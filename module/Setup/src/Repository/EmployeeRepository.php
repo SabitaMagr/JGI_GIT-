@@ -536,8 +536,23 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function fetchBy($by) {
+        $columIfSynergy="";
+        $joinIfSyngery="";
+        if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
+            $columIfSynergy="FCAS.ACC_EDESC AS BANK_ACCOUNT,";
+            $joinIfSyngery="LEFT JOIN FA_CHART_OF_ACCOUNTS_SETUP FCAS 
+                ON(FCAS.ACC_CODE=E.ID_ACC_CODE AND ACC_NATURE  = 'AC'
+                AND FCAS.COMPANY_CODE  = '01'
+                AND FCAS.DELETED_FLAG  = 'N'
+                AND FCAS.ACC_TYPE_FLAG = 'T')";
+        }
+        
+        
         $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
-        $sql = "SELECT E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
+        $sql = "SELECT 
+            {$columIfSynergy}
+                E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
+                  E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
                   E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)                                              AS FULL_NAME,
                   INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
@@ -658,6 +673,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID
                 LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
                 ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
+                {$joinIfSyngery}
                 WHERE 1                 =1
                 {$condition}
                 ORDER BY E.FULL_NAME ASC";

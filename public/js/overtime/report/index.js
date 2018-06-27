@@ -115,11 +115,11 @@
 
         $('#excelExport').on('click', function () {
             var month = app.findOneBy(months, {'MONTH_ID': selectedMonth})
-            app.excelExport($table, exportMap, `Overtime Monthly List ${month['MONTH_EDESC']}.xlsx`);
+            app.excelExport($table, exportMap, `OT Monthly  ${month['MONTH_EDESC']}.xlsx`);
         });
         $('#pdfExport').on('click', function () {
             var month = app.findOneBy(months, {'MONTH_ID': selectedMonth})
-            app.exportToPDF($table, exportMap, `Overtime Monthly List${month['MONTH_EDESC']}.pdf`);
+            app.exportToPDF($table, exportMap, `OT Monthly ${month['MONTH_EDESC']}.pdf`);
         });
     });
 })(window.jQuery, window.app);
