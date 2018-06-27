@@ -82,7 +82,7 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Blood Group"})
      * @Annotation\Attributes({ "id":"bloodGroupId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})
@@ -91,7 +91,7 @@ class HrEmployeesForm
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"true"})
+     * @Annotation\Required({"required":"false"})
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Religion"})
      * @Annotation\Attributes({ "id":"religionId","class":"full-width select2-offscreen","data-init-plugin":"select2","tabindex":"-1"})

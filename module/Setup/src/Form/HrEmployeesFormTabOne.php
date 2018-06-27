@@ -82,7 +82,7 @@ class HrEmployeesFormTabOne extends Model {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Blood Group"})
      * @Annotation\Attributes({ "id":"bloodGroupId","class":"form-control"})
@@ -91,7 +91,7 @@ class HrEmployeesFormTabOne extends Model {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Religion"})
      * @Annotation\Attributes({ "id":"religionId","class":"form-control"})
@@ -182,7 +182,7 @@ class HrEmployeesFormTabOne extends Model {
 
     /**
      * @Annotation\Type("Application\Custom\FormElement\Mobile")
-     * @Annotation\Required(true)
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Phone No"})
      * @Annotation\Attributes({ "id":"emergContactNo", "placeholder":"xxx-xxx-xxxx", "class":"form-control" , "pattern"="^\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$", "title"="Enter your mobile number(xxx-xxx-xxxx)"})

@@ -66,7 +66,7 @@ class RoleSetupForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required({"required":"True"})
+     * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"disable_inarray_validator":"true"})
      * @Annotation\Attributes({ "id":"selectOptions","class":"form-control","multiple":"True"})

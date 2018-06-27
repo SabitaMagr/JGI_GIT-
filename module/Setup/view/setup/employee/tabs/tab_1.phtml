@@ -212,7 +212,7 @@ $formOne->prepare();
                     <div class="form-group ">
                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                             <?php print $this->formLabel($religionId) ?>
-                            <span class="required" aria-required="true">*</span>
+                           
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                             <?php print $this->formElement($religionId) ?>
@@ -240,13 +240,12 @@ $formOne->prepare();
             <div class="col-xs-12 col-sm-6 col-md-3 col-box">
                 <div class="row bottomgap">
                     <div class="form-group  <?= empty($bloodGroupId->getMessages()) ? "" : "error" ?>">
-                        <div class="col-xs-6 col-sm-6  col-md-6 rightalign">
-                            <?php print $this->formLabel($bloodGroupId) ?>
-                            <span class="required" aria-required="true">*</span>
+                        <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                            <?php print $this->formLabel($bloodGroupId); ?>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
-                            <?php print $this->formElement($bloodGroupId) ?>
-                            <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']) ?>
+                            <?php print $this->formElement($bloodGroupId); ?>
+                            <?php print $this->formElementErrors()->render($bloodGroupId, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
                 </div>
@@ -574,7 +573,7 @@ $formOne->prepare();
                     <div class="form-group  <?= empty($emergContactNo->getMessages()) ? "" : "error" ?>">
                         <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
                             <?php print $this->formLabel($emergContactNo); ?>
-                            <span class="required" aria-required="true">*</span>
+                      
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                             <?php print $this->formElement($emergContactNo); ?></div>
