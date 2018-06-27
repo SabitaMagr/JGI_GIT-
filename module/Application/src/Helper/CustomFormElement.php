@@ -58,7 +58,7 @@ class CustomFormElement {
                     $formElement = new Textarea();
                     $formElement->setName($formElementName);
                     $formElement->setValue($selectedValue);
-                    $formElement->setAttributes(["id" => $formElementName . "Id", "class" => "form-control", "style" => "height:50px!important", "required" => "required", $extraAttr => $extraAttr]);
+                    $formElement->setAttributes(["id" => $formElementName . "Id", "class" => "form-control", "style" => "height:150px!important;  resize: none;", "required" => "required", $extraAttr => $extraAttr]);
                     break;
                 case self::NUMBER:
                     $formElement = new Number();
