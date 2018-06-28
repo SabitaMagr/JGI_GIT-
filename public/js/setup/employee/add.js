@@ -12,6 +12,9 @@
         /*
          * 
          */
+        
+    app.populateSelectElement($('#idCitizenshipIssuePlace'), document.allDistrict,address['citizenshipIssuePlace']);
+        
         var onChangePermZone = function (zoneId) {
             if (zoneId == null) {
                 app.populateSelectElement(addrPermDistrictId, []);

@@ -301,6 +301,7 @@ class EmployeeController extends HrisController {
 
             if ($tab != 3 || !$request->isPost()) {
                 $formThreeModel->exchangeArrayFromDB($employeeData);
+                $address['citizenshipIssuePlace']=$formThreeModel->idCitizenshipIssuePlace;
                 $this->formThree->bind($formThreeModel);
             }
 
@@ -364,7 +365,8 @@ class EmployeeController extends HrisController {
                 'approvers' => ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"], "FIRST_NAME", "ASC", " ", false, true),
                 'customRender' => Helper::renderCustomView(),
                 'programSE' => $programSE,
-                'countries' => $this->getCountryList()
+                'countries' => $this->getCountryList(),
+                'allDistricts' =>ApplicationHelper::getTableKVList($this->adapter, 'HRIS_DISTRICTS', 'DISTRICT_ID', ['DISTRICT_NAME'], null, null, true)
         ]);
     }
 

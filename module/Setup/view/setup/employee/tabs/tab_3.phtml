@@ -26,11 +26,13 @@ if ($countryId->getValue() == 168) {
     $name = $idCitizenshipIssuePlace->getAttributes()['name'];
     $label = $idCitizenshipIssuePlace->getLabel();
     $value = $idCitizenshipIssuePlace->getValue();
-
+    $citzId = $idCitizenshipIssuePlace->getAttributes()['id'];
+   
     $idCitizenshipIssuePlace = clone($addrPermDistrictId);
     $idCitizenshipIssuePlace->setAttributes(['name' => $name]);
     $idCitizenshipIssuePlace->setLabel($label);
     $idCitizenshipIssuePlace->setValue($value);
+     $idCitizenshipIssuePlace->setAttributes(['id' => $citzId]);
 } else if ($countryId->getValue() != null) {
     $idCitizenshipIssuePlace->setAttributes(['value' => $countries[$countryId->getValue()]]);
     $idCitizenshipIssuePlace->setAttributes(["disabled" => 'true']);

@@ -19,6 +19,7 @@ $this->headScript()
 
 ?>
 <script>
+    document.allDistrict =<?php echo json_encode($allDistricts); ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.urlDistrict = '<?= $this->url("employee", ["action" => "district"]) ?>';
     document.urlSubmitExperience = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 8]) ?>';
