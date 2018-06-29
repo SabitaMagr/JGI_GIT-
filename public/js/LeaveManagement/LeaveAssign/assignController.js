@@ -7,8 +7,11 @@ angular.module('hris', [])
             $scope.prevBalForAll = 0;
             $scope.daysForAllFlag = false;
             var leaveId;
+            var leaveYearId;
             $scope.leaveName;
-
+            $scope.monthSelect=false;
+            $scope.leaveMonthList=[];
+            
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.leaveList.length; i++) {
                     $scope.leaveList[i].checked = item;
@@ -51,6 +54,8 @@ angular.module('hris', [])
                             leave: leaveId,
                             balance: $scope.leaveList[index].TOTAL_DAYS,
                             previousYearBal: $scope.leaveList[index].PREVIOUS_YEAR_BAL,
+                            leaveYear: leaveYearId,
+                            month: $scope.selectedLeaveMonth,
                         }));
                     }
                 }
@@ -67,10 +72,15 @@ angular.module('hris', [])
                 $scope.all = false;
                 $scope.leaveName = $('#leaveId>option:selected').text();
                 leaveId = $('#leaveId').val();
+                leaveYearId=$('#leaveYear').val();
                 var q = document.searchManager.getSearchValues();
                 q['leaveId'] = leaveId;
+                q['leaveYear'] = leaveYearId;
                 window.app.serverRequest(document.pullEmployeeLeaveLink, q).then(function (success) {
                     $scope.$apply(function () {
+                        $scope.monthSelect=(success.data[0]['IS_MONTHLY']=='Y')?true:false;
+                        $scope.leaveMonthList=success.leaveMonthData;
+                        $scope.selectedLeaveMonth = $scope.leaveMonthList[0].LEAVE_YEAR_MONTH_NO;
                         $scope.leaveList = success.data;
                         for (var i = 0; i < $scope.leaveList.length; i++) {
                             $scope.leaveList[i].checked = false;

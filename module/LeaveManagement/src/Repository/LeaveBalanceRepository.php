@@ -179,22 +179,23 @@ class LeaveBalanceRepository {
            SELECT LA.*,E.FULL_NAME FROM (SELECT *
             FROM
               (SELECT EMPLOYEE_ID,
+              PREVIOUS_YEAR_BAL,
                 LEAVE_ID,
                 TOTAL_DAYS AS TOTAL,
                 BALANCE,
-                (TOTAL_DAYS-BALANCE) AS TAKEN
+                (TOTAL_DAYS+PREVIOUS_YEAR_BAL-BALANCE) AS TAKEN
               FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
               WHERE EMPLOYEE_ID IN
                 ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}
                 ){$monthlyCondition}
-              ) PIVOT ( MAX(BALANCE) AS BALANCE,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
+              ) PIVOT (MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
             ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID) 
 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
     private function fetchLeaveAsDbArray($isMonthly = false) {
-        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : "";
+        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : " ";
         $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT LEAVE_ID FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS ='E' {$condition}");
         $dbArray = "";
         foreach ($rawList as $key => $row) {

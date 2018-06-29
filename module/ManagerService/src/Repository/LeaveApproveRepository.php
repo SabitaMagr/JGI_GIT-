@@ -176,7 +176,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                 ON RECM.EMPLOYEE_ID=RA.RECOMMEND_BY
                 LEFT JOIN HRIS_EMPLOYEES APRV
                 ON APRV.EMPLOYEE_ID=RA.APPROVED_BY,
-                  HRIS_MONTH_CODE MTH,
+                  HRIS_LEAVE_MONTH_CODE MTH,
                   HRIS_EMPLOYEE_LEAVE_ASSIGN ELA
                 WHERE LA.ID = {$id}
                 AND TRUNC(LA.START_DATE) BETWEEN MTH.FROM_DATE AND MTH.TO_DATE
@@ -184,11 +184,13 @@ class LeaveApproveRepository implements RepositoryInterface {
                 AND LA.LEAVE_ID               =ELA.LEAVE_ID
                 AND (ELA.FISCAL_YEAR_MONTH_NO =
                   CASE
-                    WHEN L.IS_MONTHLY ='Y'
-                    THEN MTH.FISCAL_YEAR_MONTH_NO
+                    WHEN l.is_monthly = 'Y' AND l.CARRY_FORWARD = 'N'  THEN mth.leave_year_month_no
+                    WHEN l.is_monthly = 'Y' AND l.CARRY_FORWARD = 'Y'  THEN 
+                    (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE
+                    WHERE TRUNC(SYSDATE)BETWEEN FROM_DATE AND TO_DATE)
                   END
                 OR ELA.FISCAL_YEAR_MONTH_NO IS NULL)";
-
+                
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();

@@ -12,11 +12,11 @@ AS
   V_CUR_FIS_YR_START_DATE DATE;
   V_MONTH_COUNT NUMBER:=1;
 BEGIN
-  SELECT LEAVE_YEAR_ID,
+  SELECT FISCAL_YEAR_ID,
     TRUNC(START_DATE)
   INTO V_CUR_FIS_YR_ID,
     V_CUR_FIS_YR_START_DATE
-  FROM HRIS_LEAVE_YEARS
+  FROM HRIS_FISCAL_YEARS
   WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE;
   --
   BEGIN
@@ -30,13 +30,13 @@ BEGIN
     RETURN;
   END;
   BEGIN
-    SELECT LEAVE_YEAR_ID,
+    SELECT FISCAL_YEAR_ID,
       MONTH_ID,
-      LEAVE_YEAR_MONTH_NO
+      FISCAL_YEAR_MONTH_NO
     INTO V_FISCAL_YEAR_ID,
       V_MONTH_ID,
       V_FISCAL_YEAR_MONTH_NO
-    FROM HRIS_LEAVE_MONTH_CODE
+    FROM HRIS_MONTH_CODE
     WHERE (
       CASE
         WHEN V_JOIN_DATE>V_CUR_FIS_YR_START_DATE
@@ -86,7 +86,7 @@ BEGIN
                 PREVIOUS_YEAR_BAL,
                 TOTAL_DAYS,
                 BALANCE,
-                --FISCAL_YEAR,
+                FISCAL_YEAR,
                 FISCAL_YEAR_MONTH_NO,
                 CREATED_DT
               )
@@ -97,7 +97,7 @@ BEGIN
                 0,
                 leave.DEFAULT_DAYS,
                 leave.DEFAULT_DAYS,
-               -- V_FISCAL_YEAR_ID,
+                V_FISCAL_YEAR_ID,
                 i,
                 TRUNC(SYSDATE)
               );
@@ -110,15 +110,12 @@ BEGIN
       -- IF MONTHLY CARRY FORWARD IS YES
       IF(leave.CARRY_FORWARD ='Y')
       THEN
-      V_MONTH_COUNT:=1;
-      
-      SELECT COUNT(*)
-          INTO V_COUNT
-          FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
-          WHERE EMPLOYEE_ID       =P_EMPLOYEE_ID
-          AND LEAVE_ID            = leave.LEAVE_ID;
-          
-        IF(V_COUNT=0) THEN
+
+      -- DELETE ALL PREVIOUS lEAVE_ASSIGN
+      DELETE  FROM HRIS_EMPLOYEE_LEAVE_ASSIGN WHERE 
+  EMPLOYEE_ID=P_EMPLOYEE_ID 
+  AND LEAVE_ID=leave.LEAVE_ID;
+
        FOR i IN V_FISCAL_YEAR_MONTH_NO..12
             LOOP
 
@@ -130,7 +127,7 @@ BEGIN
                     PREVIOUS_YEAR_BAL,
                     TOTAL_DAYS,
                     BALANCE,
-                   -- FISCAL_YEAR,
+                    FISCAL_YEAR,
                     FISCAL_YEAR_MONTH_NO,
                     CREATED_DT
                   )
@@ -141,15 +138,13 @@ BEGIN
                     0,
                     leave.DEFAULT_DAYS*V_MONTH_COUNT,
                     leave.DEFAULT_DAYS*V_MONTH_COUNT,
-                  --  V_FISCAL_YEAR_ID,
+                    V_FISCAL_YEAR_ID,
                     i,
                     TRUNC(SYSDATE)
                   );
 
                   V_MONTH_COUNT:=V_MONTH_COUNT+1;
             END LOOP;
-            
-             END IF;
 
 
       END IF;
