@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_EMPLOYEE_SETUP_PROC(
+create or replace PROCEDURE HRIS_EMPLOYEE_SETUP_PROC(
     P_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE)
 AS
   V_JOIN_DATE HRIS_EMPLOYEES.JOIN_DATE%TYPE;
@@ -10,12 +10,13 @@ AS
   V_COUNT                NUMBER;
   V_CUR_FIS_YR_ID HRIS_FISCAL_YEARS.FISCAL_YEAR_ID%TYPE;
   V_CUR_FIS_YR_START_DATE DATE;
+  V_MONTH_COUNT NUMBER:=1;
 BEGIN
-  SELECT FISCAL_YEAR_ID,
+  SELECT LEAVE_YEAR_ID,
     TRUNC(START_DATE)
   INTO V_CUR_FIS_YR_ID,
     V_CUR_FIS_YR_START_DATE
-  FROM HRIS_FISCAL_YEARS
+  FROM HRIS_LEAVE_YEARS
   WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE;
   --
   BEGIN
@@ -29,13 +30,13 @@ BEGIN
     RETURN;
   END;
   BEGIN
-    SELECT FISCAL_YEAR_ID,
+    SELECT LEAVE_YEAR_ID,
       MONTH_ID,
-      FISCAL_YEAR_MONTH_NO
+      LEAVE_YEAR_MONTH_NO
     INTO V_FISCAL_YEAR_ID,
       V_MONTH_ID,
       V_FISCAL_YEAR_MONTH_NO
-    FROM HRIS_MONTH_CODE
+    FROM HRIS_LEAVE_MONTH_CODE
     WHERE (
       CASE
         WHEN V_JOIN_DATE>V_CUR_FIS_YR_START_DATE
@@ -49,7 +50,7 @@ BEGIN
   END;
   BEGIN
     FOR leave IN
-    (SELECT LEAVE_ID,
+    (SELECT LEAVE_ID,CARRY_FORWARD,
       DEFAULT_DAYS,
       IS_PRODATA_BASIS,
       IS_MONTHLY
@@ -63,8 +64,12 @@ BEGIN
         CONTINUE;
       END IF;
       IF (leave.IS_MONTHLY ='Y') THEN
-        DBMS_OUTPUT.PUT_LINE('FISCAL_YEAR_NO:'||V_FISCAL_YEAR_MONTH_NO);
-        FOR i IN V_FISCAL_YEAR_MONTH_NO..12
+
+      -- IF MONTHLY CARRY FORWARD IS NO 
+      IF(leave.CARRY_FORWARD ='N')
+      THEN
+      DBMS_OUTPUT.PUT_LINE('FISCAL_YEAR_NO:'||V_FISCAL_YEAR_MONTH_NO);
+      FOR i IN V_FISCAL_YEAR_MONTH_NO..12
         LOOP
           SELECT COUNT(*)
           INTO V_COUNT
@@ -81,7 +86,7 @@ BEGIN
                 PREVIOUS_YEAR_BAL,
                 TOTAL_DAYS,
                 BALANCE,
-                FISCAL_YEAR,
+                --FISCAL_YEAR,
                 FISCAL_YEAR_MONTH_NO,
                 CREATED_DT
               )
@@ -92,12 +97,65 @@ BEGIN
                 0,
                 leave.DEFAULT_DAYS,
                 leave.DEFAULT_DAYS,
-                V_FISCAL_YEAR_ID,
+               -- V_FISCAL_YEAR_ID,
                 i,
                 TRUNC(SYSDATE)
               );
           END IF;
         END LOOP;
+
+
+      END IF;
+
+      -- IF MONTHLY CARRY FORWARD IS YES
+      IF(leave.CARRY_FORWARD ='Y')
+      THEN
+      V_MONTH_COUNT:=1;
+      
+      SELECT COUNT(*)
+          INTO V_COUNT
+          FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
+          WHERE EMPLOYEE_ID       =P_EMPLOYEE_ID
+          AND LEAVE_ID            = leave.LEAVE_ID;
+          
+        IF(V_COUNT=0) THEN
+       FOR i IN V_FISCAL_YEAR_MONTH_NO..12
+            LOOP
+
+                INSERT
+                INTO HRIS_EMPLOYEE_LEAVE_ASSIGN
+                  (
+                    EMPLOYEE_ID,
+                    LEAVE_ID,
+                    PREVIOUS_YEAR_BAL,
+                    TOTAL_DAYS,
+                    BALANCE,
+                   -- FISCAL_YEAR,
+                    FISCAL_YEAR_MONTH_NO,
+                    CREATED_DT
+                  )
+                  VALUES
+                  (
+                    P_EMPLOYEE_ID,
+                     leave.LEAVE_ID,
+                    0,
+                    leave.DEFAULT_DAYS*V_MONTH_COUNT,
+                    leave.DEFAULT_DAYS*V_MONTH_COUNT,
+                  --  V_FISCAL_YEAR_ID,
+                    i,
+                    TRUNC(SYSDATE)
+                  );
+
+                  V_MONTH_COUNT:=V_MONTH_COUNT+1;
+            END LOOP;
+            
+             END IF;
+
+
+      END IF;
+
+
+
         CONTINUE;
       END IF;
       V_PRODATA_DAYS           := leave.DEFAULT_DAYS;

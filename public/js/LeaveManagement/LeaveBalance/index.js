@@ -18,6 +18,11 @@
                 title: leaveList[i]['LEAVE_ENAME'],
                 columns: [
                     {
+                        title: 'Previous',
+                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'PREVIOUS_YEAR_BAL',
+                        width: 100
+                    },
+                    {
                         title: 'Total',
                         field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'TOTAL',
                         width: 100

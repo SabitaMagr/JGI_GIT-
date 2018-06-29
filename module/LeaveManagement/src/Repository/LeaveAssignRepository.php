@@ -62,8 +62,8 @@ class LeaveAssignRepository extends HrisRepository {
                 ON (E.EMPLOYEE_ID = ELA.EMPLOYEE_ID)
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP LS
                 ON(LS.LEAVE_ID={$leaveId})
-                LEFT JOIN HRIS_MONTH_CODE MC 
-                ON (MC.FISCAL_YEAR_ID=LS.FISCAL_YEAR AND MC.FISCAL_YEAR_MONTH_NO=ELA.FISCAL_YEAR_MONTH_NO)
+                LEFT JOIN (SELECT * FROM HRIS_LEAVE_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE) MC 
+                ON (MC.LEAVE_YEAR_MONTH_NO=ELA.FISCAL_YEAR_MONTH_NO)
                 LEFT JOIN HRIS_COMPANY C
                 ON (E.COMPANY_ID=C.COMPANY_ID)
                 LEFT JOIN HRIS_BRANCHES B
@@ -72,10 +72,24 @@ class LeaveAssignRepository extends HrisRepository {
                 ON (E.DEPARTMENT_ID=DEP.DEPARTMENT_ID)
                 WHERE 1            =1 
                 {$searchCondition}
-                ORDER BY C.COMPANY_NAME,B.BRANCH_NAME,DEP.DEPARTMENT_NAME,E.FULL_NAME,MC.FISCAL_YEAR_MONTH_NO";
+                    AND (CASE 
+           WHEN ELA.FISCAL_YEAR_MONTH_NO IS NOT NULL THEN 
+         (SELECT LEAVE_YEAR_MONTH_NO FROM HRIS_LEAVE_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE)
+           END=ELA.FISCAL_YEAR_MONTH_NO 
+          OR 
+           CASE 
+           WHEN ELA.FISCAL_YEAR_MONTH_NO IS  NULL THEN 
+         1
+         ELSE
+         2
+           END=1
+          )
                 
-//                echo $sql;
-//                die();
+
+                ORDER BY C.COMPANY_NAME,B.BRANCH_NAME,DEP.DEPARTMENT_NAME,E.FULL_NAME,MC.LEAVE_YEAR_MONTH_NO";
+                
+//                ECHO $sql;
+//                DIE();
 
         return $this->rawQuery($sql);
     }
@@ -98,59 +112,6 @@ class LeaveAssignRepository extends HrisRepository {
         $this->tableGateway->update([LeaveAssign::PREVIOUS_YEAR_BAL => $preYrBalance, LeaveAssign::TOTAL_DAYS => $totalDays, LeaveAssign::BALANCE => $balance], [LeaveAssign::EMPLOYEE_ID => $employeeId, LeaveAssign::LEAVE_ID => $leaveId]);
     }
     
-    public function addMonthlyLeave($employeeId,$leaveDetails,$monthId,$totalDays=null){
-        $monthlyDays=($totalDays !=null && $totalDays !=0)?$totalDays:$leaveDetails['DEFAULT_DAYS'];
-        $sql="DECLARE
-            V_DEFAULT_LEAVE_DAYS NUMBER:={$monthlyDays};
-            V_LEAVE_ID NUMBER:={$leaveDetails['LEAVE_ID']};
-            V_MONTH_ID NUMBER:={$monthId};
-     V_COUNT NUMBER;
-     V_FISCAL_YEAR_ID HRIS_FISCAL_YEARS.FISCAL_YEAR_ID%TYPE:={$leaveDetails['FISCAL_YEAR']};
-     V_EMPLOYEE_ID NUMBER:={$employeeId};
-         V_MONTH_COUNT NUMBER:=1;
-    BEGIN
-
-    FOR i IN V_MONTH_ID..12
-            LOOP
-              SELECT COUNT(*)
-              INTO V_COUNT
-              FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
-              WHERE EMPLOYEE_ID       =V_EMPLOYEE_ID
-              AND LEAVE_ID            = V_LEAVE_ID
-              AND FISCAL_YEAR_MONTH_NO=i ;
-              IF ( V_COUNT            =0 )THEN
-                INSERT
-                INTO HRIS_EMPLOYEE_LEAVE_ASSIGN
-                  (
-                    EMPLOYEE_ID,
-                    LEAVE_ID,
-                    PREVIOUS_YEAR_BAL,
-                    TOTAL_DAYS,
-                    BALANCE,
-                    FISCAL_YEAR,
-                    FISCAL_YEAR_MONTH_NO,
-                    CREATED_DT
-                  )
-                  VALUES
-                  (
-                    V_EMPLOYEE_ID,
-                    V_LEAVE_ID,
-                    0,
-                    V_DEFAULT_LEAVE_DAYS*V_MONTH_COUNT,
-                    V_DEFAULT_LEAVE_DAYS*V_MONTH_COUNT,
-                    V_FISCAL_YEAR_ID,
-                    i,
-                    TRUNC(SYSDATE)
-                  );
-              END IF;
-              
-              V_MONTH_COUNT:=V_MONTH_COUNT+1;
-            END LOOP;
-        
-        END;";
-         $this->executeStatement($sql);
-    }
-    
     
     public function editMonthlyLeave($employeeId,$leaveDetails,$monthId,$totalDays=null){
         $monthlyDays=($totalDays !=null && $totalDays !=0)?$totalDays:$leaveDetails['DEFAULT_DAYS'];
@@ -159,9 +120,9 @@ class LeaveAssignRepository extends HrisRepository {
             V_LEAVE_ID NUMBER:={$leaveDetails['LEAVE_ID']};
             V_MONTH_ID NUMBER:={$monthId};
      V_COUNT NUMBER;
-     V_FISCAL_YEAR_ID HRIS_FISCAL_YEARS.FISCAL_YEAR_ID%TYPE:={$leaveDetails['FISCAL_YEAR']};
      V_EMPLOYEE_ID NUMBER:={$employeeId};
          V_MONTH_COUNT NUMBER:=1;
+         V_CARRY_FORWARD CHAR(1 BYTE):='{$leaveDetails['CARRY_FORWARD']}';
     BEGIN
     
         DELETE  FROM HRIS_EMPLOYEE_LEAVE_ASSIGN WHERE 
@@ -179,7 +140,6 @@ class LeaveAssignRepository extends HrisRepository {
                     PREVIOUS_YEAR_BAL,
                     TOTAL_DAYS,
                     BALANCE,
-                    FISCAL_YEAR,
                     FISCAL_YEAR_MONTH_NO,
                     CREATED_DT
                   )
@@ -190,13 +150,14 @@ class LeaveAssignRepository extends HrisRepository {
                     0,
                     V_DEFAULT_LEAVE_DAYS*V_MONTH_COUNT,
                     V_DEFAULT_LEAVE_DAYS*V_MONTH_COUNT,
-                    V_FISCAL_YEAR_ID,
                     i,
                     TRUNC(SYSDATE)
                   );
               
-              
+              IF(V_CARRY_FORWARD='Y') THEN
               V_MONTH_COUNT:=V_MONTH_COUNT+1;
+              END IF;
+              
             END LOOP;
         
         END;";

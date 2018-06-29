@@ -93,6 +93,14 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
                     <?php print $this->formElement($leaveFormElement); ?>
                 </div> 
             </div>
+            
+            <div class="row margin-top-10">
+                <div class="col-sm-2">
+                    <?php print $this->formLabel($leaveYearFormElement); ?>
+                    <?php print $this->formElement($leaveYearFormElement); ?>
+                </div> 
+            </div>
+            
             <div class="row margin-top-10">
                 <div class=" col-sm-offset-8 col-sm-4">
                     <button class="btn default btn-sm pull-right">
@@ -109,21 +117,10 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
     </div>
     
     <div class="row"  ng-show="monthSelect">
+
     <div class="col-sm-2">
-        <select id="monthId">
-            <option value="1">Shrawan</option>
-            <option value="2">Bhadra</option>
-            <option value="3">Ashwin</option>
-            <option value="4">Kartik</option>
-            <option value="5">Mangsir</option>
-            <option value="6">Paush</option>
-            <option value="7">Magh</option>
-            <option value="8">Falgun</option>
-            <option value="9">Chaitra</option>
-            <option value="10">Baishakh</option>
-            <option value="11">Jestha</option>
-            <option value="12">Ashadh</option>
-        </select>
+        <select id="monthId" ng-model="selectedLeaveMonth" ng-options="item.LEAVE_YEAR_MONTH_NO as item.MONTH_EDESC for item in leaveMonthList">
+</select>  
     </div>
     </div>
     

@@ -89,17 +89,11 @@ class LeaveRequestRepository implements RepositoryInterface {
                 AND L.LEAVE_ID               ={$leaveId}
                 AND (LA.FISCAL_YEAR_MONTH_NO =
                   CASE
-                    WHEN (L.IS_MONTHLY='Y' AND L.CARRY_FORWARD='N')
+                    WHEN (L.IS_MONTHLY='Y')
                     THEN
-                      (SELECT FISCAL_YEAR_MONTH_NO
-                      FROM HRIS_MONTH_CODE
+                      (SELECT LEAVE_YEAR_MONTH_NO
+                      FROM HRIS_LEAVE_MONTH_CODE
                       WHERE {$date} BETWEEN FROM_DATE AND TO_DATE
-                      )
-                       WHEN (L.IS_MONTHLY='Y' AND L.CARRY_FORWARD='Y')
-                    THEN
-                      (SELECT FISCAL_YEAR_MONTH_NO
-                      FROM HRIS_MONTH_CODE
-                      WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
                       )
                   END
                 OR LA.FISCAL_YEAR_MONTH_NO IS NULL )";

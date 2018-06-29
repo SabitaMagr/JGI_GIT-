@@ -61,7 +61,7 @@ class LeaveSetup extends HrisController {
                     'form' => $this->form,
                     'customRenderer' => Helper::renderCustomView(),
                     'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", NULL, TRUE, TRUE),
-                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID", ["FISCAL_YEAR_NAME"], null),
+                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null),
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                         ]
                 )
@@ -149,7 +149,7 @@ class LeaveSetup extends HrisController {
                     'id' => $id,
                     'customRenderer' => Helper::renderCustomView(),
                     'companies' => EntityHelper::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", NULL, TRUE, TRUE),
-                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_FISCAL_YEARS", "FISCAL_YEAR_ID", ["FISCAL_YEAR_NAME"], null),
+                    'fiscalYears' => EntityHelper::getTableKVList($this->adapter, "HRIS_LEAVE_YEARS", "LEAVE_YEAR_ID", ["LEAVE_YEAR_NAME"], null),
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'searchSelectedValues' => $searchSelectedValues
                         ]

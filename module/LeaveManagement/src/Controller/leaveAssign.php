@@ -2,6 +2,7 @@
 namespace LeaveManagement\Controller;
 
 use Application\Controller\HrisController;
+use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\HrisQuery;
 use Exception;
@@ -37,7 +38,27 @@ class leaveAssign extends HrisController {
             'label' => 'Type'
         ];
         $leaveSE = $this->getSelectElement($config, $leaveList);
-        return ['leaveFormElement' => $leaveSE];
+        
+        
+         $leaveYearData = HrisQuery::singleton()
+            ->setAdapter($this->adapter)
+            ->setTableName('HRIS_LEAVE_YEARS')
+            ->setColumnList(['LEAVE_YEAR_ID', 'LEAVE_YEAR_NAME'])
+            ->setWhere(['STATUS' => 'E'])
+            ->setOrder(['LEAVE_YEAR_ID' => Select::ORDER_DESCENDING])
+            ->setKeyValue('LEAVE_YEAR_ID', 'LEAVE_YEAR_NAME')
+            ->result();
+         $leaveYearConfig = [
+            'name' => 'leaveYear',
+            'id' => 'leaveYear',
+            'class' => 'form-control',
+            'label' => 'Leave Year'
+        ];
+         $leaveYearSE = $this->getSelectElement($leaveYearConfig, $leaveYearData);
+        return [
+            'leaveFormElement' => $leaveSE,
+            'leaveYearFormElement' => $leaveYearSE,
+                ];
     }
 
     public function pullEmployeeLeaveAction() {
@@ -54,9 +75,13 @@ class leaveAssign extends HrisController {
                 $item["PREVIOUS_YEAR_BAL"] = (float) $item["PREVIOUS_YEAR_BAL"];
                 array_push($list, $item);
             }
+            $leaveMonthDataSql="SELECT * FROM HRIS_LEAVE_MONTH_CODE 
+                    WHERE LEAVE_YEAR_ID=(SELECT MAX(LEAVE_YEAR_ID) from HRIS_LEAVE_MONTH_CODE) ORDER BY LEAVE_YEAR_MONTH_NO";
+            $leaveMonthData= EntityHelper::rawQueryResult($this->adapter, $leaveMonthDataSql);
             return new JsonModel([
                 "success" => "true",
                 "data" => $list,
+                "leaveMonthData"=>Helper::extractDbData($leaveMonthData)
             ]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
@@ -73,6 +98,7 @@ class leaveAssign extends HrisController {
             $leaveAssign->employeeId = $data['employeeId'];
             $leaveAssign->leaveId = $data['leave'];
             $leaveAssign->previousYearBalance = $data['previousYearBal'];
+//            $leaveAssign->fiscalYear = $data['leaveYear'];
             
                 $leaveSetupRepo=new LeaveMasterRepository($this->adapter);
                 $leaveDetails=$leaveSetupRepo->fetchById($leaveAssign->leaveId);
@@ -85,7 +111,7 @@ class leaveAssign extends HrisController {
                 
                 
                 ($leaveDetails['IS_MONTHLY']=='N')?
-                $leaveAssignRepo->add($employeeId,$leaveDetails)
+                $leaveAssignRepo->add($leaveAssign)
                 :$leaveAssignRepo->editMonthlyLeave($leaveAssign->employeeId,$leaveDetails,$data['month'],$leaveAssign->totalDays);
             } else {
                 $leaveAssign->modifiedDt = Helper::getcurrentExpressionDate();
