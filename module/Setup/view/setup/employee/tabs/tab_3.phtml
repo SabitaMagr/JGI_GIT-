@@ -18,6 +18,8 @@ $idCitizenshipIssuePlace = $formThree->get('idCitizenshipIssuePlace');
 $idPassportNo = $formThree->get('idPassportNo');
 $idPassportExpiry = $formThree->get('idPassportExpiry');
 
+$empowerCompanyCode= $formThree->get('empowerCompanyCode');
+$empowerBranchCode= $formThree->get('empowerBranchCode');
 
 $countryId = $formOne->get('countryId');
 $addrPermDistrictId = $formOne->get('addrPermDistrictId');
@@ -304,6 +306,43 @@ $formThree->prepare();
                         </div>
                     </div>
                 </div>
+                
+                <?php
+                if($syngergyTable){
+                
+                ?>
+                
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                <?php print $this->formLabel($empowerCompanyCode); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                <?php print $this->formElement($empowerCompanyCode); ?></div>
+                            <?php print $this->formElementErrors()->render($empowerCompanyCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="row bottomgap">
+                        <div class="form-group">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign-3">
+                                <?php print $this->formLabel($empowerBranchCode); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap-3">
+                                <?php print $this->formElement($empowerBranchCode); ?></div>
+                            <?php print $this->formElementErrors()->render($empowerBranchCode, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <?php
+                }
+                ?>
+
+                
+                
+                
+                
 
             </div>
         </div>

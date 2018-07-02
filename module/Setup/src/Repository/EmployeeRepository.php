@@ -1010,4 +1010,28 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
             return [];
         }
     }
+    
+    public function fetchEmpowerCompany(): array{
+        if ($this->checkIfTableExists("COMPANY_SETUP")) {
+            $sql = "select * from COMPANY_SETUP WHERE DELETED_FLAG='N'";
+            return $this->rawQuery($sql);
+        } else {
+            return [];
+        }
+    }
+    
+     
+    public function fetchEmpowerBranch(): array{
+        if ($this->checkIfTableExists("FA_BRANCH_SETUP")) {
+            $sql = "SELECT * FROM FA_BRANCH_SETUP WHERE GROUP_SKU_FLAG='I' AND DELETED_FLAG='N'";
+            return $this->rawQuery($sql);
+        } else {
+            return [];
+        }
+    }
+    
+    public function checkIfTableExists($tableName): bool  {
+          return parent::checkIfTableExists($tableName);
+    }
+        
 }

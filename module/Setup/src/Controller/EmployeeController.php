@@ -135,6 +135,17 @@ class EmployeeController extends HrisController {
             $bankAccountList = $this->repository->fetchBankAccountList();
             $bankAccountKVList = $this->listValueToKV($bankAccountList, "ACC_CODE", "ACC_EDESC");
             $idAccCode->setValueOptions($bankAccountKVList);
+            
+            $empowerCompanyList = $this->repository->fetchEmpowerCompany();
+            $empowerBranchList = $this->repository->fetchEmpowerBranch();
+            $empowerCompanyCodeKVList = $this->listValueToKV($empowerCompanyList, "COMPANY_CODE", "COMPANY_EDESC");
+            $empowerBranchKVList = $this->listValueToKV($empowerBranchList, "BRANCH_CODE", "BRANCH_EDESC");
+            
+            
+             $empowerCompanyCode = $this->formThree->get('empowerCompanyCode');
+             $empowerBranchCode = $this->formThree->get('empowerBranchCode');
+             $empowerCompanyCode->setValueOptions($empowerCompanyCodeKVList);
+             $empowerBranchCode->setValueOptions($empowerBranchKVList);
         }
         if (!$this->formFour) {
             $this->formFour = $builder->createForm($formTabFour);
@@ -303,6 +314,8 @@ class EmployeeController extends HrisController {
                 $formThreeModel->exchangeArrayFromDB($employeeData);
                 $address['citizenshipIssuePlace']=$formThreeModel->idCitizenshipIssuePlace;
                 $this->formThree->bind($formThreeModel);
+                
+                $syngergyTable=$this->repository->checkIfTableExists('COMPANY_SETUP');
             }
 
             if ($tab != 4 || !$request->isPost()) {
@@ -366,7 +379,8 @@ class EmployeeController extends HrisController {
                 'customRender' => Helper::renderCustomView(),
                 'programSE' => $programSE,
                 'countries' => $this->getCountryList(),
-                'allDistricts' =>ApplicationHelper::getTableKVList($this->adapter, 'HRIS_DISTRICTS', 'DISTRICT_ID', ['DISTRICT_NAME'], null, null, true)
+                'allDistricts' =>ApplicationHelper::getTableKVList($this->adapter, 'HRIS_DISTRICTS', 'DISTRICT_ID', ['DISTRICT_NAME'], null, null, true),
+                'syngergyTable' =>$syngergyTable
         ]);
     }
 

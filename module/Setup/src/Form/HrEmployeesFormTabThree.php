@@ -168,6 +168,24 @@ class HrEmployeesFormTabThree extends Model {
      * @Annotation\Attributes({"class":"form-control","id":"idPassportExpiry" })
      */
     public $idPassportExpiry;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"label":"Empower Company Code"})
+     * @Annotation\Attributes({ "id":"empowerCompanyCode", "class":"form-control" })
+     */
+    public $empowerCompanyCode;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"label":"Empower Branch Code"})
+     * @Annotation\Attributes({ "id":"empowerBranchCode", "class":"form-control" })
+     */
+    public $empowerBranchCode;
+    
+    
     public $modifiedBy;
     public $modifiedDt;
     public $mappings = [
@@ -190,6 +208,8 @@ class HrEmployeesFormTabThree extends Model {
         'idPassportExpiry' => 'ID_PASSPORT_EXPIRY',
         'modifiedBy' => 'MODIFIED_BY',
         'modifiedDt' => 'MODIFIED_DT',
+        'empowerCompanyCode' => 'EMPOWER_COMPANY_CODE',
+        'empowerBranchCode' => 'EMPOWER_BRANCH_CODE',
     ];
 
 }
