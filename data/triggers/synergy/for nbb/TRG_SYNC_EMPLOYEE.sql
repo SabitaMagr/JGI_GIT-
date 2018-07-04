@@ -8,7 +8,9 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
   V_COUNT                                                                                                      NUMBER;
   V_COMPANY_CODE                                                                                               VARCHAR2(30 BYTE);
   V_SUB_CODE                                                                                                   NUMBER;
-  V_EMPSUB_CODE                                                                                                VARCHAR2(50 BYTE);
+  V_EMPSUB_CODE VARCHAR2(50 BYTE);
+--new added
+  V_EMP_BLOOD_GROUP VARCHAR2(50 BYTE):='';
   BEGIN
     BEGIN
       SELECT COUNT (*)
@@ -45,11 +47,27 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     ELSE
       V_MARITAL_STATUS := 'Unmarried';
     END IF;
-    IF :NEW.RETIRED_FLAG = 'N' THEN
-      V_EMPLOYEE_STATUS := 'Working';
-    ELSE
-      V_EMPLOYEE_STATUS := NULL;
-    END IF;
+
+    V_EMPLOYEE_STATUS :=:NEW.EMPLOYEE_STATUS;
+
+
+   -- IF :NEW.RETIRED_FLAG = 'Y' THEN
+   --   V_EMPLOYEE_STATUS := 'Retired';
+   -- END IF;
+
+     --   IF :NEW.RESIGNED_FLAG = 'Y' THEN
+    --  V_EMPLOYEE_STATUS := 'Resigned';
+   -- END IF;
+
+
+
+IF :NEW.BLOOD_GROUP_ID IS NOT NULL THEN
+      SELECT BLOOD_GROUP_CODE  INTO V_EMP_BLOOD_GROUP
+FROM HRIS_BLOOD_GROUPS 
+WHERE BLOOD_GROUP_ID=:NEW.BLOOD_GROUP_ID;
+END IF;
+
+
     IF V_COUNT = 0 THEN
       INSERT
       INTO HR_EMPLOYEE_SETUP
@@ -94,6 +112,24 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           PF_NUMBER ,
           SAL_SHEET_CODE,
           DEPOSIT_ACCOUNT
+-- new added fields
+,THUMB_ID
+,BIRTH_DATE
+,BLOOD_GROUP
+,PERSONAL_EMAIL
+,CITIZENSHIP_NO
+,CTZ_ISSUED_DATE
+,LICENSE_NO
+,EFATHER_NAME
+,ETEMPORARY_ADDRESS1
+,PASSPORT_NO
+,PASS_EXPIRY_DATE
+,PERMANENT_DATE
+,BAR_CODE
+,RESIGNED_DATE
+,REASON
+,RF_NUMBER
+
         )
         VALUES
         (
@@ -123,7 +159,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           TO_CHAR(:NEW.DESIGNATION_ID,'FM000') ,
           TO_CHAR(:NEW.POSITION_ID,'FM000') ,
           :NEW.SALARY ,
-          V_EMPLOYEE_STATUS ,
+          'Working' ,
           'Monthly' ,
           V_COMPANY_CODE ,
           V_COMPANY_CODE
@@ -135,14 +171,31 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           V_DELETED_FLAG ,
           'Saturday' ,
           :NEW.ID_ACCOUNT_NO ,
-          :NEW.ID_LBRF ,
+          :NEW.ID_RETIREMENT_NO ,
           0 ,
           :NEW.ID_PAN_NO ,
-          'None' ,
+          :NEW.ID_DRIVING_LICENCE_TYPE ,
           :NEW.OVERTIME_FLAG ,
           :NEW.ID_PROVIDENT_FUND_NO ,
           '001',
           :NEW.ID_ACC_CODE
+--new added fields
+,:NEW.ID_THUMB_ID
+,:NEW.BIRTH_DATE
+,V_EMP_BLOOD_GROUP
+,:NEW.EMAIL_PERSONAL
+,:NEW.ID_CITIZENSHIP_NO
+,:NEW.ID_CITIZENSHIP_ISSUE_DATE
+,:NEW.ID_DRIVING_LICENCE_NO
+,:NEW.FAM_FATHER_NAME
+,:NEW.ADDR_TEMP_STREET_ADDRESS
+,:NEW.ID_PASSPORT_NO
+,:NEW.ID_PASSPORT_EXPIRY
+,:NEW.PERMANENT_DATE
+,:NEW.ID_BAR_CODE
+,:NEW.RESIGNED_DATE
+,:NEW.REMARKS
+,:NEW.ID_LBRF
         );
       V_EMPSUB_CODE := 'E'||:NEW.EMPLOYEE_ID;
       SELECT COUNT(*)
@@ -227,12 +280,28 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           ||'.01' ,
           LOCK_FLAG               = V_DELETED_FLAG ,
           ACCOUNT_NO              = :NEW.ID_ACCOUNT_NO ,
-          CIT_NUMBER              = :NEW.ID_LBRF ,
+          CIT_NUMBER              = :NEW.ID_RETIREMENT_NO ,
           PAN_NO                  = :NEW.ID_PAN_NO ,
           THUMB_ID                = :NEW.ID_THUMB_ID ,
           PF_NUMBER               = :NEW.ID_PROVIDENT_FUND_NO ,
           OVERTIME_APPLICABLE     = :NEW.OVERTIME_FLAG,
           DEPOSIT_ACCOUNT         = :NEW.ID_ACC_CODE
+-- new update queries
+,BIRTH_DATE=:NEW.BIRTH_DATE
+,BLOOD_GROUP=V_EMP_BLOOD_GROUP
+,PERSONAL_EMAIL=:NEW.EMAIL_PERSONAL
+,CITIZENSHIP_NO=:NEW.ID_CITIZENSHIP_NO
+,CTZ_ISSUED_DATE=:NEW.ID_CITIZENSHIP_ISSUE_DATE
+,LICENSE_NO=:NEW.ID_DRIVING_LICENCE_NO
+,EFATHER_NAME=:NEW.FAM_FATHER_NAME
+,ETEMPORARY_ADDRESS1=:NEW.ADDR_TEMP_STREET_ADDRESS
+,PASSPORT_NO=:NEW.ID_PASSPORT_NO
+,PASS_EXPIRY_DATE=:NEW.ID_PASSPORT_EXPIRY
+,PERMANENT_DATE=:NEW.PERMANENT_DATE
+,BAR_CODE=:NEW.ID_BAR_CODE
+,RESIGNED_DATE=:NEW.RESIGNED_DATE
+,REASON=:NEW.REMARKS
+,RF_NUMBER=:NEW.ID_LBRF 
         WHERE TRIM(EMPLOYEE_CODE) = TO_CHAR(:OLD.EMPLOYEE_ID);
         BEGIN
           UPDATE FA_SUB_LEDGER_SETUP
