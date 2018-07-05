@@ -51,13 +51,16 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     V_EMPLOYEE_STATUS :=:NEW.EMPLOYEE_STATUS;
 
 
-   -- IF :NEW.RETIRED_FLAG = 'Y' THEN
-   --   V_EMPLOYEE_STATUS := 'Retired';
-   -- END IF;
+IF :NEW.RESIGNED_FLAG = 'Y' THEN
+      V_EMPLOYEE_STATUS := 'Resigned';
+    END IF;
 
-     --   IF :NEW.RESIGNED_FLAG = 'Y' THEN
-    --  V_EMPLOYEE_STATUS := 'Resigned';
-   -- END IF;
+
+    IF :NEW.RETIRED_FLAG = 'Y' THEN
+      V_EMPLOYEE_STATUS := 'Retired';
+    END IF;
+
+        
 
 
 
@@ -129,6 +132,7 @@ END IF;
 ,RESIGNED_DATE
 ,REASON
 ,RF_NUMBER
+,ACC_CODE
 
         )
         VALUES
@@ -177,7 +181,7 @@ END IF;
           :NEW.ID_DRIVING_LICENCE_TYPE ,
           :NEW.OVERTIME_FLAG ,
           :NEW.ID_PROVIDENT_FUND_NO ,
-          '001',
+          TO_CHAR(:NEW.BRANCH_ID,'FM000'),
           :NEW.ID_ACC_CODE
 --new added fields
 ,:NEW.ID_THUMB_ID
@@ -196,6 +200,7 @@ END IF;
 ,:NEW.RESIGNED_DATE
 ,:NEW.REMARKS
 ,:NEW.ID_LBRF
+,'1007'
         );
       V_EMPSUB_CODE := 'E'||:NEW.EMPLOYEE_ID;
       SELECT COUNT(*)
@@ -285,7 +290,8 @@ END IF;
           THUMB_ID                = :NEW.ID_THUMB_ID ,
           PF_NUMBER               = :NEW.ID_PROVIDENT_FUND_NO ,
           OVERTIME_APPLICABLE     = :NEW.OVERTIME_FLAG,
-          DEPOSIT_ACCOUNT         = :NEW.ID_ACC_CODE
+          DEPOSIT_ACCOUNT         = :NEW.ID_ACC_CODE,
+          SAL_SHEET_CODE=TO_CHAR(:NEW.BRANCH_ID,'FM000')
 -- new update queries
 ,BIRTH_DATE=:NEW.BIRTH_DATE
 ,BLOOD_GROUP=V_EMP_BLOOD_GROUP

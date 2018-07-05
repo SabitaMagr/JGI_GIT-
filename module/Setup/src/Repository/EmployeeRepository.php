@@ -335,7 +335,11 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        $this->tableGateway->insert($model->getArrayCopyForDB());
+        $employeeData=$model->getArrayCopyForDB();
+        // for hr with empower nbb bank start
+        $employeeData['EMPLOYEE_STATUS']='Working';
+        // for hr with empower nbb bank end
+        $this->tableGateway->insert($employeeData);
     }
 
     public function delete($model) {
