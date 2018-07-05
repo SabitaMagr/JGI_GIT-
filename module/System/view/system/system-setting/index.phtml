@@ -16,6 +16,7 @@ $includeHolidayAsLeave = $form->get('includeHolidayAsLeave');
 $includeEmployeeCode = $form->get('includeEmployeeCode');
 $includeCompany = $form->get('includeCompany');
 $includeBranch = $form->get('includeBranch');
+$firstTimePwdRenew = $form->get('firstTimePwdRenew');
 
 $submit = $form->get('submit');
 
@@ -168,6 +169,15 @@ if ($this->messages) {
                             <?php print $this->formLabel($includeHolidayAsLeave); ?>
                             <div class="md-radio-inline">
                                 <?php $customRenderer($includeHolidayAsLeave); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($includeHolidayAsLeave, ['class' => 'help-block error']); ?>
+                    </div>
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($firstTimePwdRenew); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($firstTimePwdRenew); ?>
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($includeHolidayAsLeave, ['class' => 'help-block error']); ?>

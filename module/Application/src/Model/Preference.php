@@ -21,6 +21,7 @@ class Preference extends Model {
     public $includeEmployeeCode = 'Y';
     public $includeCompany = 'Y';
     public $includeBranch = 'Y';
+    public $firstTimePwdRenew='N';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -39,6 +40,7 @@ class Preference extends Model {
     CONST INCLUDE_EMPLOYEE_CODE = "INCLUDE_EMPLOYEE_CODE";
     CONST INCLUDE_COMPANY= "INCLUDE_COMPANY";
     CONST INCLUDE_BRANCH= "INCLUDE_BRANCH";
+    CONST FIRST_TIME_PWD_RENEW="FIRST_TIME_PWD_RENEW";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -58,6 +60,7 @@ class Preference extends Model {
         'includeEmployeeCode' => self::INCLUDE_EMPLOYEE_CODE,
         'includeCompany' => self::INCLUDE_COMPANY,
         'includeBranch' => self::INCLUDE_BRANCH,
+        'firstTimePwdRenew' => self::FIRST_TIME_PWD_RENEW,
     ];
 
 }

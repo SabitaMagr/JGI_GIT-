@@ -7,6 +7,7 @@ use Application\Repository\RepositoryInterface;
 use System\Model\UserSetup;
 use Traversable;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\Sql\Expression as Expression2;
 use Zend\Db\Sql\Predicate\Expression;
 use Zend\Db\Sql\Select;
 use Zend\Db\Sql\Sql;
@@ -176,7 +177,7 @@ class UserSetupRepository implements RepositoryInterface {
     }
 
     public function updateByEmpId($employeeId, $password) {
-        $this->tableGateway->update([UserSetup::PASSWORD => $password], [UserSetup::EMPLOYEE_ID => $employeeId]);
+        $this->tableGateway->update([UserSetup::PASSWORD => $password,UserSetup::FIRST_TIME=>'N',UserSetup::MODIFIED_DT=> new Expression2('TRUNC(SYSDATE)')], [UserSetup::EMPLOYEE_ID => $employeeId]);
     }
 
     public function getUserByEmployeeId($employeeId) {

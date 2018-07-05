@@ -102,10 +102,24 @@ class AuthController extends AbstractActionController {
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
+                
+                 /*
+                 * To check First Time Password 
+                 */
+                $firstTimePwdChange=$this->checkFirstTimePasswordChange($request->getPost('username'),$request->getPost('password'));
+                if ($firstTimePwdChange) {
+                    return $firstTimePwdChange;
+                }
+                /*
+                 * End Of First Time Password 
+                 */
+                
+                
+                
                 /*
                  * password expiration check | comment this code if this feature is not needed
                  */
-                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'));
+                $needPwdChange = $this->checkPasswordExpire($request->getPost('username'),$request->getPost('password'));
                 if ($needPwdChange) {
                     return $needPwdChange;
                 }
@@ -218,13 +232,13 @@ class AuthController extends AbstractActionController {
         return $this->redirect()->toRoute('login');
     }
 
-    public function checkPasswordExpire($userName) {
+    public function checkPasswordExpire($userName,$pwd) {
         if (!($this->preference->forcePasswordRenew == 'Y')) {
             return false;
         }
         $maxPasswordDays = $this->preference->forcePasswordRenewDay || 0;
         $loginRepo = new LoginRepository($this->adapter);
-        $result = $loginRepo->checkPasswordExpire($userName);
+        $result = $loginRepo->checkPasswordExpire($userName,$pwd);
         $createdDays = $result['CREATED_DAYS'];
         $modifiedDays = $result['MODIFIED_DAYS'];
         $isLocked = $result['IS_LOCKED'];
@@ -321,6 +335,15 @@ class AuthController extends AbstractActionController {
                 $this->getAuthService()->clearIdentity();
             }
         }
+    }
+    
+     public function checkFirstTimePasswordChange($userName,$pwd) {
+        if (!($this->preference->firstTimePwdRenew == 'Y')) {
+            return false;
+        }
+        $loginRepo = new LoginRepository($this->adapter);
+        $result = $loginRepo->fetchByUserName($userName,$pwd);
+        return ($result['FIRST_TIME']=='Y')?  $this->redirect()->toRoute('updatePwd', ['action' => 'changePwd', 'un' => $userName]):false;
     }
 
 }
