@@ -3,6 +3,8 @@
 namespace SelfService\Controller;
 
 use Application\Controller\HrisController;
+use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Exception;
 use SelfService\Repository\LeaveRepository;
 use Zend\Authentication\Storage\StorageInterface;
@@ -33,7 +35,14 @@ class Leave extends HrisController {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
-        return new ViewModel();
+        $leaveMonthDataSql = "SELECT * FROM HRIS_LEAVE_MONTH_CODE 
+                    WHERE LEAVE_YEAR_ID=(SELECT LEAVE_YEAR_ID from HRIS_LEAVE_YEARS WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE) ORDER BY LEAVE_YEAR_MONTH_NO";
+        $leaveMonthData = EntityHelper::rawQueryResult($this->adapter, $leaveMonthDataSql);
+        $currentMonth = Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, "SELECT NVL(MAX(LEAVE_YEAR_MONTH_NO),0) AS MONTH_NO FROM HRIS_LEAVE_MONTH_CODE WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE"));
+        return new ViewModel([
+            "leaveMonthData" => Helper::extractDbData($leaveMonthData),
+            "currentMonth" => $currentMonth[0]['MONTH_NO']
+        ]);
     }
 
 }

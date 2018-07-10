@@ -84,6 +84,9 @@ class LeaveRequestRepository implements RepositoryInterface {
                 FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
                 INNER JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID                =LA.LEAVE_ID
+                LEFT JOIN (SELECT * FROM HRIS_LEAVE_YEARS WHERE 
+                 TRUNC(SYSDATE)  BETWEEN START_DATE AND END_DATE) LY  
+                 ON(1=1)
                 WHERE L.STATUS               ='E'
                 AND LA.EMPLOYEE_ID           ={$employeeId}
                 AND L.LEAVE_ID               ={$leaveId}
@@ -96,7 +99,8 @@ class LeaveRequestRepository implements RepositoryInterface {
                       WHERE {$date} BETWEEN FROM_DATE AND TO_DATE
                       )
                   END
-                OR LA.FISCAL_YEAR_MONTH_NO IS NULL )";
+                OR LA.FISCAL_YEAR_MONTH_NO IS NULL ) 
+                AND {$date} BETWEEN LY.START_DATE AND LY.END_DATE";
         $statement = $this->adapter->query($sql);
         return $statement->execute()->current();
     }

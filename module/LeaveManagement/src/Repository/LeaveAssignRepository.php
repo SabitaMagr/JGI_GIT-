@@ -159,6 +159,10 @@ class LeaveAssignRepository extends HrisRepository {
               END IF;
               
             END LOOP;
+            
+         BEGIN
+         HRIS_RECALC_MONTHLY_LEAVES(V_EMPLOYEE_ID,V_LEAVE_ID);
+        END;
         
         END;";
          $this->executeStatement($sql);

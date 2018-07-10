@@ -17,9 +17,10 @@ class LeaveRepository extends HrisRepository {
     }
 
     function selectAll($employeeId): Traversable {
-        $sql = "SELECT LA.LEAVE_ID,
+        $sql = "SELECT * FROM (SELECT LA.LEAVE_ID,
                   LMS.LEAVE_CODE,
                   LMS.LEAVE_ENAME,
+                  LA.PREVIOUS_YEAR_BAL,
                   LA.TOTAL_DAYS,
                   LA.BALANCE,
                   (SELECT SUM(ELR.NO_OF_DAYS/(
@@ -29,9 +30,11 @@ class LeaveRepository extends HrisRepository {
                       ELSE 1
                     END))
                   FROM HRIS_EMPLOYEE_LEAVE_REQUEST ELR
+                   LEFT JOIN (SELECT * FROM HRIS_LEAVE_YEARS  WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE ) LY ON (1=1)
                   WHERE ELR.LEAVE_ID =LA.LEAVE_ID
                   AND ELR.EMPLOYEE_ID=LA.EMPLOYEE_ID
                   AND ELR.STATUS     ='AP'
+                   AND ELR.START_DATE BETWEEN LY.START_DATE AND LY.END_DATE
                   ) AS LEAVE_TAKEN,
                   (SELECT SUM(EPD.NO_OF_DAYS)
                   FROM HRIS_EMPLOYEE_PENALTY_DAYS EPD
@@ -46,18 +49,23 @@ class LeaveRepository extends HrisRepository {
                 FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
                 ON (LA.LEAVE_ID     =LMS.LEAVE_ID)
-                WHERE LA.EMPLOYEE_ID={$employeeId} AND LMS.STATUS ='E' AND LMS.IS_MONTHLY = 'N' ORDER BY LMS.LEAVE_ENAME ASC";
+                WHERE LA.EMPLOYEE_ID={$employeeId} AND LMS.STATUS ='E' AND LMS.IS_MONTHLY = 'N' ORDER BY LMS.LEAVE_ENAME ASC)";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
 
     function monthlyLeaveStatus($employeeId, $fiscalYearMonthNo) {
-        $sql = "SELECT LA.LEAVE_ID,
+        $sql = "SELECT * FROM (SELECT LA.LEAVE_ID,
                   LMS.LEAVE_CODE,
                   LMS.LEAVE_ENAME,
                   LA.TOTAL_DAYS,
                   LA.BALANCE,
-                  (SELECT SUM(ELR.NO_OF_DAYS)
+                  (SELECT SUM(ELR.NO_OF_DAYS/(
+                    CASE
+                      WHEN ELR.HALF_DAY IN ('F','S')
+                      THEN 2
+                      ELSE 1
+                    END))
                   FROM HRIS_EMPLOYEE_LEAVE_REQUEST ELR
                   WHERE ELR.LEAVE_ID =LA.LEAVE_ID
                   AND ELR.EMPLOYEE_ID=LA.EMPLOYEE_ID
@@ -67,14 +75,47 @@ class LeaveRepository extends HrisRepository {
                 FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
                 ON (LA.LEAVE_ID =LMS.LEAVE_ID)
-                LEFT JOIN HRIS_MONTH_CODE MTH
-                ON (MTH.FISCAL_YEAR_ID      =LA.FISCAL_YEAR
-                AND MTH.FISCAL_YEAR_MONTH_NO= LA.FISCAL_YEAR_MONTH_NO)
+                LEFT JOIN (SELECT * FROM HRIS_LEAVE_MONTH_CODE WHERE 
+                LEAVE_YEAR_ID=(SELECT LEAVE_YEAR_ID FROM HRIS_LEAVE_YEARS 
+                WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE)) MTH
+                ON (MTH.LEAVE_YEAR_MONTH_NO= LA.FISCAL_YEAR_MONTH_NO)
                 WHERE LA.EMPLOYEE_ID        ={$employeeId}
                 AND LA.FISCAL_YEAR_MONTH_NO ={$fiscalYearMonthNo}
                 AND LMS.STATUS              ='E'
                 AND LMS.IS_MONTHLY          = 'Y'
-                ORDER BY LMS.LEAVE_ENAME ASC";
+                AND LMS.CARRY_FORWARD          = 'N'
+                ORDER BY LMS.LEAVE_ENAME ASC)
+                UNION ALL
+                SELECT * FROM (SELECT LA.LEAVE_ID,
+                  LMS.LEAVE_CODE,
+                  LMS.LEAVE_ENAME,
+                  LA.TOTAL_DAYS,
+                  LA.BALANCE,
+                  (SELECT SUM(ELR.NO_OF_DAYS/(
+                    CASE
+                      WHEN ELR.HALF_DAY IN ('F','S')
+                      THEN 2
+                      ELSE 1
+                    END))
+                  FROM HRIS_EMPLOYEE_LEAVE_REQUEST ELR
+                  WHERE ELR.LEAVE_ID =LA.LEAVE_ID
+                  AND ELR.EMPLOYEE_ID=LA.EMPLOYEE_ID
+                  AND ELR.STATUS     ='AP'
+                  AND ELR.START_DATE <= MTH.TO_DATE
+                  ) AS LEAVE_TAKEN
+                FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
+                LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
+                ON (LA.LEAVE_ID =LMS.LEAVE_ID)
+                LEFT JOIN (SELECT * FROM HRIS_LEAVE_MONTH_CODE WHERE 
+                LEAVE_YEAR_ID=(SELECT LEAVE_YEAR_ID FROM HRIS_LEAVE_YEARS 
+                WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE)) MTH
+                ON (MTH.LEAVE_YEAR_MONTH_NO= LA.FISCAL_YEAR_MONTH_NO)
+                WHERE LA.EMPLOYEE_ID        ={$employeeId}
+                AND LA.FISCAL_YEAR_MONTH_NO ={$fiscalYearMonthNo}
+                AND LMS.STATUS              ='E'
+                AND LMS.IS_MONTHLY          = 'Y'
+                AND LMS.CARRY_FORWARD          = 'Y'
+                ORDER BY LMS.LEAVE_ENAME ASC) ";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }

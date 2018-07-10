@@ -5,6 +5,7 @@
 
         app.initializeKendoGrid($table, [
             {field: "LEAVE_ENAME", title: "Leave Name"},
+            {field: "PREVIOUS_YEAR_BAL", title: "Previous"},
             {field: "TOTAL_DAYS", title: "Total Days"},
             {field: "LEAVE_TAKEN", title: "Leave taken"},
             {field: "LEAVE_DEDUCTED", title: "Leave Deducted"},
@@ -24,6 +25,7 @@
 
         var exportMap = {
             'LEAVE_ENAME': 'Leave',
+            'PREVIOUS_YEAR_BAL': 'Previous',
             'TOTAL_DAYS': 'Total Days',
             'LEAVE_TAKEN': 'Leave Taken',
             'LEAVE_DEDUCTED': 'Leave Deducted',
@@ -36,13 +38,16 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'LeaveBalanaceList');
         });
-        var months = null;
-        var $year = $('#fiscalYear');
-        var $month = $('#fiscalMonth');
+
+
+        console.log(document.currentMonth);
+
+        app.populateSelect($('#leaveMonth'), document.monthList, 'LEAVE_YEAR_MONTH_NO', 'MONTH_EDESC', null, null, document.currentMonth)
+        var $month = $('#leaveMonth');
         var $monthlyLeaveTable = $('#monthlyLeaveTable');
-        app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
-            months = monthList;
-        });
+
+
+
         app.initializeKendoGrid($monthlyLeaveTable, [
             {field: "LEAVE_ENAME", title: "Leave Name"},
             {field: "TOTAL_DAYS", title: "Total Days"},
@@ -51,23 +56,25 @@
         ]);
 
 
-        $month.on('change', function () {
-            var value = $(this).val();
+        var populateMonthlyLeave = function () {
+            var value = $month.val();
             if (value == null) {
                 return;
             }
-            var selectedMonthList = months.filter(function (item) {
-                return item['MONTH_ID'] === value;
-            });
-            if (selectedMonthList.length <= 0) {
-                return;
-            }
-            app.serverRequest("", {fiscalYearMonthNo: selectedMonthList[0]['FISCAL_YEAR_MONTH_NO']}).then(function (response) {
+            app.serverRequest("", {fiscalYearMonthNo: value}).then(function (response) {
                 app.renderKendoGrid($monthlyLeaveTable, response.data);
             }, function (error) {
 
             });
+        };
+
+        populateMonthlyLeave();
+
+
+        $month.on('change', function () {
+            populateMonthlyLeave();
         });
+
 
 
     });

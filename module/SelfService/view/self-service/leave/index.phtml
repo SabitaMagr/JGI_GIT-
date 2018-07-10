@@ -12,6 +12,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/SelfService/leave/index.js'));
 ?>
 <script>
+    document.currentMonth=<?=$currentMonth?>;
+    document.monthList=<?= json_encode($leaveMonthData)?>;
     document.getFiscalYearMonthLink = '<?php echo $this->url('leave', ['action' => 'getFiscalYearMonth']); ?>';
 </script>
 
@@ -69,10 +71,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div>
         <div class="row margin-top-20">
             <div class="col-sm-2">
-                <select id="fiscalYear"></select>
-            </div>
-            <div class="col-sm-2">
-                <select id="fiscalMonth"></select>
+                <select id="leaveMonth"></select>
             </div>
         </div>
         <div id="monthlyLeaveTable">

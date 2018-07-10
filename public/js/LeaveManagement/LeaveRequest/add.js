@@ -172,7 +172,7 @@
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 var leaveDetail = success.data;
-                availableDays = parseFloat(leaveDetail.BALANCE);
+                availableDays = (typeof leaveDetail.BALANCE=='undefined')?0:parseFloat(leaveDetail.BALANCE);
                 $availableDays.val(availableDays);
 
                 var noOfDays = parseFloat($noOfDays.val());
