@@ -178,7 +178,7 @@ END IF;
           :NEW.ID_RETIREMENT_NO ,
           0 ,
           :NEW.ID_PAN_NO ,
-          :NEW.ID_DRIVING_LICENCE_TYPE ,
+          'None',
           :NEW.OVERTIME_FLAG ,
           :NEW.ID_PROVIDENT_FUND_NO ,
           TO_CHAR(:NEW.BRANCH_ID,'FM000'),
