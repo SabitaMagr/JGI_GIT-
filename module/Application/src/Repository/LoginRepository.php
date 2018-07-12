@@ -39,8 +39,11 @@ class LoginRepository implements RepositoryInterface {
         
     }
 
-    public function fetchByUserName($userName) {
+    public function fetchByUserName($userName,$pwd=NULL) {
         $where = ['USER_NAME' => $userName];
+        if($pwd!=NULL){
+            $where['FN_DECRYPT_PASSWORD(PASSWORD)']=$pwd;
+        }
         $result = $this->tableGateway->select($where);
         return $result->current();
     }
@@ -51,8 +54,11 @@ class LoginRepository implements RepositoryInterface {
         $result = $this->tableGateway->update($set, $where);
     }
 
-    public function checkPasswordExpire($userName) {
+    public function checkPasswordExpire($userName,$pwd=NULL) {
         $where = "and USER_NAME='$userName'";
+        if($pwd!=null){
+            $where.=" AND FN_DECRYPT_PASSWORD(PASSWORD)='{$pwd}'";
+        }
         $sql = "select EMPLOYEE_ID,USER_NAME,ROLE_ID,STATUS,CREATED_DT,MODIFIED_DT,IS_LOCKED,TRUNC(SYSDATE) AS CURRENTDATE,TRUNC(SYSDATE)-CREATED_DT AS CREATED_DAYS,TRUNC(SYSDATE)-MODIFIED_DT AS MODIFIED_DAYS from hris_users where status='E' " . $where;
         $statement = $this->adapter->query($sql);
         $result = $statement->execute()->current();
@@ -71,7 +77,7 @@ class LoginRepository implements RepositoryInterface {
     }
 
     public function updatePwdByUserName($un, $pwd) {
-        $set = ["PASSWORD" => new Expression("FN_ENCRYPT_PASSWORD('$pwd')"), 'MODIFIED_DT' => new Expression('TRUNC(SYSDATE)')];
+        $set = ["PASSWORD" => new Expression("FN_ENCRYPT_PASSWORD('$pwd')"), 'MODIFIED_DT' => new Expression('TRUNC(SYSDATE)'), 'FIRST_TIME' => 'N'];
         $where = ['USER_NAME' => $un];
         $this->tableGateway->update($set, $where);
     }

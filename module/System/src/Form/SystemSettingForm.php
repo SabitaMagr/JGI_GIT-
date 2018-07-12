@@ -128,6 +128,13 @@ class SystemSettingForm {
      * @Annotation\Attributes({ "id":"includeBranch"})
      */
     public $includeBranch;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"First Time Password Renew"})
+     * @Annotation\Attributes({ "id":"firstTimePwdRenew","value":"N"})
+     */
+    public $firstTimePwdRenew;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
