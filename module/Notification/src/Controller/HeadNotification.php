@@ -191,7 +191,7 @@ class HeadNotification {
     private static function leaveRecommend(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
         self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
         $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
-        $leaveReqNotiMod = self::initializeNotificationModel($leaveApply->employeeId, $recommendAppModel[RecommendApprove::RECOMMEND_BY], LeaveRequestNotificationModel::class, $adapter);
+        $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::RECOMMEND_BY], $leaveApply->employeeId, LeaveRequestNotificationModel::class, $adapter);
 
 //
         $leaveReqNotiMod->fromDate = $leaveApply->startDate;
