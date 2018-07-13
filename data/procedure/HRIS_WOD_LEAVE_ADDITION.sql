@@ -15,12 +15,15 @@ AS
   V_ON_TRAVEL CHAR(1 BYTE) :='N';
   V_SHIFT_ID  NUMBER(7,0);
 BEGIN
+-- get substitute leave id and set in variable V_SUBSTITUTE_LEAVE_ID
   SELECT LEAVE_ID
   INTO V_SUBSTITUTE_LEAVE_ID
   FROM HRIS_LEAVE_MASTER_SETUP
   WHERE IS_SUBSTITUTE='Y'
   AND ROWNUM         = 1;
   --
+  
+  -- ger details of work on day off from param id and set in variables
   SELECT FROM_DATE,
     TO_DATE,
     TRUNC(TO_DATE)-TRUNC(FROM_DATE),
@@ -34,6 +37,10 @@ BEGIN
   FROM HRIS_EMPLOYEE_WORK_DAYOFF
   WHERE ID= P_WOD_ID;
   --
+  
+  --select past balance from HRIS_EMPLOYEE_LEAVE_ASSIGN  and set into variable
+  -- if not found  the insert new record in HRIS_EMPLOYEE_LEAVE_ASSIGN 
+  --for that employee and leave with balance and total 0
   BEGIN
     SELECT BALANCE
     INTO V_BALANCE
@@ -65,8 +72,11 @@ BEGIN
       );
   END;
   --
+  
+  --loop until the duration of work on day applied
   FOR i IN 0..V_DURATION
   LOOP
+  -- check attendance_details for that day(total worked hour,travel,shift_id) and set in variables
     BEGIN
       SELECT TOTAL_HOUR,
         (
@@ -86,6 +96,8 @@ BEGIN
     WHEN no_data_found THEN
       CONTINUE;
     END;
+    
+    -- if on travel select total working hour from  shift and override into variable v-total_hour
     IF V_ON_TRAVEL = 'Y' THEN
       SELECT TOTAL_WORKING_HR
       INTO V_TOTAL_HOUR
@@ -93,7 +105,9 @@ BEGIN
       WHERE SHIFT_ID = V_SHIFT_ID;
     END IF;
     --
-    IF((V_TOTAL_HOUR /60) >= 2 AND(V_TOTAL_HOUR /60) < 4) THEN
+    -- check  total working hour  
+    --if greater than 2 then add 0.5 leave if  greater tan 4 then 1 day leave 
+    IF((V_TOTAL_HOUR /60)     >= 2 AND(V_TOTAL_HOUR /60) < 4) THEN
       V_INCREMENT_DAY         :=.5;
     ELSIF ((V_TOTAL_HOUR /60) >=4) THEN
       V_INCREMENT_DAY         :=1;

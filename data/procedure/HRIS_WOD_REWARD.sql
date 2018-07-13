@@ -8,6 +8,7 @@ AS
   V_FROM_DATE HRIS_EMPLOYEE_WORK_DAYOFF.FROM_DATE%TYPE;
   V_TO_DATE HRIS_EMPLOYEE_WORK_DAYOFF.TO_DATE%TYPE;
 BEGIN
+--select  work on day of details from HRIS_EMPLOYEE_WORK_DAYOFF Table
   SELECT EMPLOYEE_ID,
     TRUNC(FROM_DATE),
     TRUNC( TO_DATE)
@@ -16,10 +17,12 @@ BEGIN
     V_TO_DATE
   FROM HRIS_EMPLOYEE_WORK_DAYOFF
   WHERE ID    = P_ID;
-  IF(V_TO_DATE>TRUNC(SYSDATE)) THEN
+  -- if to date greater than today date then end procedure
+  IF(V_TO_DATE>TRUNC(SYSDATE)) THEN 
     RETURN;
   END IF;
   --
+  -- select employee reward type in  position and set in variable  if not found terminate
   BEGIN
     SELECT P.WOH_FLAG
     INTO V_WOH_FLAG
@@ -32,12 +35,15 @@ BEGIN
     HRIS_RAISE_ERR(V_EMPLOYEE_ID,'Work on dayoff reward could not be given.','Employee position is not set');
   END;
   --
-DELETE FROM HRIS_EMPLOYEE_LEAVE_ADDITION WHERE WOD_ID=P_ID;
-     DELETE FROM HRIS_OVERTIME_DETAIL WHERE WOD_ID= P_ID;
-      DELETE FROM HRIS_OVERTIME WHERE WOD_ID = P_ID;
+  --delete from from necessary tables
+  DELETE FROM HRIS_EMPLOYEE_LEAVE_ADDITION WHERE WOD_ID=P_ID;
+  DELETE FROM HRIS_OVERTIME_DETAIL WHERE WOD_ID= P_ID;
+  DELETE FROM HRIS_OVERTIME WHERE WOD_ID = P_ID;
+  -- call another procedure acordint to reward type
   IF V_WOH_FLAG ='L' THEN
     HRIS_WOD_LEAVE_ADDITION(P_ID);
   ELSIF V_WOH_FLAG ='O' THEN
     HRIS_WOD_OT_ADDITION(P_ID);
   END IF;
 END;
+ 
