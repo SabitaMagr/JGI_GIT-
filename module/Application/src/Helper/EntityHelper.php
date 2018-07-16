@@ -263,7 +263,7 @@ class EntityHelper {
         return "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$companyCondition}{$branchCondition}{$departmentCondition}{$designationCondition}{$positionCondition}{$serviceTypeCondition}{$serviceEventtypeCondition}{$employeeTypeCondition}{$employeeCondition}";
     }
 
-    public static function conditionBuilder($colValue, $colName, $conditonType, $isString = false,$parentQuery=false) {
+    public static function conditionBuilder($colValue, $colName, $conditonType, $isString = false, $parentQuery = false) {
         if (gettype($colValue) === "array") {
             $valuesinCSV = "";
             for ($i = 0; $i < sizeof($colValue); $i++) {
@@ -274,8 +274,8 @@ class EntityHelper {
                     $valuesinCSV .= "{$value},";
                 }
             }
-            if($parentQuery){
-              $valuesinCSV=str_replace('INVALUES',$valuesinCSV , $parentQuery);
+            if ($parentQuery) {
+                $valuesinCSV = str_replace('INVALUES', $valuesinCSV, $parentQuery);
             }
             return " {$conditonType} {$colName} IN ({$valuesinCSV})";
         } else {
@@ -293,14 +293,14 @@ class EntityHelper {
             $conditon .= self::conditionBuilder($branchId, "E.BRANCH_ID", "AND");
         }
         if ($departmentId != null && $departmentId != -1) {
-            $parentQuery="(SELECT DEPARTMENT_ID FROM
+            $parentQuery = "(SELECT DEPARTMENT_ID FROM
                          HRIS_DEPARTMENTS 
                         START WITH PARENT_DEPARTMENT in (INVALUES)
                         CONNECT BY PARENT_DEPARTMENT= PRIOR DEPARTMENT_ID
                         UNION 
                         SELECT DEPARTMENT_ID FROM HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN (INVALUES)
                         )";
-            $conditon .= self::conditionBuilder($departmentId, "E.DEPARTMENT_ID", "AND",false,$parentQuery);
+            $conditon .= self::conditionBuilder($departmentId, "E.DEPARTMENT_ID", "AND", false, $parentQuery);
         }
         if ($positionId != null && $positionId != -1) {
             $conditon .= self::conditionBuilder($positionId, "E.POSITION_ID", "AND");
@@ -362,6 +362,27 @@ class EntityHelper {
         $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Present Status");
         return $statusFormElement;
+    }
+
+    public static function getOrderBy($default,$name=null,$position=null,$joinDate=null) {
+        $auth = new \Zend\Authentication\AuthenticationService();
+        $preference = $auth->getStorage()->read()['preference'];
+        $orderByString = '';
+        
+        if ($preference['orderByPosition']=='Y' && $position!=null) {
+            $orderByString.=(empty($orderByString))?' '.$position.'  ASC':','.$position.'  ASC';
+            
+        }
+        if ($preference['orderByJoinDate']=='Y' && $joinDate!=null) {
+            $orderByString.=(empty($orderByString))?' '.$joinDate.'  ASC':','.$joinDate.'  ASC';
+        }
+        if ($preference['orderByName']=='Y' && $name!=null) {
+            $orderByString.=(empty($orderByString))?' '.$name.'  ASC':','.$name.'  ASC';
+        }
+        if(empty($orderByString)){
+            $orderByString=$default;
+        }
+        return ' ORDER BY '.$orderByString;
     }
 
 }
