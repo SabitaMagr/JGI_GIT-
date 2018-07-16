@@ -135,6 +135,28 @@ class SystemSettingForm {
      * @Annotation\Attributes({ "id":"firstTimePwdRenew","value":"N"})
      */
     public $firstTimePwdRenew;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Order By Name"})
+     * @Annotation\Attributes({ "id":"orderByName","value":"Y"})
+     */
+    public $orderByName;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Order By Position"})
+     * @Annotation\Attributes({ "id":"orderByPosition","value":"N"})
+     */
+    public $orderByPosition;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Order By JoinDate"})
+     * @Annotation\Attributes({ "id":"orderByJoinDate","value":"N"})
+     */
+    public $orderByJoinDate;
+
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")
