@@ -50,7 +50,7 @@ BEGIN
            TRUNC(SYSDATE)  BETWEEN START_DATE AND END_DATE;
            
            IF(P_END_DATE>V_LEAVE_YEAR_END) THEN
-           RETURN 'Yout Are Requesting leave for next leave Year';
+           RETURN 'You Are Requesting leave for next leave Year';
            END IF;
 
   
