@@ -3,6 +3,10 @@ window.app = (function ($, toastr, App) {
     $(document).ready(function () {
         App.setAssetsPath(document.basePath + '/assets/');
     });
+    
+    $(document).on( 'focus', ':input', function(){
+        $(this).attr( 'autocomplete', 'off' );
+    });
 
     var format = "dd-M-yyyy";
     window.toastr.options = {"positionClass": "toast-bottom-right"};
