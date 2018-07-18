@@ -7,6 +7,7 @@ $companyId = $form->get('companyId');
 $withinBranch = $form->get("withinBranch");
 $withinDepartment = $form->get("withinDepartment");
 $basicSalary = $form->get("basicSalary");
+$orderNo = $form->get("orderNo");
 $submit = $form->get("submit");
 
 $form->setAttribute('action', $this->url('designation', ['action' => 'edit', 'id' => $id]));
@@ -62,6 +63,13 @@ $form->prepare();
                             <?= $this->formLabel($parentDesignation) ?>
                             <?= $this->formElement($parentDesignation); ?>
                             <?= $this->formElementErrors()->render($parentDesignation, ['class' => 'help-block']) ?>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="form-group">
+                            <?= $this->formLabel($orderNo) ?>
+                            <?= $this->formElement($orderNo); ?>
+                            <?= $this->formElementErrors()->render($orderNo, ['class' => 'help-block']) ?>
                         </div>
                     </div>
 

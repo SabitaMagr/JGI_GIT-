@@ -24,6 +24,7 @@ class Preference extends Model {
     public $firstTimePwdRenew='N';
     public $orderByName='N';
     public $orderByPosition='N';
+    public $orderByDesignation='N';
     public $orderByJoinDate='N';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
@@ -46,6 +47,7 @@ class Preference extends Model {
     CONST FIRST_TIME_PWD_RENEW="FIRST_TIME_PWD_RENEW";
     CONST ORDER_BY_NAME="ORDER_BY_NAME";
     CONST ORDER_BY_POSITION="ORDER_BY_POSITION";
+    CONST ORDER_BY_DESIGNATION="ORDER_BY_DESIGNATION";
     CONST ORDER_BY_JOIN_DATE="ORDER_BY_JOIN_DATE";
     
 
@@ -70,6 +72,7 @@ class Preference extends Model {
         'firstTimePwdRenew' => self::FIRST_TIME_PWD_RENEW,
         'orderByName' =>self::ORDER_BY_NAME,
         'orderByPosition' =>self::ORDER_BY_POSITION,
+        'orderByDesignation' =>self::ORDER_BY_DESIGNATION,
         'orderByJoinDate' =>self::ORDER_BY_JOIN_DATE
     ];
 

@@ -59,6 +59,15 @@ class DesignationForm {
      * @Annotation\Attributes({ "id":"basicSalary" ,"min":"0","step":"0.01","class":"form-basicSalary form-control" })
      */
     public $basicSalary;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Order No"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({ "id":"orderNo","min":"0", "class":"form-control"})
+     */
+    public $orderNo;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Submit")

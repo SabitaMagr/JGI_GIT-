@@ -19,6 +19,7 @@ $includeBranch = $form->get('includeBranch');
 $firstTimePwdRenew = $form->get('firstTimePwdRenew');
 $orderByName = $form->get('orderByName');
 $orderByPosition = $form->get('orderByPosition');
+$orderByDesignation = $form->get('orderByDesignation');
 $orderByJoinDate = $form->get('orderByJoinDate');
 
 $submit = $form->get('submit');
@@ -234,6 +235,16 @@ if ($this->messages) {
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($orderByPosition, ['class' => 'help-block error']); ?>
+                    </div>
+                    
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($orderByDesignation); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($orderByDesignation); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($orderByDesignation, ['class' => 'help-block error']); ?>
                     </div>
                     
                     <div class=" col-sm-4 ">

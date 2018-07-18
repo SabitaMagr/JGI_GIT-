@@ -368,20 +368,25 @@ class EntityHelper {
         return $statusFormElement;
     }
 
-    public static function getOrderBy($default,$name=null,$position=null,$joinDate=null) {
+    public static function getOrderBy($default,$mandatory=null,$position=null,$joinDate=null,$designation=null,$name=null) {
         $auth = new \Zend\Authentication\AuthenticationService();
         $preference = $auth->getStorage()->read()['preference'];
         $orderByString = '';
         
         if ($preference['orderByPosition']=='Y' && $position!=null) {
             $orderByString.=(empty($orderByString))?' '.$position.'  ASC':','.$position.'  ASC';
-            
         }
         if ($preference['orderByJoinDate']=='Y' && $joinDate!=null) {
             $orderByString.=(empty($orderByString))?' '.$joinDate.'  ASC':','.$joinDate.'  ASC';
         }
+        if ($preference['orderByDesignation']=='Y' && $designation!=null) {
+            $orderByString.=(empty($orderByString))?' '.$designation.'  ASC':','.$designation.'  ASC';
+        }
         if ($preference['orderByName']=='Y' && $name!=null) {
             $orderByString.=(empty($orderByString))?' '.$name.'  ASC':','.$name.'  ASC';
+        }
+        if($mandatory!=null){
+            $orderByString.=(empty($orderByString))?' '.$mandatory:','.$mandatory;
         }
         if(empty($orderByString)){
             $orderByString=$default;

@@ -540,7 +540,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function fetchBy($by) {
-        $orderByString=EntityHelper::getOrderBy('E.FULL_NAME ASC','E.FULL_NAME','P.LEVEL_NO','E.JOIN_DATE');
+        $orderByString=EntityHelper::getOrderBy('E.FULL_NAME ASC',null,'P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
         $columIfSynergy="";
         $joinIfSyngery="";
         if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
