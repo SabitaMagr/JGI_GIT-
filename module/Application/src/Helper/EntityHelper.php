@@ -299,6 +299,10 @@ class EntityHelper {
                         CONNECT BY PARENT_DEPARTMENT= PRIOR DEPARTMENT_ID
                         UNION 
                         SELECT DEPARTMENT_ID FROM HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN (INVALUES)
+                        UNION
+                        SELECT  TO_NUMBER(TRIM(REGEXP_SUBSTR(EXCEPTIONAL,'[^,]+', 1, LEVEL) )) DEPARTMENT_ID
+  FROM (SELECT EXCEPTIONAL  FROM  HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN  (INVALUES))
+   CONNECT BY  REGEXP_SUBSTR(EXCEPTIONAL, '[^,]+', 1, LEVEL) IS NOT NULL
                         )";
             $conditon .= self::conditionBuilder($departmentId, "E.DEPARTMENT_ID", "AND", false, $parentQuery);
         }
