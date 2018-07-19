@@ -678,7 +678,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                 LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
                 ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
                 {$joinIfSyngery}
-                WHERE 1                 =1
+                WHERE 1                 =1 AND E.STATUS='E' 
                 {$condition}
                 ORDER BY E.FULL_NAME ASC";
         return $this->rawQuery($sql);
