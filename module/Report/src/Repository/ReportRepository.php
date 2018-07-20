@@ -1122,7 +1122,17 @@ EOT;
         
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
         $sql = <<<EOT
-        SELECT * FROM 
+             SELECT PL.*,
+                CL.PRESENT,
+                CL.ABSENT,
+                CL.LEAVE,
+                CL.DAYOFF,
+                CL.HOLIDAY,
+                CL.WORK_DAYOFF,
+                CL.WORK_HOLIDAY,
+                 (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) as TOTAL
+      FROM
+      (SELECT * FROM 
 (SELECT 
 E.FULL_NAME,
 AD.EMPLOYEE_ID,
@@ -1137,8 +1147,25 @@ WHERE MC.MONTH_ID={$searchQuery['monthCodeId']}
     )
 PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
                         IN ({$pivotString}))
+                        ) PL
+   LEFT JOIN (SELECT
+    EMPLOYEE_ID,
+    COUNT(case  when OVERALL_STATUS  IN ('TV','TN','PR','BA','LA','TP','LP','VP') then 1 end) AS PRESENT,
+    COUNT(case OVERALL_STATUS when 'AB' then 1 end) AS ABSENT,
+    COUNT(case OVERALL_STATUS when 'LV' then 1 end) AS LEAVE,
+    COUNT(case OVERALL_STATUS when 'DO' then 1 end) AS DAYOFF,
+    COUNT(case OVERALL_STATUS when 'HO' then 1 end) AS HOLIDAY,
+    COUNT(case OVERALL_STATUS when 'WD' then 1 end) AS WORK_DAYOFF,
+    COUNT(case OVERALL_STATUS when 'WH' then 1 end) AS WORK_HOLIDAY
+        FROM HRIS_ATTENDANCE_DETAIL
+        WHERE
+         ATTENDANCE_DT BETWEEN   TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND   TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
+        GROUP BY EMPLOYEE_ID)CL ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
                 
 EOT;
+         
+         echo $sql;
+         die();
                 $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return ['monthDetail'=>$monthDetail,'data'=>Helper::extractDbData($result)];

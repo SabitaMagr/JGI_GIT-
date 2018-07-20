@@ -59,6 +59,13 @@
         function generateColsForKendo(dayCount) {
               exportVals={
             'FULL_NAME': 'Employee Name',
+            'PRESENT': 'Present',
+            'ABSENT': 'Absent',
+            'LEAVE': 'Leave',
+            'DAYOFF': 'Day Off',
+            'HOLIDAY': 'Holiday',
+            'WORK_DAYOFF': 'Work on Dayoff',
+            'WORK_HOLIDAY': 'Work On Holiday',
         };
 //        exportVals
             var cols = [];
@@ -79,6 +86,60 @@
                      template: '<span>#:(' + temp + ' == null) ? " " :'+temp+'#</span>',
                 });
             }
+            
+            
+            cols.push({
+                field: 'PRESENT',
+                title: "Present",
+//                locked: true,
+                template: '<span>#:PRESENT#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'ABSENT',
+                title: "Absent",
+//                locked: true,
+                template: '<span>#:ABSENT#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'LEAVE',
+                title: "Leave",
+//                locked: true,
+                template: '<span>#:LEAVE#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'DAYOFF',
+                title: "Dayoff",
+                template: '<span>#:DAYOFF#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'HOLIDAY',
+                title: "Holiday",
+                template: '<span>#:HOLIDAY#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'WORK_DAYOFF',
+                title: "Work Dayoff",
+                template: '<span>#:WORK_DAYOFF#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'WORK_HOLIDAY',
+                title: "Work Holiday",
+                template: '<span>#:WORK_HOLIDAY#</span>',
+                width: 100
+            });
+            cols.push({
+                field: 'TOTAL',
+                title: "TOTAL",
+                template: '<span>#:TOTAL#</span>',
+                width: 100
+            });
+            
             console.log(exportVals);
             return cols;
         }
