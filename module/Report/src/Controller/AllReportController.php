@@ -151,7 +151,6 @@ class AllReportController extends HrisController {
             try {
                 $data = $request->getPost();
                  $postedData = $request->getPost();
-//                $data = $this->repository->employeeDailyReport($postedData);
                 $data = $this->repository->employeeDailyReport($postedData);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
             } catch (Exception $e) {

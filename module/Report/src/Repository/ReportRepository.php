@@ -1107,6 +1107,19 @@ EOT;
     }
     
     public function employeeDailyReport($searchQuery){
+        $monthDetail=$this->getMonthDetails($searchQuery['monthCodeId']);
+        
+         $pivotString = '';
+        for ($i = 1; $i <= $monthDetail['DAYS']; $i++) {
+            if ($i != $monthDetail['DAYS']) {
+                $pivotString .= $i . ' AS ' . 'D' . $i . ', ';
+            } else {
+                $pivotString .= $i . ' AS ' . 'D' . $i;
+            }
+        }
+        
+        
+        
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
         $sql = <<<EOT
         SELECT * FROM 
@@ -1119,15 +1132,27 @@ AD.OVERALL_STATUS,
 FROM HRIS_ATTENDANCE_DETAIL AD
 LEFT JOIN HRIS_MONTH_CODE MC ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
 LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
-WHERE MC.MONTH_ID={$searchQuery['monthCodeId']})
+WHERE MC.MONTH_ID={$searchQuery['monthCodeId']}
+{$searchConditon}
+    )
 PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
-                        IN (1 as D1,2 as D2, 3 as D3, 4 as D4))
+                        IN ({$pivotString}))
                 
 EOT;
                 $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return Helper::extractDbData($result);
-        
+        return ['monthDetail'=>$monthDetail,'data'=>Helper::extractDbData($result)];
+    }
+    
+    
+    public function getMonthDetails($monthId){
+        $sql="SELECT 
+    FROM_DATE,TO_DATE,TO_DATE-FROM_DATE+1 AS DAYS FROM 
+    HRIS_MONTH_CODE WHERE MONTH_ID={$monthId}";
+    
+    $statement = $this->adapter->query($sql);
+    $result = $statement->execute()->current();
+     return $result;   
     }
     
    
