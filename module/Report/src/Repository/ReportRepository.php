@@ -143,6 +143,8 @@ EOT;
                     ORDER BY AD.ATTENDANCE_DT,
                       E.EMPLOYEE_ID
 EOT;
+        echo $sql;
+        die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
@@ -1103,4 +1105,32 @@ EOT;
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
+    
+    public function employeeDailyReport($searchQuery){
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $sql = <<<EOT
+        SELECT * FROM 
+(SELECT 
+E.FULL_NAME,
+AD.EMPLOYEE_ID,
+AD.OVERALL_STATUS,
+--AD.ATTENDANCE_DT,
+(AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
+FROM HRIS_ATTENDANCE_DETAIL AD
+LEFT JOIN HRIS_MONTH_CODE MC ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
+LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+WHERE MC.MONTH_ID={$searchQuery['monthCodeId']})
+PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
+                        IN (1 as D1,2 as D2, 3 as D3, 4 as D4))
+                
+EOT;
+                $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+        
+    }
+    
+   
+    
+    
 }

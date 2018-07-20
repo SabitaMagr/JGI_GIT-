@@ -143,16 +143,32 @@ class AllReportController extends HrisController {
     }
 
     public function departmentWiseDailyAction() {
-        $monthId = (int) $this->params()->fromRoute('id1');
-        $departmentId = (int) $this->params()->fromRoute('id2');
-        $monthList = $this->repository->getMonthList();
+//        $monthId = (int) $this->params()->fromRoute('id1');
+//        $departmentId = (int) $this->params()->fromRoute('id2');
+//        $monthList = $this->repository->getMonthList();
+        $request=$this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                 $postedData = $request->getPost();
+//                $data = $this->repository->employeeDailyReport($postedData);
+                $data = $this->repository->employeeDailyReport($postedData);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        
+        
+        
         return $this->stickFlashMessagesTo([
-                'comBraDepList' => [
-                    'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
-                ],
-                'monthList' => $monthList,
-                'monthId' => $monthId,
-                'departmentId' => $departmentId
+//                'comBraDepList' => [
+//                    'DEPARTMENT_LIST' => EntityHelper::getTableList($this->adapter, Department::TABLE_NAME, [Department::DEPARTMENT_ID, Department::DEPARTMENT_NAME, Department::COMPANY_ID, Department::BRANCH_ID], [Department::STATUS => "E"])
+//                ],
+//                'monthList' => $monthList,
+//                'monthId' => $monthId,
+//                'departmentId' => $departmentId,
+                'fiscalYearSE' => $this->getFiscalYearSE()
         ]);
     }
 
