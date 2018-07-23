@@ -1183,6 +1183,57 @@ EOT;
      return $result;   
     }
     
+    public function employeeYearlyReport($employeeId,$fiscalYearId){
+        $sql = <<<EOT
+                
+                SELECT PL.*,
+           CL.PRESENT,
+                CL.ABSENT,
+                CL.LEAVE,
+                CL.DAYOFF,
+                CL.HOLIDAY,
+                CL.WORK_DAYOFF,
+                CL.WORK_HOLIDAY,
+                 (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) as TOTAL
+           FROM  (SELECT * FROM (SELECT  
+E.FULL_NAME,
+AD.EMPLOYEE_ID,
+CASE WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+THEN 'PR' ELSE AD.OVERALL_STATUS END AS OVERALL_STATUS,
+                MC.MONTH_ID,
+                MC.YEAR||MC.MONTH_EDESC AS MONTH_DTL,
+                MC.FISCAL_YEAR_MONTH_NO,
+(AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
+FROM HRIS_ATTENDANCE_DETAIL AD
+LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+JOIN (SELECT * FROM HRIS_MONTH_CODE WHERE FISCAL_YEAR_ID={$fiscalYearId} ) MC ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
+WHERE AD.EMPLOYEE_ID = {$employeeId})
+PIVOT (MAX(OVERALL_STATUS) FOR DAY_COUNT
+                        IN (1 AS D1, 2 AS D2, 3 AS D3, 4 AS D4, 5 AS D5, 6 AS D6, 7 AS D7, 8 AS D8, 9 AS D9, 10 AS D10, 11 AS D11, 12 AS D12, 13 AS D13, 14 AS D14, 15 AS D15, 16 AS D16, 17 AS D17, 18 AS D18, 19 AS D19, 20 AS D20, 21 AS D21, 22 AS D22, 23 AS D23, 24 AS D24, 25 AS D25, 26 AS D26, 27 AS D27, 28 AS D28, 29 AS D29, 30 AS D30, 31 AS D31,
+                        32 AS D32)
+                        ) ORDER BY FISCAL_YEAR_MONTH_NO) PL
+                        LEFT JOIN 
+                        (SELECT 
+CAD.EMPLOYEE_ID,CMC.MONTH_ID,
+    COUNT(case  when CAD.OVERALL_STATUS  IN ('TV','TN','PR','BA','LA','TP','LP','VP') then 1 end) AS PRESENT,
+    COUNT(case OVERALL_STATUS when 'AB' then 1 end) AS ABSENT,
+    COUNT(case OVERALL_STATUS when 'LV' then 1 end) AS LEAVE,
+    COUNT(case OVERALL_STATUS when 'DO' then 1 end) AS DAYOFF,
+    COUNT(case OVERALL_STATUS when 'HD' then 1 end) AS HOLIDAY,
+    COUNT(case OVERALL_STATUS when 'WD' then 1 end) AS WORK_DAYOFF,
+    COUNT(case OVERALL_STATUS when 'WH' then 1 end) AS WORK_HOLIDAY
+FROM HRIS_ATTENDANCE_DETAIL CAD
+JOIN HRIS_MONTH_CODE CMC ON (CMC.FISCAL_YEAR_ID={$fiscalYearId} AND CAD.ATTENDANCE_DT BETWEEN CMC.FROM_DATE AND CMC.TO_DATE)
+WHERE EMPLOYEE_ID={$employeeId} 
+GROUP BY CAD.EMPLOYEE_ID,CMC.MONTH_ID)CL ON (PL.MONTH_ID=CL.MONTH_ID)
+
+           
+EOT;
+                $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+    
    
     
     

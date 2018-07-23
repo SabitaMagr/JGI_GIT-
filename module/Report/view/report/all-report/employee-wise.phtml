@@ -19,10 +19,11 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportfour.
 <?php } ?>
 
 <script>
+     document.getFiscalYearMonthLink = '<?php echo $this->url('allreport', ['action' => 'getFiscalYearMonth']); ?>';
     document.wsEmployeeWiseDailyReport = '<?php echo $this->url('allreport', ['action' => 'employeeWiseDailyReport']); ?>';
-    document.comBraDepList =<?php echo json_encode($comBraDepList); ?>;
+//    document.comBraDepList =<?php // echo json_encode($comBraDepList); ?>;
     document.employeeList =<?php echo json_encode($employeeList); ?>;
-    document.employeeId =<?php echo $employeeId; ?>;
+//    document.employeeId =<?php // echo $employeeId; ?>;
 </script>
 
 
@@ -35,30 +36,34 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportfour.
 <div class="portlet light bg-inverse">
     <div class="portlet-title">
         <div class="caption">
-            <div class="indicator">
-                <ul>
-                    <li>
-                        <div class="indicator-box indicator-color-present"></div> 
-                        <span>Present</span>
+            <i class="icon-paper-plane font-green-haze"></i>
+            <span class="caption-subject bold font-green-haze uppercase"> Employee Monthly </span>
+        </div>
+        <div class="tools">
+            <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+            <a href="" class="fullscreen" data-original-title="" title=""> </a>
+        </div>
+        <div class="actions">
+            <div class="btn-group">
+                <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-copy"></i> Tools
+                    <i class="fa fa-angle-down "></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li >
+                        <a href="javascript:;" id="excelExport">
+                            <i class="fa fa-file-excel-o" ></i> Export to Excel </a>
                     </li>
-                    <li>
-                        <div class="indicator-box indicator-color-Absent"> </div>   
-                        <span>Absent</span>
-                    </li>
-
-
-                    <li>
-                        <div class="indicator-box indicator-color-leave"> </div> 
-                        <span>leave</span>
+                    <li >
+                        <a href="javascript:;" id="pdfExport">
+                            <i class="fa fa-file-pdf-o" ></i> Export to PDF </a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="actions">
-            <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
-        </div>
 
     </div>
+    
     <div class="portlet-body">
         <div class="row">
 
@@ -68,11 +73,17 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportfour.
 
                 </select> 
             </div>
-            <div class="col-sm-offset-6 col-sm-3 bottomgap">
+            
+            <div class="col-sm-3">
+    <?php print $this->formElement($fiscalYearSE); ?>
+<!--                <select class="form-control"  id="fiscalYearId" >
+                </select>-->
+            </div>
+            
+            <div class="col-sm-offset-3 col-sm-3 bottomgap">
                 <button id="generateReport" class="btn btn-block btn-customized">
                     Generate Report
                 </button>
-
             </div>
 
         </div>
@@ -83,4 +94,6 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportfour.
             </div>
         </div>
     </div>
+    
+    
 </div>

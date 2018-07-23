@@ -175,11 +175,25 @@ class AllReportController extends HrisController {
 
         $employeeId = (int) $this->params()->fromRoute('id1');
         $employeeList = $this->repository->getEmployeeList();
+        
+        $request=$this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $postedData = $request->getPost();
+                 $employeeId=$postedData['employeeId'];
+                 $fiscalYearId=$postedData['fiscalYearId'];
+                $data = $this->repository->employeeYearlyReport($employeeId,$fiscalYearId);
+                return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        
 
         return $this->stickFlashMessagesTo([
-                'comBraDepList' => $this->getComBraDepList(),
-                'employeeList' => $employeeList,
-                'employeeId' => $employeeId
+            'fiscalYearSE' => $this->getFiscalYearSE(),
+                'employeeList' => $employeeList
         ]);
     }
 
