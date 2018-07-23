@@ -143,8 +143,8 @@ EOT;
                     ORDER BY AD.ATTENDANCE_DT,
                       E.EMPLOYEE_ID
 EOT;
-        echo $sql;
-        die();
+//        echo $sql;
+//        die();
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
@@ -1136,7 +1136,8 @@ EOT;
 (SELECT 
 E.FULL_NAME,
 AD.EMPLOYEE_ID,
-AD.OVERALL_STATUS,
+CASE WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+THEN 'PR' ELSE AD.OVERALL_STATUS END AS OVERALL_STATUS,
 --AD.ATTENDANCE_DT,
 (AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
 FROM HRIS_ATTENDANCE_DETAIL AD
@@ -1154,7 +1155,7 @@ PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
     COUNT(case OVERALL_STATUS when 'AB' then 1 end) AS ABSENT,
     COUNT(case OVERALL_STATUS when 'LV' then 1 end) AS LEAVE,
     COUNT(case OVERALL_STATUS when 'DO' then 1 end) AS DAYOFF,
-    COUNT(case OVERALL_STATUS when 'HO' then 1 end) AS HOLIDAY,
+    COUNT(case OVERALL_STATUS when 'HD' then 1 end) AS HOLIDAY,
     COUNT(case OVERALL_STATUS when 'WD' then 1 end) AS WORK_DAYOFF,
     COUNT(case OVERALL_STATUS when 'WH' then 1 end) AS WORK_HOLIDAY
         FROM HRIS_ATTENDANCE_DETAIL
@@ -1164,8 +1165,8 @@ PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
                 
 EOT;
          
-         echo $sql;
-         die();
+//         echo $sql;
+//         die();
                 $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return ['monthDetail'=>$monthDetail,'data'=>Helper::extractDbData($result)];

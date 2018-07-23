@@ -1,3 +1,26 @@
+
+function setTemplate(temp) {
+    var returnvalue = '';
+    if (temp == 'PR') {
+        returnvalue = 'blue';
+    } 
+    else if (temp == 'AB') {
+        returnvalue = 'red';
+    } else if (temp == 'LV') {
+        returnvalue = 'green';
+    } else if (temp == 'DO') {
+        returnvalue = 'yellow';
+    } else if (temp == 'HD') {
+        returnvalue = 'purple';
+    } else if (temp == 'WD') {
+        returnvalue = 'purple-soft';
+    } else if (temp == 'WH') {
+        returnvalue = 'yellow-soft';
+    }
+    return returnvalue;
+}
+
+
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
@@ -67,7 +90,6 @@
             'WORK_DAYOFF': 'Work on Dayoff',
             'WORK_HOLIDAY': 'Work On Holiday',
         };
-//        exportVals
             var cols = [];
             cols.push({
                 field: 'FULL_NAME',
@@ -82,8 +104,9 @@
                 cols.push({
                     field: temp,
                     title: "" + i,
-                     width: 35,
-                     template: '<span>#:(' + temp + ' == null) ? " " :'+temp+'#</span>',
+                     width: 60,
+                     template: '<button type="button" class="btn btn-block #:setTemplate('+temp+')#">#:(' + temp + ' == null) ? " " :'+temp+'#</button>',
+//                     template: '<span  class="#: setTemplate(' + temp + ') #">#:(' + temp + ' == null) ? " " :'+temp+'#</span>',
                 });
             }
             
@@ -91,21 +114,18 @@
             cols.push({
                 field: 'PRESENT',
                 title: "Present",
-//                locked: true,
                 template: '<span>#:PRESENT#</span>',
                 width: 100
             });
             cols.push({
                 field: 'ABSENT',
                 title: "Absent",
-//                locked: true,
                 template: '<span>#:ABSENT#</span>',
                 width: 100
             });
             cols.push({
                 field: 'LEAVE',
                 title: "Leave",
-//                locked: true,
                 template: '<span>#:LEAVE#</span>',
                 width: 100
             });
@@ -133,14 +153,8 @@
                 template: '<span>#:WORK_HOLIDAY#</span>',
                 width: 100
             });
-            cols.push({
-                field: 'TOTAL',
-                title: "TOTAL",
-                template: '<span>#:TOTAL#</span>',
-                width: 100
-            });
             
-            console.log(exportVals);
+//            console.log(exportVals);
             return cols;
         }
         
