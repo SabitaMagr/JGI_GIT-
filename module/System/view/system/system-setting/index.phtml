@@ -17,6 +17,10 @@ $includeEmployeeCode = $form->get('includeEmployeeCode');
 $includeCompany = $form->get('includeCompany');
 $includeBranch = $form->get('includeBranch');
 $firstTimePwdRenew = $form->get('firstTimePwdRenew');
+$orderByName = $form->get('orderByName');
+$orderByPosition = $form->get('orderByPosition');
+$orderByDesignation = $form->get('orderByDesignation');
+$orderByJoinDate = $form->get('orderByJoinDate');
 
 $submit = $form->get('submit');
 
@@ -212,6 +216,50 @@ if ($this->messages) {
                         </div>
                         <?php print $this->formElementErrors()->render($includeBranch, ['class' => 'help-block error']); ?>
                     </div>
+                    
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($orderByName); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($orderByName); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($orderByName, ['class' => 'help-block error']); ?>
+                    </div>
+                    
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($orderByPosition); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($orderByPosition); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($orderByPosition, ['class' => 'help-block error']); ?>
+                    </div>
+                    
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($orderByDesignation); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($orderByDesignation); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($orderByDesignation, ['class' => 'help-block error']); ?>
+                    </div>
+                    
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($orderByJoinDate); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($orderByJoinDate); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($orderByJoinDate, ['class' => 'help-block error']); ?>
+                    </div>
+                    
+                    
+                    
+                    
                 </div>
                 <div class="">
                     <?php print $this->formSubmit($submit); ?>

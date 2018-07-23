@@ -22,6 +22,10 @@ class Preference extends Model {
     public $includeCompany = 'Y';
     public $includeBranch = 'Y';
     public $firstTimePwdRenew='N';
+    public $orderByName='N';
+    public $orderByPosition='N';
+    public $orderByDesignation='N';
+    public $orderByJoinDate='N';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -41,6 +45,11 @@ class Preference extends Model {
     CONST INCLUDE_COMPANY= "INCLUDE_COMPANY";
     CONST INCLUDE_BRANCH= "INCLUDE_BRANCH";
     CONST FIRST_TIME_PWD_RENEW="FIRST_TIME_PWD_RENEW";
+    CONST ORDER_BY_NAME="ORDER_BY_NAME";
+    CONST ORDER_BY_POSITION="ORDER_BY_POSITION";
+    CONST ORDER_BY_DESIGNATION="ORDER_BY_DESIGNATION";
+    CONST ORDER_BY_JOIN_DATE="ORDER_BY_JOIN_DATE";
+    
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -61,6 +70,10 @@ class Preference extends Model {
         'includeCompany' => self::INCLUDE_COMPANY,
         'includeBranch' => self::INCLUDE_BRANCH,
         'firstTimePwdRenew' => self::FIRST_TIME_PWD_RENEW,
+        'orderByName' =>self::ORDER_BY_NAME,
+        'orderByPosition' =>self::ORDER_BY_POSITION,
+        'orderByDesignation' =>self::ORDER_BY_DESIGNATION,
+        'orderByJoinDate' =>self::ORDER_BY_JOIN_DATE
     ];
 
 }

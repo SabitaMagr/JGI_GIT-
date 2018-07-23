@@ -122,6 +122,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($min != null && $max != null) {
             $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
         }
+          $orderByString=EntityHelper::getOrderBy('A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
         $sql = "
                SELECT * FROM (SELECT 
                   ROWNUM                                           AS R,
@@ -209,6 +210,10 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON E.COMPANY_ID=COM.COMPANY_ID
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON E.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+                LEFT JOIN HRIS_POSITIONS P
+                ON E.POSITION_ID=P.POSITION_ID
+                LEFT JOIN HRIS_DESIGNATIONS DES
+                ON E.DESIGNATION_ID=DES.DESIGNATION_ID
                 LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP H
                 ON A.HOLIDAY_ID=H.HOLIDAY_ID
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
@@ -227,7 +232,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 {$toDateCondition}
                 {$statusCondition}
                 {$presentStatusCondition}
-                ORDER BY A.ATTENDANCE_DT DESC ,A.IN_TIME ASC) Q
+                {$orderByString}
+                ) Q
                 {$rowNums}
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
@@ -752,11 +758,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($min != null && $max != null) {
             $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
         }
+        $orderByString=EntityHelper::getOrderBy('ATTENDANCE_DT DESC ,IN_TIME ASC','ATTENDANCE_DT DESC ,IN_TIME ASC','LEVEL_NO','JOIN_DATE','ORDER_NO','EMPLOYEE_NAME');
         $sql = "
                SELECT 
 DISTINCT
 			   EMPLOYEE_ID,ATTENDANCE_DT ,
-               
+                 LEVEL_NO ,JOIN_DATE ,ORDER_NO,
                 IN_DEVICE_NAME,
                   OUT_DEVICE_NAME,
                   ID,
@@ -813,6 +820,7 @@ FROM (SELECT
                   L.LEAVE_ENAME                                    AS LEAVE_ENAME,
                   T.TRAINING_NAME                                  AS TRAINING_NAME,
                   TVL.DESTINATION                                  AS TRAVEL_DESTINATION,
+                   P.LEVEL_NO ,E.JOIN_DATE ,DES.ORDER_NO,
                   (
                   CASE
                     WHEN A.OVERALL_STATUS = 'DO'
@@ -874,6 +882,10 @@ FROM (SELECT
                 ON E.COMPANY_ID=COM.COMPANY_ID
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON E.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+                LEFT JOIN HRIS_POSITIONS P
+                ON E.POSITION_ID=P.POSITION_ID
+                LEFT JOIN HRIS_DESIGNATIONS DES
+                ON E.DESIGNATION_ID=DES.DESIGNATION_ID
                 LEFT JOIN HRIS_HOLIDAY_MASTER_SETUP H
                 ON A.HOLIDAY_ID=H.HOLIDAY_ID
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
@@ -906,7 +918,7 @@ FROM (SELECT
                 {$toDateCondition}
                 {$statusCondition}
                 {$presentStatusCondition}
-                ORDER BY A.ATTENDANCE_DT DESC ,A.IN_TIME ASC) Q
+                ) Q {$orderByString}
                 {$rowNums}
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
