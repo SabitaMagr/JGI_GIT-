@@ -1,4 +1,5 @@
 <?php
+
 namespace System\Controller;
 
 use Application\Controller\HrisController;
@@ -39,7 +40,7 @@ class AttendanceDeviceController extends HrisController {
         }
 
         return $this->stickFlashMessagesTo([
-                'acl' => $this->acl
+                    'acl' => $this->acl
         ]);
     }
 
@@ -51,18 +52,26 @@ class AttendanceDeviceController extends HrisController {
             if ($this->form->isValid()) {
                 $attendanceDevice = new AttendanceDevice();
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
-                $attendanceDevice->deviceId = ((int) Helper::getMaxId($this->adapter, AttendanceDevice::TABLE_NAME, AttendanceDevice::DEVICE_ID)) + 1;
-                $attendanceDevice->status = 'E';
-                $attendanceDevice->branchId = $attendanceDevice->deviceId;
-                $this->repository->add($attendanceDevice);
+                $sameIp = EntityHelper::rawQueryResult($this->adapter, "SELECT * FROM HRIS_ATTD_DEVICE_MASTER 
+                WHERE DEVICE_IP='{$attendanceDevice->deviceIp}' ")->current();
+                if (!$sameIp) {
 
-                $this->flashmessenger()->addMessage("Attendance Device Successfully Added!!!");
-                return $this->redirect()->toRoute("AttendanceDevice");
+                    $attendanceDevice->deviceId = ((int) Helper::getMaxId($this->adapter, AttendanceDevice::TABLE_NAME, AttendanceDevice::DEVICE_ID)) + 1;
+                    $attendanceDevice->status = 'E';
+                    $attendanceDevice->branchId = $attendanceDevice->deviceId;
+                    $this->repository->add($attendanceDevice);
+
+                    $this->flashmessenger()->addMessage("Attendance Device Successfully Added!!!");
+                    return $this->redirect()->toRoute("AttendanceDevice");
+                } else {
+                    $deviceIpForm = $this->form->get('deviceIp');
+                    $deviceIpForm->setMessages(['cus' => 'The ip address is already in the database']);
+                }
             }
         }
         $this->prepareForm();
         return $this->stickFlashMessagesTo([
-                'form' => $this->form,
+                    'form' => $this->form,
         ]);
     }
 
@@ -74,18 +83,27 @@ class AttendanceDeviceController extends HrisController {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $attendanceDevice->exchangeArrayFromForm($this->form->getData());
-                $this->repository->edit($attendanceDevice, $id);
-                $this->flashmessenger()->addMessage("Attendance Device Successfully Updated!!!");
-                return $this->redirect()->toRoute("AttendanceDevice");
+
+                $sameIp = EntityHelper::rawQueryResult($this->adapter, "SELECT * FROM HRIS_ATTD_DEVICE_MASTER 
+                WHERE DEVICE_IP='{$attendanceDevice->deviceIp}' AND DEVICE_ID NOT IN ({$id}) ")->current();
+                if (!$sameIp) {
+                    $this->repository->edit($attendanceDevice, $id);
+                    $this->flashmessenger()->addMessage("Attendance Device Successfully Updated!!!");
+                    return $this->redirect()->toRoute("AttendanceDevice");
+                } else {
+                    $deviceIpForm = $this->form->get('deviceIp');
+                    $deviceIpForm->setMessages(['cus' => 'The ip address is already in the database']);
+                }
             }
+        } else {
+            $detail = $this->repository->fetchById($id)->getArrayCopy();
+            $attendanceDevice->exchangeArrayFromDB($detail);
+            $this->form->bind($attendanceDevice);
         }
-        $detail = $this->repository->fetchById($id)->getArrayCopy();
-        $attendanceDevice->exchangeArrayFromDB($detail);
-        $this->form->bind($attendanceDevice);
         $this->prepareForm();
         return $this->stickFlashMessagesTo([
-                'id' => $id,
-                'form' => $this->form,
+                    'id' => $id,
+                    'form' => $this->form,
         ]);
     }
 
@@ -156,7 +174,7 @@ class AttendanceDeviceController extends HrisController {
         $deviceIPSE = $this->getSelectElement(['name' => 'deviceIP', 'id' => 'deviceIP', 'class' => 'form-control', 'label' => 'Device IP'], $deviceIPKV);
         $deviceIPSE->setAttributes(['multiple' => 'multiple']);
         return $this->stickFlashMessagesTo([
-                'deviceIPSE' => $deviceIPSE
+                    'deviceIPSE' => $deviceIPSE
         ]);
     }
 
@@ -179,9 +197,10 @@ class AttendanceDeviceController extends HrisController {
                 }
             }
 
-            return new JsonModel(['success' => true, 'data' => ['isRunning'=>$isRunning], 'error' => '']);
+            return new JsonModel(['success' => true, 'data' => ['isRunning' => $isRunning], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+
 }

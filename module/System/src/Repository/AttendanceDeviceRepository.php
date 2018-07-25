@@ -26,7 +26,8 @@ class AttendanceDeviceRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
-        $this->tableGateway->update([AttendanceDevice::STATUS => "D"], [AttendanceDevice::DEVICE_ID => $id]);
+//        $this->tableGateway->update([AttendanceDevice::STATUS => "D"], [AttendanceDevice::DEVICE_ID => $id]);
+        $this->tableGateway->delete([AttendanceDevice::DEVICE_ID => $id]);
     }
 
     public function edit(Model $model, $id) {
