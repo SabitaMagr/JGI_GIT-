@@ -99,12 +99,12 @@ class CompanyController extends HrisController {
         if ($id === 0) {
             return $this->redirect()->toRoute('company');
         }
-        $this->prepareForm();
         $request = $this->getRequest();
 
         $company = new Company();
         if (!$request->isPost()) {
             $company->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
+            $this->prepareForm($company->companyCode);
             $this->form->bind($company);
         } else {
             $postedData = $request->getPost();
@@ -132,7 +132,7 @@ class CompanyController extends HrisController {
         );
     }
 
-    private function prepareForm() {
+    private function prepareForm($companyCode=null) {
         $formCode = $this->form->get('formCode');
         $drAccCode = $this->form->get('drAccCode');
         $crAccCode = $this->form->get('crAccCode');
@@ -141,9 +141,10 @@ class CompanyController extends HrisController {
         $equalCrAccCode = $this->form->get('equalCrAccCode');
         $advanceDrAccCode = $this->form->get('advanceDrAccCode');
         $advanceCrAccCode = $this->form->get('advanceCrAccCode');
-
-        $formCodeList = $this->synergyRepo->getFormList($this->storageData['company_detail']['COMPANY_CODE']);
-        $accCodeList = $this->synergyRepo->getAccountList($this->storageData['company_detail']['COMPANY_CODE']);
+        
+        $companyCode=($companyCode!=null)?$companyCode:$this->storageData['company_detail']['COMPANY_CODE'];
+        $formCodeList = $this->synergyRepo->getFormList($companyCode);
+        $accCodeList = $this->synergyRepo->getAccountList($companyCode);
         $formCode->setValueOptions($this->listValueToKV($formCodeList, "FORM_CODE", "FORM_EDESC"));
 
         $drAccCode->setValueOptions($this->listValueToKV($accCodeList, "ACC_CODE", "ACC_EDESC"));
