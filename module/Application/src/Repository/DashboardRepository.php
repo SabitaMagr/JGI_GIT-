@@ -766,5 +766,21 @@ class DashboardRepository {
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
+    
+    
+    public function empOnLeaveToday(){
+        $sql="";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+    
+    public function empOnTravelToday(){
+        $sql="";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+    
 
 }
