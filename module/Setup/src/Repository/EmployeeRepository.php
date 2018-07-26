@@ -546,10 +546,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
             $columIfSynergy="FCAS.ACC_EDESC AS BANK_ACCOUNT,";
             $joinIfSyngery="LEFT JOIN FA_CHART_OF_ACCOUNTS_SETUP FCAS 
-                ON(FCAS.ACC_CODE=E.ID_ACC_CODE AND ACC_NATURE  = 'AC'
-                AND FCAS.COMPANY_CODE  = '01'
-                AND FCAS.DELETED_FLAG  = 'N'
-                AND FCAS.ACC_TYPE_FLAG = 'T')";
+                ON(FCAS.ACC_CODE=E.ID_ACC_CODE)";
         }
         
         
@@ -1000,14 +997,15 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         $statement->execute();
     }
 
-    public function fetchBankAccountList(): array {
+    public function fetchBankAccountList($companyCode=null): array {
+        $companyCode=($companyCode==null)?'01':$companyCode;
         if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
             $sql = "SELECT ACC_CODE,
                   ACC_EDESC,
                   TRANSACTION_TYPE
                 FROM FA_CHART_OF_ACCOUNTS_SETUP
                 WHERE ACC_NATURE  = 'AC'
-                AND COMPANY_CODE  = '01'
+                AND COMPANY_CODE  = '{$companyCode}'
                 AND DELETED_FLAG  = 'N'
                 AND ACC_TYPE_FLAG = 'T'";
             return $this->rawQuery($sql);
@@ -1037,6 +1035,15 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     
     public function checkIfTableExists($tableName): bool  {
           return parent::checkIfTableExists($tableName);
+    }
+    
+    
+    public function getCompanyCodeByEmpId($employeeId){
+        $sql="SELECT NVL(C.COMPANY_CODE,TO_CHAR(C.COMPANY_ID)) AS COMPANY_CODE FROM HRIS_EMPLOYEES E LEFT JOIN HRIS_COMPANY C ON (E.COMPANY_ID=C.COMPANY_ID) "
+                . "WHERE E.EMPLOYEE_ID={$employeeId}";
+               $statement = $this->adapter->query($sql);
+                $result = $statement->execute();
+                return $result->current();
     }
         
 }

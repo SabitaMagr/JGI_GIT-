@@ -58,6 +58,7 @@ class EmployeeController extends HrisController {
     private $formSeven;
     private $formEight;
     private $countryList;
+    private $erpCompanyCode;
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage, ConfigInterface $config) {
         parent::__construct($adapter, $storage);
@@ -132,7 +133,7 @@ class EmployeeController extends HrisController {
         if (!$this->formThree) {
             $this->formThree = $builder->createForm($formTabThree);
             $idAccCode = $this->formThree->get('idAccCode');
-            $bankAccountList = $this->repository->fetchBankAccountList();
+            $bankAccountList = $this->repository->fetchBankAccountList($this->erpCompanyCode);
             $bankAccountKVList = $this->listValueToKV($bankAccountList, "ACC_CODE", "ACC_EDESC");
             $idAccCode->setValueOptions($bankAccountKVList);
             
@@ -169,8 +170,9 @@ class EmployeeController extends HrisController {
             $this->flashmessenger()->addMessage("Employee Successfully Submitted!!!");
             return $this->redirect()->toRoute('employee', ['action' => 'index']);
         }
-
-
+        
+        $this->erpCompanyCode=$this->repository->getCompanyCodeByEmpId($id)['COMPANY_CODE'];
+        
         $this->initializeMultipleForm();
         $request = $this->getRequest();
 
