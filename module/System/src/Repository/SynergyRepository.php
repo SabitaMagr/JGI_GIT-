@@ -31,7 +31,7 @@ class SynergyRepository extends HrisRepository {
             return [];
         }
         $condition = $companyCode != null ? " AND COMPANY_CODE = {$companyCode}" : "";
-        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP WHERE 1=1 " . $condition;
+        $sql = "SELECT * FROM FA_CHART_OF_ACCOUNTS_SETUP WHERE   DELETED_FLAG='N' " . $condition;
         return $this->rawQuery($sql);
     }
 
