@@ -769,14 +769,26 @@ class DashboardRepository {
     
     
     public function empOnLeaveToday(){
-        $sql="";
+        $sql="SELECT E.FULL_NAME,LMS.LEAVE_ENAME,LR.START_DATE,LR.END_DATE,LR.ID
+FROM HRIS_ATTENDANCE_DETAIL AD 
+LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS ON (LMS.LEAVE_ID=AD.LEAVE_ID)
+LEFT JOIN HRIS_EMPLOYEE_LEAVE_REQUEST LR ON (LR.EMPLOYEE_ID=AD.EMPLOYEE_ID AND TRUNC(SYSDATE) BETWEEN LR.START_DATE AND LR.END_DATE )
+WHERE AD.ATTENDANCE_DT=TRUNC(SYSDATE)
+AND AD.OVERALL_STATUS='LV'";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
     
     public function empOnTravelToday(){
-        $sql="";
+        $sql="SELECT E.FULL_NAME,TR.PURPOSE,TR.DESTINATION,TR.FROM_DATE,TR.TO_DATE
+ --,FULL_NAME||TR.PURPOSE||TR.DESTINATION||TR.FROM_DATE||TR.TO_DATE AS TRAVEL_DETAIL
+FROM HRIS_ATTENDANCE_DETAIL AD 
+LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST TR ON (TR.TRAVEL_ID=AD.TRAVEL_ID) 
+WHERE AD.ATTENDANCE_DT=TRUNC(SYSDATE)
+AND AD.OVERALL_STATUS='TV'";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
