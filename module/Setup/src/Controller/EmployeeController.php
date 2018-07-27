@@ -171,6 +171,8 @@ class EmployeeController extends HrisController {
             return $this->redirect()->toRoute('employee', ['action' => 'index']);
         }
         
+            $syngergyTable=$this->repository->checkIfTableExists('COMPANY_SETUP');
+        
         $this->erpCompanyCode=$this->repository->getCompanyCodeByEmpId($id)['COMPANY_CODE'];
         
         $this->initializeMultipleForm();
@@ -317,7 +319,6 @@ class EmployeeController extends HrisController {
                 $address['citizenshipIssuePlace']=$formThreeModel->idCitizenshipIssuePlace;
                 $this->formThree->bind($formThreeModel);
                 
-                $syngergyTable=$this->repository->checkIfTableExists('COMPANY_SETUP');
             }
 
             if ($tab != 4 || !$request->isPost()) {
