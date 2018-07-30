@@ -388,3 +388,48 @@ INTO HRIS_MENUS
     NULL,
     'Y'
   );
+
+
+--new menus from new fisacl year
+
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Sub Leave Mandatory',
+    301,
+    NULL,
+    'leave-sub-man',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-list-alt',
+    'index',
+    8,
+    NULL,
+    NULL,
+    'Y'
+  );
+
+

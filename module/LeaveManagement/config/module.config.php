@@ -58,6 +58,16 @@ return [
                     ]
                 ]
             ],
+            'leaveSubBypass' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/leave-sub-man[/:action]',
+                    'defaults' => [
+                        'controller' => Controller\LeaveSubBypass::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
         ]
     ],
     'navigation' => [
@@ -213,7 +223,8 @@ return [
             Controller\leaveAssign::class => ControllerFactory::class,
             Controller\LeaveApply::class => ControllerFactory::class,
             Controller\LeaveStatus::class => ControllerFactory::class,
-            Controller\LeaveBalance::class => ControllerFactory::class
+            Controller\LeaveBalance::class => ControllerFactory::class,
+            Controller\LeaveSubBypass::class => ControllerFactory::class
         ],
     ],
     'view_manager' => [
