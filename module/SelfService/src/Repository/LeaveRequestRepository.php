@@ -79,11 +79,22 @@ class LeaveRequestRepository implements RepositoryInterface {
                   INITCAP(L.LEAVE_ENAME)    AS LEAVE_ENAME,
                   L.ALLOW_HALFDAY           AS ALLOW_HALFDAY,
                   L.ALLOW_GRACE_LEAVE       AS ALLOW_GRACE_LEAVE,
-                  L.IS_SUBSTITUTE_MANDATORY AS IS_SUBSTITUTE_MANDATORY,
+                   CASE WHEN L.IS_SUBSTITUTE_MANDATORY='Y' AND LBP.BYPASS='N' THEN 
+                  'Y'
+                  ELSE
+                  'N'
+                  END AS IS_SUBSTITUTE_MANDATORY,
                   L.ENABLE_SUBSTITUTE       AS ENABLE_SUBSTITUTE
                 FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
                 INNER JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID                =LA.LEAVE_ID
+                 LEFT JOIN (
+                SELECT CASE NVL(MIN(LEAVE_ID),'0') WHEN 0 
+                THEN 'N'
+                ELSE 'Y' 
+                END AS BYPASS FROM HRIS_SUB_MAN_BYPASS 
+                WHERE LEAVE_ID={$leaveId} AND EMPLOYEE_ID={$employeeId}
+                ) LBP ON (1=1)
                 LEFT JOIN (SELECT * FROM HRIS_LEAVE_YEARS WHERE 
                  TRUNC(SYSDATE)  BETWEEN START_DATE AND END_DATE) LY  
                  ON(1=1)
