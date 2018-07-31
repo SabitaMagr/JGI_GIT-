@@ -546,7 +546,7 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
             $columIfSynergy="FCAS.ACC_EDESC AS BANK_ACCOUNT,";
             $joinIfSyngery="LEFT JOIN FA_CHART_OF_ACCOUNTS_SETUP FCAS 
-                ON(FCAS.ACC_CODE=E.ID_ACC_CODE)";
+                ON(FCAS.ACC_CODE=E.ID_ACC_CODE AND C.COMPANY_CODE=FCAS.COMPANY_CODE)";
         }
         
         
