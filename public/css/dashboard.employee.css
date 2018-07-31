@@ -188,6 +188,7 @@ ul {
     box-shadow: none;
     font-size: 11px;
   text-transform: capitalize !important;
+      white-space: normal;
 }
 
 .upcomingholidays .date {
