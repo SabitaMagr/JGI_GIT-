@@ -14,7 +14,7 @@
 
             $assignTable.find("tr:gt(0)").remove();
 
-            app.pullDataById("", {'data': data}).then(function (response) {
+            app.serverRequest("", {'data': data}).then(function (response) {
                 console.log(response);
                 $.each(response.data, function (index, value) {
                     var appendData = `<tr >
@@ -95,10 +95,14 @@
                 });
 
 
-                window.app.bulkServerRequest(document.assignSubMandatory, postValues, function () {
-                    window.app.showMessage("Sucessfully Assigned");
-                }, function (data, error) {
-                    app.showMessage(error, 'error');
+                app.serverRequest(document.assignSubMandatory, {
+                    data: postValues}).then(function (response) {
+                    if (response.success = true) {
+                        app.showMessage("Sucessfully Assigned");
+                    }
+                }, function (failure) {
+                    window.app.showMessage("failed");
+                    throw failure;
                 });
 
 

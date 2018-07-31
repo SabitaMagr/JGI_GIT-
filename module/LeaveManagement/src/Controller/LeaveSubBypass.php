@@ -68,11 +68,13 @@ class LeaveSubBypass extends HrisController {
             try {
                 $request = $this->getRequest();
                 $data = $request->getPost();
+                $empList=$data['data'];
                 
-                $employeeId=$data['employeeId'];
-                $isChecked=$data['isChecked'];
-                $leaveId=$data['leaveId'];
                 
+                foreach($empList as $list){
+                $employeeId=$list['employeeId'];
+                $isChecked=$list['isChecked'];
+                $leaveId=$list['leaveId'];
                 
                 $leaveSubManBypassModel= new LeaveSubManBypass();
                 $leaveSubManBypassModel->employeeId=$employeeId;
@@ -83,6 +85,7 @@ class LeaveSubBypass extends HrisController {
                     $this->repository->add($leaveSubManBypassModel);
                 }
                 
+                }
                 return new JsonModel([
                     "success" => true,
 //                    "data" => $list,
