@@ -139,8 +139,8 @@ class EmployeeController extends HrisController {
             
             $empowerCompanyList = $this->repository->fetchEmpowerCompany();
             $empowerBranchList = $this->repository->fetchEmpowerBranch();
-            $empowerCompanyCodeKVList = $this->listValueToKV($empowerCompanyList, "COMPANY_CODE", "COMPANY_EDESC");
-            $empowerBranchKVList = $this->listValueToKV($empowerBranchList, "BRANCH_CODE", "BRANCH_EDESC");
+            $empowerCompanyCodeKVList = $this->listValueToKV($empowerCompanyList, "COMPANY_CODE", "COMPANY_EDESC",true);
+            $empowerBranchKVList = $this->listValueToKV($empowerBranchList, "BRANCH_CODE", "BRANCH_EDESC",true);
             
             
              $empowerCompanyCode = $this->formThree->get('empowerCompanyCode');
