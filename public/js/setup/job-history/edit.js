@@ -36,7 +36,7 @@
                                             <tr><td>Designation</td><td>${item['DESIGNATION_TITLE']}</td></tr>
                                             <tr><td>Position</td><td>${item['POSITION_NAME']}</td></tr>
                                             <tr><td>Service Type</td><td>${item['SERVICE_TYPE_NAME']}</td></tr>
-                                            <tr><td>Service Type</td><td>${item['TO_SALARY']}</td></tr>
+                                            <tr><td>Salary</td><td>${item['TO_SALARY']}</td></tr>
                                             </table>`
                                 }],
                         });
