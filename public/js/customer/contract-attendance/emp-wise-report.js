@@ -10,6 +10,7 @@
 
 
         var columns = [
+            {field: "EMPLOYEE_CODE", title: "Emp Code", width: 150},
             {field: "FULL_NAME", title: "Name", width: 150},
             {field: "CONTRACT_NAME", title: "Contract", width: 130},
             {field: "LOCATION_NAME", title: "Location", width: 130},
@@ -24,7 +25,7 @@
         ];
 
 
-        app.searchTable($table, ['FULL_NAME',
+        app.searchTable($table, ['FULL_NAME','EMPLOYEE_CODE',
             'CONTRACT_NAME',
             'LOCATION_NAME',
             'DESIGNATION_TITLE',

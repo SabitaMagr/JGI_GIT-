@@ -53,6 +53,13 @@ function getStausString(status, normal, ot, subEmp) {
         function GenerateColsForKendo(dayCount) {
             var cols = [];
             cols.push({
+                field: 'EMPLOYEE_CODE',
+                title: "Emp Code",
+                locked: true,
+                template: '<span>#:EMPLOYEE_CODE#</span>',
+                width: 100
+            });
+            cols.push({
                 field: 'FULL_NAME',
                 title: "Name",
                 locked: true,
@@ -166,7 +173,7 @@ function getStausString(status, normal, ot, subEmp) {
 
 
 
-  app.searchTable($("#grid"), ['FULL_NAME']);
+  app.searchTable($("#grid"), ['FULL_NAME','EMPLOYEE_CODE']);
 
 
 
