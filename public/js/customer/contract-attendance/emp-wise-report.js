@@ -59,6 +59,29 @@
 
 
         });
+        
+        var exportMap = {
+            'EMPLOYEE_CODE': 'Emp Code',
+            'FULL_NAME': 'FULL_NAME',
+            'CONTRACT_NAME': 'Contract',
+            'LOCATION_NAME': 'Location',
+            'DUTY_TYPE_NAME': 'Duty type',
+            'PRESENT_DAYS': 'Present',
+            'TOTAL_NORMAL_HOUR': 'Normal Hour',
+            'TOTAL_OT_HOUR': 'Total Ot Hour',
+        };
+  
+  $('#excelExport').on('click', function () {
+            app.excelExport($table, exportMap, 'Advance Request List.xlsx');
+        });
+
+        $('#pdfExport').on('click', function () {
+            app.exportToPDF($table, exportMap, 'Advance Request List.pdf');
+        });
+
+        
+        
+        
     });
 }
 )(window.jQuery);
