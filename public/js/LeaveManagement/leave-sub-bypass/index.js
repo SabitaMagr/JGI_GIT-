@@ -16,19 +16,25 @@
 
             app.serverRequest("", {'data': data}).then(function (response) {
                 console.log(response);
+                
+                
                 $.each(response.data, function (index, value) {
+                value.BRANCH_NAME=(value.BRANCH_NAME!==null)?value.BRANCH_NAME:' ';
+                value.DEPARTMENT_NAME=(value.DEPARTMENT_NAME!==null)?value.DEPARTMENT_NAME:' ';
+                value.POSITION_NAME=(value.POSITION_NAME!==null)?value.POSITION_NAME:' ';
                     var appendData = `<tr >
                             <td>` + value.FULL_NAME + `</td>
                             <td>
+                    ` + value.BRANCH_NAME + `
                             </td>
                             <td>
-
+                    ` + value.DEPARTMENT_NAME+ `
                             </td>
                             <td>
+                    ` + value.POSITION_NAME+ `
                             </td>
                             <td>
-                            </td>
-                            <td>
+                    ` + value.DESIGNATION_TITLE+ `
                             </td>
                             <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                                 <div class="th-inner ">

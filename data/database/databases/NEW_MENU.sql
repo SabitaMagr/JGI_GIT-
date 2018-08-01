@@ -417,10 +417,10 @@ INTO HRIS_MENUS
   (
     NULL,
     (select max(menu_id)+1 from hris_menus),
-    'Sub Leave Mandatory',
+    'Leave Sub Bypass',
     301,
     NULL,
-    'leave-sub-man',
+    'leaveSubBypass',
     'E',
     trunc(sysdate),
     NULL,

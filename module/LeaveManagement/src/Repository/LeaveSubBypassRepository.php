@@ -18,7 +18,7 @@ class LeaveSubBypassRepository extends HrisRepository {
     public function getEmployeeList($data) {
 
 
-        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
+        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId']);
 
         $sql = "SELECT 
                   E.FULL_NAME,
@@ -29,7 +29,9 @@ class LeaveSubBypassRepository extends HrisRepository {
                   B.BRANCH_NAME,
                   DEP.DEPARTMENT_NAME,
                   E.EMPLOYEE_ID,
-                  E.EMPLOYEE_CODE
+                  E.EMPLOYEE_CODE,
+                  P.POSITION_NAME,
+                  DES.DESIGNATION_TITLE
                 FROM HRIS_EMPLOYEES E
                 LEFT JOIN (select * from HRIS_SUB_MAN_BYPASS where leave_id=   {$data['leave']}) ELA
                 ON (E.EMPLOYEE_ID = ELA.EMPLOYEE_ID)
@@ -39,6 +41,10 @@ class LeaveSubBypassRepository extends HrisRepository {
                 ON (E.BRANCH_ID=B.BRANCH_ID)
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON (E.DEPARTMENT_ID=DEP.DEPARTMENT_ID)
+                LEFT JOIN HRIS_POSITIONS P 
+                ON (P.POSITION_ID=E.POSITION_ID)
+                LEFT JOIN HRIS_DESIGNATIONS DES
+                ON (DES.DESIGNATION_ID=E.DESIGNATION_ID)
                 WHERE 1            =1 
                  AND E.STATUS ='E'
                 {$condition}
