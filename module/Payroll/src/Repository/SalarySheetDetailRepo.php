@@ -33,7 +33,7 @@ class SalarySheetDetailRepo extends HrisRepository {
 
     public function fetchSalarySheetDetail($sheetId) {
         $in = $this->fetchPayIdsAsArray();
-        $sql = "SELECT P.*,E.FULL_NAME AS EMPLOYEE_NAME
+        $sql = "SELECT P.*,E.FULL_NAME AS EMPLOYEE_NAME,E.EMPLOYEE_CODE,B.BRANCH_NAME,PO.POSITION_NAME,E.ID_ACCOUNT_NO
                 FROM
                   (SELECT *
                   FROM
@@ -46,7 +46,9 @@ class SalarySheetDetailRepo extends HrisRepository {
                     ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
                   ) P
                 JOIN HRIS_EMPLOYEES E
-                ON (P.EMPLOYEE_ID=E.EMPLOYEE_ID)";
+                ON (P.EMPLOYEE_ID=E.EMPLOYEE_ID) 
+                LEFT JOIN HRIS_BRANCHES B ON (B.BRANCH_ID=E.BRANCH_ID)
+                LEFT JOIN HRIS_POSITIONS PO ON (PO.POSITION_ID=E.POSITION_ID)";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 

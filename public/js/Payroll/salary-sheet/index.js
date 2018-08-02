@@ -146,7 +146,39 @@
             monthChangeAction();
         });
 
-        var exportMap = {"EMPLOYEE_NAME": "Employee"};
+        var exportMap = {
+            "EMPLOYEE_ID": "Employee Id",
+            "EMPLOYEE_CODE": "Employee Code",
+            "EMPLOYEE_NAME": "Employee",
+            "BRANCH_NAME": "Branch",
+            "POSITION_NAME": "Position",
+            "ID_ACCOUNT_NO": "Account No"
+        };
+        var employeeIdColumn = {
+            field: "EMPLOYEE_ID",
+            title: "Id",
+            width: 50
+        };
+        var employeeCodeColumn = {
+            field: "EMPLOYEE_CODE",
+            title: "Code",
+            width: 80
+        };
+        var employeeBranchColumn = {
+            field: "BRANCH_NAME",
+            title: "Branch",
+            width: 100
+        };
+        var employeePositionColumn = {
+            field: "POSITION_NAME",
+            title: "Position",
+            width: 100
+        };
+        var employeeAccountColumn = {
+            field: "ID_ACCOUNT_NO",
+            title: "Acc",
+            width: 70
+        };
         var employeeNameColumn = {
             field: "EMPLOYEE_NAME",
             title: "Employee",
@@ -161,9 +193,19 @@
         if (data.ruleList.length > 0) {
             employeeNameColumn.locked = true;
             actionColumn.locked = true;
+            employeeIdColumn.locked = true;
+            employeeCodeColumn.locked = true;
+            employeeBranchColumn.locked = true;
+            employeePositionColumn.locked = true;
+            employeeAccountColumn.locked = true;
         }
         var columns = [
+            employeeIdColumn,
+            employeeCodeColumn,
             employeeNameColumn,
+            employeeBranchColumn,
+            employeePositionColumn,
+            employeeAccountColumn,
             actionColumn
         ];
 
