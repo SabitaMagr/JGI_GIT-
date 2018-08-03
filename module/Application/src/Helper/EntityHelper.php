@@ -180,6 +180,7 @@ class EntityHelper {
         $locationList = self::getTableList($adapter, Location::TABLE_NAME, [Location::LOCATION_ID, Location::LOCATION_EDESC], [Location::STATUS => "E"]);
         $employeeList = self::getTableList($adapter, HrEmployees::TABLE_NAME, [
                     HrEmployees::EMPLOYEE_ID,
+                    HrEmployees::EMPLOYEE_CODE,
                     HrEmployees::FULL_NAME,
                     HrEmployees::COMPANY_ID,
                     HrEmployees::BRANCH_ID,

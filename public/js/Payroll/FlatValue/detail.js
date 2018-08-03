@@ -53,6 +53,7 @@
         var initTable = function (fiscalYearId, employeeList, serverData) {
             $header.html('');
             $header.append($('<th>', {text: 'Id'}));
+            $header.append($('<th>', {text: 'Code'}));
             $header.append($('<th>', {text: 'Name'}));
             $header.append($('<th>', {text: 'Value'}));
 
@@ -61,6 +62,7 @@
                 var $tr = $('<tr>');
 
                 $tr.append($('<td>', {text: item['EMPLOYEE_ID']}));
+                $tr.append($('<td>', {text: item['EMPLOYEE_CODE']}));
                 $tr.append($('<td>', {text: item['FULL_NAME']}))
 
                 var $td = $('<td>');
@@ -74,7 +76,8 @@
             var $tr = $('<tr>');
 
             $tr.append($('<td>', {text: ''}));
-            $tr.append($('<td>', {text: ''}))
+            $tr.append($('<td>', {text: ''}));
+            $tr.append($('<td>', {text: ''}));
 
             var $td = $('<td>');
             $td.append($('<input>', {type: 'number', class: 'group form-control'}));
@@ -122,6 +125,12 @@
 
 
 
+        });
+        
+        //IMPORT EXPORT CHANGES
+        
+        $('#excelExport').on('click',function(){
+            console.log('dsf');
         });
 
 

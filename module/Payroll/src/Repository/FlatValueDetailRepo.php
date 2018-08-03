@@ -53,7 +53,8 @@ class FlatValueDetailRepo implements RepositoryInterface {
     public function getFlatValuesDetailById($flatValueId, $fiscalYearId, $emp, $monthId = null) {
         $searchConditon = EntityHelper::getSearchConditon($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'], $emp['locationId']);
         $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}";
-        $sql = "SELECT * FROM HRIS_FLAT_VALUE_DETAIL WHERE FLAT_ID = {$flatValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ({$empQuery})";
+        $sql = "SELECT  FVD.*,EE.EMPLOYEE_CODE FROM HRIS_FLAT_VALUE_DETAIL FVD
+    LEFT JOIN HRIS_EMPLOYEES EE on (EE.EMPLOYEE_ID=FVD.EMPLOYEE_ID)  WHERE FVD.FLAT_ID = {$flatValueId} AND FVD.FISCAL_YEAR_ID = {$fiscalYearId} AND FVD.EMPLOYEE_ID IN ({$empQuery})";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
