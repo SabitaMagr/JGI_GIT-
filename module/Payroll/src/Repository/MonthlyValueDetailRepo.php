@@ -42,7 +42,9 @@ class MonthlyValueDetailRepo {
     public function getMonthlyValuesDetailById($monthlyValueId, $fiscalYearId, $emp, $monthId = null) {
         $searchConditon = EntityHelper::getSearchConditon($emp['companyId'], $emp['branchId'], $emp['departmentId'], $emp['positionId'], $emp['designationId'], $emp['serviceTypeId'], $emp['serviceEventTypeId'], $emp['employeeTypeId'], $emp['employeeId'], $emp['genderId'], $emp['locationId']);
         $empQuery = "SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 {$searchConditon}";
-        $sql = "SELECT * FROM HRIS_MONTHLY_VALUE_DETAIL WHERE MTH_ID = {$monthlyValueId} AND FISCAL_YEAR_ID = {$fiscalYearId} AND EMPLOYEE_ID IN ( {$empQuery} )";
+        $sql = "SELECT MVD.*,EE.FULL_NAME,EE.EMPLOYEE_CODE FROM HRIS_MONTHLY_VALUE_DETAIL MVD
+                LEFT JOIN HRIS_EMPLOYEES EE on (EE.EMPLOYEE_ID=MVD.EMPLOYEE_ID)  
+                WHERE MVD.MTH_ID = {$monthlyValueId} AND MVD.FISCAL_YEAR_ID = {$fiscalYearId} AND MVD.EMPLOYEE_ID IN ( {$empQuery} )";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
@@ -93,6 +95,12 @@ class MonthlyValueDetailRepo {
                     );
                 END;
 ";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
+    }
+
+    public function getMonthDeatilByFiscalYear($fiscalYearId) {
+        $sql = "SELECT * FROM HRIS_MONTH_CODE  WHERE FISCAL_YEAR_ID={$fiscalYearId} ORDER BY FISCAL_YEAR_MONTH_NO";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }

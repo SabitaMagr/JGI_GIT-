@@ -12,6 +12,7 @@ use Payroll\Model\FlatValue as FlatValueModel;
 use Payroll\Repository\FlatValueDetailRepo;
 use Payroll\Repository\FlatValueRepository;
 use Payroll\Repository\PositionFlatValueRepo;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Setup\Model\Position;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -188,6 +189,66 @@ class FlatValue extends HrisController {
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function uploadFlatValueEmpWiseAction() {
+        try {
+            $request = $this->getRequest();
+            $files = $request->getFiles()->toArray();
+
+            if (sizeof($files) > 0) {
+                $ext = pathinfo($files['excel_file']['name'], PATHINFO_EXTENSION);
+                $fileName = pathinfo($files['excel_file']['name'], PATHINFO_FILENAME);
+                $unique = Helper::generateUniqueName();
+                $newFileName = $unique . "." . $ext;
+                $uploadPath = Helper::UPLOAD_DIR . "/payroll/" . $newFileName;
+
+
+                if ($ext != 'xlsx') {
+                    throw new Exception("Please upload a xlsx file");
+                }
+
+
+
+                if (!empty($_FILES["excel_file"])) {
+                    $success = move_uploaded_file($files['excel_file']['tmp_name'], $uploadPath);
+                    if (!$success) {
+                        throw new Exception("Upload unsuccessful.");
+                    }
+
+                    $reader = new Xlsx();
+                    $spreadsheet = $reader->load($uploadPath);
+                    $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+                    $i = 0;
+                    $detailRepo = new FlatValueDetailRepo($this->adapter);
+                    foreach ($sheetData as $importDetails) {
+                        $data = [];
+
+                        if ($i > 0) {
+                            $data['employeeId'] = $importDetails['A'];
+                            $data['fiscalYearId'] = $importDetails['D'];
+                            $data['flatId'] = $importDetails['E'];
+                            $data['flatValue'] = $importDetails['F'];
+
+                            if ($data['flatValue']) {
+                                $detailRepo->postFlatValuesDetail($data);
+                            }
+                        }
+
+                        $i++;
+                    }
+                }
+            } else {
+                throw new Exception('Error Reading File');
+            }
+
+            $this->flashmessenger()->addMessage("Sucessfully Uploaded.");
+            return $this->redirect()->toRoute("flatValue", ["action" => "detail"]);
+        } catch (Exception $e) {
+            $errorMSg = $e->getMessage();
+            $this->flashmessenger()->addMessage("Error !!" . $errorMSg);
+            return $this->redirect()->toRoute("flatValue", ["action" => "detail"]);
         }
     }
 

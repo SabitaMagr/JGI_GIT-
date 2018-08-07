@@ -15,6 +15,8 @@
         var $table = $('#monthlyValueDetailTable');
         var $footer = $('#monthlyValueDetailFooter');
 
+        var exportMonthList;
+
         app.populateSelect($monthlyValueId, document.monthlyValues, "MTH_ID", "MTH_EDESC", "Select Monthly Value");
         app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
 
@@ -52,12 +54,19 @@
         };
 
         var initTable = function (fiscalYearId, employeeList, serverData) {
+            var selectedfiscalYearId = $fiscalYearId.val();
+            var selecetedMonthlyValueId = $monthlyValueId.val();
+            var selectedMonthlyValueName = $("#monthlyValueId option:selected").text();
+
             var filteredMonths = months.filter(function (item) {
                 return item['FISCAL_YEAR_ID'] == fiscalYearId;
             });
 
+            exportMonthList = filteredMonths;
+
             $header.html('');
             $header.append($('<th>', {text: 'Id'}));
+            $header.append($('<th>', {text: 'Code'}));
             $header.append($('<th>', {text: 'Name'}));
             $.each(filteredMonths, function (index, item) {
                 $header.append($('<th>', {text: item['MONTH_EDESC']}));
@@ -69,7 +78,36 @@
                 var $tr = $('<tr>');
 
                 $tr.append($('<td>', {text: item['EMPLOYEE_ID']}));
-                $tr.append($('<td>', {text: item['FULL_NAME']}))
+                $tr.append($('<td>', {text: item['EMPLOYEE_CODE']}));
+//                $tr.append($('<td>', {text: item['FULL_NAME'],
+//                    FISAL_YEAR_ID:selectedfiscalYearId,
+//                    class: 'allRowDetails',
+//                    ID:'SDFSDF',
+////                    MONTHLY_VALUE_NAME:selectedMonthlyValueName,
+////                    MONTHLY_VALUE_ID:selecetedMonthlyValueId,
+////                    EMPLOYEE_ID: item['EMPLOYEE_ID'],
+////                    EMPLOYEE_CODE: item['EMPLOYEE_CODE'],
+////                    FULL_NAME: item['FULL_NAME']
+//                }));
+
+                var monthValueDtl = '';
+                $.each(filteredMonths, function (k, v) {
+                    var tempValue = findMonthValue(serverData, item['EMPLOYEE_ID'], v['MONTH_ID']);
+                    tempValue = (tempValue != null) ? tempValue : '';
+                    monthValueDtl += v.MONTH_EDESC + `='` + tempValue + `' `;
+                });
+
+                var appendData = `<td><label class='allRowDetails' `
+                        + `FISAL_YEAR_ID='` + selectedfiscalYearId
+                        + `'MONTHLY_VALUE_NAME='` + selectedMonthlyValueName
+                        + `'MONTHLY_VALUE_ID='` + selecetedMonthlyValueId
+                        + `'EMPLOYEE_ID='` + item['EMPLOYEE_ID']
+                        + `'EMPLOYEE_CODE='` + item['EMPLOYEE_CODE']
+                        + `'FULL_NAME='` + item['FULL_NAME']
+                        + `' ` + monthValueDtl + `>`
+                        + item['FULL_NAME']
+                        + `</label></td>`;
+                $tr.append(appendData);
 
                 $.each(filteredMonths, function (k, v) {
                     var $td = $('<td>');
@@ -163,6 +201,50 @@
 
 
         });
+
+
+        //  IMPORT EXPORT CHANGES
+        var map = {
+            'EMPLOYEE_ID': 'EMPLOYEE_ID',
+            'EMPLOYEE_CODE': 'EMPLOYEE_CODE',
+            'FULL_NAME': 'Name',
+            'FISAL_YEAR_ID': 'FISAL_YEAR_ID',
+            'MONTHLY_VALUE_ID': 'MONTHLY_VALUE_ID',
+            'MONTHLY_VALUE_NAME': 'MONTHLY_VALUE'
+        };
+
+        $('#excelExport').on('click', function () {
+            console.log(exportMonthList);
+            $.each(exportMonthList, function (k, v) {
+                map[v.MONTH_EDESC] = v.MONTH_EDESC;
+            });
+            console.log(map);
+            var exportData = createcodes($table, map);
+            app.excelExport(exportData, map, 'MonthlyValueUpload.xlsx');
+        });
+
+        function createcodes($tableId, map) {
+//            console.log('createCode');
+
+
+            var retrunValues = [];
+            $tableId.each(function (i, row) {
+                var $row = $(row);
+                var $inputValues = $row.find('label[class*="allRowDetails"]');
+                $inputValues.each(function (key, value) {
+//                    console.log(key, value);
+                    var mapValues = [];
+                    var currentelement = $(this);
+                    $.each(map, function (k, v) {
+                        mapValues[k] = currentelement.attr(k)
+                    });
+                    retrunValues[key] = mapValues;
+                });
+            });
+
+            return retrunValues;
+        }
+
 
 
 

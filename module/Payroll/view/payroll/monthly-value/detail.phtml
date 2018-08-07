@@ -2,11 +2,19 @@
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/bootstrap-table/bootstrap-table.min.css'));
 $this->headScript()
+        ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+        ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('assets/global/plugins/bootstrap-table/bootstrap-table.min.js'))
         ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('js/setup/recommend-approve/comBranchDeptDesignSearch.js'))
         ->appendFile($this->basePath('js/Payroll/MonthlyValue/detailController.js'));
 ?>
+
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 
 <script>
     document.getMonthlyValueDetailWS = '<?php echo $this->url("monthlyValue", ["action" => "getMonthlyValueDetail"]); ?>';
@@ -118,6 +126,24 @@ $this->headScript()
                     <div class="tools">
                         <a href="" class="fullscreen" data-original-title="" title=""> </a>
                     </div>
+                    
+                    <div class="actions">
+                        <div class="btn-group">
+                            <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-copy"></i> Tools
+                                <i class="fa fa-angle-down "></i>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li >
+                                    <a href="javascript:;" id="excelExport">
+                                        <i class="fa fa-file-excel-o" ></i>
+                                        Export to Excel
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
                 </div>
                 <div class="portlet-body">
                     <div>
@@ -142,6 +168,19 @@ $this->headScript()
                         </div>
                     </div>
                 </div>
+                
+                
+                <form enctype="multipart/form-data" action="<?= $this->url("monthlyValue", ["action" => "uploadMonthlyValueEmpWise"]); ?>" method="POST" >  
+
+                        <div class="row margin-top-20">
+                            <div class="col-sm-4">
+                                <label>Select Monthly Excel Upload</label>  
+                                <input required="required" type="file" name="excel_file" />  
+                                <input type="submit" value="submit"> 
+                            </div>
+                        </div>
+                    </form>  
+                
             </div>
         </div>
     </div>

@@ -13,6 +13,9 @@
         var $header = $('#flatValuesDetailHeader');
         var $table = $('#flatValueDetailTable');
         var $footer = $('#flatValueDetailFooter');
+        
+        var selectedflatValueName;
+        var selectedfisaclYear;
 
         app.populateSelect($flatValueId, document.flatValues, "FLAT_ID", "FLAT_EDESC", "Select Flat Value");
         app.populateSelect($fiscalYearId, document.fiscalYears, "FISCAL_YEAR_ID", "FISCAL_YEAR_NAME", "Select Fiscal Year");
@@ -51,6 +54,10 @@
         };
 
         var initTable = function (fiscalYearId, employeeList, serverData) {
+            
+            var selecetedflatValueId=$flatValueId.val();
+             selectedfisaclYear=$fiscalYearId.val();
+             selectedflatValueName=$("#flatValueId option:selected").text();
             $header.html('');
             $header.append($('<th>', {text: 'Id'}));
             $header.append($('<th>', {text: 'Code'}));
@@ -66,7 +73,8 @@
                 $tr.append($('<td>', {text: item['FULL_NAME']}))
 
                 var $td = $('<td>');
-                $td.append($('<input>', {type: 'number', col: 'col', row: item['EMPLOYEE_ID'], value: findMonthValue(serverData, item['EMPLOYEE_ID']), class: 'form-control'}));
+                var updatedValue=findMonthValue(serverData, item['EMPLOYEE_ID']);
+                $td.append($('<input>', {FISAL_YEAR_ID:selectedfisaclYear,FLAT_VALUE_NAME:updatedValue,FLAT_VALUE_ID:selecetedflatValueId,EMPLOYEE_ID: item['EMPLOYEE_ID'], EMPLOYEE_CODE: item['EMPLOYEE_CODE'], FULL_NAME: item['FULL_NAME'], type: 'number', col: 'col', row: item['EMPLOYEE_ID'], value: updatedValue, class: 'form-control flatValueInput'}));
                 $tr.append($td);
 
                 $grid.append($tr);
@@ -126,12 +134,45 @@
 
 
         });
-        
+
         //IMPORT EXPORT CHANGES
-        
-        $('#excelExport').on('click',function(){
-            console.log('dsf');
+        var map = {
+            'EMPLOYEE_ID': 'EMPLOYEE_ID',
+            'EMPLOYEE_CODE': 'EMPLOYEE_CODE',
+            'FULL_NAME': 'Name',
+            'FISAL_YEAR_ID': 'FISAL_YEAR_ID',
+            'FLAT_VALUE_ID': 'FLAT_VALUE_ID'
+        };
+
+        $('#excelExport').on('click', function () {
+            console.log();
+            map['FLAT_VALUE_NAME']=selectedflatValueName;
+            console.log(map);
+            var exportData = createcodes($table, map);
+//            console.log(exportData);
+            app.excelExport(exportData, map, 'FlatValueUpload.xlsx');
         });
+
+
+        function createcodes($tableId, map) {
+            
+
+            var retrunValues = [];
+            $tableId.each(function (i, row) {
+                var $row = $(row);
+                var $inputValues = $row.find('input[class*="flatValueInput"]');
+                $inputValues.each(function (key, value) {
+                var mapValues = [];
+                    var currentelement = $(this);
+                    $.each(map, function (k, v) {
+                        mapValues[k] = currentelement.attr(k)
+                    });
+                    retrunValues[key] = mapValues;
+                });
+            });
+
+            return retrunValues;
+        }
 
 
 
