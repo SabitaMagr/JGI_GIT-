@@ -11,6 +11,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
   V_EMPSUB_CODE                                                                                                VARCHAR2(50 BYTE);
   V_OLD_COMPANY_CODE VARCHAR2(30 BYTE);
   BEGIN
+  
     BEGIN
       SELECT COUNT (*)
       INTO V_COUNT
@@ -29,7 +30,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     WHEN OTHERS THEN
       V_COMPANY_CODE := TO_CHAR ('0'||:NEW.COMPANY_ID);
     END;
-
+    
     BEGIN
       SELECT COMPANY_CODE
       INTO V_OLD_COMPANY_CODE
@@ -39,7 +40,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     WHEN OTHERS THEN
       V_OLD_COMPANY_CODE := TO_CHAR ('0'||:OLD.COMPANY_ID);
     END;
-
+    
     IF :NEW.STATUS    = 'E' THEN
       V_DELETED_FLAG := 'N';
     ELSE
@@ -208,8 +209,14 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           NULL;
         END;
       END IF;
-    ELSIF V_COUNT >0 THEN
+    ELSIF V_COUNT >= 1 THEN
       BEGIN
+      
+      IF(V_OLD_COMPANY_CODE!=V_COMPANY_CODE)
+      THEN
+       DELETE  FROM HR_EMPLOYEE_SETUP WHERE EMPLOYEE_CODE=:OLD.EMPLOYEE_ID AND COMPANY_CODE=V_COMPANY_CODE;
+      END IF;
+      
         UPDATE HR_EMPLOYEE_SETUP
         SET EMPLOYEE_EDESC = REPLACE(CONCAT(CONCAT(:NEW.FIRST_NAME
           ||' ',:NEW.MIDDLE_NAME
@@ -246,8 +253,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           OVERTIME_APPLICABLE     = :NEW.OVERTIME_FLAG,
           DEPOSIT_ACCOUNT         = :NEW.ID_ACC_CODE
         WHERE TRIM(EMPLOYEE_CODE) = TO_CHAR(:OLD.EMPLOYEE_ID)
-        AND COMPANY_CODE=V_OLD_COMPANY_CODE;
-
+         AND COMPANY_CODE=V_OLD_COMPANY_CODE;
         BEGIN
           UPDATE FA_SUB_LEDGER_SETUP
           SET SUB_EDESC = CONCAT(CONCAT(:NEW.FIRST_NAME
@@ -257,21 +263,24 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
             ||' ',:NEW.MIDDLE_NAME
             ||' '),:NEW.LAST_NAME))
           WHERE TRIM(SUB_CODE) = 'E'
-            ||:OLD.EMPLOYEE_ID AND COMPANY_CODE=V_OLD_COMPANY_CODE;
+            ||:OLD.EMPLOYEE_ID;
         EXCEPTION
         WHEN OTHERS THEN
           NULL;
         END;
+      END;
+    END IF;
 
 
-        -- to create new double employee 
-
-        IF( V_COUNT=1 AND :NEW.EMPOWER_COMPANY_CODE!='-1' AND :NEW.EMPOWER_COMPANY_CODE!=V_COMPANY_CODE)
-        THEN
-
-        BEGIN
-       INSERT
-      INTO HR_EMPLOYEE_SETUP
+-- TO CREATE MULTIPLE EMPLOYESS IN JGI
+    
+    
+   IF(V_COUNT>=1 AND :NEW.EMPOWER_COMPANY_CODE!='-1' AND :NEW.EMPOWER_COMPANY_CODE!=V_COMPANY_CODE)
+   THEN
+   
+   DELETE  FROM HR_EMPLOYEE_SETUP WHERE EMPLOYEE_CODE=:OLD.EMPLOYEE_ID AND COMPANY_CODE=:NEW.EMPOWER_COMPANY_CODE;
+   
+    INSERT INTO HR_EMPLOYEE_SETUP
         (
           EMPLOYEE_CODE ,
           EMPLOYEE_EDESC ,
@@ -312,7 +321,8 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           OVERTIME_APPLICABLE ,
           PF_NUMBER ,
           SAL_SHEET_CODE,
-          DEPOSIT_ACCOUNT
+          DEPOSIT_ACCOUNT,
+          THUMB_ID
         )
         VALUES
         (
@@ -346,7 +356,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           'Monthly' ,
           :NEW.EMPOWER_COMPANY_CODE ,
           :NEW.EMPOWER_COMPANY_CODE
-          ||'.01' ,
+          ||'.02' ,
           'SYNC' ,
           NVL(:NEW.CREATED_DT,TRUNC(SYSDATE)) ,
           V_DELETED_FLAG ,
@@ -361,78 +371,11 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           :NEW.OVERTIME_FLAG ,
           :NEW.ID_PROVIDENT_FUND_NO ,
           '001',
-          :NEW.ID_ACC_CODE
+          :NEW.ID_ACC_CODE,
+          :NEW.ID_THUMB_ID
         );
-        END;
-
-
-        END IF;
-
-
-
-        --double emploeyee to update 
-         IF( V_COUNT=2 AND :NEW.EMPOWER_COMPANY_CODE!='-1' AND :NEW.EMPOWER_COMPANY_CODE!=V_COMPANY_CODE)
-        THEN
-
-        BEGIN
-         UPDATE HR_EMPLOYEE_SETUP
-        SET EMPLOYEE_EDESC = REPLACE(CONCAT(CONCAT(:NEW.FIRST_NAME
-          ||' ',:NEW.MIDDLE_NAME
-          ||' '),:NEW.LAST_NAME),'  ',' ') ,
-          EMPLOYEE_NDESC = NVL(:NEW.NAME_NEPALI, CONCAT(CONCAT(:NEW.FIRST_NAME
-          ||' ',:NEW.MIDDLE_NAME
-          ||' '),:NEW.LAST_NAME)) ,
-          EPERMANENT_ADDRESS1 = :NEW.ADDR_PERM_STREET_ADDRESS ,
-          EPERMANENT_COUNTRY  = TO_CHAR(:NEW.COUNTRY_ID) ,
-          PHONE               = :NEW.TELEPHONE_NO ,
-          MOBILE              = :NEW.MOBILE_NO ,
-          EMAIL               = :NEW.EMAIL_OFFICIAL ,
-          SEX                 = V_GENDER ,
-          MARITAL_STATUS      = V_MARITAL_STATUS ,
-          JOIN_DATE           = :NEW.JOIN_DATE ,
-          LINK_SUB_CODE       = 'E'
-          ||TO_CHAR(:NEW.EMPLOYEE_ID) ,
-          EMPLOYEE_TYPE_CODE   = TO_CHAR(:NEW.SERVICE_TYPE_ID,'FM00') ,
-          PERIOD_CODE          = '01' ,
-          CUR_DEPARTMENT_CODE  = TO_CHAR(:NEW.DEPARTMENT_ID,'FM000') ,
-          CUR_DESIGNATION_CODE = TO_CHAR(:NEW.DESIGNATION_ID,'FM000') ,
-          CUR_GRADE_CODE       = TO_CHAR(:NEW.POSITION_ID,'FM000') ,
-          CUR_BASIC_SALARY     = :NEW.SALARY ,
-          EMPLOYEE_STATUS      = V_EMPLOYEE_STATUS ,
-          COMPANY_CODE         = :NEW.EMPOWER_COMPANY_CODE ,
-          BRANCH_CODE          = :NEW.EMPOWER_COMPANY_CODE
-          ||'.01' ,
-          LOCK_FLAG               = V_DELETED_FLAG ,
-          ACCOUNT_NO              = :NEW.ID_ACCOUNT_NO ,
-          CIT_NUMBER              = :NEW.ID_LBRF ,
-          PAN_NO                  = :NEW.ID_PAN_NO ,
-          THUMB_ID                = :NEW.ID_THUMB_ID ,
-          PF_NUMBER               = :NEW.ID_PROVIDENT_FUND_NO ,
-          OVERTIME_APPLICABLE     = :NEW.OVERTIME_FLAG,
-          DEPOSIT_ACCOUNT         = :NEW.ID_ACC_CODE
-        WHERE TRIM(EMPLOYEE_CODE) = TO_CHAR(:OLD.EMPLOYEE_ID)
-        AND COMPANY_CODE=:OLD.EMPOWER_COMPANY_CODE;
-        END;
-
-
-        END IF;
-
-
-            -- TO DELETE IF NO EMPOWER COMPANY CODe
-        IF (V_COUNT=2 AND :NEW.EMPOWER_COMPANY_CODE='-1')
-        THEN
-
-        DELETE  FROM HR_EMPLOYEE_SETUP  WHERE TRIM(EMPLOYEE_CODE) = TO_CHAR(:OLD.EMPLOYEE_ID)
-        AND COMPANY_CODE=:OLD.EMPOWER_COMPANY_CODE;
-
-        END IF;
-
-
-
-
-
-
-
-      END;
-    END IF;
+   
+   END IF;
+    
+    
   END;
