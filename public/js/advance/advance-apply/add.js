@@ -106,7 +106,7 @@
                 $deductionIn.prop('readonly', true);
                 if (advanceDetails.ALLOW_OVERRIDE_MONTH === 'Y'
                         && advanceDetails.MAX_OVERRIDE_MONTH != null
-                        && advanceDetails.MAX_OVERRIDE_MONTH > advanceDetails.DEDUCTION_IN) {
+                        && Number(advanceDetails.MAX_OVERRIDE_MONTH) > Number(advanceDetails.DEDUCTION_IN)) {
                     $deductionIn.prop('readonly', false);
                     $overrideDeductionMonth.text('Max Override Payment months=' + advanceDetails.MAX_OVERRIDE_MONTH);
                     $deductionIn.attr('max', advanceDetails.MAX_OVERRIDE_MONTH);
