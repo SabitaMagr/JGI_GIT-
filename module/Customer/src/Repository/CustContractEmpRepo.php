@@ -135,7 +135,8 @@ class CustContractEmpRepo implements RepositoryInterface {
              left join HRIS_CUSTOMER_LOCATION CL ON (CL.LOCATION_ID=CE.LOCATION_ID)
              left join HRIS_DUTY_TYPE DT ON (DT.DUTY_TYPE_ID=CE.DUTY_TYPE_ID)
              where ce.STATUS='E' and ce.contract_id={$contractId}
-                 ORDER BY CE.END_DATE DESC,CE.DESIGNATION_ID";
+                  ORDER BY E.FULL_NAME
+                 --ORDER BY CE.END_DATE DESC,CE.DESIGNATION_ID";
 //             echo $sql;
 //             die();
         $statement = $this->adapter->query($sql);
