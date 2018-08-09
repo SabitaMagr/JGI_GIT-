@@ -25,7 +25,7 @@
         ];
 
 
-        app.searchTable($table, ['FULL_NAME','EMPLOYEE_CODE',
+        app.searchTable($table, ['FULL_NAME', 'EMPLOYEE_CODE',
             'CONTRACT_NAME',
             'LOCATION_NAME',
             'DESIGNATION_TITLE',
@@ -38,7 +38,27 @@
 //            'PAID_HOLIDAY'
         ]);
 
-        app.initializeKendoGrid($table, columns);
+//        app.initializeKendoGrid($table, columns);
+
+
+        $table.kendoGrid({
+            excel: {
+                fileName: "Monthly Report List.xlsx",
+                allPages: true,
+                filterable: true
+            },
+            sortable: true,
+            pageable: true,
+            groupable: true,
+            filterable: true,
+            columnMenu: true,
+            reorderable: true,
+            resizable: true,
+            columns: columns
+        });
+
+
+
 
         $('#viewBtn').on('click', function () {
 
@@ -59,7 +79,7 @@
 
 
         });
-        
+
         var exportMap = {
             'EMPLOYEE_CODE': 'Emp Code',
             'FULL_NAME': 'FULL_NAME',
@@ -70,18 +90,19 @@
             'TOTAL_NORMAL_HOUR': 'Normal Hour',
             'TOTAL_OT_HOUR': 'Total Ot Hour',
         };
-  
-  $('#excelExport').on('click', function () {
-            app.excelExport($table, exportMap, 'Advance Request List.xlsx');
+
+        $('#excelExport').on('click', function () {
+            $table.getKendoGrid().saveAsExcel();
+//            app.excelExport($table, exportMap, 'Advance Request List.xlsx');
         });
 
         $('#pdfExport').on('click', function () {
             app.exportToPDF($table, exportMap, 'Advance Request List.pdf');
         });
 
-        
-        
-        
+
+
+
     });
 }
 )(window.jQuery);
