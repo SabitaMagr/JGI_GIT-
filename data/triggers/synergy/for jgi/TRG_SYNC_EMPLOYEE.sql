@@ -356,7 +356,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
           'Monthly' ,
           :NEW.EMPOWER_COMPANY_CODE ,
           :NEW.EMPOWER_COMPANY_CODE
-          ||'.02' ,
+          ||'.01' ,
           'SYNC' ,
           NVL(:NEW.CREATED_DT,TRUNC(SYSDATE)) ,
           V_DELETED_FLAG ,
