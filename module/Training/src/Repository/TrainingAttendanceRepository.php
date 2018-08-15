@@ -114,6 +114,12 @@ class TrainingAttendanceRepository implements RepositoryInterface {
                 BEGIN
                 DELETE FROM HRIS_EMP_TRAINING_ATTENDANCE WHERE TRAINING_ID= {$trainingId};
                 {$insertList}
+            BEGIN
+            FOR EMPLOYEE_LIST IN (select * from HRIS_EMPLOYEE_TRAINING_ASSIGN where training_id={$trainingId})
+            LOOP
+            HRIS_TRAINING_REWARD (EMPLOYEE_LIST.EMPLOYEE_ID,EMPLOYEE_LIST.TRAINING_ID);
+            END LOOP;
+            END;
                 END;
                 ";
         $result = EntityHelper::rawQueryResult($this->adapter, $sql);

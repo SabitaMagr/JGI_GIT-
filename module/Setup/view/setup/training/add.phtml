@@ -18,6 +18,7 @@ $trainingType = $form->get('trainingType');
 $trainingType->setValueOptions($trainingTypeList);
 $instituteName = $form->get('instituteId');
 $instituteName->setValueOptions($instituteNameList);
+$dailyTrainingHour = $form->get('dailyTrainingHour');
 
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
@@ -135,6 +136,14 @@ $form->prepare();
                 <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group" >
+                            <?php print $this->formLabel($dailyTrainingHour); ?>
+                            <?php print $this->formElement($dailyTrainingHour); ?>
+                            <?php print $this->formElementErrors()->render($dailyTrainingHour, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group" >
                             <?php print $this->formLabel($instituteName); ?>
                             <?php print $this->formElement($instituteName); ?>
                             <?php print $this->formElementErrors()->render($instituteName, ['class' => 'help-block error']); ?>
@@ -150,6 +159,8 @@ $form->prepare();
                     </div>
 
 
+                </div>
+                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group" >
                             <?php print $this->formLabel($remarks); ?>
@@ -157,8 +168,6 @@ $form->prepare();
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class=" col-sm-4 ">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($isWithinCompany); ?>
