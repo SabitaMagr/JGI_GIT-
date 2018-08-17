@@ -144,7 +144,7 @@ class LeaveRequestRepository implements RepositoryInterface {
 
     public function delete($id) {
         $currentDate = Helper::getcurrentExpressionDate();
-        $this->tableGateway->update([LeaveApply::STATUS => 'CR', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+        $this->tableGateway->update([LeaveApply::STATUS => 'CP', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
 //        EntityHelper::rawQueryResult($this->adapter, "
 //                   DECLARE
 //                      V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
