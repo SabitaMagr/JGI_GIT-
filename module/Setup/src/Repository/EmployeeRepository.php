@@ -1024,9 +1024,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
     
      
-    public function fetchEmpowerBranch(): array{
+    public function fetchEmpowerBranch($empowerCompanyCode): array{
         if ($this->checkIfTableExists("FA_BRANCH_SETUP")) {
-            $sql = "SELECT * FROM FA_BRANCH_SETUP WHERE GROUP_SKU_FLAG='I' AND DELETED_FLAG='N'";
+            $sql = "SELECT * FROM FA_BRANCH_SETUP WHERE GROUP_SKU_FLAG='I' AND DELETED_FLAG='N' AND COMPANY_CODE='{$empowerCompanyCode}'";
             return $this->rawQuery($sql);
         } else {
             return [];

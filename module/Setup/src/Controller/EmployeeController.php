@@ -138,7 +138,7 @@ class EmployeeController extends HrisController {
             $idAccCode->setValueOptions($bankAccountKVList);
             
             $empowerCompanyList = $this->repository->fetchEmpowerCompany();
-            $empowerBranchList = $this->repository->fetchEmpowerBranch();
+            $empowerBranchList = $this->repository->fetchEmpowerBranch($this->erpCompanyCode);
             $empowerCompanyCodeKVList = $this->listValueToKV($empowerCompanyList, "COMPANY_CODE", "COMPANY_EDESC",true);
             $empowerBranchKVList = $this->listValueToKV($empowerBranchList, "BRANCH_CODE", "BRANCH_EDESC",true);
             
