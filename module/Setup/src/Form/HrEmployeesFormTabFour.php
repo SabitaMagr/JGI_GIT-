@@ -22,7 +22,7 @@ class HrEmployeesFormTabFour extends Model {
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
      * @Annotation\Options({"label":"Salary"})
      * @Annotation\Validator({"name":"StringLength", "options":{"max":"9"}})
-     * @Annotation\Attributes({ "id":"salary", "class":"form-control" })
+     * @Annotation\Attributes({ "id":"salary", "class":"form-control","step":"0.01","min":"0"})
      */
     public $salary;
 

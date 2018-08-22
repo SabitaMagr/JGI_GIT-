@@ -1012,3 +1012,22 @@ MODIFY ID NUMBER(7) NOT NULL;
 CREATE TABLE HRIS_SUB_MAN_BYPASS(
 	EMPLOYEE_ID NUMBER(7,0) NOT NULL,
 	LEAVE_ID NUMBER (7,0) NOT NULL);
+
+
+
+-- disable trigger TRG_SYNC_EMPLOYEE  first if avaiable  important!!
+
+create table HRIS_SALARY_BAKUP
+as
+select employee_id,salary from hris_employees;
+
+update HRIS_EMPLOYEES set salary=null;
+
+ALTER TABLE HRIS_EMPLOYEES
+MODIFY SALARY NUMBER(11,2);
+
+update HRIS_EMPLOYEES m set m.salary=(
+select b.salary from HRIS_SALARY_BAKUP b 
+where b.employee_id=m.employee_id) ;
+
+-- now  enable trigger TRG_SYNC_EMPLOYEE  if avaiable  important !!
