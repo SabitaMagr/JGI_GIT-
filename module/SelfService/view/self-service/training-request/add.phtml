@@ -17,6 +17,7 @@ $trainingType = $form->get('trainingType');
 $description = $form->get('description');
 $remarks = $form->get('remarks');
 $isWithinCompany = $form->get('isWithinCompany');
+$dailyTrainingHour = $form->get('dailyTrainingHour');
 $submit = $form->get('submit');
 $form->setAttribute('action', $this->url('trainingRequest', ['action' => 'add']));
 $form->prepare();
@@ -126,6 +127,15 @@ $form->prepare();
                         </div>
                     </div>
 
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($dailyTrainingHour); ?>
+                            <?php print $this->formElement($dailyTrainingHour); ?>
+                            <?php print $this->formElementErrors()->render($dailyTrainingHour, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>

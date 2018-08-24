@@ -10,6 +10,7 @@
         var $nepaliStartDate = $("#nepaliStartDate");
         var $nepaliEndDate = $("#nepaliEndDate");
         var $duration = $("#duration");
+        var $dailyTrainingHour = $("#dailyTrainingHour");
 
         $('select').select2();
         app.startEndDatePickerWithNepali('nepaliStartDate', 'startDate', 'nepaliEndDate', 'endDate', function (fromDate, toDate) {
@@ -28,6 +29,15 @@
             var training = document.trainingList[$this.val()];
             var startDate = (training == null) ? '' : app.getSystemDate(training["START_DATE"]);
             var endDate = (training == null) ? '' : app.getSystemDate(training["END_DATE"]);
+            
+            if(training != null){
+                $dailyTrainingHour.prop('readonly',true);
+                $dailyTrainingHour.val(training['DAILY_TRAINING_HOUR']);
+            }else{
+                $dailyTrainingHour.val('');
+                $dailyTrainingHour.prop('readonly',false);
+                }
+        
 
             $title.val((training == null) ? '' : training["TRAINING_NAME"]);
             $startDate.datepicker('setStartDate', startDate);
