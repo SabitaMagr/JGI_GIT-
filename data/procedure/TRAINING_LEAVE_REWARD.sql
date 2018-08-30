@@ -1,5 +1,6 @@
-CREATE OR REPLACE PROCEDURE HRIS_TRAINING_LEAVE_REWARD( p_employee_id NUMBER,p_training_id NUMBER ) AS
+create or replace PROCEDURE HRIS_TRAINING_LEAVE_REWARD(p_training_request_id NUMBER ) AS
 
+    v_employee_id           NUMBER;
     v_shift_id              NUMBER;
     v_training_start_date   DATE;
     v_training_end_date     DATE;
@@ -20,11 +21,15 @@ CREATE OR REPLACE PROCEDURE HRIS_TRAINING_LEAVE_REWARD( p_employee_id NUMBER,p_t
     v_sub_days              NUMBER := 0;
     v_sub_leave_id          NUMBER;
     v_increament            NUMBER;
+    v_status                char(2 byte);
+    v_assigned_balance      NUMBER;
 BEGIN
     dbms_output.put_line('LEAVE ADDITION');
 
 -- TO SELECT TRAINING DEATILS
     SELECT
+        employee_id,
+        status,
         start_date,
         end_date,
         duration,
@@ -39,38 +44,19 @@ BEGIN
             WHEN daily_training_hour >= 4 THEN 1
         END
     INTO
-        v_training_start_date,v_training_end_date,v_duration,v_training_type,v_increament
-    FROM
-        hris_training_master_setup
+        v_employee_id,v_status,v_training_start_date,v_training_end_date,v_duration,v_training_type,v_increament
+     FROM
+        HRIS_EMPLOYEE_TRAINING_REQUEST
     WHERE
-        training_id = p_training_id;
+        REQUEST_ID = p_training_request_id;
 
     IF
         ( v_training_type = 'CC' )
     THEN
         FOR i IN 0..v_duration - 1 LOOP
             dbms_output.put_line(v_training_start_date + i);
-            BEGIN
-                SELECT
-                    COUNT(*)
-                INTO
-                    v_is_present
-                FROM
-                    hris_emp_training_attendance
-                WHERE
-                        training_id = 13
-                    AND
-                        employee_id = p_employee_id
-                    AND
-                        training_dt = v_training_start_date + i
-                    AND
-                        attendance_status = 'P';
 
-            END;
 
-            IF
-                ( v_is_present > 0 )
-            THEN
                 BEGIN
                     SELECT
                         hs.shift_id,
@@ -89,7 +75,7 @@ BEGIN
                     WHERE
                             1 = 1
                         AND
-                            es.employee_id = p_employee_id
+                            es.employee_id = v_employee_id
                         AND
                             trunc(es.for_date) = v_training_start_date + i
                         AND
@@ -122,7 +108,7 @@ BEGIN
                                             FROM
                                                 hris_employee_shift_assign
                                             WHERE
-                                                    employee_id = p_employee_id
+                                                    employee_id = v_employee_id
                                                 AND (
                                                         trunc(v_training_start_date + i) >= start_date
                                                     AND
@@ -254,7 +240,7 @@ BEGIN
                     END;
                 END IF;
 
-            END IF;
+
 
             dbms_output.put_line('-----------');
         END LOOP;
@@ -271,24 +257,57 @@ BEGIN
                 is_substitute = 'Y';
 
             DELETE FROM hris_employee_leave_addition WHERE
-                    employee_id = p_employee_id
+                    employee_id = v_employee_id
                 AND
                     leave_id = v_sub_leave_id
                 AND
-                    training_id = p_training_id;
+                    training_id = p_training_request_id;
+
+
+                    BEGIN
+            SELECT BALANCE
+            INTO v_assigned_balance
+            FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
+            WHERE EMPLOYEE_ID=v_employee_id
+            AND LEAVE_ID     = v_sub_leave_id;
+          EXCEPTION
+          WHEN no_data_found THEN
+            INSERT
+            INTO HRIS_EMPLOYEE_LEAVE_ASSIGN
+              (
+                EMPLOYEE_ID,
+                LEAVE_ID,
+                PREVIOUS_YEAR_BAL,
+                TOTAL_DAYS,
+                BALANCE,
+                CREATED_DT,
+                CREATED_BY
+              )
+              VALUES
+              (
+                v_employee_id,
+                v_sub_leave_id,
+                0,
+                0,
+                0,
+                TRUNC(SYSDATE),
+                v_employee_id
+              );
+        END;
+
 
             IF
-                ( v_sub_days > 0 )
+                ( v_sub_days > 0 and v_status='AP' )
             THEN
                 INSERT INTO hris_employee_leave_addition VALUES (
-                    p_employee_id,
+                    v_employee_id,
                     v_sub_leave_id,
                     v_sub_days,
                     'WOT REWARD',
                     trunc(SYSDATE),
                     NULL,
                     NULL,
-                    p_training_id
+                    p_training_request_id
                 );
 
             END IF;

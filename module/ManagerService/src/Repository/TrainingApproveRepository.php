@@ -1,6 +1,7 @@
 <?php
 namespace ManagerService\Repository;
 
+use Application\Helper\EntityHelper;
 use Application\Model\Model;
 use Application\Repository\HrisRepository;
 use SelfService\Model\TrainingRequest;
@@ -42,46 +43,82 @@ class TrainingApproveRepository extends HrisRepository {
                   FROM HRIS_EMPLOYEE_TRAINING_REQUEST
                   WHERE REQUEST_ID =V_REQUEST_ID;
                   --
-                  IF V_TRAINING_ID IS NOT NULL THEN
-                    SELECT (
-                      CASE
-                        WHEN COUNT(*)>0
-                        THEN 'Y'
-                        ELSE 'N'
-                      END)
-                    INTO V_ASSIGNED
-                    FROM HRIS_EMPLOYEE_TRAINING_ASSIGN
-                    WHERE TRAINING_ID = V_TRAINING_ID
-                    AND EMPLOYEE_ID   =V_EMPLOYEE_ID;
-                    IF V_ASSIGNED    ='N' THEN
-                      INSERT
-                      INTO HRIS_EMPLOYEE_TRAINING_ASSIGN
-                        (
-                          TRAINING_ID,
-                          EMPLOYEE_ID,
-                          STATUS,
-                          CREATED_DATE,
-                          CREATED_BY
-                        )
-                        VALUES
-                        (
-                          V_TRAINING_ID,
-                          V_EMPLOYEE_ID,
-                          'E',
-                          TRUNC(SYSDATE),
-                          V_EMPLOYEE_ID
-                        );
-                    END IF;
-                    IF V_STATUS IN ('AP','C') AND V_START_DATE <TRUNC(SYSDATE) THEN
+                  IF V_STATUS IN ('AP','C') THEN
+                     HRIS_TRAINING_LEAVE_REWARD(V_REQUEST_ID);
+                    IF V_START_DATE <TRUNC(SYSDATE) THEN
                         HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
                     END IF;                  
-                END IF;
+                  END IF;                  
                   
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN
                   DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| V_REQUEST_ID);
                 END;
 ");
+
+//        $this->executeStatement("
+//                DECLARE
+//                  V_TRAINING_ID HRIS_EMPLOYEE_TRAINING_REQUEST.TRAINING_ID%TYPE;
+//                  V_START_DATE HRIS_EMPLOYEE_TRAINING_REQUEST.START_DATE%TYPE;
+//                  V_END_DATE HRIS_EMPLOYEE_TRAINING_REQUEST.END_DATE%TYPE;
+//                  V_EMPLOYEE_ID HRIS_EMPLOYEE_TRAINING_REQUEST.EMPLOYEE_ID%TYPE;
+//                  V_STATUS HRIS_EMPLOYEE_TRAINING_REQUEST.STATUS%TYPE;
+//                  V_REQUEST_ID HRIS_EMPLOYEE_TRAINING_REQUEST.REQUEST_ID%TYPE:= {$id};
+//                  V_ASSIGNED CHAR(1 BYTE)                                    :=NULL;
+//                BEGIN
+//                  SELECT TRAINING_ID,
+//                    TRUNC( START_DATE ),
+//                    TRUNC( END_DATE ),
+//                    EMPLOYEE_ID,
+//                    STATUS
+//                  INTO V_TRAINING_ID,
+//                    V_START_DATE,
+//                    V_END_DATE,
+//                    V_EMPLOYEE_ID,
+//                    V_STATUS
+//                  FROM HRIS_EMPLOYEE_TRAINING_REQUEST
+//                  WHERE REQUEST_ID =V_REQUEST_ID;
+//                  --
+//                  IF V_TRAINING_ID IS NOT NULL THEN
+//                    SELECT (
+//                      CASE
+//                        WHEN COUNT(*)>0
+//                        THEN 'Y'
+//                        ELSE 'N'
+//                      END)
+//                    INTO V_ASSIGNED
+//                    FROM HRIS_EMPLOYEE_TRAINING_ASSIGN
+//                    WHERE TRAINING_ID = V_TRAINING_ID
+//                    AND EMPLOYEE_ID   =V_EMPLOYEE_ID;
+//                    IF V_ASSIGNED    ='N' THEN
+//                      INSERT
+//                      INTO HRIS_EMPLOYEE_TRAINING_ASSIGN
+//                        (
+//                          TRAINING_ID,
+//                          EMPLOYEE_ID,
+//                          STATUS,
+//                          CREATED_DATE,
+//                          CREATED_BY
+//                        )
+//                        VALUES
+//                        (
+//                          V_TRAINING_ID,
+//                          V_EMPLOYEE_ID,
+//                          'E',
+//                          TRUNC(SYSDATE),
+//                          V_EMPLOYEE_ID
+//                        );
+//                    END IF;
+//                    IF V_STATUS IN ('AP','C') AND V_START_DATE <TRUNC(SYSDATE) THEN
+//                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
+//                    END IF;                  
+//                END IF;
+//                  
+//                EXCEPTION
+//                WHEN NO_DATA_FOUND THEN
+//                  DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| V_REQUEST_ID);
+//                END;
+//");
     }
 
     public function fetchById($id) {
@@ -355,6 +392,21 @@ class TrainingApproveRepository extends HrisRepository {
     }
 
     public function getListAdmin($search) {
+        
+        $fromDate = $search['fromDate'];
+        $toDate = $search['toDate'];
+        $employeeId = $search['employeeId'];
+        $companyId = $search['companyId'];
+        $branchId = $search['branchId'];
+        $departmentId = $search['departmentId'];
+        $designationId = $search['designationId'];
+        $positionId = $search['positionId'];
+        $serviceTypeId = $search['serviceTypeId'];
+        $serviceEventTypeId = $search['serviceEventTypeId'];
+        $status = $search['status'];
+        $employeeTypeId = $search['employeeTypeId'];
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        
         $condition = "";
         if (isset($search['fromDate']) && $search['fromDate'] != null) {
             $condition .= " AND TR.START_DATE>=TO_DATE('{$search['fromDate']}','DD-MM-YYYY') ";
@@ -461,7 +513,8 @@ class TrainingApproveRepository extends HrisRepository {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
-                WHERE 1          =1 {$condition}";
+                WHERE 1          =1 {$searchConditon} {$condition}";
+                
         $finalSql = $this->getPrefReportQuery($sql);
         return $this->rawQuery($finalSql);
     }

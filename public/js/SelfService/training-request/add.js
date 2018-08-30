@@ -49,7 +49,7 @@
             $duration.val((training == null) ? '' : training["DURATION"]);
             $trainingType.val((training == null) ? '' : training["TRAINING_TYPE"]).trigger('change.select2');
             $(`input[type='radio'][name='isWithinCompany'][value='${(training == null) ? '' : training["IS_WITHIN_COMPANY"]}']`).prop('checked', true);
-            app.lockField((training != null), [$title, $startDate, $endDate, $duration, $trainingType, $("input[name='isWithinCompany']")]);
+            app.lockField((training != null), [$title, $startDate,$nepaliStartDate, $endDate, $duration, $trainingType, $("input[name='isWithinCompany']")]);
         };
 
         $trainingId.on('change', function () {
@@ -57,7 +57,7 @@
         });
         app.floatingProfile.setDataFromRemote($employeeId.val());
         app.setLoadingOnSubmit("TrainingRequest", function () {
-            app.lockField(false, [$title, $startDate, $endDate, $duration, $trainingType, $("input[name='isWithinCompany']")]);
+            app.lockField(false, [$title, $startDate,$nepaliStartDate, $endDate, $duration, $trainingType, $("input[name='isWithinCompany']")]);
             return true;
         });
     });
