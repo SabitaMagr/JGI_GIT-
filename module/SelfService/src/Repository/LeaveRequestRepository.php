@@ -143,33 +143,38 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     public function delete($id) {
+        $leaveStatus = $this->getLeaveFrontOrBack($id);
         $currentDate = Helper::getcurrentExpressionDate();
-        $this->tableGateway->update([LeaveApply::STATUS => 'CP', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
-//        EntityHelper::rawQueryResult($this->adapter, "
-//                   DECLARE
-//                      V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
-//                      V_STATUS HRIS_EMPLOYEE_LEAVE_REQUEST.STATUS%TYPE;
-//                      V_START_DATE HRIS_EMPLOYEE_LEAVE_REQUEST.START_DATE%TYPE;
-//                      V_END_DATE HRIS_EMPLOYEE_LEAVE_REQUEST.END_DATE%TYPE;
-//                      V_EMPLOYEE_ID HRIS_EMPLOYEE_LEAVE_REQUEST.EMPLOYEE_ID%TYPE;
-//                    BEGIN
-//                      SELECT ID,
-//                        STATUS,
-//                        START_DATE,
-//                        END_DATE,
-//                        EMPLOYEE_ID
-//                      INTO V_ID,
-//                        V_STATUS,
-//                        V_START_DATE,
-//                        V_END_DATE,
-//                        V_EMPLOYEE_ID
-//                      FROM HRIS_EMPLOYEE_LEAVE_REQUEST
-//                      WHERE ID                                    = {$id};
-//                      IF(V_STATUS IN ('AP','C') AND V_START_DATE <=TRUNC(SYSDATE)) THEN
-//                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
-//                      END IF;
-//                    END;
-//    ");
+        if ($leaveStatus['DATE_STATUS'] == 'BD' || $leaveStatus['LEAVE_STATUS'] == 'AP') {
+            $this->tableGateway->update([LeaveApply::STATUS => 'CP', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+            EntityHelper::rawQueryResult($this->adapter, "
+                   DECLARE
+                      V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
+                      V_STATUS HRIS_EMPLOYEE_LEAVE_REQUEST.STATUS%TYPE;
+                      V_START_DATE HRIS_EMPLOYEE_LEAVE_REQUEST.START_DATE%TYPE;
+                      V_END_DATE HRIS_EMPLOYEE_LEAVE_REQUEST.END_DATE%TYPE;
+                      V_EMPLOYEE_ID HRIS_EMPLOYEE_LEAVE_REQUEST.EMPLOYEE_ID%TYPE;
+                    BEGIN
+                      SELECT ID,
+                        STATUS,
+                        START_DATE,
+                        END_DATE,
+                        EMPLOYEE_ID
+                      INTO V_ID,
+                        V_STATUS,
+                        V_START_DATE,
+                        V_END_DATE,
+                        V_EMPLOYEE_ID
+                      FROM HRIS_EMPLOYEE_LEAVE_REQUEST
+                      WHERE ID                                    = {$id};
+                      IF(V_STATUS IN ('AP','C') AND V_START_DATE <=TRUNC(SYSDATE)) THEN
+                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
+                      END IF;
+                    END;
+    ");
+        } else {
+            $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+        }
     }
 
     public function checkEmployeeLeave($employeeId, $date) {
@@ -271,6 +276,26 @@ class LeaveRequestRepository implements RepositoryInterface {
     public function validateLeaveRequest($fromDate, $toDate, $employeeId) {
         $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_VALIDATE_LEAVE_REQUEST({$fromDate},{$toDate},{$employeeId}) AS ERROR FROM DUAL");
         return $rawResult->current();
+    }
+
+    public function getLeaveFrontOrBack($id) {
+        $sql = "SELECT START_DATE,TRUNC(SYSDATE) AS CURDATE,
+            CASE WHEN
+            STATUS IN ('RQ','RC') THEN 'NA'
+            ELSE 'A'
+            END
+            AS LEAVE_STATUS,
+            START_DATE-TRUNC(SYSDATE) AS DIFF,
+                CASE  WHEN 
+                (START_DATE-TRUNC(SYSDATE))>0
+                THEN
+                'FD'
+                ELSE
+                'BD'
+                END AS DATE_STATUS
+                FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID={$id}";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute()->current();
     }
 
 }

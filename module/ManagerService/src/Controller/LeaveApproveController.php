@@ -76,61 +76,105 @@ class LeaveApproveController extends HrisController {
             $getData = $request->getPost();
             $action = $getData->submit;
 
-            if ($role == 2) {
-                $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
-                if ($action == "Reject") {
-                    $leaveApply->status = "R";
-                    $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $leaveApply->status = "RC";
-                    $this->flashmessenger()->addMessage("Leave Request Approved!!!");
-                }
-                $leaveApply->recommendedBy = $this->employeeId;
-                $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
-                $this->repository->edit($leaveApply, $id);
-
-                $leaveApply->id = $id;
-                $leaveApply->employeeId = $requestedEmployeeID;
-                $leaveApply->approvedBy = $detail['APPROVER_ID'];
-                try {
-                    if ($leaveApply->status == 'RC') {
-                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
-                    } else {
-                        HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
-                    }
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
-                }
-            } else if ($role == 3 || $role == 4) {
-                $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
-                if ($action == "Reject") {
-                    $leaveApply->status = "R";
-                    $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
-                } else if ($action == "Approve") {
-                    $leaveApply->status = "AP";
-                    $this->flashmessenger()->addMessage("Leave Request Approved");
-                }
-                unset($leaveApply->halfDay);
-                $leaveApply->approvedBy = $this->employeeId;
-                $leaveApply->approvedRemarks = $getData->approvedRemarks;
-
-                if ($role == 4) {
-                    $leaveApply->recommendedBy = $this->employeeId;
+            if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
+                if ($role == 2) {
                     $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
-                }
-                $this->repository->edit($leaveApply, $id);
+                    if ($action == "Reject") {
+                        $leaveApply->status = "R";
+                        $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
+                    } else if ($action == "Approve") {
+                        $leaveApply->status = "RC";
+                        $this->flashmessenger()->addMessage("Leave Request Approved!!!");
+                    }
+                    $leaveApply->recommendedBy = $this->employeeId;
+                    $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
+                    $this->repository->edit($leaveApply, $id);
 
-                $leaveApply->id = $id;
-                $leaveApply->employeeId = $requestedEmployeeID;
+                    $leaveApply->id = $id;
+                    $leaveApply->employeeId = $requestedEmployeeID;
+                    $leaveApply->approvedBy = $detail['APPROVER_ID'];
+                    try {
+                        if ($leaveApply->status == 'RC') {
+                            HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
+                        } else {
+                            HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
+                        }
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
+                } else if ($role == 3 || $role == 4) {
+                    $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
+                    if ($action == "Reject") {
+                        $leaveApply->status = "R";
+                        $this->flashmessenger()->addMessage("Leave Request Rejected!!!");
+                    } else if ($action == "Approve") {
+                        $leaveApply->status = "AP";
+                        $this->flashmessenger()->addMessage("Leave Request Approved");
+                    }
+                    unset($leaveApply->halfDay);
+                    $leaveApply->approvedBy = $this->employeeId;
+                    $leaveApply->approvedRemarks = $getData->approvedRemarks;
+
+                    if ($role == 4) {
+                        $leaveApply->recommendedBy = $this->employeeId;
+                        $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
+                    }
+                    $this->repository->edit($leaveApply, $id);
+
+                    $leaveApply->id = $id;
+                    $leaveApply->employeeId = $requestedEmployeeID;
 
 
 
-                try {
-                    HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
-                } catch (Exception $e) {
-                    $this->flashmessenger()->addMessage($e->getMessage());
+                    try {
+                        HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
                 }
             }
+
+            //for cancelling leave
+
+            if ($detail['STATUS'] == 'CP' || $detail['STATUS'] == 'CR') {
+
+                if ($role == 2) {
+                    $leaveApply->cancelRecDt = Helper::getcurrentExpressionDate();
+                    if ($action == "Reject") {
+                        $leaveApply->status = "AP";
+                        $this->flashmessenger()->addMessage("Leave Cancel Request Rejected!!!");
+                    } else if ($action == "Approve") {
+                        $leaveApply->status = "CR";
+                        $this->flashmessenger()->addMessage("Leave Cancel Request Approved!!!");
+                    }
+                    $leaveApply->cancelRecBy = $this->employeeId;
+                    $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
+                    $this->repository->edit($leaveApply, $id);
+                } else if ($role == 3 || $role == 4) {
+                    $leaveApply->cancelAppDt = Helper::getcurrentExpressionDate();
+                    if ($action == "Reject") {
+                        $leaveApply->status = "AP";
+                        $this->flashmessenger()->addMessage("Leave Cancel Request Rejected!!!");
+                    } else if ($action == "Approve") {
+                        $leaveApply->status = "C";
+                        $this->flashmessenger()->addMessage("Leave Cancel Request Approved");
+                    }
+                    unset($leaveApply->halfDay);
+                    $leaveApply->cancelAppBy = $this->employeeId;
+                    $leaveApply->approvedRemarks = $getData->approvedRemarks;
+
+                    if ($role == 4) {
+                        $leaveApply->cancelRecBy = $this->employeeId;
+                        $leaveApply->cancelRecDt = Helper::getcurrentExpressionDate();
+                    }
+                    $this->repository->edit($leaveApply, $id);
+                }
+            }
+
+
+
+
+
             return $this->redirect()->toRoute("leaveapprove");
         }
         return Helper::addFlashMessagesToArray($this, [
