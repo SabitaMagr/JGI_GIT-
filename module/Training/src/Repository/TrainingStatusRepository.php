@@ -151,4 +151,16 @@ class TrainingStatusRepository extends HrisRepository {
         $result = $statement->execute();
         return $result;
     }
+    
+    public function fetchEmployeeTraining(){
+        $sql="SELECT * FROM 
+        HRIS_TRAINING_MASTER_SETUP TMS
+        LEFT JOIN HRIS_EMPLOYEE_TRAINING_REQUEST TR ON (TR.TRAINING_ID=TMS.TRAINING_ID AND TR.EMPLOYEE_ID=700280)
+        WHERE TR.STATUS IS NULL OR TR.STATUS!='AP'";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result;
+    }
+    
+    
 }
