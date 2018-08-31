@@ -121,6 +121,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                                 echo "Rejected";
                                             } else if ($status == "C") {
                                                 echo "Cancelled";
+                                            } else if ($status == "CP") {
+                                                echo "C Pending";
+                                            } else if ($status == "CR") {
+                                                echo "C Recommended";
                                             }
                                             ?>
                                         </td>
@@ -321,7 +325,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                 <?php } ?>
                 <div class="form-group">
-                    <?php if ($status == 'RQ' || $status == 'RC') { ?>
+                    <?php if ($status == 'RQ' || $status == 'RC' || $status == 'CP' || $status == 'CR') { ?>
                         <?php print $this->formSubmit($submit); ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                     <?php } ?>

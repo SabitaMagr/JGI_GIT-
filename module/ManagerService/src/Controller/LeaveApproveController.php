@@ -263,51 +263,81 @@ class LeaveApproveController extends HrisController {
                     $detail = $this->repository->fetchById($id);
                     $requestedEmployeeID = $detail['EMPLOYEE_ID'];
 
-                    if ($role == 2) {
-                        $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
-                        if ($action == "Reject") {
-                            $leaveApply->status = "R";
-                        } else if ($action == "Approve") {
-                            $leaveApply->status = "RC";
-                        }
-                        $leaveApply->recommendedBy = $this->employeeId;
-                        $this->repository->edit($leaveApply, $id);
-
-
-                        $leaveApply->id = $id;
-                        $leaveApply->employeeId = $requestedEmployeeID;
-                        $leaveApply->approvedBy = $detail['APPROVER'];
-
-                        try {
-                            if ($leaveApply->status == 'RC') {
-                                HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
-                            } else {
-                                HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
-                            }
-                        } catch (Exception $e) {
-                            
-                        }
-                    } else if ($role == 3 || $role == 4) {
-                        $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
-                        if ($action == "Reject") {
-                            $leaveApply->status = "R";
-                        } else if ($action == "Approve") {
-                            $leaveApply->status = "AP";
-                        }
-                        unset($leaveApply->halfDay);
-                        $leaveApply->approvedBy = $this->employeeId;
-
-                        if ($role == 4) {
-                            $leaveApply->recommendedBy = $this->employeeId;
+                    if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
+                        if ($role == 2) {
                             $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
+                            if ($action == "Reject") {
+                                $leaveApply->status = "R";
+                            } else if ($action == "Approve") {
+                                $leaveApply->status = "RC";
+                            }
+                            $leaveApply->recommendedBy = $this->employeeId;
+                            $this->repository->edit($leaveApply, $id);
+
+
+                            $leaveApply->id = $id;
+                            $leaveApply->employeeId = $requestedEmployeeID;
+                            $leaveApply->approvedBy = $detail['APPROVER'];
+
+                            try {
+                                if ($leaveApply->status == 'RC') {
+                                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
+                                } else {
+                                    HeadNotification::pushNotification(NotificationEvents::LEAVE_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
+                                }
+                            } catch (Exception $e) {
+                                
+                            }
+                        } else if ($role == 3 || $role == 4) {
+                            $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
+                            if ($action == "Reject") {
+                                $leaveApply->status = "R";
+                            } else if ($action == "Approve") {
+                                $leaveApply->status = "AP";
+                            }
+                            unset($leaveApply->halfDay);
+                            $leaveApply->approvedBy = $this->employeeId;
+
+                            if ($role == 4) {
+                                $leaveApply->recommendedBy = $this->employeeId;
+                                $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
+                            }
+                            $this->repository->edit($leaveApply, $id);
+                            $leaveApply->id = $id;
+                            $leaveApply->employeeId = $requestedEmployeeID;
+                            try {
+                                HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                
+                            }
                         }
-                        $this->repository->edit($leaveApply, $id);
-                        $leaveApply->id = $id;
-                        $leaveApply->employeeId = $requestedEmployeeID;
-                        try {
-                            HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
-                        } catch (Exception $e) {
-                            
+                    }
+
+
+                    // for cancel
+                    if ($detail['STATUS'] == 'CP' || $detail['STATUS'] == 'CR') {
+                        if ($role == 2) {
+                            $leaveApply->cancelRecDt = Helper::getcurrentExpressionDate();
+                            if ($action == "Reject") {
+                                $leaveApply->status = "AP";
+                            } else if ($action == "Approve") {
+                                $leaveApply->status = "CR";
+                            }
+                            $leaveApply->cancelRecBy = $this->employeeId;
+                            $this->repository->edit($leaveApply, $id);
+                        } else if ($role == 3 || $role == 4) {
+                            $leaveApply->cancelAppDt = Helper::getcurrentExpressionDate();
+                            if ($action == "Reject") {
+                                $leaveApply->status = "AP";
+                            } else if ($action == "Approve") {
+                                $leaveApply->status = "C";
+                            }
+                            unset($leaveApply->halfDay);
+                            $leaveApply->cancelAppBy = $this->employeeId;
+                            if ($role == 4) {
+                                $leaveApply->cancelRecBy = $this->employeeId;
+                                $leaveApply->cancelRecDt = Helper::getcurrentExpressionDate();
+                            }
                         }
                     }
                 }
