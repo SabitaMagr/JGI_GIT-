@@ -86,6 +86,13 @@ class LeaveStatus extends HrisController {
                 $leaveApply->approvedRemarks = $reason;
                 $leaveApply->approvedBy = $this->employeeId;
                 $leaveApproveRepository->edit($leaveApply, $id);
+                $leaveApply->id = $id;
+                $leaveApply->employeeId = $requestedEmployeeID;
+                try {
+                    HeadNotification::pushNotification(($leaveApply->status == 'AP') ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
 
             if ($detail['STATUS'] == 'CP' || $detail['STATUS'] == 'CR') {
@@ -100,6 +107,13 @@ class LeaveStatus extends HrisController {
                 unset($leaveApply->halfDay);
                 $leaveApply->cancelAppBy = $this->employeeId;
                 $leaveApproveRepository->edit($leaveApply, $id);
+                $leaveApply->id = $id;
+                $leaveApply->employeeId = $requestedEmployeeID;
+                try {
+                    HeadNotification::pushNotification(($leaveApply->status == 'C') ? NotificationEvents::LEAVE_CANCELLED_APPROVE_ACCEPTED : NotificationEvents::LEAVE_CANCELLED_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
+                } catch (Exception $e) {
+                    $this->flashmessenger()->addMessage($e->getMessage());
+                }
             }
 
             return $this->redirect()->toRoute("leavestatus");
@@ -190,9 +204,15 @@ class LeaveStatus extends HrisController {
             $model->cancelAppBy = $this->employeeId;
             $model->status = $approve ? "C" : "AP";
             $message = $approve ? "Leave Cancel Request Approved" : "Leave Cancel Request Rejected";
+            $notificationEvent = $approve ? NotificationEvents::LEAVE_CANCELLED_APPROVE_ACCEPTED : NotificationEvents::LEAVE_CANCELLED_APPROVE_REJECTED;
             $leaveApproveRepository->edit($model, $id);
             if ($enableFlashNotification) {
                 $this->flashmessenger()->addMessage($message);
+            }
+            try {
+                HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+            } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
             }
         }
     }

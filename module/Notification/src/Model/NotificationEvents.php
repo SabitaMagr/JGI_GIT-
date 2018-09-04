@@ -10,6 +10,10 @@ class NotificationEvents {
     const LEAVE_APPROVE_ACCEPTED = 4;
     const LEAVE_APPROVE_REJECTED = 5;
     const LEAVE_CANCELLED = 6;
+    const LEAVE_CANCELLED_RECOMMEND_ACCEPTED = 79;
+    const LEAVE_CANCELLED_RECOMMEND_REJECTED = 80;
+    const LEAVE_CANCELLED_APPROVE_ACCEPTED = 81;
+    const LEAVE_CANCELLED_APPROVE_REJECTED = 82;
     
     const ATTENDANCE_APPLIED = 7;
     const ATTENDANCE_APPROVE_ACCEPTED = 8;
@@ -102,5 +106,7 @@ class NotificationEvents {
     const OVERTIME_CANCELLED = 74;
     
     const BIRTHDAY_WISHED= 78;
+    
+//    note number 79 80 81 82 already used in leave above
     
 }

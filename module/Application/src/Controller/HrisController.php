@@ -32,6 +32,8 @@ class HrisController extends AbstractActionController {
         'AP' => 'Approved',
         'R' => 'Rejected',
         'C' => 'Cancelled',
+        'CP' => 'Cancel Pending',
+        'CR' => 'Cancel Recommended'
     ];
 
     function __construct(AdapterInterface $adapter, StorageInterface $storage) {

@@ -61,7 +61,10 @@ class LeaveApproveController extends HrisController {
         $leaveId = $detail['LEAVE_ID'];
         $leaveRepository = new LeaveMasterRepository($this->adapter);
         $leaveDtl = $leaveRepository->fetchById($leaveId);
-
+        
+        if ($this->employeeId!=$detail['RECOMMENDER_ID'] && $this->employeeId!=$detail['APPROVER_ID']) {
+            return $this->redirect()->toRoute("leaveapprove");
+        }
         $requestedEmployeeID = $detail['EMPLOYEE_ID'];
         $employeeName = $detail['FULL_NAME'];
         $authRecommender = $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'];
@@ -69,9 +72,13 @@ class LeaveApproveController extends HrisController {
         $recommenderId = $detail['RECOMMENDED_BY'] == null ? $detail['RECOMMENDER_ID'] : $detail['RECOMMENDED_BY'];
         //to get the previous balance of selected leave from assigned leave detail
         $preBalance = $detail['BALANCE'];
+        
         if (!$request->isPost()) {
             $leaveApply->exchangeArrayFromDB($detail);
             $this->form->bind($leaveApply);
+            if ($detail['STATUS'] == 'CP' || $detail['STATUS'] == 'CR') {
+                $recommenderId = $detail['RECOMMENDER_ID'];
+            }
         } else {
             $getData = $request->getPost();
             $action = $getData->submit;
@@ -150,6 +157,19 @@ class LeaveApproveController extends HrisController {
                     $leaveApply->cancelRecBy = $this->employeeId;
                     $leaveApply->recommendedRemarks = $getData->recommendedRemarks;
                     $this->repository->edit($leaveApply, $id);
+
+                    $leaveApply->id = $id;
+                    $leaveApply->employeeId = $requestedEmployeeID;
+                    $leaveApply->approvedBy = $detail['APPROVER_ID'];
+                    try {
+                        if ($leaveApply->status == 'CR') {
+                            HeadNotification::pushNotification(NotificationEvents::LEAVE_CANCELLED_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
+                        } else {
+                            HeadNotification::pushNotification(NotificationEvents::LEAVE_CANCELLED_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
+                        }
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
                 } else if ($role == 3 || $role == 4) {
                     $leaveApply->cancelAppDt = Helper::getcurrentExpressionDate();
                     if ($action == "Reject") {
@@ -168,6 +188,13 @@ class LeaveApproveController extends HrisController {
                         $leaveApply->cancelRecDt = Helper::getcurrentExpressionDate();
                     }
                     $this->repository->edit($leaveApply, $id);
+                    $leaveApply->id = $id;
+                    $leaveApply->employeeId = $requestedEmployeeID;
+                    try {
+                        HeadNotification::pushNotification(($leaveApply->status == 'C') ? NotificationEvents::LEAVE_CANCELLED_APPROVE_ACCEPTED : NotificationEvents::LEAVE_CANCELLED_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
+                    } catch (Exception $e) {
+                        $this->flashmessenger()->addMessage($e->getMessage());
+                    }
                 }
             }
 
@@ -218,7 +245,10 @@ class LeaveApproveController extends HrisController {
             'RQ' => 'Pending',
             'RC' => 'Recommended',
             'AP' => 'Approved',
-            'R' => 'Rejected'
+            'R' => 'Rejected',
+            'C' => 'Cancelled',
+            'CP' => 'Cancel Pending',
+            'CR' => 'Cancel Recommended'
         ];
         $leaveStatusFormElement = new Select();
         $leaveStatusFormElement->setName("leaveStatus");
@@ -325,6 +355,19 @@ class LeaveApproveController extends HrisController {
                             }
                             $leaveApply->cancelRecBy = $this->employeeId;
                             $this->repository->edit($leaveApply, $id);
+
+                            $leaveApply->id = $id;
+                            $leaveApply->employeeId = $requestedEmployeeID;
+                            $leaveApply->approvedBy = $detail['APPROVER_ID'];
+                            try {
+                                if ($leaveApply->status == 'CR') {
+                                    HeadNotification::pushNotification(NotificationEvents::LEAVE_CANCELLED_RECOMMEND_ACCEPTED, $leaveApply, $this->adapter, $this);
+                                } else {
+                                    HeadNotification::pushNotification(NotificationEvents::LEAVE_CANCELLED_RECOMMEND_REJECTED, $leaveApply, $this->adapter, $this);
+                                }
+                            } catch (Exception $e) {
+                                
+                            }
                         } else if ($role == 3 || $role == 4) {
                             $leaveApply->cancelAppDt = Helper::getcurrentExpressionDate();
                             if ($action == "Reject") {
@@ -337,6 +380,14 @@ class LeaveApproveController extends HrisController {
                             if ($role == 4) {
                                 $leaveApply->cancelRecBy = $this->employeeId;
                                 $leaveApply->cancelRecDt = Helper::getcurrentExpressionDate();
+                            }
+                            $this->repository->edit($leaveApply, $id);
+                            $leaveApply->id = $id;
+                            $leaveApply->employeeId = $requestedEmployeeID;
+                            try {
+                                HeadNotification::pushNotification(($leaveApply->status == 'C') ? NotificationEvents::LEAVE_CANCELLED_APPROVE_ACCEPTED : NotificationEvents::LEAVE_CANCELLED_APPROVE_REJECTED, $leaveApply, $this->adapter, $this);
+                            } catch (Exception $e) {
+                                $this->flashmessenger()->addMessage($e->getMessage());
                             }
                         }
                     }

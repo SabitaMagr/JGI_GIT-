@@ -139,7 +139,15 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
-        // TODO: Implement fetchById() method.
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(LeaveApply::TABLE_NAME);
+        $select->where([
+            "ID=".$id
+        ]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $resultset = $statement->execute();
+        return $resultset->current();
     }
 
     public function delete($id) {

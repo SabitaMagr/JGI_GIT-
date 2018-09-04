@@ -33,7 +33,7 @@ class LeaveRepository extends HrisRepository {
                    LEFT JOIN (SELECT * FROM HRIS_LEAVE_YEARS  WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE ) LY ON (1=1)
                   WHERE ELR.LEAVE_ID =LA.LEAVE_ID
                   AND ELR.EMPLOYEE_ID=LA.EMPLOYEE_ID
-                  AND ELR.STATUS     ='AP'
+                  AND ELR.STATUS IN ('AP','CP','CR')
                    AND ELR.START_DATE BETWEEN LY.START_DATE AND LY.END_DATE
                   ) AS LEAVE_TAKEN,
                   (SELECT SUM(EPD.NO_OF_DAYS)

@@ -116,6 +116,17 @@ class LeaveRequest extends HrisController {
         }
         $this->repository->delete($id);
         $this->flashmessenger()->addMessage("Leave Request Successfully Cancelled!!!");
+        $leaveRequest = new LeaveApply();
+        $leaveRequestDetail = $this->repository->fetchById($id);
+        $leaveRequest->exchangeArrayFromDB($leaveRequestDetail);
+
+        IF ($leaveRequest->status == 'CP') {
+            try {
+                HeadNotification::pushNotification(NotificationEvents::LEAVE_CANCELLED, $leaveRequest, $this->adapter, $this);
+            } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
+        }
         return $this->redirect()->toRoute('leaverequest');
     }
 
