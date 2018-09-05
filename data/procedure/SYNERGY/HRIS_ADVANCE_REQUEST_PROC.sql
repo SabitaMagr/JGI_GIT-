@@ -23,11 +23,14 @@ BEGIN
       tr.date_of_advance,
       tr.deduction_in,
       c.company_code,
-      c.company_code
-      || '.01',
+      CASE WHEN e.EMPOWER_BRANCH_CODE IS NULL OR e.EMPOWER_BRANCH_CODE='-1'
+      THEN c.company_code|| '.01'
+      ELSE e.EMPOWER_BRANCH_CODE
+      END,
       c.form_code,
       c.advance_dr_acc_code,
-      c.advance_cr_acc_code
+      c.advance_cr_acc_code,
+      e.FULL_NAME
     INTO v_employee_id,
       v_status,
       v_requested_amount,
@@ -37,7 +40,8 @@ BEGIN
       v_branch_code,
       v_form_code,
       v_dr_acc_code ,
-      v_cr_acc_code
+      v_cr_acc_code,
+      v_created_by
     FROM hris_employee_advance_request tr
     JOIN hris_employees e
     ON ( tr.employee_id = e.employee_id )
@@ -56,7 +60,7 @@ BEGIN
     INTO v_voucher_no
     FROM dual;
     --
-    hris_travel_advance( v_company_code, v_form_code, TRUNC(SYSDATE), v_branch_code, v_created_by, TRUNC(SYSDATE), v_dr_acc_code, v_cr_acc_code, 'TEST', v_requested_amount, 'E' || v_employee_id, v_voucher_no );
+    hris_travel_advance( v_company_code, v_form_code, TRUNC(SYSDATE), v_branch_code, v_created_by, TRUNC(SYSDATE), v_dr_acc_code, v_cr_acc_code, 'SALARY ADVANCE', v_requested_amount, 'E' || v_employee_id, v_voucher_no );
     --
     hris_advance_to_empower( v_company_code, v_branch_code, v_date_of_advance, v_date_of_advance, v_created_by, v_requested_amount, v_deduction_in, v_requested_amount / v_deduction_in, v_employee_id, v_dr_acc_code, v_cr_acc_code );
     --

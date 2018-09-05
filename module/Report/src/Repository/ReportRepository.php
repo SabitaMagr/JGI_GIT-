@@ -927,7 +927,7 @@ EOT;
     }
 
     public function toEmpower($fiscalYearId, $fiscalYearMonthNo) {
-        $sql = "BEGIN HRIS_TO_EMPOWER({$fiscalYearId},{$fiscalYearMonthNo}) END;";
+        $sql = "BEGIN HRIS_TO_EMPOWER({$fiscalYearId},{$fiscalYearMonthNo}); END;";
         $this->executeStatement($sql);
     }
 
