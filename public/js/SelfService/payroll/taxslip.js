@@ -64,6 +64,11 @@
 
         }
         $viewBtn.on('click', function () {
+            var selectedYearText=$("#fiscalYearId option:selected" ).text();
+            var selectedMonthText=$("#monthId option:selected" ).text();
+            var displayYearMonthtext='Taxslip for '+selectedMonthText+' '+selectedYearText;
+            $('#yearMonthDetails').html(displayYearMonthtext);
+            
             var monthId = $month.val();
             var employeeId = $employeeId.val();
             app.serverRequest('', {monthId: monthId, employeeId: employeeId}).then(function (response) {

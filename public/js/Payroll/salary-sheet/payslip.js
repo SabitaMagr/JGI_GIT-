@@ -26,6 +26,7 @@
             var deductionData = {};
             var deductionCounter = 0;
             var deductionSum = 0;
+            var netSum = 0;
             $.each($data, function (index, item) {
                 switch (item['PAY_TYPE_FLAG']) {
                     case 'A':
@@ -39,6 +40,7 @@
                         deductionCounter++;
                         break;
                 }
+                 netSum = additionSum - deductionSum;
             });
             var maxRows = (additionCounter > deductionCounter) ? additionCounter : deductionCounter;
             for (var i = 0; i < maxRows; i++) {
@@ -51,14 +53,21 @@
                 $paySlipBody.append($row);
             }
             $paySlipBody.append($(`<tr>
-                                <td>Total:</td>
+                                <td>Total Addition:</td>
                                 <td>${additionSum}</td>
-                                <td>Total:</td>
+                                <td>Total Deduction:</td>
                                 <td>${deductionSum}</td>
-                                </tr>`));
+                                </tr></tr> <td>Net Salary:</td>
+                                 <td>${netSum}</td>`));
 
         }
         $viewBtn.on('click', function () {
+            var selectedYearText=$("#fiscalYearId option:selected" ).text();
+            var selectedMonthText=$("#monthId option:selected" ).text();
+            var selectNameText=$("#employeeId option:selected").text();
+            var displayYearMonthtext='Payslip of '+selectNameText+' for '+selectedMonthText+' '+selectedYearText;
+            $('#yearMonthDetails').html(displayYearMonthtext);
+            
             var monthId = $month.val();
             var employeeId = $employeeId.val();
             var employee = employeeList.find(function (item) {
