@@ -120,7 +120,9 @@
             for (var i in salarySheetList) {
                 if (salarySheetList[i]['MONTH_ID'] == monthValue && (companyValue == -1 || companyValue == salarySheetList[i]['COMPANY_ID']) && (groupValue == -1 || groupValue == salarySheetList[i]['GROUP_ID'])) {
                     selectedSalarySheetList.push(salarySheetList[i]);
-                    break;
+                    if (groupValue != '-1') {
+                        break;
+                    }
                 }
             }
             if (selectedSalarySheetList.length > 0) {

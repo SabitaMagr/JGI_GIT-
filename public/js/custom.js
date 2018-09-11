@@ -3,9 +3,9 @@ window.app = (function ($, toastr, App) {
     $(document).ready(function () {
         App.setAssetsPath(document.basePath + '/assets/');
     });
-    
-    $(document).on( 'focus', ':input', function(){
-        $(this).attr( 'autocomplete', 'off' );
+
+    $(document).on('focus', ':input', function () {
+        $(this).attr('autocomplete', 'off');
     });
 
     var format = "dd-M-yyyy";
@@ -1029,7 +1029,15 @@ window.app = (function ($, toastr, App) {
             var dataItem = data[i];
             var row = [];
             $.each(col, function (key, value) {
-                row.push({value: dataItem[key]});
+                if (dataItem[key] != null && dataItem[key] != '') {
+                    if (isNaN(dataItem[key])) {
+                        row.push({value: dataItem[key]});
+                    } else {
+                        row.push({value: parseFloat(dataItem[key])});
+                    }
+                } else {
+                    row.push({value: dataItem[key]});
+                }
             });
             rows.push({
                 cells: row
