@@ -48,7 +48,7 @@ window.nepaliCalendar = (function ($) {
         '02': 'Jestha',
         '03': 'Asar',
         '04': 'Shrawan',
-        '05': 'Bhadau',
+        '05': 'Bhadra',
         '06': 'Aswin',
         '07': 'Kartik',
         '08': 'Mansir',
