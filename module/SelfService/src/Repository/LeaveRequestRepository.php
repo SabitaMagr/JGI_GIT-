@@ -140,6 +140,13 @@ class LeaveRequestRepository implements RepositoryInterface {
 
     public function fetchById($id) {
         // TODO: Implement fetchById() method.
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['L' => LeaveApply::TABLE_NAME]);
+        $select->where(["L." . LeaveApply::ID . "=$id"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result->current();
     }
 
     public function delete($id) {
@@ -271,6 +278,16 @@ class LeaveRequestRepository implements RepositoryInterface {
     public function validateLeaveRequest($fromDate, $toDate, $employeeId) {
         $rawResult = EntityHelper::rawQueryResult($this->adapter, "SELECT HRIS_VALIDATE_LEAVE_REQUEST({$fromDate},{$toDate},{$employeeId}) AS ERROR FROM DUAL");
         return $rawResult->current();
+    }
+
+    public function fetchByEmpId($employeeId) {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->from(['L' => LeaveApply::TABLE_NAME]);
+        $select->where(["L." . LeaveApply::EMPLOYEE_ID . "=$employeeId"]);
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
 
 }
