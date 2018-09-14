@@ -15,7 +15,19 @@
 
         var controlValue = $('input[name=control]:checked').val();
         $('input[name=control]').change(function () {
+            changeControl();
+        });
+
+        function changeControl() {
             var controlValue = $('input[name=control]:checked').val();
+
+            var populateValues = [];
+            $.each(document.selectedControlValues, function (k, v) {
+                if (v.CONTROL == controlValue) {
+                    populateValues.push(v.VAL);
+                }
+            });
+
             if (controlValue === 'C') {
                 $controlOption.text("Select Companies");
                 app.populateSelect($selectOptions, document.searchValues['company'], 'COMPANY_ID', 'COMPANY_NAME', '---', '');
@@ -39,7 +51,12 @@
                 $controlOption.empty();
                 $selectOptions.empty();
             }
-        });
+
+            $selectOptions.val(populateValues).trigger('change.select2');
+        }
+
+
+        changeControl();
 
 
 

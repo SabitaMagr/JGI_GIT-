@@ -1031,3 +1031,25 @@ select b.salary from HRIS_SALARY_BAKUP b
 where b.employee_id=m.employee_id) ;
 
 -- now  enable trigger TRG_SYNC_EMPLOYEE  if avaiable  important !!
+
+
+create table hris_roles_bk as select * from hris_roles;
+
+ALTER TABLE HRIS_ROLES 
+DROP COLUMN CONTROL;
+
+ALTER TABLE HRIS_ROLES 
+ADD CONTROL VARCHAR2(2 BYTE) DEFAULT 'F' NOT NULL ;
+
+update HRIS_ROLES m set m.CONTROL=(
+select b.CONTROL from hris_roles_bk b 
+where b.ROLE_ID=m.ROLE_ID) ;
+
+
+
+CREATE TABLE HRIS_ROLE_CONTROL
+  (
+    ROLE_ID NUMBER(7,0) NOT NULL,
+    CONTROL VARCHAR2(2 BYTE) NOT NULL,
+    VAL     NUMBER(7,0)
+  );

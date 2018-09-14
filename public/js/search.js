@@ -398,6 +398,15 @@
             var acl = document.acl;
             var employeeDetail = document.employeeDetail;
             if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
+
+                var populateValues = [];
+                $.each(acl['CONTROL_VALUES'], function (k, v) {
+                    if (v.CONTROL == acl['CONTROL']) {
+                        populateValues.push(v.VAL);
+                    }
+                });
+                
+
                 switch (acl['CONTROL']) {
                     case 'C':
                         $company.val(employeeDetail['COMPANY_ID']);
@@ -416,7 +425,9 @@
                         $department.prop('disabled', true);
                         break;
                     case 'P':
-                        $position.val(employeeDetail['POSITION_ID']);
+//                        $position.val(employeeDetail['POSITION_ID']);
+//                        $position.val(populateValues);
+                        $position.val((populateValues.length<1)?employeeDetail['POSITION_ID']:populateValues);
                         $position.prop('disabled', true);
                         break;
                 }

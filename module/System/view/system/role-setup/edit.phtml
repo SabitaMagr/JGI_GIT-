@@ -28,6 +28,7 @@ $form->prepare();
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.selectedControlValues =<?php echo json_encode($selectedValues); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\rolesetup')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

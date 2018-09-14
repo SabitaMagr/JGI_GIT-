@@ -1,11 +1,14 @@
 <?php
+
 namespace System\Controller;
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
 use System\Form\RoleSetupForm;
+use System\Model\RoleControl;
 use System\Model\RoleSetup;
+use System\Repository\RoleControlRepository;
 use System\Repository\RoleSetupRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -48,7 +51,7 @@ class RoleSetupController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                'acl' => $this->acl
+                    'acl' => $this->acl
         ]);
     }
 
@@ -60,12 +63,24 @@ class RoleSetupController extends AbstractActionController {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $roleSetup = new RoleSetup();
+                
+                
                 $roleSetup->exchangeArrayFromForm($this->form->getData());
                 $roleSetup->roleId = ((int) Helper::getMaxId($this->adapter, RoleSetup::TABLE_NAME, RoleSetup::ROLE_ID)) + 1;
                 $roleSetup->createdDt = Helper::getcurrentExpressionDate();
                 $roleSetup->createdBy = $this->employeeId;
                 $roleSetup->status = 'E';
 
+                //to insert data into roleControl start
+                $roleControlModel = new RoleControl();
+                $roleControlRepo = new RoleControlRepository($this->adapter);
+                $roleControlModel->roleId = $roleSetup->roleId;
+                $roleControlModel->control = $request->getPost('control');
+                foreach ($request->getPost('selectOptions') as $controlList) {
+                    $roleControlModel->val = $controlList;
+                    $roleControlRepo->add($roleControlModel);
+                }
+                //to insert data into roleControl end
                 $this->repository->add($roleSetup);
 
                 $this->flashmessenger()->addMessage("Role Successfully Added!!!");
@@ -73,9 +88,9 @@ class RoleSetupController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                'form' => $this->form,
-                'customRenderer' => Helper::renderCustomView(),
-                'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'form' => $this->form,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
@@ -85,12 +100,23 @@ class RoleSetupController extends AbstractActionController {
         $request = $this->getRequest();
 
         $roleSetup = new RoleSetup();
+        $roleControlRepo = new RoleControlRepository($this->adapter);
         if (!$request->isPost()) {
             $roleSetup->exchangeArrayFromDB($this->repository->fetchById($id)->getArrayCopy());
             $this->form->bind($roleSetup);
         } else {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
+                //to insert data into roleControl start
+                $roleControlModel = new RoleControl();
+                $roleControlModel->roleId = $id;
+                $roleControlModel->control = $request->getPost('control');
+                $roleControlRepo->delete($id);
+                foreach ($request->getPost('selectOptions') as $controlList) {
+                    $roleControlModel->val = $controlList;
+                    $roleControlRepo->add($roleControlModel);
+                }
+                //to insert data into roleControl end
                 $roleSetup->exchangeArrayFromForm($this->form->getData());
                 $roleSetup->modifiedDt = Helper::getcurrentExpressionDate();
                 $roleSetup->modifiedBy = $this->employeeId;
@@ -103,10 +129,11 @@ class RoleSetupController extends AbstractActionController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                'form' => $this->form,
-                'id' => $id,
-                'customRenderer' => Helper::renderCustomView(),
-                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'form' => $this->form,
+                    'id' => $id,
+                    'customRenderer' => Helper::renderCustomView(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'selectedValues' => $roleControlRepo->fetchById($id)
         ]);
     }
 
@@ -124,4 +151,5 @@ class RoleSetupController extends AbstractActionController {
     public function fetchRuleControls() {
         
     }
+
 }

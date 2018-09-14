@@ -12,6 +12,7 @@ use Application\Repository\MonthRepository;
 use Application\Repository\UserLogRepository;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use Setup\Repository\EmployeeRepository;
+use System\Repository\RoleControlRepository;
 use System\Repository\RolePermissionRepository;
 use System\Repository\RoleSetupRepository;
 use System\Repository\SystemSettingRepository;
@@ -173,6 +174,10 @@ class AuthController extends AbstractActionController {
 
                     $roleRepo = new RoleSetupRepository($this->adapter);
                     $acl = $roleRepo->fetchById($resultRow->ROLE_ID);
+                    
+                    $roleControlRepo = new RoleControlRepository($this->adapter);
+                    $roleControlDetails = $roleControlRepo->fetchById($acl['ROLE_ID']);
+                    $acl['CONTROL_VALUES']=$roleControlDetails;
 
                     $this->getAuthService()->getStorage()->write([
                         "user_name" => $request->getPost('username'),
