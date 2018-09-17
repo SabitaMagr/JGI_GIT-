@@ -368,6 +368,11 @@ return [
                         'route' => 'system-utility',
                         'action' => 'databaseBackup',
                     ],
+                    [
+                        'label' => 'Update Seniority',
+                        'route' => 'system-utility',
+                        'action' => 'updateSeniority',
+                    ],
                 ],
             ],
         ]

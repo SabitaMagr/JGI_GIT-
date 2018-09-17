@@ -93,3 +93,32 @@ CONNECTION_STRING VARCHAR2(100 BYTE),
 ORACLE_USER VARCHAR2(100 BYTE),
 DIRECTORY_NAME VARCHAR2(100 BYTE)
 );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    (SELECT MAX(menu_id)+1 FROM hris_menus),
+    'Update Seniority',
+    (select menu_id from hris_menus where lower(menu_name) like lower('utility%')),
+    'system-utility',
+    'E',
+    TRUNC(SYSDATE),
+    'fa fa-pencil',
+    'updateSeniority',
+    (select max(menu_index)+1 from hris_menus where parent_menu=(select menu_id from hris_menus where lower(menu_name) like lower('utility%'))),
+    'Y'
+  );

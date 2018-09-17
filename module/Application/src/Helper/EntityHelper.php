@@ -369,10 +369,14 @@ class EntityHelper {
         return $statusFormElement;
     }
 
-    public static function getOrderBy($default,$mandatory=null,$position=null,$joinDate=null,$designation=null,$name=null) {
+    public static function getOrderBy($default,$mandatory=null,$seniorityLevel=null,$position=null,$joinDate=null,$designation=null,$name=null) {
         $auth = new \Zend\Authentication\AuthenticationService();
         $preference = $auth->getStorage()->read()['preference'];
         $orderByString = '';
+        
+        if($preference['orderBySeniority']=='Y' && $seniorityLevel!=null){
+            $orderByString.=(empty($orderByString))?' '.$seniorityLevel.'  ASC':','.$seniorityLevel.'  ASC';
+        }
         
         if ($preference['orderByPosition']=='Y' && $position!=null) {
             $orderByString.=(empty($orderByString))?' '.$position.'  ASC':','.$position.'  ASC';

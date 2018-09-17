@@ -4,6 +4,7 @@ namespace System\Controller;
 
 use Application\Controller\HrisController;
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Exception;
 use Setup\Model\HrEmployees;
 use System\Repository\SystemUtilityRepository;
@@ -88,6 +89,20 @@ class SystemUtility extends HrisController {
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
+    }
+
+    public function updateSeniorityAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $sql = "UPDATE HRIS_EMPLOYEES E  SET E.SENIORITY_LEVEL=(select  OE.SENIORITY_LEVEL 
+                 from HR_EMPLOYEE_SETUP OE 
+                    WHERE OE.EMPLOYEE_CODE=TO_CHAR(E.EMPLOYEE_ID)
+                    )";
+            $rawResult = EntityHelper::rawQueryResult($this->adapter, $sql);
+            $this->flashmessenger()->addMessage("Updated Sucessfully");
+            return $this->redirect()->toRoute("system-utility", ['action' => 'updateSeniority']);
+        }
+        return Helper::addFlashMessagesToArray($this, []);
     }
 
 }

@@ -26,6 +26,7 @@ class Preference extends Model {
     public $orderByPosition='N';
     public $orderByDesignation='N';
     public $orderByJoinDate='N';
+    public $orderBySeniority='N';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -49,6 +50,7 @@ class Preference extends Model {
     CONST ORDER_BY_POSITION="ORDER_BY_POSITION";
     CONST ORDER_BY_DESIGNATION="ORDER_BY_DESIGNATION";
     CONST ORDER_BY_JOIN_DATE="ORDER_BY_JOIN_DATE";
+    CONST ORDER_BY_SENIORITY="ORDER_BY_SENIORITY";
     
 
     public $mappings = [
@@ -73,7 +75,8 @@ class Preference extends Model {
         'orderByName' =>self::ORDER_BY_NAME,
         'orderByPosition' =>self::ORDER_BY_POSITION,
         'orderByDesignation' =>self::ORDER_BY_DESIGNATION,
-        'orderByJoinDate' =>self::ORDER_BY_JOIN_DATE
+        'orderByJoinDate' =>self::ORDER_BY_JOIN_DATE,
+        'orderBySeniority' =>self::ORDER_BY_SENIORITY
     ];
 
 }

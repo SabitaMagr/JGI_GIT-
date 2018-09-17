@@ -21,6 +21,7 @@ $orderByName = $form->get('orderByName');
 $orderByPosition = $form->get('orderByPosition');
 $orderByDesignation = $form->get('orderByDesignation');
 $orderByJoinDate = $form->get('orderByJoinDate');
+$orderBySeniority = $form->get('orderBySeniority');
 
 $submit = $form->get('submit');
 
@@ -255,6 +256,16 @@ if ($this->messages) {
                             </div>
                         </div>
                         <?php print $this->formElementErrors()->render($orderByJoinDate, ['class' => 'help-block error']); ?>
+                    </div>
+                    
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($orderBySeniority); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($orderBySeniority); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($orderBySeniority, ['class' => 'help-block error']); ?>
                     </div>
                     
                     

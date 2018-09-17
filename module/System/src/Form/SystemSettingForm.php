@@ -163,6 +163,13 @@ class SystemSettingForm {
      * @Annotation\Attributes({ "id":"orderByJoinDate","value":"N"})
      */
     public $orderByJoinDate;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Order By Seniority"})
+     * @Annotation\Attributes({ "id":"orderBySeniority","value":"N"})
+     */
+    public $orderBySeniority;
 
 
     /**

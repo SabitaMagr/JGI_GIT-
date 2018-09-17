@@ -122,7 +122,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($min != null && $max != null) {
             $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
         }
-          $orderByString=EntityHelper::getOrderBy('A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
+          $orderByString=EntityHelper::getOrderBy('A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','E.SENIORITY_LEVEL','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
         $sql = "
                SELECT * FROM (SELECT 
                   ROWNUM                                           AS R,
@@ -758,12 +758,12 @@ class AttendanceDetailRepository implements RepositoryInterface {
         if ($min != null && $max != null) {
             $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
         }
-        $orderByString=EntityHelper::getOrderBy('ATTENDANCE_DT DESC ,IN_TIME ASC','ATTENDANCE_DT DESC ,IN_TIME ASC','LEVEL_NO','JOIN_DATE','ORDER_NO','EMPLOYEE_NAME');
+        $orderByString=EntityHelper::getOrderBy('ATTENDANCE_DT DESC ,IN_TIME ASC','ATTENDANCE_DT DESC ,IN_TIME ASC','SENIORITY_LEVEL','LEVEL_NO','JOIN_DATE','ORDER_NO','EMPLOYEE_NAME');
         $sql = "
                SELECT 
 DISTINCT
 			   EMPLOYEE_ID,ATTENDANCE_DT ,
-                 LEVEL_NO ,JOIN_DATE ,ORDER_NO,
+                 LEVEL_NO ,JOIN_DATE ,ORDER_NO,SENIORITY_LEVEL,
                 IN_DEVICE_NAME,
                   OUT_DEVICE_NAME,
                   ID,
@@ -820,7 +820,7 @@ FROM (SELECT
                   L.LEAVE_ENAME                                    AS LEAVE_ENAME,
                   T.TRAINING_NAME                                  AS TRAINING_NAME,
                   TVL.DESTINATION                                  AS TRAVEL_DESTINATION,
-                   P.LEVEL_NO ,E.JOIN_DATE ,DES.ORDER_NO,
+                   P.LEVEL_NO ,E.JOIN_DATE ,DES.ORDER_NO,E.SENIORITY_LEVEL,
                   (
                   CASE
                     WHEN A.OVERALL_STATUS = 'DO'
