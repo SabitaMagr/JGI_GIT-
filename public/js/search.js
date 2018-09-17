@@ -409,24 +409,22 @@
 
                 switch (acl['CONTROL']) {
                     case 'C':
-                        $company.val(employeeDetail['COMPANY_ID']);
+                        $company.val((populateValues.length<1)?employeeDetail['COMPANY_ID']:populateValues);
                         $company.prop('disabled', true);
                         break;
                     case 'B':
-                        $branch.val(employeeDetail['BRANCH_ID']);
+                        $branch.val((populateValues.length<1)?employeeDetail['BRANCH_ID']:populateValues);
                         $branch.prop('disabled', true);
                         break;
                     case 'DS':
-                        $designation.val(employeeDetail['DESIGNATION_ID']);
+                        $designation.val((populateValues.length<1)?employeeDetail['DESIGNATION_ID']:populateValues);
                         $designation.prop('disabled', true);
                         break;
                     case 'DP':
-                        $department.val(employeeDetail['DEPARTMENT_ID']);
+                        $department.val((populateValues.length<1)?employeeDetail['DEPARTMENT_ID']:populateValues);
                         $department.prop('disabled', true);
                         break;
                     case 'P':
-//                        $position.val(employeeDetail['POSITION_ID']);
-//                        $position.val(populateValues);
                         $position.val((populateValues.length<1)?employeeDetail['POSITION_ID']:populateValues);
                         $position.prop('disabled', true);
                         break;
