@@ -94,7 +94,7 @@ class TrainingAttendanceRepository implements RepositoryInterface {
                 FROM HRIS_EMPLOYEE_TRAINING_ASSIGN ET
                 JOIN HRIS_EMPLOYEES E
                 ON (ET.EMPLOYEE_ID   = E.EMPLOYEE_ID)
-                WHERE ET.TRAINING_ID ={$id}";
+                WHERE ET.TRAINING_ID ={$id} AND ET.STATUS='E'";
         $result = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($result);
     }
@@ -110,20 +110,20 @@ class TrainingAttendanceRepository implements RepositoryInterface {
             }
         }
 
-//        $sql = "
-//                BEGIN
-//                DELETE FROM HRIS_EMP_TRAINING_ATTENDANCE WHERE TRAINING_ID= {$trainingId};
-//                {$insertList}
-//            BEGIN
-//            FOR EMPLOYEE_LIST IN (select * from HRIS_EMPLOYEE_TRAINING_ASSIGN where training_id={$trainingId})
-//            LOOP
-//            HRIS_TRAINING_REWARD (EMPLOYEE_LIST.EMPLOYEE_ID,EMPLOYEE_LIST.TRAINING_ID);
-//            END LOOP;
-//            END;
-//                END;
-//                ";
-//        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
-//        return $result;
+        $sql = "
+                BEGIN
+                DELETE FROM HRIS_EMP_TRAINING_ATTENDANCE WHERE TRAINING_ID= {$trainingId};
+                {$insertList}
+            BEGIN
+            FOR EMPLOYEE_LIST IN (select * from HRIS_EMPLOYEE_TRAINING_ASSIGN where training_id={$trainingId})
+            LOOP
+            HRIS_TRAINING_LEAVE_REWARD (EMPLOYEE_LIST.EMPLOYEE_ID,EMPLOYEE_LIST.TRAINING_ID);
+            END LOOP;
+            END;
+                END;
+                ";
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $result;
     }
 
     public function fetchTrainingDates($id) {

@@ -112,7 +112,7 @@ class TrainingRepository implements RepositoryInterface {
 
         $select->where([
             "T.STATUS='E'",
-            "T.TRAINING_ID NOT IN (SELECT TRAINING_ID FROM HRIS_EMPLOYEE_TRAINING_ASSIGN WHERE EMPLOYEE_ID=$employeeId)"
+            "T.TRAINING_ID NOT IN (SELECT TRAINING_ID FROM HRIS_EMPLOYEE_TRAINING_ASSIGN WHERE STATUS='E' AND EMPLOYEE_ID=$employeeId)"
 //            "T.END_DATE<=".$today->getExpression()
         ]);
 

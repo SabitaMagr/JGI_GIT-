@@ -39,27 +39,91 @@ class TrainingRequestRepository implements RepositoryInterface {
                   V_STATUS HRIS_EMPLOYEE_TRAINING_REQUEST.STATUS%TYPE;
                   V_REQUEST_ID HRIS_EMPLOYEE_TRAINING_REQUEST.REQUEST_ID%TYPE:= {$id};
                   V_ASSIGNED CHAR(1 BYTE)                                    :=NULL;
+                  V_DURATION HRIS_EMPLOYEE_TRAINING_REQUEST.DURATION%TYPE;
                 BEGIN
                   SELECT TRAINING_ID,
                     TRUNC( START_DATE ),
                     TRUNC( END_DATE ),
                     EMPLOYEE_ID,
-                    STATUS
+                    STATUS,
+                    DURATION
                   INTO V_TRAINING_ID,
                     V_START_DATE,
                     V_END_DATE,
                     V_EMPLOYEE_ID,
-                    V_STATUS
+                    V_STATUS,
+                    V_DURATION
                   FROM HRIS_EMPLOYEE_TRAINING_REQUEST
                   WHERE REQUEST_ID =V_REQUEST_ID;
                   --
-                  IF V_STATUS IN ('AP','C') THEN
-                     HRIS_TRAINING_LEAVE_REWARD(V_REQUEST_ID);
-                    IF V_START_DATE <TRUNC(SYSDATE) THEN
-                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
-                    END IF;                  
-                  END IF;                  
                   
+                    IF V_TRAINING_ID IS NOT NULL THEN
+                    SELECT (
+                      CASE
+                        WHEN COUNT(*)>0
+                        THEN 'Y'
+                        ELSE 'N'
+                      END)
+                    INTO V_ASSIGNED
+                    FROM HRIS_EMPLOYEE_TRAINING_ASSIGN
+                    WHERE TRAINING_ID = V_TRAINING_ID
+                    AND EMPLOYEE_ID   =V_EMPLOYEE_ID;
+                    IF V_ASSIGNED    ='N' AND V_STATUS='AP' THEN
+                      INSERT
+                      INTO HRIS_EMPLOYEE_TRAINING_ASSIGN
+                        (
+                          TRAINING_ID,
+                          EMPLOYEE_ID,
+                          STATUS,
+                          CREATED_DATE,
+                          CREATED_BY
+                        )
+                        VALUES
+                        (
+                          V_TRAINING_ID,
+                          V_EMPLOYEE_ID,
+                          'E',
+                          TRUNC(SYSDATE),
+                          V_EMPLOYEE_ID
+                        );
+                        
+                        
+
+
+                    END IF;
+                    -- TO DELETE IF ASSIGNED
+                    IF(V_ASSIGNED ='Y' AND V_STATUS='C')
+                    THEN
+                    DELETE FROM HRIS_EMPLOYEE_TRAINING_ASSIGN WHERE 
+                    TRAINING_ID=V_TRAINING_ID AND EMPLOYEE_ID=V_EMPLOYEE_ID;
+                    END IF;
+                    IF V_STATUS IN ('AP','C') AND V_START_DATE <TRUNC(SYSDATE) THEN
+                        HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
+                    END IF;
+                    
+                 BEGIN
+                DELETE  FROM  HRIS_EMP_TRAINING_ATTENDANCE WHERE
+                TRAINING_ID=V_TRAINING_ID AND EMPLOYEE_ID=V_EMPLOYEE_ID;
+                END;
+                 FOR i IN 0..V_DURATION - 1 LOOP
+
+                    DBMS_OUTPUT.PUT_LINE(V_START_DATE+i);
+                 INSERT INTO HRIS_EMP_TRAINING_ATTENDANCE VALUES
+                 (V_TRAINING_ID,V_EMPLOYEE_ID,V_START_DATE+i,'P');
+                END LOOP;
+                    
+
+                    HRIS_TRAINING_LEAVE_REWARD(V_EMPLOYEE_ID,V_TRAINING_ID);
+                  
+
+
+                  --IF V_STATUS IN ('AP','C') THEN
+                    -- HRIS_TRAINING_LEAVE_REWARD(V_REQUEST_ID);
+                  --  IF V_START_DATE <TRUNC(SYSDATE) THEN
+                    --    HRIS_REATTENDANCE(V_START_DATE,V_EMPLOYEE_ID,V_END_DATE);
+                   -- END IF;                  
+                --  END IF;                  
+                  END IF; 
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN
                   DBMS_OUTPUT.PUT('NO DATA FOUND FOR ID =>'|| V_REQUEST_ID);
