@@ -70,6 +70,7 @@ class UserSetupRepository implements RepositoryInterface {
                 ->join(['E' => "HRIS_EMPLOYEES"], "E.EMPLOYEE_ID=US.EMPLOYEE_ID", ['FULL_NAME' => new Expression("INITCAP(E.FULL_NAME)")], Select::JOIN_LEFT)
                 ->join(['C' => "HRIS_COMPANY"], "C.COMPANY_ID=E.COMPANY_ID", ['COMPANY_NAME' => new Expression("INITCAP(C.COMPANY_NAME)")], Select::JOIN_LEFT);
 
+        $select->where(["US.STATUS" =>"E" ]);
         if (isset($filter['companyId']) && $filter['companyId'] != -1) {
             $select->where(["E.COMPANY_ID" => $filter['companyId']]);
         }
