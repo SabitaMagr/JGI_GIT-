@@ -420,6 +420,38 @@ BEGIN
       WHEN NO_DATA_FOUND THEN
         DBMS_OUTPUT.PUT('NO WORK ON DAYOFF FOUND');
       END;
+
+ -- added from trainign assign start
+    BEGIN
+    v_training_id:=NULL;
+            SELECT
+                ta.training_id
+            INTO
+                v_training_id
+            FROM
+                hris_employee_training_assign ta
+                INNER JOIN hris_training_master_setup t ON ta.training_id = t.training_id
+            WHERE
+                    ta.employee_id = employee.employee_id
+                AND
+                    ta.status = 'E'
+                AND
+                    p_from_attendance_dt + i BETWEEN t.start_date AND t.end_date;
+                     EXCEPTION
+                WHEN no_data_found THEN
+                    dbms_output.put('NO training for the day ON DAYOFF FOUND');
+            
+
+
+                     IF v_training_id IS NOT NULL
+                     THEN 
+                     HRIS_TRAINING_LEAVE_REWARD(v_employee_id,v_training_id);
+                     END IF;
+
+        END;            
+    -- added from trainign assign 
+
+
     END LOOP;
   END LOOP;
 END;
