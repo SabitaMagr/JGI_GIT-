@@ -31,7 +31,7 @@ class PayslipPreviousRepository extends HrisRepository {
     }
 
     public function getPayslipDetail($companyCode, $employeeCode, $periodDtCode, $salaryType) {
-        $sql = "SELECT 'R000' PAY_CODE,
+      $sql = "SELECT 'R000' PAY_CODE,
                   'Calc Basic' PAY_EDESC,
                   'Calc Basic' PAY_NDESC,
                   CALC_BASIC AMOUNT,
@@ -40,14 +40,17 @@ class PayslipPreviousRepository extends HrisRepository {
                 FROM HR_SALARY_SHEET_DETAIL
                 WHERE 1          = 1
                 AND SHEET_NO                =(SELECT HSS.SHEET_NO
-                    FROM HR_SALARY_SHEET HSS
-                    JOIN HR_EMPLOYEE_SETUP HES
-                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE OR HSS.SAL_SHEET_CODE IS NULL)
+                    FROM   HR_SALARY_SHEET HSS, HR_EMPLOYEE_SETUP HES, HR_SALARY_SHEET_DETAIL SSD                    
                     WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
                     AND HSS.COMPANY_CODE     ='{$companyCode}'
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
                     AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
-                    AND HSS.SALARY_TYPE ='{$salaryType}')
+                    AND HSS.SALARY_TYPE ='{$salaryType}'
+					AND SSD.SHEET_NO= HSS.SHEET_NO
+                    AND SSD.EMPLOYEE_CODE= HES.EMPLOYEE_CODE
+                    AND SSD.COMPANY_CODE= HSS.COMPANY_CODE
+                    AND SSD.COMPANY_CODE= HES.COMPANY_CODE
+					)
                 AND EMPLOYEE_CODE         ='{$employeeCode}'
                 AND COMPANY_CODE ='{$companyCode}'
                 AND BRANCH_CODE  ='{$companyCode}.01'
@@ -63,14 +66,16 @@ class PayslipPreviousRepository extends HrisRepository {
                   HR_PAY_SETUP B
                 WHERE 1                     = 1
                 AND SHEET_NO                =(SELECT HSS.SHEET_NO
-                    FROM HR_SALARY_SHEET HSS
-                    JOIN HR_EMPLOYEE_SETUP HES
-                    ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE OR HSS.SAL_SHEET_CODE IS NULL)
+                    FROM   HR_SALARY_SHEET HSS, HR_EMPLOYEE_SETUP HES, HR_SALARY_SHEET_DETAIL SSD   
                     WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
                     AND HSS.COMPANY_CODE     ='{$companyCode}'
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
                     AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
-                    AND HSS.SALARY_TYPE ='{$salaryType}')
+                    AND HSS.SALARY_TYPE ='{$salaryType}'
+					AND SSD.SHEET_NO= HSS.SHEET_NO
+                    AND SSD.EMPLOYEE_CODE= HES.EMPLOYEE_CODE
+                    AND SSD.COMPANY_CODE= HSS.COMPANY_CODE
+                    AND SSD.COMPANY_CODE= HES.COMPANY_CODE)
                 AND A.EMPLOYEE_CODE         ='{$employeeCode}'
                 AND A.COMPANY_CODE          ='{$companyCode}'
                 AND A.BRANCH_CODE           ='{$companyCode}.01'
@@ -85,7 +90,7 @@ class PayslipPreviousRepository extends HrisRepository {
     }
 
     public function getSalarySheetDetail($companyCode, $employeeCode, $periodDtCode, $salaryType) {
-        $sql = "SELECT HSSD.*,
+       $sql = "SELECT HSSD.*,
                   E.EMPLOYEE_EDESC,
                   C.COMPANY_EDESC,
                   E.PF_NUMBER,
@@ -99,14 +104,16 @@ class PayslipPreviousRepository extends HrisRepository {
                 ON(E.COMPANY_CODE   =C.COMPANY_CODE)
                 WHERE HSSD.SHEET_NO =
                   (SELECT HSS.SHEET_NO
-                  FROM HR_SALARY_SHEET HSS
-                  JOIN HR_EMPLOYEE_SETUP HES
-                  ON (HSS.SAL_SHEET_CODE   =HES.SAL_SHEET_CODE)
+                  FROM HR_SALARY_SHEET HSS, HR_EMPLOYEE_SETUP HES, HR_SALARY_SHEET_DETAIL SSD
                    WHERE HSS.PERIOD_DT_CODE ='{$periodDtCode}'
                     AND HSS.COMPANY_CODE     ='{$companyCode}'
                     AND HSS.BRANCH_CODE      ='{$companyCode}.01'
                     AND HES.EMPLOYEE_CODE    ='{$employeeCode}'
                     AND HSS.SALARY_TYPE ='{$salaryType}'
+					AND SSD.SHEET_NO= HSS.SHEET_NO
+                    AND SSD.EMPLOYEE_CODE= HES.EMPLOYEE_CODE
+                    AND SSD.COMPANY_CODE= HSS.COMPANY_CODE
+                    AND SSD.COMPANY_CODE= HES.COMPANY_CODE
                   )
                 AND HSSD.EMPLOYEE_CODE='{$employeeCode}'";
         return $this->rawQuery($sql);
