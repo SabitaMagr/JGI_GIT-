@@ -12,9 +12,9 @@
         /*
          * 
          */
-        
-    app.populateSelectElement($('#idCitizenshipIssuePlace'), document.allDistrict,address['citizenshipIssuePlace']);
-        
+
+        app.populateSelectElement($('#idCitizenshipIssuePlace'), document.allDistrict, address['citizenshipIssuePlace']);
+
         var onChangePermZone = function (zoneId) {
             if (zoneId == null) {
                 app.populateSelectElement(addrPermDistrictId, []);
@@ -221,6 +221,23 @@
             {form: $modalProgram, url: document.addProgramLink},
             {form: $modalCourse, url: document.addCourseLink}
         ]);
+
+
+
+        $('#distributionBtn').confirmation({
+            placement: 'bottom',
+            onConfirm: function () {
+                app.serverRequest(document.addDistributionEmp,{id:document.employeeId}).then(
+                        function(success){
+                            app.showMessage('Sucessfully Created Employee for Distribution','success','succcess')
+                        });
+            },
+            onCancel: function () {
+                console.log('cancel');
+            },
+        
+        });
+
 
     });
 

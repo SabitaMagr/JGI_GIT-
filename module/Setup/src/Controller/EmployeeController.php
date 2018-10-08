@@ -172,6 +172,7 @@ class EmployeeController extends HrisController {
         }
         
             $syngergyTable=$this->repository->checkIfTableExists('COMPANY_SETUP');
+            $distributionTable=$this->repository->checkIfTableExists('DIST_LOGIN_USER');
         
         $this->erpCompanyCode=$this->repository->getCompanyCodeByEmpId($id)['COMPANY_CODE'];
         
@@ -383,7 +384,8 @@ class EmployeeController extends HrisController {
                 'programSE' => $programSE,
                 'countries' => $this->getCountryList(),
                 'allDistricts' =>ApplicationHelper::getTableKVList($this->adapter, 'HRIS_DISTRICTS', 'DISTRICT_ID', ['DISTRICT_NAME'], null, null, true),
-                'syngergyTable' =>$syngergyTable
+                'syngergyTable' =>$syngergyTable,
+                'distributionTable' =>$distributionTable
         ]);
     }
 
@@ -1039,4 +1041,20 @@ class EmployeeController extends HrisController {
             ->result();
         return new JsonModel($districtKV);
     }
+    
+    public function addDistributionEmpAction(){
+        try{
+             $request = $this->getRequest();
+             $id = $request->getPost('id');
+             if($id>0 && $id!=null){
+             ApplicationHelper::rawQueryResult($this->adapter, '
+                     BEGIN HRIS_CREATE_DIS_EMP('.$id.'); END;');
+             }
+            return new JsonModel(['success' => true, 'data' => null, 'message' => "Successfully Created Distribution Employee."]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+        
+    }
+    
 }

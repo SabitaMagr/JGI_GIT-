@@ -50,7 +50,8 @@ $this->headScript()
     document.addDegreeLink = '<?php echo $this->url('employee', ['action' => 'addDegree']); ?>';
     document.addUniversityLink = '<?php echo $this->url('employee', ['action' => 'addUniversity']); ?>';
     document.addProgramLink = '<?php echo $this->url('employee', ['action' => 'addProgram']); ?>';
-    document.addCourseLink = '<?php echo $this->url('employee', ['action' => 'addCourse']); ?>';</script>
+    document.addCourseLink = '<?php echo $this->url('employee', ['action' => 'addCourse']); ?>';
+    document.addDistributionEmp = '<?php echo $this->url('employee', ['action' => 'addDistributionEmp']); ?>';</script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
