@@ -225,7 +225,7 @@
 
 
         $('#distributionBtn').confirmation({
-            placement: 'bottom',
+            placement: 'right',
             onConfirm: function () {
                 app.serverRequest(document.addDistributionEmp,{id:document.employeeId}).then(
                         function(success){
@@ -237,6 +237,24 @@
             },
         
         });
+        
+        function enableAbroadAddress(countryId){
+            if(countryId!=168){
+                $('#permanentAddressDiv :input').attr("disabled", true);
+                $('#permanentAddressDiv').hide();
+                $('#abroadAddressDiv').show();
+            }else{
+                $('#permanentAddressDiv :input').attr("disabled", false);
+                $('#permanentAddressDiv').show();
+                $('#abroadAddressDiv').hide();
+            }
+        }
+        
+        $('#countryId').on('change',function(){
+            enableAbroadAddress($(this).val());
+        });
+        
+        enableAbroadAddress($('#countryId').val());
 
 
     });

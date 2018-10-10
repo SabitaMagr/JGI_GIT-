@@ -23,6 +23,7 @@ $emailOfficial = $formOne->get('emailOfficial');
 $emailPersonal = $formOne->get('emailPersonal');
 $socialNetwork = $formOne->get('socialNetwork');
 $countryId = $formOne->get('countryId');
+$abroadAddress = $formOne->get('abroadAddress');
 
 /**
  * Emergency Contact Information
@@ -345,9 +346,24 @@ $formOne->prepare();
             </div>
         </div>
     </div>
+    
+    <div class="permanent-info" id="abroadAddressDiv">
+        <p> <i class="fa fa-ad ticon" aria-hidden="true"></i>Abroad Address</p>
+                    <?php // print $this->formLabel($abroadAddress); ?>
+        
+        <div class="row clearfix e-setup">
+            <div class="col-md-12 colsm-12 col-xs-12">
+                    <?php print $this->formElement($abroadAddress); ?>
+                    <?php print $this->formElementErrors()->render($abroadAddress, ['class' => 'help-block error']); ?>
+
+            </div>
+            
+        </div>
+        
+    </div>
 
 
-    <div class="permanent-info">
+    <div class="permanent-info" id="permanentAddressDiv">
 
         <p> <i class="fa fa-address-book ticon" aria-hidden="true"></i>Permanent Address</p>
 

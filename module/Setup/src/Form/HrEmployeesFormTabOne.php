@@ -319,6 +319,17 @@ class HrEmployeesFormTabOne extends Model {
      * @Annotation\Attributes({ "id":"addrTempZoneId","class":"form-control"})
      */
     public $addrTempZoneId;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Textarea")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Abroad Address"})
+     * @Annotation\Attributes({"id":"abroadAddress","rows":"6","cols":"120","style":"width: 100%; resize: none;"})
+     */
+    public $abroadAddress;
+    
+    
     public $addrPermCountryId;
     public $addrTempCountryId;
     public $status;
@@ -369,6 +380,7 @@ class HrEmployeesFormTabOne extends Model {
         'createdBy' => 'CREATED_BY',
         'modifiedBy' => 'MODIFIED_BY',
         'modifiedDt' => 'MODIFIED_DT',
+        'abroadAddress' => 'ABROAD_ADDRESS',
     ];
 
 }

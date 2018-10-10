@@ -104,7 +104,8 @@ class HrEmployees extends Model {
     public $deletedBy;
     public $empowerCompanyCode;
     public $empowerBranchCode;
-
+    public $abroadAddress;
+    
     const TABLE_NAME = "HRIS_EMPLOYEES";
     const EMPLOYEE_ID = "EMPLOYEE_ID";
     const COMPANY_ID = "COMPANY_ID";
@@ -205,6 +206,7 @@ class HrEmployees extends Model {
     const DELETED_BY = "DELETED_BY";
     const EMPOWER_COMPANY_CODE = "EMPOWER_COMPANY_CODE";
     const EMPOWER_BRANCH_CODE = "EMPOWER_BRANCH_CODE";
+    const ABROAD_ADDRESS = "ABROAD_ADDRESS";
     
     public $mappings = [
         'employeeId' => self::EMPLOYEE_ID,
@@ -306,6 +308,7 @@ class HrEmployees extends Model {
         'deletedBy' => self::DELETED_BY,
         'empowerCompanyCode' => self::EMPOWER_COMPANY_CODE,
         'empowerBranchCode' => self::EMPOWER_BRANCH_CODE,
+        'abroadAddress' => self::ABROAD_ADDRESS,
     ];
 
 }
