@@ -45,6 +45,7 @@ class PayrollGenerator {
         "IS_CONTRACT",
         "IS_TEMPORARY",
         "TOTAL_DAYS_TO_PAY",
+        "BRANCH_ALLOWANCE",
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",
