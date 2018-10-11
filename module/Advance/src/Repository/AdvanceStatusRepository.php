@@ -57,6 +57,7 @@ class AdvanceStatusRepository extends HrisRepository {
           AR.DEDUCTION_TYPE AS DEDUCTION_TYPE,
           AR.DEDUCTION_RATE AS DEDUCTION_RATE,
           AR.DEDUCTION_IN AS DEDUCTION_IN,
+          AR.VOUCHER_NO AS VOUCHER_NO,
           (
             CASE
               WHEN AR.DEDUCTION_TYPE = 'M' THEN 'MONTH'

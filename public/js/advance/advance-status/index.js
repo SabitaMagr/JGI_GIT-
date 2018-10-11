@@ -46,6 +46,7 @@
                     }]},
             {field: "REQUESTED_AMOUNT", title: "Request Amt."},
             {field: "STATUS_DETAIL", title: "Status"},
+            {field: "VOUCHER_NO", title: "Voucher"},
             {field: ["ADVANCE_REQUEST_ID"], title: "Action", template: action}
         ];
 
@@ -58,7 +59,16 @@
                 }
             }});
 
-        app.searchTable($table, ['EMPLOYEE_NAME']);
+        app.searchTable($table, ['EMPLOYEE_NAME',
+            'ADVANCE_ENAME',
+            'REQUESTED_DATE_AD',
+            'REQUESTED_DATE_BS',
+            'DATE_OF_ADVANCE_AD',
+            'DATE_OF_ADVANCE_BS',
+            'STATUS_DETAIL',
+            'REQUESTED_AMOUNT',
+            'VOUCHER_NO'
+        ]);
         var exportMap = app.prependPrefExportMap({
             'EMPLOYEE_NAME': 'Employee Name',
             'ADVANCE_ENAME': 'Advance',
@@ -67,6 +77,8 @@
             'DATE_OF_ADVANCE_AD': 'Advance Date(AD)',
             'DATE_OF_ADVANCE_BS': 'Advance Date(BS)',
             'STATUS_DETAIL': 'Status',
+            'REQUESTED_AMOUNT': 'Requested Amt',
+            'VOUCHER_NO': 'Voucher',
         });
 
         $('#excelExport').on('click', function () {

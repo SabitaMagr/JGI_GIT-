@@ -24,38 +24,45 @@
             </div>
         `;
         var columns = [
-            {field: "EMPLOYEE_NAME", title: "Employee"},
+            {field: "EMPLOYEE_NAME", title: "Employee", width: 100},
             {title: "Start Date",
                 columns: [{
                         field: "FROM_DATE_AD",
                         title: "English",
+                        width: 80
                     },
                     {
                         field: "FROM_DATE_BS",
                         title: "Nepali",
+                        width: 80
                     }]},
             {title: "To Date",
                 columns: [{
                         field: "TO_DATE_AD",
                         title: "English",
+                        width: 80
                     },
                     {field: "TO_DATE_BS",
                         title: "Nepali",
+                        width: 80
                     }]},
             {title: "Applied Date",
                 columns: [{
                         field: "REQUESTED_DATE_AD",
                         title: "English",
+                        width: 80
                     },
                     {field: "REQUESTED_DATE_BS",
                         title: "Nepali",
+                        width: 80
                     }]},
-            {field: "DESTINATION", title: "Destination"},
-            {field: "REQUESTED_AMOUNT", title: "Request Amt."},
-            {field: "REQUESTED_TYPE_DETAIL", title: "Request For"},
-            {field: "TRANSPORT_TYPE_DETAIL", title: "Transport"},
-            {field: "STATUS_DETAIL", title: "Status"},
-            {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: action}
+            {field: "DESTINATION", title: "Destination", width: 100},
+            {field: "REQUESTED_AMOUNT", title: "Request Amt.", width: 100},
+            {field: "REQUESTED_TYPE_DETAIL", title: "Request For", width: 100},
+            {field: "TRANSPORT_TYPE_DETAIL", title: "Transport", width: 100},
+            {field: "STATUS_DETAIL", title: "Status", width: 90},
+            {field: "VOUCHER_NO", title: "Voucher", width: 90},
+            {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: action, width: 80}
         ];
         columns=app.prependPrefColumns(columns);
         var pk = 'TRAVEL_ID';
@@ -104,7 +111,8 @@
             'RECOMMENDED_REMARKS': 'Recommended Remarks',
             'RECOMMENDED_DATE': 'Recommended Date',
             'APPROVED_REMARKS': 'Approved Remarks',
-            'APPROVED_DATE': 'Approved Date'
+            'APPROVED_DATE': 'Approved Date',
+            'VOUCHER_NO': 'Voucher'
         };
         exportMap=app.prependPrefExportMap(exportMap);
         $('#excelExport').on('click', function () {

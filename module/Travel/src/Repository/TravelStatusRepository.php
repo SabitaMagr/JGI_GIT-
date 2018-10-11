@@ -51,6 +51,7 @@ class TravelStatusRepository extends HrisRepository {
                   BS_DATE(TR.TO_DATE)                      AS TO_DATE_BS,
                   TR.DESTINATION                           AS DESTINATION,
                   TR.PURPOSE                               AS PURPOSE,
+                  TR.VOUCHER_NO                            AS VOUCHER_NO,
                   TR.REQUESTED_TYPE                        AS REQUESTED_TYPE,
                   (
                   CASE
