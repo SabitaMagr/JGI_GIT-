@@ -78,14 +78,15 @@ class LeaveApproveRepository implements RepositoryInterface {
                 OR U.EMPLOYEE_ID   =RA.APPROVED_BY)
                 WHERE E.STATUS        ='E'
                 AND E.RETIRED_FLAG    ='N'
-                AND ((RA.RECOMMEND_BY= U.EMPLOYEE_ID AND LA.STATUS='RQ') OR (RA.APPROVED_BY= U.EMPLOYEE_ID AND LA.STATUS='RC') )
+                AND ((RA.RECOMMEND_BY= U.EMPLOYEE_ID AND LA.STATUS IN ('RQ','CP')) OR (RA.APPROVED_BY= U.EMPLOYEE_ID AND LA.STATUS IN ('RC','CR')) )
                 AND U.EMPLOYEE_ID={$id}
                 AND (LS.APPROVED_FLAG =
                   CASE
                     WHEN LS.EMPLOYEE_ID IS NOT NULL
                     THEN ('Y')
                   END
-                OR LS.EMPLOYEE_ID IS NULL)
+                OR LS.EMPLOYEE_ID IS NULL
+                OR LA.STATUS IN ('CP','CR'))
                 ORDER BY LA.REQUESTED_DT DESC";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

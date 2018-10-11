@@ -38,7 +38,7 @@ BEGIN
     END IF;
 
     IF
-      :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP'
+      :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP' AND :OLD.STATUS NOT IN ('CP','CR')
     THEN
       UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
         SET
@@ -48,7 +48,7 @@ BEGIN
         AND
           LEAVE_ID =:NEW.LEAVE_ID;
 
-    ELSIF :OLD.STATUS = 'AP' AND
+    ELSIF :OLD.STATUS IN('AP','CP','CR') AND
       :NEW.STATUS IN (
         'C','R'
       )
@@ -145,7 +145,7 @@ BEGIN
     END IF;
 
       IF
-        :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP'
+      :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP'
       THEN
         FOR LEAVE_ASSIGN_DTL IN (
           SELECT
@@ -178,7 +178,7 @@ BEGIN
 
         END LOOP;
 
-      ELSIF :OLD.STATUS = 'AP' AND
+       ELSIF :OLD.STATUS = 'AP' AND
         :NEW.STATUS IN (
           'C','R'
         )

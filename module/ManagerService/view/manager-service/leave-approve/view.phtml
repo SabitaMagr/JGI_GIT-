@@ -150,6 +150,10 @@ print $this->form()->openTag($form);
                                                 echo "Rejected";
                                             } else if ($status == "C") {
                                                 echo "Cancelled";
+                                            } else if ($status == "CP") {
+                                                echo "C Pending";
+                                            } else if ($status == "CR") {
+                                                echo "C Recommended";
                                             }
                                             ?>
                                         </td>
@@ -314,6 +318,13 @@ print $this->form()->openTag($form);
                         </div>
                     <?php } ?>
                 </div>
+                
+                <?php
+                if ($status=='CP' || $status=='CR') {
+                    $recommendedRemarks->setAttributes(['disabled' => 'disabled']);
+                    $approvedRemarks->setAttributes(['disabled' => 'disabled']);
+                }
+                ?>
 
                 <?php if ($role == 2) { ?>
                     <div
@@ -349,7 +360,7 @@ print $this->form()->openTag($form);
                 <?php } ?>
                 <div class="form-group">
                     <?php
-                    if ($status == 'RQ' || ($status == 'RC' && $employeeId != $recommendedBy)) {
+                    if (($status == 'RQ' && $employeeId == $recommendedBy) || ($status == 'RC' && $employeeId != $recommendedBy) || ($status == 'CP' && $employeeId == $recommendedBy) || ($status == 'CR' && $employeeId != $recommendedBy) ) {
                         print $this->formSubmit($submit);
                         ?>
                         <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">

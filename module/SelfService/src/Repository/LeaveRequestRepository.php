@@ -139,20 +139,26 @@ class LeaveRequestRepository implements RepositoryInterface {
     }
 
     public function fetchById($id) {
+
         // TODO: Implement fetchById() method.
+
         $sql = new Sql($this->adapter);
         $select = $sql->select();
-        $select->from(['L' => LeaveApply::TABLE_NAME]);
-        $select->where(["L." . LeaveApply::ID . "=$id"]);
+        $select->from(LeaveApply::TABLE_NAME);
+        $select->where([
+            "ID=".$id
+        ]);
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        return $result->current();
+        $resultset = $statement->execute();
+        return $resultset->current();
     }
 
     public function delete($id) {
+        $leaveStatus = $this->getLeaveFrontOrBack($id);
         $currentDate = Helper::getcurrentExpressionDate();
-        $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
-        EntityHelper::rawQueryResult($this->adapter, "
+        if ($leaveStatus['DATE_STATUS'] == 'BD' || $leaveStatus['LEAVE_STATUS'] == 'AP') {
+            $this->tableGateway->update([LeaveApply::STATUS => 'CP', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+            EntityHelper::rawQueryResult($this->adapter, "
                    DECLARE
                       V_ID HRIS_EMPLOYEE_LEAVE_REQUEST.ID%TYPE;
                       V_STATUS HRIS_EMPLOYEE_LEAVE_REQUEST.STATUS%TYPE;
@@ -177,6 +183,9 @@ class LeaveRequestRepository implements RepositoryInterface {
                       END IF;
                     END;
     ");
+        } else {
+            $this->tableGateway->update([LeaveApply::STATUS => 'C', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
+        }
     }
 
     public function checkEmployeeLeave($employeeId, $date) {
@@ -280,6 +289,7 @@ class LeaveRequestRepository implements RepositoryInterface {
         return $rawResult->current();
     }
 
+
     public function fetchByEmpId($employeeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -288,6 +298,25 @@ class LeaveRequestRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+}
+    public function getLeaveFrontOrBack($id) {
+        $sql = "SELECT START_DATE,TRUNC(SYSDATE) AS CURDATE,
+            CASE WHEN
+            STATUS IN ('RQ','RC') THEN 'NA'
+            ELSE 'A'
+            END
+            AS LEAVE_STATUS,
+            START_DATE-TRUNC(SYSDATE) AS DIFF,
+                CASE  WHEN 
+                (START_DATE-TRUNC(SYSDATE))>0
+                THEN
+                'FD'
+                ELSE
+                'BD'
+                END AS DATE_STATUS
+                FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID={$id}";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute()->current();
     }
 
 }

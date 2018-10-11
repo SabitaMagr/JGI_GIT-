@@ -71,6 +71,7 @@ class EmailController extends AbstractActionController {
         39 => "Overtime_Approve",
         40 => "Monthly_Appraisal_Assigned",
         41 => "Birthday_Wish",
+        42 => "Leave_Cancel",
     ];
 
     private function getVariables() {
@@ -162,7 +163,8 @@ class EmailController extends AbstractActionController {
             38 => $overtimeNotiModelOA,
             39 => $overtimeNotiModelOA,
             40 => $type13ObjVars,
-            41 => $birthdayWishOA
+            41 => $birthdayWishOA,
+            42 => $type1ObjVars
         ];
     }
 

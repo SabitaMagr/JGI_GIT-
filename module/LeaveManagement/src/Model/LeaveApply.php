@@ -25,6 +25,10 @@ class LeaveApply extends Model {
     const APPROVED_REMARKS = "APPROVED_REMARKS";
     const MODIFIED_DT = "MODIFIED_DT";
     const GRACE_PERIOD = "GRACE_PERIOD";
+    const CANCEL_REC_BY = "CANCEL_REC_BY";
+    const CANCEL_APP_BY = "CANCEL_APP_BY";
+    const CANCEL_REC_DT = "CANCEL_REC_DT";
+    const CANCEL_APP_DT = "CANCEL_APP_DT";
 
     public $id;
     public $employeeId;
@@ -44,6 +48,10 @@ class LeaveApply extends Model {
     public $approvedRemarks;
     public $modifiedDt;
     public $gracePeriod;
+    public $cancelRecBy;
+    public $cancelAppBy;
+    public $cancelRecDt;
+    public $cancelAppDt;
     public $mappings = [
         'id' => self::ID,
         'employeeId' => self::EMPLOYEE_ID,
@@ -63,6 +71,10 @@ class LeaveApply extends Model {
         'approvedRemarks' => self::APPROVED_REMARKS,
         'modifiedDt' => self::MODIFIED_DT,
         'gracePeriod' => self::GRACE_PERIOD,
+        'cancelRecBy' => self::CANCEL_APP_BY,
+        'cancelAppBy' => self::CANCEL_REC_BY,
+        'cancelRecDt' => self::CANCEL_REC_DT,
+        'cancelAppDt' => self::CANCEL_APP_DT
     ];
 
 }
