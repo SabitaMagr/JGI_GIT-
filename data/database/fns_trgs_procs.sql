@@ -4712,7 +4712,7 @@ BEGIN
       INTO V_TOTAL_NO_OF_DAYS
       FROM HRIS_EMPLOYEE_LEAVE_REQUEST R
       LEFT JOIN (SELECT * FROM HRIS_LEAVE_YEARS  WHERE TRUNC(SYSDATE) BETWEEN START_DATE AND END_DATE ) LY ON (1=1)
-      WHERE R.STATUS    = 'AP'
+      WHERE R.STATUS IN('AP','CP','CR')
       AND R.EMPLOYEE_ID = leave_assign.EMPLOYEE_ID
       AND R.LEAVE_ID    = leave_assign.LEAVE_ID
        AND R.START_DATE BETWEEN LY.START_DATE AND LY.END_DATE
@@ -5860,8 +5860,8 @@ IF DELETING THEN
   UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
   SET BALANCE       = BALANCE   -:old.NO_OF_DAYS,
     TOTAL_DAYS      = TOTAL_DAYS-:old.NO_OF_DAYS
-  WHERE EMPLOYEE_ID =:new.EMPLOYEE_ID
-  AND LEAVE_ID      = :new.LEAVE_ID;
+  WHERE EMPLOYEE_ID =:old.EMPLOYEE_ID
+  AND LEAVE_ID      = :old.LEAVE_ID;
 END IF;
 END;/
             DROP TRIGGER APPRAISAL_STATUS_TRIGGER;
@@ -5920,7 +5920,7 @@ BEGIN
     END IF;
 
     IF
-      :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP'
+      :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP' AND :OLD.STATUS NOT IN ('CP','CR')
     THEN
       UPDATE HRIS_EMPLOYEE_LEAVE_ASSIGN
         SET
@@ -5930,7 +5930,7 @@ BEGIN
         AND
           LEAVE_ID =:NEW.LEAVE_ID;
 
-    ELSIF :OLD.STATUS = 'AP' AND
+    ELSIF :OLD.STATUS IN('AP','CP','CR') AND
       :NEW.STATUS IN (
         'C','R'
       )
@@ -6027,7 +6027,7 @@ BEGIN
     END IF;
 
       IF
-        :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP'
+      :OLD.STATUS != 'AP' AND :NEW.STATUS = 'AP'
       THEN
         FOR LEAVE_ASSIGN_DTL IN (
           SELECT
@@ -6060,7 +6060,7 @@ BEGIN
 
         END LOOP;
 
-      ELSIF :OLD.STATUS = 'AP' AND
+       ELSIF :OLD.STATUS = 'AP' AND
         :NEW.STATUS IN (
           'C','R'
         )
@@ -6846,28 +6846,22 @@ BEGIN
   RETURN V_STATUS_DESC;
 END;
  /
-            create or replace FUNCTION LEAVE_STATUS_DESC(
-    P_STATUS HRIS_EMPLOYEE_LEAVE_REQUEST.STATUS%TYPE)
-  RETURN VARCHAR2
-IS
-  V_STATUS_DESC VARCHAR2(50 BYTE);
+            create or replace FUNCTION leave_status_desc ( p_status hris_employee_leave_request.status%TYPE ) RETURN VARCHAR2 IS
+    v_status_desc   VARCHAR2(50 BYTE);
 BEGIN
-  V_STATUS_DESC:=
-  (
-    CASE P_STATUS
-    WHEN 'RQ' THEN
-      'Pending'
-    WHEN 'RC'THEN
-      'Recommended'
-    WHEN 'R' THEN
-      'Rejected'
-    WHEN 'AP' THEN
-      'Approved'
-    WHEN 'C' THEN
-      'Cancelled'
-    END);
-  RETURN V_STATUS_DESC;
-END;/
+    v_status_desc := ( CASE p_status
+        WHEN 'RQ' THEN 'Pending'
+        WHEN 'RC' THEN 'Recommended'
+        WHEN 'R' THEN 'Rejected'
+        WHEN 'AP' THEN 'Approved'
+        WHEN 'C' THEN 'Cancelled'
+        WHEN 'CP' THEN 'C Pending'
+        WHEN 'CR' THEN 'C Recommended'
+    END );
+
+    RETURN v_status_desc;
+END;
+/
             create or replace FUNCTION MIN_TO_HOUR(
     P_MIN NUMBER)
   RETURN VARCHAR2
