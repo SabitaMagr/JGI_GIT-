@@ -5915,7 +5915,7 @@ BEGIN
         v_training_start_date,v_training_end_date,v_duration,v_training_type,v_increament,v_assign_status
     FROM
         hris_training_master_setup ms
-        left join HRIS_EMPLOYEE_TRAINING_ASSIGN ta on (ta.training_id=ms.training_id and ta.status='E') 
+        left join HRIS_EMPLOYEE_TRAINING_ASSIGN ta on (ta.training_id=ms.training_id and ta.status='E' and ta.employee_id=p_employee_id) 
     WHERE
         ms.training_id = p_training_id;
 
