@@ -3,6 +3,7 @@
 namespace Training;
 
 use Application\Controller\ControllerFactory;
+use Training\Controller\TrainingApplyController;
 use Training\Controller\TrainingAssignController;
 use Training\Controller\TrainingAttendanceController;
 use Training\Controller\TrainingStatusController;
@@ -49,6 +50,20 @@ return [
                     ],
                     'defaults' => [
                         'controller' => TrainingAttendanceController::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
+            'trainingApply' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/training/trainingApply[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => TrainingApplyController::class,
                         'action' => 'index'
                     ],
                 ],
@@ -132,12 +147,30 @@ return [
                 ],
             ],
         ],
+        'trainingApply' => [
+            [
+                'label' => "Training",
+                'route' => "trainingStatus"
+            ],
+            [
+                'label' => "Training",
+                'route' => "trainingStatus",
+                'pages' => [
+                    [
+                        'label' => 'Apply',
+                        'route' => 'trainingApply',
+                        'action' => 'add',
+                    ],
+                ],
+            ],
+        ],
     ],
     'controllers' => [
         'factories' => [
             Controller\TrainingAssignController::class => ControllerFactory::class,
             Controller\TrainingStatusController::class => ControllerFactory::class,
             Controller\TrainingAttendanceController::class => ControllerFactory::class,
+            Controller\TrainingApplyController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

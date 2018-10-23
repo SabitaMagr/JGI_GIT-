@@ -27,6 +27,7 @@ class TrainingRequest extends Model {
     const DURATION = "DURATION";
     const REMARKS = "REMARKS";
     const IS_WITHIN_COMPANY = "IS_WITHIN_COMPANY";
+    const DAILY_TRAINING_HOUR = "DAILY_TRAINING_HOUR";
 
     public $requestId;
     public $requestedDate;
@@ -48,6 +49,7 @@ class TrainingRequest extends Model {
     public $duration;
     public $remarks;
     public $isWithinCompany;
+    public $dailyTrainingHour;
     public $mappings = [
         'requestId' => self::REQUEST_ID,
         'requestedDate' => self::REQUESTED_DATE,
@@ -68,7 +70,8 @@ class TrainingRequest extends Model {
         'modifiedDate' => self::MODIFIED_DATE,
         'duration' => self::DURATION,
         'remarks' => self::REMARKS,
-        'isWithinCompany' => self::IS_WITHIN_COMPANY
+        'isWithinCompany' => self::IS_WITHIN_COMPANY,
+        'dailyTrainingHour' => self::DAILY_TRAINING_HOUR
     ];
 
 }

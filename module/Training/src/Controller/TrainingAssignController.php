@@ -167,7 +167,7 @@ class TrainingAssignController extends HrisController {
                 } else {
                     $trainingAssignList = null;
                 }
-                if ($trainingAssignList != null) {
+                if ($trainingAssignList != null && $trainingAssignList['STATUS']=='E') {
                     $employeeRow['TRAINING_NAME'] = $trainingAssignList['TRAINING_NAME'];
                     $employeeRow['TRAINING_ID'] = $trainingAssignList['TRAINING_ID'];
                     $employeeRow['START_DATE'] = $trainingAssignList['START_DATE'];

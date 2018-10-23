@@ -65,11 +65,11 @@
             }});
 
         $search.on('click', function () {
-            app.serverRequest('', {
-                'status': $status.val(),
-                'fromDate': $fromDate.val(),
-                'toDate': $toDate.val()
-            }).then(function (response) {
+            var data = document.searchManager.getSearchValues();
+            data['status'] = $status.val();
+            data['fromDate'] = $fromDate.val();
+            data['toDate'] = $toDate.val();
+            app.serverRequest('', data).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
                 } else {
@@ -79,7 +79,12 @@
                 app.showMessage(error, 'error');
             });
         });
-        app.searchTable($table, ['EMPLOYEE_NAME']);
+        app.searchTable($table, ['FULL_NAME','TITLE','TRAINING_TYPE','REQUESTED_DATE','REQUESTED_DATE_BS',
+            'START_DATE','START_DATE_BS',
+            'END_DATE','END_DATE_BS',
+            'DURATION','STATUS_DETAIL',
+            'REMARKS'
+        ]);
         var exportMap = {
             'FULL_NAME': 'Employee Name',
             'TITLE': 'Training Name',

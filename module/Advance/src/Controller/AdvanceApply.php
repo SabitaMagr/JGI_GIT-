@@ -70,7 +70,7 @@ class AdvanceApply extends HrisController {
         try {
             $request = $this->getRequest();
             $employeeId = $request->getPost('employeeId');
-            $advanceList = $this->repository->fetchAvailableAdvacenList($this->employeeId);
+            $advanceList = $this->repository->fetchAvailableAdvacenList($employeeId);
             return new JsonModel(['success' => true, 'data' => $advanceList, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);

@@ -26,10 +26,12 @@ class TrainingAssignRepository implements RepositoryInterface {
 
     public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
+        $this->leaveReward($model->employeeId, $model->trainingId);
     }
 
     public function delete($id) {
         $this->tableGateway->update([TrainingAssign::STATUS => 'D'], [TrainingAssign::EMPLOYEE_ID . "=$id[0]", TrainingAssign::TRAINING_ID . " =$id[1]"]);
+        EntityHelper::rawQueryResult($this->adapter, "BEGIN  HRIS_TRAINING_LEAVE_REWARD({$id[0]},{$id[1]}); END;");
     }
 
     public function getDetailByEmployeeID($employeeId, $trainingId) {
@@ -156,13 +158,14 @@ class TrainingAssignRepository implements RepositoryInterface {
                 ON (TA.TRAINING_ID= TMS.TRAINING_ID)
                 LEFT JOIN HRIS_EMPLOYEES E
                 ON (TA.EMPLOYEE_ID=E.EMPLOYEE_ID)
-                WHERE 1=1
+                WHERE 1=1 AND TA.STATUS='E' 
                 {$condition} ORDER BY TMS.TRAINING_NAME,E.FULL_NAME";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
     public function edit(Model $model, $id) {
         $this->tableGateway->update($model->getArrayCopyForDB(), [TrainingAssign::EMPLOYEE_ID . "=$id[0]", TrainingAssign::TRAINING_ID . " =$id[1]"]);
+        $this->leaveReward($id[0], $id[1]);
     }
 
     public function fetchAll() {
@@ -186,5 +189,44 @@ class TrainingAssignRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result->current();
     }
+    
+    public function leaveReward($employeeId,$trainingId){
+        $sql="DECLARE
+                V_EMPLOYEE_ID NUMBER(7,0):=$employeeId;
+                V_TRAINING_ID NUMBER(7,0):=$trainingId;
+                V_START_DATE DATE;
+                V_END_DATE DATE;
+                V_DURATION NUMBER;
+                BEGIN
+                SELECT START_DATE,END_DATE,DURATION
+                INTO V_START_DATE,V_END_DATE,V_DURATION
+                FROM HRIS_TRAINING_MASTER_SETUP WHERE TRAINING_ID=V_TRAINING_ID;
+
+                DBMS_OUTPUT.PUT_LINE(V_START_DATE);
+                DBMS_OUTPUT.PUT_LINE(V_END_DATE);
+                DBMS_OUTPUT.PUT_LINE(V_DURATION);
+
+
+                BEGIN
+                DELETE  FROM  HRIS_EMP_TRAINING_ATTENDANCE WHERE
+                TRAINING_ID=V_TRAINING_ID AND EMPLOYEE_ID=V_EMPLOYEE_ID;
+                END;
+                 FOR i IN 0..v_duration - 1 LOOP
+
+                    DBMS_OUTPUT.PUT_LINE(V_START_DATE+i);
+                 INSERT INTO HRIS_EMP_TRAINING_ATTENDANCE VALUES
+                 (V_TRAINING_ID,V_EMPLOYEE_ID,V_START_DATE+i,'P');
+
+
+                 END LOOP;
+
+                 BEGIN
+                 HRIS_TRAINING_LEAVE_REWARD(V_EMPLOYEE_ID,V_TRAINING_ID);
+                 END;
+
+                END;";
+        EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+    
 
 }

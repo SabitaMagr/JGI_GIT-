@@ -433,3 +433,42 @@ INTO HRIS_MENUS
   );
 
 
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Apply',
+    (select menu_id from hris_menus where lower(menu_name) like 'training%' and parent_menu=302 and route='trainingStatus'),
+    NULL,
+    'trainingApply',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil',
+    'add',
+    4,
+    NULL,
+    NULL,
+    'Y'
+  );
+
+

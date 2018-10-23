@@ -24,6 +24,7 @@ class Training extends Model {
     const MODIFIED_BY = "MODIFIED_BY";
     const COMPANY_ID = "COMPANY_ID";
     const IS_WITHIN_COMPANY = "IS_WITHIN_COMPANY";
+    const DAILY_TRAINING_HOUR = "DAILY_TRAINING_HOUR";
 
     public $trainingId;
     public $trainingCode;
@@ -42,6 +43,7 @@ class Training extends Model {
     public $instructorName;
     public $companyId;
     public $isWithinCompany;
+    public $dailyTrainingHour;
     public $mappings = [
         'trainingId' => self::TRAINING_ID,
         'trainingCode' => self::TRAINING_CODE,
@@ -59,7 +61,8 @@ class Training extends Model {
         'remarks' => self::REMARKS,
         'status' => self::STATUS,
         'companyId' => self::COMPANY_ID,
-        'isWithinCompany' => self::IS_WITHIN_COMPANY
+        'isWithinCompany' => self::IS_WITHIN_COMPANY,
+        'dailyTrainingHour' => self::DAILY_TRAINING_HOUR
     ];
 
 }
