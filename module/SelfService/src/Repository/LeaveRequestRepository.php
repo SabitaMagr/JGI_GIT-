@@ -156,7 +156,7 @@ class LeaveRequestRepository implements RepositoryInterface {
     public function delete($id) {
         $leaveStatus = $this->getLeaveFrontOrBack($id);
         $currentDate = Helper::getcurrentExpressionDate();
-        if ($leaveStatus['DATE_STATUS'] == 'BD' || $leaveStatus['LEAVE_STATUS'] == 'AP') {
+        if ($leaveStatus['DATE_STATUS'] == 'BD' && $leaveStatus['LEAVE_STATUS'] == 'AP') {
             $this->tableGateway->update([LeaveApply::STATUS => 'CP', LeaveApply::MODIFIED_DT => $currentDate], [LeaveApply::ID => $id]);
             EntityHelper::rawQueryResult($this->adapter, "
                    DECLARE
@@ -303,7 +303,7 @@ class LeaveRequestRepository implements RepositoryInterface {
         $sql = "SELECT START_DATE,TRUNC(SYSDATE) AS CURDATE,
             CASE WHEN
             STATUS IN ('RQ','RC') THEN 'NA'
-            ELSE 'A'
+            ELSE STATUS
             END
             AS LEAVE_STATUS,
             START_DATE-TRUNC(SYSDATE) AS DIFF,

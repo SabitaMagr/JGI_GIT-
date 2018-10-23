@@ -20,7 +20,7 @@ class TrainingRequestForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Name"})
      * @Annotation\Attributes({ "id":"trainingId","class":"form-control"})
      */
