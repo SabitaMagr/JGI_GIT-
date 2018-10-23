@@ -139,7 +139,7 @@ class VariableProcessor {
              * BRANCH_ALLOWANCE
              */
             case PayrollGenerator::VARIABLES[18]:
-                $processedValue = $this->payrollRepo->getWorkedDays($this->employeeId);
+                $processedValue = $this->payrollRepo->getBranchAllowance($this->employeeId);
                 break;
             default:
 
