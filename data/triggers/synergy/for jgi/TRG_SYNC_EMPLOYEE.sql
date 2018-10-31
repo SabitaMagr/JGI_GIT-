@@ -11,7 +11,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
   V_EMPSUB_CODE                                                                                                VARCHAR2(50 BYTE);
   V_OLD_COMPANY_CODE VARCHAR2(30 BYTE);
   BEGIN
-  
+
     BEGIN
       SELECT COUNT (*)
       INTO V_COUNT
@@ -30,7 +30,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     WHEN OTHERS THEN
       V_COMPANY_CODE := TO_CHAR ('0'||:NEW.COMPANY_ID);
     END;
-    
+
     BEGIN
       SELECT COMPANY_CODE
       INTO V_OLD_COMPANY_CODE
@@ -40,7 +40,7 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     WHEN OTHERS THEN
       V_OLD_COMPANY_CODE := TO_CHAR ('0'||:OLD.COMPANY_ID);
     END;
-    
+
     IF :NEW.STATUS    = 'E' THEN
       V_DELETED_FLAG := 'N';
     ELSE
@@ -211,12 +211,12 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
       END IF;
     ELSIF V_COUNT >= 1 THEN
       BEGIN
-      
+
       IF(V_OLD_COMPANY_CODE!=V_COMPANY_CODE)
       THEN
        DELETE  FROM HR_EMPLOYEE_SETUP WHERE EMPLOYEE_CODE=:OLD.EMPLOYEE_ID AND COMPANY_CODE=V_COMPANY_CODE;
       END IF;
-      
+
         UPDATE HR_EMPLOYEE_SETUP
         SET EMPLOYEE_EDESC = REPLACE(CONCAT(CONCAT(:NEW.FIRST_NAME
           ||' ',:NEW.MIDDLE_NAME
@@ -256,9 +256,9 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
          AND COMPANY_CODE=V_OLD_COMPANY_CODE;
         BEGIN
           UPDATE FA_SUB_LEDGER_SETUP
-          SET SUB_EDESC = CONCAT(CONCAT(:NEW.FIRST_NAME
+          SET SUB_EDESC = REPLACE(CONCAT(CONCAT(:NEW.FIRST_NAME
             ||' ',:NEW.MIDDLE_NAME
-            ||' '),:NEW.LAST_NAME),
+            ||' '),:NEW.LAST_NAME),'  ',' '),
             SUB_NDESC = NVL(:NEW.NAME_NEPALI, CONCAT(CONCAT(:NEW.FIRST_NAME
             ||' ',:NEW.MIDDLE_NAME
             ||' '),:NEW.LAST_NAME))
@@ -272,6 +272,6 @@ create or replace TRIGGER "TRG_SYNC_EMPLOYEE" AFTER
     END IF;
 
 
-    
-    
+
+
   END;
