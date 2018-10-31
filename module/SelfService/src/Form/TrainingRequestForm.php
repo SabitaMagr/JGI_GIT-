@@ -20,7 +20,7 @@ class TrainingRequestForm {
 
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
-     * @Annotation\Required(false)
+     * @Annotation\Required(true)
      * @Annotation\Options({"disable_inarray_validator":"true","label":"Training Name"})
      * @Annotation\Attributes({ "id":"trainingId","class":"form-control"})
      */
@@ -119,5 +119,14 @@ class TrainingRequestForm {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Daily Training Hour"})
+     * @Annotation\Attributes({ "id":"dailyTrainingHour", "class":" form-control","step":"0.1"})
+     */
+    public $dailyTrainingHour;
 
 }

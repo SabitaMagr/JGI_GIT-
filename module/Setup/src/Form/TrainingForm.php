@@ -101,5 +101,15 @@ class TrainingForm {
      * @Annotation\Attributes({ "id":"isWithinCompany"})
      */
     public $isWithinCompany;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Daily Training Hour"})
+     * @Annotation\Attributes({ "id":"dailyTrainingHour", "class":" form-control","step":"0.1"})
+     */
+    public $dailyTrainingHour;
+    
 
 }

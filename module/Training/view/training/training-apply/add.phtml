@@ -1,3 +1,21 @@
+
+<div class="page-bar">
+    <?= $this->navigation('Zend\Navigation\trainingApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+</div>
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
 <?php
 $this->headLink()
         ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
@@ -6,8 +24,13 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 
-$this->headScript()->appendFile($this->basePath('js/SelfService/training-request/add.js'));
+$this->headScript()->appendFile($this->basePath('js/training/training-apply/add.js'));
+?>
 
+<?php
+$form->setAttribute('role', 'form');
+
+$employeeId = $form->get('employeeId');
 $trainingId = $form->get('trainingId');
 $startDate = $form->get('startDate');
 $endDate = $form->get('endDate');
@@ -19,21 +42,25 @@ $remarks = $form->get('remarks');
 $isWithinCompany = $form->get('isWithinCompany');
 $dailyTrainingHour = $form->get('dailyTrainingHour');
 $submit = $form->get('submit');
-$form->setAttribute('action', $this->url('trainingRequest', ['action' => 'add']));
+
+
+//$form->setAttribute('action', $this->url('trainingRequest', ['action' => 'add']));
 $form->prepare();
+print $this->form()->openTag($form);
 ?>
+
 <script>
-    document.trainingList =<?= json_encode($trainingList) ?>;
+    document.employeeList =<?=json_encode($employeeList);?>;
+    document.pullEmployeeTraining = '<?php echo $this->url('trainingApply', ['action' => 'pullEmployeeTraining']); ?>';
 </script>
-<div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\trainingRequest')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
-</div>
-<div class="row margin-top-20">
+
+<div class="row margin-top-20" >
     <div class="col-sm-12">
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-user"></i>New Entry
+                    <i class="fa fa-user"></i>
+                    Apply For Advance
                 </div>
                 <div class="actions">
                     <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
@@ -42,6 +69,15 @@ $form->prepare();
             <div class="portlet-body">
                 <?php print $this->form()->openTag($form); ?>
                 <div class=" row">
+                    
+                    <div class="col-sm-4" >
+                        <div class="form-group">
+                            <?php print $this->formLabel($employeeId); ?>
+                            <?php print $this->formElement($employeeId); ?>
+                            <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($trainingId); ?>
@@ -148,8 +184,13 @@ $form->prepare();
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();
                 ?>
+                
             </div>
-
         </div>
     </div>
 </div>
+<?php
+print $this->form()->closeTag();
+?>
+
+

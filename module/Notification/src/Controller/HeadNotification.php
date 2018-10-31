@@ -505,7 +505,7 @@ class HeadNotification {
         $title = "Training $type";
         $desc = "Training $type";
 
-        self::addNotifications($notification, $title, $desc, $adapter);
+       // self::addNotifications($notification, $title, $desc, $adapter);
         self::sendEmail($notification, 12, $adapter, $url);
     }
 

@@ -116,7 +116,7 @@ class TrainingRequest extends HrisController {
             $trainingResult = $trainingRepo->selectAll($employeeId);
             $trainingList = [];
             $allTrainings = [];
-            $trainingList[-1] = "---";
+            $trainingList[''] = "---";
             foreach ($trainingResult as $trainingRow) {
                 $trainingList[$trainingRow['TRAINING_ID']] = $trainingRow['TRAINING_NAME'] . " (" . $trainingRow['START_DATE'] . " to " . $trainingRow['END_DATE'] . ")";
                 $allTrainings[$trainingRow['TRAINING_ID']] = $trainingRow;
