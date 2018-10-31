@@ -202,7 +202,7 @@ class ManagerReportRepo implements RepositoryInterface {
                 ON A.TRAVEL_ID      =TVL.TRAVEL_ID
                 LEFT JOIN HRIS_RECOMMENDER_APPROVER  RA
                 ON RA.EMPLOYEE_ID=E.EMPLOYEE_ID
-                WHERE 1=1
+                WHERE 1=1 AND E.STATUS='E'
                 {$employeeCondition}
                 {$fromDateCondition}
                 {$toDateCondition}
