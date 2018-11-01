@@ -288,5 +288,15 @@ class PayrollRepository extends HrisRepository {
         $employeeListRaw = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($employeeListRaw);
     }
+    
+    public function getBranchAllowance($employeeId) {
+        $sql = "SELECT ALLOWANCE FROM HRIS_BRANCHES WHERE 
+                BRANCH_ID=(SELECT  BRANCH_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID={$employeeId})";
+        $resultList = $this->rawQuery($sql);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['ALLOWANCE'];
+    }
 
 }
