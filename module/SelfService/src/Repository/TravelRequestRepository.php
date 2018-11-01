@@ -34,6 +34,9 @@ class TravelRequestRepository implements RepositoryInterface {
                   V_STATUS HRIS_EMPLOYEE_TRAVEL_REQUEST.STATUS%TYPE;
                   V_TRAVEL_ID HRIS_EMPLOYEE_TRAVEL_REQUEST.TRAVEL_ID%TYPE:= {$id};
                 BEGIN
+                BEGIN
+                HRIS_TRAVEL_CANCELLATION(V_TRAVEL_ID);
+                END;
                   SELECT FROM_DATE ,
                     TO_DATE,
                     EMPLOYEE_ID,
