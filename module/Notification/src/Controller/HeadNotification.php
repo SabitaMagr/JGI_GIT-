@@ -1551,17 +1551,17 @@ class HeadNotification {
                 self::leaveCancelled($model, $adapter, $url, self::RECOMMENDER);
                 break;
             case NotificationEvents::LEAVE_CANCELLED_RECOMMEND_ACCEPTED:
-                self::leaveRecommend($model, $adapter, $url, self::CANCELLED_ACCEPTED);
+                self::leaveCancelRecommend($model, $adapter, $url, self::CANCELLED_ACCEPTED);
                 self::leaveCancelled($model, $adapter, $url, self::APPROVER);
                 break;
             case NotificationEvents::LEAVE_CANCELLED_RECOMMEND_REJECTED:
-                self::leaveRecommend($model, $adapter, $url, self::CANCELLED_REJECTED);
+                self::leaveCancelRecommend($model, $adapter, $url, self::CANCELLED_REJECTED);
                 break;
             case NotificationEvents::LEAVE_CANCELLED_APPROVE_ACCEPTED:
-                self::leaveApprove($model, $adapter, $url, self::CANCELLED_ACCEPTED);
+                self::leaveCancelApprove($model, $adapter, $url, self::CANCELLED_ACCEPTED);
                 break;
             case NotificationEvents::LEAVE_CANCELLED_APPROVE_REJECTED:
-                self::leaveApprove($model, $adapter, $url, self::CANCELLED_REJECTED);
+                self::leaveCancelApprove($model, $adapter, $url, self::CANCELLED_REJECTED);
                 break;
         }
     }
@@ -1890,7 +1890,7 @@ class HeadNotification {
         $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
         $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
 
-        $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "view", "id" => $leaveApply->id, "role" => $idAndRole['role']]);
+        $leaveReqNotiMod->route = json_encode(["route" => "leaveapprove", "action" => "cancelView", "id" => $leaveApply->id, "role" => $idAndRole['role']]);
 //
         $notificationTitle = "Leave Cancel Request";
         $notificationDesc = "Leave Cancel Request of $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate";
@@ -1898,5 +1898,52 @@ class HeadNotification {
         self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
         self::sendEmail($leaveReqNotiMod, 42, $adapter, $url);
     }
+    
+    private static function leaveCancelRecommend(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
+        self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
+        $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
+        $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::RECOMMEND_BY], $leaveApply->employeeId, LeaveRequestNotificationModel::class, $adapter);
+
+//
+        $leaveReqNotiMod->fromDate = $leaveApply->startDate;
+        $leaveReqNotiMod->toDate = $leaveApply->endDate;
+        $leaveReqNotiMod->leaveName = self::getName($leaveApply->leaveId, new LeaveMasterRepository($adapter), 'LEAVE_ENAME');
+        $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
+        $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
+        $leaveReqNotiMod->leaveRecommendStatus = $status;
+        $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
+//
+        $notificationTitle = "Leave Cancel Recommended";
+        $notificationDesc = "Recommendation of Leave Cancel Request by"
+                . " $leaveReqNotiMod->fromName from $leaveReqNotiMod->fromDate"
+                . " to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveRecommendStatus";
+        self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
+        self::sendEmail($leaveReqNotiMod, 43, $adapter, $url);
+    }
+
+    public static function leaveCancelApprove(LeaveApply $leaveApply, AdapterInterface $adapter, Url $url, string $status) {
+        self::initFullModel(new LeaveApplyRepository($adapter), $leaveApply, $leaveApply->id);
+        $recommendAppModel = self::findRecApp($leaveApply->employeeId, $adapter);
+        $leaveReqNotiMod = self::initializeNotificationModel($recommendAppModel[RecommendApprove::APPROVED_BY], $leaveApply->employeeId, LeaveRequestNotificationModel::class, $adapter);
+
+
+        $leaveReqNotiMod->fromDate = $leaveApply->startDate;
+        $leaveReqNotiMod->toDate = $leaveApply->endDate;
+        $leaveReqNotiMod->leaveName = self::getName($leaveApply->leaveId, new LeaveMasterRepository($adapter), 'LEAVE_ENAME');
+        $leaveReqNotiMod->leaveType = $leaveApply->halfDay;
+        $leaveReqNotiMod->noOfDays = $leaveApply->noOfDays;
+        $leaveReqNotiMod->leaveApprovedStatus = $status;
+
+        $leaveReqNotiMod->route = json_encode(["route" => "leaverequest", "action" => "view", "id" => $leaveApply->id]);
+
+        $notificationTitle = "Leave Cancel Approval";
+        $notificationDesc = "Approval of Leave Cancel Request by $leaveReqNotiMod->fromName from "
+                . "$leaveReqNotiMod->fromDate to $leaveReqNotiMod->toDate is $leaveReqNotiMod->leaveApprovedStatus";
+        self::addNotifications($leaveReqNotiMod, $notificationTitle, $notificationDesc, $adapter);
+        self::sendEmail($leaveReqNotiMod, 44, $adapter, $url);
+    }
+    
+    
+    
 
 }

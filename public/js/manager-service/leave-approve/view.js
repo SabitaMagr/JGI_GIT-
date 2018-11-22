@@ -19,7 +19,7 @@
                 if (typeof document.isHalfDay !== 'undefined') {
                     noOfDays = noOfDays / (document.isHalfDay ? 2 : 1);
                 }
-                if (noOfDays > availableBalance) {
+                if (noOfDays > availableBalance && typeof document.leaveCancel=="undefined") {
                     var errorMsgSpan = $('<span />', {
                         "class": 'errorMsgNoLeft',
                         text: "There is not enough available days...!!!"

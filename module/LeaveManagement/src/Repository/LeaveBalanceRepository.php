@@ -27,7 +27,7 @@ class LeaveBalanceRepository {
     }
 
     public function getAllLeave($isMonthly = false) {
-        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : "";
+        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : "  AND IS_MONTHLY = 'N' ";
         $sql = "SELECT LEAVE_ID,INITCAP(LEAVE_ENAME) AS LEAVE_ENAME FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS='E' {$condition} ORDER BY LEAVE_ID";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
@@ -195,7 +195,7 @@ class LeaveBalanceRepository {
     }
 
     private function fetchLeaveAsDbArray($isMonthly = false) {
-        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : " ";
+        $condition = $isMonthly ? " AND IS_MONTHLY = 'Y' " : " AND IS_MONTHLY = 'N' ";
         $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT LEAVE_ID FROM HRIS_LEAVE_MASTER_SETUP WHERE STATUS ='E' {$condition}");
         $dbArray = "";
         foreach ($rawList as $key => $row) {

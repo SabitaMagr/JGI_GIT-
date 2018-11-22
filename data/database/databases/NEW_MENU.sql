@@ -432,7 +432,7 @@ INTO HRIS_MENUS
     'Y'
   );
 
-
+-- do not insert it start
 INSERT
 INTO HRIS_MENUS
   (
@@ -470,5 +470,81 @@ INTO HRIS_MENUS
     NULL,
     'Y'
   );
+-- do not insert it end
 
 
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Leave Cancel To Approve',
+    (select menu_id from hris_menus where lower(menu_name) like 'approval%'),
+    NULL,
+    'leaveapprove',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'cancelList',
+    1,
+    NULL,
+    NULL,
+    'Y'
+  );
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'view',
+    (select menu_id from hris_menus where lower(menu_name) like 'leave cancel%'),
+    NULL,
+    'leaveapprove',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'cancelView',
+    1,
+    NULL,
+    NULL,
+    'N'
+  );

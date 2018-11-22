@@ -42,6 +42,10 @@
 
 
         var viewAttendance = function () {
+            console.log($('#fromDate').val());
+            console.log($('#toDate').val());
+            
+            
             app.pullDataById(document.attendancelistUrl, {data: {
                     'fromDate': $('#fromDate').val(),
                     'toDate': $('#toDate').val(),
@@ -92,9 +96,11 @@
                 var $fromDate = $('#fromDate');
                 var $toDate = $('#toDate');
                 var $presentStatus = $('#presentStatusId');
+                
+                
 
-                $fromDate.val(fiscalYear.FROM_DATE);
-                $toDate.val(fiscalYear.TO_DATE);
+                $fromDate.val(getDateFormat(fiscalYear.FROM_DATE));
+                $toDate.val(getDateFormat(fiscalYear.TO_DATE));
 
                 if (idFromParameter >= 6) {
                     $presentStatus.val(paramMap[idFromParameter]).change();
@@ -105,6 +111,23 @@
                 viewAttendance();
             }
         }, 6000);
+        
+        
+        
+        function getDateFormat(date) {
+            var m_names = new Array("Jan", "Feb", "Mar",
+                    "Apr", "May", "Jun", "Jul", "Aug", "Sep",
+                    "Oct", "Nov", "Dec");
+
+
+            var d = new Date(date);
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth();
+            var curr_year = d.getFullYear();
+            return curr_date + "-" + m_names[curr_month]
+                    + "-" + curr_year;
+
+        }
 
 
 

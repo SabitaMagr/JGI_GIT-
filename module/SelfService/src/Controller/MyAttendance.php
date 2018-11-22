@@ -6,6 +6,7 @@ use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
+use Application\Repository\MonthRepository;
 use Exception;
 use SelfService\Repository\AttendanceRepository;
 use Zend\Authentication\Storage\StorageInterface;
@@ -19,13 +20,15 @@ class MyAttendance extends HrisController {
     }
 
     public function indexAction() {
+        $monthRepo = new MonthRepository($this->adapter);
         $statusSelectElement = EntityHelper::getAttendanceStatusSelectElement();
         $presentStatusSelectElement = EntityHelper::getAttendancePresentStatusSelectElement();
         return Helper::addFlashMessagesToArray($this, [
                     'employeeId' => $this->employeeId,
                     'status' => $statusSelectElement,
                     'presentStatus' => $presentStatusSelectElement,
-                    'fiscalYear' => $this->storageData['fiscal_year']
+//                    'fiscalYear' => $this->storageData['fiscal_year']
+                    'fiscalYear' => $monthRepo->getCurrentMonth()
         ]);
     }
 
