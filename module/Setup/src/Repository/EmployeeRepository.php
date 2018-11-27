@@ -343,7 +343,16 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function delete($model) {
-        $this->tableGateway->update(['STATUS' => 'D', 'DELETED_DATE' => $model->deletedDate, 'DELETED_BY' => $model->deletedBy], ['EMPLOYEE_ID' => $model->employeeId]);
+        $sql = "UPDATE HRIS_EMPLOYEES SET 
+                REMARKS=REMARKS||' THUMB_ID='||ID_THUMB_ID,
+                ID_THUMB_ID=NULL,
+                STATUS='D',
+                DELETED_DATE={$model->deletedDate->getExpression()},
+                DELETED_BY={$model->deletedBy}
+                WHERE EMPLOYEE_ID={$model->employeeId}";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+//        $this->tableGateway->update(['STATUS' => 'D', 'DELETED_DATE' => $model->deletedDate, 'DELETED_BY' => $model->deletedBy], ['EMPLOYEE_ID' => $model->employeeId]);
     }
 
     public function edit(Model $model, $id) {
