@@ -145,7 +145,7 @@ BEGIN
     SELECT
     employee_id,
     overtime_date,
-    AVG(total_hour) AS total_hour
+    SUM(total_hour) AS total_hour
 FROM
     hris_overtime where status ='AP'
 GROUP BY
