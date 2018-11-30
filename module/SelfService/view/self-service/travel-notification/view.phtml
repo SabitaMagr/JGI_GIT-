@@ -68,11 +68,11 @@ $form->prepare();
                                 <table>
                                     <tr height="30">
                                         <td>
-                                            Requested Date
+                                            Employee Name
                                         </td>
                                         <td width="15">:</td>
                                         <td>
-                                            <?php echo $requestedDate; ?>
+                                            <?php echo $employeeName; ?>
                                         </td>
                                     </tr>
                                     <tr height="30">
@@ -99,6 +99,29 @@ $form->prepare();
                                 </table>
                             </div>
                             <div class="col-sm-4">
+                                <table>
+                                    <tr height="30">
+                                        <td>
+                                            Requested Date
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $requestedDate; ?>
+                                        </td>
+                                    </tr>
+                                    <tr height="30">
+                                        <td>
+                                            Approver
+                                        </td>
+                                        <td width="15">:</td>
+                                        <td>
+                                            <?php echo $approver; ?>
+                                        </td>
+                                    </tr>                               
+                                </table>
+                            </div>
+                            
+                            <div class="col-sm-4">
                                 <table>  
                                     <tr height="30">
                                         <td>
@@ -121,15 +144,6 @@ $form->prepare();
                                             ?>
                                         </td>
                                     </tr>
-                                    <tr height="30">
-                                        <td>
-                                            Approver
-                                        </td>
-                                        <td width="15">:</td>
-                                        <td>
-                                            <?php echo $approver; ?>
-                                        </td>
-                                    </tr>                               
                                 </table>
                             </div>
                         </div>
