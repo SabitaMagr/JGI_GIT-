@@ -68,7 +68,8 @@
             "Other\\": "module/Other/src/",
             "Report\\": "module/Report/src/",
             "MobileApi\\": "module/MobileApi/src/",
-            "Customer\\": "module/Customer/src/"
+            "Customer\\": "module/Customer/src/",
+            "PayrollApi\\": "module/PayrollApi/src/"
         }
     },
     "autoload-dev": {
