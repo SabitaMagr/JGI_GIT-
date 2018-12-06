@@ -123,7 +123,7 @@ class PayrollApi extends HrisController {
     }
 
     private function getMonthWiseSalaryShett($month_id) {
-        $sqlbk = "SELECT * FROM (select hs.YEAR,hsc.MONTH_NO,he.EMPLOYEE_ID,he.EMPLOYEE_CODE,hsp.PAY_ID,
+        $sql = "SELECT * FROM (select hs.YEAR,hsc.MONTH_NO,he.EMPLOYEE_ID,he.EMPLOYEE_CODE,hsp.PAY_ID,
              --hsp.PAY_EDESC,
              hsd.VAL
             from HRIS_SALARY_SHEET hs join hris_salary_sheet_detail hsd on hs.SHEET_NO=hsd.SHEET_NO 
@@ -136,19 +136,19 @@ class PayrollApi extends HrisController {
              )
              PIVOT  (MAX(VAL)  FOR (pay_id) IN (1,4,5,6,8,10,9,7,11,35,36,13,14,34))";
 
-        $sql = " SELECT * FROM (select hs.YEAR,hsc.MONTH_NO,he.EMPLOYEE_ID,he.EMPLOYEE_CODE,hsp.PAY_ID,
-             --hsp.PAY_EDESC,
-             hsd.VAL
-            from LLBS_PAYROLL.HRIS_SALARY_SHEET hs join 
-            LLBS_PAYROLL.hris_salary_sheet_detail hsd on hs.SHEET_NO=hsd.SHEET_NO 
-             join LLBS_PAYROLL.hris_pay_setup hsp on hsp.PAY_ID=hsd.PAY_ID
-             join LLBS_PAYROLL.HRIS_MONTH_CODE hsc on hsc.MONTH_ID=hs.MONTH_ID
-             join LLBS_PAYROLL.hris_employees he on 
-             he.EMPLOYEE_ID=hsd.EMPLOYEE_ID where
-             --he.EMPLOYEE_ID=83 AND
-             hs.MONTH_ID= 37 and hsd.PAY_ID in (1,4,5,6,8,10,9,7,11,35,36,13,14,34)
-             )
-             PIVOT  (MAX(VAL)  FOR (pay_id) IN (1,4,5,6,8,10,9,7,11,35,36,13,14,34))";
+//        $sql = " SELECT * FROM (select hs.YEAR,hsc.MONTH_NO,he.EMPLOYEE_ID,he.EMPLOYEE_CODE,hsp.PAY_ID,
+//             --hsp.PAY_EDESC,
+//             hsd.VAL
+//            from LLBS_PAYROLL.HRIS_SALARY_SHEET hs join 
+//            LLBS_PAYROLL.hris_salary_sheet_detail hsd on hs.SHEET_NO=hsd.SHEET_NO 
+//             join LLBS_PAYROLL.hris_pay_setup hsp on hsp.PAY_ID=hsd.PAY_ID
+//             join LLBS_PAYROLL.HRIS_MONTH_CODE hsc on hsc.MONTH_ID=hs.MONTH_ID
+//             join LLBS_PAYROLL.hris_employees he on 
+//             he.EMPLOYEE_ID=hsd.EMPLOYEE_ID where
+//             --he.EMPLOYEE_ID=83 AND
+//             hs.MONTH_ID= 37 and hsd.PAY_ID in (1,4,5,6,8,10,9,7,11,35,36,13,14,34)
+//             )
+//             PIVOT  (MAX(VAL)  FOR (pay_id) IN (1,4,5,6,8,10,9,7,11,35,36,13,14,34))";
 
         $result = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($result);
