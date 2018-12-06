@@ -43,6 +43,11 @@ class PayrollApi extends HrisController {
 
     public function PostSalaryAction() {
         $refreshPage = 'N';
+        
+        $tokenData = $this->getToken();
+        if (!isset($tokenData)) {
+        $refreshPage = 'Y';
+        };
 
         $request = $this->getRequest();
         if ($request->isPost()) {
