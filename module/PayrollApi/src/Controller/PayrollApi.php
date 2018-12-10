@@ -59,7 +59,10 @@ class PayrollApi extends HrisController {
             $monthWiseDetail = $this->getMonthWiseSalaryShett($monthId);
 
             $postDataFormat = array();
-
+			
+			$postDataFormat['year']='';
+            $postDataFormat['month']='';
+            $postDataFormat['edate']='';
             $postDataFormat['payroll'] = array();
             $loopCounter = 0;
             foreach ($monthWiseDetail as $salaryData) {
@@ -67,6 +70,7 @@ class PayrollApi extends HrisController {
                 if ($loopCounter == 0) {
                     $postDataFormat['year'] = $salaryData['YEAR'];
                     $postDataFormat['month'] = $salaryData['MONTH_NO'];
+					$postDataFormat['edate'] = $salaryData['FROM_DATE'];
                 }
 
                 $tempData = array();
@@ -84,6 +88,12 @@ class PayrollApi extends HrisController {
             $curl = curl_init();
 //
             $bodyData = json_encode($postDataFormat);
+			
+			//echo '<pre>';
+			//print_r($bodyData);
+			//die();
+			
+			
 
             $token = $this->getToken();
 
@@ -94,21 +104,32 @@ class PayrollApi extends HrisController {
                 CURLOPT_POSTFIELDS => $bodyData,
                 CURLOPT_HTTPHEADER => array(
                     'Content-Type: application/json',
-                    'Authorization: ' . $token,
+                    'Authorization: Bearer ' . $token,
                     'Content-Length: ' . strlen($bodyData)
                 )
             ));
             $response = json_decode(curl_exec($curl));
             curl_close($curl);
+			
+			
+			
+			//echo '<pre>';
+			//print_r($response);
+			//die();
+			
+			
 
 
 
-            if ($response->status == true) {
+            if ($response->status == 'true') {
                 $this->flashmessenger()->addMessage("Procedure Sucessfully Completed");
             } else {
+				
                 $refreshPage = 'Y';
-                $this->flashmessenger()->addMessage("Error : " . $response->errdesc);
+                $this->flashmessenger()->addMessage($response->errdesc);
             }
+			
+			
         }
 
 
@@ -123,18 +144,24 @@ class PayrollApi extends HrisController {
     }
 
     private function getMonthWiseSalaryShett($month_id) {
-        $sql = "SELECT * FROM (select hs.YEAR,hsc.MONTH_NO,he.EMPLOYEE_ID,he.EMPLOYEE_CODE,hsp.PAY_ID,
-             --hsp.PAY_EDESC,
-             hsd.VAL
+        $sql ="SELECT * FROM (select hs.YEAR,lpad(hsc.MONTH_NO, 2, '0') as MONTH_NO ,to_number(he.EMPLOYEE_CODE) as EMPLOYEE_ID,
+		hsp.PAY_ID,to_char(hsc.from_date,'YYYY-MM-DD') as from_date,
+             case when hsd.VAL  is null then 0 else round(hsd.VAL,2) end as VAL 
             from HRIS_SALARY_SHEET hs join hris_salary_sheet_detail hsd on hs.SHEET_NO=hsd.SHEET_NO 
              join hris_pay_setup hsp on hsp.PAY_ID=hsd.PAY_ID
              join HRIS_MONTH_CODE hsc on hsc.MONTH_ID=hs.MONTH_ID
              join hris_employees he on 
-             he.EMPLOYEE_ID=hsd.EMPLOYEE_ID where
+             he.EMPLOYEE_ID=hsd.EMPLOYEE_ID where he.status='E' and he.retired_flag='N' and 
              hs.MONTH_ID= {$month_id} 
-             and hsd.PAY_ID in (1,4,5,6,8,10,9,7,11,35,36,13,14,34)
+             and hsd.PAY_ID in (1,4,5,6,8,9,13,14,50,51)
              )
-             PIVOT  (MAX(VAL)  FOR (pay_id) IN (1,4,5,6,8,10,9,7,11,35,36,13,14,34))";
+             PIVOT  (MAX(VAL)  FOR (pay_id) IN (1,4,5,6,8,9,13,14,50,51))";
+			 
+			 //echo $sql;
+			// die();
+			
+			 
+	
 
 //        $sql = " SELECT * FROM (select hs.YEAR,hsc.MONTH_NO,he.EMPLOYEE_ID,he.EMPLOYEE_CODE,hsp.PAY_ID,
 //             --hsp.PAY_EDESC,
