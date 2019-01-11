@@ -28,7 +28,7 @@ return[
     'navigation' => [
         'allreport' => [
             [
-                'label' => 'Asset Type',
+                'label' => 'Reports',
                 'route' => 'allreport',
             ], [
                 'label' => 'Report',
@@ -77,6 +77,11 @@ return[
                     [
                         'label' => 'Branch Wise Daily',
                         'route' => 'allreport',
+                        'action' => 'branchWiseDaily',
+                    ],
+                    [
+                        'label' => 'Allowance Report',
+                        'route' => 'monthlyAllowance',
                         'action' => 'branchWiseDaily',
                     ],
                 ],

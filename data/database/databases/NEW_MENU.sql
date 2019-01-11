@@ -548,3 +548,36 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
+
+
+-- from bottlers food/shift/night shift start
+
+insert into hris_menus
+(
+menu_id,
+MENU_NAME,
+PARENT_MENU,
+route,
+status,
+created_dt,
+icon_class,
+action,
+menu_index,
+is_visible
+)values
+(
+(select max(menu_id)+1 from hris_menus),
+'Allowance Report',
+148,
+'allreport',
+'E',
+TRUNC(SYSDATE),
+'fa fa-pencil',
+'monthlyAllowance',
+(select max(MENU_INDEX)+1 from hris_menus where parent_menu=148),
+'Y'
+);
+
+
+
+-- from bottlers food/shift/night shift end

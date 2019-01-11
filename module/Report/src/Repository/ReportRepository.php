@@ -1234,6 +1234,26 @@ EOT;
         return Helper::extractDbData($result);
     }
     
+    
+    public function getMonthlyAllowance($searchQuery) {
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $sql="SELECT
+        E.FULL_NAME,
+        AD.EMPLOYEE_ID,
+        SUM(AD.FOOD_ALLOWANCE) AS FOOD_ALLOWANCE,
+        SUM(AD.SHIFT_ALLOWANCE) AS SHIFT_ALLOWANCE,
+        SUM(AD.NIGHT_SHIFT_ALLOWANCE) AS NIGHT_SHIFT_ALLOWANCE
+        FROM HRIS_ATTENDANCE_DETAIL AD
+        JOIN (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID={$searchQuery['monthCodeId']}) MC ON (1=1)
+        LEFT JOIN HRIS_EMPLOYEES E ON (AD.EMPLOYEE_ID=E.EMPLOYEE_ID)
+        WHERE AD.Attendance_Dt
+        BETWEEN MC.FROM_DATE AND MC.TO_DATE {$searchConditon}
+        GROUP BY AD.EMPLOYEE_ID,E.FULL_NAME";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+    
    
     
     
