@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Controller;
 
 use Application\Controller\HrisController;
@@ -46,11 +47,11 @@ class RecommendApproveController extends HrisController {
         $approverSE = $this->getSelectElement(['name' => 'approver', "id" => "approverId", "class" => "form-control", "label" => "Approver"], $approvers);
 
         return $this->stickFlashMessagesTo([
-                'approverFormElement' => $recommenderSE,
-                'recommenderFormElement' => $approverSE,
-                'searchValues' => EntityHelper::getSearchData($this->adapter),
-                'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail'],
+                    'approverFormElement' => $recommenderSE,
+                    'recommenderFormElement' => $approverSE,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
         ]);
     }
 
@@ -66,6 +67,17 @@ class RecommendApproveController extends HrisController {
             $modifiedDt = date('d-M-y');
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
+
+                $alternateRecommender = $request->getPost('alternateRecomender');
+                $alternateApprover = $request->getPost('alternateApprover');
+
+                EntityHelper::rawQueryResult($this->adapter, "DELETE  FROM HRIS_ALTERNATE_R_A WHERE EMPLOYEE_ID={$id}");
+                foreach ($alternateRecommender as $key => $value) {
+                    EntityHelper::rawQueryResult($this->adapter, "INSERT INTO  HRIS_ALTERNATE_R_A VALUES ({$id},{$value},'R')");
+                }
+                foreach ($alternateApprover as $key => $value) {
+                    EntityHelper::rawQueryResult($this->adapter, "INSERT INTO  HRIS_ALTERNATE_R_A VALUES ({$id},{$value},'A')");
+                }
                 $recommendApprove->exchangeArrayFromForm($this->form->getData());
                 $recommendApprove->modifiedDt = Helper::getcurrentExpressionDate();
                 $recommendApprove->modifiedBy = $this->employeeId;
@@ -76,10 +88,12 @@ class RecommendApproveController extends HrisController {
             }
         }
         return Helper::addFlashMessagesToArray($this, [
-                'form' => $this->form,
-                'id' => $id,
-                'employeeList' => EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),
-                'employees' => $this->repository->getEmployees($id)
+                    'form' => $this->form,
+                    'id' => $id,
+                    'employeeList' => EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),
+                    'employees' => $this->repository->getEmployees($id),
+                    'alternateRecommendor' => $this->repository->getAlternateRecmApprover($id,'R'),
+                    'alternateApprover' => $this->repository->getAlternateRecmApprover($id,'A')
         ]);
     }
 
@@ -115,11 +129,11 @@ class RecommendApproveController extends HrisController {
             array_push($employeeList, ['id' => $key, 'name' => $value]);
         }
         return Helper::addFlashMessagesToArray($this, [
-                "branches" => $branchFormElement,
-                "departments" => $departmentFormElement,
-                'designations' => $designationFormElement,
-                'searchValues' => EntityHelper::getSearchData($this->adapter),
-                'employeeList' => $employeeList
+                    "branches" => $branchFormElement,
+                    "departments" => $departmentFormElement,
+                    'designations' => $designationFormElement,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'employeeList' => $employeeList
         ]);
     }
 
@@ -248,4 +262,5 @@ class RecommendApproveController extends HrisController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
+
 }

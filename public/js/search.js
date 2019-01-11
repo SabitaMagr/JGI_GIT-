@@ -177,7 +177,9 @@
                 }
                 return employeeList.filter(function (item) {
                     if (Array.isArray(selectedValues)) {
-                        return $.inArray(item['EMPLOYEE_ID'], selectedValues) === 0;
+                        if($.inArray(item['EMPLOYEE_ID'], selectedValues) >= 0){
+                            return item;
+                        };
                     } else {
                         return item['EMPLOYEE_ID'] == selectedValues;
                     }
