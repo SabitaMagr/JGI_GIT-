@@ -27,7 +27,7 @@ angular.module('hris', ['ui.bootstrap'])
                 }
             };
             $scope.checkReportingHierarchy = function () {
-                if ($scope.recommenderAssign || $scope.approverAssign) {
+                if ($scope.recommenderAssign || $scope.approverAssign || $scope.alternateRecomenderAssign) {
                     $scope.showHideAssignBtn = true;
                 } else {
                     $scope.showHideAssignBtn = false;
@@ -70,6 +70,7 @@ angular.module('hris', ['ui.bootstrap'])
                     console.log("Employee Get All", failure);
                 });
             };
+//            $scope.alternateRecommenderOptions = document.employeeList;
             $scope.recommenderOptions = document.employeeList;
             $scope.recommenderSelected = $scope.recommenderOptions[0]
             $scope.approverOptions = document.employeeList;

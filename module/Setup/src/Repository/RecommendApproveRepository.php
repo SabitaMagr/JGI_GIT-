@@ -266,7 +266,7 @@ class RecommendApproveRepository implements RepositoryInterface {
     
     public function getAlternateRecmApprover($employee_id,$rA){
         $sql = "  
-            SELECT R_A_ID FROM HRIS_ALTERNATE_R_A WHERE R_A_FLAG='{$rA}'";
+            SELECT R_A_ID FROM HRIS_ALTERNATE_R_A WHERE R_A_FLAG='{$rA}' and employee_id={$employee_id}";
         return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, $sql));
     }
     
