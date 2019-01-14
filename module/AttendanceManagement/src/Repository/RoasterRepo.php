@@ -60,10 +60,17 @@ class RoasterRepo implements RepositoryInterface {
                   FROM HRIS_EMPLOYEE_SHIFT_ROASTER
                   WHERE EMPLOYEE_ID = V_EMPLOYEE_ID
                   AND FOR_DATE      =V_FOR_DATE;
+                  
+                  IF(V_SHIFT_ID_NEW=-1)
+                THEN
+                DELETE FROM HRIS_EMPLOYEE_SHIFT_ROASTER WHERE EMPLOYEE_ID =V_EMPLOYEE_ID AND FOR_DATE=V_FOR_DATE;
+                ELSE
                   UPDATE HRIS_EMPLOYEE_SHIFT_ROASTER
                   SET SHIFT_ID     = V_SHIFT_ID_NEW
                   WHERE EMPLOYEE_ID=V_EMPLOYEE_ID
                   AND FOR_DATE     =V_FOR_DATE;
+                END IF;
+                  
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN
                   INSERT
