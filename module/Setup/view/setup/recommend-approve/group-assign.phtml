@@ -106,6 +106,12 @@ $this->headScript()
                         <th>
                             Approver Assigned
                         </th>
+                        <th>
+                            Alternate Recommender
+                        </th>
+                        <th>
+                            Alternate Approver
+                        </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
                                 <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -133,6 +139,8 @@ $this->headScript()
                         <td>
                             <span ng-bind="employee.APPROVER_NAME"></span>
                         </td>
+                        <td><span ng-bind="employee.A_R_NAME"></td>
+                        <td><span ng-bind="employee.A_A_NAME"></td>
 
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -188,24 +196,38 @@ $this->headScript()
             </div>
         </div>
 
-<!--        <div class="col-sm-3">
+        <div class="col-sm-3">
             <label for="designationId" style="width:100%">Alternate Recommender</label>
             <div class="row">
                 <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
-                    <select multiple name="alternateRecomender" required="required" id="alternateRecomender" class="form-control" ng-options="altRecomm.name for altRecomm in alternateRecommenderOptions track by altRecomm.id" ng-model="alternateRecommenderSelected">
+                    <select multiple name="alternateRecomender[]" required="required" id="alternateRecomender" class="form-control" ng-options="altRecomm.name for altRecomm in alternateRecommenderOptions track by altRecomm.id" ng-model="alternateRecommenderSelected">
                     </select>   
                 </div>
                 <div class="col-md-3 rlPadding alternateRecomenderWrap" style="padding:0px 0px !important;">
-                    <a class="btn-edit" href="javascript::" ng-click="open(2)" style="height:22px; padding: 0px 7px !important;">
-                        <i class="fa fa-search" style="height:17px;"></i>
-                    </a>
                     <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                         <input class="" ng-model="alternateRecomenderAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="alternateRecomenderAssign"/>
                         <span></span>
                     </label>
                 </div>  
             </div>
-        </div>   -->
+        </div>   
+        
+        
+        <div class="col-sm-3">
+            <label for="designationId" style="width:100%">Alternate Approver</label>
+            <div class="row">
+                <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                    <select multiple name="alternateApprover[]" required="required" id="alternateApprover" class="form-control" ng-options="altApp.name for altApp in alternateApproverOptions track by altApp.id" ng-model="alternateApproverSelected">
+                    </select>   
+                </div>
+                <div class="col-md-3 rlPadding alternateApproverWrap" style="padding:0px 0px !important;">
+                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                        <input class="" ng-model="alternateApproverAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="alternateApproverAssign"/>
+                        <span></span>
+                    </label>
+                </div>  
+            </div>
+        </div>   
 
 
         <div class="col-sm-2 " ng-show="showHideAssignBtn">
