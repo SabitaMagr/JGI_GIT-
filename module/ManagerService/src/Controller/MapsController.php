@@ -104,7 +104,6 @@ class MapsController extends HrisController {
             'timeData1' => $checkInTime, 
             'timeData2' => $checkOutTime,
             'employee' => $employee,
-            'empcodepref' => $this->getEmployeeCodePreference(),
             'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
@@ -156,7 +155,6 @@ class MapsController extends HrisController {
                 'presentStatus' => $this->getPresentStatusSelect(),
                 'searchValues' => $searchValues,
                 'acl' => $this->acl,
-                'empcodepref' => $this->getEmployeeCodePreference(),
                 'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
