@@ -84,7 +84,7 @@ class HolidayAssign extends HrisController {
                 if (!isset($postedData['employeeIdList'])) {
                     $employeeIdList = [];
                 } else {
-                    $employeeIdList = $postedData['employeeIdList'];
+                    $employeeIdList = json_decode($postedData['employeeIdList']);
                 }
                 $reportData = $this->repository->multipleEmployeeAssignToHoliday($holidayId, $employeeIdList);
                 return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);

@@ -128,9 +128,13 @@ class HolidayAssignRepository {
     }
 
     public function multipleEmployeeAssignToHoliday($holidayId, $employeeIdList) {
-        EntityHelper::rawQueryResult($this->adapter, "DELETE FROM HRIS_EMPLOYEE_HOLIDAY WHERE HOLIDAY_ID={$holidayId}");
         foreach ($employeeIdList as $empId) {
-            EntityHelper::rawQueryResult($this->adapter, "INSERT INTO HRIS_EMPLOYEE_HOLIDAY(HOLIDAY_ID,EMPLOYEE_ID) VALUES({$holidayId},{$empId})");
+            $employeeId = $empId[0]->id;
+            $status = $empId[0]->s;
+            EntityHelper::rawQueryResult($this->adapter, "DELETE FROM HRIS_EMPLOYEE_HOLIDAY WHERE HOLIDAY_ID={$holidayId} AND EMPLOYEE_ID={$employeeId}");
+            if ($status == 'A') {
+                EntityHelper::rawQueryResult($this->adapter, "INSERT INTO HRIS_EMPLOYEE_HOLIDAY(HOLIDAY_ID,EMPLOYEE_ID) VALUES({$holidayId},{$employeeId})");
+            }
         }
     }
 
