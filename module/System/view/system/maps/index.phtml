@@ -1,0 +1,99 @@
+
+<?php
+$this->headLink()
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+$this->headLink()
+    ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+    ->appendFile($this->basePath('js/search.js'))
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+    ->appendFile($this->basePath('js/AttendanceManagement/by-hr/index.js'));
+?>
+
+<script>
+    window.onerror = function(message, url, lineNumber) { return true; };
+
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.picUrl = '<?= $this->basePath('img/nobody_m.original.jpg'); ?>';
+    document.pullAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'pullAttendance']); ?>';
+    document.bulkAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'bulkAttendanceWS']); ?>';
+    document.pullInOutTimeLink = '<?php echo $this->url('attendancebyhr', ['action' => 'pullInOutTime']); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
+</script>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+<form method="post" action="<?= $this->url('showlocation', ['action' => 'showMap']); ?>">
+<div class="portlet light bg-inverse">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-paper-plane font-green-haze"></i>
+            <span class="caption-subject bold font-green-haze uppercase">Select Employee and Date</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+        <div class="row margin-top-10">
+            <div class="col-sm-2">
+                <label>Employee</label>
+                <select class="form-control" name="employee" id="employeeId">
+                </select>
+            </div> 
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>From Date(AD)</label>
+                    <input type="text" id="fromDate" name="fromDate" class="form-control" placeholder="From Date"/>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>From Date(BS)</label>
+                    <input type="text" id="nepaliFromDate" name="nepaliFromDate" class="form-control" placeholder="From Date Nepali"/>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>To Date(AD)</label>
+                    <input type="text" id="toDate" name="toDate"  class="form-control" placeholder="From Date"/>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>To Date(BS)</label>
+                    <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
+                </div>
+            </div>
+            
+            <div class="col-sm-2">
+                <button id="search" class="btn btn-default btn-sm pull-right" class="form-control">
+                    Show Location
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</form>
+
+
+
+
