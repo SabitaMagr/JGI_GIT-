@@ -41,7 +41,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         document.messages =<?php echo json_encode($this->messages); ?>
     </script>
 <?php } ?>
-<form method="post" action="<?= $this->url('showlocation', ['action' => 'showMap']); ?>">
+<form method="post" action="<?= $this->url('location', ['action' => 'showMap']); ?>">
 <div class="portlet light bg-inverse">
     <div class="portlet-title">
         <div class="caption">
