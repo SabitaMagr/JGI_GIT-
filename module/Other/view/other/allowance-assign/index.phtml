@@ -2,16 +2,15 @@
 $this->headScript()
     ->appendFile($this->basePath('js/angular.min.js'))
     ->appendFile($this->basePath('js/search.js'))
-    ->appendFile($this->basePath('js/HolidayManagement/HolidayAssign/index.js'));
+    ->appendFile($this->basePath('js/other/allowance-assign/index.js'));
 
 ?>
 
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.wsGetEmployeeList = '<?php echo $this->url('holiday-assign', ['action' => 'getEmployeeList']); ?>';
-    document.wsGetHolidayAssignedEmployees = '<?php echo $this->url('holiday-assign', ['action' => 'getHolidayAssignedEmployees']); ?>';
+    document.wsGetEmployeeList = '<?php echo $this->url('allowance-assign', ['action' => 'getEmployeeList']); ?>';
+    document.wsGetAllowanceAssignedEmployees = '<?php echo $this->url('allowance-assign', ['action' => 'getAllowanceAssignedEmployees']); ?>';
     document.wsAssignHolidayToEmployees = '<?php echo $this->url('holiday-assign', ['action' => 'assignHolidayToEmployees']); ?>';
-    document.holidayList =<?php echo json_encode($holidayList); ?>;
     document.regenAttendanceLink = '<?php echo $this->url('holiday-assign', ['action' => 'regen-attendance']); ?>';
 </script>
 <div class="page-bar">
@@ -87,6 +86,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
 
             <div class="row margin-top-10 margin-bottom-20">
+<!--                <div class="col-sm-2">
+                    <select   ng-model="allowance" ng-change="allowanceChangeFn()" class="form-control" name="allowance" id="allowanceId">
+                        <option value="">Select Allowance</option>
+                        <option value="S">Shift Allowance</option>
+                        <option value="F">Food Allowance</option>
+                    </select>
+                </div>-->
+                <!--<div class=" col-sm-offset-6 col-sm-4 ">-->
                 <div class=" col-sm-offset-8 col-sm-4 ">
                     <button  ng-click="view()" class="btn btn-default btn-sm pull-right">
                         Search
@@ -163,8 +170,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
             <div class="row margin-top-30" >
                 <div class="col-sm-2">
-                    <select  ng-options="holiday.HOLIDAY_ID as holiday.HOLIDAY_ENAME for holiday in holidayList" ng-model="holiday" ng-change="holidayChangeFn()" class="form-control" name="holiday" id="holidayId">
-                        <option value="">Select Holiday</option>
+                    <select   ng-model="allowance" ng-change="allowanceChangeFn()" class="form-control" name="allowance" id="allowanceId">
+                        <option value="">Select Allowance</option>
+                        <option value="S">Shift Allowance</option>
+                        <option value="F">Food Allowance</option>
                     </select>
                 </div>
                 <div class="col-sm-10">

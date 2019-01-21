@@ -19,12 +19,11 @@ angular.module('hris', [])
             var $employeeTypeId = angular.element(document.getElementById('employeeTypeId'));
 
 
-            $scope.holidayList = document.holidayList;
 
             $scope.employeeList = [];
             $scope.alreadyAssignedEmpList = [];
             $scope.all = false;
-
+//
             $scope.checkAll = function (item) {
                 for (var i = 0; i < $scope.employeeList.length; i++) {
                     $scope.employeeList[i].checked = item;
@@ -32,8 +31,9 @@ angular.module('hris', [])
             };
 
 
-            $scope.holidayChangeFn = function () {
-                if ($scope.holiday == null) {
+            $scope.allowanceChangeFn = function () {
+                console.log($scope.allowance);
+                if ($scope.allowance == null) {
                     $scope.alreadyAssignedEmpList = [];
                     var empList = angular.copy($scope.employeeList);
                     $scope.employeeList = [];
@@ -47,9 +47,10 @@ angular.module('hris', [])
 
                 $scope.all = false;
 
-                window.app.serverRequest(document.wsGetHolidayAssignedEmployees, {
-                    holidayId: $scope.holiday
+                window.app.serverRequest(document.wsGetAllowanceAssignedEmployees, {
+                    allowanceId: $scope.allowance
                 }).then(function (response) {
+                    console.log(response);
                     if (response.success) {
                         $scope.$apply(function () {
                             $scope.alreadyAssignedEmpList = response.data;
@@ -62,7 +63,7 @@ angular.module('hris', [])
                             }
                         });
                     } else {
-                        console.log("getHolidayAssignedEmployees=>", response.error);
+                        console.log("getAllowanceAssignedEmployees=>", response.error);
                     }
 
                 }, function (failure) {
@@ -82,6 +83,7 @@ angular.module('hris', [])
                     genderId: $genderId.val(),
                     employeeTypeId: $employeeTypeId.val()
                 }).then(function (response) {
+                    console.log(response);
                     $scope.$apply(function () {
                         $scope.employeeList = [];
                         var empList = response.data;
@@ -96,63 +98,54 @@ angular.module('hris', [])
                 }, function (failure) {
 
                 });
-                $scope.holidayChangeFn();
+                $scope.allowanceChangeFn();
             };
-
+//
             $scope.assign = function () {
                 if ($scope.employeeList.length == 0) {
                     window.app.showMessage("No Employees to Assign.", "error");
                     return;
                 }
-                if ($scope.holiday == null) {
-                    window.app.showMessage("Select the holiday first to assign to", "error");
+                if ($scope.allowance == null) {
+                    window.app.showMessage("Select the Allowance first to assign to", "error");
                     return;
                 }
 
-
                 var checkedEmpList = [];
                 for (var index in $scope.employeeList) {
+                    var tmpStatus = 'D';
+                    var tempData = [];
                     if ($scope.employeeList[index].checked) {
-                        checkedEmpList.push($scope.employeeList[index].EMPLOYEE_ID);
+                        tmpStatus = 'A';
                     }
+                    tempData.push({
+                        id: $scope.employeeList[index].EMPLOYEE_ID,
+                        s: tmpStatus
+                    });
+                    checkedEmpList.push(tempData);
                 }
-                var reattendance = function (employeeList, fromDate, toDate) {
-                    var employeeIdList = [];
-                    $.each(employeeList, function (key, employeeId) {
-                        var employeeData = {
-                            EMPLOYEE_ID: employeeId,
-                            FROM_DATE: fromDate,
-                            TO_DATE: toDate
-                        }
-                        employeeIdList.push(employeeData);
-                    });
-                    window.app.bulkServerRequest(document.regenAttendanceLink, employeeIdList, function () {
-                        window.app.showMessage("Holiday Assigned Successfully");
-                    }, function (data, error) {
-                        app.showMessage(error, 'error');
-                    });
-                };
-
-                window.app.serverRequest(document.wsAssignHolidayToEmployees, {
-                    holidayId: $scope.holiday,
-                    employeeIdList: checkedEmpList
-                }).then(function (response) {
-                    if (response.success) {
-                        var holiday = $scope.holidayList.filter(function (item) {
-                            return item['HOLIDAY_ID'] == $scope.holiday;
-                        })[0];
-                        var employeeIdList = [];
-                        for (var index in $scope.employeeList) {
-                            employeeIdList.push($scope.employeeList[index].EMPLOYEE_ID);
-                        }
-                        reattendance(employeeIdList, holiday['START_DATE'], holiday['END_DATE']);
-                    } else {
-                        window.app.showMessage(response.error);
-                    }
-                }, function (failure) {
-                    console.log("shift Assign Filter Success Response", failure);
-                });
-
+                console.log(checkedEmpList);
+                
+//                window.app.serverRequest(document.wsAssignHolidayToEmployees, {
+//                    holidayId: $scope.holiday,
+//                    employeeIdList: checkedEmpList
+//                }).then(function (response) {
+//                    if (response.success) {
+//                        var holiday = $scope.holidayList.filter(function (item) {
+//                            return item['HOLIDAY_ID'] == $scope.holiday;
+//                        })[0];
+//                        var employeeIdList = [];
+//                        for (var index in $scope.employeeList) {
+//                            employeeIdList.push($scope.employeeList[index].EMPLOYEE_ID);
+//                        }
+//                        reattendance(employeeIdList, holiday['START_DATE'], holiday['END_DATE']);
+//                    } else {
+//                        window.app.showMessage(response.error);
+//                    }
+//                }, function (failure) {
+//                    console.log("shift Assign Filter Success Response", failure);
+//                });
+//
             };
 
         });
