@@ -1236,19 +1236,66 @@ EOT;
     
     
     public function getMonthlyAllowance($searchQuery) {
+        $fromDate=$searchQuery['fromDate'];
+        $toDate=$searchQuery['toDate'];
+        
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
-        $sql="SELECT
+        $sql="SELECT  
+EMPLOYEE_ID,
+EMPLOYEE_CODE,
+FULL_NAME,
+        COMPANY_NAME,
+        BRANCH_NAME,
+        DEPARTMENT_NAME,
+        DESIGNATION_TITLE,
+        POSITION_NAME,
+        SUM(SYSTEM_OVERTIME) AS SYSTEM_OVERTIME,
+        SUM(MANUAL_OVERTIME) AS MANUAL_OVERTIME,
+        SUM(FOOD_ALLOWANCE) AS FOOD_ALLOWANCE,
+        SUM(SHIFT_ALLOWANCE) AS SHIFT_ALLOWANCE,
+        SUM(NIGHT_SHIFT_ALLOWANCE) AS NIGHT_SHIFT_ALLOWANCE,
+        SUM(HOLIDAY_COUNT) AS HOLIDAY_COUNT
+FROM 
+(SELECT
+E.EMPLOYEE_ID,
+E.EMPLOYEE_CODE,
         E.FULL_NAME,
-        AD.EMPLOYEE_ID,
-        SUM(AD.FOOD_ALLOWANCE) AS FOOD_ALLOWANCE,
-        SUM(AD.SHIFT_ALLOWANCE) AS SHIFT_ALLOWANCE,
-        SUM(AD.NIGHT_SHIFT_ALLOWANCE) AS NIGHT_SHIFT_ALLOWANCE
+        C.COMPANY_NAME,
+        B.BRANCH_NAME,
+        D.DEPARTMENT_NAME,
+        DES.DESIGNATION_TITLE,
+        P.POSITION_NAME,
+        ROUND(AD.OT_MINUTES/60,2) AS SYSTEM_OVERTIME,
+        CASE WHEN 
+        OM.OVERTIME_HOUR IS NOT NULL THEN
+        ROUND(OM.OVERTIME_HOUR,2)
+        ELSE
+        ROUND(AD.OT_MINUTES/60,2)
+        END
+        AS MANUAL_OVERTIME,
+        AD.FOOD_ALLOWANCE,
+        AD.SHIFT_ALLOWANCE,
+        AD.NIGHT_SHIFT_ALLOWANCE,
+        AD.HOLIDAY_COUNT
         FROM HRIS_ATTENDANCE_DETAIL AD
-        JOIN (SELECT * FROM HRIS_MONTH_CODE WHERE MONTH_ID={$searchQuery['monthCodeId']}) MC ON (1=1)
+        LEFT JOIN HRIS_OVERTIME_MANUAL OM ON (OM.EMPLOYEE_ID=AD.EMPLOYEE_ID AND OM.ATTENDANCE_DATE=AD.ATTENDANCE_DT)
         LEFT JOIN HRIS_EMPLOYEES E ON (AD.EMPLOYEE_ID=E.EMPLOYEE_ID)
+        LEFT JOIN HRIS_COMPANY C ON (C.COMPANY_ID=E.COMPANY_ID)
+        LEFT JOIN HRIS_BRANCHES B ON (B.BRANCH_ID=E.BRANCH_ID)
+        LEFT JOIN HRIS_DEPARTMENTS D ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+        LEFT JOIN HRIS_DESIGNATIONS DES ON (DES.DESIGNATION_ID=E.DESIGNATION_ID)
+        LEFT JOIN HRIS_POSITIONS P ON (P.POSITION_ID=E.POSITION_ID)
         WHERE AD.Attendance_Dt
-        BETWEEN MC.FROM_DATE AND MC.TO_DATE {$searchConditon}
-        GROUP BY AD.EMPLOYEE_ID,E.FULL_NAME";
+        BETWEEN TO_DATE('{$fromDate}','DD-MON-YYYY') AND TO_DATE('{$toDate}','DD-MON-YYYY') {$searchConditon}
+        ) TAB_A
+        GROUP BY EMPLOYEE_ID,
+EMPLOYEE_CODE,
+FULL_NAME,
+        COMPANY_NAME,
+        BRANCH_NAME,
+        DEPARTMENT_NAME,
+        DESIGNATION_TITLE,
+        POSITION_NAME ";
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);

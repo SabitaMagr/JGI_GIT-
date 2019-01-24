@@ -29,6 +29,7 @@ AS
   V_ATTENDANCE_DATA_COUNT NUMBER;
   V_NIGHT_SHIFT CHAR(1 BYTE):='N';
   V_SHIFT_ALLOWANCE CHAR(1 BYTE):='N';
+  V_HOLIDAY_WEEK_OFF NUMBER:=0;
   CURSOR CUR_EMPLOYEE
   IS
     SELECT EMPLOYEE_ID
@@ -61,6 +62,7 @@ BEGIN
     V_OVERALL_STATUS      :=NULL;
     V_LEAVE_HALFDAY_PERIOD:=NULL;
     V_LEAVE_GRACE_PERIOD  :=NULL;
+    V_HOLIDAY_WEEK_OFF:=0;
     --
     -- DELETE IF ALREADY EXISTS
     DELETE
@@ -277,6 +279,9 @@ BEGIN
       AND ROWNUM          <2;
       IF V_HOLIDAY_ID    IS NOT NULL THEN
         V_OVERALL_STATUS :='HD';
+        IF V_DAYOFF='Y' AND V_HOLIDAY_ID IS NOT NULL THEN
+        V_HOLIDAY_WEEK_OFF :=1;
+        END IF;
       END IF;
     EXCEPTION
     WHEN NO_DATA_FOUND THEN
@@ -455,7 +460,12 @@ WHERE EMPLOYEE_ID=V_EMPLOYEE_ID;
           TWO_DAY_SHIFT,
           IGNORE_TIME,
           NIGHT_SHIFT_ALLOWANCE,
-          SHIFT_ALLOWANCE
+          SHIFT_ALLOWANCE,
+          HOLIDAY_COUNT,
+          HOLIDAY_WEEK_OFF,
+          NIGHT_SHIFT_FLAG,
+          SHIFT_ALLOWANCE_FLAG
+          
         )
         VALUES
         (
@@ -485,18 +495,17 @@ WHERE EMPLOYEE_ID=V_EMPLOYEE_ID;
             ELSE V_TWO_DAY_SHIFT
           END),
           V_IGNORE_TIME,
+          0,
+          0,
           (
           CASE
-            WHEN V_NIGHT_SHIFT='Y'
+            WHEN V_HOLIDAY_WEEK_OFF=1
             THEN 1
             ELSE 0
           END),
-          (
-          CASE
-            WHEN V_SHIFT_ALLOWANCE='Y'
-            THEN 1
-            ELSE 0
-          END)
+          V_HOLIDAY_WEEK_OFF,
+          V_NIGHT_SHIFT,
+          V_SHIFT_ALLOWANCE          
         );
     END;
   END LOOP;

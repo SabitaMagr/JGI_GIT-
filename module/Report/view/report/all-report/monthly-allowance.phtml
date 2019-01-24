@@ -1,7 +1,7 @@
 <?php
 $this->headLink()
-    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
 
 
 $this->headScript()
@@ -9,6 +9,10 @@ $this->headScript()
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
 $this->headScript()->appendFile($this->basePath('js/search.js'));
 $this->headScript()->appendFile($this->basePath('js/Report/AllReport/monthlyAllowance.js'));
+
+$this->headScript()
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+        ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 ?>
 <?php if ($this->messages) { ?>
     <script>
@@ -119,20 +123,52 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/monthlyAllo
                     </select>
                 </div>
             </div>
+
             <div class="row margin-top-10">
                 <div class="col-sm-2">
-                <select class="form-control"  id="fiscalYearId" >
-                </select>
+                    <select class="form-control"  id="fiscalYearId" >
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control" id="monthId" >
+                    </select>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="nepaliFromDate" name="nepaliFromDate" class="form-control" placeholder="From Date Nepali"/>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="toDate" name="toDate"  class="form-control" placeholder="To Date"/>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <input type="text" id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-2">
-                <select class="form-control" id="monthId" >
-                </select>
-            </div>
-                
-<!--                <div class="col-sm-2">
-                    <?php // print $this->formElement($fiscalYearSE); ?>
-                </div>-->
-                <div class="col-sm-4 col-sm-offset-6">
+
+            <div class="row margin-top-10">
+                <!--                <div class="col-sm-2">
+                                <select class="form-control"  id="fiscalYearId" >
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <select class="form-control" id="monthId" >
+                                </select>
+                            </div>-->
+
+                <!--                <div class="col-sm-2">
+                <?php // print $this->formElement($fiscalYearSE); ?>
+                                </div>-->
+                <div class="col-sm-4 col-sm-offset-8">
                     <button class="btn default btn-sm pull-right hris-filter-reset-btn">
                         Reset
                         <i class="fa fa-refresh"></i>
@@ -144,14 +180,12 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/monthlyAllo
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div id="report">
-                </div>
-            </div>
-        </div>
+
 
     </div>
+</div>
+
+<div id="report">
 </div>
 
 

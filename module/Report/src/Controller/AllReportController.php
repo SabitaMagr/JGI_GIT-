@@ -430,7 +430,8 @@ class AllReportController extends HrisController {
             }
         }
         return $this->stickFlashMessagesTo([
-                    'fiscalYearSE' => $this->getFiscalYearSE()
+                    'fiscalYearSE' => $this->getFiscalYearSE(),
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
 
