@@ -303,6 +303,7 @@
                 }).then(function (success) {
                     $scope.$apply(function () {
                         $scope.employeeDocuments = success.data;
+                        console.log($scope.employeeDocuments);
                     });
                 }, function (failure) {
                 });
