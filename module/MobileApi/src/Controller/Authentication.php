@@ -61,7 +61,7 @@ class Authentication extends AbstractActionController {
     }
     
     
-    private function attendanceInsert($data) {
+    public function attendanceInsert($data) {
 
         $attendanceModel = new Attendance();
         $attendanceModel->employeeId = $this->employeeId;
