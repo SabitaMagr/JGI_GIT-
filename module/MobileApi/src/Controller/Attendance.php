@@ -58,10 +58,6 @@ public function indexAction(){
 
         $attendanceRepositiry = new AttendanceRepository($this->adapter);
 
-//    echo '<pre>';
-//    print_r($data);
-//    print_r($attendanceModel);
-//    die();
         return $attendanceRepositiry->add($attendanceModel);
     }
     
