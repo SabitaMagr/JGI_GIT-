@@ -112,10 +112,18 @@ angular.module('hris', [])
 
                 var checkedEmpList = [];
                 for (var index in $scope.employeeList) {
+                    var tmpStatus='D';
+                    var tempData=[];
                     if ($scope.employeeList[index].checked) {
-                        checkedEmpList.push($scope.employeeList[index].EMPLOYEE_ID);
+                    tmpStatus='A';
                     }
+                    tempData.push({
+                        id: $scope.employeeList[index].EMPLOYEE_ID, 
+                        s:  tmpStatus
+                        });
+                        checkedEmpList.push(tempData);
                 }
+                console.log(checkedEmpList);
                 var reattendance = function (employeeList, fromDate, toDate) {
                     var employeeIdList = [];
                     $.each(employeeList, function (key, employeeId) {
@@ -135,7 +143,7 @@ angular.module('hris', [])
 
                 window.app.serverRequest(document.wsAssignHolidayToEmployees, {
                     holidayId: $scope.holiday,
-                    employeeIdList: checkedEmpList
+                    employeeIdList: JSON.stringify(checkedEmpList)
                 }).then(function (response) {
                     if (response.success) {
                         var holiday = $scope.holidayList.filter(function (item) {
