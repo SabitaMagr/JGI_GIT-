@@ -28,24 +28,15 @@ class MapsController extends HrisController {
     public function showMapAction(){
         $request = $this->getRequest();
         $data = $request->getPost();
-        $employeeId = $data['employee'];
+        $employeeId = $data['employeeId'];
 
-        if($employeeId == -1){
-            $this->flashmessenger()->addMessage("Please select an employee.");
-            return $this->redirect()->toRoute("showlocation");
-        }
-
-        $attd_from_date = $data['fromDate'];
-        $attd_to_date = $data['toDate'];
-
-        if($attd_from_date == null){
-            $this->flashmessenger()->addMessage("Please select from date.");
-            return $this->redirect()->toRoute("showlocation");
-        }
-
+        $attd_from_date = $data['date1'];
+        $attd_to_date = $data['date2'];
+        $attd_from_date = date("d-M-y", strtotime($attd_from_date));
         if(empty($attd_to_date)){
             $attd_to_date = $attd_from_date;
         }
+        $attd_to_date = date("d-M-y", strtotime($attd_to_date));
 
         $begin = new \DateTime($attd_from_date);
         $end = new \DateTime($attd_to_date);
@@ -81,31 +72,13 @@ class MapsController extends HrisController {
             } 
         }
         
-        $employeeName = $this->repository->getEmployeeData($employeeId);
-        $employee = $employeeName->current();
-        $employee = json_encode($employee);
+        $data = array();
+        $data['checkInLocation'] = $checkInLocation;
+        $data['checkOutLocation'] = $checkOutLocation;
+        $data['checkInTime'] = $checkInTime;
+        $data['checkOutTime'] = $checkOutTime;
 
-        $searchValues = EntityHelper::getSearchData($this->adapter);
-        $filteredEmployees = $this->repository->fetchAllEmployee($this->employeeId);
-        
-        foreach($searchValues['employee'] as $key => $value){
-            if(!array_key_exists($searchValues['employee'][$key]['EMPLOYEE_ID'], $filteredEmployees)){
-               unset($searchValues['employee'][$key]);
-            }
-        } 
-
-        return Helper::addFlashMessagesToArray($this, [
-            'status' => $this->getStatusSelect(),
-            'presentStatus' => $this->getPresentStatusSelect(),
-            'searchValues' => $searchValues,
-            'acl' => $this->acl,
-            'locData1' => $checkInLocation, 
-            'locData2' => $checkOutLocation,
-            'timeData1' => $checkInTime, 
-            'timeData2' => $checkOutTime,
-            'employee' => $employee,
-            'employeeDetail' => $this->storageData['employee_detail']
-        ]);
+        return new JsonModel(['success' => true, 'data' => $data, 'message' => null]);
     }
 
     private function getStatusSelect() {

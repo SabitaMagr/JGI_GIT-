@@ -12,7 +12,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
-
+ 
 class MapsRepository implements RepositoryInterface {
 
     private $tableGateway;
@@ -31,12 +31,6 @@ class MapsRepository implements RepositoryInterface {
 
     public function fetchCheckOutLocation($employeeId, $attd_date){
       $sql = "select LOCATION,ATTENDANCE_TIME from (select * from HRIS_ATTENDANCE WHERE EMPLOYEE_ID = $employeeId AND ATTENDANCE_DT = '$attd_date' order by ATTENDANCE_TIME desc ) where ROWNUM <= 1";
-      $statement = $this->adapter->query($sql);
-      return $statement->execute();
-    }
-
-    public function getEmployeeData($employeeId){
-      $sql = "select full_name from hris_employees where employee_id = $employeeId";
       $statement = $this->adapter->query($sql);
       return $statement->execute();
     }

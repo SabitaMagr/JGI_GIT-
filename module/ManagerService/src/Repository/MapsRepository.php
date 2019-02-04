@@ -35,12 +35,6 @@ class MapsRepository implements RepositoryInterface {
       return $statement->execute();
     }
 
-    public function getEmployeeData($employeeId){
-      $sql = "select full_name from hris_employees where employee_id = $employeeId";
-      $statement = $this->adapter->query($sql);
-      return $statement->execute();
-    }
-
     public function fetchAllEmployee($employeeId) {
       $sql = "SELECT RA.EMPLOYEE_ID,E.FULL_NAME
               FROM HRIS_RECOMMENDER_APPROVER  RA
