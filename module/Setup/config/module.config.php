@@ -930,6 +930,33 @@ return [
                 ]
             ]
         ],
+        'fileType' => [
+            [
+                'label' => 'File Type',
+                'route' => 'fileType',
+            ],
+            [
+                'label' => 'File Type',
+                'route' => 'fileType',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'fileType',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'fileType',
+                        'action' => 'add',
+                    ],
+                    [
+                        'label' => 'Edit',
+                        'route' => 'fileType',
+                        'action' => 'edit',
+                    ],
+                ]
+            ]
+        ],
     ],
     'controllers' => [
         'factories' => [
