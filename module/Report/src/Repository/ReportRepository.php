@@ -1297,7 +1297,7 @@ E.EMPLOYEE_CODE,
 EMPLOYEE_CODE,
 FULL_NAME,
         COMPANY_NAME,
-        BRANCH_NAME,
+        BRANCH_NAME, 
         DEPARTMENT_NAME,
         DESIGNATION_TITLE,
         POSITION_NAME ";
@@ -1306,7 +1306,38 @@ FULL_NAME,
         return Helper::extractDbData($result);
     }
     
-   
+
+public function departmentWiseAttdReport($date1, $date2) {
+        $sql = <<<EOT
+        SELECT *
+        FROM (SELECT 
+        DEPARTMENT_NAME,
+        OVERALL_STATUS,
+        COUNT(OVERALL_STATUS) AS TOTAL
+        FROM (select
+        HE.DEPARTMENT_ID,
+        HD.DEPARTMENT_NAME,
+        CASE 
+        WHEN HED.OVERALL_STATUS 
+        IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+        THEN 'PR' 
+        ELSE HED.OVERALL_STATUS END AS OVERALL_STATUS
+        from HRIS_ATTENDANCE_DETAIL HED 
+        JOIN HRIS_EMPLOYEES HE ON (HE.EMPLOYEE_ID=HED.EMPLOYEE_ID)
+        JOIN HRIS_DEPARTMENTS HD ON(HD.DEPARTMENT_ID=HE.DEPARTMENT_ID)
+        WHERE HED.ATTENDANCE_DT BETWEEN '$date1' AND '$date2'
+        )
+        GROUP BY OVERALL_STATUS,DEPARTMENT_NAME)
+        PIVOT (
+        MAX(TOTAL) FOR OVERALL_STATUS IN ('PR' as PR,'WD' as WD,'HD' as HD,'LV' as LV,'WH' as WH,'DO' as DO,'AB' as AB)
+        )
+EOT;
+//        echo $sql;
+//        die();
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
     
     
 }

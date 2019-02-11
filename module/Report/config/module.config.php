@@ -21,7 +21,7 @@ return[
                         'controller' => AllReportController::class,
                         'action' => 'index',
                     ]
-                ],
+                ], 
             ],
         ],
     ],
@@ -83,6 +83,11 @@ return[
                         'label' => 'Allowance Report',
                         'route' => 'monthlyAllowance',
                         'action' => 'branchWiseDaily',
+                    ],
+                    [
+                        'label' => 'Department|Month', 
+                        'route' => 'allreport',
+                        'action' => 'departmentWiseAttdReport',
                     ],
                 ],
             ],

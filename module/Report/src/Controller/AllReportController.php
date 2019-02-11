@@ -169,8 +169,8 @@ class AllReportController extends HrisController {
 //                'monthId' => $monthId,
 //                'departmentId' => $departmentId,
                     'fiscalYearSE' => $this->getFiscalYearSE()
-        ]);
-    }
+        ]); 
+    } 
 
     public function employeeWiseAction() {
 
@@ -418,7 +418,7 @@ class AllReportController extends HrisController {
     }
 
     public function monthlyAllowanceAction() {
-        $request = $this->getRequest();
+        $request = $this->getRequest(); 
         if ($request->isPost()) {
             try {
                 $data = $request->getPost();
@@ -435,6 +435,39 @@ class AllReportController extends HrisController {
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail']
         ]);
+    }
+
+    public function departmentWiseAttdReportAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+                $postedData = $request->getPost();
+
+                $date1 = $postedData['date1'];
+                if (!isset($date1)) {
+                    throw new Exception("parameter from_date is required");
+                }
+                $date2 = $postedData['date2'];
+                if (!isset($date2)) {
+                    throw new Exception("parameter to_date is required");
+                }
+
+                if($date2 == '' || $date2 == null){
+                    $date2 = $date1;
+                }
+
+                $reportData = $this->repository->departmentWiseAttdReport($date1, $date2);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } else {
+                return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+                ]);
+            }
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
     }
 
 }

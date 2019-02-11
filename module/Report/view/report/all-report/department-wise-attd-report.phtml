@@ -1,0 +1,221 @@
+
+<?php
+$this->headLink()
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.rtl.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.min.css'))
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.dataviz.default.min.css'));
+$this->headLink()
+    ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
+
+$this->headScript()
+    ->appendFile($this->basePath('js/search.js'))
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+    ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
+    ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+    ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
+    ->appendFile($this->basePath('js/Report/AllReport/departmentWiseAttdReport.js'))
+    ->appendFile($this->basePath('js/angular.min.js'));
+?>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+ <style type="text/css">
+     .hidden{
+        visibility: hidden;
+     }
+ </style> 
+
+<script>
+   // window.onerror = function(message, url, lineNumber) { return true; };
+document.wsGetEmployeeList = '<?php echo $this->url('holiday-assign', ['action' => 'getEmployeeList']); ?>';
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
+    document.picUrl = '<?= $this->basePath('img/nobody_m.original.jpg'); ?>';
+    document.pullAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'pullAttendance']); ?>';
+    document.bulkAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'bulkAttendanceWS']); ?>';
+    document.pullInOutTimeLink = '<?php echo $this->url('attendancebyhr', ['action' => 'pullInOutTime']); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
+</script>
+
+<script type="text/javascript">
+var reportData;
+$(function(){
+
+  $(document).ajaxStart(function(){
+    $("#wait").css("display", "block");
+  });
+  $(document).ajaxComplete(function(){
+    $("#wait").css("display", "none");
+  });
+
+    $("#generate").on("click", function(){
+        $("#grid").addClass("hidden");
+        var date1 = $("#fromDate").val();
+        //var date2 = $("#toDate").val();
+        var date2 = date1;
+        $("#viewLevel").val("9");
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: "<?php echo $this->url('allreport', ['action' => 'departmentWiseAttdReport']); ?>",
+            //async: false,
+            data: {
+                date1 : date1,
+                date2 : date2
+            },
+            success: function(data) {
+                $("#grid").removeClass("hidden");
+                reportData = data.data;
+                reportData.push({
+                    DEPARTMENT_NAME:'Total',
+                    AB: reportData.reduce((a, b) => +a + +b.AB, 0),
+                    total: reportData.reduce((a, b) => +a + +b.total, 0),
+                    PR: reportData.reduce((a, b) => +a + +b.PR, 0),
+                    LV: reportData.reduce((a, b) => +a + +b.LV, 0),
+                    WD: reportData.reduce((a, b) => +a + +b.WD, 0),
+                    WH: reportData.reduce((a, b) => +a + +b.WH, 0),
+                    HD: reportData.reduce((a, b) => +a + +b.HD, 0),
+                    DO: reportData.reduce((a, b) => +a + +b.DO, 0)
+                });
+                console.log(reportData);
+                for(var i = 0; i < reportData.length; i++){
+                    reportData[i].total = (parseInt(reportData[i].PR)||0)+(parseInt(reportData[i].WD)||0)+(parseInt(reportData[i].HD)||0)+(parseInt(reportData[i]).LV||0)+(parseInt(reportData[i].WH)||0)+(parseInt(reportData[i].DO)||0)+(parseInt(reportData[i].AB)||0);
+
+                    reportData[i].absentRate = parseFloat(((parseInt(reportData[i].AB)||0)/(parseInt(reportData[i].total)||0))*100);
+                }
+                generateReport();
+            }
+        });
+    });
+});
+</script>
+
+<?php
+if ($this->messages && (sizeof($this->messages) > 1)) {
+    print '<div class="alert alert-warning alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>Warning!</strong> ';
+    print $this->messages[1];
+    print '</div>';
+}
+
+?>
+<?php if ($this->messages) { ?>
+    <script>
+        document.messages =<?php echo json_encode($this->messages); ?>
+    </script>
+<?php } ?>
+
+<div class="portlet light bg-inverse">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-paper-plane font-green-haze"></i>
+            <span class="caption-subject bold font-green-haze uppercase">Select date</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+        <div class="row">
+        <div class="row margin-top-10">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>From Date(AD)</label>
+                    <input type="text" id="fromDate" name="fromDate" class="input-sm" class="form-control" placeholder="From Date"/>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>From Date(BS)</label>
+                    <input type="text" id="nepaliFromDate" name="nepaliFromDate" class="input-sm" class="form-control" placeholder="From Date Nepali"/>
+                </div>
+            </div>
+            <!--
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>To Date(AD)</label>
+                    <input type="text" id="toDate" name="toDate" class="input-sm" class="form-control" placeholder="From Date"/>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>To Date(BS)</label>
+                    <input type="text" id="nepaliToDate" name="nepaliToDate" class="input-sm" class="form-control" placeholder="To Date Nepali"/>
+                </div>
+            </div>
+            -->
+            <div class="col-sm-2">
+                <label>Report</label>
+                <button id="generate" class="btn btn-default btn-sm pull-right" class="form-control">
+                    Generate Report
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<div id="grid" class="hidden"></div>
+
+
+<div id="wait" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;"><img src='<?= $this->basePath('img/demo_wait.gif'); ?>' width="64" height="64" /><br>Loading..</div>
+<script>
+    function generateReport(){
+        $(function() {
+            $("#grid").kendoGrid({
+            toolbar: ["excel"],
+            excel: {
+            fileName: "Department Wise Attendance Report.xlsx",
+            filterable: true
+            },
+            dataSource: {
+                data: reportData,
+                schema: {
+                    model: {
+                        fields: {
+                            DEPARTMENT_NAME: { type: "string" },
+                            AB: { type: "number" },
+                            PR: { type: "number" },
+                            DO: { type: "number" },
+                            LV: { type: "number" },
+                            HD: { type: "number" },
+                            WH: { type: "number" },
+                            WD: { type: "number" },
+                            total: {type: "number"},
+                            absentRate: {type: "number"}
+                        }
+                    }
+                },
+                pageSize: 20
+            },
+            height: 550,
+            scrollable: true,
+            sortable: true,
+            groupable: true,
+            filterable: true,
+            pageable: {
+                input: true,
+                numeric: false
+            },
+            columns: [
+                { field: "DEPARTMENT_NAME", title: "Department", format: "{0:c}", width: "100px" },
+                { field: "total", title: "Total Employees", width: "50px" },
+                { field: "PR", title: "Present", width: "50px" },
+                { field: "AB", title: "Absent", width: "50px"}, 
+                { field: "LV", title: "Leave", width: "50px" },   
+                { field: "DO", title: "Day Off", width: "50px" },
+                { field: "WD", title: "WOD", width: "50px" },
+                { field: "HD", title: "Holiday", width: "50px" },
+                { field: "WH", title: "WOH", width: "50px" },
+                { field: "absentRate", title: "% Absent", format: "{0:0.##}", width: "50px" }
+            ]
+            });
+        });
+    }
+</script>
+
+
+
+
+
+
