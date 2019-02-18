@@ -126,7 +126,7 @@
                 title: 'Select All',
                 headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
                 template: "<input type='checkbox' id='#:ID#'  class='k-checkbox row-checkbox'><label class='k-checkbox-label' for='#:ID#'></label>",
-                width: 80
+                width: 50
             },
             {field: "COMPANY_NAME", title: "Company"},
             {field: "DEPARTMENT_NAME", title: "Department"},
@@ -144,6 +144,8 @@
                 ]},
             {field: "IN_TIME", title: "Check In", template: "<span>#: (IN_TIME == null) ? '-' : IN_TIME # </span>"},
             {field: "OUT_TIME", title: "Check Out", template: "<span>#: (OUT_TIME == null) ? '-' : OUT_TIME # </span>"},
+            {field: "SYSTEM_OVERTIME", title: "OT", template: "<span>#: (SYSTEM_OVERTIME == null) ? '-' : SYSTEM_OVERTIME # </span>"},
+            {field: "MANUAL_OVERTIME", title: "MOT", template: "<span>#: (MANUAL_OVERTIME == null) ? '-' : MANUAL_OVERTIME # </span>"},
             {field: "STATUS", title: "Status", template: "<span>#: (STATUS == null) ? '-' : STATUS # </span>"},
             {title: 'Shift Details', columns: [
                     {field: "SHIFT_ENAME", title: "Name"},
@@ -186,6 +188,8 @@
             'IN_REMARKS': 'In Remarks',
             'OUT_REMARKS': 'Out Remarks',
             'TOTAL_HOUR': 'Total Hour',
+            'SYSTEM_OVERTIME': 'System OT',
+            'MANUAL_OVERTIME': 'Manual OT',
             'STATUS': 'Status',
             'SHIFT_ENAME': 'Shift Name',
             'START_TIME': 'Start Time',
