@@ -278,7 +278,9 @@
                                     break;
                                 }
                             }
-                            return xc;
+                            if(xc==false){
+                                return xc;
+                            }
                         } else if (value === null) {
 
                         } else {
