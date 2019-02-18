@@ -68,13 +68,24 @@
             var fromDate = $fromDate.val();
             var toDate = $toDate.val();
             var dateRange = app.getDateRangeBetween(nepaliDatePickerExt.getDate(fromDate), nepaliDatePickerExt.getDate(toDate));
+            
+            
+            
             columns.splice(1);
             for (var i in dateRange) {
-                var columnTitle = dateRange[i].getFullYear() + "-" + ("0" + dateRange[i].getMonth() + 1).slice(-2) + "-" + ("0" + dateRange[i].getDate()).slice(-2);
-                var forDate = "f" + dateRange[i].getFullYear() + ("0" + dateRange[i].getMonth() + 1).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
-                var shiftId = "s" + dateRange[i].getFullYear() + ("0" + dateRange[i].getMonth() + 1).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
+                var columnTitle = dateRange[i].getFullYear() + "-" + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + "-" + ("0" + dateRange[i].getDate()).slice(-2);
+                var forDate = "f" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
+                var shiftId = "s" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
+             console.log('columTitle',columnTitle);
+            console.log('forDate',forDate);
+            console.log('shiftId',shiftId);
+            console.log(dateRange[i].getMonth());
+            
+                
+                
                 columns.push({title: columnTitle, width: 130, field: [forDate, "EMPLOYEE_ID", shiftId], template: cellTemplate(forDate, shiftId)});
             }
+            
             initialize($table, kendoConfig);
             getRoaster(function (rData) {
                 var employees = document.searchManager.getSelectedEmployee();
@@ -93,11 +104,11 @@
                     var cell = {'FULL_NAME': employees[i]['FULL_NAME']};
                     for (var j in dateRange) {
                         var columndate = nepaliDatePickerExt.getFormatedDate(dateRange[j]);
-                        var dateCheckString = "f" + dateRange[j].getFullYear() + ("0" + dateRange[j].getMonth() + 1).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2);
-                        cell["f" + dateRange[j].getFullYear() + ("0" + dateRange[j].getMonth() + 1).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = columndate;
+                        var dateCheckString = "f" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2);
+                        cell["f" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = columndate;
                         cell['EMPLOYEE_ID'] = employees[i]['EMPLOYEE_ID'];
                         var check = searchInRData(rData, cell, dateCheckString);
-                        cell["s" + dateRange[j].getFullYear() + ("0" + dateRange[j].getMonth() + 1).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = check != false ? check['SHIFT_ID'] : '';
+                        cell["s" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = check != false ? check['SHIFT_ID'] : '';
                     }
                     data.push(cell);
                 }
