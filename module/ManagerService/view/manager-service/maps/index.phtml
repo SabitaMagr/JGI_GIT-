@@ -42,7 +42,6 @@ $(function(){
         var employeeId = $("#employeeId").val();
         var date1 = $("#fromDate").val();
         var date2 = $("#toDate").val();
-        $("#viewLevel").val("9");
         $.ajax({
             type: 'POST',
             dataType: 'json',
@@ -59,7 +58,7 @@ $(function(){
                 if(data.data.checkInLocation.length != 0){
                     locationData = data;
                     $("#map").removeClass('hidden');
-                    initializeMap(data,9);
+                    initializeMap(locationData,9);
                 }  
                 else{
                     locationData = null;
@@ -162,7 +161,6 @@ function changeView(){
 }
 
 function initializeMap(data,view) {
-
     var marker;
     var markerLocation;
     var bounds = new google.maps.LatLngBounds();

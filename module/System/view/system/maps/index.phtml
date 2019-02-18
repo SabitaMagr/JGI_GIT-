@@ -42,7 +42,6 @@ $(function(){
         var employeeId = $("#employeeId").val();
         var date1 = $("#fromDate").val();
         var date2 = $("#toDate").val();
-        $("#viewLevel").val("9");
         $.ajax({
             type: 'POST',
             dataType: 'json',
@@ -174,11 +173,10 @@ function initializeMap(data,view) {
 
     var myOptions =
     {
-        maxZoom: 14,
         zoom: view,
         center: center,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        disableDefaultUI: true
+        disableDefaultUI: false
     };
 
     var map = new google.maps.Map(document.getElementById("map"), myOptions);
@@ -187,7 +185,7 @@ function initializeMap(data,view) {
     for(var i = 0; i < data.data.checkInLocation.length; i++){ 
         if(data.data.checkInLocation[i] == null){ console.log("Skipped"); continue; }
         xy = data.data.checkInLocation[i].split(",");
-        xy[0] = parseInt(xy[0]); xy[1] = parseInt(xy[1]);
+        xy[0] = parseFloat(xy[0]); xy[1] = parseFloat(xy[1]);
         markerLocation = new google.maps.LatLng(xy[0],xy[1]);
         marker = new google.maps.Marker({
             map: map,
@@ -203,7 +201,7 @@ function initializeMap(data,view) {
     for(var i = 0; i < data.data.checkOutLocation.length; i++){ 
         if(data.data.checkOutLocation[i] == null){ console.log("Skipped"); continue; }
         xy = data.data.checkOutLocation[i].split(",");
-        xy[0] = parseInt(xy[0]); xy[1] = parseInt(xy[1]);
+        xy[0] = parseFloat(xy[0]); xy[1] = parseFloat(xy[1]);
         markerLocation = new google.maps.LatLng(xy[0],xy[1]);
         marker = new google.maps.Marker({
             map: map,

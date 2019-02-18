@@ -5,10 +5,12 @@
         var reportData;
         $("#generate").on("click", function () {
             var date1 = $("#fromDate").val();
+            var company = $("#company").val();
             var date2 = date1;
             app.serverRequest('', {
                 date1: date1,
-                date2: date2
+                date2: date2,
+                company: company
             }).then(function (response) {
                 if (response.success) {
                     reportData = response.data;
@@ -89,6 +91,6 @@
                     {field: "absentRate", title: "% Absent", format: "{0:0.##}", width: "50px"}
                 ]
             });
-        }
+        } 
     });
 })(window.jQuery, window.app);

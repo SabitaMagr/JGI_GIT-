@@ -452,17 +452,22 @@ class AllReportController extends HrisController {
                     throw new Exception("parameter to_date is required");
                 }
 
+                $companyId = $postedData['company'];
+
                 if($date2 == '' || $date2 == null){
                     $date2 = $date1;
                 }
 
-                $reportData = $this->repository->departmentWiseAttdReport($date1, $date2);
+                $reportData = $this->repository->departmentWiseAttdReport($companyId, $date1, $date2);
                 return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
             } else {
+                $companies = $this->repository->getAllCompanies();
+               
                 return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'companies' => $companies
                 ]);
             }
         } catch (Exception $e) {
