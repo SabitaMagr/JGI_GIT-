@@ -22,6 +22,7 @@ $orderByPosition = $form->get('orderByPosition');
 $orderByDesignation = $form->get('orderByDesignation');
 $orderByJoinDate = $form->get('orderByJoinDate');
 $orderBySeniority = $form->get('orderBySeniority');
+$calendarView = $form->get('calendarView');
 
 $submit = $form->get('submit');
 
@@ -190,6 +191,15 @@ if ($this->messages) {
                 </div>
                     <h3 class="form-section">Report</h3>
                 <div class="row">
+                    <div class=" col-sm-4 ">
+                        <div class="form-group padding-0">
+                            <?php print $this->formLabel($calendarView); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($calendarView); ?>
+                            </div>
+                        </div>
+                        <?php print $this->formElementErrors()->render($calendarView, ['class' => 'help-block error']); ?>
+                    </div>
                     <div class=" col-sm-4 ">
                         <div class="form-group padding-0">
                             <?php print $this->formLabel($includeEmployeeCode); ?>
