@@ -2,11 +2,20 @@
     'use strict';
     $(document).ready(function () {
         var $fromDate = $('#fromDate');
-        var $toDate = $('#toDate');
+        var $toDate = $('#toDate'); 
         var $presentStatusId = $("#presentStatusId");
         var $status = $('#statusId');
         var $table = $('#table');
         var $search = $('#search');
+
+        $('select').select2();
+        $('#inTime').combodate({
+            minuteStep: 1
+        });
+        $('#outTime').combodate({
+            minuteStep: 1
+        });
+
         $.each(document.searchManager.getIds(), function (key, value) {
             $('#' + value).select2();
         });
@@ -78,7 +87,7 @@
                     scrollable: false,
                     sortable: false,
                     pageable: false,
-                    serverPaging: true,
+                    serverPaging: true, 
                     serverSorting: true,
                     serverFiltering: true,
                     columns:
@@ -91,7 +100,7 @@
                     class: "col-sm-2",
                     css: {
                         float: "left",
-                        padding: "0px",
+                        padding: "0px", 
                         margin: "0px 0px 0px 20px",
                         width: "11%"
                     }
@@ -229,23 +238,35 @@
                 } else {
                     $bulkBtnContainer.hide();
                 }
-
+ 
             }
         });
-        $bulkBtns.bind("click", function () {
+        $bulkBtns.bind("click", function () { 
             var btnId = $(this).attr('id');
             var selectedValues = [];
+            var shiftId = $("#shiftId").val();
+            var in_time = $("#inTime").val();
+            var out_time = $("#outTime").val();
+            $bulkBtnContainer.hide();
             var impactOtherDays = $impactOtherDays.prop('checked');
             for (var i in selectItems) {
                 if (selectItems[i].checked) {
-                    selectedValues.push({id: i, employeeId: selectItems[i]['employeeId'], attendanceDt: selectItems[i]['attendanceDt'], action: btnId, impactOtherDays: impactOtherDays});
+                    selectedValues.push({
+                        in_time: in_time,
+                        out_time: out_time, 
+                        shiftId: shiftId,
+                        id: i, employeeId: selectItems[i]['employeeId'], 
+                        attendanceDt: selectItems[i]['attendanceDt'], 
+                        action: btnId, 
+                        impactOtherDays: impactOtherDays
+                    });
                 }
             }
             app.bulkServerRequest(document.bulkAttendanceWS, selectedValues, function () {
                 $search.trigger('click');
             }, function (data, error) {
-
-            });
+                
+            }); 
         });
         var $impactOtherDays = $('#impact_other_days');
 

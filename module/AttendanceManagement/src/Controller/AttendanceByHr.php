@@ -9,6 +9,7 @@ use AttendanceManagement\Form\AttendanceByHrForm;
 use AttendanceManagement\Model\AttendanceDetail;
 use AttendanceManagement\Repository\AttendanceDetailRepository;
 use AttendanceManagement\Repository\AttendanceRepository;
+use AttendanceManagement\Repository\ShiftRepository;
 use Exception;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
@@ -54,18 +55,21 @@ class AttendanceByHr extends HrisController {
         $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Present Status");
         return $statusFormElement;
-    }
+    } 
 
     public function indexAction() {
+        $shiftRepo = new ShiftRepository($this->adapter);
+        $shiftList = iterator_to_array($shiftRepo->fetchAll(), false);
         return Helper::addFlashMessagesToArray($this, [
                 'status' => $this->getStatusSelect(),
                 'presentStatus' => $this->getPresentStatusSelect(),
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
-                'acl' => $this->acl,
+                'acl' => $this->acl, 
+                'shiftList' => $shiftList,
                 'employeeDetail' => $this->storageData['employee_detail']
         ]);
-    }
-
+    } 
+ 
     public function reportAction() {
         return Helper::addFlashMessagesToArray($this, [
                 'status' => $this->getStatusSelect(),
@@ -75,9 +79,9 @@ class AttendanceByHr extends HrisController {
                 'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
-
+ 
     public function addAction() {
-        $request = $this->getRequest();
+        $request = $this->getRequest(); 
         try {
             if ($request->isPost()) {
                 $this->form->setData($request->getPost());
@@ -181,7 +185,6 @@ class AttendanceByHr extends HrisController {
             $result['success'] = true;
             $result['data'] = Helper::extractDbData($results);
             $result['error'] = "";
-
             return new CustomViewModel($result);
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -231,18 +234,20 @@ class AttendanceByHr extends HrisController {
         try {
             $request = $this->getRequest();
             $postedData = $request->getPost();
-            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action'], $postedData['impactOtherDays'] === 'true');
+            $inTime = "TO_DATE('{$postedData['in_time']}', 'HH:MI AM')";
+            $outTime = "TO_DATE('{$postedData['out_time']}', 'HH:MI AM')";
+            //return new JsonModel(['success' => true, 'data' => $postedData, 'error' => '']);
+            $this->repository->manualAttendance($postedData['employeeId'], Helper::getExpressionDate($postedData['attendanceDt'])->getExpression(), $postedData['action'], $postedData['impactOtherDays'] === 'true', $postedData['shiftId'], $inTime, $outTime);
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-        }
-    }
+        } 
+    } 
 
     public function pullInOutTimeAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-
 
             $attendanceDt = $data['attendanceDt'];
             $employeeId = $data['employeeId'];

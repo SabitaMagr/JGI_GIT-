@@ -677,16 +677,16 @@ class AttendanceDetailRepository implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result->current();
-    }
-
-    public function manualAttendance($employeeId, $attendanceDt, $action, $impactOtherDays) {
-        if ($impactOtherDays) {
+    } 
+ 
+    public function manualAttendance($employeeId, $attendanceDt, $action, $impactOtherDays, $shiftId = null, $in_time = null, $out_time = null) {
+        if ($impactOtherDays) { 
             $sql = "BEGIN
-                  HRIS_MANUAL_ATTENDANCE_ALL({$employeeId},{$attendanceDt},'{$action}');
+                  HRIS_MANUAL_ATTENDANCE_ALL({$employeeId},{$attendanceDt},'{$action}', {$shiftId}, {$in_time}, {$out_time});
                 END;";
         } else {
             $sql = "BEGIN
-                  HRIS_MANUAL_ATTENDANCE({$employeeId},{$attendanceDt},'{$action}');
+                  HRIS_MANUAL_ATTENDANCE({$employeeId},{$attendanceDt},'{$action}', {$shiftId}, {$in_time}, {$out_time});
                 END;";
         }
         $statement = $this->adapter->query($sql);
