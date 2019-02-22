@@ -665,4 +665,3 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
-

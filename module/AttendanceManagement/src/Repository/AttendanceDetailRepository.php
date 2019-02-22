@@ -202,7 +202,18 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   END) AS STATUS,
                    S.SHIFT_ENAME,
                   TO_CHAR(S.START_TIME,'HH:MI AM') AS START_TIME,
-                  TO_CHAR(S.END_TIME,'HH:MI AM')   AS END_TIME
+                  TO_CHAR(S.END_TIME,'HH:MI AM')   AS END_TIME,
+                   CASE WHEN A.OT_MINUTES>0
+                   THEN 
+                   MIN_TO_HOUR(A.OT_MINUTES)
+                   ELSE ''
+                   END
+                   AS SYSTEM_OVERTIME,
+                  CASE WHEN A.OM.OVERTIME_HOUR is not null
+                   THEN 
+                  MIN_TO_HOUR(A.OM.OVERTIME_HOUR*60)
+                   ELSE ''
+                   END AS MANUAL_OVERTIME
                 FROM HRIS_ATTENDANCE_DETAIL A
                 LEFT JOIN HRIS_EMPLOYEES E
                 ON A.EMPLOYEE_ID=E.EMPLOYEE_ID
@@ -226,6 +237,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON A.TRAVEL_ID      =TVL.TRAVEL_ID
                 LEFT JOIN HRIS_SHIFTS S
                 ON A.SHIFT_ID=S.SHIFT_ID
+                LEFT JOIN  HRIS_OVERTIME_MANUAL OM
+                ON (OM.ATTENDANCE_DATE=A.ATTENDANCE_DT AND OM.EMPLOYEE_ID=A.EMPLOYEE_ID)
                 WHERE 1=1
                 {$searchConditon}
                 {$fromDateCondition}

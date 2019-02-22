@@ -170,6 +170,13 @@ class SystemSettingForm {
      * @Annotation\Attributes({ "id":"orderBySeniority","value":"N"})
      */
     public $orderBySeniority;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"N":"Nepali","E":"English"},"label":"Calendar View"})
+     * @Annotation\Attributes({ "id":"calendarView","value":"N"})
+     */
+    public $calendarView;
 
 
     /**

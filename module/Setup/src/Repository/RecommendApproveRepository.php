@@ -3,6 +3,7 @@
 namespace Setup\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\RecommendApprove;
@@ -262,5 +263,13 @@ class RecommendApproveRepository implements RepositoryInterface {
               {$condition}";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
+    
+    public function getAlternateRecmApprover($employee_id,$rA){
+        $sql = "  
+            SELECT R_A_ID FROM HRIS_ALTERNATE_R_A WHERE R_A_FLAG='{$rA}' and employee_id={$employee_id}";
+        return Helper::extractDbData(EntityHelper::rawQueryResult($this->adapter, $sql));
+    }
+    
+    
 
 }

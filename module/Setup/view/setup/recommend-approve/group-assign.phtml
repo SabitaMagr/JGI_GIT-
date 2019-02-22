@@ -13,6 +13,8 @@ $this->headScript()
 ?>
 
 <script>
+//    document.selectedAlternateRecommneder = <?php // echo json_encode($alternateRecommendor);   ?>;
+//    document.selectedAlternateApprover = <?php // echo json_encode($alternateApprover);   ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchLink = '<?php echo $this->url('recommendapprove', ["action" => "pullEmployeeForRecAppAssign"]); ?>';
     document.assignEmployeeReportingHierarchyLink = '<?php echo $this->url('recommendapprove', ["action" => "assignEmployeeReportingHierarchy"]); ?>';
@@ -104,6 +106,12 @@ $this->headScript()
                         <th>
                             Approver Assigned
                         </th>
+                        <th>
+                            Alternate Recommender
+                        </th>
+                        <th>
+                            Alternate Approver
+                        </th>
                         <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
                                 <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
@@ -131,6 +139,8 @@ $this->headScript()
                         <td>
                             <span ng-bind="employee.APPROVER_NAME"></span>
                         </td>
+                        <td><span ng-bind="employee.A_R_NAME"></td>
+                        <td><span ng-bind="employee.A_A_NAME"></td>
 
                         <td class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
                             <div class="th-inner ">
@@ -184,7 +194,42 @@ $this->headScript()
                     </label>
                 </div>  
             </div>
-        </div>      
+        </div>
+
+        <div class="col-sm-3">
+            <label for="designationId" style="width:100%">Alternate Recommender</label>
+            <div class="row">
+                <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                    <select multiple name="alternateRecomender[]" required="required" id="alternateRecomender" class="form-control" ng-options="altRecomm.name for altRecomm in alternateRecommenderOptions track by altRecomm.id" ng-model="alternateRecommenderSelected">
+                    </select>   
+                </div>
+                <div class="col-md-3 rlPadding alternateRecomenderWrap" style="padding:0px 0px !important;">
+                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                        <input class="" ng-model="alternateRecomenderAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="alternateRecomenderAssign"/>
+                        <span></span>
+                    </label>
+                </div>  
+            </div>
+        </div>   
+        
+        
+        <div class="col-sm-3">
+            <label for="designationId" style="width:100%">Alternate Approver</label>
+            <div class="row">
+                <div class="col-md-9 parentDiv" style="padding-right: 0px;">                                
+                    <select multiple name="alternateApprover[]" required="required" id="alternateApprover" class="form-control" ng-options="altApp.name for altApp in alternateApproverOptions track by altApp.id" ng-model="alternateApproverSelected">
+                    </select>   
+                </div>
+                <div class="col-md-3 rlPadding alternateApproverWrap" style="padding:0px 0px !important;">
+                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                        <input class="" ng-model="alternateApproverAssign" ng-click="checkReportingHierarchy()" type="checkbox" id="alternateApproverAssign"/>
+                        <span></span>
+                    </label>
+                </div>  
+            </div>
+        </div>   
+
+
         <div class="col-sm-2 " ng-show="showHideAssignBtn">
             <label height="45"></label>
             <button id="assignBtn" ng-click="assign()" class="btn btn-default form-control i-search mt-ladda-btn ladda-button mt-progress-demo">
