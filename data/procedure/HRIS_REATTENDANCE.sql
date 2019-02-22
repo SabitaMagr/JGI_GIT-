@@ -35,9 +35,6 @@ AS
   V_HALF_INTERVAL      DATE;
   v_NEXT_HALF_INTERVAL DATE;
   v_training_id          number;
-  V_FOOD_ALLOWANCE NUMBER(1,0):=0;
-  V_NIGHT_SHIFT_ALLOWANCE NUMBER(1,0):=0;
-  V_SHIFT_ALLOWANCE NUMBER(1,0):=0;
 BEGIN
   IF P_TO_ATTENDANCE_DT IS NOT NULL THEN
     V_TO_ATTENDANCE_DT  :=P_TO_ATTENDANCE_DT;
@@ -185,20 +182,6 @@ BEGIN
         --
       END IF;
       --
-      
-      --to update food shift allowance to zero allowance it  no attendnace start
-      
-      UPDATE HRIS_ATTENDANCE_DETAIL
-        SET 
-          FOOD_ALLOWANCE    =0,
-          SHIFT_ALLOWANCE    =0,
-          NIGHT_SHIFT_ALLOWANCE    =0
-        WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
-        AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
-      
-      --to update food shift allowance to zero allowance it  no attendnace end
-      
-      
       IF V_IN_TIME IS NOT NULL THEN
         --
         IF V_IN_TIME  = V_OUT_TIME THEN
@@ -393,38 +376,13 @@ BEGIN
           END IF;
         END IF;
         --
-        
-        -- TO CHECK FOOD/SHIFT/NIGHT ALLOWANCE 
-        SELECT 
-            (CASE WHEN V_DIFF_IN_MIN >= 120 AND V_DIFF_IN_MIN < 240
-            THEN 1
-            WHEN V_DIFF_IN_MIN>=240
-            THEN 2
-            ELSE 0
-           END),
-           (CASE WHEN V_DIFF_IN_MIN >0 AND V_DIFF_IN_MIN IS NOT NULL AND employee.NIGHT_SHIFT_ALLOWANCE>0
-            THEN 1
-            ELSE 0
-           END),
-           (CASE WHEN V_DIFF_IN_MIN >=480 AND V_DIFF_IN_MIN IS NOT NULL AND employee.SHIFT_ALLOWANCE>0
-            THEN 1
-            ELSE 0
-           END)
-           INTO V_FOOD_ALLOWANCE,V_NIGHT_SHIFT_ALLOWANCE,V_SHIFT_ALLOWANCE
-            FROM DUAL;
-        --TO CHECK FOOD/SHIFT/NIGHT ALLOWANCE
-        
-        
         UPDATE HRIS_ATTENDANCE_DETAIL
         SET IN_TIME         = V_IN_TIME,
           OUT_TIME          =V_OUT_TIME,
           OVERALL_STATUS    = V_OVERALL_STATUS,
           LATE_STATUS       = V_LATE_STATUS,
           TOTAL_HOUR        = V_DIFF_IN_MIN,
-          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN),
-          FOOD_ALLOWANCE    =V_FOOD_ALLOWANCE,
-          SHIFT_ALLOWANCE    =V_SHIFT_ALLOWANCE,
-          NIGHT_SHIFT_ALLOWANCE    =V_NIGHT_SHIFT_ALLOWANCE
+          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN)
         WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
         AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
         --

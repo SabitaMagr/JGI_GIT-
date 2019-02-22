@@ -27,8 +27,6 @@ AS
   V_IGNORE_TIME HRIS_SHIFTS.IGNORE_TIME%TYPE;
   V_MAX_ID                NUMBER;
   V_ATTENDANCE_DATA_COUNT NUMBER;
-  V_NIGHT_SHIFT CHAR(1 BYTE):='N';
-  V_SHIFT_ALLOWANCE CHAR(1 BYTE):='N';
   CURSOR CUR_EMPLOYEE
   IS
     SELECT EMPLOYEE_ID
@@ -80,8 +78,7 @@ BEGIN
           WEEKDAY6,
           WEEKDAY7,
           TWO_DAY_SHIFT,
-          IGNORE_TIME,
-          NIGHT_SHIFT
+          IGNORE_TIME
         INTO V_SHIFT_ID,
           V_WEEKDAY1,
           V_WEEKDAY2,
@@ -91,8 +88,7 @@ BEGIN
           V_WEEKDAY6,
           V_WEEKDAY7,
           V_TWO_DAY_SHIFT,
-          V_IGNORE_TIME,
-          V_NIGHT_SHIFT
+          V_IGNORE_TIME
         FROM HRIS_SHIFTS HS
         WHERE HS.SHIFT_ID = P_SHIFT_ID ;
       END;
@@ -108,8 +104,7 @@ BEGIN
           WEEKDAY6,
           WEEKDAY7,
           TWO_DAY_SHIFT,
-          IGNORE_TIME,
-          NIGHT_SHIFT
+          IGNORE_TIME
         INTO V_SHIFT_ID,
           V_WEEKDAY1,
           V_WEEKDAY2,
@@ -119,8 +114,7 @@ BEGIN
           V_WEEKDAY6,
           V_WEEKDAY7,
           V_TWO_DAY_SHIFT,
-          V_IGNORE_TIME,
-          V_NIGHT_SHIFT
+          V_IGNORE_TIME
         FROM HRIS_EMPLOYEE_SHIFT_ROASTER ES,
           HRIS_SHIFTS HS
         WHERE 1                = 1
@@ -140,8 +134,7 @@ BEGIN
             WEEKDAY6,
             WEEKDAY7,
             TWO_DAY_SHIFT,
-            IGNORE_TIME,
-            NIGHT_SHIFT
+            IGNORE_TIME
           INTO V_SHIFT_ID,
             V_WEEKDAY1,
             V_WEEKDAY2,
@@ -151,8 +144,7 @@ BEGIN
             V_WEEKDAY6,
             V_WEEKDAY7,
             V_TWO_DAY_SHIFT,
-            V_IGNORE_TIME,
-            V_NIGHT_SHIFT
+            V_IGNORE_TIME
           FROM
             (SELECT *
             FROM
@@ -185,8 +177,7 @@ BEGIN
               WEEKDAY6,
               WEEKDAY7,
               TWO_DAY_SHIFT,
-              IGNORE_TIME,
-              NIGHT_SHIFT
+              IGNORE_TIME
             INTO V_SHIFT_ID,
               V_WEEKDAY1,
               V_WEEKDAY2,
@@ -196,8 +187,7 @@ BEGIN
               V_WEEKDAY6,
               V_WEEKDAY7,
               V_TWO_DAY_SHIFT,
-              V_IGNORE_TIME,
-              V_NIGHT_SHIFT
+              V_IGNORE_TIME
             FROM HRIS_SHIFTS
             WHERE V_ATTENDANCE_DATE BETWEEN START_DATE AND END_DATE
             AND DEFAULT_SHIFT = 'Y'
@@ -425,15 +415,6 @@ BEGIN
       NULL;
     END;
     --
-    
-    -- TO CHECK SHIFT ALLOWANCE FOR THE EMPLOYEE START
-   SELECT P.SHIFT_ALLOWANCE INTO V_SHIFT_ALLOWANCE FROM HRIS_EMPLOYEES E
-LEFT JOIN HRIS_POSITIONS P ON (E.POSITION_ID=P.POSITION_ID)
-WHERE EMPLOYEE_ID=V_EMPLOYEE_ID;
-
--- TO CHECK SHIFT ALLOWANCE FOR THE EMPLOYEE START
-
-    
     BEGIN
       INSERT
       INTO HRIS_ATTENDANCE_DETAIL
@@ -453,9 +434,7 @@ WHERE EMPLOYEE_ID=V_EMPLOYEE_ID;
           TRAINING_TYPE,
           OVERALL_STATUS,
           TWO_DAY_SHIFT,
-          IGNORE_TIME,
-          NIGHT_SHIFT_ALLOWANCE,
-          SHIFT_ALLOWANCE
+          IGNORE_TIME
         )
         VALUES
         (
@@ -484,19 +463,7 @@ WHERE EMPLOYEE_ID=V_EMPLOYEE_ID;
             THEN 'D'
             ELSE V_TWO_DAY_SHIFT
           END),
-          V_IGNORE_TIME,
-          (
-          CASE
-            WHEN V_NIGHT_SHIFT='Y'
-            THEN 1
-            ELSE 0
-          END),
-          (
-          CASE
-            WHEN V_SHIFT_ALLOWANCE='Y'
-            THEN 1
-            ELSE 0
-          END)
+          V_IGNORE_TIME
         );
     END;
   END LOOP;
