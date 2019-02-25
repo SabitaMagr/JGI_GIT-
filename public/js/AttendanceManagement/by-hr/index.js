@@ -15,6 +15,9 @@
         $('#outTime').combodate({
             minuteStep: 1
         });
+        
+        (document.allowShiftChange=="Y")? $(".manualShift").show(): $(".manualShift").hide();
+        (document.allowTimeChange=="Y")? $(".manualTime").show(): $(".manualTime").hide();
 
         $.each(document.searchManager.getIds(), function (key, value) {
             $('#' + value).select2();

@@ -25,6 +25,8 @@ $this->headScript()
     document.pullInOutTimeLink = '<?php echo $this->url('attendancebyhr', ['action' => 'pullInOutTime']); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
+    document.allowShiftChange ='<?php echo $allowShiftChange; ?>';
+    document.allowTimeChange ='<?php echo $allowTimeChange; ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -202,7 +204,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div class="col-sm-2 ">
         <button id="A" class="btn btn-danger btnApproveReject">Absent</button>
     </div>
-    <div class="col-sm-2 ">
+    <div class="col-sm-2 manualShift">
         <label>Shift</label>
         <select id="shiftId" name="shiftId">
         <option value="0" selected="selected">---</option>
@@ -212,7 +214,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </select>
     </div>
 
-    <div class="col-sm-3">
+    <div class="col-sm-3 manualTime">
         <div class="form-group ">
             <label for="inTime">In Time</label>                            
             <!--<span class="required" aria-required="true">*</span>-->
@@ -222,7 +224,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
 
-    <div class="col-sm-3">
+    <div class="col-sm-3 manualTime">
         <div class="form-group ">
             <label for="outTime">Out Time</label>                            
             <div class="input-group dropdown-select">
@@ -234,7 +236,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
     <!-- <div class="col-sm-2 col-sm-offset-8"> -->
-    <div class="col-sm-2">
+    <div class="col-sm-2 pull-right">
         <button id="P" class="btn btn-info btnApproveReject pull-right">Present</button>
     </div>
 </div>

@@ -66,7 +66,9 @@ class AttendanceByHr extends HrisController {
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl, 
                 'shiftList' => $shiftList,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'allowShiftChange' =>  isset($this->preference['attAppShiftChangeable'])? $this->preference['attAppShiftChangeable']  : 'N',
+                'allowTimeChange' =>  isset($this->preference['attAppTimeChangeable'])? $this->preference['attAppTimeChangeable']  : 'N'
         ]);
     } 
  
