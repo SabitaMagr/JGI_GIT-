@@ -6,7 +6,7 @@ use Application\Repository\HrisRepository;
 use LeaveManagement\Model\LeaveApply;
 use Setup\Model\HrEmployees;
 use Zend\Db\Sql\Expression;
-use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Sql; 
 
 class LeaveStatusRepository extends HrisRepository {
 

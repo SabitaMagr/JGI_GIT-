@@ -7,6 +7,7 @@
         var $search = $('#search');
 
         var columns = [
+            {field: "EMPLOYEE_CODE", title: "Code"},
             {field: "FULL_NAME", title: "Employee"},
             {field: "LEAVE_ENAME", title: "Leave"},
             {title: "Requested Date",

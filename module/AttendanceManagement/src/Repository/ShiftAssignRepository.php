@@ -85,6 +85,7 @@ class ShiftAssignRepository implements RepositoryInterface {
         $condition = $companyCondition . $branchCondition . $departmentCondition . $designationCondition . $positionCondition . $serviceTypeCondition . $serviceEventTypeConditon . $employeeCondition . $employeeTypeCondition;
         $sql = <<<EOT
                 SELECT C.COMPANY_NAME,
+                  E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
                   B.BRANCH_NAME,
                   DEP.DEPARTMENT_NAME,
                   P.POSITION_NAME,

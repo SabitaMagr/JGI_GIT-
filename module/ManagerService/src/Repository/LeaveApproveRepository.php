@@ -31,6 +31,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                 SELECT 
                   LA.ID                  AS ID,
                   LA.EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)   AS FULL_NAME,
                   INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
                   INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE_AD,
@@ -237,6 +238,7 @@ class LeaveApproveRepository implements RepositoryInterface {
                 SELECT 
                   LA.ID                  AS ID,
                   LA.EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)   AS FULL_NAME,
                   INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
                   INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))   AS START_DATE_AD,

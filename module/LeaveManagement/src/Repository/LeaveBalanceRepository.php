@@ -176,7 +176,7 @@ class LeaveBalanceRepository {
         $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly);
 
         $sql = "
-           SELECT LA.*,E.FULL_NAME FROM (SELECT *
+           SELECT LA.*,E.FULL_NAME, E.EMPLOYEE_CODE AS EMPLOYEE_CODE FROM (SELECT *
             FROM
               (SELECT EMPLOYEE_ID,
               PREVIOUS_YEAR_BAL,
