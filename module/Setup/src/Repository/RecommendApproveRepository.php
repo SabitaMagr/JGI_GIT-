@@ -240,11 +240,12 @@ class RecommendApproveRepository implements RepositoryInterface {
                 $condition .= "AND RA.APPROVED_BY IN ('{$search['approverId']}')";
             }
         }
-
+ 
         $sql = "  
             SELECT EC.COMPANY_NAME, 
                 E.EMPLOYEE_ID,
                 E.FULL_NAME    AS EMPLOYEE_NAME,
+                E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
                 RE.EMPLOYEE_ID AS RECOMMENDER_ID,
                 RE.FULL_NAME   AS RECOMMENDER_NAME,
                 AE.EMPLOYEE_ID AS APPROVER_ID,

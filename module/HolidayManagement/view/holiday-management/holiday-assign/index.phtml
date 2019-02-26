@@ -100,6 +100,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <thead>
                         <tr>
                             <th>
+                                Code
+                            </th>
+                            <th>
                                 Employee
                             </th>
                             <th>
@@ -130,6 +133,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </thead>
                     <tbody>
                         <tr ng-repeat="employeeShift in employeeList track by $index">
+                            <td>
+                                <span ng-bind="employeeShift.EMPLOYEE_CODE"></span>
+                            </td>
                             <td>
                                 <span ng-bind="employeeShift.FIRST_NAME"></span>
                                 <span ng-bind="employeeShift.MIDDLE_NAME"></span>

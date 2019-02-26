@@ -11,7 +11,7 @@ use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 
 class ReportRepository extends HrisRepository {
-
+ 
     public function employeeWiseDailyReport($employeeId) {
         $sql = <<<EOT
             SELECT R.*,
@@ -85,6 +85,7 @@ EOT;
                       TRUNC(AD.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1                              AS DAY_COUNT, 
                       E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID ,
                       E.FIRST_NAME                                                                   AS FIRST_NAME,
+                      E.EMPLOYEE_CODE                                                                   AS EMPLOYEE_CODE,
                       E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
                       E.LAST_NAME                                                                    AS LAST_NAME,
                       CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
@@ -1020,7 +1021,7 @@ EOT;
     public function employeeMonthlyReport($searchQuery) {
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
         $sql = <<<EOT
-                SELECT D.FULL_NAME,
+                SELECT D.FULL_NAME, D.EMPLOYEE_CODE,
                   R.*
                 FROM
                   (SELECT *
@@ -1136,6 +1137,7 @@ EOT;
 (SELECT 
 E.FULL_NAME,
 AD.EMPLOYEE_ID,
+E.EMPLOYEE_CODE,
 CASE WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
 THEN 'PR' ELSE AD.OVERALL_STATUS END AS OVERALL_STATUS,
 --AD.ATTENDANCE_DT,
@@ -1308,7 +1310,6 @@ FULL_NAME,
      
 
 public function departmentWiseAttdReport($companyId, $date1, $date2) {
-
         if($companyId == 0){
           $sql = <<<EOT
           SELECT *

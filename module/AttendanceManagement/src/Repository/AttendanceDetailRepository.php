@@ -120,7 +120,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
 
         if ($min != null && $max != null) {
-            $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})";
+            $rowNums = "WHERE (Q.R BETWEEN {$min} AND {$max})"; 
         }
           $orderByString=EntityHelper::getOrderBy('A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','E.SENIORITY_LEVEL','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
         $sql = "
@@ -128,6 +128,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   ROWNUM                                           AS R,
                   A.ID                                             AS ID,
                   A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE                                    AS EMPLOYEE_CODE,
                   INITCAP(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT,
                   BS_DATE(TO_CHAR(A.ATTENDANCE_DT, 'DD-MON-YYYY')) AS ATTENDANCE_DT_N,
                   INITCAP(TO_CHAR(A.IN_TIME, 'HH:MI AM'))          AS IN_TIME,

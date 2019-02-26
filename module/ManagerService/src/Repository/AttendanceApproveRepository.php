@@ -37,6 +37,7 @@ class AttendanceApproveRepository extends HrisRepository {
             new Expression("AR.IN_REMARKS AS IN_REMARKS"),
             new Expression("AR.OUT_REMARKS AS OUT_REMARKS"),
             new Expression("AR.EMPLOYEE_ID AS EMPLOYEE_ID"),
+            new Expression("E.EMPLOYEE_CODE AS EMPLOYEE_CODE"),
             new Expression("AR.TOTAL_HOUR AS TOTAL_HOUR"),
             new Expression("AR.STATUS AS STATUS"),
             new Expression("LEAVE_STATUS_DESC(AR.STATUS) AS STATUS_DETAIL"),
@@ -99,7 +100,7 @@ class AttendanceApproveRepository extends HrisRepository {
             new Expression("A.TOTAL_HOUR AS TOTAL_HOUR"),
             new Expression("A.REQUESTED_DT AS REQUESTED_DT"),
             new Expression("A.APPROVED_REMARKS AS APPROVED_REMARKS")
-                ], true);
+                ], true); 
         $select->from(['A' => AttendanceRequestModel::TABLE_NAME])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'E.EMPLOYEE_ID=A.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=A.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")

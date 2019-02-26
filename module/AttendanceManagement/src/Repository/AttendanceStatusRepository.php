@@ -103,6 +103,7 @@ class AttendanceStatusRepository extends HrisRepository {
 
         $sql = "SELECT DISTINCT AR.ID                                             AS ID,
                   AR.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE                                                  AS EMPLOYEE_CODE,
                   INITCAP(TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY'))               AS ATTENDANCE_DT_AD,
                   BS_DATE(TO_CHAR(AR.ATTENDANCE_DT, 'DD-MON-YYYY'))               AS ATTENDANCE_DT_BS,
                   INITCAP(TO_CHAR(AR.IN_TIME, 'HH:MI AM'))                        AS IN_TIME,

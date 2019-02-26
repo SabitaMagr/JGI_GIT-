@@ -132,7 +132,7 @@
             }, function (failure) {
                 console.log(failure);
             });
-        };
+        }; 
         app.initializeKendoGrid($table, [
             {
                 title: 'Select All',
@@ -142,6 +142,7 @@
             },
             {field: "COMPANY_NAME", title: "Company"},
             {field: "DEPARTMENT_NAME", title: "Department"},
+            {field: "EMPLOYEE_CODE", title: "Code"},
             {field: "EMPLOYEE_NAME", title: "Employee", template: "<span>#: (EMPLOYEE_NAME == null) ? '-' : EMPLOYEE_NAME # </span>"},
             {title: "Attendance Date",
                 columns: [
@@ -188,10 +189,11 @@
             });
         });
 
-        app.searchTable($table, ['EMPLOYEE_NAME']);
+        app.searchTable($table, ['EMPLOYEE_NAME', 'EMPLOYEE_CODE']);
         var exportMap = {
             'COMPANY_NAME': ' Company',
             'DEPARTMENT_NAME': ' Department',
+            'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_NAME': ' Name',
             'ATTENDANCE_DT': 'Attendance Date(AD)',
             'ATTENDANCE_DT_N': 'Attendance Date(BS)',

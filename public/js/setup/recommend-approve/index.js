@@ -17,6 +17,7 @@
         };
         var columns = [
             {field: "COMPANY_NAME", title: "Company"},
+            {field: "EMPLOYEE_CODE", title: "Code"},
             {field: "EMPLOYEE_NAME", title: "Name"},
             {field: "RECOMMENDER_NAME", title: "Recommender"},
             {field: "APPROVER_NAME", title: "Approver"},
@@ -24,13 +25,14 @@
         ];
         var map = {
             'COMPANY_NAME': 'Company',
+            'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_NAME': 'Name',
             'RECOMMENDER_NAME': 'Recommender',
             'APPROVER_NAME': 'Approver',
         }
         app.initializeKendoGrid($table, columns);
 
-        app.searchTable($table, ['EMPLOYEE_NAME']);
+        app.searchTable($table, ['EMPLOYEE_NAME', 'EMPLOYEE_CODE']);
 
         $('#excelExport').on('click', function () {
             app.excelExport($table, map, 'Recommender Approver List.xlsx');
