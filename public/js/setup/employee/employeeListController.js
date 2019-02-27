@@ -51,6 +51,7 @@
         var map = {
             'EMPLOYEE_ID': 'Employee Id',
             'EMPLOYEE_CODE': 'Employee Code',
+            'TITLE': 'Title',
             'FULL_NAME': 'Employee',
             'GENDER_NAME': 'Gender',
             'BIRTH_DATE_AD': 'Birth Date(AD)',
