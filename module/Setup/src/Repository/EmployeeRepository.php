@@ -564,9 +564,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
             {$columIfSynergy}
                 E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
                   E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
-                  (CASE WHEN E.GENDER_ID = 1 THEN 'MR'
-                  WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'U' THEN 'MS'
-                  WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'M' THEN 'MRS' END) AS TITLE,
+                  (CASE WHEN E.GENDER_ID = 1 THEN 'MR.'
+                  WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'U' THEN 'MS.'
+                  WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'M' THEN 'MRS.' END) AS TITLE,
                   E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
                   INITCAP(E.FULL_NAME)                                              AS FULL_NAME,
                   INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
