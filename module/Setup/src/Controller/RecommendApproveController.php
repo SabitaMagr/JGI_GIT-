@@ -40,10 +40,10 @@ class RecommendApproveController extends HrisController {
             }
         }
 
-        $recommeders = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FULL_NAME"], ["STATUS" => "E"], "FULL_NAME", "ASC", null, [-1 => "All Recommender"], true);
+        $recommeders = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => "E"], "FULL_NAME", "ASC", " - ", [-1 => "All Recommender"], true);
         $recommenderSE = $this->getSelectElement(['name' => 'recommender', "id" => "recommenderId", "class" => "form-control", "label" => "Recommender"], $recommeders);
 
-        $approvers = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FULL_NAME"], ["STATUS" => "E"], "FULL_NAME", "ASC", null, [-1 => "All Approver"], true);
+        $approvers = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => "E"], "FULL_NAME", "ASC", " - ", [-1 => "All Approver"], true);
         $approverSE = $this->getSelectElement(['name' => 'approver', "id" => "approverId", "class" => "form-control", "label" => "Approver"], $approvers);
 
         return $this->stickFlashMessagesTo([
@@ -94,7 +94,7 @@ class RecommendApproveController extends HrisController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
-                    'employeeList' => EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"], ["STATUS" => "E"]),
+                    'employeeList' => EntityHelper::getTableKVList($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => "E"]," - "),
                     'employees' => $this->repository->getEmployees($id),
                     'alternateRecommendor' => $this->repository->getAlternateRecmApprover($id,'R'),
                     'alternateApprover' => $this->repository->getAlternateRecmApprover($id,'A')
@@ -127,7 +127,7 @@ class RecommendApproveController extends HrisController {
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control"]);
         $designationFormElement->setLabel("Designation");
 
-        $employeeResult = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], "FIRST_NAME", "ASC", " ", false, true);
+        $employeeResult = EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::EMPLOYEE_CODE, HrEmployees::FULL_NAME], [HrEmployees::STATUS => 'E', HrEmployees::RETIRED_FLAG => 'N'], "FIRST_NAME", "ASC", " - ", false, true);
         $employeeList = [];
         foreach ($employeeResult as $key => $value) {
             array_push($employeeList, ['id' => $key, 'name' => $value]);
@@ -137,7 +137,9 @@ class RecommendApproveController extends HrisController {
                     "departments" => $departmentFormElement,
                     'designations' => $designationFormElement,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'employeeList' => $employeeList
+                    'employeeList' => $employeeList,
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
         ]);
     }
 

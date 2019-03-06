@@ -242,7 +242,8 @@ class RecommendApproveRepository implements RepositoryInterface {
         }
  
         $sql = "  
-            SELECT EC.COMPANY_NAME, 
+            SELECT AR.A_R_ID,AR.A_R_NAME,AA.A_A_ID,AA.A_A_NAME,
+            EC.COMPANY_NAME, 
                 E.EMPLOYEE_ID,
                 E.FULL_NAME    AS EMPLOYEE_NAME,
                 E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
@@ -259,8 +260,27 @@ class RecommendApproveRepository implements RepositoryInterface {
               ON (AE.EMPLOYEE_ID=RA.APPROVED_BY)
               LEFT JOIN HRIS_COMPANY EC
               ON (EC.COMPANY_ID=E.COMPANY_ID)
+              
+
+LEFT JOIN (
+            SELECT 
+IARA.EMPLOYEE_ID,
+LISTAGG(IARA.R_A_ID, ',') WITHIN GROUP (ORDER BY IARAE.FULL_NAME) AS A_R_ID,
+LISTAGG(IARAE.FULL_NAME, ',') WITHIN GROUP (ORDER BY IARAE.FULL_NAME) AS A_R_NAME
+FROM HRIS_ALTERNATE_R_A IARA
+JOIN HRIS_EMPLOYEES IARAE ON (IARA.R_A_ID=IARAE.EMPLOYEE_ID AND IARA.R_A_FLAG='R')
+GROUP BY IARA.EMPLOYEE_ID) AR ON (AR.EMPLOYEE_ID=E.EMPLOYEE_ID)
+LEFT JOIN (
+            SELECT 
+IARA.EMPLOYEE_ID,
+LISTAGG(IARA.R_A_ID, ',') WITHIN GROUP (ORDER BY IARAE.FULL_NAME) AS A_A_ID,
+LISTAGG(IARAE.FULL_NAME, ',') WITHIN GROUP (ORDER BY IARAE.FULL_NAME) AS A_A_NAME
+FROM HRIS_ALTERNATE_R_A IARA
+JOIN HRIS_EMPLOYEES IARAE ON (IARA.R_A_ID=IARAE.EMPLOYEE_ID AND IARA.R_A_FLAG='A')
+GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
+
               WHERE 1           =1
-              AND RA.STATUS        = 'E' 
+              AND RA.STATUS        = 'E' AND E.STATUS='E '
               {$condition}";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }

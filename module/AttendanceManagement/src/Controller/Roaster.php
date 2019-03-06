@@ -29,7 +29,9 @@ class Roaster extends HrisController {
 
     public function getRoasterListAction() {
         try {
-            $result = $this->repository->fetchAll();
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $result = $this->repository->getRosterDetailList($data['q']);
             return new JsonModel(['success' => true, 'data' => $result, 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
@@ -40,7 +42,7 @@ class Roaster extends HrisController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            
+
 //            print_r($data['data']);
 //            die();
 
