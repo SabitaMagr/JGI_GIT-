@@ -54,6 +54,7 @@ class LeaveStatus extends HrisController {
 
 
         $detail = $leaveApproveRepository->fetchById($id);
+        $fileDetails = $leaveApproveRepository->fetchAttachmentsById($id);
 
         $status = $detail['STATUS'];
 
@@ -117,7 +118,7 @@ class LeaveStatus extends HrisController {
             }
 
             return $this->redirect()->toRoute("leavestatus");
-        }
+        } 
         $leaveApply->exchangeArrayFromDB($detail);
         $this->form->bind($leaveApply);
         return Helper::addFlashMessagesToArray($this, [
@@ -141,7 +142,8 @@ class LeaveStatus extends HrisController {
                     'subRemarks' => $detail['SUB_REMARKS'],
                     'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
-                    'gp' => $detail['GRACE_PERIOD']
+                    'gp' => $detail['GRACE_PERIOD'],
+                    'files' => $fileDetails 
         ]);
     }
 
