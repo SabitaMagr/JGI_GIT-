@@ -907,7 +907,7 @@ class EmployeeController extends HrisController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
-
+ 
     public function pullEmployeeListForEmployeeTableAction() {
         try {
             $request = $this->getRequest();
