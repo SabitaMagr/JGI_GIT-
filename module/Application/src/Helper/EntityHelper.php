@@ -295,6 +295,10 @@ class EntityHelper {
             return " {$conditonType} {$colName} IN ({$valuesinCSV})";
         } else {
             $value = $isString ? "'{$colValue}'" : $colValue;
+            if($parentQuery){
+            $value=str_replace('INVALUES', $value, $parentQuery);
+             return " {$conditonType} {$colName} IN ({$value})";
+            }
             return " {$conditonType} {$colName} = {$value}";
         }
     }

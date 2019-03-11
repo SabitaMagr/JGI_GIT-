@@ -8,8 +8,7 @@
         var $fromDate = $('#fromDate');
         var $toDate = $('#toDate');
         var $search = $('#search');
-        var columns = [{title: "Code", field: "EMPLOYEE_CODE", width: 80},
-        {title: "Employee", field: "FULL_NAME", width: 100}];
+        var columns = [{title: "Employee", field: "FULL_NAME", width: 100}];
 
         var selectedFromDate;
         var selectedToDate;
@@ -72,13 +71,11 @@
             
             
             
-            columns.splice(2);
+            columns.splice(1);
             for (var i in dateRange) {
                 var columnTitle = dateRange[i].getFullYear() + "-" + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + "-" + ("0" + dateRange[i].getDate()).slice(-2);
-//                var forDate = "f" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
-//                var shiftId = "s" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
-                var forDate = "F" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2)+"_D";
-                var shiftId = "F" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2)+"_S";
+                var forDate = "f" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
+                var shiftId = "s" + dateRange[i].getFullYear() + ("0" + (dateRange[i].getMonth() + 1)).slice(-2) + ("0" + dateRange[i].getDate()).slice(-2);
              console.log('columTitle',columnTitle);
             console.log('forDate',forDate);
             console.log('shiftId',shiftId);
@@ -91,52 +88,41 @@
             
             initialize($table, kendoConfig);
             getRoaster(function (rData) {
-                console.log('aaaa',rData);
-//                var employees = document.searchManager.getSelectedEmployee();
-//
-//                var data = [];
-//                var searchInRData = function (on, by, datecheck) {
-//                    for (var i in on) {
-//                        if (on[i]['EMPLOYEE_ID'] == by['EMPLOYEE_ID'] && on[i]['FOR_CHECK'] == by[datecheck]) {
-//                            return on[i];
-//                        }
-//                    }
-//                    return false;
-//                };
-//
-//                for (var i in employees) {
-//                    var cell = {'FULL_NAME': employees[i]['FULL_NAME']};
-//                    for (var j in dateRange) {
-//                        var columndate = nepaliDatePickerExt.getFormatedDate(dateRange[j]);
-//                        var dateCheckString = "f" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2);
-//                        cell["f" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = columndate;
-//                        cell['EMPLOYEE_ID'] = employees[i]['EMPLOYEE_ID'];
-//                        var check = searchInRData(rData, cell, dateCheckString);
-//                        cell["s" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = check != false ? check['SHIFT_ID'] : '';
-//                    }
-//                    data.push(cell);
-//                }
-                app.renderKendoGrid($table, rData);
+                var employees = document.searchManager.getSelectedEmployee();
+
+                var data = [];
+                var searchInRData = function (on, by, datecheck) {
+                    for (var i in on) {
+                        if (on[i]['EMPLOYEE_ID'] == by['EMPLOYEE_ID'] && on[i]['FOR_CHECK'] == by[datecheck]) {
+                            return on[i];
+                        }
+                    }
+                    return false;
+                };
+
+                for (var i in employees) {
+                    var cell = {'FULL_NAME': employees[i]['FULL_NAME']};
+                    for (var j in dateRange) {
+                        var columndate = nepaliDatePickerExt.getFormatedDate(dateRange[j]);
+                        var dateCheckString = "f" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2);
+                        cell["f" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = columndate;
+                        cell['EMPLOYEE_ID'] = employees[i]['EMPLOYEE_ID'];
+                        var check = searchInRData(rData, cell, dateCheckString);
+                        cell["s" + dateRange[j].getFullYear() + ("0" + (dateRange[j].getMonth() + 1)).slice(-2) + ("0" + dateRange[j].getDate()).slice(-2)] = check != false ? check['SHIFT_ID'] : '';
+                    }
+                    data.push(cell);
+                }
+                app.renderKendoGrid($table, data);
                 $('.r-cell').each(function () {
                     var $this = $(this);
                     var selectedShift = $this.attr('shift-id');
                     app.populateSelect($this, document.shifts, 'SHIFT_ID', 'SHIFT_ENAME', 'Select Shift', -1, selectedShift != "" ? selectedShift : null);
                 });
-
-/////////------
-
-//app.renderKendoGrid($table, rData);
-
-
-
             });
         });
 
         var getRoaster = function (fn) {
-            var q = document.searchManager.getSearchValues();
-            q['fromDate'] = $fromDate.val();
-            q['toDate'] = $toDate.val();
-            app.pullDataById(document.getRoasterListLink, {q}).then(function (response) {
+            app.pullDataById(document.getRoasterListLink, {}).then(function (response) {
                 var data = response.data;
                 fn(data);
                 for (var i in data) {

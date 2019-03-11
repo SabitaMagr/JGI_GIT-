@@ -261,7 +261,7 @@ EOT;
               E.FIRST_NAME                                                                   AS FIRST_NAME,
               E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
               E.LAST_NAME                                                                    AS LAST_NAME,
-              CONCAT(CONCAT(CONCAT(E.FIRST_NAME,' '),CONCAT(E.MIDDLE_NAME, '')),E.LAST_NAME) AS FULL_NAME,
+              EMPLOYEE_CODE||'-'||FULL_NAME                                                                      AS FULL_NAME,
               E.COMPANY_ID                                                                   AS COMPANY_ID,
               E.BRANCH_ID                                                                    AS BRANCH_ID,
               E.DEPARTMENT_ID                                                                AS DEPARTMENT_ID

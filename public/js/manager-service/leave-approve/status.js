@@ -48,6 +48,7 @@
         app.searchTable($tableContainer, ["FULL_NAME"]);
 
         var map = {
+            'EMPLOYEE_CODE': 'Code',
             'FULL_NAME': 'Name',
             'LEAVE_ENAME': 'Leave',
             'APPLIED_DATE_AD': 'Applied Date(AD)',

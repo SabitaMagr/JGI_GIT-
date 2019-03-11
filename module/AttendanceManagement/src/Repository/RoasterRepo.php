@@ -5,18 +5,20 @@ namespace AttendanceManagement\Repository;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Application\Model\Model;
+use Application\Repository\HrisRepository;
 use Application\Repository\RepositoryInterface;
 use AttendanceManagement\Model\RoasterModel;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\TableGateway\TableGateway;
 
-class RoasterRepo implements RepositoryInterface {
+class RoasterRepo extends HrisRepository implements RepositoryInterface {
 
-    private $adapter;
+//    private $adapter;
     private $gateway;
 
     public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
+        parent::__construct($adapter);
+//        $this->adapter = $adapter;
         $this->gateway = new TableGateway(RoasterModel::TABLE_NAME, $adapter);
     }
 
@@ -73,6 +75,7 @@ class RoasterRepo implements RepositoryInterface {
                   
                 EXCEPTION
                 WHEN NO_DATA_FOUND THEN
+                IF(V_SHIFT_ID_NEW!=-1) THEN
                   INSERT
                   INTO HRIS_EMPLOYEE_SHIFT_ROASTER
                     (
@@ -86,6 +89,7 @@ class RoasterRepo implements RepositoryInterface {
                       V_FOR_DATE,
                       V_SHIFT_ID_NEW
                     );
+                    END IF;
                 END;");
     }
 
@@ -139,6 +143,71 @@ FROM
        
         $raw = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($raw);
+    }
+    
+    
+    public function getRosterDetailList($data) {
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
+        $fromDate = $data['fromDate'];
+        $toDate = $data['toDate'];
+        
+        
+        $getAllDates = EntityHelper::rawQueryResult($this->adapter, "
+                SELECT  
+TO_CHAR(TO_DATE('{$fromDate}','DD-MON-YYYY') + ROWNUM -1,'DD-MON-YYYY')  AS DATES,
+'F'||TO_CHAR((TO_DATE('{$fromDate}','DD-MON-YYYY') + ROWNUM -1),'YYYYMMDD') AS FORMATE_DATE
+        FROM dual D
+        CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YYYY') -  TO_DATE('{$fromDate}','DD-MON-YYYY') + 1
+                ");
+        
+
+
+        $pivotString = '';
+        $i = 0;
+        foreach ($getAllDates as $list) {
+            if ($i == 0) {
+                $pivotString .= '\'' . $list['DATES'] . '\' AS ' . $list['FORMATE_DATE'];
+            } else {
+                $pivotString .= ', \'' . $list['DATES'] . '\' AS ' . $list['FORMATE_DATE'];
+            }
+            $i++;
+        }
+        
+        
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+
+
+
+        $sql = "
+            SELECT * FROM (select E.employee_code,E.employee_id,E.full_name,
+D.*,
+ER.SHIFT_ID
+from hris_employees E
+left JOIN 
+(SELECT  
+TO_CHAR(TO_DATE('{$fromDate}','DD-MON-YYYY') + ROWNUM -1,'DD-MON-YYYY')  AS DATES
+        FROM dual D
+        CONNECT BY  rownum <=  TO_DATE('{$toDate}','DD-MON-YYYY') -  TO_DATE('{$fromDate}','DD-MON-YYYY') + 1) D on (1=1)
+        LEFT JOIN HRIS_EMPLOYEE_SHIFT_ROASTER ER ON (D.DATES=ER.FOR_DATE AND E.EMPLOYEE_ID=ER.EMPLOYEE_ID)
+         WHERE 1=1 AND E.STATUS='E' {$searchCondition}
+)
+PIVOT(
+ MAX (DATES) AS D ,
+  MAX (SHIFT_ID) AS S
+ FOR DATES IN ({$pivotString})) ORDER BY FULL_NAME
+                ";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }
