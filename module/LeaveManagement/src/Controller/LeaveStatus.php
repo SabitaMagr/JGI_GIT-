@@ -48,11 +48,11 @@ class LeaveStatus extends HrisController {
         if ($id === 0) {
             return $this->redirect()->toRoute("leavestatus");
         }
-        $request = $this->getRequest();
+        $request = $this->getRequest(); 
         $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
 
-
+ 
         $detail = $leaveApproveRepository->fetchById($id);
         $fileDetails = $leaveApproveRepository->fetchAttachmentsById($id);
 
@@ -118,7 +118,7 @@ class LeaveStatus extends HrisController {
             }
 
             return $this->redirect()->toRoute("leavestatus");
-        } 
+        }  
         $leaveApply->exchangeArrayFromDB($detail);
         $this->form->bind($leaveApply);
         return Helper::addFlashMessagesToArray($this, [

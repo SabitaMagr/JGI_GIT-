@@ -59,29 +59,8 @@ class LeaveApply extends HrisController {
             $newsId = $this->params()->fromRoute('id');
             $request = $this->getRequest();
             $data = $request->getPost();
-
-            $newsFile = new NewsFile();
-            $return = []; 
-            if ($data['newsTypeId'] == null) {
-                $newsFile->newsFileId = ((int) Helper::getMaxId($this->adapter, 'HRIS_LEAVE_FILES', 'FILE_ID')) + 1;
-                $newsFile->newsId = $newsId;
-                $newsFile->filePath = $data['filePath'];
-                $newsFile->fileName = $data['fileName'];
-                $newsFile->status = 'E';
-                $newsFile->createdDt = Helper::getcurrentExpressionDate();
-                $newsFile->createdBy = $this->employeeId;
-
-                $newsFileRepo = new LeaveApplyRepository($this->adapter);
-                $newsFileRepo->add($newsFile);
-
-                $returnData= ['newsFileId' => $newsFile->newsFileId,'filePath'=>$newsFile->filePath];
-            } else {
-                $newsFile->filePath = $data['filePath'];
-                $newsFileRepo = new NewsFileRepository($this->adapter);
-                $newsFileRepo->edit($newsFile, $data['newsTypeId']);
-                $returnData=['newsFileId' => $data['newsTypeId']];
-            }
-            return new JsonModel(['success' => true, 'data' => $returnData, 'message' => null]);
+            $returnData = $this->repository->pushFileLink($data);
+            return new JsonModel(['success' => true, 'data' => $returnData[0], 'message' => null]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
@@ -96,7 +75,7 @@ class LeaveApply extends HrisController {
             if ($this->form->isValid()) {
                 $leaveRequest = new LeaveApplyModel();
                 $leaveRequest->exchangeArrayFromForm($this->form->getData());
-                $leaveRequest->id = (int) Helper::getMaxId($this->adapter, LeaveApplyModel::TABLE_NAME, LeaveApplyModel::ID) + 1;
+                $leaveRequest->id = (int) Helper::getMaxId($this->adapter, LeaveApplyModel::TABLE_NAME, LeaveApplyModel::ID) + 1; 
                 $leaveRequest->startDate = Helper::getExpressionDate($leaveRequest->startDate);
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate(); 

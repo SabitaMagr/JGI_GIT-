@@ -243,7 +243,7 @@
                 maxFiles: 1, 
                 addRemoveLinks: true,
                 init: function () { 
-                this.on("success", function (file, success) { console.log(success);
+                this.on("success", function (file, success) { 
                     if (success.success) { 
                         imageUpload(success.data);
                     }
@@ -268,17 +268,16 @@
             $('#documentUploadModel').modal('hide');
             myDropzone.processQueue();
         }); 
-
+ 
         var imageUpload = function (data) {  
             window.app.pullDataById(document.pushLeaveFileLink, {
-                'newsTypeId': null,
                 'filePath': data.fileName,
                 'fileName': data.oldFileName
             }).then(function (success) { ;
                 if (success.success) {
                     $('#fileDetailsTbl').append('<tr>'
-                    +'<input  type="hidden" name="fileUploadList[]" value="'+success.data.newsFileId+'"><td>' + data.oldFileName + '</td>'
-                    +'<td><a href="'+document.basePath+'/uploads/news/'+success.data.filePath+'"><i class="fa fa-download"></i></a></td>'
+                    +'<input type="hidden" name="fileUploadList[]" value="'+success.data.FILE_ID+'"><td>' + success.data.FILE_NAME + '</td>'
+                    +'<td><a href="'+document.basePath+'/uploads/news/'+success.data.FILE_IN_DIE_NAME+'"><i class="fa fa-download"></i></a></td>'
                     +'<td><button type="button" class="btn btn-danger deleteFile">DELETE</button></td></tr>');
                 }
             }, function (failure) {
