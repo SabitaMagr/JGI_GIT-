@@ -13,8 +13,8 @@
         var $startDate = $('#startDate'), $endDate = $('#endDate');
         var $leaveSubstitute = $('#leaveSubstitute');
 
-        var dateDiff = "";
-        var substituteEmp = {
+        var dateDiff = ""; 
+        var substituteEmp = { 
             list: [],
             disable: function (employeeIds) { 
                 if (this.list.length > 0) {
@@ -277,12 +277,12 @@
                 if (success.success) {
                     $('#fileDetailsTbl').append('<tr>'
                     +'<input type="hidden" name="fileUploadList[]" value="'+success.data.FILE_ID+'"><td>' + success.data.FILE_NAME + '</td>'
-                    +'<td><a href="'+document.basePath+'/uploads/news/'+success.data.FILE_IN_DIE_NAME+'"><i class="fa fa-download"></i></a></td>'
+                    +'<td><a target="blank" href="'+document.basePath+'/uploads/leave_documents/'+success.data.FILE_IN_DIR_NAME+'"><i class="fa fa-download"></i></a></td>'
                     +'<td><button type="button" class="btn btn-danger deleteFile">DELETE</button></td></tr>');
                 }
             }, function (failure) {
             });
-        }
+        } 
  
         $('#uploadCancelBtn').on('click', function () {
             $('#documentUploadModel').modal('hide');
