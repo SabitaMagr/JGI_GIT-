@@ -6,6 +6,7 @@
         $('select#form-transportType').select2();
         $('select#travelSubstitute').select2();
         $('select#form-employeeId').select2();
+        $('select#travelEmpSub').select2();
         var employeeId = $('#employeeId').val();
         app.floatingProfile.setDataFromRemote(employeeId);
 

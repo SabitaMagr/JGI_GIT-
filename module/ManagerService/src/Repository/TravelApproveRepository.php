@@ -36,6 +36,17 @@ class TravelApproveRepository implements RepositoryInterface {
     public function edit(Model $model, $id) {
         $temp = $model->getArrayCopyForDB();
         $this->tableGateway->update($temp, [TravelRequest::TRAVEL_ID => $id]);
+        IF ($model->status == 'AP') {
+            try {
+                EntityHelper::rawQueryResult($this->adapter, "
+                BEGIN
+                    hris_travel_leave_reward({$id});
+                END;");
+            } catch (Exception $e) {
+                return $e->getMessage();
+            }
+        }
+
         $link = $model->status == 'AP' ? 'Y' : 'N';
         if ($link == 'Y') {
             try {
