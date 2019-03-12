@@ -10,12 +10,13 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\Helper;
 
 class TravelApproveRepository implements RepositoryInterface {
 
     private $tableGateway;
     private $adapter;
-
+ 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(TravelRequest::TABLE_NAME, $adapter);
@@ -51,6 +52,12 @@ class TravelApproveRepository implements RepositoryInterface {
 
     public function fetchAll() {
         
+    }
+  
+    public function fetchAttachmentsById($id){
+      $sql = "SELECT * FROM HRIS_TRAVEL_FILES WHERE TRAVEL_ID = $id";
+      $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+      return Helper::extractDbData($result);
     }
 
     public function fetchById($id) {
