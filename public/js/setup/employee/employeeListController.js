@@ -99,7 +99,8 @@
             'EMERG_CONTACT_ADDRESS': 'Emergency Contact Address',
             'EMERG_CONTACT_NO': 'Emergency Contact No',
             'ID_ACCOUNT_NO': 'Account No',
-            'BANK_ACCOUNT': 'BANK'
+            'BANK_ACCOUNT': 'BANK',
+            'ID_THUMB_ID': 'THUMB ID'
         }; 
 
         var exportColumnParameters = [];
