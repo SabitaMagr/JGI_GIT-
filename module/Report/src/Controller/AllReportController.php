@@ -15,8 +15,9 @@ use Setup\Model\Department;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select as Select2;
-use Zend\Form\Element\Select;
+use Zend\Form\Element\Select; 
 use Zend\View\Model\JsonModel;
+use Application\Helper\EntityHelper as ApplicationHelper;
 
 class AllReportController extends HrisController {
 
@@ -128,7 +129,7 @@ class AllReportController extends HrisController {
         return ['fiscalYearSE' => $this->getFiscalYearSE()];
     }
 
-    public function departmentWiseAction() {
+    public function departmentWiseAction() { 
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
@@ -474,5 +475,42 @@ class AllReportController extends HrisController {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-
+  
+    public function birthdayReportAction(){
+        $request = $this->getRequest();
+        if ($request->isPost()){
+            try {
+                $data = $request->getPost();
+                $list = $this->repository->fetchBirthdays($data);
+                return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        } 
+        
+        return $this->stickFlashMessagesTo([
+                'searchValues' => ApplicationHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail'],
+        ]);
+    } 
+  
+    public function jobDurationReportAction(){
+        $request = $this->getRequest();
+        if ($request->isPost()){
+            try {
+                $data = $request->getPost();
+                $list = $this->repository->fetchJobDurationReport($data);
+                return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        } 
+         
+        return $this->stickFlashMessagesTo([
+                'searchValues' => ApplicationHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail'],
+        ]);
+    }
 }
