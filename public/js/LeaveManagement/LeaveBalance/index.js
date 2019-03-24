@@ -23,21 +23,6 @@
         app.populateSelect($options, columnOptions, 'VALUES', 'COLUMNS');
 
         var leaveList = document.leaves;
-        for (var i in leaveList) {
-            columns.push({
-                title: leaveList[i]['LEAVE_ENAME'],
-                columns: [
-                    {
-                        title: 'Balance',
-                        field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'BALANCE',
-                        width: 100
-                    }
-                ]
-            });
-            map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'TOTAL'] = leaveList[i]['LEAVE_ENAME'] + '(Total)';
-            map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'TAKEN'] = leaveList[i]['LEAVE_ENAME'] + '(Taken)';
-            map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'BALANCE'] = leaveList[i]['LEAVE_ENAME'] + '(Balance)';
-        }
 
         function reinitializeKendo(optionalColumns){
             columns = [
@@ -101,10 +86,16 @@
                 }
                 
                 columns.push(columnsList);
-                map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'TOTAL'] = leaveList[i]['LEAVE_ENAME'] + '(Total)';
-                map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'TAKEN'] = leaveList[i]['LEAVE_ENAME'] + '(Taken)';
+
+                if(optionalColumns.indexOf("1") != -1){
+                    map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'TOTAL'] = leaveList[i]['LEAVE_ENAME'] + '(Total)';
+                }
+                if(optionalColumns.indexOf("2") != -1){
+                    map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'TAKEN'] = leaveList[i]['LEAVE_ENAME'] + '(Taken)';
+                }
+            
                 map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'BALANCE'] = leaveList[i]['LEAVE_ENAME'] + '(Balance)';
-            }
+            } 
         }
         reinitializeKendo([]);
         app.initializeKendoGrid($table, columns);
