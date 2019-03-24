@@ -1390,9 +1390,9 @@ EOT;
           $joinIfSyngery="LEFT JOIN FA_CHART_OF_ACCOUNTS_SETUP FCAS 
               ON(FCAS.ACC_CODE=E.ID_ACC_CODE AND C.COMPANY_CODE=FCAS.COMPANY_CODE)";
       }
-      $fromDate = $_POST['fromDate']; 
-      $toDate = $_POST['toDate'];
- 
+      $fromDate = !empty($_POST['fromDate']) ? $_POST['fromDate'] : '01-Jan-2019'; 
+      $toDate = !empty($_POST['toDate']) ? $_POST['toDate'] : '31-Dec-2019'; 
+
       $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
       $sql = "SELECT  
           {$columIfSynergy}
