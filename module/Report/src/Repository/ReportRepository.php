@@ -1582,4 +1582,51 @@ EOT;
  
   return $this->rawQuery($sql);    
   }
+
+  public function fetchWeeklyWorkingHoursReport($by){
+    $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
+
+    $fromDate = !empty($_POST['fromDate']) ? $_POST['fromDate'] : date('d-M-y', strtotime('-6 days')) ;
+    $fromDate = date('d-M-y', strtotime($fromDate));
+    $toDate = strtotime($fromDate);
+    $toDate = strtotime("+6 day", $toDate);
+    $toDate = date('d-M-y', $toDate);
+ 
+    $sql = "select * from (SELECT HE.EMPLOYEE_CODE,AD.EMPLOYEE_ID,HE.FULL_NAME,
+    TO_CHAR(ATTENDANCE_DT,'DY') AS WEEKNAME,
+    HE.DEPARTMENT_ID,
+    D.DEPARTMENT_NAME,
+      HS.TOTAL_WORKING_HR/60 ASSIGNED_HOUR ,
+         CASE WHEN TOTAL_HOUR IS NOT NULL THEN
+         ROUND (TOTAL_HOUR / 60)
+         ELSE
+         0
+         END
+         AS WORKED_HOUR  
+    FROM HRIS_ATTENDANCE_DETAIL AD
+     JOIN  HRIS_EMPLOYEES HE ON (AD.EMPLOYEE_ID=HE.EMPLOYEE_ID)
+     JOIN  HRIS_EMPLOYEES E ON (AD.EMPLOYEE_ID=HE.EMPLOYEE_ID)
+     JOIN  HRIS_SHIFTS HS ON (AD.SHIFT_ID = HS.SHIFT_ID)
+    LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=HE.DEPARTMENT_ID)
+    LEFT JOIN HRIS_DESIGNATIONS DES
+      ON E.DESIGNATION_ID=DES.DESIGNATION_ID 
+      LEFT JOIN HRIS_POSITIONS P
+      ON E.POSITION_ID=P.POSITION_ID
+    WHERE 
+     HE.STATUS='E'
+    AND HE.RETIRED_FLAG='N'
+    AND HE.RESIGNED_FLAG='N' {$condition}
+    AND ATTENDANCE_DT BETWEEN TRUNC(sysdate-6) AND TRUNC(sysdate)
+    ORDER BY DEPARTMENT_ID,FULL_NAME, ATTENDANCE_DT)
+    PIVOT ( MAX( WORKED_HOUR ) AS WH 
+    FOR WEEKNAME 
+    IN ( 'TUE' AS TUE,'WED' AS WED,'THU' AS THU,'FRI' AS FRI,'SAT' AS SAT,'SUN' AS SUN,'MON' AS MON)
+    )";  
+
+  return $this->rawQuery($sql);    
+  }
 }
+
+
+
+

@@ -1,6 +1,6 @@
 <?php
 
-namespace Report\Controller;
+namespace Report\Controller; 
 
 use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
@@ -513,7 +513,7 @@ class AllReportController extends HrisController {
                 'employeeDetail' => $this->storageData['employee_detail'],
         ]);
     }
-
+  
     public function leaveReportCardAction(){
         $request = $this->getRequest();
         if ($request->isPost()){
@@ -532,4 +532,31 @@ class AllReportController extends HrisController {
                 'employeeDetail' => $this->storageData['employee_detail'],
         ]); 
     }
+ 
+    public function weeklyWorkingHoursReportAction(){
+        $request = $this->getRequest();
+        if ($request->isPost()){
+            try {
+                $data = $request->getPost();
+                $list = $this->repository->fetchWeeklyWorkingHoursReport($data);
+                //echo '<pre>'; print_r($list); die;
+                // $newList = array();
+                // $weeks = array('SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY');
+                // for($i = 0; $i < count($list)/7; $i+=7){
+                    
+                // }
+
+                return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+            }
+        }  
+           
+        return $this->stickFlashMessagesTo([
+                'searchValues' => ApplicationHelper::getSearchData($this->adapter),
+                'acl' => $this->acl,
+                'employeeDetail' => $this->storageData['employee_detail'],
+        ]); 
+    }
+
 }
