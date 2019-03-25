@@ -75,7 +75,7 @@
             'POSITION_NAME': 'Position',
             'LEVEL_NO': 'Level',
             'SERVICE_TYPE_NAME': 'Service Type',
-            'EMPLOYEE_TYPE': 'Employee',
+            'EMPLOYEE_TYPE': 'Employee Type',
             'LOCATION_EDESC': 'Location',
             'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
             'FUNCTIONAL_LEVEL_NO': 'Functional Level No',
