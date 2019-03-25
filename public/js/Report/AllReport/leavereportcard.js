@@ -1,152 +1,52 @@
+
 (function ($, app) {
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.datePickerWithNepali('fromDate', 'nepaliFromDate');
-        app.datePickerWithNepali('toDate', 'nepaliToDate');
-       
-        var $employeeTable = $('#employeeTable');
+        var $table = $('#table');
         var $search = $('#search');
         
-        function initializeKendo(){
-            $(document).ready(function() {
-                $("#table").kendoGrid({
-                    dataSource: {
-                        data: products,
-                        schema: {
-                            model: {
-                                fields: {
-                                    EMPLOYEE_CODE: { type: "string" },
-                                    LEAVE_ENAME: { type: "number" },
-                                    FULL_NAME: { type: "number" },
-                                    Discontinued: { type: "boolean" }
-                                }
-                            }
-                        },
-                        pageSize: 20
-                    },
-                    height: 550,
-                    scrollable: true,
-                    sortable: true,
-                    filterable: true,
-                    pageable: {
-                        input: true,
-                        numeric: false
-                    },
-                    columns: [
-                        "ProductName",
-                        { field: "UnitPrice", title: "Unit Price", format: "{0:c}", width: "130px" },
-                        { field: "UnitsInStock", title: "Units In Stock", width: "130px" },
-                        { field: "Discontinued", width: "130px" }
-                    ]
-                });
-            });
-        }
-        
-    
-        app.initializeKendoGrid($employeeTable, [
-            {field: "EMPLOYEE_CODE", title: "Code",locked: true, width: 100},
-            {field: "LEAVE_ENAME", title: "Leave Type", locked: true, width: 100},
-            {field: "FULL_NAME", title: "Full Name", locked: true, width: 150},
-            {title: "Requested Date", locked: true, columns: [
-                    {field: "REQUESTED_DT_AD", title: "AD", width: 80},
-                    {field: "REQUESTED_DT_BS", title: "BS", width: 80}
-                ]},
-            {title: "From Date", locked: true, columns: [
-                    {field: "FROM_DATE_AD", title: "AD", width: 80},
-                    {field: "FROM_DATE_BS", title: "BS", width: 80}
-                ]},
-            {title: "To Date", locked: true, columns: [
-                    {field: "TO_DATE_AD", title: "AD", width: 80},
-                    {field: "TO_DATE_BS", title: "BS", width: 80}
-                ]},
-            {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
-            /*
-            {field: "COMPANY_NAME", title: "Company", width: 150},
-            {field: "BRANCH_NAME", title: "Branch", width: 150},
-            {field: "DEPARTMENT_NAME", title: "Department", width: 150},
-            {field: "POSITION_NAME", title: "Position", width: 150},
-            {field: "LEVEL_NO", title: "Level", width: 150},
-            {field: "LOCATION_EDESC", title: "Location", width: 150},
-            {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 150},
-            {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Level", width: 150}*/
-        ]);
-
-        app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], false);
-  
-        var map = {
-            'EMPLOYEE_ID': 'Employee Id',
-            'EMPLOYEE_CODE': 'Employee Code',
-            'TITLE': 'Title',
-            'FULL_NAME': 'Employee',
-            'GENDER_NAME': 'Gender',
-            'BIRTH_DATE_AD': 'Birth Date(AD)',
-            'BIRTH_DATE_BS': 'Birth Date(BS)',
-            'JOIN_DATE_AD': 'Join Date(AD)',
-            'JOIN_DATE_BS': 'Join Date(BS)',
-            'COUNTRY_NAME': 'Country',
-            'RELIGION_NAME': 'Religion',
-            'BLOOD_GROUP_CODE': 'Blood Group',
-            'MOBILE_NO': 'Mobile No',
-            'TELEPHONE_NO': 'Telephone No',
-            'SOCIAL_ACTIVITY': 'Social Activity',
-            'EXTENSION_NO': 'Extension No',
-            'EMAIL_OFFICIAL': 'Official Email',
-            'EMAIL_PERSONAL': 'Personal Email',
-            'SOCIAL_NETWORK': 'Social Network',
-            'COMPANY_NAME': 'Company',
-            'BRANCH_NAME': 'Branch',
-            'DEPARTMENT_NAME': 'Department',
-            'DESIGNATION_TITLE': 'Designation',
-            'POSITION_NAME': 'Position',
-            /*'LEVEL_NO': 'Level',
-            'SERVICE_TYPE_NAME': 'Service Type',
-            'EMPLOYEE_TYPE': 'Employee',
-            'LOCATION_EDESC': 'Location',
-            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
-            'FUNCTIONAL_LEVEL_NO': 'Functional Level No',
-            'FUNCTIONAL_LEVEL_EDESC': 'Functional Level',
-            'ADDR_PERM_HOUSE_NO': 'Permanent House No',
-            'ADDR_PERM_WARD_NO': 'Permanent Ward No',
-            'ADDR_PERM_STREET_ADDRESS': 'Permanent Street Address',
-            'ADDR_PERM_COUNTRY_NAME': 'Permanent Country',
-            'ADDR_PERM_ZONE_NAME': 'Permanent Zone',
-            'ADDR_PERM_DISTRICT_NAME': 'Permanent District',
-            'VDC_MUNICIPALITY_NAME_PERM': 'Permanent VDC/Municipality',
-            'ADDR_TEMP_HOUSE_NO': 'Temporary House No',
-            'ADDR_TEMP_WARD_NO': 'Temporary Ward No',
-            'ADDR_TEMP_STREET_ADDRESS': 'Temporary Street Address',
-            'ADDR_TEMP_COUNTRY_NAME': 'Temporary Country',
-            'ADDR_TEMP_ZONE_NAME': 'Temporary Zone',
-            'ADDR_TEMP_DISTRICT_NAME': 'Temporary District',
-            'VDC_MUNICIPALITY_NAME_TEMP': 'Temporary VDC/Municipality',
-            'EMRG_CONTACT_NAME': 'Emergency Contact Name',
-            'EMERG_CONTACT_RELATIONSHIP': 'Emergency Contact Relationship',
-            'EMERG_CONTACT_ADDRESS': 'Emergency Contact Address',
-            'EMERG_CONTACT_NO': 'Emergency Contact No',
-            'ID_ACCOUNT_NO': 'Account No',
-            'BANK_ACCOUNT': 'BANK',*/
-            'ID_THUMB_ID': 'THUMB ID'
-        }; 
-
         $('#excelExport').on('click', function () {
             app.excelExport($employeeTable, map, 'Birthday Employee List.xlsx');        
         });
         $('#pdfExport').on('click', function () {
             app.exportToPDF($employeeTable, map, 'Birthday Employee List.pdf');
         });
-       
+        
         $search.on('click', function () {
+            var tableData = '';
+            var index;
+            var responseData;
+            var SN;
             var data = document.searchManager.getSearchValues();
-            var fromDate = $('#fromDate').val();
-            var toDate = $('#toDate').val();
-            data.fromDate = fromDate;
-            data.toDate = toDate;
-            
             app.serverRequest(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
                 if (response.success) {
-                    console.log(response);
-                    app.renderKendoGrid($employeeTable, response.data);
+                    $table.empty();
+                    responseData = response.data;
+                    var uniqueEmployeeId = [];
+                    for(let i = 0; i < responseData.length; i++){
+                        if(uniqueEmployeeId.indexOf(responseData[i].EMPLOYEE_ID) == -1){
+                            uniqueEmployeeId.push(responseData[i].EMPLOYEE_ID);
+                        }
+                    } 
+                    for(let i = 0; i < uniqueEmployeeId.length; i++){
+                        for(var j = 0; j < responseData.length; j++){
+                            if(uniqueEmployeeId[i] == responseData[j].EMPLOYEE_ID){
+                                index = j;
+                                break;
+                            }
+                        }
+                        tableData+='<table><tr><td>Employee Code</td><td>'+responseData[index].EMPLOYEE_CODE+'</td></tr>';
+                        tableData+='<tr><td>Name</td><td>Present Address</td><td>Present Address</td></tr>';
+                        tableData+='<tr><td>'+responseData[index].FULL_NAME+'</td><td>-</td><td>-</td></tr>';
+                        tableData+='<tr><td>Date Of Join</td><td>Designation</td><td>Department</td></tr>';
+                        tableData+='<tr><td>'+responseData[index].JOIN_DATE_AD+'</td><td>-</td><td>-</td></tr>';
+                        tableData+='<tr><td rowspan="2">SrNo</td><td rowspan="2">Date</td><td rowspan="2">Type Of Leave</td><td colspan="3">Leave Required</td></tr></table>';
+
+
+
+                        $('#table').append(tableData);
+                    }
                 } else {
                     app.showMessage(response.error, 'error');
                 }

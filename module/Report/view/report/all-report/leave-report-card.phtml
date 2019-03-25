@@ -5,7 +5,7 @@ $this->headLink()
         ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
     ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
         
-
+  
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
@@ -57,6 +57,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <a href="<?= $this->url('employee', ['action' => 'edit', 'tab' => 1]) ?>" class="btn default btn-sm">
                         <i class="fa fa-plus-square icon-black"></i> New </a>
                 <?php endif; ?> 
+                
                 <div class="btn-group">
                     <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-copy"></i> Tools
@@ -72,7 +73,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <i class="fa fa-file-pdf-o" ></i> Export to PDF </a>
                         </li>
                     </ul>
-                </div>
+                </div> 
             </div>
         </div>
         <div class="portlet-body">
@@ -149,7 +150,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
     </div> 
-
-    <div id="employeeTable">
+ 
+    <div id="table">
     </div>
 </div>

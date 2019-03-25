@@ -1,5 +1,5 @@
 <?php
-namespace Report\Repository;
+namespace Report\Repository; 
 
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
@@ -1554,7 +1554,7 @@ EOT;
     $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
 
     $sql = "SELECT LA.ID AS ID, LA.EMPLOYEE_ID AS EMPLOYEE_ID, E.EMPLOYEE_CODE AS 
-    EMPLOYEE_CODE, LA.LEAVE_ID AS LEAVE_ID, 
+    EMPLOYEE_CODE,E.JOIN_DATE AS JOIN_DATE, LA.LEAVE_ID AS LEAVE_ID, 
     INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS FROM_DATE_AD, BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) 
     AS FROM_DATE_BS, INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS TO_DATE_AD, BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) 
     AS TO_DATE_BS, LA.HALF_DAY AS HALF_DAY, (CASE WHEN (LA.HALF_DAY IS NULL OR LA.HALF_DAY = 'N') THEN 'Full Day' WHEN (LA.HALF_DAY = 'F') 
@@ -1579,7 +1579,7 @@ EOT;
                             THEN 20
                             ELSE 365
                           END) ORDER BY LA.REQUESTED_DT DESC";  
-
+ 
   return $this->rawQuery($sql);    
   }
 }
