@@ -7,26 +7,66 @@
        
         var $employeeTable = $('#employeeTable');
         var $search = $('#search');
-  
-
+        
+        function initializeKendo(){
+            $(document).ready(function() {
+                $("#table").kendoGrid({
+                    dataSource: {
+                        data: products,
+                        schema: {
+                            model: {
+                                fields: {
+                                    EMPLOYEE_CODE: { type: "string" },
+                                    LEAVE_ENAME: { type: "number" },
+                                    FULL_NAME: { type: "number" },
+                                    Discontinued: { type: "boolean" }
+                                }
+                            }
+                        },
+                        pageSize: 20
+                    },
+                    height: 550,
+                    scrollable: true,
+                    sortable: true,
+                    filterable: true,
+                    pageable: {
+                        input: true,
+                        numeric: false
+                    },
+                    columns: [
+                        "ProductName",
+                        { field: "UnitPrice", title: "Unit Price", format: "{0:c}", width: "130px" },
+                        { field: "UnitsInStock", title: "Units In Stock", width: "130px" },
+                        { field: "Discontinued", width: "130px" }
+                    ]
+                });
+            });
+        }
+        
+    
         app.initializeKendoGrid($employeeTable, [
-            {field: "EMPLOYEE_CODE", title: "Code", locked: true, width: 70},
+            {field: "EMPLOYEE_CODE", title: "Code",locked: true, width: 100},
+            {field: "LEAVE_ENAME", title: "Leave Type", locked: true, width: 100},
             {field: "FULL_NAME", title: "Full Name", locked: true, width: 150},
-            {field: "MOBILE_NO", title: "Mobile No", locked: true, width: 100},
-            {title: "Birth Date", locked: true, columns: [
-                    {field: "BIRTH_DATE_AD", title: "AD", width: 80},
-                    {field: "BIRTH_DATE_BS", title: "BS", width: 80}
+            {title: "Requested Date", locked: true, columns: [
+                    {field: "REQUESTED_DT_AD", title: "AD", width: 80},
+                    {field: "REQUESTED_DT_BS", title: "BS", width: 80}
                 ]},
-            {title: "Join Date", locked: true, columns: [
-                    {field: "JOIN_DATE_AD", title: "AD", width: 80},
-                    {field: "JOIN_DATE_BS", title: "BS", width: 80}
+            {title: "From Date", locked: true, columns: [
+                    {field: "FROM_DATE_AD", title: "AD", width: 80},
+                    {field: "FROM_DATE_BS", title: "BS", width: 80}
                 ]},
+            {title: "To Date", locked: true, columns: [
+                    {field: "TO_DATE_AD", title: "AD", width: 80},
+                    {field: "TO_DATE_BS", title: "BS", width: 80}
+                ]},
+            {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
+            /*
             {field: "COMPANY_NAME", title: "Company", width: 150},
             {field: "BRANCH_NAME", title: "Branch", width: 150},
             {field: "DEPARTMENT_NAME", title: "Department", width: 150},
-            {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
             {field: "POSITION_NAME", title: "Position", width: 150},
-            /*{field: "LEVEL_NO", title: "Level", width: 150},
+            {field: "LEVEL_NO", title: "Level", width: 150},
             {field: "LOCATION_EDESC", title: "Location", width: 150},
             {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 150},
             {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Level", width: 150}*/
@@ -44,7 +84,7 @@
             'BIRTH_DATE_BS': 'Birth Date(BS)',
             'JOIN_DATE_AD': 'Join Date(AD)',
             'JOIN_DATE_BS': 'Join Date(BS)',
-            /*'COUNTRY_NAME': 'Country',
+            'COUNTRY_NAME': 'Country',
             'RELIGION_NAME': 'Religion',
             'BLOOD_GROUP_CODE': 'Blood Group',
             'MOBILE_NO': 'Mobile No',
@@ -53,13 +93,13 @@
             'EXTENSION_NO': 'Extension No',
             'EMAIL_OFFICIAL': 'Official Email',
             'EMAIL_PERSONAL': 'Personal Email',
-            'SOCIAL_NETWORK': 'Social Network',*/
+            'SOCIAL_NETWORK': 'Social Network',
             'COMPANY_NAME': 'Company',
             'BRANCH_NAME': 'Branch',
             'DEPARTMENT_NAME': 'Department',
             'DESIGNATION_TITLE': 'Designation',
-            /*'POSITION_NAME': 'Position',
-            'LEVEL_NO': 'Level',
+            'POSITION_NAME': 'Position',
+            /*'LEVEL_NO': 'Level',
             'SERVICE_TYPE_NAME': 'Service Type',
             'EMPLOYEE_TYPE': 'Employee',
             'LOCATION_EDESC': 'Location',
