@@ -125,7 +125,7 @@ class AllReportController extends HrisController {
         }
 
 
-        return ['fiscalYearSE' => $this->getFiscalYearSE()];
+        return ['fiscalYearSE' => $this->getFiscalYearSE(),'calenderType'=> $this->getCanderType()];
     }
 
     public function departmentWiseAction() {
@@ -140,7 +140,7 @@ class AllReportController extends HrisController {
             }
         }
 
-        return ['fiscalYearSE' => $this->getFiscalYearSE()];
+        return ['fiscalYearSE' => $this->getFiscalYearSE(),'calenderType'=> $this->getCanderType()];
     }
 
     public function departmentWiseDailyAction() {
@@ -473,6 +473,14 @@ class AllReportController extends HrisController {
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
+    }
+    
+    public function getCanderType(){
+        $calenderType='N';
+        if(isset($this->preference['calendarView'])){
+        $calenderType=$this->preference['calendarView'];
+        }
+        return $calenderType;
     }
 
 }
