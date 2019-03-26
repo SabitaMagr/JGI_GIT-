@@ -16,6 +16,8 @@ $this->headScript()
         ->appendFile($this->basePath('js/Report/AllReport/weekly-working-hours-report.js'));
 
 ?>    
+
+
 <script> 
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
     document.searchValues =<?php echo json_encode($searchValues); ?>;
@@ -49,6 +51,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <i class="icon-paper-plane font-green-haze"></i>
                 <span class="caption-subject bold font-green-haze uppercase"> Filter Employees</span>
             </div>
+            <?php /*
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
                 <a href="" class="fullscreen" data-original-title="" title=""> </a>
@@ -74,8 +77,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </li>
                     </ul>
                 </div>
-            </div>
-        </div>
+            </div> */ ?> 
+        </div> 
         <div class="portlet-body">
             <div class="row">
                 <div class="col-sm-2">
@@ -163,6 +166,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div> 
 
-    <div id="employeeTable">
+    <div id="table">
     </div>
 </div>

@@ -1586,45 +1586,61 @@ EOT;
   public function fetchWeeklyWorkingHoursReport($by){
     $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
 
-    $fromDate = !empty($_POST['fromDate']) ? $_POST['fromDate'] : date('d-M-y', strtotime('-6 days')) ;
-    $fromDate = date('d-M-y', strtotime($fromDate));
-    $toDate = strtotime($fromDate);
-    $toDate = strtotime("+6 day", $toDate);
-    $toDate = date('d-M-y', $toDate);
+    $toDate = !empty($_POST['toDate']) ? $_POST['toDate'] : date('d-M-y', strtotime('now')) ;
+    $toDate = date('d-M-y', strtotime($toDate));
+    $fromDate = strtotime($toDate);
+    $fromDate = strtotime("-6 day", $fromDate);
+    $fromDate = date('d-M-y', $fromDate);
  
-    $sql = "select * from (SELECT HE.EMPLOYEE_CODE,AD.EMPLOYEE_ID,HE.FULL_NAME,
+    $sql = "select * from (SELECT E.EMPLOYEE_CODE,AD.EMPLOYEE_ID,E.FULL_NAME,
     TO_CHAR(ATTENDANCE_DT,'DY') AS WEEKNAME,
-    HE.DEPARTMENT_ID,
+    E.DEPARTMENT_ID,
     D.DEPARTMENT_NAME,
       HS.TOTAL_WORKING_HR/60 ASSIGNED_HOUR ,
-         CASE WHEN TOTAL_HOUR IS NOT NULL THEN
-         ROUND (TOTAL_HOUR / 60)
+         CASE WHEN AD.TOTAL_HOUR IS NOT NULL THEN
+         ROUND (AD.TOTAL_HOUR / 60)
          ELSE
          0
          END
-         AS WORKED_HOUR  
+         AS WORKED_HOUR,
+         AD.OVERALL_STATUS
+       --  AD.ATTENDANCE_DT
     FROM HRIS_ATTENDANCE_DETAIL AD
-     JOIN  HRIS_EMPLOYEES HE ON (AD.EMPLOYEE_ID=HE.EMPLOYEE_ID)
-     JOIN  HRIS_EMPLOYEES E ON (AD.EMPLOYEE_ID=HE.EMPLOYEE_ID)
-     JOIN  HRIS_SHIFTS HS ON (AD.SHIFT_ID = HS.SHIFT_ID)
-    LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=HE.DEPARTMENT_ID)
-    LEFT JOIN HRIS_DESIGNATIONS DES
-      ON E.DESIGNATION_ID=DES.DESIGNATION_ID 
-      LEFT JOIN HRIS_POSITIONS P
-      ON E.POSITION_ID=P.POSITION_ID
+     LEFT JOIN  HRIS_EMPLOYEES E ON (AD.EMPLOYEE_ID=E.EMPLOYEE_ID)
+     LEFT JOIN  HRIS_SHIFTS HS ON (AD.SHIFT_ID = HS.SHIFT_ID)
+    LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+    LEFT JOIN HRIS_DESIGNATIONS DES ON (E.DESIGNATION_ID=DES.DESIGNATION_ID) 
+      LEFT JOIN HRIS_POSITIONS P ON (E.POSITION_ID=P.POSITION_ID)
     WHERE 
-     HE.STATUS='E'
-    AND HE.RETIRED_FLAG='N'
-    AND HE.RESIGNED_FLAG='N' {$condition}
-    AND ATTENDANCE_DT BETWEEN TRUNC(sysdate-6) AND TRUNC(sysdate)
+     E.STATUS='E'
+    AND E.RETIRED_FLAG='N' {$condition} 
+    AND E.RESIGNED_FLAG='N' 
+    AND ATTENDANCE_DT BETWEEN TO_DATE('{$fromDate}', 'DD-MON-YY') 
+    AND TO_DATE('{$toDate}', 'DD-MON-YY')
     ORDER BY DEPARTMENT_ID,FULL_NAME, ATTENDANCE_DT)
-    PIVOT ( MAX( WORKED_HOUR ) AS WH 
+    PIVOT ( MAX( ASSIGNED_HOUR ) AS AH, MAX( WORKED_HOUR ) AS WH,MAX( OVERALL_STATUS ) AS OS
     FOR WEEKNAME 
     IN ( 'TUE' AS TUE,'WED' AS WED,'THU' AS THU,'FRI' AS FRI,'SAT' AS SAT,'SUN' AS SUN,'MON' AS MON)
     )";  
 
-  return $this->rawQuery($sql);    
+    return $this->rawQuery($sql);    
   }
+
+  public function getDays(){
+    $toDate = !empty($_POST['toDate']) ? $_POST['toDate'] : date('d-M-y', strtotime('now')) ;
+    $toDate="TO_DATE('{$toDate}')";
+    
+    $sql = "SELECT   trunc($toDate-6) + ROWNUM -1  AS DATES,
+    ROWNUM AS DAY_COUNT,
+    trunc($toDate-6) AS FROM_DATE,
+    TO_CHAR($toDate+ ROWNUM -1,'D') AS WEEKDAY,
+    TO_CHAR($toDate+ ROWNUM -1,'DAY') AS WEEKNAME
+    FROM dual d
+    CONNECT BY  rownum <=  $toDate -  trunc($toDate-6) + 1";
+
+    return $this->rawQuery($sql); 
+  }
+
 }
 
 

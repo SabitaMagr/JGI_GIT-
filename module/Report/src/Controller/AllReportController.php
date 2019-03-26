@@ -539,14 +539,9 @@ class AllReportController extends HrisController {
             try {
                 $data = $request->getPost();
                 $list = $this->repository->fetchWeeklyWorkingHoursReport($data);
-                //echo '<pre>'; print_r($list); die;
-                // $newList = array();
-                // $weeks = array('SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY');
-                // for($i = 0; $i < count($list)/7; $i+=7){
-                    
-                // }
-
-                return new JsonModel(['success' => true, 'data' => $list, 'message' => null]);
+                $days = $this->repository->getDays();
+                
+                return new JsonModel(['success' => true, 'data' => $list, 'days' =>$days, 'message' => null]);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
             }
