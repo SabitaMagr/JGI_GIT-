@@ -17,8 +17,8 @@ return [
 //    'username' => 'LC_FROM_LC',
 //     'password' => 'LC_FROM_LC',
 
-// 'username' => 'JGI0110',
-// 'password' => 'JGI0110',
+'username' => 'JGI0110',
+'password' => 'JGI0110',
 
 //  'username' => 'IMS_7576',
 //  'password' => 'IMS_7576',
@@ -41,8 +41,8 @@ return [
 //        'username' => 'JWL_HRIS_APR4',
 //        'password' => 'JWL_HRIS_APR4',
 //        
-        'username' => 'ITNEPAL_HRIS_APR2',
-        'password' => 'ITNEPAL_HRIS_APR2',
+        // 'username' => 'ITNEPAL_HRIS_APR2',
+        // 'password' => 'ITNEPAL_HRIS_APR2',
         
 //        'username'      => 'HRIS_JWL',
 //        'password'      => 'HRIS_JWL',

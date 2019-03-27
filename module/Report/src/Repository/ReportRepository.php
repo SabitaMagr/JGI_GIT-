@@ -1640,7 +1640,6 @@ EOT;
 
     return $this->rawQuery($sql); 
   }
-
 }
 
 

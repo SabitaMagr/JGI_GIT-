@@ -8,7 +8,6 @@
     
 
         function initializeKendo(data, days){
-            console.log(days);
             $table.kendoGrid({
                 toolbar: ["excel"],
                 excel: {
