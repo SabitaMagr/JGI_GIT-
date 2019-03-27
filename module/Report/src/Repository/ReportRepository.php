@@ -1596,7 +1596,12 @@ EOT;
     TO_CHAR(ATTENDANCE_DT,'DY') AS WEEKNAME,
     E.DEPARTMENT_ID,
     D.DEPARTMENT_NAME,
-      HS.TOTAL_WORKING_HR/60 ASSIGNED_HOUR ,
+      CASE WHEN AD.OVERALL_STATUS='DO'
+      THEN
+      0
+      ELSE
+      HS.TOTAL_WORKING_HR/60 
+      END AS ASSIGNED_HOUR ,
          CASE WHEN AD.TOTAL_HOUR IS NOT NULL THEN
          ROUND (AD.TOTAL_HOUR / 60)
          ELSE
@@ -1622,7 +1627,7 @@ EOT;
     FOR WEEKNAME 
     IN ( 'TUE' AS TUE,'WED' AS WED,'THU' AS THU,'FRI' AS FRI,'SAT' AS SAT,'SUN' AS SUN,'MON' AS MON)
     )";  
-
+    
     return $this->rawQuery($sql);    
   }
 
@@ -1633,11 +1638,11 @@ EOT;
     $sql = "SELECT   trunc($toDate-6) + ROWNUM -1  AS DATES,
     ROWNUM AS DAY_COUNT,
     trunc($toDate-6) AS FROM_DATE,
-    TO_CHAR($toDate+ ROWNUM -1,'D') AS WEEKDAY,
-    TO_CHAR($toDate+ ROWNUM -1,'DAY') AS WEEKNAME
+    TO_CHAR(trunc($toDate-6) + ROWNUM -1,'D') AS WEEKDAY,
+    TO_CHAR(trunc($toDate-6) + ROWNUM -1,'DAY') AS WEEKNAME
     FROM dual d
     CONNECT BY  rownum <=  $toDate -  trunc($toDate-6) + 1";
-
+    
     return $this->rawQuery($sql); 
   }
 }
