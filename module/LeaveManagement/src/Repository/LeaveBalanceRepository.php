@@ -207,5 +207,45 @@ class LeaveBalanceRepository {
         }
         return $dbArray;
     }
+    
+    public function getPivotedListBetnDates($searchQuery, $isMonthly = false) {
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly);
+        $fromDate="to_date('{$searchQuery['fromDate']}')";
+        $toDate="to_date('{$searchQuery['toDate']}')";
+        
+        $sql="SELECT LB.*,E.FULL_NAME, E.EMPLOYEE_CODE AS EMPLOYEE_CODE FROM (SELECT * FROM
+(SELECT la.employee_id,
+    la.leave_id,
+    ( la.total_days + la.previous_year_bal - la.balance ) AS TAKEN,
+    la.balance+ltad.leave_taken_after_dates AS CALCULATED_BALANCE
+              FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
+              LEFT JOIN 
+              (SELECT 
+EMPLOYEE_ID,LEAVE_ID
+,SUM(CASE WHEN HALF_DAY='F' OR HALF_DAY='S' THEN 0.5 ELSE 1 END) AS lEAVE_TAKEN_BETWEEN_DATES 
+FROM (SELECT * FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS='AP') LR
+  JOIN 
+(SELECT   {$fromDate} + ROWNUM -1  AS DATES
+    FROM dual d
+    CONNECT BY  rownum <=  {$toDate} -  {$fromDate} + 1) ADT ON (ADT.DATES Between START_DATE AND END_DATE)
+    WHERE  ADT.DATES BETWEEN  {$fromDate} AND {$toDate}
+   GROUP BY EMPLOYEE_ID,LEAVE_ID) LTBD ON (LTBD.LEAVE_ID=LA.LEAVE_ID AND LTBD.EMPLOYEE_ID=LA.EMPLOYEE_ID)
+   LEFT JOIN (
+   select EMPLOYEE_ID,LEAVE_ID
+,SUM(CASE WHEN HALF_DAY='F' OR HALF_DAY='S' THEN leave_days/0.5 ELSE leave_days END) AS lEAVE_TAKEN_AFTER_DATES 
+from (SELECT EMPLOYEE_ID,LEAVE_ID,START_DATE,END_DATE,NO_OF_DAYS,
+HALF_DAY,end_date-TO_DATE('14-JAN-19') as leave_days
+    FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE STATUS='AP'
+    AND END_DATE>{$toDate}
+    AND START_DATE<={$toDate}
+    )
+    GROUP BY EMPLOYEE_ID,LEAVE_ID) LTAD ON (LTAD.LEAVE_ID=LA.LEAVE_ID AND LTAD.EMPLOYEE_ID=LA.EMPLOYEE_ID)
+    )PIVOT (MAX(TAKEN) AS TAKEN, MAX(CALCULATED_BALANCE) AS BALANCE 
+    FOR LEAVE_ID
+    IN ({$leaveArrayDb}) )
+    )LB LEFT JOIN HRIS_EMPLOYEES E ON (LB.EMPLOYEE_ID=E.EMPLOYEE_ID) ";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
 
 }
