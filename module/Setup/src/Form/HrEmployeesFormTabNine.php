@@ -1,8 +1,6 @@
 <?php
 namespace Setup\Form;
 
-
-use Application\Model\Model;
 use Zend\Form\Annotation;
 
 /**
@@ -10,10 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Name("HrEmployeesFormTabSeven")
  */
 
-class HrEmployeesFormTabSeven extends Model{
-    
-    public $eRId;
-    public $employeeId;
+class HrEmployeesFormTabNine {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Select")
@@ -66,41 +61,41 @@ class HrEmployeesFormTabSeven extends Model{
     
      
     
-    public $id;
-    public $remarks;
-    public $companyId;
-    public $branchId;
-    public $createdBy;
-    public $createdDate;
-    public $modifiedBy;
-    public $modifiedDate;
-    public $approved;
-    public $approvedBy;
-    public $approvedDate;
-    public $status;
+//    public $id;
+//    public $remarks;
+//    public $companyId;
+//    public $branchId;
+//    public $createdBy;
+//    public $createdDate;
+//    public $modifiedBy;
+//    public $modifiedDate;
+//    public $approved;
+//    public $approvedBy;
+//    public $approvedDate;
+//    public $status;
     
     
-    public $mappings=[
-        'id'=>'ID',
-        'employeeId'=>'EMPLOYEE_ID',
-        'organizationName'=>'ORGANIZATION_NAME',
-        'organizationType'=>'ORGANIZATION_TYPE',
-        'position'=>'POSITION',
-        'fromDate'=>'FROM_DATE',
-        'toDate'=>'TO_DATE',
-        'remarks'=>'REMARKS',
-        'companyId'=>'COMPANY_ID',
-        'branchId'=>'BRANCH_ID',
-        'createdBy'=>'CREATED_BY',
-        'createdDate'=>'CREATED_DATE',
-        'modifiedBy'=>'MODIFIED_BY',
-        'modifiedDate'=>'MODIFIED_DATE',
-        'approved'=>'APPROVED',
-        'approvedBy'=>'APPROVED_BY',
-        'approvedDate'=>'APPROVED_DATE',
-        'status'=>'STATUS'
-        
-    ];
+//    public $mappings=[
+//        'id'=>'ID',
+//        'employeeId'=>'EMPLOYEE_ID',
+//        'organizationName'=>'ORGANIZATION_NAME',
+//        'organizationType'=>'ORGANIZATION_TYPE',
+//        'position'=>'POSITION',
+//        'fromDate'=>'FROM_DATE',
+//        'toDate'=>'TO_DATE',
+//        'remarks'=>'REMARKS',
+//        'companyId'=>'COMPANY_ID',
+//        'branchId'=>'BRANCH_ID',
+//        'createdBy'=>'CREATED_BY',
+//        'createdDate'=>'CREATED_DATE',
+//        'modifiedBy'=>'MODIFIED_BY',
+//        'modifiedDate'=>'MODIFIED_DATE',
+//        'approved'=>'APPROVED',
+//        'approvedBy'=>'APPROVED_BY',
+//        'approvedDate'=>'APPROVED_DATE',
+//        'status'=>'STATUS'
+//        
+//    ];
     
     
     

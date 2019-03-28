@@ -44,6 +44,7 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\View\Model\JsonModel;
+use Setup\Form\HrEmployeesFormTabNine;
 
 class EmployeeController extends HrisController {
 
@@ -57,6 +58,7 @@ class EmployeeController extends HrisController {
     private $formSix;
     private $formSeven;
     private $formEight;
+    private $formNine;
     private $countryList;
     private $erpCompanyCode;
 
@@ -101,6 +103,7 @@ class EmployeeController extends HrisController {
         $formTabSix = new HrEmployeesFormTabSix();
         $formTabSeven = new HrEmployeesFormTabSeven();
         $formTabEight = new HrEmployeesFormTabEight();
+        $formTabEight = new HrEmployeesFormTabNine();
 
         if (!$this->formOne) {
             $this->formOne = $builder->createForm($formTabOne);
