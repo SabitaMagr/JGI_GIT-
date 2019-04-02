@@ -103,7 +103,7 @@ class EmployeeController extends HrisController {
         $formTabSix = new HrEmployeesFormTabSix();
         $formTabSeven = new HrEmployeesFormTabSeven();
         $formTabEight = new HrEmployeesFormTabEight();
-        $formTabEight = new HrEmployeesFormTabNine();
+        $formTabNine = new HrEmployeesFormTabNine();
 
         if (!$this->formOne) {
             $this->formOne = $builder->createForm($formTabOne);
@@ -162,6 +162,9 @@ class EmployeeController extends HrisController {
         }
         if (!$this->formEight) {
             $this->formEight = $builder->createForm($formTabEight);
+        }
+        if (!$this->formEight) {
+            $this->formNine = $builder->createForm($formTabNine);
         }
     }
 
