@@ -51,7 +51,13 @@ $this->headScript()
     document.addUniversityLink = '<?php echo $this->url('employee', ['action' => 'addUniversity']); ?>';
     document.addProgramLink = '<?php echo $this->url('employee', ['action' => 'addProgram']); ?>';
     document.addCourseLink = '<?php echo $this->url('employee', ['action' => 'addCourse']); ?>';
-    document.addDistributionEmp = '<?php echo $this->url('employee', ['action' => 'addDistributionEmp']); ?>';</script>
+    document.addDistributionEmp = '<?php echo $this->url('employee', ['action' => 'addDistributionEmp']); ?>';
+    document.relation=<?php echo json_encode($relation); ?>;
+    document.pullReltionDetailLink = '<?php echo $this->url('employee', ['action' => 'pullRelationDetail']); ?>';
+    document.submitRelationDtlLink = '<?php echo $this->url('employee', ['action' => 'submitRelationDtl']); ?>';
+    document.deleteRelationDtlLink = '<?php echo $this->url('employee', ['action' => 'deleteRelationDtl']); ?>';
+    document.urlSubmitRelation = '<?= $this->url('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]) ?>';
+</script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\Employee')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>

@@ -24,8 +24,8 @@ class HrEmployeesFormTabNine {
      * @Annotation\Required(false)
      * @Annotation\Type("Zend\Form\Element\Text")
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"label":"Organization Name"})
-     * @Annotation\Attributes({ "id":"organizationName", "class":"form-control" })
+     * @Annotation\Options({"label":"Person Name"})
+     * @Annotation\Attributes({ "id":"personName", "class":"form-control" })
      */
     
     public $personName;
@@ -44,8 +44,8 @@ class HrEmployeesFormTabNine {
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Relation"})
-     * @Annotation\Attributes({ "id":"relationId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Nominee"})
+     * @Annotation\Attributes({ "id":"isNominee","class":"form-control"})
      */
     
     public $isNominee;
@@ -54,8 +54,8 @@ class HrEmployeesFormTabNine {
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"disable_inarray_validator":"true","label":"Relation"})
-     * @Annotation\Attributes({ "id":"relationId","class":"form-control"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Dependent"})
+     * @Annotation\Attributes({ "id":"isDependent","class":"form-control"})
      */
     public $isDependent;
     
