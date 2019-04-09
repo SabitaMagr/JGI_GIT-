@@ -665,3 +665,162 @@ INTO HRIS_MENUS
     NULL,
     'N'
   );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Medical Reimbursement',
+    (select menu_id from hris_menus where menu_id=302 and route='javascript::' and Action='javascript::'),
+    NULL,
+    'javascript::',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'javascript::',
+    (select max(Menu_Index)+1 from hris_menus where parent_menu=302),
+    NULL,
+    NULL,
+    'Y'
+  );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Entry',
+    (select menu_id from hris_menus where menu_name like 'Medical Reimbursement' 
+    and route='javascript::' and action='javascript::'),
+    NULL,
+    'medicalEntry',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'index',
+    1,
+    NULL,
+    NULL,
+    'Y'
+  );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Verify',
+    (select menu_id from hris_menus where menu_name like 'Medical Reimbursement' 
+    and route='javascript::' and action='javascript::'),
+    NULL,
+    'medicalVerify',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'index',
+    2,
+    NULL,
+    NULL,
+    'Y'
+  );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Settlement',
+    (select menu_id from hris_menus where menu_name like 'Medical Reimbursement' 
+    and route='javascript::' and action='javascript::'),
+    NULL,
+    'medicalSettlement',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'index',
+    3,
+    NULL,
+    NULL,
+    'Y'
+  );

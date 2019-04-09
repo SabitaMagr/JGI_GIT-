@@ -320,8 +320,14 @@ window.app = (function ($, toastr, App) {
     };
 
     var datePickerWithNepali = function (englishDate, nepaliDate) {
-        var $nepaliDate = $('#' + nepaliDate);
-        var $englishDate = $('#' + englishDate);
+        var $englishDate = englishDate;
+        if (!(englishDate instanceof jQuery)) {
+            var $englishDate = $('#' + englishDate);
+        }
+        var $nepaliDate = nepaliDate;
+        if (!(nepaliDate instanceof jQuery)) {
+            $nepaliDate = $('#' + nepaliDate);
+        }
         var oldNepali = null;
 
         $nepaliDate.nepaliDatePicker({
