@@ -4,6 +4,7 @@ namespace Medical;
 
 use Application\Controller\ControllerFactory;
 use Medical\Controller\MedicalEntry;
+use Medical\Controller\MedicalReport;
 use Medical\Controller\MedicalSettlement;
 use Medical\Controller\MedicalVerify;
 use Zend\Router\Http\Segment;
@@ -53,9 +54,22 @@ return [
                     ],
                 ],
             ],
+            'medicalReport' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/medical/report[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => MedicalReport::class,
+                        'action' => 'index'
+                    ],
+                ],
+            ],
         ],
     ],
-    
     'navigation' => [
         'medicalEntry' => [
             [
@@ -134,6 +148,7 @@ return [
             MedicalEntry::class => ControllerFactory::class,
             MedicalVerify::class => ControllerFactory::class,
             MedicalSettlement::class => ControllerFactory::class,
+            MedicalReport::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [

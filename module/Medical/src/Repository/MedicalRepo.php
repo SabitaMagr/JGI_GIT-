@@ -214,4 +214,139 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
 //        return Helper::extractDbData($result);
     }
 
+    public function fetchMedicalBalance($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId) {
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $fromDateCondition = "";
+        $toDateCondition = "";
+        $statusCondition = '';
+
+
+        $sql = "SELECT  
+                E.EMPLOYEE_CODE,E.FULL_NAME,
+                D.DEPARTMENT_NAME,FUNT.FUNCTIONAL_TYPE_EDESC
+                ,SM.VALUE-NVL(ST.SELF_TAKEN,0) AS SELF
+                ,DM.VALUE-NVL(DT.DEPENDENT_TAKEN,0) AS DEPENDENT
+                ,DM.VALUE+DMO.VALUE-NVL(DTWO.DEPENDENT_TAKEN_WO,0) AS OPERATION
+                FROM 
+                HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+                LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
+                LEFT JOIN (SELECT EMPLOYEE_ID,NVL(SUM(CASE 
+                WHEN APPROVED_AMT IS NOT NULL 
+                THEN APPROVED_AMT
+                ELSE
+                REQUESTED_AMT
+                END),0) AS SELF_TAKEN
+                FROM HRIS_MEDICAL
+                WHERE 
+                STATUS='E' 
+                AND BILL_STATUS!='C' 
+                AND CLAIM_OF='S' 
+                GROUP BY EMPLOYEE_ID
+                ) ST ON (E.EMPLOYEE_ID=ST.EMPLOYEE_ID)
+                LEFT JOIN (SELECT EMPLOYEE_ID,NVL(SUM(CASE 
+                WHEN M.APPROVED_AMT IS NOT NULL 
+                THEN M.APPROVED_AMT
+                ELSE
+                M.REQUESTED_AMT
+                END),0) AS DEPENDENT_TAKEN
+                FROM HRIS_MEDICAL M
+                WHERE 
+                M.STATUS='E' 
+                AND M.BILL_STATUS!='C' 
+                AND M.CLAIM_OF='D'
+                AND M.OPERATION_FLAG='N'
+                GROUP BY EMPLOYEE_ID
+                ) DT ON (E.EMPLOYEE_ID=ST.EMPLOYEE_ID)
+                LEFT JOIN (SELECT EMPLOYEE_ID,NVL(SUM(CASE 
+                WHEN APPROVED_AMT IS NOT NULL 
+                THEN APPROVED_AMT
+                ELSE
+                REQUESTED_AMT
+                END),0) AS DEPENDENT_TAKEN_WO
+                FROM HRIS_MEDICAL
+                WHERE 
+                STATUS='E' 
+                AND BILL_STATUS!='C' 
+                AND CLAIM_OF='D'
+                GROUP BY EMPLOYEE_ID
+                ) DTWO ON (E.EMPLOYEE_ID=DTWO.EMPLOYEE_ID)    
+                LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_MEDICAL') SM ON (1=1)
+                LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_MEDICAL') DM ON (1=1)
+                LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO ON (1=1)
+                WHERE E.STATUS='E'
+                {$searchConditon}
+                ";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    public function fetchTransactionList($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null) {
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $fromDateCondition = "";
+        $toDateCondition = "";
+//        $statusCondition = '';
+//        $rowNums = '';
+        if ($fromDate != null) {
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+        }
+        if ($toDate != null) {
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+        }
+
+
+        $sql = "SELECT M.*
+                    ,CASE M.BILL_STATUS 
+                    WHEN 'RQ' THEN 'REQUESTED'
+                    WHEN 'AP' THEN 'APPROVED'
+                    WHEN 'PD' THEN 'PAID'
+                    WHEN 'C' THEN 'CANCELLED'
+                    END AS BILL_STATUS_NAME
+                    ,CASE M.CLAIM_OF 
+                    WHEN 'S' THEN 'SELF'
+                    WHEN 'D' THEN 'DEPENDENT'
+                    END AS CLAIM_OF_NAME
+                    ,E.EMPLOYEE_CODE
+                    ,E.FULL_NAME
+                    ,D.DEPARTMENT_NAME
+                    ,FUNT.FUNCTIONAL_TYPE_EDESC
+                    ,E.ID_ACCOUNT_NO
+                    FROM Hris_Medical M
+                    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=M.EMPLOYEE_ID)
+                    LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+                    LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
+                    WHERE M.STATUS='E' AND M.BILL_STATUS='PD'
+                    {$searchConditon}
+                    {$fromDateCondition}
+                    {$toDateCondition}";
+
+
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    public function fetchTransactionTotal($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null) {
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $fromDateCondition = "";
+        $toDateCondition = "";
+        if ($fromDate != null) {
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+        }
+        if ($toDate != null) {
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+        }
+
+
+        $sql = "SELECT 
+            SUM(M.Approved_Amt) AS TOTAL_AMT
+,to_char(to_date(SUM(M.Approved_Amt),'J'),'JSP') AS TOTAL_AMT_IN_WORDS
+                    FROM Hris_Medical M
+                    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=M.EMPLOYEE_ID)
+                    WHERE M.STATUS='E' AND M.BILL_STATUS='PD'
+                    {$searchConditon}
+                    {$fromDateCondition}
+                    {$toDateCondition}";
+
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $result->current();
+    }
+
 }

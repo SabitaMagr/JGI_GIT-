@@ -17,7 +17,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Element\Select;
 use Zend\View\Model\JsonModel;
 
-class MedicalVerify extends HrisController {
+class MedicalReport extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
@@ -31,50 +31,6 @@ class MedicalVerify extends HrisController {
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
                     'employeeId' => $this->employeeId,
-                    'status' => $this->getMedicalStatusSelect()
-        ]);
-    }
-
-    public function viewAction() {
-        $id = (int) $this->params()->fromRoute('id');
-        if ($id === 0) {
-            return $this->redirect()->toRoute("medicalVerify");
-        }
-        $request = $this->getRequest();
-        $detail = $this->repository->fetchById($id);
-        $medical = new Medical();
-
-
-        if ($request->isPost()) {
-            $getData = $request->getPost();
-            $action = $getData->submit;
-            if ($action == "Reject") {
-                $medical->billStatus = "C";
-                $this->flashmessenger()->addMessage("Medical Bill Rejected!!!");
-            } else if ($action == "Approve") {
-                $medical->billStatus = "AP";
-                $this->flashmessenger()->addMessage("Medical Bill Approved");
-            }
-
-            $medical->approvedAmt = $getData->approvedAmt;
-            $medical->remarks = $getData->remarks;
-            $medical->approvedBy = $this->employeeId;
-            $medical->approvedDt = Helper::getcurrentExpressionDate();
-
-            $this->repository->edit($medical, $id);
-            return $this->redirect()->toRoute("medicalVerify");
-        }
-        $medicalBillRepo = new \Medical\Repository\MedicalBillRepo($this->adapter);
-        $billDetails = Helper::extractDbData($medicalBillRepo->fetchById($id));
-        $medical->exchangeArrayFromDB($detail);
-        $this->form->bind($medical);
-
-        return Helper::addFlashMessagesToArray($this, [
-                    'form' => $this->form,
-                    'id' => $id,
-                    'detail' => $detail,
-                    'billDetail' => $billDetails,
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
         ]);
     }
 
@@ -98,7 +54,7 @@ class MedicalVerify extends HrisController {
         }
     }
 
-    public function pullMedicalListAction() {
+    public function pullBalanceAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
@@ -114,11 +70,8 @@ class MedicalVerify extends HrisController {
             $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
             $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
             $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
-            $fromDate = $data['fromDate'];
-            $toDate = $data['toDate'];
-            $status = $data['status'];
 
-            $results = $this->repository->filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate, $toDate, $status);
+            $results = $this->repository->fetchMedicalBalance($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId);
 
             $result = [];
             $result['success'] = true;
@@ -130,20 +83,57 @@ class MedicalVerify extends HrisController {
         }
     }
 
-    private function getMedicalStatusSelect() {
-        $statusFormElement = new Select();
-        $statusFormElement->setName("status");
-        $status = array(
-            "-1" => "All",
-            "RQ" => "Requested",
-            "AP" => "Approved",
-            "PD" => "Paid",
-            "C" => "Cancelled",
-        );
-        $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
-        $statusFormElement->setLabel("Status");
-        return $statusFormElement;
+    public function pullEmpMedicalDetailAction($employeeId) {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $employeeId = (int) $data->employeeId;
+            $result = $this->repository->fetchEmpMedicalDetail($employeeId);
+            return new JsonModel([
+                "success" => true,
+                "data" => $result
+            ]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function transactionRepAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+
+                $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+                $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+                $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+                $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+                $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+                $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+                $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+                $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+                $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
+                $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
+                $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+                $fromDate = $data['fromDate'];
+                $toDate = $data['toDate'];
+
+                $result = $this->repository->fetchTransactionList($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate, $toDate);
+                $total = $this->repository->fetchTransactionTotal($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate, $toDate);
+
+                $list = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $list, 'total' => $total, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'employeeId' => $this->employeeId,
+        ]);
     }
 
 }
