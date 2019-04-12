@@ -12,7 +12,7 @@ $this->headScript()
         ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-        ->appendFile($this->basePath('js/medical/medical-report/transaction-rep.js'));
+        ->appendFile($this->basePath('js/medical/medical-report/voucher.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -25,7 +25,6 @@ $this->headScript()
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.acl =<?php echo json_encode($acl); ?>;
-    document.pullBalanceLink = '<?= $this->url("medicalReport", ["action" => "pullBalance"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\medicalEntry')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -188,23 +187,42 @@ $this->headScript()
 
     <!--<div id="printDiv">-->
         <div id="printDiv" style="display: none;">
-        <div class="col-sm-offset-2">
-            <h3>SOALTEE CROWN PLAZA</h3>
-            <b>Tachal Kathmandu</b> </br>
-            Bank Transfer List(Medical) 
-        </div>
+
+
+        <table>
+            <tr>
+                <td>Date</td>       
+                <td colspan="2" id="curDate"></td>       
+                <td></td>       
+                <td></td>       
+                <td></td>       
+            </tr>
+            <tr>
+                <td>Company</td>       
+                <td colspan="2">SOALTEE CROWNE PLAZA</td>       
+                <td></td>       
+                <td></td>       
+                <td></td>       
+            </tr>
+            <tr>
+                <td>Medical Reimbursement</td>       
+                <td colspan="2"></td>       
+                <td></td>       
+                <td></td>       
+                <td></td>       
+            </tr>
+        </table>
 
 
         <table id="printTable" class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Code</th>       
-                    <th>Employee</th>       
-                    <th>Department</th>       
-                    <th>Functional Type</th>       
-                    <th>Claim Of</th>       
-                    <th>Account No</th>       
-                    <th>Amt</th>       
+                    <th>S.No</th>       
+                    <th>Account Number</th>       
+                    <th>a/c Name</th>       
+                    <th>Dr.Amount</th>       
+                    <th>Cr.Amount</th>       
+                    <th>Remarks</th>       
                 </tr>
             </thead>
             <tbody>

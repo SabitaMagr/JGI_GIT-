@@ -904,3 +904,43 @@ INTO HRIS_MENUS
     NULL,
     'Y'
   );
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Voucher',
+    (select menu_id from hris_menus where menu_name like 'Medical Reimbursement' 
+    and route='javascript::' and action='javascript::'),
+    NULL,
+    'medicalReport',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'voucher',
+    6,
+    NULL,
+    NULL,
+    'Y'
+  );
+  

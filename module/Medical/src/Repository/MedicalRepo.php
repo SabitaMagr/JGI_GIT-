@@ -338,6 +338,7 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
         $sql = "SELECT 
             SUM(M.Approved_Amt) AS TOTAL_AMT
 ,to_char(to_date(SUM(M.Approved_Amt),'J'),'JSP') AS TOTAL_AMT_IN_WORDS
+,TO_CHAR(TRUNC(SYSDATE),'DD-MON-YYYY') AS CUR_DATE
                     FROM Hris_Medical M
                     LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=M.EMPLOYEE_ID)
                     WHERE M.STATUS='E' AND M.BILL_STATUS='PD'
@@ -348,5 +349,43 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
         $result = EntityHelper::rawQueryResult($this->adapter, $sql);
         return $result->current();
     }
+    
+    
+    public function fetchVoucherList($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate = null, $toDate = null) {
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $fromDateCondition = "";
+        $toDateCondition = "";
+//        $statusCondition = '';
+//        $rowNums = '';
+        if ($fromDate != null) {
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+        }
+        if ($toDate != null) {
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+        }
+
+
+        $sql = "SELECT ROWNUM,AA.* FROM (SELECT 
+                         ' ' AS DR_AMT,
+                    SUM(M.APPROVED_AMT) AS CR_AMT
+                    ,E.EMPLOYEE_CODE
+                    ,E.FULL_NAME
+                    ,E.ID_ACCOUNT_NO as ID_ACCOUNT_NO
+                    ,'Medical Reimbursement' AS REMARKS
+                    FROM Hris_Medical M
+                    LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=M.EMPLOYEE_ID)
+                    LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+                    LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
+                    WHERE M.STATUS='E' AND M.BILL_STATUS='PD'
+                    {$searchConditon}
+                    {$fromDateCondition}
+                    {$toDateCondition} GROUP BY E.EMPLOYEE_CODE,E.FULL_NAME,E.ID_ACCOUNT_NO) AA";
+
+//                    echo $sql;
+//die();
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+    
+    
 
 }
