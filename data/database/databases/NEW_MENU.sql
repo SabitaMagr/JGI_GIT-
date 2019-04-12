@@ -786,7 +786,25 @@ INTO HRIS_MENUS
   );
 
 
-INSERT
+
+
+Insert into HRIS_MENUS (MENU_CODE,MENU_ID,MENU_NAME,PARENT_MENU,MENU_DESCRIPTION,ROUTE,STATUS,CREATED_DT,MODIFIED_DT,ICON_CLASS,ACTION,MENU_INDEX,CREATED_BY,MODIFIED_BY,IS_VISIBLE) values
+ (null,(select max(menu_id+1) from HRIS_MENUS),'Employee Birthhday Report',148,null,'allreport','E',trunc(sysdate),null,null,'birthdayReport',
+(select max(menu_index)+1 from hris_menus where Parent_Menu=148),
+null,null,'Y');
+
+Insert into HRIS_MENUS (MENU_CODE,MENU_ID,MENU_NAME,PARENT_MENU,MENU_DESCRIPTION,ROUTE,STATUS,CREATED_DT,MODIFIED_DT,ICON_CLASS,ACTION,MENU_INDEX,CREATED_BY,MODIFIED_BY,IS_VISIBLE) values 
+(null,(select max(menu_id+1) from HRIS_MENUS),'Job Duration Report',148,null,'allreport','E',trunc(sysdate),null,null,'jobDurationReport',
+(select max(menu_index)+1 from hris_menus where Parent_Menu=148),
+null,null,'Y');
+
+Insert into HRIS_MENUS (MENU_CODE,MENU_ID,MENU_NAME,PARENT_MENU,MENU_DESCRIPTION,ROUTE,STATUS,CREATED_DT,MODIFIED_DT,ICON_CLASS,ACTION,MENU_INDEX,CREATED_BY,MODIFIED_BY,IS_VISIBLE) values
+ (null,(select max(menu_id+1) from HRIS_MENUS),'Weekly Work Report',148,null,'allreport','E',trunc(sysdate),null,null,'weeklyWorkingHoursReport',
+(select max(menu_index)+1 from hris_menus where Parent_Menu=148),
+null,null,'Y');
+
+
+ INSERT
 INTO HRIS_MENUS
   (
     MENU_CODE,
@@ -933,14 +951,20 @@ INTO HRIS_MENUS
     and route='javascript::' and action='javascript::'),
     NULL,
     'medicalReport',
+    'Leave Count Date Wise',
+    2,
+    NULL,
+    'leavebalance',
     'E',
     trunc(sysdate),
     NULL,
     'fa fa-pencil-square-o',
     'voucher',
     6,
+    'betweenDates',
+    (select max(menu_index)+1 from hris_menus where parent_menu=2),
     NULL,
     NULL,
     'Y'
   );
-  
+
