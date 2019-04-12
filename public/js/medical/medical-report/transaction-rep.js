@@ -16,6 +16,7 @@
             {field: "ID_ACCOUNT_NO", title: "Account No", width: 120},
             {field: "APPROVED_AMT", title: "Amt", width: 80}
         ];
+        var exportType = {"ID_ACCOUNT_NO":'STRING'};
         var map = {
             'EMPLOYEE_CODE': 'Code',
             'FULL_NAME': 'Employee',
@@ -30,7 +31,7 @@
         app.searchTable($table, ['EMPLOYEE_CODE', 'FULL_NAME', 'DEPARTMENT_NAME', 'FUNCTIONAL_TYPE_EDESC', 'SELF', 'DEPENDENT', 'OPERATION']);
 
         $('#excelExport').on('click', function () {
-            app.excelExport($table, map, 'MedicalBalance.xlsx');
+            app.excelExport($table, map, 'MedicalBalance.xlsx',exportType);
         });
 
         $('#pdfExport').on('click', function () {
@@ -96,7 +97,7 @@
             var totalInWords = `
                  <tr>
             <td><b>IN Words</b></td>
-            <td colspan="6"><b> Rs. ` + total.TOTAL_AMT_IN_WORDS + ` Only</b></td>
+            <td colspan="6"><b> Rs. ` + total.TOTAL_AMT_IN_WORDS + `</b></td>
                 </tr>
             `;
 

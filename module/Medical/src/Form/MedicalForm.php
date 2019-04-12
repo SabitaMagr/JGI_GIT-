@@ -72,7 +72,7 @@ class MedicalForm {
      * @Annotation\Required(true)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Request Amt"})
-     * @Annotation\Attributes({ "id":"requestedAmt","readonly"="readonly","class":"form-control","min":"0"})
+     * @Annotation\Attributes({ "id":"requestedAmt","readonly"="readonly","class":"form-control","min":"0","step":"0.01"})
      */
     public $requestedAmt;
     
@@ -81,7 +81,7 @@ class MedicalForm {
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
      * @Annotation\Options({"label":"Approved Amt"})
-     * @Annotation\Attributes({ "id":"approvedAmt","class":"form-control","min":"0"})
+     * @Annotation\Attributes({ "id":"approvedAmt","class":"form-control","min":"0","step":"0.01"})
      */
     public $approvedAmt;
     

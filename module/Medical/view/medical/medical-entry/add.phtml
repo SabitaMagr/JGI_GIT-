@@ -179,7 +179,7 @@ print $this->form()->openTag($form);
                                         <input id="billDate" class="billDate form-control" type="text" name="billDate[]" required>
                                         <!--<input id="nepaliBillDate" class="nepaliBillDate form-control" type="text" name="billDateNepali[]" required>-->
                                     </td>
-                                    <td><input class="billAmt form-control" type="number" name="billAmt[]" required></td>
+                                    <td><input class="billAmt form-control" type="number" name="billAmt[]" required min="0" step="0.01"></td>
                                     <!--<td><input class="billDelBtn btn btn-danger" type="button" value="Del -"></td>-->
                                 </tr>
                             </tbody>

@@ -48,14 +48,19 @@
         });
         var allConfig = function (employeeId) {
             if (typeof employeeId !== 'undefined' && employeeId !== '') {
+                let selectedDependent = $dependentId.val();
+                let operationFlagVal = $("input[name='operationFlag']:checked").val();
+                let claimOfVal = $("input[name='claimOf']:checked").val();
                 app.pullDataById(document.pullEmployeeRelationLink, {employeeId: employeeId}).then(function (response) {
                     let realtionList = response.data;
-                    app.populateSelect($dependentId, realtionList, 'E_R_ID', 'PERSON_NAME', '---', '-1');
+                    if (selectedDependent && claimOfVal=='D') {
+                        app.populateSelect($dependentId, realtionList, 'E_R_ID', 'PERSON_NAME', '---', '-1', selectedDependent);
+                    } else {
+                        app.populateSelect($dependentId, realtionList, 'E_R_ID', 'PERSON_NAME', '---', '-1');
+                    }
                 }, function (error) {
 
                 });
-                let claimOfVal = $("input[name='claimOf']:checked").val();
-                let operationFlagVal = $("input[name='operationFlag']:checked").val();
 //                console.log(operationFlagVal);
 //                    console.log(claimOfVal);
 
@@ -95,7 +100,7 @@
 <input class="billDate form-control" type="text" name="billDate[]" required>
 
 </td>
-                <td><input class="billAmt form-control" type="number" name="billAmt[] min="0" required></td>
+                <td><input class="billAmt form-control" type="number" name="billAmt[]" min="0" step="0.01" required></td>
             <td><input class="billDelBtn btn btn-danger" type="button" value="Del -"></td>
             </tr>
             
@@ -122,7 +127,7 @@
                 if (tempVal == '') {
                     tempVal = 0;
                 }
-                sum += parseInt(tempVal);
+                sum += parseFloat(Number(tempVal).toFixed(2));
             });
             console.log($('#requestedAmt').attr("max"));
             if ($remainingBalance.val() == 0 || sum > $remainingBalance.val()) {

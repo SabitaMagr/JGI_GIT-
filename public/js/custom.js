@@ -1036,7 +1036,7 @@ window.app = (function ($, toastr, App) {
             var row = [];
             $.each(col, function (key, value) {
                 if (dataItem[key] != null && dataItem[key] != '') {
-                    if ('ID_ACCOUNT_NO' == key) {
+                    if (exportType[key]) {
                         if (exportType[key] == 'STRING') {
                             row.push({value: dataItem[key]});
                         }

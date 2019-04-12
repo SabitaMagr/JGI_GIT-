@@ -257,7 +257,7 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
                 AND M.CLAIM_OF='D'
                 AND M.OPERATION_FLAG='N'
                 GROUP BY EMPLOYEE_ID
-                ) DT ON (E.EMPLOYEE_ID=ST.EMPLOYEE_ID)
+                ) DT ON (E.EMPLOYEE_ID=DT.EMPLOYEE_ID)
                 LEFT JOIN (SELECT EMPLOYEE_ID,NVL(SUM(CASE 
                 WHEN APPROVED_AMT IS NOT NULL 
                 THEN APPROVED_AMT
@@ -287,10 +287,10 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
 //        $statusCondition = '';
 //        $rowNums = '';
         if ($fromDate != null) {
-            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-Mon-YYYY') ";
         }
         if ($toDate != null) {
-            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-Mon-YYYY') ";
         }
 
 
@@ -328,16 +328,19 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
         $fromDateCondition = "";
         $toDateCondition = "";
         if ($fromDate != null) {
-            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-Mon-YYYY') ";
         }
         if ($toDate != null) {
-            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-Mon-YYYY') ";
         }
 
 
         $sql = "SELECT 
             SUM(M.Approved_Amt) AS TOTAL_AMT
-,to_char(to_date(SUM(M.Approved_Amt),'J'),'JSP') AS TOTAL_AMT_IN_WORDS
+,TO_CHAR(TO_DATE(TRUNC(SUM(M.Approved_Amt)),'J'),'JSP')
+||' AND '||
+ TO_CHAR(TO_DATE(TO_NUMBER(MOD(SUM(M.Approved_Amt),1)*100),'J'),'JSP')
+||' PAISA ONLY' AS TOTAL_AMT_IN_WORDS
 ,TO_CHAR(TRUNC(SYSDATE),'DD-MON-YYYY') AS CUR_DATE
                     FROM Hris_Medical M
                     LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=M.EMPLOYEE_ID)
@@ -358,10 +361,10 @@ LEFT JOIN (select *  from HRIS_PREFERENCES WHERE KEY='STAFF_DEP_OPERATION') DMO 
 //        $statusCondition = '';
 //        $rowNums = '';
         if ($fromDate != null) {
-            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-MM-YYYY') ";
+            $fromDateCondition = " AND M.BANK_TRANSFER_DT>=TO_DATE('" . $fromDate . "','DD-Mon-YYYY') ";
         }
         if ($toDate != null) {
-            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-MM-YYYY') ";
+            $toDateCondition = " AND M.BANK_TRANSFER_DT<=TO_DATE('" . $toDate . "','DD-Mon-YYYY') ";
         }
 
 
