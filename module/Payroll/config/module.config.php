@@ -62,6 +62,16 @@ return [
                         'action' => 'index'
                     ]
                 ]
+            ],
+            'varianceSetup' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/varianceSetup[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\VarianceSetupController::class,
+                        'action' => 'index'
+                    ]
+                ]
             ]
         ]
     ],
@@ -213,6 +223,27 @@ return [
                     ],
                 ]
             ]
+        ], 'varianceSetup' => [
+            [
+                'label' => 'Variance',
+                'route' => 'varianceSetup',
+            ],
+            [
+                'label' => 'Variance',
+                'route' => 'varianceSetup',
+                'pages' => [
+                    [
+                        'label' => 'List',
+                        'route' => 'varianceSetup',
+                        'action' => 'index',
+                    ],
+                    [
+                        'label' => 'Add',
+                        'route' => 'varianceSetup',
+                        'action' => 'add',
+                    ],
+                ]
+            ]
         ]
     ],
     'controllers' => [
@@ -222,6 +253,7 @@ return [
             Rules::class => ControllerFactory::class,
             SalarySheetController::class => ControllerFactory::class,
             TaxSheetController::class => ControllerFactory::class,
+            Controller\VarianceSetupController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
