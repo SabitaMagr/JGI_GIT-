@@ -14,10 +14,10 @@
                 var carryforward = parseFloat($("#carryforward").val());
                 var availableDays = parseFloat($("#availableDays").val());
                 if (carryforward > availableDays ) {
-                    alert("* Carry Forward can't be more than available days.");
+                    app.showMessage("Carry Forward can't be more than available days. ",'info','error');
                     return false;
                 } else if (carryforward > 14) {
-                    alert("* Applied days can't be greater than 14");
+                    app.showMessage("Applied days can't be greater than 14",'info','error');
                     return false;
                 } else {
                     $errorMsg.html("");
