@@ -68,6 +68,21 @@ return [
                     ]
                 ]
             ],
+            
+            'leavecarryforward' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/leavemanagement/leavecarryforward[/:action[/:id]]',
+                    'constants' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\LeaveCarryForward::class,
+                        'action' => 'index',
+                    ]
+                ],
+            ],
         ]
     ],
     'navigation' => [
@@ -213,11 +228,6 @@ return [
                         'route' => 'leavebalance',
                         'action' => 'view',
                     ],
-                    [
-                        'label' => 'Between Dates',
-                        'route' => 'leavebalance',
-                        'action' => 'betweenDates',
-                    ],
                 ]
             ]
         ],
@@ -225,6 +235,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\LeaveSetup::class => ControllerFactory::class,
+            Controller\LeaveCarryForward::class => ControllerFactory::class,
             Controller\leaveAssign::class => ControllerFactory::class,
             Controller\LeaveApply::class => ControllerFactory::class,
             Controller\LeaveStatus::class => ControllerFactory::class,

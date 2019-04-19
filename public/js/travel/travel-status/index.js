@@ -57,6 +57,7 @@
                         title: "Nepali",
                         width: 80
                     }]},
+            {field: "DEPARTURE", title: "Departure", width: 100},
             {field: "DESTINATION", title: "Destination", width: 100},
             {field: "REQUESTED_AMOUNT", title: "Request Amt.", width: 100},
             {field: "REQUESTED_TYPE_DETAIL", title: "Request For", width: 100},
@@ -100,6 +101,7 @@
             'TO_DATE_AD': 'To Date(AD)',
             'TO_DATE_BS': 'To Date(BS)',
             'DESTINATION': 'Destination',
+            'DEPARTURE' : 'Departure',
             'REQUESTED_AMOUNT': 'Request Amt',
             'REQUESTED_TYPE_DETAIL': 'Request Type',
             'TRANSPORT_TYPE_DETAIL': 'Transport',

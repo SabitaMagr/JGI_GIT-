@@ -78,6 +78,7 @@ class TravelApproveRepository implements RepositoryInterface {
             new Expression("TR.EMPLOYEE_ID AS EMPLOYEE_ID"),
             new Expression("TR.TRAVEL_ID AS TRAVEL_ID"),
             new Expression("TR.TRAVEL_CODE AS TRAVEL_CODE"),
+            new Expression("TR.DEPARTURE AS DEPARTURE"),
             new Expression("TR.DESTINATION AS DESTINATION"),
             new Expression("TR.REQUESTED_AMOUNT AS REQUESTED_AMOUNT"),
             new Expression("TR.PURPOSE AS PURPOSE"),

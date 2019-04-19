@@ -55,6 +55,15 @@ class TravelRequestForm{
     public $destination;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Text")
+     * @Annotation\Required(true)
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"label":"Departure"})
+     * @Annotation\Attributes({ "class":"form-departure","class":"form-control"})
+     */
+    public $departure;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required(false)
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})

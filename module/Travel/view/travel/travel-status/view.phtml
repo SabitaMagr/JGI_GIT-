@@ -20,6 +20,8 @@ $toDate = $form->get('toDate');
 $toDate->setAttributes(["disabled" => "disabled"]);
 $requestedAmount = $form->get('requestedAmount');
 $requestedAmount->setAttributes(["disabled" => "disabled"]);
+$departure = $form->get('departure');
+$departure->setAttributes(["disabled" => "disabled"]);
 $destination = $form->get('destination');
 $destination->setAttributes(["disabled" => "disabled"]);
 $purpose = $form->get('purpose');
@@ -194,6 +196,13 @@ print $this->form()->openTag($form);
 
 
                 <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($departure); ?>
+                            <?php print $this->formElement($departure); ?>
+                            <?php print $this->formElementErrors()->render($departure, ['class' => 'help-block']); ?>
+                        </div>               
+                    </div>
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($destination); ?>

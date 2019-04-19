@@ -168,6 +168,7 @@ class TravelRequest extends HrisController {
             $model->fromDate = $detail['FROM_DATE'];
             $model->toDate = $detail['TO_DATE'];
             $model->destination = $detail['DESTINATION'];
+            $model ->departure = $detail ['DEPARTURE'];
             $model->purpose = $detail['PURPOSE'];
             $model->travelCode = $detail['TRAVEL_CODE'];
             $model->requestedType = 'ep';
