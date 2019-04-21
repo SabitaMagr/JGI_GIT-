@@ -22,13 +22,10 @@ class LeaveReportCard extends HrisController {
     }
 
     public function indexAction() {
-        
-       
         return $this->stickFlashMessagesTo([
-                    
-                    'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+            'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'acl' => $this->acl,
+            'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
  

@@ -30,7 +30,7 @@
                 for(let i = 0; i < leaves.length; i++){
                     htmlData+='<td>-</td>';
                 }
-                htmlData+='</tr><tr><td colspan="2">'+leaveDetails[0].JOIN_DATE+'</td><td colspan="3">{{Designation}}</td><td>{{DEPARTMENT}}</td><td colspan="3">LEAVE DUE THIS YEAR</td>';
+                htmlData+='</tr><tr><td colspan="2">'+leaveDetails[0].JOIN_DATE+'</td><td colspan="3">'+leaveDetails[0].DESIGNATION+'</td><td>{{DEPARTMENT}}</td><td colspan="3">LEAVE DUE THIS YEAR</td>';
                 for(let i = 0; i < leaves.length; i++){
                     htmlData+='<td>-</td>';
                 }
