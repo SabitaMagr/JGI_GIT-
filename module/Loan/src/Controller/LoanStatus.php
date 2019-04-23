@@ -108,8 +108,9 @@ class LoanStatus extends AbstractActionController {
             }
             $loanRequest->approvedBy = $this->employeeId;
             $loanRequest->approvedRemarks = $reason;
+            $this->loanApproveRepository->addToDetails($id);
             $this->loanApproveRepository->edit($loanRequest, $id);
-
+ 
             return $this->redirect()->toRoute("loanStatus");
         }
         return Helper::addFlashMessagesToArray($this, [
