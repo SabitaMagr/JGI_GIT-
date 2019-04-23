@@ -775,6 +775,7 @@ EOT;
             SELECT C.COMPANY_NAME,
               D.DEPARTMENT_NAME,
               A.EMPLOYEE_ID,
+              E.EMPLOYEE_CODE,
               E.FULL_NAME,
               A.DAYOFF,
               A.PRESENT,

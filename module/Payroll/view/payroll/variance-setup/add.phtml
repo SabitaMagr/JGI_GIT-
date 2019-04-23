@@ -5,6 +5,7 @@ $this->headScript()->appendFile($this->basePath('js/Payroll/VarianceSetup/addEdi
 $varianceName = $form->get('varianceName');
 $payId = $form->get('payId');
 $showDefault = $form->get('showDefault');
+$showDifference = $form->get('showDifference');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'add']));
@@ -60,6 +61,20 @@ $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'add']));
                         </div>
 
                     </div>
+                </div>
+
+                <div class="row">
+
+
+                    <div class="col-sm-4 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($showDifference); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($showDifference); ?>
+                            </div>
+                        </div>
+
+                    </div>
 
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
@@ -68,6 +83,7 @@ $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'add']));
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
+
                 </div>
 
                 <?php

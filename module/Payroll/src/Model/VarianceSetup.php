@@ -10,6 +10,7 @@ class VarianceSetup extends Model {
     CONST VARIANCE_ID = "VARIANCE_ID";
     CONST VARIANCE_NAME = "VARIANCE_NAME";
     CONST SHOW_DEFAULT = "SHOW_DEFAULT";
+    CONST SHOW_DIFFERENCE = "SHOW_DIFFERENCE";
     CONST STATUS = "STATUS";
     CONST CREATED_DT = "CREATED_DT";
     CONST CREATED_BY = "CREATED_BY";
@@ -22,6 +23,7 @@ class VarianceSetup extends Model {
     public $varianceId;
     public $varianceName;
     public $showDefault;
+    public $showDifference;
     public $status;
     public $createdDt;
     public $createdBy;
@@ -35,6 +37,7 @@ class VarianceSetup extends Model {
         'varianceId' => self::VARIANCE_ID,
         'varianceName' => self::VARIANCE_NAME,
         'showDefault' => self::SHOW_DEFAULT,
+        'showDifference' => self::SHOW_DIFFERENCE,
         'status' => self::STATUS,
         'createdDt' => self::CREATED_DT,
         'createdBy' => self::CREATED_BY,

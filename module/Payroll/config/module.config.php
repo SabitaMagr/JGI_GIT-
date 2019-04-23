@@ -72,6 +72,16 @@ return [
                         'action' => 'index'
                     ]
                 ]
+            ],
+            'payrollReport' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/payrollReport[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => Controller\PayrollReportController::class,
+                        'action' => 'index'
+                    ]
+                ]
             ]
         ]
     ],
@@ -254,6 +264,7 @@ return [
             SalarySheetController::class => ControllerFactory::class,
             TaxSheetController::class => ControllerFactory::class,
             Controller\VarianceSetupController::class => ControllerFactory::class,
+            Controller\PayrollReportController::class => ControllerFactory::class,
         ],
     ],
     'view_manager' => [
