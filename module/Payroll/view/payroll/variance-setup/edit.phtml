@@ -6,6 +6,7 @@ $varianceName = $form->get('varianceName');
 $payId = $form->get('payId');
 $showDefault = $form->get('showDefault');
 $showDifference = $form->get('showDifference');
+$variableType = $form->get('variableType');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'edit', 'id' => $id]));
@@ -73,6 +74,16 @@ $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'edit', '
                             <?php print $this->formLabel($showDifference); ?>
                             <div class="md-radio-inline">
                                 <?php $customRenderer($showDifference); ?>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <div class="col-sm-4 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($variableType); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($variableType); ?>
                             </div>
                         </div>
 
