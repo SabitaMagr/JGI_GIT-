@@ -6,6 +6,7 @@
         var monthList = null;
         var $fiscalYear = $('#fiscalYearId');
         var $month = $('#monthId');
+        var $reportType = $('#reportType');
         var $otVariable = $('#otVariable');
         var $extraFields = $('#extraFields');
         var $table = $('#table');
@@ -113,6 +114,7 @@
             q['monthId'] = $month.val();
             q['extVar'] = $otVariable.val();
             q['extField'] = $extraFields.val();
+            q['reportType'] = $reportType.val();
             console.log(q);
 
             app.serverRequest(document.pullGradeBasicLink, q).then(function (response) {

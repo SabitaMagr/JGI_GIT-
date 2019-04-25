@@ -72,7 +72,12 @@ class PayrollReportController extends HrisController {
             $request = $this->getRequest();
             $data = $request->getPost();
             $defaultColumnsList = $this->repository->getOtDefaultColumns();
-            $results = $this->repository->getGradeBasicReport($data);
+            $reportType = $data['reportType'];
+            if ($reportType == 'S') {
+                $results = $this->repository->getGradeBasicSummary($data);
+            } else {
+                $results = $this->repository->getGradeBasicReport($data);
+            }
             $result = [];
             $result['success'] = true;
             $result['data'] = Helper::extractDbData($results);

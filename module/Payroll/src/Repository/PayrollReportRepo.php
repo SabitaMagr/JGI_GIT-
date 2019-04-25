@@ -193,7 +193,7 @@ AND Show_Default='N'";
         $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $monthId = $data['monthId'];
-//        $monthId = $data['monthId'];
+//        $fiscalId = $data['fiscalId'];
 
         $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
@@ -447,6 +447,65 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
 
         $rawList = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($rawList);
+    }
+
+    public function getGradeBasicSummary($data) {
+        $varianceVariable = $this->fetchOtVariable();
+
+        $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+        $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+        $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+        $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+        $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+        $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+        $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+        $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+        $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
+        $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
+        $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+        $fiscalId = $data['fiscalId'];
+
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        
+        $sql="SELECT 
+            E.FULL_NAME,
+            E.EMPLOYEE_CODE,
+            E.Id_Account_No AS ACCOUNT_NO
+            ,E.BIRTH_DATE
+            ,E.JOIN_DATE
+            ,D.DEPARTMENT_NAME
+            ,FUNT.FUNCTIONAL_TYPE_EDESC
+             ,P.POSITION_NAME
+            ,ST.SERVICE_TYPE_NAME
+            ,DES.DESIGNATION_TITLE
+            ,GB.*
+            FROM
+            (
+            SELECT * FROM (SELECT 
+            SD.EMPLOYEE_ID
+            ,Vp.Variance_Id
+            ,SUM(VAL) AS TOTAL
+            FROM HRIS_VARIANCE V
+            LEFT JOIN HRIS_VARIANCE_PAYHEAD VP ON (V.VARIANCE_ID=VP.VARIANCE_ID)
+            LEFT JOIN (select * from HRIS_SALARY_SHEET) SS ON (1=1)
+            LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
+            LEFT JOIN HRIS_MONTH_CODE MC ON (SS.MONTH_ID=MC.MONTH_ID) 
+            WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='O'  AND Mc.Fiscal_Year_Id={$fiscalId} 
+            GROUP BY SD.EMPLOYEE_ID,V.VARIANCE_NAME,Vp.Variance_Id)
+            PIVOT ( MAX( TOTAL )
+                FOR Variance_Id 
+                IN ($varianceVariable)
+                ))GB
+                LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=GB.EMPLOYEE_ID)
+                LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+                LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
+                LEFT JOIN HRIS_POSITIONS P ON (E.POSITION_ID=P.POSITION_ID)
+                LEFT JOIN HRIS_SERVICE_TYPES ST ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
+                LEFT JOIN HRIS_DESIGNATIONS DES ON (E.DESIGNATION_ID=DES.DESIGNATION_ID)
+                WHERE 1=1 
+             {$searchConditon}
+                ";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
 }
