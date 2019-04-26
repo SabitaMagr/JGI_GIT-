@@ -14,8 +14,11 @@ return [
 //    'username' => 'HRIS',
 //    'password' => 'NEO_HRIS',
           
-   'username' => 'JGI0110',
-    'password' => 'JGI0110',
+//    'username' => 'JGI0110',
+//     'password' => 'JGI0110',
+
+    'username' => 'HRIS_SOALTEE',
+     'password' => 'HRIS_SOALTEE',
 
 //         'username' => 'JGI7475_HM',
 //         'password' => 'JGI7475_HM',

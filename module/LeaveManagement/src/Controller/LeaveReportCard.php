@@ -28,7 +28,7 @@ class LeaveReportCard extends HrisController {
             'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
- 
+  
     public function fetchReportCardAction(){
         $request = $this->getRequest();
         if ($request->isPost()) {

@@ -11,9 +11,9 @@ use Zend\Db\Sql\Sql;
 class LeaveReportCardRepository extends HrisRepository {
 
   public function fetchLeaveReportCard($by){
-
+    
     $employees = $by['data']['employeeId'];
-    $employees = implode(',', $employees);
+    //$employees = implode(',', $employees);
 
     $sql = "SELECT LA.ID AS ID, LA.EMPLOYEE_ID AS EMPLOYEE_ID, E.EMPLOYEE_CODE AS 
     EMPLOYEE_CODE,E.JOIN_DATE AS JOIN_DATE, LA.LEAVE_ID AS LEAVE_ID, 

@@ -8,17 +8,22 @@
 
         function searchAction() {
 
-            var data = document.searchManager.getSearchValues();
-            console.log();
-            console.log(data);
+            // var data = document.searchManager.getSearchValues();
+            var data = {
+                employeeId: $("#employeeId").val()
+            }; 
+             
+            // data.push();
 
+            console.log(data);
+ 
             $assignTable.find("tr:gt(0)").remove();
             $("#table").empty();
             
             app.serverRequest(document.pullLeaveReportCardLink , {'data': data}).then(function (response) {
                 var leaveDetails = response.data;
                 var leaves = response.leaves;
-                var htmlData = '<table class="table table-striped">';
+                var htmlData = '<table class="table table-bordered">';
                 htmlData+='<tr><th colspan="3">EMP ID: </th><td>'+leaveDetails[0].EMPLOYEE_ID+'</td></tr>';
                 htmlData+='<tr><td colspan="2">Name </td><th colspan="3">Present Address</th><td>{{PRESENT ADDR}}</td><th colspan="3">LEAVE DETAILS</th>';
                 for(let i = 0; i < leaves.length; i++){
@@ -41,7 +46,7 @@
                 }
                 htmlData+='</tr>';
                 for(let i = 0; i < leaveDetails.length; i++){
-                    htmlData+='<tr><td>'+(i+1)+'</td><td>'+leaveDetails[i].FROM_DATE_AD+'</td><td>'+leaveDetails[i].LEAVE_ENAME+'</td><td>'+leaveDetails[i].NO_OF_DAYS+'</td><td>'+leaveDetails[i].FROM_DATE_AD+'</td><td>'+leaveDetails[i].TO_DATE_AD+'</td><td>'+leaveDetails[i].REMARKS+'</td><td>'+leaveDetails[i].RECOMMENDER_NAME+'</td><td>'+leaveDetails[i].APPROVER_NAME+'</td>';
+                    htmlData+='<tr><td>'+(i+1)+'</td><td>'+leaveDetails[i].FROM_DATE_AD+'</td><td>'+leaveDetails[i].LEAVE_ENAME+'</td><td>'+leaveDetails[i].NO_OF_DAYS+'</td><td>'+leaveDetails[i].FROM_DATE_AD+'</td><td>'+leaveDetails[i].TO_DATE_AD+'</td><td>'+leaveDetails[i].REMARKS+'</td><td>'+leaveDetails[i].RECOMMENDED_BY_NAME+'</td><td>'+leaveDetails[i].APPROVED_BY_NAME+'</td>';
                     for(let j = 0; j < leaves.length; j++){
                         htmlData+='<td>-</td>';
                     }
@@ -106,13 +111,15 @@
                     window.app.showMessage("failed");
                     throw failure;
                 });
-
-
-
             });
         }
 
-
-
+        $("#excelExport").click(function(){    
+            $("#table").table2excel({
+                exclude: ".noExl",
+                name: "leave-card",
+                filename: "leave-report-card" 
+            });
+        });
     });
 })(window.jQuery, window.app);
