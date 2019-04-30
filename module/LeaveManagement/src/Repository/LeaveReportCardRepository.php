@@ -17,6 +17,8 @@ class LeaveReportCardRepository extends HrisRepository {
 
     $sql = "SELECT LA.ID AS ID, LA.EMPLOYEE_ID AS EMPLOYEE_ID, E.EMPLOYEE_CODE AS 
     EMPLOYEE_CODE,E.JOIN_DATE AS JOIN_DATE, LA.LEAVE_ID AS LEAVE_ID, 
+    (CASE WHEN  E.ADDR_PERM_STREET_ADDRESS IS NULL THEN '-' ELSE E.ADDR_PERM_STREET_ADDRESS END) AS ADDR_PERM_STREET_ADDRESS,
+    (CASE WHEN  E.ADDR_TEMP_STREET_ADDRESS IS NULL THEN '-' ELSE E.ADDR_TEMP_STREET_ADDRESS END) AS ADDR_TEMP_STREET_ADDRESS,
     D.DESIGNATION_TITLE AS DESIGNATION_TITLE,HD.DEPARTMENT_NAME AS DEPARTMENT,
     INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) AS FROM_DATE_AD, BS_DATE(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY')) 
     AS FROM_DATE_BS, INITCAP(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) AS TO_DATE_AD, BS_DATE(TO_CHAR(LA.END_DATE, 'DD-MON-YYYY')) 
@@ -44,12 +46,18 @@ class LeaveReportCardRepository extends HrisRepository {
                             THEN 20
                             ELSE 365
                             END) AND E.EMPLOYEE_ID IN ($employees) ORDER BY LA.REQUESTED_DT DESC";  
-
-  return $this->rawQuery($sql);    
+    
+    return $this->rawQuery($sql);    
   }
 
-  public function fetchLeaves(){
-    $sql = "SELECT LEAVE_ENAME FROM HRIS_LEAVE_MASTER_SETUP";
+  public function fetchLeaves($empId){
+    $sql = "select 
+    Lms.Leave_Ename,Lms.LEAVE_ID,
+    la.Total_Days
+    from hris_leave_master_setup lms
+    left join Hris_Employee_Leave_Assign la on (lms.leave_id=la.leave_id )
+    where la.employee_id= $empId";
+    
     return $this->rawQuery($sql);
   }
 } 

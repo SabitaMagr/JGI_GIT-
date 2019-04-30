@@ -47,7 +47,13 @@
         };
 
         $(document).on('click', '.btn-edit', function(){
-            return confirm("Are you sure to skip loan payment this month?") ? true : false;
+            var val = $(this).parent().siblings(":nth-of-type(7)").text();
+            if(val == 0){
+                return confirm("Are you sure you want to revert the skip this month?") ? true : false;
+            }
+            else{
+                return confirm("Are you sure to skip loan payment this month?") ? true : false;
+            }
         });
 
         app.serverRequest('', '').then(function (response) {

@@ -153,9 +153,24 @@ class LoanStatus extends AbstractActionController {
         $loanStatusRepository = new LoanStatusRepository($this->adapter);
         
         $requestId = Helper::extractDbData($loanStatusRepository->getLoanRequestId($id));
+
+        $loanDetails = $loanStatusRepository->getPaidStatus($requestId[0]['LOAN_REQUEST_ID'], $id);
+        $loanDetails = Helper::extractDbData($loanDetails)[0];
+        $paidFlag = $loanDetails['PAID_FLAG'];
+        $amount = $loanDetails['AMOUNT'];
         
-        $loanStatusRepository->skipMonth($requestId[0]['LOAN_REQUEST_ID'], $id);
- 
+        if($paidFlag == 'N' && $amount != 0){
+            $loanStatusRepository->skipMonth($requestId[0]['LOAN_REQUEST_ID'], $id);
+            $this->flashmessenger()->addMessage('Loan Payment has been skipped for selected month.');
+        }
+        else if($paidFlag == 'N' && $amount == 0){
+            $loanStatusRepository->skipMonth($requestId[0]['LOAN_REQUEST_ID'], $id);
+            $this->flashmessenger()->addMessage('Loan Payment skip has been reverted for selected month.');
+        }
+        else{
+            $this->flashmessenger()->addMessage('Sorry, Skip is not possible. Loan has already been paid or skipped this month.');
+        }
+
         return $this->redirect()->toRoute('loanStatus', array(
             'controller' => 'LoanStatus',
             'action' =>  'edit',
@@ -168,15 +183,16 @@ class LoanStatus extends AbstractActionController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-
+ 
             $loanStatusRepository = new LoanStatusRepository($this->adapter);
             $result = $loanStatusRepository->getLoanRequestList($data);
             $recordList = Helper::extractDbData($result);
+
             // $request_ids = array();
             // foreach($recordList as $record){
             //     array_push($request_ids, $record['LOAN_REQUEST_ID']);
             // }
-            
+             
             // $additionalDetails =  Helper::extractDbData($loanStatusRepository->getLoanRequestDetails($request_ids));
             return new JsonModel([
                 "success" => "true",

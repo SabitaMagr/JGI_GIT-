@@ -331,6 +331,13 @@ class LoanStatusRepository implements RepositoryInterface {
       $statement = $this->adapter->query($sql); 
       $statement->execute(); 
     }
+
+    public function getPaidStatus($requestId, $id){
+      $sql = "SELECT PAID_FLAG, AMOUNT FROM HRIS_LOAN_PAYMENT_DETAIL WHERE PAYMENT_ID = $id";
+
+      $statement = $this->adapter->query($sql); 
+      return $statement->execute();
+    }
  
     public function getLoanRequestId($id){
       $sql = "SELECT DISTINCT LOAN_REQUEST_ID FROM HRIS_LOAN_PAYMENT_DETAIL WHERE 
