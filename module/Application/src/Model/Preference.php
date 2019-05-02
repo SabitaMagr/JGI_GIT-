@@ -30,6 +30,7 @@ class Preference extends Model {
     public $calendarView='N';
     public $attAppShiftChangeable='N';
     public $attAppTimeChangeable='N';
+    public $travelSubCycle='Y';
 
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -57,6 +58,7 @@ class Preference extends Model {
     CONST CALENDAR_VIEW="CALENDAR_VIEW";
     CONST ATT_APP_SHIFT_CHANGEABLE="ATT_APP_SHIFT_CHANGEABLE";
     CONST ATT_APP_TIME_CHANGEABLE="ATT_APP_TIME_CHANGEABLE";
+    CONST TRAVEL_SUB_CYCLE="TRAVEL_SUB_CYCLE";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -84,7 +86,8 @@ class Preference extends Model {
         'orderBySeniority' =>self::ORDER_BY_SENIORITY,
         'calendarView' =>self::CALENDAR_VIEW,
         'attAppShiftChangeable' =>self::ATT_APP_SHIFT_CHANGEABLE,
-        'attAppTimeChangeable' =>self::ATT_APP_TIME_CHANGEABLE
+        'attAppTimeChangeable' =>self::ATT_APP_TIME_CHANGEABLE,
+        'travelSubCycle' =>self::TRAVEL_SUB_CYCLE
     ];
 
 }
