@@ -54,22 +54,22 @@
                     }
                 }
                 htmlData+='</tr>';
-                htmlData+='</table><hr />';
+                htmlData+='<tr><td colspan="9" style="font-weight: bold; text-align: center;">Balance</td>';
+                    for(let j = 0; j < leaves.length; j++){
+                        htmlData+='<td>'+leaves[j].TOTAL_DAYS+'</td>';
+                    }
+                htmlData+='</tr></table><hr />';
                 $("#table").append(htmlData);
                 $("#table").css('border', '1px solid black');
             }, function (error) {
 
             });
             }
-        }
-        ;
+        };
 
         $('#search').on('click', function () {
             searchAction();
         });
-
-
-
 
         $('#masterCheckElement').on('click', function () {
             var elementChecked = $(this).is(':checked');
@@ -81,12 +81,9 @@
 
         });
 
-
         $('#assignBtn').on('click', function () {
             createcodes();
         });
-
-
 
         function createcodes() {
             var assignLeaveId = $('#leaveId').val();
@@ -96,13 +93,11 @@
                 var $allCheckBox = $row.find('input[class*="insideChkBox"]');
                 var postValues = [];
 
-
                 $allCheckBox.each(function (key, value) {
                     var employeeId = $(this).attr("dataEmp");
                     var isEmpChecked = $(this).is(':checked');
                     postValues[key] = {'employeeId': employeeId, 'isChecked': isEmpChecked, 'leaveId': assignLeaveId};
                 });
-
 
                 app.serverRequest(document.assignSubMandatory, {
                     data: postValues}).then(function (response) {
