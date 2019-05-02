@@ -20,7 +20,7 @@ class LeaveCarryForward extends HrisController {
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
         $this->initializeRepository(LeaveCarryForwardRepository::class);
-        $this->initializeForm(LeaveCarryforwardForm::class);
+        $this->initializeForm(LeaveCarryForwardForm::class);
     }
 
     public function indexAction() {

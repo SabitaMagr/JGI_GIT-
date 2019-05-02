@@ -8,7 +8,7 @@ use Zend\Form\Annotation;
  * @Annotation\Hydrator("Zend\Hydrator\ObjectProperty")
  * @Annotation\Name("leaveApply")
  */ 
-class LeaveCarryforwardForm {
+class LeaveCarryForwardForm {
  
     /**
      * @Annotation\Type("Zend\Form\Element\Select")

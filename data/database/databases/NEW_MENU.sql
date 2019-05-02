@@ -1007,3 +1007,81 @@ INTO HRIS_MENUS
     'Y'
   );
 
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Leave Carry Forward',
+    2,
+    NULL,
+    'leavecarryforward',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'index',
+    (select max(menu_index)+1 from hris_menus where Parent_Menu=2),
+    NULL,
+    NULL,
+    'Y'
+  );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'add',
+    (select menu_id from hris_menus where menu_name='Leave Carry Forward'),
+    NULL,
+    'leavecarryforward',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'add',
+    (select max(menu_index)+1 from hris_menus where Parent_Menu=(select menu_id from hris_menus where menu_name='Leave Carry Forward')),
+    NULL,
+    NULL,
+    'N'
+  );
+
