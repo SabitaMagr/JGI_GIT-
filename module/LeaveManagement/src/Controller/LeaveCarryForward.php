@@ -7,7 +7,7 @@ use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Exception;
-use LeaveManagement\Form\LeaveCarryforwardForm;
+use LeaveManagement\Form\LeaveCarryForwardForm;
 use LeaveManagement\Model\LeaveMaster;
 use LeaveManagement\Repository\LeaveCarryForwardRepository;
 use SelfService\Repository\LeaveRequestRepository;
