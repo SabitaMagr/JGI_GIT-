@@ -86,10 +86,9 @@ class TravelStatus extends HrisController {
         } 
         $travelRequestModel = new TravelRequest();
         $detail = $this->travelApproveRepository->fetchById($id);
-        $fileDetails = $this->travelApproveRepository->fetchAttachmentsById($id);
+        //$fileDetails = $this->travelApproveRepository->fetchAttachmentsById($id);
         $travelRequestModel->exchangeArrayFromDB($detail);
         $this->form->bind($travelRequestModel);
-
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
         return Helper::addFlashMessagesToArray($this, [
@@ -99,8 +98,8 @@ class TravelStatus extends HrisController {
                 'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
                 'detail' => $detail,
                 'todayDate' => date('d-M-Y'),
-                'advanceAmount' => $advanceAmount,
-                'files' => $fileDetails
+                'advanceAmount' => $advanceAmount
+                //'files' => $fileDetails
         ]);
     }
 
@@ -147,7 +146,7 @@ class TravelStatus extends HrisController {
                 'totalAmount' => $totalAmount,
                 'totalAmountInWords' => $totalAmountInWords,
                 'balance' => $balance
-                ]
+            ]
         );
     }
 

@@ -59,6 +59,7 @@ class TravelRequest extends HrisController {
             $postData = $request->getPost();
             $travelSubstitute = $postData->travelSubstitute;
             $this->form->setData($postData);
+            
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
                 $model->requestedAmount = ($model->requestedAmount == null) ? 0 : $model->requestedAmount;
@@ -239,7 +240,7 @@ class TravelRequest extends HrisController {
         }
 
         $detail = $this->repository->fetchById($id);
-        $fileDetails = $this->repository->fetchAttachmentsById($id);
+        //$fileDetails = $this->repository->fetchAttachmentsById($id);
         $model = new TravelRequestModel();
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
@@ -253,8 +254,54 @@ class TravelRequest extends HrisController {
                     'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
                     'detail' => $detail,
                     'todayDate' => date('d-M-Y'),
-                    'advanceAmount' => $advanceAmount,
-                    'files' => $fileDetails
+                    'advanceAmount' => $advanceAmount
+                    //'files' => $fileDetails
+        ]);
+    }
+    
+    public function editAction() {
+        $request = $this->getRequest();
+        
+        $id = (int) $this->params()->fromRoute('id');
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelRequest");
+        }
+        if($this->repository->checkAllowEdit($id) == 'N'){
+            return $this->redirect()->toRoute("travelRequest");
+        }
+
+        if ($request->isPost()) {
+            $travelRequest = new TravelRequestModel();
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
+            
+            if ($this->form->isValid()) {
+                $travelRequest->exchangeArrayFromForm($this->form->getData());
+                $travelRequest->modifiedDt = Helper::getcurrentExpressionDate();
+                $travelRequest->employeeId = $this->employeeId;
+                $this->repository->edit($travelRequest, $id);
+                $this->flashmessenger()->addMessage("Travel Request Successfully Edited!!!");
+                return $this->redirect()->toRoute("travelRequest");
+            }
+        }
+        
+        $detail = $this->repository->fetchById($id);
+        //$fileDetails = $this->repository->fetchAttachmentsById($id);
+        $model = new TravelRequestModel();
+        $model->exchangeArrayFromDB($detail);
+        $this->form->bind($model);
+
+        $numberInWord = new NumberHelper();
+        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'recommender' => $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'],
+                    'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
+                    'detail' => $detail,
+                    'todayDate' => date('d-M-Y'),
+                    'advanceAmount' => $advanceAmount
+                    //'files' => $fileDetails
         ]);
     }
 
