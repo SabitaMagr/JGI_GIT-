@@ -24,14 +24,16 @@ class TravelApply extends AbstractActionController {
     private $adapter;
     private $travelRequesteRepository;
     private $employeeId;
+    private $preference;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->travelRequesteRepository = new TravelRequestRepository($adapter);
         $auth = new AuthenticationService();
         $this->employeeId = $auth->getStorage()->read()['employee_id'];
+        $this->preference = $auth->getStorage()->read()['preference'];
     }
- 
+
     public function initializeForm() {
         $builder = new AnnotationBuilder();
         $form = new TravelRequestForm();
@@ -41,11 +43,11 @@ class TravelApply extends AbstractActionController {
     public function indexAction() {
         return $this->redirect()->toRoute("travelStatus");
     }
- 
+
     public function fileUploadAction() {
         $request = $this->getRequest();
-        $responseData = []; 
-        $files = $request->getFiles()->toArray();  
+        $responseData = [];
+        $files = $request->getFiles()->toArray();
         try {
             if (sizeof($files) > 0) {
                 $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
@@ -65,10 +67,10 @@ class TravelApply extends AbstractActionController {
                 "traceAsString" => $e->getTraceAsString(),
                 "line" => $e->getLine()
             ];
-        }         
+        }
         return new JsonModel($responseData);
-    } 
-  
+    }
+
     public function pushTravelFileLinkAction() {
         try {
             $newsId = $this->params()->fromRoute('id');
@@ -80,22 +82,22 @@ class TravelApply extends AbstractActionController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
- 
+
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
 
-        $model = new TravelRequestModel(); 
+        $model = new TravelRequestModel();
         if ($request->isPost()) {
             $postData = $request->getPost();
             $travelSubstitute = $postData->travelSubstitute;
             $this->form->setData($postData);
-            if ($this->form->isValid()) { 
+            if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
                 $model->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequestModel::TABLE_NAME, TravelRequestModel::TRAVEL_ID)) + 1;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
-                $model->deductOnSalary = 'Y'; 
+                $model->deductOnSalary = 'Y';
                 $this->travelRequesteRepository->add($model);
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
 
@@ -112,11 +114,18 @@ class TravelApply extends AbstractActionController {
                     $travelSubstituteModel->createdDate = Helper::getcurrentExpressionDate();
                     $travelSubstituteModel->status = 'E';
 
+                    if (isset($this->preference['travelSubCycle']) && $this->preference['travelSubCycle'] == 'N') {
+                        $travelSubstituteModel->approvedFlag = 'Y';
+                        $travelSubstituteModel->approvedDate = Helper::getcurrentExpressionDate();
+                    }
+
                     $travelSubstituteRepo->add($travelSubstituteModel);
-                    try {
-                        HeadNotification::pushNotification(NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED, $model, $this->adapter, $this);
-                    } catch (Exception $e) {
-                        $this->flashmessenger()->addMessage($e->getMessage());
+                    if (!isset($this->preference['travelSubCycle']) OR ( isset($this->preference['travelSubCycle']) && $this->preference['travelSubCycle'] == 'Y')) {
+                        try {
+                            HeadNotification::pushNotification(NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED, $model, $this->adapter, $this);
+                        } catch (Exception $e) {
+                            $this->flashmessenger()->addMessage($e->getMessage());
+                        }
                     }
                 } else {
                     try {
@@ -142,7 +151,7 @@ class TravelApply extends AbstractActionController {
                     'form' => $this->form,
                     'requestTypes' => $requestType,
                     'transportTypes' => $transportTypes,
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FULL_NAME", "ASC", "-", false, true),
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE", "FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FULL_NAME", "ASC", "-", false, true),
         ]);
     }
 
