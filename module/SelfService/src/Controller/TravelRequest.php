@@ -75,6 +75,10 @@ class TravelRequest extends HrisController {
 
                     $travelSubstitute = $postData->travelSubstitute;
 
+                    if (isset($this->preference['travelSubCycle']) && $this->preference['travelSubCycle'] == 'N') {
+                        $travelSubstituteModel->approvedFlag = 'Y';
+                        $travelSubstituteModel->approvedDate = Helper::getcurrentExpressionDate();
+                    }
                     $travelSubstituteModel->travelId = $model->travelId;
                     $travelSubstituteModel->employeeId = $travelSubstitute;
                     $travelSubstituteModel->createdBy = $this->employeeId;
@@ -82,10 +86,13 @@ class TravelRequest extends HrisController {
                     $travelSubstituteModel->status = 'E';
 
                     $travelSubstituteRepo->add($travelSubstituteModel);
-                    try {
-                        HeadNotification::pushNotification(NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED, $model, $this->adapter, $this);
-                    } catch (Exception $e) {
-                        $this->flashmessenger()->addMessage($e->getMessage());
+
+                    if (!isset($this->preference['travelSubCycle']) OR ( isset($this->preference['travelSubCycle']) && $this->preference['travelSubCycle'] == 'Y')) {
+                        try {
+                            HeadNotification::pushNotification(NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED, $model, $this->adapter, $this);
+                        } catch (Exception $e) {
+                            $this->flashmessenger()->addMessage($e->getMessage());
+                        }
                     }
                 } else {
                     try {
@@ -230,13 +237,13 @@ class TravelRequest extends HrisController {
         if ($id === 0) {
             return $this->redirect()->toRoute("travelRequest");
         }
-      
+
         $detail = $this->repository->fetchById($id);
         $fileDetails = $this->repository->fetchAttachmentsById($id);
         $model = new TravelRequestModel();
         $model->exchangeArrayFromDB($detail);
         $this->form->bind($model);
- 
+
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
 

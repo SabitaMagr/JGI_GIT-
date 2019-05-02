@@ -138,6 +138,14 @@ class SystemSettingForm {
     
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Travel Substitute Cycle"})
+     * @Annotation\Attributes({ "id":"travelSubCycle","value":"Y"})
+     */
+    public $travelSubCycle;
+    
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
      * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Order By Name"})
      * @Annotation\Attributes({ "id":"orderByName","value":"Y"})
      */

@@ -37,6 +37,24 @@ class Variance {
      * @Annotation\Attributes({"id":"showDefault","value":"N"})
      */
     public $showDefault;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":" Show Difference"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({"id":"showDifference","value":"N"})
+     */
+    public $showDifference;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"V":"Variance","O":"Other"},"label":"Variable Type"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({"id":"variableType","value":"V"})
+     */
+    public $variableType;
 
     /**
      * @Annotation\Type("Zend\Form\Element\Textarea")
