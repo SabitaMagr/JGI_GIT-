@@ -18,6 +18,7 @@ $this->headScript()
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.expenseDetailLink = '<?= $this->url("travelStatus", ["action" => "expenseDetail"]) ?>';
     document.viewLink = '<?= $this->url("travelStatus", ["action" => "view"]) ?>';
+    document.editLink = '<?= $this->url("travelStatus", ["action" => "edit"]) ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.bulkLink = '<?php echo $this->url('travelStatus', ['action' => 'bulk']); ?>';
