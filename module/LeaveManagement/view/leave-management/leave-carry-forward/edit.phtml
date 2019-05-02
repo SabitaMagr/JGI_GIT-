@@ -100,14 +100,14 @@ print $this->form()->openTag($form);
                     <div class="col-sm-4">
                         <div class="form-group disabled">
                             <label for="leaveId">Leave Days For Carry Forward</label>
-                            <input type="number" name="carryforward"  required="required" id="carryforward" 
+                            <input type="number" name="carryforward" step="0.1"  required="required" id="carryforward" 
                                    class="form-control"  value="<?=$details['CARRY_FORWARD_DAYS']?>">
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group disabled">
                             <label for="leaveId">Leave Days For Encashment</label>                            
-                            <input type="number" name="encashment" readonly  id="encashment"
+                            <input type="number" name="encashment" step="0.1" readonly  id="encashment"
                                    class="form-control" readonly value="<?=$details['ENCASH_DAYS']?>">
                            
                         </div>
