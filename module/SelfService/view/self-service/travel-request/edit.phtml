@@ -16,36 +16,24 @@ $form->setAttribute('role', 'form');
 $form->setAttribute('id', 'travelRequest-form');
 
 $fromDate = $form->get('fromDate');
-$fromDate->setAttributes(["disabled" => "disabled"]);
+
 $toDate = $form->get('toDate');
-$toDate->setAttributes(["disabled" => "disabled"]);
-$departure = $form->get('departure');
-$departure->setAttributes(["disabled" => "disabled"]);
+
 $destination = $form->get('destination');
-$destination->setAttributes(["disabled" => "disabled"]);
+
 $purpose = $form->get('purpose');
-$purpose->setAttributes(["disabled" => "disabled"]);
+$departure = $form->get('departure');
 $requestedType = $form->get('requestedType');
 $requestedType->setValueOptions([$detail['REQUESTED_TYPE'] => $detail['REQUESTED_TYPE_DETAIL']]);
-$requestedType->setAttributes(["disabled" => "disabled"]);
 $transportType = $form->get('transportType');
 $transportType->setValueOptions([$detail['TRANSPORT_TYPE'] => $detail['TRANSPORT_TYPE_DETAIL']]);
-$transportType->setAttributes(['disabled' => "disabled"]);
 $requestedAmount = $form->get('requestedAmount');
-$requestedAmount->setAttributes(["disabled" => "disabled"]);
 $remarks = $form->get('remarks');
-$remarks->setAttributes(["disabled" => "disabled"]);
 $recommendedRemarks = $form->get('recommendedRemarks');
-$recommendedRemarks->setAttributes(["disabled" => "disabled"]);
 $approvedRemarks = $form->get('approvedRemarks');
-$approvedRemarks->setAttributes(["disabled" => "disabled"]);
-
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
-
-$form->setAttribute('action', $this->url('travelRequest', ['action' => 'add']));
-
-
+$form->setAttribute('action', '');
 $form->prepare();
 print $this->form()->openTag($form);
 ?>
@@ -172,13 +160,14 @@ print $this->form()->openTag($form);
                 </div>
 
                 <div class=" row">
-                     <div class="col-sm-4">
+                    <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($departure); ?>
                             <?php print $this->formElement($departure); ?>
                             <?php print $this->formElementErrors()->render($departure, ['class' => 'help-block']); ?>
                         </div>               
                     </div>
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($destination); ?>
@@ -229,7 +218,7 @@ print $this->form()->openTag($form);
                         </div>
                     </div>
                 </div>   
-
+ 
                 <?php if(!empty($files)){ ?>
                         <div class="row"> 
                             <div class="col-sm-6"> 
@@ -243,7 +232,7 @@ print $this->form()->openTag($form);
                                         </ul>
                                     </div>
                                 </div>
-                        </div>
+                        </div> 
                     <?php } ?>
 
                 <?php if (isset($detail['SUB_EMPLOYEE_ID'])) { ?>
@@ -284,10 +273,6 @@ print $this->form()->openTag($form);
     </div>
 </div>
 
-
-<?php
-print $this->form()->closeTag();
-?>
 <div style="border:1px solid; display: none;" id="printableArea" class="col-md-8">
     <div class="row">
         <div class="col-md-8 col-sm-offset-2">
@@ -387,3 +372,8 @@ print $this->form()->closeTag();
 <div class="col-md-12" style="text-align:center;display:<?php echo $detail['STATUS'] == 'AP' ? 'block' : 'none'; ?>">
     <a class="btn btn-success" id="print"> Print</a>
 </div>
+
+<?php
+print $this->formSubmit($submit);
+print $this->form()->closeTag();
+?>

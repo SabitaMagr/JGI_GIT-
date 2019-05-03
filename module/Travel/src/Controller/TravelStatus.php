@@ -16,6 +16,8 @@ use Travel\Repository\TravelStatusRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
+use SelfService\Repository\TravelRequestRepository;
+use SelfService\Model\TravelRequest as TravelRequestModel;
 
 class TravelStatus extends HrisController {
 
@@ -27,6 +29,7 @@ class TravelStatus extends HrisController {
         $this->initializeForm(TravelRequestForm::class);
         $this->travelApproveRepository = new TravelApproveRepository($adapter);
         $this->travelStatusRepository = new TravelStatusRepository($adapter);
+        $this->travelRequestRepository = new TravelRequestRepository($adapter);
     }
 
     public function indexAction() {
@@ -86,10 +89,9 @@ class TravelStatus extends HrisController {
         } 
         $travelRequestModel = new TravelRequest();
         $detail = $this->travelApproveRepository->fetchById($id);
-        $fileDetails = $this->travelApproveRepository->fetchAttachmentsById($id);
+        //$fileDetails = $this->travelApproveRepository->fetchAttachmentsById($id);
         $travelRequestModel->exchangeArrayFromDB($detail);
         $this->form->bind($travelRequestModel);
-
         $numberInWord = new NumberHelper();
         $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
         return Helper::addFlashMessagesToArray($this, [
@@ -99,10 +101,57 @@ class TravelStatus extends HrisController {
                 'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
                 'detail' => $detail,
                 'todayDate' => date('d-M-Y'),
-                'advanceAmount' => $advanceAmount,
-                'files' => $fileDetails
+                'advanceAmount' => $advanceAmount
+                //'files' => $fileDetails
         ]);
     }
+    
+    public function editAction() {
+        $request = $this->getRequest();
+        
+        $id = (int) $this->params()->fromRoute('id');
+        if ($id === 0) {
+            return $this->redirect()->toRoute("travelRequest");
+        }
+        if($this->travelRequestRepository->checkAllowEdit($id) == 'N'){
+            return $this->redirect()->toRoute("travelRequest");
+        }
+
+        if ($request->isPost()) {
+            $travelRequest = new TravelRequestModel();
+            $postedData = $request->getPost();
+            $this->form->setData($postedData);
+            
+            if ($this->form->isValid()) {
+                $travelRequest->exchangeArrayFromForm($this->form->getData());
+                $travelRequest->modifiedDt = Helper::getcurrentExpressionDate();
+                $travelRequest->employeeId = $this->employeeId;
+                $this->travelRequestRepository->edit($travelRequest, $id);
+                $this->flashmessenger()->addMessage("Travel Request Successfully Edited!!!");
+                return $this->redirect()->toRoute("travelApply");
+            }
+        }
+        
+        $detail = $this->travelRequestRepository->fetchById($id);
+        //$fileDetails = $this->repository->fetchAttachmentsById($id);
+        $model = new TravelRequestModel();
+        $model->exchangeArrayFromDB($detail);
+        $this->form->bind($model);
+
+        $numberInWord = new NumberHelper();
+        $advanceAmount = $numberInWord->toText($detail['REQUESTED_AMOUNT']);
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'form' => $this->form,
+                    'recommender' => $detail['RECOMMENDED_BY_NAME'] == null ? $detail['RECOMMENDER_NAME'] : $detail['RECOMMENDED_BY_NAME'],
+                    'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
+                    'detail' => $detail,
+                    'todayDate' => date('d-M-Y'),
+                    'advanceAmount' => $advanceAmount
+                    //'files' => $fileDetails
+        ]);
+    }
+
 
     public function expenseDetailAction() {
         $id = (int) $this->params()->fromRoute('id');
@@ -147,7 +196,7 @@ class TravelStatus extends HrisController {
                 'totalAmount' => $totalAmount,
                 'totalAmountInWords' => $totalAmountInWords,
                 'balance' => $balance
-                ]
+            ]
         );
     }
 

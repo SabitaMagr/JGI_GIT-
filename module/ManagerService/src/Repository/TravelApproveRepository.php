@@ -65,11 +65,12 @@ class TravelApproveRepository implements RepositoryInterface {
         
     }
   
+    /*
     public function fetchAttachmentsById($id){
       $sql = "SELECT * FROM HRIS_TRAVEL_FILES WHERE TRAVEL_ID = $id";
       $result = EntityHelper::rawQueryResult($this->adapter, $sql);
       return Helper::extractDbData($result);
-    }
+    }*/
 
     public function fetchById($id) {
         $sql = new Sql($this->adapter);

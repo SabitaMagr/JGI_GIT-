@@ -21,6 +21,11 @@
                     <i class="fa fa-search"></i>
                 </a>
                 #}#
+                 #if(ALLOW_EDIT=='Y'){#
+                <a class="btn btn-icon-only yellow" href="${document.editLink}/#:TRAVEL_ID#" style="height:17px;" title="View Detail">
+                    <i class="fa fa-edit"></i>
+                </a>
+                #}#
             </div>
         `;
         var columns = [

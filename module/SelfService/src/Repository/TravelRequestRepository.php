@@ -21,6 +21,7 @@ class TravelRequestRepository implements RepositoryInterface {
         $this->tableGateway = new TableGateway(TravelRequest::TABLE_NAME, $adapter);
     } 
 
+    /*
     public function pushFileLink($data){ 
         $fileName = $data['fileName'];
         $fileInDir = $data['filePath'];
@@ -32,6 +33,7 @@ class TravelRequestRepository implements RepositoryInterface {
         return Helper::extractDbData($statement->execute());
     }
   
+    
     public function linkTravelWithFiles(){
         if(!empty($_POST['fileUploadList'])){
             $filesList = $_POST['fileUploadList'];
@@ -49,10 +51,12 @@ class TravelRequestRepository implements RepositoryInterface {
       $result = EntityHelper::rawQueryResult($this->adapter, $sql);
       return Helper::extractDbData($result);
     }
- 
+     * 
+     */
+    
     public function add(Model $model) {
         $this->tableGateway->insert($model->getArrayCopyForDB());
-        $this->linkTravelWithFiles();
+        //$this->linkTravelWithFiles();
     }
 
     public function delete($id) {
@@ -90,7 +94,8 @@ class TravelRequestRepository implements RepositoryInterface {
     }
  
     public function edit(Model $model, $id) {
-        
+        $array = $model->getArrayCopyForDB();
+        $this->tableGateway->update($array, [TravelRequest::TRAVEL_ID => $id]);
     }
 
     public function fetchAll() {
@@ -238,5 +243,13 @@ class TravelRequestRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
+    }
+    
+    public function checkAllowEdit($id){
+        $sql = "SELECT (CASE WHEN STATUS = 'RQ' THEN 'Y' ELSE 'N' END)"
+                . " AS ALLOW_EDIT FROM HRIS_EMPLOYEE_TRAVEL_REQUEST WHERE "
+                . "TRAVEL_ID = $id";
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($result)[0]["ALLOW_EDIT"];
     }
 }

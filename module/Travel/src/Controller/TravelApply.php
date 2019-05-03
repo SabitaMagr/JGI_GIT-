@@ -44,6 +44,7 @@ class TravelApply extends AbstractActionController {
         return $this->redirect()->toRoute("travelStatus");
     }
 
+    /*
     public function fileUploadAction() {
         $request = $this->getRequest();
         $responseData = [];
@@ -70,7 +71,7 @@ class TravelApply extends AbstractActionController {
         }
         return new JsonModel($responseData);
     }
-
+     
     public function pushTravelFileLinkAction() {
         try {
             $newsId = $this->params()->fromRoute('id');
@@ -82,7 +83,8 @@ class TravelApply extends AbstractActionController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
-
+     */
+    
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();

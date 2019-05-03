@@ -48,7 +48,7 @@ class TravelApproveController extends HrisController {
             return $this->redirect()->toRoute("travelApprove");
         }
         $request = $this->getRequest();
-        $filesData = $this->repository->fetchAttachmentsById($id);
+        //$filesData = $this->repository->fetchAttachmentsById($id);
         $travelRequestModel = new TravelRequest();
         if ($request->isPost()) {
             $postedData = (array) $request->getPost();
@@ -71,8 +71,8 @@ class TravelApproveController extends HrisController {
                     'approver' => $detail['APPROVED_BY_NAME'] == null ? $detail['APPROVER_NAME'] : $detail['APPROVED_BY_NAME'],
                     'detail' => $detail,
                     'todayDate' => date('d-M-Y'),
-                    'advanceAmount' => $advanceAmount,
-                    'files' => $filesData
+                    'advanceAmount' => $advanceAmount
+                    //'files' => $filesData
         ]);
     }
 
