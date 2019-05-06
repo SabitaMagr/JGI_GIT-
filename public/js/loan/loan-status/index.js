@@ -29,17 +29,25 @@
                     }]},
             {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 150},
             {field: "STATUS", title: "Status", width: 90},
+            {field: "LOAN_STATUS", title: "Loan Status", width: 90},
             {field: ["LOAN_REQUEST_ID"], title: "Action", template: `
             <span> 
                 <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
                     <i class="fa fa-search-plus"></i>
                 </a>
             </span>
+            #if(ALLOW_EDIT == 'Y'){#
             <span> 
-            <a class="btn  btn-icon-only btn-success" href="${document.editLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
+            <a class="btn  btn-icon-only btn-success" href="${document.editLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="edit">
                 <i class="fa fa-edit"></i>
             </a>
-        </span>`}
+        </span>
+          <span> 
+            <a class="btn  btn-icon-only btn-success" href="${document.loanClosing}/#: LOAN_REQUEST_ID #" style="height:17px;" title="Loan Closing">
+                <i>Pay</i>
+            </a>
+        </span>
+            #}#`}
         ];
  
         var map = {

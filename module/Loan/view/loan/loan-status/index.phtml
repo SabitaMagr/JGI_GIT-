@@ -24,6 +24,7 @@ $this->headScript()
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("loanStatus", ["action" => "view"]) ?>';
     document.editLink = '<?= $this->url("loanStatus", ["action" => "edit"]) ?>';
+    document.loanClosing = '<?= $this->url("loanApply", ["action" => "loanClosing"]) ?>';
     document.pullLoanRequestStatusListLink = '<?= $this->url("loanStatus", ["action" => "pullLoanRequestStatusList"]) ?>';
 </script>
 <div class="page-bar">
