@@ -300,12 +300,22 @@ class PayrollRepository extends HrisRepository {
     }
 
     public function getMonthNo($monthId) {
-        $sql = "select FISCAL_YEAR_ID from hris_month_code where month_id={$monthId}";
+        $sql = "select FISCAL_YEAR_MONTH_NO from hris_month_code where month_id={$monthId}";
         $resultList = $this->rawQuery($sql);
         if (!(sizeof($resultList) == 1)) {
             throw new Exception('Result not found.');
         }
         return $resultList[0]['FISCAL_YEAR_ID'];
+    }
+
+    
+     public function getBranch($employeeId) {
+        $sql = "SELECT BRANCH_ID FROM HRIS_EMPLOYEES WHERE  EMPLOYEE_ID={$employeeId}";
+        $resultList = $this->rawQuery($sql);
+        if (!(sizeof($resultList) == 1)) {
+            throw new Exception('No Report Found.');
+        }
+        return $resultList[0]['BRANCH_ID'];
     }
 
 }
