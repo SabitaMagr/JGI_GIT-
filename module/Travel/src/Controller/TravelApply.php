@@ -45,46 +45,46 @@ class TravelApply extends AbstractActionController {
     }
 
     /*
-    public function fileUploadAction() {
-        $request = $this->getRequest();
-        $responseData = [];
-        $files = $request->getFiles()->toArray();
-        try {
-            if (sizeof($files) > 0) {
-                $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
-                $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
-                $unique = Helper::generateUniqueName();
-                $newFileName = $unique . "." . $ext;
-                $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/travel_documents/" . $newFileName);
-                if (!$success) {
-                    throw new Exception("Upload unsuccessful.");
-                }
-                $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
-            }
-        } catch (Exception $e) {
-            $responseData = [
-                "success" => false,
-                "message" => $e->getMessage(),
-                "traceAsString" => $e->getTraceAsString(),
-                "line" => $e->getLine()
-            ];
-        }
-        return new JsonModel($responseData);
-    }
-     
-    public function pushTravelFileLinkAction() {
-        try {
-            $newsId = $this->params()->fromRoute('id');
-            $request = $this->getRequest();
-            $data = $request->getPost();
-            $returnData = $this->travelRequesteRepository->pushFileLink($data);
-            return new JsonModel(['success' => true, 'data' => $returnData[0], 'message' => null]);
-        } catch (Exception $e) {
-            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
-        }
-    }
+      public function fileUploadAction() {
+      $request = $this->getRequest();
+      $responseData = [];
+      $files = $request->getFiles()->toArray();
+      try {
+      if (sizeof($files) > 0) {
+      $ext = pathinfo($files['file']['name'], PATHINFO_EXTENSION);
+      $fileName = pathinfo($files['file']['name'], PATHINFO_FILENAME);
+      $unique = Helper::generateUniqueName();
+      $newFileName = $unique . "." . $ext;
+      $success = move_uploaded_file($files['file']['tmp_name'], Helper::UPLOAD_DIR . "/travel_documents/" . $newFileName);
+      if (!$success) {
+      throw new Exception("Upload unsuccessful.");
+      }
+      $responseData = ["success" => true, "data" => ["fileName" => $newFileName, "oldFileName" => $fileName . "." . $ext]];
+      }
+      } catch (Exception $e) {
+      $responseData = [
+      "success" => false,
+      "message" => $e->getMessage(),
+      "traceAsString" => $e->getTraceAsString(),
+      "line" => $e->getLine()
+      ];
+      }
+      return new JsonModel($responseData);
+      }
+
+      public function pushTravelFileLinkAction() {
+      try {
+      $newsId = $this->params()->fromRoute('id');
+      $request = $this->getRequest();
+      $data = $request->getPost();
+      $returnData = $this->travelRequesteRepository->pushFileLink($data);
+      return new JsonModel(['success' => true, 'data' => $returnData[0], 'message' => null]);
+      } catch (Exception $e) {
+      return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+      }
+      }
      */
-    
+
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
@@ -125,6 +125,12 @@ class TravelApply extends AbstractActionController {
                     if (!isset($this->preference['travelSubCycle']) OR ( isset($this->preference['travelSubCycle']) && $this->preference['travelSubCycle'] == 'Y')) {
                         try {
                             HeadNotification::pushNotification(NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED, $model, $this->adapter, $this);
+                        } catch (Exception $e) {
+                            $this->flashmessenger()->addMessage($e->getMessage());
+                        }
+                    } else {
+                        try {
+                            HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
                         } catch (Exception $e) {
                             $this->flashmessenger()->addMessage($e->getMessage());
                         }
