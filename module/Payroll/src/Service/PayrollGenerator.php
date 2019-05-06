@@ -48,6 +48,7 @@ class PayrollGenerator {
         "TOTAL_DAYS_TO_PAY",
         "BRANCH_ALLOWANCE",
         "MONTH",
+        "BRANCH_ID",
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",
