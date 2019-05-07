@@ -189,14 +189,15 @@ class LoanStatusRepository implements RepositoryInterface {
         $loanRequestStatusId = $data['loanRequestStatusId'];
         $employeeTypeId = $data['employeeTypeId'];
 
-
         $sql = "SELECT INITCAP(L.LOAN_NAME) AS LOAN_NAME,
                   LR.REQUESTED_AMOUNT,
                   INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY'))                   AS LOAN_DATE_AD,
+                  (CASE WHEN LR.STATUS = 'AP' AND LR.LOAN_STATUS = 'OPEN' THEN 'Y' ELSE 'N' END)              AS ALLOW_EDIT,
                   BS_DATE(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY'))                   AS LOAN_DATE_BS,
                   INITCAP(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_AD,
                   BS_DATE(TO_CHAR(LR.REQUESTED_DATE, 'DD-MON-YYYY'))              AS REQUESTED_DATE_BS,
                   LEAVE_STATUS_DESC(LR.STATUS)                                    AS STATUS,
+                  LR.LOAN_STATUS                                                  AS LOAN_STATUS,
                   LR.EMPLOYEE_ID                                                  AS EMPLOYEE_ID,
                   LR.LOAN_REQUEST_ID                                              AS LOAN_REQUEST_ID,
                   INITCAP(TO_CHAR(LR.RECOMMENDED_DATE, 'DD-MON-YYYY'))            AS RECOMMENDED_DATE,
@@ -370,5 +371,10 @@ class LoanStatusRepository implements RepositoryInterface {
       $result = $statement->execute();
       return $result;
     }
-
+    
+    public function getApprovedStatus($id){
+      $sql = "SELECT STATUS FROM HRIS_EMPLOYEE_LOAN_REQUEST WHERE LOAN_REQUEST_ID = $id";
+      $statement = $this->adapter->query($sql); 
+      return $statement->execute();
+    }
 }
