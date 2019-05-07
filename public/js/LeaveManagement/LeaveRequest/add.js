@@ -3,6 +3,9 @@
     $(document).ready(function () {
         $('select').select2();
 
+        var subLeaveReference = document.subLeaveReference;
+        console.log(subLeaveReference);
+
         var $employee = $('#employeeId');
         var $leave = $('#leaveId');
         var $halfDay = $("#halfDay");
@@ -12,11 +15,14 @@
         var $errorMsg = $("#errorMsg");
         var $startDate = $('#startDate'), $endDate = $('#endDate');
         var $leaveSubstitute = $('#leaveSubstitute');
+        var $subRefId = $('#subRefId');
 
-        var dateDiff = ""; 
-        var substituteEmp = { 
+        var substituteDetails = [];
+
+        var dateDiff = "";
+        var substituteEmp = {
             list: [],
-            disable: function (employeeIds) { 
+            disable: function (employeeIds) {
                 if (this.list.length > 0) {
                     $.each(this.list, function (key, value) {
                         $leaveSubstitute.find('option[value="' + value + '"]').prop('disabled', false);
@@ -172,8 +178,27 @@
             }).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 var leaveDetail = success.data;
-                availableDays = (typeof leaveDetail.BALANCE=='undefined')?0:parseFloat(leaveDetail.BALANCE);
-                $availableDays.val(availableDays);
+                substituteDetails = success.subtituteDetails;
+//                app.populateSelect($leave, substituteDetails, 'id', 'name', 'Select a Leave', null, null, false);
+                app.populateSelect($subRefId, substituteDetails, 'ID', 'SUB_NAME', 'Select Substitute Date ', ' ', $subRefId.val(), false);
+                $subRefId.prop('required', true);
+                console.log(leaveDetail);
+                if (success.data.IS_SUBSTITUTE == 'Y') {
+                    $('#SubReferenceDiv').show();
+                    (subLeaveReference=='Y')?$('#request').attr("disabled", true):$('#request').attr("disabled", false);
+                } else {
+                    $('#request').attr("disabled", false);
+                    $('#SubReferenceDiv').hide()
+                }
+                availableDays = (typeof leaveDetail.BALANCE == 'undefined') ? 0 : parseFloat(leaveDetail.BALANCE);
+
+
+                if ($subRefId.val() == ' '||subLeaveReference!='Y') {
+                    $availableDays.val(availableDays);
+                }
+                if ($subRefId.val() == ' ' && success.data.IS_SUBSTITUTE == 'Y' && subLeaveReference=='Y') {
+                    $availableDays.val(0);
+                }
 
                 var noOfDays = parseFloat($noOfDays.val());
 
@@ -232,27 +257,27 @@
                 calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $employee.val(), $leave.val());
             }
         });
- 
-  
- 
+
+
+
         var myDropzone;
         Dropzone.autoDiscover = false;
         myDropzone = new Dropzone("div#dropZoneContainer", {
-                url: document.uploadUrl,
-                autoProcessQueue: false,
-                maxFiles: 1, 
-                addRemoveLinks: true,
-                init: function () { 
-                this.on("success", function (file, success) { 
-                    if (success.success) { 
+            url: document.uploadUrl,
+            autoProcessQueue: false,
+            maxFiles: 1,
+            addRemoveLinks: true,
+            init: function () {
+                this.on("success", function (file, success) {
+                    if (success.success) {
                         imageUpload(success.data);
                     }
                 });
-                this.on("complete", function (file) { 
+                this.on("complete", function (file) {
                     this.removeAllFiles(true);
                 });
             }
-            });
+        });
 
         $('#addDocument').on('click', function () {
             $('#documentUploadModel').modal('show');
@@ -267,30 +292,50 @@
             }
             $('#documentUploadModel').modal('hide');
             myDropzone.processQueue();
-        }); 
- 
-        var imageUpload = function (data) {  
+        });
+
+        var imageUpload = function (data) {
             window.app.pullDataById(document.pushLeaveFileLink, {
                 'filePath': data.fileName,
                 'fileName': data.oldFileName
-            }).then(function (success) { ;
+            }).then(function (success) {
                 if (success.success) {
                     $('#fileDetailsTbl').append('<tr>'
-                    +'<input type="hidden" name="fileUploadList[]" value="'+success.data.FILE_ID+'"><td>' + success.data.FILE_NAME + '</td>'
-                    +'<td><a target="blank" href="'+document.basePath+'/uploads/leave_documents/'+success.data.FILE_IN_DIR_NAME+'"><i class="fa fa-download"></i></a></td>'
-                    +'<td><button type="button" class="btn btn-danger deleteFile">DELETE</button></td></tr>');
+                            + '<input type="hidden" name="fileUploadList[]" value="' + success.data.FILE_ID + '"><td>' + success.data.FILE_NAME + '</td>'
+                            + '<td><a target="blank" href="' + document.basePath + '/uploads/leave_documents/' + success.data.FILE_IN_DIR_NAME + '"><i class="fa fa-download"></i></a></td>'
+                            + '<td><button type="button" class="btn btn-danger deleteFile">DELETE</button></td></tr>');
                 }
             }, function (failure) {
             });
-        } 
- 
+        }
+
         $('#uploadCancelBtn').on('click', function () {
             $('#documentUploadModel').modal('hide');
         });
 
-        $('#fileDetailsTbl').on('click','.deleteFile', function() {
-             var selectedtr = $(this).parent().parent();
-             selectedtr.remove();
+        $('#fileDetailsTbl').on('click', '.deleteFile', function () {
+            var selectedtr = $(this).parent().parent();
+            selectedtr.remove();
+        });
+
+        $subRefId.on('change', function () {
+            if (subLeaveReference == 'Y') {
+                console.log('dsfsd');
+                calculateAvailableDays($startDate.val(), $endDate.val(), $halfDay.val(), $employee.val(), $leave.val());
+
+                var selectedSubRefId = $(this).val();
+                if (selectedSubRefId !== ' ') {
+                    $('#request').attr("disabled", false);
+                } else {
+                    $('#request').attr("disabled", true);
+                }
+
+                $.each(substituteDetails, function (index, value) {
+                    if (selectedSubRefId == value.ID) {
+                        $availableDays.val(value.AVAILABLE_DAYS);
+                    }
+                });
+            }
         });
 
     });

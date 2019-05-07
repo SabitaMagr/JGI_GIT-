@@ -233,7 +233,14 @@ class LeaveStatusRepository extends HrisRepository {
             $toDateCondition = "AND LA.END_DATE<=TO_DATE('{$toDate}','DD-MM-YYYY')";
         }
 
-        $sql = "SELECT INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
+        $sql = "SELECT 
+            --INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
+            CASE WHEN SUB_REF_ID IS NULL THEN 
+INITCAP(L.LEAVE_ENAME)
+ELSE
+INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')'
+END
+AS LEAVE_ENAME,
                   L.LEAVE_CODE,
                   LA.NO_OF_DAYS,
                   INITCAP(TO_CHAR(LA.START_DATE, 'DD-MON-YYYY'))     AS START_DATE_AD,
@@ -279,6 +286,28 @@ class LeaveStatusRepository extends HrisRepository {
                 ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 LEFT OUTER JOIN HRIS_LEAVE_SUBSTITUTE LS
                 ON LA.ID       = LS.LEAVE_REQUEST_ID
+                LEFT JOIN 
+                (SELECT 
+WOD_ID AS ID
+,LA.EMPLOYEE_ID
+,NO_OF_DAYS
+,WD.FROM_DATE||' - '||WD.TO_DATE AS SUB_NAME
+from 
+HRIS_EMPLOYEE_LEAVE_ADDITION LA
+JOIN Hris_Employee_Work_Dayoff WD ON (LA.WOD_ID=WD.ID)
+UNION
+SELECT 
+WOH_ID AS ID
+,LA.EMPLOYEE_ID
+,NO_OF_DAYS
+,H.Holiday_Ename||'-'||WH.FROM_DATE||' - '||WH.TO_DATE AS SUB_NAME
+from 
+HRIS_EMPLOYEE_LEAVE_ADDITION LA
+JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID)
+LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID)) SLR ON (SLR.ID=LA.SUB_REF_ID)
+                
+
+
                 WHERE L.STATUS ='E'
                 AND E.STATUS   ='E'
                 {$searchCondition} {$statusCondition} {$leaveCondition} {$fromDateCondition} {$toDateCondition}

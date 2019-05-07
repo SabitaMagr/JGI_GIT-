@@ -31,7 +31,9 @@ class Preference extends Model {
     public $attAppShiftChangeable='N';
     public $attAppTimeChangeable='N';
     public $travelSubCycle='Y';
-
+    public $subLeaveReference='N';
+    public $subLeaveMaxDays='365';
+    
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
     CONST ALLOW_ACCOUNT_LOCK = "ALLOW_ACCOUNT_LOCK";
@@ -59,6 +61,8 @@ class Preference extends Model {
     CONST ATT_APP_SHIFT_CHANGEABLE="ATT_APP_SHIFT_CHANGEABLE";
     CONST ATT_APP_TIME_CHANGEABLE="ATT_APP_TIME_CHANGEABLE";
     CONST TRAVEL_SUB_CYCLE="TRAVEL_SUB_CYCLE";
+    CONST SUB_LEAVE_REFERENCE="SUB_LEAVE_REFERENCE";
+    CONST SUB_LEAVE_MAX_DAYS="SUB_LEAVE_MAX_DAYS";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -87,7 +91,9 @@ class Preference extends Model {
         'calendarView' =>self::CALENDAR_VIEW,
         'attAppShiftChangeable' =>self::ATT_APP_SHIFT_CHANGEABLE,
         'attAppTimeChangeable' =>self::ATT_APP_TIME_CHANGEABLE,
-        'travelSubCycle' =>self::TRAVEL_SUB_CYCLE
+        'travelSubCycle' =>self::TRAVEL_SUB_CYCLE,
+        'subLeaveReference' =>self::SUB_LEAVE_REFERENCE,
+        'subLeaveMaxDays' =>self::SUB_LEAVE_MAX_DAYS
     ];
-
+    
 }

@@ -107,6 +107,7 @@ class LeaveRequest extends HrisController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
+                $leaveRequest->subRefId = $postData['subRefId'];
 
                 $this->repository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
@@ -138,13 +139,20 @@ class LeaveRequest extends HrisController {
                 return $this->redirect()->toRoute("leaverequest");
             }
         }
-
+        
+        $subLeaveReference='N';
+        if(isset($this->preference['subLeaveReference'])){
+        $subLeaveReference=$this->preference['subLeaveReference'];
+        }
+//        echo $subLeaveReference;
+//        die();
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employeeId' => $this->employeeId,
                     'leave' => $this->repository->getLeaveList($this->employeeId),
                     'customRenderer' => Helper::renderCustomView(),
-                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true)
+                    'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true),
+                    'subLeaveReference' => $subLeaveReference,
         ]);
     }
 
@@ -247,8 +255,14 @@ class LeaveRequest extends HrisController {
                 $employeeId = $postedData['employeeId'];
                 $startDate = $postedData['startDate'];
                 $leaveDetail = $leaveRequestRepository->getLeaveDetail($employeeId, $leaveId, $startDate);
+                
+                $maxSubDays=500;
+                if(isset($this->preference['subLeaveMaxDays'])){
+                $maxSubDays=$this->preference['subLeaveMaxDays'];
+                }
+                $subtituteDetails= $leaveRequestRepository->getSubstituteList($leaveId,$employeeId,$maxSubDays);
 
-                return new CustomViewModel(['success' => true, 'data' => $leaveDetail, 'error' => '']);
+                return new CustomViewModel(['success' => true, 'data' => $leaveDetail, 'subtituteDetails'=>$subtituteDetails, 'error' => '']);
             } else {
                 throw new Exception("The request should be of type post");
             }
