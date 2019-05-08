@@ -44,6 +44,7 @@ print $this->form()->openTag($form);
     document.wsPullLeaveDetail = '<?= $this->url("leaveapply", ["action" => "pullLeaveDetail"]) ?>';
     document.wsFetchAvailableDays = '<?= $this->url("leaveapply", ["action" => "fetchAvailableDays"]) ?>';
     document.wsValidateLeaveRequest = '<?= $this->url("leaveapply", ["action" => "validateLeaveRequest"]) ?>';
+    document.subLeaveReference = '<?=$subLeaveReference?>';
 </script>
 
 <div class="row margin-top-20" >
@@ -73,6 +74,9 @@ print $this->form()->openTag($form);
                         </div>
                         <?php print $this->formElementErrors()->render($employeeId, ['class' => 'help-block error']); ?> 
                     </div>
+                </div>
+                
+                <div class=" row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="leaveId">Leave Type</label>
@@ -89,6 +93,15 @@ print $this->form()->openTag($form);
                             <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                         </div>
                     </div> 
+                    
+                    <div class="col-sm-4" id="SubReferenceDiv">
+                        <div class="form-group" >
+                            <label>IN SUB LEAVE</label>
+                            <select name="subRefId" id="subRefId" class="form-control" >
+                            </select>
+                        </div>
+                    </div>
+                    
                 </div>
 
                 <div class=" row">
