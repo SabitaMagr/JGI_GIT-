@@ -217,9 +217,9 @@ class LeaveBalanceRepository {
         
         $sql="SELECT LB.*,E.FULL_NAME,
             E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
-            INITCAP(D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
-            INITCAP(DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
-            INITCAP(P.POSITION_NAME)                                          AS POSITION_NAME,
+            (D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
+            (DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
+            (P.POSITION_NAME)                                          AS POSITION_NAME,
             FUNT.FUNCTIONAL_TYPE_EDESC                                        AS FUNCTIONAL_TYPE_EDESC
             FROM (SELECT * FROM
 (SELECT la.employee_id,

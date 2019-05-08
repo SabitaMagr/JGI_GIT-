@@ -26,7 +26,7 @@ class EntityHelper {
 
     const STATUS_ENABLED = 'E';
     const STATUS_DISABLED = 'D';
-    const ORACLE_FUNCTION_INITCAP = 'INITCAP';
+    const ORACLE_FUNCTION_INITCAP = '';
 
     public static function getTableKVList(AdapterInterface $adapter, $tableName, $key = null, array $values, $where = null, $concatWith = null, $emptyColumn = false, $orderBy = null, $orderAs = null, $initCap = false) {
         $gateway = new TableGateway($tableName, $adapter);
@@ -37,7 +37,7 @@ class EntityHelper {
             if ($initCap) {
                 $tempValues = [];
                 foreach ($values as $key => $value) {
-                    $tempValues[$key] = "INITCAP({$value}) AS {$value}";
+                    $tempValues[$key] = "({$value}) AS {$value}";
                 }
                 $values = $tempValues;
             }
