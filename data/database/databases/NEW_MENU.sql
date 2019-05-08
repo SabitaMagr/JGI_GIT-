@@ -1124,3 +1124,37 @@ INTO HRIS_MENUS
     'N'
   );
 
+  INSERT INTO hris_menus (
+    menu_code,
+    menu_id,
+    menu_name,
+    parent_menu,
+    menu_description,
+    route,
+    status,
+    created_dt,
+    modified_dt,
+    icon_class,
+    action,
+    menu_index,
+    created_by,
+    modified_by,
+    is_visible
+) VALUES (
+    NULL,
+    3081,
+    'Basic Report',
+    85,
+    NULL,
+    'loanReport',
+    'E',
+    TO_DATE('07-MAY-19','DD-MON-RR'),
+    NULL,
+    'fa fa-star-o',
+    'index',
+    910,
+    12,
+    NULL,
+    'Y'
+)
+

@@ -5,18 +5,18 @@
         $('select').select2();
         // app.datePickerWithNepali("fromDate","nepaliFromDate");
         // $('#form-paidDate').datepicker("setStartDate", new Date());
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
         var $tableContainer = $("#loanRequestStatusTable");
         var $search = $('#search');
 
         var columns = [
             {field: "DT", title: "Date", width: 100},
             {field: "PARTICULARS", title: "Particulars", width: 150},
-            {field: "DEBIT_AMOUNT", title: "Debit Rs", width: 120},
-            {field: "CREDIT_AMOUNT", title: "Credit Rs", width: 120},
-            {field: "BALANCE", title: "Balance", width: 120}
+            {field: "DEBIT_AMOUNT", title: "Debit Rs", width: 120, format: "{0:0.##}"},
+            {field: "CREDIT_AMOUNT", title: "Credit Rs", width: 120, format: "{0:0.##}"},
+            {field: "BALANCE", title: "Balance", width: 120, format: "{0:0.##}"}
         ];
- 
+  
         var map = {
             'DT': 'Date',
             'PARTICULARS': 'Particulars',
@@ -47,9 +47,20 @@
                 App.unblockUI("#hris-page-content");
                 var data = success.data;
                 data[0].BALANCE = data[0].DEBIT_AMOUNT;
-                for(var i = 1; i < data.length; i++){
+                data.push({
+                    DT : '',
+                    PARTICULARS : 'Total',
+                    DEBIT_AMOUNT : data[0].DEBIT_AMOUNT,
+                    CREDIT_AMOUNT : data[0].CREDIT_AMOUNT,
+                    BALANCE : 0
+                });
+                for(var i = 1; i < data.length-1; i++){
                     data[i].BALANCE = parseFloat(data[i-1].BALANCE) + parseFloat(data[i].DEBIT_AMOUNT) - parseFloat(data[i].CREDIT_AMOUNT);
+                    data[data.length-1].DEBIT_AMOUNT = parseFloat(data[data.length-1].DEBIT_AMOUNT) + parseFloat(data[i].DEBIT_AMOUNT);
+                    data[data.length-1].CREDIT_AMOUNT = parseFloat(data[data.length-1].CREDIT_AMOUNT) + parseFloat(data[i].CREDIT_AMOUNT);
                 }
+                data[data.length-1].BALANCE = data[data.length-1].DEBIT_AMOUNT - data[data.length-1].CREDIT_AMOUNT;
+                console.log(data);
                 app.renderKendoGrid($tableContainer, data);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
