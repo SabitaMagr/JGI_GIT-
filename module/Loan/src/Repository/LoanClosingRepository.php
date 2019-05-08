@@ -55,7 +55,7 @@ class LoanClosingRepository implements RepositoryInterface {
 
     public function getRemainingAmount($old_loan_req_id, $paymentAmount){
         $sql = "SELECT 
-        SUM(AMOUNT)-$paymentAmount AS REMAINING_AMOUNT 
+        ROUND(SUM(AMOUNT)-$paymentAmount) AS REMAINING_AMOUNT 
         FROM HRIS_LOAN_PAYMENT_DETAIL 
         WHERE PAID_FLAG = 'N' AND LOAN_REQUEST_ID = $old_loan_req_id";
         $statement = $this->adapter->query($sql);
@@ -65,7 +65,7 @@ class LoanClosingRepository implements RepositoryInterface {
 
     public function getUnpaidAmount($old_loan_req_id){
         $sql = "SELECT 
-        SUM(AMOUNT) AS UNPAID_AMOUNT 
+        ROUND(SUM(AMOUNT)) AS UNPAID_AMOUNT 
         FROM HRIS_LOAN_PAYMENT_DETAIL 
         WHERE PAID_FLAG = 'N' AND LOAN_REQUEST_ID = $old_loan_req_id";
         $statement = $this->adapter->query($sql);

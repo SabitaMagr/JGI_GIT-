@@ -301,7 +301,6 @@ class LoanStatusRepository implements RepositoryInterface {
         }
 
         $sql .= " ORDER BY LR.LOAN_REQUEST_ID DESC";
-        
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -349,31 +348,143 @@ class LoanStatusRepository implements RepositoryInterface {
       return $result;
     }
 
-    public function getLoanRequestDetails($ids){
+    // public function getLoanRequestDetails($ids){
 
-      $ids = implode($ids, ',');
+    //   $ids = implode($ids, ',');
 
-      $sql = "SELECT (CASE WHEN (SELECT COUNT(*) FROM HRIS_LOAN_PAYMENT_DETAIL 
-      WHERE LOAN_REQUEST_ID IN ($ids)
-      AND PAID_FLAG = 'N') > 0 
-      THEN 'OPEN' 
-      ELSE 'CLOSED' END) 
-      AS STATUS,
-      SUM(CASE WHEN PAID_FLAG = 'N' THEN AMOUNT ELSE 0 END) 
-      AS BALANCE,
-      SUM(CASE WHEN PAID_FLAG = 'Y' THEN AMOUNT ELSE 0 END) 
-      AS PAID_AMOUNT
-      FROM HRIS_LOAN_PAYMENT_DETAIL
-      where LOAN_REQUEST_ID IN ($ids) GROUP BY LOAN_REQUEST_ID 
-      ORDER BY LOAN_REQUEST_ID DESC;";
-    
-      $statement = $this->adapter->query($sql);
-      $result = $statement->execute();
-      return $result;
-    }
+    //   $sql = "SELECT (CASE WHEN (SELECT COUNT(*) FROM HRIS_LOAN_PAYMENT_DETAIL 
+    //   WHERE LOAN_REQUEST_ID IN ($ids)
+    //   AND PAID_FLAG = 'N') > 0 
+    //   THEN 'OPEN' 
+    //   ELSE 'CLOSED' END) 
+    //   AS STATUS,
+    //   SUM(CASE WHEN PAID_FLAG = 'N' THEN AMOUNT ELSE 0 END) 
+    //   AS BALANCE,
+    //   SUM(CASE WHEN PAID_FLAG = 'Y' THEN AMOUNT ELSE 0 END) 
+    //   AS PAID_AMOUNT
+    //   FROM HRIS_LOAN_PAYMENT_DETAIL
+    //   where LOAN_REQUEST_ID IN ($ids) GROUP BY LOAN_REQUEST_ID 
+    //   ORDER BY LOAN_REQUEST_ID DESC;";
+     
+    //   $statement = $this->adapter->query($sql);
+    //   $result = $statement->execute();
+    //   return $result;
+    // }
     
     public function getApprovedStatus($id){
       $sql = "SELECT STATUS FROM HRIS_EMPLOYEE_LOAN_REQUEST WHERE LOAN_REQUEST_ID = $id";
+      $statement = $this->adapter->query($sql); 
+      return $statement->execute();
+    }
+
+    public function fetchEmployeeLoanDetails($emp_id, $loan_id){
+      $sql = "SELECT DISTINCT
+      e.employee_code,
+      e.full_name,
+      initcap(l.loan_name) AS loan_name,
+      lr.requested_amount,
+      lr.loan_request_id,
+      NVL(ROUND((
+          SELECT
+              SUM(amount)
+          FROM
+              hris_loan_payment_detail
+          WHERE
+                  paid_flag = 'Y'
+              AND
+                  loan_request_id = lr.loan_request_id
+      )), 0)AS paid_amount,
+      ( 
+          SELECT
+              ROUND(SUM(amount))
+          FROM
+              hris_loan_payment_detail
+          WHERE
+                  paid_flag = 'N'
+              AND
+                  loan_request_id = lr.loan_request_id
+      )  AS balance,
+      trunc(hlpd.amount, 2) AS current_installment,
+      initcap(TO_CHAR(lr.loan_date,'DD-MON-YYYY') ) AS loan_date_ad,
+      bs_date(TO_CHAR(lr.loan_date,'DD-MON-YYYY') ) AS loan_date_bs,
+      initcap(TO_CHAR(lr.requested_date,'DD-MON-YYYY') ) AS requested_date_ad,
+      bs_date(TO_CHAR(lr.requested_date,'DD-MON-YYYY') ) AS requested_date_bs,
+      lr.loan_status AS status,
+      lr.employee_id AS employee_id
+  FROM
+      hris_employee_loan_request lr
+      LEFT OUTER JOIN hris_loan_master_setup l ON l.loan_id = lr.loan_id
+      LEFT OUTER JOIN hris_employees e ON e.employee_id = lr.employee_id
+      LEFT OUTER JOIN hris_loan_payment_detail hlpd ON hlpd.loan_request_id = lr.loan_request_id
+  WHERE
+      1 = 1 ";
+
+    $sql.= $emp_id != null ? " AND e.employee_id = $emp_id " : '' ;
+    $sql.= $loan_id != null ? " AND l.loan_id = $loan_id " : '' ;
+    $sql.=' ORDER BY lr.LOAN_REQUEST_ID';
+
+      $statement = $this->adapter->query($sql); 
+      return $statement->execute();
+    }
+
+    public function fetchLoanVoucher($emp_id, $fromDate, $toDate){
+      $sql = " SELECT HLPD.FROM_DATE AS DT, 'Opening Balance' as PARTICULARS,
+      TRUNC(SUM(HLPD.PRINCIPLE_AMOUNT), 2) AS DEBIT_AMOUNT,
+      0 AS CREDIT_AMOUNT, 0 AS BALANCE
+      FROM 
+      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
+      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
+         WHERE HLPD.FROM_DATE = trunc(to_date('{$fromDate}'),'month')
+         AND HELR.EMPLOYEE_ID = $emp_id
+      GROUP BY HLPD.FROM_DATE
+     
+     UNION ALL
+     
+      SELECT HLPD.FROM_DATE AS DT, 'Interest Due' as PARTICULARS,
+      TRUNC(SUM(HLPD.INTEREST_AMOUNT), 2) AS DEBIT_AMOUNT, 
+      0 AS CREDIT_AMOUNT, 0 AS BALANCE
+      FROM 
+      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
+      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
+         WHERE HLPD.FROM_DATE IN(
+     select trunc(add_Months(sysdate, level),'month') result
+      from DUAL
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')
+      ) AND HELR.EMPLOYEE_ID = $emp_id
+      GROUP BY HLPD.FROM_DATE
+      
+     UNION ALL
+     
+     SELECT HLPD.FROM_DATE AS DT, 'Interest Paid' as PARTICULARS,
+       0 AS DEBIT_AMOUNT,
+       TRUNC(SUM(HLPD.INTEREST_AMOUNT), 2) AS CREDIT_AMOUNT, 0 AS BALANCE
+      FROM 
+      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
+      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
+         WHERE HLPD.FROM_DATE IN(
+     select trunc(add_Months(sysdate, level),'month') result
+      from DUAL
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')
+      ) AND HELR.EMPLOYEE_ID = $emp_id
+      GROUP BY HLPD.FROM_DATE
+     
+      
+      UNION ALL
+      
+      SELECT HLPD.FROM_DATE AS DT, 'Amount Paid' as PARTICULARS,
+       0 AS DEBIT_AMOUNT,
+       TRUNC(SUM(HLPD.AMOUNT), 2) AS CREDIT_AMOUNT, 0 AS BALANCE
+      FROM 
+      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
+      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
+         WHERE HLPD.FROM_DATE IN(
+     select trunc(add_Months(sysdate, level),'month') result
+      from DUAL
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')
+      ) AND HELR.EMPLOYEE_ID = $emp_id
+      GROUP BY HLPD.FROM_DATE
+     ORDER BY DT, DEBIT_AMOUNT DESC, CREDIT_AMOUNT DESC";
+
       $statement = $this->adapter->query($sql); 
       return $statement->execute();
     }
