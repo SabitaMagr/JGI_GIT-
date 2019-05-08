@@ -47,7 +47,7 @@ class LoanRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Loan::class, [Loan::LOAN_NAME],NULL,NULL,NULL,NULL,'L',FALSE,FALSE), false);
         $select->from(['L' => Loan::TABLE_NAME]);
-        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=L.". Loan::COMPANY_ID, [Company::COMPANY_NAME => new Expression('INITCAP(C.COMPANY_NAME)')], 'left');
+        $select->join(['C' => Company::TABLE_NAME], "C.".Company::COMPANY_ID."=L.". Loan::COMPANY_ID, [Company::COMPANY_NAME => new Expression('(C.COMPANY_NAME)')], 'left');
         $select->where(["L.".Loan::STATUS."='E'"]);
         $select->order("L.".Loan::LOAN_NAME . " ASC");
         $statement = $sql->prepareStatementForSqlObject($select);

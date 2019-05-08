@@ -54,7 +54,9 @@ class PayrollGenerator {
         "TOTAL_ANNUAL_AMOUNT",
         "TOTAL_AMOUNT",
         "SELF_PREV_TOTAL",
-        "MULTIPLICATION_FACTOR"
+        "MULTIPLICATION_FACTOR",
+        "LOAN_AMT",
+        "LOAN_INT"
     ];
 
     public function __construct($adapter) {
@@ -115,10 +117,13 @@ class PayrollGenerator {
                 foreach ($this->formattedVariableList as $key => $variable) {
                     $formula = $this->convertVariableToValue($formula, $key, $variable);
                 }
-
+                
                 foreach ($this->formattedSystemRuleList as $key => $systemRule) {
                     $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule, $ruleId);
                 }
+                //added by prabin to remoeve extra params PARS and PARAe start
+                $formula=$this->deleteAllBetweenString("PARS", "PARE", $formula);
+                //added by prabin to remoeve extra params PARS and PARAe end
 
                 $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
                 $ruleValue = eval("return {$processedformula} ;");
@@ -214,5 +219,17 @@ class PayrollGenerator {
         }
         return $payValue;
     }
+    
+    // added by prabin start
+    private function deleteAllBetweenString($beginning, $end, $string) {
+        $beginningPos = strpos($string, $beginning);
+        $endPos = strpos($string, $end);
+        if ($beginningPos === false || $endPos === false) {
+            return $string;
+        }
+        $textToDelete = substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos);
+        return $this->deleteAllBetweenString($beginning, $end, str_replace($textToDelete, '', $string)); // recursion to ensure all occurrences are replaced
+    }
+    // added by prabin end
 
 }
