@@ -189,7 +189,9 @@ class LoanStatusRepository implements RepositoryInterface {
         $loanRequestStatusId = $data['loanRequestStatusId'];
         $employeeTypeId = $data['employeeTypeId'];
 
-        $sql = "SELECT INITCAP(L.LOAN_NAME) AS LOAN_NAME,
+        $sql = "SELECT
+                  E.EMPLOYEE_CODE as EMPLOYEE_CODE, 
+                  INITCAP(L.LOAN_NAME) AS LOAN_NAME,
                   LR.REQUESTED_AMOUNT,
                   INITCAP(TO_CHAR(LR.LOAN_DATE, 'DD-MON-YYYY'))                   AS LOAN_DATE_AD,
                   (CASE WHEN LR.STATUS = 'AP' AND LR.LOAN_STATUS = 'OPEN' THEN 'Y' ELSE 'N' END)              AS ALLOW_EDIT,
@@ -230,18 +232,18 @@ class LoanStatusRepository implements RepositoryInterface {
                 ON APRV.EMPLOYEE_ID = RA.APPROVED_BY
                 WHERE L.STATUS   ='E'
                 AND E.STATUS     ='E'
-                AND (E1.STATUS   =
-                  CASE
-                    WHEN E1.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E1.STATUS  IS NULL)
-                AND (E2.STATUS =
-                  CASE
-                    WHEN E2.STATUS IS NOT NULL
-                    THEN ('E')
-                  END
-                OR E2.STATUS    IS NULL)
+                --AND (E1.STATUS   =
+                 -- CASE
+                --    WHEN E1.STATUS IS NOT NULL
+                --    THEN ('E')
+                --  END
+               -- OR E1.STATUS  IS NULL)
+               -- AND (E2.STATUS =
+               --   CASE
+                --    WHEN E2.STATUS IS NOT NULL
+               --     THEN ('E')
+                --  END
+               -- OR E2.STATUS    IS NULL)
                 AND (RECM.STATUS =
                   CASE
                     WHEN RECM.STATUS IS NOT NULL
@@ -301,6 +303,7 @@ class LoanStatusRepository implements RepositoryInterface {
         }
 
         $sql .= " ORDER BY LR.LOAN_REQUEST_ID DESC";
+
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
