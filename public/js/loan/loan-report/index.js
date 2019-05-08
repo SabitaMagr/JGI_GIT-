@@ -2,21 +2,20 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
+        //app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         var $tableContainer = $("#loanRequestStatusTable");
         var $search = $('#search');
 
         var columns = [
-            {field: "EMPLOYEE_CODE", title: "Emp. Code", width: 150},
+            {field: "EMPLOYEE_CODE", title: "Code", width: 100},
             {field: "FULL_NAME", title: "Employee", width: 150},
             {field: "LOAN_NAME", title: "Loan", width: 120},
-            {field: "RECOMMENDED_BY_NAME", title: "Recommender", width: 120},
-            {field: "APPROVED_BY_NAME", title: "Approver", width: 120},
             {title: "Requested Date",
                 columns: [{
                         field: "REQUESTED_DATE_AD",
                         title: "AD",
-                        width: 120},
+                        width: 120
+                    },
                     {field: "REQUESTED_DATE_BS",
                         title: "BS",
                         width: 120
@@ -33,31 +32,19 @@
                         field: "LOAN_DATE_BS",
                         title: "BS",
                         width: 120
-                    }]},
-            {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 150},
+                    }
+                ]
+            },
             {field: "STATUS", title: "Status", width: 90},
-            {field: "LOAN_STATUS", title: "Loan Status", width: 90},
-            {field: ["LOAN_REQUEST_ID"], title: "Action", template: `
-            <span> 
-                <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
-                    <i class="fa fa-search-plus"></i>
-                </a>
-            </span>
-            #if(ALLOW_EDIT == 'Y'){#
-            <span> 
-            <a class="btn  btn-icon-only btn-success" href="${document.editLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="edit">
-                <i class="fa fa-edit"></i>
-            </a>
-        </span>
-          <span> 
-            <a class="btn  btn-icon-only btn-success" href="${document.loanClosing}/#: LOAN_REQUEST_ID #" style="height:17px;" title="Loan Closing">
-                <i>Pay</i>
-            </a>
-        </span>
-            #}#`,  width: 120}
+            {field: "REQUESTED_AMOUNT", title: "Amount", width: 120},
+            {field: "PAID_AMOUNT", title: "Paid Amount", width: 120},
+            {field: "CURRENT_INSTALLMENT", title: "Cur. Instalment", width: 120},
+            {field: "BALANCE", title: "Balance", width: 120}
+            
         ];
  
         var map = {
+            'EMPLOYEE_CODE': 'Code',
             'FULL_NAME': 'Name',
             'LOAN_NAME': 'Loan',
             'REQUESTED_DATE_AD': 'Request Date(AD)',
@@ -66,24 +53,19 @@
             'LOAN_DATE_BS': 'Loan Date(BS)',
             'REQUESTED_AMOUNT': 'Reqest Amt',
             'STATUS': 'Status',
-            'REASON': 'Reason',
-            'RECOMMENDED_REMARKS': 'Recommended Remarks',
-            'RECOMMENDED_DATE': 'Recommended Date',
-            'APPROVED_REMARKS': 'Approved Remarks',
-            'APPROVED_DATE': 'Approved Date'
+            'PAID_AMOUNT': 'Paid Amount',
+            'CURRENT_INSTALLMENT': 'Cur. Instalment',
+            'BALANCE': 'Balance'
         }
         app.initializeKendoGrid($tableContainer, columns);
         app.searchTable($tableContainer, ['FULL_NAME']);
 
         $search.on('click', function () {
-            var q = document.searchManager.getSearchValues();
-            q['loanId'] = $('#loanId').val();
-            q['loanRequestStatusId'] = $('#loanRequestStatusId').val();
-            q['fromDate'] = $('#fromDate').val();
-            q['toDate'] = $('#toDate').val();
-            q['recomApproveId'] = $('#recomApproveId').val();
+            var employee = $("#employeeId").val();
+            employee = employee == -1 ? null : employee ;
+            var data = { 'emp_id' : employee };
             App.blockUI({target: "#hris-page-content"});
-            window.app.pullDataById(document.pullLoanRequestStatusListLink, q).then(function (success) {
+            window.app.pullDataById('', data).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 app.renderKendoGrid($tableContainer, success.data);
             }, function (failure) {
