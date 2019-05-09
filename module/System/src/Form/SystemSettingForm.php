@@ -143,6 +143,20 @@ class SystemSettingForm {
      */
     public $travelSubCycle;
     
+    /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":"Sub Leave Reference"})
+     * @Annotation\Attributes({ "id":"subLeaveReference","value":"N"})
+     */
+    public $subLeaveReference;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Options({"label":"Sub Leave Max Days"})
+     * @Annotation\Attributes({ "id":"subLeaveMaxDays", "class":" form-control","min":"0"})
+     */
+    public $subLeaveMaxDays;
+    
     
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")
