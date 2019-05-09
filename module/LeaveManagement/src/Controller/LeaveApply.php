@@ -80,7 +80,10 @@ class LeaveApply extends HrisController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
+                
+                if(isset($postedData['subRefId']) && $postedData['subRefId']!=' '){
                 $leaveRequest->subRefId = $postedData['subRefId'];
+                }
                 $leaveRequest->status = ($postedData['applyStatus'] == 'AP') ? 'AP' : 'RQ';
                 $this->repository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");

@@ -107,8 +107,9 @@ class LeaveRequest extends HrisController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
-                $leaveRequest->subRefId = $postData['subRefId'];
-
+                if (isset($postedData['subRefId'])  && $postedData['subRefId']!=' ') {
+                    $leaveRequest->subRefId = $postData['subRefId'];
+                }
                 $this->repository->add($leaveRequest);
                 $this->flashmessenger()->addMessage("Leave Request Successfully added!!!");
 
