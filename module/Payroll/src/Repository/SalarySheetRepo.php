@@ -71,4 +71,11 @@ class SalarySheetRepo extends HrisRepository {
                             HRIS_GEN_SAL_SH_REPORT({$sheetNo});
                         END;");
     }
+    
+    public function updateLoanPaymentFlag($employeeId, $sheetNo) {
+        $this->executeStatement("BEGIN
+                            hris_loan_payment_flag_change({$employeeId},{$sheetNo});
+                        END;");
+    }
+
 }
