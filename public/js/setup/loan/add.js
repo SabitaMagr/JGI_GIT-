@@ -2,7 +2,8 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        
+        var $payIdInt = $("#payIdInt");
+        var $payIdAmt = $("#payIdAmt");
         var inputFieldId = "form-loanName";
         var formId = "loan-form";
         var tableName =  "HRIS_LOAN_MASTER_SETUP";
@@ -16,9 +17,12 @@
             App.blockUI({target: "#hris-page-content"});
         });
         window.app.checkUniqueConstraints("form-loanCode",formId,tableName,"LOAN_CODE",checkColumnName,selfId);
+        
+        var pay_codes = document.pay_codes;
+        app.populateSelect($payIdInt, pay_codes, 'PAY_ID', 'PAY_EDESC');
+        app.populateSelect($payIdAmt, pay_codes, 'PAY_ID', 'PAY_EDESC');
     });
 })(window.jQuery,window.app);
-
 
 angular.module('hris',[])
         .controller('loanRestrictionController',function($scope,$http){

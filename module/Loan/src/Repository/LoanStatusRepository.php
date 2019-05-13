@@ -437,7 +437,10 @@ class LoanStatusRepository implements RepositoryInterface {
       FROM 
       HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
       HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE HLPD.FROM_DATE >= trunc(TO_DATE('07-Nov-2017'),'month') 
+         WHERE 
+        to_char(to_date(hlpd.from_date,'dd-mon-yy'),'mm') = 7
+        AND HLPD.FROM_DATE >= trunc(TO_DATE('{$fromDate}')) 
+         AND hlpd.paid_flag = 'Y'
          AND ROWNUM = 1
          AND HELR.EMPLOYEE_ID = $emp_id
          AND HLPD.LOAN_REQUEST_ID IN(
@@ -453,10 +456,10 @@ class LoanStatusRepository implements RepositoryInterface {
       FROM 
       HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
       HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE HLPD.FROM_DATE IN(
-     select trunc(add_Months('{$fromDate}', level),'month') result
+         WHERE hlpd.PAID_FLAG = 'Y' AND HLPD.FROM_DATE IN(
+     select trunc(add_Months('{$fromDate}', level-1),'month') result
       from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+2
       ) AND HELR.EMPLOYEE_ID = $emp_id
       GROUP BY HLPD.FROM_DATE
       
@@ -468,14 +471,13 @@ class LoanStatusRepository implements RepositoryInterface {
       FROM 
       HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
       HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE HLPD.FROM_DATE IN(
-     select trunc(add_Months('{$fromDate}', level),'month') result
+         WHERE hlpd.PAID_FLAG = 'Y' AND HLPD.FROM_DATE IN(
+     select trunc(add_Months('{$fromDate}', level-1),'month') result
       from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+2
       ) AND HELR.EMPLOYEE_ID = $emp_id
       GROUP BY HLPD.FROM_DATE
      
-      
       UNION ALL
       
       SELECT LAST_DAY(HLPD.FROM_DATE) AS DT, 'Amount Paid' as PARTICULARS,
@@ -484,10 +486,10 @@ class LoanStatusRepository implements RepositoryInterface {
       FROM 
       HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
       HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE HLPD.FROM_DATE IN(
-     select trunc(add_Months('{$fromDate}', level),'month') result
+         WHERE hlpd.PAID_FLAG = 'Y' AND HLPD.FROM_DATE IN(
+     select trunc(add_Months('{$fromDate}', level-1),'month') result
       from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+2
       ) AND HELR.EMPLOYEE_ID = $emp_id
       GROUP BY HLPD.FROM_DATE
      ORDER BY DT, DEBIT_AMOUNT DESC, CREDIT_AMOUNT DESC";

@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        $('select').select2();
+        //$('select').select2();
         // app.datePickerWithNepali("fromDate","nepaliFromDate");
         // $('#form-paidDate').datepicker("setStartDate", new Date());
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
@@ -60,7 +60,7 @@
                     data[data.length-1].CREDIT_AMOUNT = parseFloat(data[data.length-1].CREDIT_AMOUNT) + parseFloat(data[i].CREDIT_AMOUNT);
                 }
                 data[data.length-1].BALANCE = data[data.length-1].DEBIT_AMOUNT - data[data.length-1].CREDIT_AMOUNT;
-                console.log(data);
+                
                 app.renderKendoGrid($tableContainer, data);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
@@ -72,8 +72,5 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($tableContainer, map, "Loan Request List.pdf");
         });
-
-
-
     });
 })(window.jQuery, window.app);
