@@ -88,6 +88,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
 
             <div class="col-sm-2">
+                <label>Account</label>
+                <select required class="form-control" name="account" id="account">
+                    <?php foreach($loanList as $value){ ?>
+                    <option value="<?=$value['LOAN_ID']?>"><?=$value['LOAN_NAME']?></option>
+                    <?php } ?>
+                </select>
+            </div>
+            
+            <div class="col-sm-2">
                 <label>From Date</label>
                 <input type="text" required id="fromDate" name="fromDate" class="form-control" placeholder="From Date"/>
                 </select>

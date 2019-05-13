@@ -31,6 +31,7 @@
             var employee = $("#employeeId").val();
             var fromDate = $("#fromDate").val();
             var toDate = $("#toDate").val();
+            var loanType = $("#account").val();
             if(employee == -1 || fromDate == "" || toDate == ""){
                 alert("Employee, From date and To Date are required");
                 return false;
@@ -41,6 +42,7 @@
                 'emp_id' : employee,
                 'fromDate' :  fromDate,
                 'toDate' :  toDate,
+                'loanId' : loanType
             };
             App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.pullLoanVoucherDetailsLink, data).then(function (success) {
