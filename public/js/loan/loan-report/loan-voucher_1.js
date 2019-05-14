@@ -15,6 +15,7 @@
             var employee = $("#employeeId").val();
             var fromDate = $("#fromDate").val();
             var toDate = $("#toDate").val();
+            var loanType = $("#account").val();
             if (employee == -1 || fromDate == "" || toDate == "") {
                 alert("Employee, From date and To Date are required");
                 return false;
@@ -26,6 +27,7 @@
                 'emp_id': employee,
                 'fromDate': fromDate,
                 'toDate': toDate,
+                'loanId' : loanType
             };
             App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.pullLoanVoucherDetailsLink, data).then(function (success) {
@@ -47,14 +49,28 @@
                 data[data.length - 1].BALANCE = data[data.length - 1].DEBIT_AMOUNT - data[data.length - 1].CREDIT_AMOUNT;
                 var htmlData = '<table class="table table-bordered table-dark">';
                 htmlData += '<tr><th>Date</th><th>Particulars</th><th>Debit Amount</th><th>Credt Amount</th><th>Balance</th></tr>';
-                htmlData += '<tr><td>' + data[0].DT + '</td><td>' + data[0].PARTICULARS + '</td><td>' + data[0].DEBIT_AMOUNT + '</td><td>' + data[0].CREDIT_AMOUNT + '</td><td>' + data[0].BALANCE + '</td></tr>';
-                for (var i = 1; i < data.length; i++) {
-                    if((i-1) % 3 === 0){
+                
+                var span = true;
+                var spanTracker = 0;
+                
+                for (var i = 0; i < data.length; i++) {
+                    if(spanTracker % 3 === 0){
+                        span = true;
+                    }
+                    if(data[i].PARTICULARS == 'Opening Balance'){
+                        span = false;
+                        
+                        htmlData += '<tr><td>' + data[i].DT + '</td><td>' + data[i].PARTICULARS + '</td><td>' + parseFloat(data[i].DEBIT_AMOUNT).toFixed(2) + '</td><td>' + parseFloat(data[i].CREDIT_AMOUNT).toFixed(2) + '</td><td>' + parseFloat(data[i].BALANCE).toFixed(2) + '</td></tr>';
+                        continue;
+                    }
+                    if(span == true){
+                        span = false;
                         htmlData += '<tr><td rowspan="3">' + data[i].DT + '</td><td>' + data[i].PARTICULARS + '</td><td>' + parseFloat(data[i].DEBIT_AMOUNT).toFixed(2) + '</td><td>' + parseFloat(data[i].CREDIT_AMOUNT).toFixed(2) + '</td><td>' + parseFloat(data[i].BALANCE).toFixed(2) + '</td></tr>';
                     }
                     else{
                          htmlData += '<tr><td>' + data[i].PARTICULARS + '</td><td>' + parseFloat(data[i].DEBIT_AMOUNT).toFixed(2) + '</td><td>' + parseFloat(data[i].CREDIT_AMOUNT).toFixed(2) + '</td><td>' + parseFloat(data[i].BALANCE).toFixed(2) + '</td></tr>';
-                    }                  
+                    }          
+                    spanTracker++;
                 }
                 htmlData += '</table>';
                 $tableContainer.append(htmlData);

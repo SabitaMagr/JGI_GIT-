@@ -439,7 +439,7 @@ class LoanStatusRepository implements RepositoryInterface {
       HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
          WHERE 
         to_char(to_date(hlpd.from_date,'dd-mon-yy'),'mm') = 7
-        AND HLPD.FROM_DATE >= trunc(TO_DATE('{$fromDate}')) 
+        AND HLPD.FROM_DATE >= trunc(TO_DATE('{$fromDate}'),'month') 
          AND hlpd.paid_flag = 'Y'
             AND  HELR.LOAN_ID = $loanId
          AND HELR.EMPLOYEE_ID = $emp_id
