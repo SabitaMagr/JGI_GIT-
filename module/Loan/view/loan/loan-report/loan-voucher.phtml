@@ -119,8 +119,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
         </div>
 
-        <div class="row margin-top-10">
+        <div class="row margin-top-10">   
             <div class=" col-sm-offset-8 col-sm-4">
+                <div style="float: left; display: none;" id="summary1">
+                    <label for="summary">Summary</label>
+                    <input type="checkbox" id="summary">
+                    </div>
                 <button id="reset" class="btn default btn-sm pull-right">
                     Reset
                     <i class="fa fa-refresh"></i>
@@ -136,5 +140,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <div class="margin-top-20">  
     <div id="loanRequestStatusTable">
+    </div>
+    <div id="summaryTable" style="display : none;">
     </div>
 </div>

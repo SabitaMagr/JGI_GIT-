@@ -56,7 +56,10 @@ class LoanReport extends HrisController {
                 //$loan_id = !empty($_POST['loan_id']) ? $_POST['loan_id'] : null ;
                 $result = $this->repository->fetchLoanVoucher($emp_id, $fromDate, $toDate, $loanId);
                 $loanVoucherDetails = Helper::extractDbData($result);
-                return new JsonModel(['success' => true, 'data' => $loanVoucherDetails, 'message' => null]);
+                $fromDate = '1-Jul-'.date('Y', strtotime($fromDate));
+                $result = $this->repository->fetchOpeningBalance($emp_id, $fromDate, $loanId);
+                $openingBalanceDetails = Helper::extractDbData($result);
+                return new JsonModel(['success' => true, 'data' => $loanVoucherDetails, 'balanceData' => $openingBalanceDetails, 'message' => null]);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
             }
