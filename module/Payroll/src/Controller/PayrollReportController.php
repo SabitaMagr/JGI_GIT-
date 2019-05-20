@@ -115,4 +115,37 @@ class PayrollReportController extends HrisController {
         }
     }
 
+    // menu for this action not inserted
+    public function groupSheetAction() {
+       $nonDefaultList = $this->repository->getSalaryGroupColumns();
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+//                    'fiscalYears' => $fiscalYears,
+//                    'months' => $months,
+                    'nonDefaultList' => $nonDefaultList
+        ]);
+    }
+    
+    
+    public function pullGroupSheetAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $defaultColumnsList = $this->repository->getDefaultColumns('S');
+//            $reportType = $data['reportType'];
+                $results = $this->repository->getGradeSheetReport($data);
+//                print_r(Helper::extractDbData($results));
+//                die();
+            $result = [];
+            $result['success'] = true;
+            $result['data'] = Helper::extractDbData($results);
+            $result['columns'] = $defaultColumnsList;
+            $result['error'] = "";
+            return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+
 }
