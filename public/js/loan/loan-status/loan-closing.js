@@ -12,6 +12,9 @@
             if(remainingAmount > 0){
                 var repaymentmonths = prompt("Sum of " + remainingAmount + " is still remaining. This sum will be treated as a new loan. Please specify its repayment months.");
                 $("#repaymentMonths").val(repaymentmonths);
+                if(repaymentmonths == null || repaymentmonths == ''){
+                    return false;
+                }
             }
             return true;
         });

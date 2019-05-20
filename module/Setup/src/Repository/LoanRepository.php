@@ -3,6 +3,7 @@
 namespace Setup\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Setup\Model\Company;
@@ -81,4 +82,10 @@ class LoanRepository implements RepositoryInterface {
         return $row->current();
     }
 
+    public function getPayCodesList(){
+        $sql = "SELECT PAY_ID, PAY_EDESC FROM HRIS_PAY_SETUP";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
 }

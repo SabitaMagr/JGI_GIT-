@@ -51,6 +51,8 @@ class LoanApply extends AbstractActionController{
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
+                $interestRate = $this->loanRequesteRepository->getDefaultInterestRate($model->loanId);
+                $model->interestRate = Helper::extractDbData($interestRate)[0]['INTEREST_RATE'];
                 $model->loanRequestId = ((int) Helper::getMaxId($this->adapter, LoanRequestModel::TABLE_NAME, LoanRequestModel::LOAN_REQUEST_ID)) + 1;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';

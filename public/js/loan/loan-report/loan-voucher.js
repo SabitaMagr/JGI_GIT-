@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        $('select').select2();
+        //$('select').select2();
         // app.datePickerWithNepali("fromDate","nepaliFromDate");
         // $('#form-paidDate').datepicker("setStartDate", new Date());
         app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
@@ -31,6 +31,7 @@
             var employee = $("#employeeId").val();
             var fromDate = $("#fromDate").val();
             var toDate = $("#toDate").val();
+            var loanType = $("#account").val();
             if(employee == -1 || fromDate == "" || toDate == ""){
                 alert("Employee, From date and To Date are required");
                 return false;
@@ -41,6 +42,7 @@
                 'emp_id' : employee,
                 'fromDate' :  fromDate,
                 'toDate' :  toDate,
+                'loanId' : loanType
             };
             App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.pullLoanVoucherDetailsLink, data).then(function (success) {
@@ -60,7 +62,7 @@
                     data[data.length-1].CREDIT_AMOUNT = parseFloat(data[data.length-1].CREDIT_AMOUNT) + parseFloat(data[i].CREDIT_AMOUNT);
                 }
                 data[data.length-1].BALANCE = data[data.length-1].DEBIT_AMOUNT - data[data.length-1].CREDIT_AMOUNT;
-                console.log(data);
+                
                 app.renderKendoGrid($tableContainer, data);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
@@ -72,8 +74,5 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($tableContainer, map, "Loan Request List.pdf");
         });
-
-
-
     });
 })(window.jQuery, window.app);
