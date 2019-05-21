@@ -127,12 +127,17 @@ class LeaveApply extends HrisController {
         if (isset($this->preference['subLeaveReference'])) {
             $subLeaveReference = $this->preference['subLeaveReference'];
         }
+        $subLeaveMaxDays = '500';
+        if (isset($this->preference['subLeaveMaxDays'])) {
+            $subLeaveMaxDays = $this->preference['subLeaveMaxDays'];
+        }
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE", "FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N', 'IS_ADMIN' => "N"], "FULL_NAME", "ASC", "-", FALSE, TRUE),
                     'customRenderer' => Helper::renderCustomView(),
                     'applyOption' => $applyOption,
-                    'subLeaveReference' => $subLeaveReference
+                    'subLeaveReference' => $subLeaveReference,
+                    'subLeaveMaxDays' => $subLeaveMaxDays
         ]);
     }
 

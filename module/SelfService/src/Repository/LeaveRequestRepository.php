@@ -378,6 +378,8 @@ WOD_ID AS ID
 ,LA.EMPLOYEE_ID
 ,NO_OF_DAYS
 ,WD.FROM_DATE||' - '||WD.TO_DATE AS SUB_NAME
+,WD.TO_DATE AS SUB_END_DATE
+,WD.TO_DATE+{$maxSubDays} AS SUB_VALIDATE_DAYS
 --,WD.* 
 from 
 HRIS_EMPLOYEE_LEAVE_ADDITION LA
@@ -386,13 +388,15 @@ where
 LA.employee_id={$employeeId}
 and LA.leave_id={$leaveId}
 AND WD.STATUS='AP'
-AND WD.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
+--AND WD.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
 UNION
 select 
 WOH_ID AS ID
 ,LA.EMPLOYEE_ID
 ,NO_OF_DAYS
 ,WH.FROM_DATE||' - '||WH.TO_DATE AS SUB_NAME
+,WH.TO_DATE AS SUB_END_DATE
+,WH.TO_DATE+{$maxSubDays} AS SUB_VALIDATE_DAYS
 --,WH.* 
 from 
 HRIS_EMPLOYEE_LEAVE_ADDITION LA
@@ -401,7 +405,7 @@ where
 LA.employee_id={$employeeId}
 and LA.leave_id={$leaveId}
 AND WH.STATUS='AP'
-AND WH.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
+--AND WH.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
 ) sl
 left join (
 SELECT Sub_Ref_Id,
@@ -419,8 +423,6 @@ and Sub_Ref_Id is not null
  group by Sub_Ref_Id) lt on (lt.Sub_Ref_Id=sl.id)
             
             ";
-//echo $sql;
-//die();
         $statement = $this->adapter->query($sql);
         $result=$statement->execute();
         return Helper::extractDbData($result);
