@@ -9,6 +9,7 @@
         var $reportType = $('#reportType');
         var $otVariable = $('#otVariable');
         var $extraFields = $('#extraFields');
+        var $groupVariable = $('#groupVariable');
         var $table = $('#table');
         var map = {};
          var exportType = {
@@ -32,9 +33,10 @@
             monthList = months;
         });
 
-        console.log(document.nonDefaultList);
+        console.log(document.groupVariables);
 
         app.populateSelect($otVariable, document.nonDefaultList, 'VARIANCE_ID', 'VARIANCE_NAME', '---', '');
+        app.populateSelect($groupVariable, document.groupVariables, 'VARIANCE_ID', 'VARIANCE_NAME', '---', '');
         app.populateSelect($extraFields, extraFieldsList, 'ID', 'VALUE', '---', '');
 
 
@@ -115,12 +117,17 @@
             q['extVar'] = $otVariable.val();
             q['extField'] = $extraFields.val();
             q['reportType'] = $reportType.val();
+            q['groupVariable'] = $groupVariable.val();
             console.log(q);
 
             app.serverRequest(document.pullGroupSheetLink, q).then(function (response) {
                 if (response.success) {
                     console.log(response);
+                    if(q['reportType']=='GS'){
                     initKendoGrid(response.columns, $otVariable.val(), $extraFields.val());
+                }else if(q['reportType']=='GD'){
+                    initKendoGrid(response.columns, [], $extraFields.val());
+                }
                     app.renderKendoGrid($table, response.data);
                 } else {
                     app.showMessage(response.error, 'error');

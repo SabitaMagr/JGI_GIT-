@@ -117,13 +117,15 @@ class PayrollReportController extends HrisController {
 
     // menu for this action not inserted
     public function groupSheetAction() {
-       $nonDefaultList = $this->repository->getSalaryGroupColumns();
-
+       $nonDefaultList = $this->repository->getSalaryGroupColumns('Y');
+       $groupVariables = $this->repository->getSalaryGroupColumns();
+       
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
 //                    'fiscalYears' => $fiscalYears,
 //                    'months' => $months,
-                    'nonDefaultList' => $nonDefaultList
+                    'nonDefaultList' => $nonDefaultList,
+                    'groupVariables' => $groupVariables
         ]);
     }
     
@@ -132,14 +134,20 @@ class PayrollReportController extends HrisController {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $defaultColumnsList = $this->repository->getDefaultColumns('S');
-//            $reportType = $data['reportType'];
-                $results = $this->repository->getGradeSheetReport($data);
-//                print_r(Helper::extractDbData($results));
-//                die();
+            $resultData=[];
+            $reportType = $data['reportType'];
+            $groupVariable = $data['groupVariable'];
+            
+            if($reportType=="GS"){
+                $defaultColumnsList = $this->repository->getDefaultColumns('S');
+                $resultData = $this->repository->getGradeSheetReport($data);
+            }elseif ($reportType=="GD") {
+                $defaultColumnsList = $this->repository->getVarianceDetailColumns($groupVariable);
+                $resultData=$this->repository->getGroupDetailReport($data);
+            }
             $result = [];
             $result['success'] = true;
-            $result['data'] = Helper::extractDbData($results);
+            $result['data'] = Helper::extractDbData($resultData);
             $result['columns'] = $defaultColumnsList;
             $result['error'] = "";
             return new CustomViewModel($result);

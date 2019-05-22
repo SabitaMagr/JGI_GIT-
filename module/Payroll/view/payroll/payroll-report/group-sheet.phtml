@@ -19,6 +19,7 @@ $this->headScript()
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.nonDefaultList =<?php echo json_encode($nonDefaultList); ?>;
+    document.groupVariables =<?php echo json_encode($groupVariables); ?>;
     document.getFiscalYearMonthLink = '<?php echo $this->url('payrollReport', ['action' => 'getFiscalYearMonth']); ?>';
     document.pullGroupSheetLink = '<?= $this->url("payrollReport", ["action" => "pullGroupSheet"]) ?>';
 </script>
@@ -120,12 +121,21 @@ $this->headScript()
                         <div class="col-sm-2">
                             <label>Report Type</label>
                             <select class="form-control" name="reportType" id="reportType">
-<!--                                <option value="B">Basic</option>
-                                <option value="D">Days</option>
-                                <option value="S">Summary</option>-->
+                                <option value="GS">Group Sheet</option>
+                                <option value="GD">Group Detail</option>
+                                <!--<option value="S">Summary</option>-->
                             </select>
                         </div>
                     </div>
+                    
+                    <div class="row margin-top-10">
+                        <div class="col-sm-2">
+                            <label>Group Variables</label>
+                            <select class="form-control" name="groupVariable" id="groupVariable">
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="row margin-top-10">
                         <div class="col-sm-4 col-sm-offset-8">
                             <button id="reset" class="btn default btn-sm pull-right">
