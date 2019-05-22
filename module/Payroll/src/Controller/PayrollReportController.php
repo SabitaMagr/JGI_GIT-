@@ -117,8 +117,8 @@ class PayrollReportController extends HrisController {
 
     // menu for this action not inserted
     public function groupSheetAction() {
-       $nonDefaultList = $this->repository->getSalaryGroupColumns('Y');
-       $groupVariables = $this->repository->getSalaryGroupColumns();
+       $nonDefaultList = $this->repository->getSalaryGroupColumns('S','N');
+       $groupVariables = $this->repository->getSalaryGroupColumns('S');
        
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
@@ -140,7 +140,7 @@ class PayrollReportController extends HrisController {
             
             if($reportType=="GS"){
                 $defaultColumnsList = $this->repository->getDefaultColumns('S');
-                $resultData = $this->repository->getGradeSheetReport($data);
+                $resultData = $this->repository->getGroupReport('S',$data);
             }elseif ($reportType=="GD") {
                 $defaultColumnsList = $this->repository->getVarianceDetailColumns($groupVariable);
                 $resultData=$this->repository->getGroupDetailReport($data);
@@ -155,5 +155,47 @@ class PayrollReportController extends HrisController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+    
+    public function groupTaxReportAction() {
+       $nonDefaultList = $this->repository->getSalaryGroupColumns('T','N');
+       $groupVariables = $this->repository->getSalaryGroupColumns('T');
+       
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+//                    'fiscalYears' => $fiscalYears,
+//                    'months' => $months,
+                    'nonDefaultList' => $nonDefaultList,
+                    'groupVariables' => $groupVariables
+        ]);
+    }
+    
+    
+    public function pullGroupTaxReportAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $resultData=[];
+            $reportType = $data['reportType'];
+            $groupVariable = $data['groupVariable'];
+            
+            if($reportType=="GS"){
+                $defaultColumnsList = $this->repository->getDefaultColumns('T');
+                $resultData = $this->repository->getGroupReport('T',$data);
+                
+            }elseif ($reportType=="GD") {
+                $defaultColumnsList = $this->repository->getVarianceDetailColumns($groupVariable);
+                $resultData=$this->repository->getGroupDetailReport($data);
+            }
+            $result = [];
+            $result['success'] = true;
+            $result['data'] = Helper::extractDbData($resultData);
+            $result['columns'] = $defaultColumnsList;
+            $result['error'] = "";
+            return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
 
 }

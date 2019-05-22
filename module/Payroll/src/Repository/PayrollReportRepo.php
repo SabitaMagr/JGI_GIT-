@@ -508,21 +508,21 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
-    public function getSalaryGroupColumns($type=null) {
-        $typeString=" ";
-                if($type!=null){
-                    $typeString="AND Show_Default='{$type}'";
+    public function getSalaryGroupColumns($type,$default=null) {
+        $defaultString=" ";
+                if($default!=null){
+                    $defaultString="AND Show_Default='{$default}'";
                 }
         $sql = "select VARIANCE_ID,VARIANCE_NAME from Hris_Variance 
             where status='E' 
-            AND VARIABLE_TYPE='S'
-        {$typeString}";
+            AND VARIABLE_TYPE='{$type}'
+        {$defaultString}";
         $data = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($data);
     }
 
-    public function getGradeSheetReport($data) {
-        $variable = $this->fetchSalaryGroupVariable();
+    public function getGroupReport($variableType,$data) {
+        $variable = $this->fetchSalaryGroupVariable($variableType);
 
         $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
         $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
@@ -564,7 +564,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             LEFT JOIN HRIS_VARIANCE_PAYHEAD VP ON (V.VARIANCE_ID=VP.VARIANCE_ID)
             LEFT JOIN (select * from HRIS_SALARY_SHEET) SS ON (1=1)
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
-            WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='S' 
+            WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='{$variableType}' 
             and SS.MONTH_ID={$monthId}
             GROUP BY SD.EMPLOYEE_ID,V.VARIANCE_NAME,Vp.Variance_Id,SS.Month_ID,SS.SHEET_NO)
             PIVOT ( MAX( TOTAL )
@@ -588,8 +588,8 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
-    private function fetchSalaryGroupVariable() {
-        $rawList = EntityHelper::rawQueryResult($this->adapter, "select  * from Hris_Variance where   STATUS='E' AND VARIABLE_TYPE='S' order by order_no");
+    private function fetchSalaryGroupVariable($variableType) {
+        $rawList = EntityHelper::rawQueryResult($this->adapter, "select  * from Hris_Variance where   STATUS='E' AND VARIABLE_TYPE='{$variableType}' order by order_no");
         $dbArray = "";
         foreach ($rawList as $key => $row) {
             if ($key == sizeof($rawList)) {
@@ -658,7 +658,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             LEFT JOIN HRIS_VARIANCE_PAYHEAD VP ON (V.VARIANCE_ID=VP.VARIANCE_ID)
             LEFT JOIN (select * from HRIS_SALARY_SHEET) SS ON (1=1)
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
-            WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='S' 
+            WHERE  V.STATUS='E' 
             and V.VARIANCE_ID={$groupVariable}
             and SS.MONTH_ID={$monthId}
             )
