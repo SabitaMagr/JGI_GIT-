@@ -70,7 +70,8 @@
             "MobileApi\\": "module/MobileApi/src/",
             "Customer\\": "module/Customer/src/",
             "Medical\\": "module/Medical/src/",
-            "PayrollApi\\": "module/PayrollApi/src/"
+            "PayrollApi\\": "module/PayrollApi/src/",
+            "Cafeteria\\": "module/Cafeteria/src/"
         }
     },
     "autoload-dev": {
