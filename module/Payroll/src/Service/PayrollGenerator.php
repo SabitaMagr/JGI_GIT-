@@ -94,6 +94,9 @@ class PayrollGenerator {
         $this->sheetNo = $sheetNo;
         $payList = $this->ruleRepo->fetchAll();
         $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $employeeId, null, $monthId, null);
+        
+        $file = Helper::UPLOAD_DIR . "/PAYROLL_LOG.txt";
+        file_put_contents($file,"Generate Start for employeeId=".$employeeId." monthId=".$monthId." sheetNo=".$sheetNo);
 
         $ruleValueMap = [];
         $ruleTaxValueMap = [];
@@ -117,7 +120,7 @@ class PayrollGenerator {
                 foreach ($this->formattedVariableList as $key => $variable) {
                     $formula = $this->convertVariableToValue($formula, $key, $variable);
                 }
-                
+
                 foreach ($this->formattedSystemRuleList as $key => $systemRule) {
                     $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule, $ruleId);
                 }
@@ -126,6 +129,9 @@ class PayrollGenerator {
                 //added by prabin to remoeve extra params PARS and PARAe end
 
                 $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
+                
+                $current = file_get_contents($file);
+                file_put_contents($file, $current."\r\nstartRuleId=".$ruleId." ".$processedformula);
                 $ruleValue = eval("return {$processedformula} ;");
             }
             $rule = ["ruleValue" => $ruleValue, "rule" => $ruleDetail];
@@ -219,7 +225,7 @@ class PayrollGenerator {
         }
         return $payValue;
     }
-    
+
     // added by prabin start
     private function deleteAllBetweenString($beginning, $end, $string) {
         $beginningPos = strpos($string, $beginning);
@@ -231,5 +237,5 @@ class PayrollGenerator {
         return $this->deleteAllBetweenString($beginning, $end, str_replace($textToDelete, '', $string)); // recursion to ensure all occurrences are replaced
     }
     // added by prabin end
-
+    
 }

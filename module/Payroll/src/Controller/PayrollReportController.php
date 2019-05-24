@@ -117,9 +117,9 @@ class PayrollReportController extends HrisController {
 
     // menu for this action not inserted
     public function groupSheetAction() {
-       $nonDefaultList = $this->repository->getSalaryGroupColumns('S','N');
-       $groupVariables = $this->repository->getSalaryGroupColumns('S');
-       
+        $nonDefaultList = $this->repository->getSalaryGroupColumns('S', 'N');
+        $groupVariables = $this->repository->getSalaryGroupColumns('S');
+
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
 //                    'fiscalYears' => $fiscalYears,
@@ -128,22 +128,21 @@ class PayrollReportController extends HrisController {
                     'groupVariables' => $groupVariables
         ]);
     }
-    
-    
+
     public function pullGroupSheetAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $resultData=[];
+            $resultData = [];
             $reportType = $data['reportType'];
             $groupVariable = $data['groupVariable'];
-            
-            if($reportType=="GS"){
+
+            if ($reportType == "GS") {
                 $defaultColumnsList = $this->repository->getDefaultColumns('S');
-                $resultData = $this->repository->getGroupReport('S',$data);
-            }elseif ($reportType=="GD") {
+                $resultData = $this->repository->getGroupReport('S', $data);
+            } elseif ($reportType == "GD") {
                 $defaultColumnsList = $this->repository->getVarianceDetailColumns($groupVariable);
-                $resultData=$this->repository->getGroupDetailReport($data);
+                $resultData = $this->repository->getGroupDetailReport($data);
             }
             $result = [];
             $result['success'] = true;
@@ -155,11 +154,11 @@ class PayrollReportController extends HrisController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
+
     public function groupTaxReportAction() {
-       $nonDefaultList = $this->repository->getSalaryGroupColumns('T','N');
-       $groupVariables = $this->repository->getSalaryGroupColumns('T');
-       
+        $nonDefaultList = $this->repository->getSalaryGroupColumns('T', 'N');
+        $groupVariables = $this->repository->getSalaryGroupColumns('T');
+
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
 //                    'fiscalYears' => $fiscalYears,
@@ -168,23 +167,21 @@ class PayrollReportController extends HrisController {
                     'groupVariables' => $groupVariables
         ]);
     }
-    
-    
+
     public function pullGroupTaxReportAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
-            $resultData=[];
+            $resultData = [];
             $reportType = $data['reportType'];
             $groupVariable = $data['groupVariable'];
-            
-            if($reportType=="GS"){
+
+            if ($reportType == "GS") {
                 $defaultColumnsList = $this->repository->getDefaultColumns('T');
-                $resultData = $this->repository->getGroupReport('T',$data);
-                
-            }elseif ($reportType=="GD") {
+                $resultData = $this->repository->getGroupReport('T', $data);
+            } elseif ($reportType == "GD") {
                 $defaultColumnsList = $this->repository->getVarianceDetailColumns($groupVariable);
-                $resultData=$this->repository->getGroupDetailReport($data);
+                $resultData = $this->repository->getGroupDetailReport($data);
             }
             $result = [];
             $result['success'] = true;
@@ -196,6 +193,32 @@ class PayrollReportController extends HrisController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-    
+
+    public function monthlySummaryAction() {
+
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
+    }
+
+    public function pullMonthlySummaryAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $resultData = [];
+            $resultData['additionDetail'] = $this->repository->fetchMonthlySummary('A', $data);
+            $resultData['deductionDetail'] = $this->repository->fetchMonthlySummary('D', $data);
+
+            $result = [];
+            $result['success'] = true;
+            $result['data'] = $resultData;
+//            $result['columns'] = $defaultColumnsList;
+            $result['error'] = "";
+            return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
 
 }

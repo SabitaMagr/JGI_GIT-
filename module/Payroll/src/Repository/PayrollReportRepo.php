@@ -711,5 +711,20 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         }
         return $dbArray;
     }
+    
+    public function fetchMonthlySummary($type,$data){
+        $monthId = $data['monthId'];
+        $sql="SELECT 
+            PS.PAY_ID,PS.PAY_CODE,PS.PAY_EDESC,PS.PAY_TYPE_FLAG
+            ,SUM(SD.VAL)
+            FROM HRIS_PAY_SETUP PS 
+            LEFT JOIN HRIS_SALARY_SHEET SS ON (SS.MONTH_ID={$monthId})
+            LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND PS.PAY_ID=SD.PAY_ID)
+            WHERE PS.PAY_Type_flag='{$type}'
+            GROUP BY PS.PAY_ID,PS.PAY_CODE,PS.PAY_EDESC,PS.PAY_TYPE_FLAG";
+        
+         $result=EntityHelper::rawQueryResult($this->adapter, $sql);
+          return Helper::extractDbData($result);
+    }
 
 }
