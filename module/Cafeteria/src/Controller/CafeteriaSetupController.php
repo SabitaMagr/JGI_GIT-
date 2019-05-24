@@ -2,7 +2,6 @@
 namespace Cafeteria\Controller;
 
 use Application\Controller\HrisController;
-use Application\Helper\EntityHelper;
 use Application\Helper\Helper;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;

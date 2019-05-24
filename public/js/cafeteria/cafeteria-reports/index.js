@@ -5,135 +5,226 @@
 
         var $employeeTable = $('#employeeTable');
         var $search = $('#search');
-
+        var $time = $("#time");
         
-        app.initializeKendoGrid($employeeTable, [
-            {field: "EMPLOYEE_CODE", title: "Code", locked: true, width: 70},
-            {field: "FULL_NAME", title: "Full Name", locked: true, width: 150},
-            {field: "MOBILE_NO", title: "Mobile No", locked: true, width: 100},
-            {title: "Birth Date", locked: true, columns: [
-                    {field: "BIRTH_DATE_AD", title: "AD", width: 80},
-                    {field: "BIRTH_DATE_BS", title: "BS", width: 80}
-                ]},
-            {title: "Join Date", locked: true, columns: [
-                    {field: "JOIN_DATE_AD", title: "AD", width: 80},
-                    {field: "JOIN_DATE_BS", title: "BS", width: 80}
-                ]},
-            {field: "COMPANY_NAME", title: "Company", width: 150},
-            {field: "BRANCH_NAME", title: "Branch", width: 150},
-            {field: "DEPARTMENT_NAME", title: "Department", width: 150},
-            {field: "DESIGNATION_TITLE", title: "Designation", width: 150},
-            {field: "POSITION_NAME", title: "Position", width: 150},
-            {field: "LEVEL_NO", title: "Level", width: 150},
-            {field: "LOCATION_EDESC", title: "Location", width: 150},
-            {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 150},
-            {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Level", width: 150}
-        ]);
-        app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME', 'MOBILE_NO', 'BIRTH_DATE', 'COMPANY_NAME', 'BRANCH_NAME', 'DEPARTMENT_NAME', 'DESIGNATION_TITLE'], false);
-  
-        var map = {
-            'EMPLOYEE_ID': 'Employee Id',
-            'EMPLOYEE_CODE': 'Employee Code',
-            'TITLE': 'Title',
-            'FULL_NAME': 'Employee',
-            'GENDER_NAME': 'Gender',
-            'BIRTH_DATE_AD': 'Birth Date(AD)',
-            'BIRTH_DATE_BS': 'Birth Date(BS)',
-            'JOIN_DATE_AD': 'Join Date(AD)',
-            'JOIN_DATE_BS': 'Join Date(BS)',
-            'COUNTRY_NAME': 'Country',
-            'RELIGION_NAME': 'Religion',
-            'BLOOD_GROUP_CODE': 'Blood Group',
-            'MOBILE_NO': 'Mobile No',
-            'TELEPHONE_NO': 'Telephone No',
-            'SOCIAL_ACTIVITY': 'Social Activity',
-            'EXTENSION_NO': 'Extension No',
-            'EMAIL_OFFICIAL': 'Official Email',
-            'EMAIL_PERSONAL': 'Personal Email',
-            'SOCIAL_NETWORK': 'Social Network',
-            'COMPANY_NAME': 'Company',
-            'BRANCH_NAME': 'Branch',
-            'DEPARTMENT_NAME': 'Department',
-            'DESIGNATION_TITLE': 'Designation',
-            'POSITION_NAME': 'Position',
-            'LEVEL_NO': 'Level',
-            'SERVICE_TYPE_NAME': 'Service Type',
-            'EMPLOYEE_TYPE': 'Employee Type',
-            'LOCATION_EDESC': 'Location',
-            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
-            'FUNCTIONAL_LEVEL_NO': 'Functional Level No',
-            'FUNCTIONAL_LEVEL_EDESC': 'Functional Level',
-            'ADDR_PERM_HOUSE_NO': 'Permanent House No',
-            'ADDR_PERM_WARD_NO': 'Permanent Ward No',
-            'ADDR_PERM_STREET_ADDRESS': 'Permanent Street Address',
-            'ADDR_PERM_COUNTRY_NAME': 'Permanent Country',
-            'ADDR_PERM_ZONE_NAME': 'Permanent Zone',
-            'ADDR_PERM_DISTRICT_NAME': 'Permanent District',
-            'VDC_MUNICIPALITY_NAME_PERM': 'Permanent VDC/Municipality',
-            'ADDR_TEMP_HOUSE_NO': 'Temporary House No',
-            'ADDR_TEMP_WARD_NO': 'Temporary Ward No',
-            'ADDR_TEMP_STREET_ADDRESS': 'Temporary Street Address',
-            'ADDR_TEMP_COUNTRY_NAME': 'Temporary Country',
-            'ADDR_TEMP_ZONE_NAME': 'Temporary Zone',
-            'ADDR_TEMP_DISTRICT_NAME': 'Temporary District',
-            'VDC_MUNICIPALITY_NAME_TEMP': 'Temporary VDC/Municipality',
-            'EMRG_CONTACT_NAME': 'Emergency Contact Name',
-            'EMERG_CONTACT_RELATIONSHIP': 'Emergency Contact Relationship',
-            'EMERG_CONTACT_ADDRESS': 'Emergency Contact Address',
-            'EMERG_CONTACT_NO': 'Emergency Contact No',
-            'ID_ACCOUNT_NO': 'Account No',
-            'BANK_ACCOUNT': 'BANK',
-            'ID_THUMB_ID': 'THUMB ID'
-        }; 
-
-        var exportColumnParameters = [];
-        for(var key in map){
-            exportColumnParameters.push({'VALUES' : key, 'COLUMNS' : map[key]});
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
+        var map = {};
+        
+        function generateEmployeeWiseReport(reportData) {
+            $employeeTable.kendoGrid({
+                dataSource: {
+                    data: reportData,
+                    pageSize: 20,
+                    group: { field: "FULL_NAME" , aggregates:[
+                        { field: "QUANTITY", aggregate: "sum" },
+                        { field: "TOTAL_AMOUNT", aggregate: "sum" }
+                    ]},
+                    aggregate: [ 
+                        { field: "QUANTITY", aggregate: "sum" },
+                        { field: "TOTAL_AMOUNT", aggregate: "sum" }
+                    ],
+                    schema:{
+                        model: {
+                            fields: {
+                                QUANTITY: { type: "number" },
+                                TOTAL_AMOUNT: { type: "number" }
+                            }
+                        }
+                    },
+                },
+                
+                height: 550,
+                scrollable: true,
+                sortable: true,
+                groupable: true,
+                filterable: true,
+                pageable: {
+                    input: true,
+                    numeric: false
+                },
+                columns: [
+                    //{field: "LOG_DATE", title: "Log Date", width: "50px"},
+                    {field: "MENU_NAME", title: "Menu Name", width: "50px", groupFooterTemplate: "Total"},
+                    {field: "QUANTITY", title: "Quantity", width: "50px", aggregates: ["sum"], groupFooterTemplate: "#=sum#"},
+                    {field: "TOTAL_AMOUNT", title: "Total Amount", width: "50px", aggregates: ["sum"], groupFooterTemplate: "#=sum#"}
+                ]
+            });
+        } 
+        
+        function generateEmployeeDateWiseReport(reportData) {
+            $employeeTable.kendoGrid({
+                dataSource: {
+                    data: reportData,
+                    pageSize: 20,
+                    group:[ 
+                        {field: "FULL_NAME" , aggregates:[
+                        { field: "QUANTITY", aggregate: "sum" },
+                        { field: "TOTAL_AMOUNT", aggregate: "sum" }
+                    ]},
+                        {field: "LOG_DATE" , aggregates:[
+                        { field: "QUANTITY", aggregate: "sum" },
+                        { field: "TOTAL_AMOUNT", aggregate: "sum" }
+                    ]}],
+                    aggregate: [ 
+                        { field: "QUANTITY", aggregate: "sum" },
+                        { field: "TOTAL_AMOUNT", aggregate: "sum" }
+                    ],
+                    schema:{
+                        model: {
+                            fields: {
+                                QUANTITY: { type: "number" },
+                                TOTAL_AMOUNT: { type: "number" }
+                            }
+                        }
+                    },
+                },
+                
+                height: 550,
+                scrollable: true,
+                sortable: true,
+                groupable: true,
+                filterable: true,
+                pageable: {
+                    input: true,
+                    numeric: false
+                },
+                columns: [
+                    //{field: "LOG_DATE", title: "Log Date", width: "50px"},
+                    {field: "MENU_NAME", title: "Menu Name", width: "50px", groupFooterTemplate: "Total"},
+                    {field: "QUANTITY", title: "Quantity", width: "50px", aggregates: ["sum"], groupFooterTemplate: "#=sum#"},
+                    {field: "TOTAL_AMOUNT", title: "Total Amount", width: "50px", aggregates: ["sum"], groupFooterTemplate: "#=sum#"}
+                ]
+            });
+        } 
+        
+        function generateMenuConsumptionReport(reportData) {
+            $employeeTable.kendoGrid({
+                dataSource: {
+                    data: reportData,
+                    pageSize: 20,
+                    aggregate: [ 
+                        { field: "QUANTITY", aggregate: "sum" },
+                        { field: "AMOUNT", aggregate: "sum" }
+                    ],
+                    schema:{
+                        model: {
+                            fields: {
+                                QUANTITY: { type: "number" },
+                                AMOUNT: { type: "number" }
+                            }
+                        }
+                    },
+                },
+                height: 550,
+                scrollable: true,
+                sortable: true,
+                groupable: true,
+                filterable: true,
+                pageable: {
+                    input: true,
+                    numeric: false
+                },
+                columns: [
+                    //{field: "LOG_DATE", title: "Log Date", width: "50px"},
+                    {field: "MENU_NAME", title: "Menu Name", width: "50px", footerTemplate: "Total"},
+                    {field: "QUANTITY", title: "Quantity", width: "50px", aggregates: ["sum"], footerTemplate: "#=sum#"},
+                    {field: "AMOUNT", title: "Amount", width: "50px", aggregates: ["sum"], footerTemplate: "#=sum#"}
+                ]
+            });
+        } 
+        
+        function generateEmployeeWiseSummary(reportData){
+            var data="";
+            data+='<table class="table>"';
+            data+='<tr><th>Employee Code</th><th>Employee Name</th><th>Amount</th><th>Remarks</th></tr>';
+            for(let i = 0; i < reportData.length; i++){
+                data+='<tr><td>'+reportData[i].EMPLOYEE_CODE+'</td><td>'+reportData[i].FULL_NAME+'</td><td>'+reportData[i].TOTAL+'</td></tr>';
+            }
+            data+='</table>';
+            $employeeTable.append(data);
         }
 
-        var $exparams = $('#exparamsId');
-        app.populateSelect($exparams, exportColumnParameters, 'VALUES', 'COLUMNS');
- 
+        app.populateSelect($time, document.timeList, 'TIME_ID', 'TIME_NAME');
+        
+//        var exportColumnParameters = [];
+//        for(var key in map){
+//            exportColumnParameters.push({'VALUES' : key, 'COLUMNS' : map[key]});
+//        }
+//
+//        var $exparams = $('#exparamsId');
+//        app.populateSelect($exparams, exportColumnParameters, 'VALUES', 'COLUMNS');
+// 
         $('#excelExport').on('click', function () {
-            var exportColumns = [];
-            var map_bk = map;
-            exportColumns = $('#exparamsId').val();
-            if(exportColumns != null){
-                if(exportColumns.length > 0){
-                    map = {};
-                    for(var i = 0; i < exportColumns.length; i++){
-                        map[exportColumns[i]] = map_bk[exportColumns[i]];
-                    }
-                }
+            if($("#reportType").val() == 1){
+                app.excelExport($employeeTable, map, 'Employee List.xlsx');
             }
-            app.excelExport($employeeTable, map, 'Employee List.xlsx');
-            map = map_bk;
+            else{
+                $employeeTable.table2excel({
+                    exclude: ".noExl",
+                    name: "Employee-Wise-Summary",
+                    filename: "Employee Wise Summary" 
+                });
+            }
         });
         $('#pdfExport').on('click', function () {
-            var exportColumns = [];
-            var map_bk = map;
-            exportColumns = $('#exparamsId').val();
-            if(exportColumns != null){
-                if(exportColumns.length > 0){
-                    map = {};
-                    for(var i = 0; i < exportColumns.length; i++){
-                        map[exportColumns[i]] = map_bk[exportColumns[i]];
-                    }
-                }
-            }
             app.exportToPDF($employeeTable, map, 'Employee List.pdf');
-            map = map_bk;
         });
 
+//        $("#reportType").change(function(){
+//            $("#reportType").val() == 1 ? $(".actions").hide(): $(".actions").show() ;
+//        });
+
         $search.on('click', function () {
+            $employeeTable.empty();
             var data = document.searchManager.getSearchValues();
-            app.serverRequest(document.pullEmployeeListForEmployeeTableLink, data).then(function (response) {
+            data['time'] = $time.val();
+            data['toDate'] = $("#toDate").val();
+            data['reportType'] = $("#reportType").val();
+            data['fromDate'] = $("#fromDate").val();
+            if(data['fromDate'] == ''){ alert('From Date is required.'); return false; }
+            data['payType'] = $("#payType").val();
+            
+            app.serverRequest('', data).then(function (response) {
                 if (response.success) {
-                    console.log(response);
-                    app.renderKendoGrid($employeeTable, response.data);
-                } else {
-                    app.showMessage(response.error, 'error');
+                    if(data['reportType'] == 1){
+                        generateEmployeeWiseReport(response.data);
+                        map = {
+                            "EMPLOYEE_CODE" : "EMPLOYEE_CODE",
+                            "FULL_NAME" : "FULL_NAME",
+                            "MENU_NAME" : "MENU_NAME",
+                            "QUANTITY" : "QUANTITY",
+                            "TOTAL_AMOUNT" : "TOTAL_AMOUNT",
+                        };
+                    }
+                 else if(data['reportType'] == 2){
+                    generateEmployeeWiseSummary(response.data);
+                    map = {
+                        "EMPLOYEE_CODE" : "EMPLOYEE_CODE",
+                        "FULL_NAME" : "FULL_NAME",
+                        "AMOUNT" : "AMOUNT",
+                        "REMARKS" : "REMARKS"
+                    };
                 }
+                 else if(data['reportType'] == 3){
+                    generateEmployeeDateWiseReport(response.data);
+                        map = {
+                            "EMPLOYEE_CODE" : "EMPLOYEE_CODE",
+                            "LOG_DATE" : "LOG_DATE",
+                            "FULL_NAME" : "FULL_NAME",
+                            "MENU_NAME" : "MENU_NAME",
+                            "QUANTITY" : "QUANTITY",
+                            "TOTAL_AMOUNT" : "TOTAL_AMOUNT",
+                        };
+                }
+                 else if(data['reportType'] == 4){
+                    generateMenuConsumptionReport(response.data);
+                        map = {
+                            "MENU_NAME" : "MENU_NAME",
+                            "QUANTITY" : "QUANTITY",
+                            "TOTAL" : "TOTAL"
+                        };
+                }
+            }
             }, function (error) {
                 app.showMessage(error, 'error');
             }); 
