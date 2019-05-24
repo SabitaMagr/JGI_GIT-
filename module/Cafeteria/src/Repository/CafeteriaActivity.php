@@ -5,7 +5,6 @@ namespace Cafeteria\Repository;
 use Application\Model\Model;
 use Application\Repository\RepositoryInterface;
 use Zend\Db\Adapter\AdapterInterface;
-use Application\Helper\Helper;
 
 class CafeteriaActivity implements RepositoryInterface {
 

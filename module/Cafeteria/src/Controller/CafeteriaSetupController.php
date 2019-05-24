@@ -188,6 +188,10 @@ class CafeteriaSetupController extends HrisController{
             $data = $request->getPost();
             $this->cafeteriaMapRepo->mapping($data['menu'], $data['time'], $data['type'], $this->employeeId);
             $this->flashmessenger()->addMessage("Success.");
+            return $this->redirect()->toRoute('cafeteriasetup', array(
+                'controller' => 'CafeteriaSetupController',
+                'action' =>  'map'
+            ));
         }
         
         $result = $this->cafeteriaMapRepo->fetchSchedules();

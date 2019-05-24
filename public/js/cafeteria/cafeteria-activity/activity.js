@@ -13,10 +13,7 @@
 
     $(document).ready(function () {
         var menuItems = [];
-
         $(document).on('input', '.qty', function () {
-            
-              
             var tableRow = $('#menuTable tr').length;
             let grandTotal = 0;
             var thisTd = $(this).closest('td').parent()[0].sectionRowIndex;
