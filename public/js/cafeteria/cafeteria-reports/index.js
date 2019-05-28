@@ -14,7 +14,7 @@
             $employeeTable.kendoGrid({
                 dataSource: {
                     data: reportData,
-                    pageSize: 20,
+                    //pageSize: 20,
                     group: { field: "FULL_NAME" , aggregates:[
                         { field: "QUANTITY", aggregate: "sum" },
                         { field: "TOTAL_AMOUNT", aggregate: "sum" }
@@ -51,17 +51,22 @@
             });
         } 
         
+        function parseDate(rawDate) {
+            return new Date(rawDate);   
+        }
+        
         function generateEmployeeDateWiseReport(reportData) {
             $employeeTable.kendoGrid({
                 dataSource: {
                     data: reportData,
-                    pageSize: 20,
-                    group:[ 
-                        {field: "FULL_NAME" , aggregates:[
+                    //pageSize: 20,
+                    sort: { field: "LOG_DATE" },
+                    
+                    group: [{ field: "FULL_NAME" , aggregates:[
                         { field: "QUANTITY", aggregate: "sum" },
                         { field: "TOTAL_AMOUNT", aggregate: "sum" }
                     ]},
-                        {field: "LOG_DATE" , aggregates:[
+                    { field: "LOG_DATE" , aggregates:[
                         { field: "QUANTITY", aggregate: "sum" },
                         { field: "TOTAL_AMOUNT", aggregate: "sum" }
                     ]}],
@@ -73,10 +78,11 @@
                         model: {
                             fields: {
                                 QUANTITY: { type: "number" },
-                                TOTAL_AMOUNT: { type: "number" }
+                                TOTAL_AMOUNT: { type: "number" },
+                                LOG_DATE: { type: "date", parse: parseDate }
                             }
                         }
-                    },
+                    }
                 },
                 
                 height: 550,
@@ -101,16 +107,16 @@
             $employeeTable.kendoGrid({
                 dataSource: {
                     data: reportData,
-                    pageSize: 20,
+                    //pageSize: 20,
                     aggregate: [ 
                         { field: "QUANTITY", aggregate: "sum" },
-                        { field: "AMOUNT", aggregate: "sum" }
+                        { field: "TOTAL_AMOUNT", aggregate: "sum" }
                     ],
                     schema:{
                         model: {
                             fields: {
                                 QUANTITY: { type: "number" },
-                                AMOUNT: { type: "number" }
+                                TOTAL_AMOUNT: { type: "number" }
                             }
                         }
                     },
@@ -128,14 +134,14 @@
                     //{field: "LOG_DATE", title: "Log Date", width: "50px"},
                     {field: "MENU_NAME", title: "Menu Name", width: "50px", footerTemplate: "Total"},
                     {field: "QUANTITY", title: "Quantity", width: "50px", aggregates: ["sum"], footerTemplate: "#=sum#"},
-                    {field: "AMOUNT", title: "Amount", width: "50px", aggregates: ["sum"], footerTemplate: "#=sum#"}
+                    {field: "TOTAL_AMOUNT", title: "Amount", width: "50px", aggregates: ["sum"], footerTemplate: "#=sum#"}
                 ]
             });
         } 
         
         function generateEmployeeWiseSummary(reportData){
             var data="";
-            data+='<table class="table>"';
+            data+='<table class="table">';
             data+='<tr><th>Employee Code</th><th>Employee Name</th><th>Amount</th><th>Remarks</th></tr>';
             for(let i = 0; i < reportData.length; i++){
                 data+='<tr><td>'+reportData[i].EMPLOYEE_CODE+'</td><td>'+reportData[i].FULL_NAME+'</td><td>'+reportData[i].TOTAL+'</td></tr>';
@@ -143,17 +149,28 @@
             data+='</table>';
             $employeeTable.append(data);
         }
+        
+        function generateEmployeeCalendar(reportData, columns){
+              $employeeTable.kendoGrid({
+                dataSource: {
+                    data: reportData,
+                    //pageSize: 20,
+                },
+                height: 550,
+                scrollable: true,
+                sortable: true,
+                groupable: true,
+                filterable: true,
+                pageable: {
+                    input: true,
+                    numeric: false
+                },
+                columns: columns
+            });
+        }
 
         app.populateSelect($time, document.timeList, 'TIME_ID', 'TIME_NAME');
         
-//        var exportColumnParameters = [];
-//        for(var key in map){
-//            exportColumnParameters.push({'VALUES' : key, 'COLUMNS' : map[key]});
-//        }
-//
-//        var $exparams = $('#exparamsId');
-//        app.populateSelect($exparams, exportColumnParameters, 'VALUES', 'COLUMNS');
-// 
         $('#excelExport').on('click', function () {
             if($("#reportType").val() == 1){
                 app.excelExport($employeeTable, map, 'Employee List.xlsx');
@@ -222,6 +239,29 @@
                             "MENU_NAME" : "MENU_NAME",
                             "QUANTITY" : "QUANTITY",
                             "TOTAL" : "TOTAL"
+                        };
+                }
+                 else if(data['reportType'] == 5){
+                    var columns = [];
+                    
+                    for(let i in response.data[0]){
+                        columns.push({field: i, title: i.replace(/_/g, "-").replace(/DATE-/g, ""), width: "150px"});
+                    }
+                    columns.push({field: "TOTAL", title: "Total", width: "150px"});
+                    
+                    for (let i = 0; i < response.data.length; i++) {
+                        response.data[i].TOTAL = 0;
+                        for(let j in response.data[i]){
+                            if(j == 'FULL_NAME'){
+                                continue;
+                            }
+                            response.data[i].TOTAL += (parseInt(response.data[i][j]) || 0);
+                        }
+                    }
+                    
+                    generateEmployeeCalendar(response.data, columns);
+                        map = {
+                            
                         };
                 }
             }
