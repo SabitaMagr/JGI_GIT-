@@ -245,17 +245,22 @@
                     var columns = [];
                     
                     for(let i in response.data[0]){
+                        if(i == 'FULL_NAME'){
+                            columns.push({field: i, title: "Employee", width: "150px"});
+                            continue;
+                        }
                         columns.push({field: i, title: i.replace(/_/g, "-").replace(/DATE-/g, ""), width: "150px"});
                     }
                     columns.push({field: "TOTAL", title: "Total", width: "150px"});
                     
                     for (let i = 0; i < response.data.length; i++) {
                         response.data[i].TOTAL = 0;
+                        parseFloat(response.data[i].TOTAL);
                         for(let j in response.data[i]){
-                            if(j == 'FULL_NAME'){
+                            if(j == 'FULL_NAME' || j == 'TOTAL'){
                                 continue;
                             }
-                            response.data[i].TOTAL += (parseInt(response.data[i][j]) || 0);
+                            response.data[i].TOTAL += (parseFloat(response.data[i][j]) || 0);
                         }
                     }
                     

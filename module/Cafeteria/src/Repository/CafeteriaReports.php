@@ -47,29 +47,21 @@ class CafeteriaReports implements RepositoryInterface {
         $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
         $sql='';
         if($by['reportType'] == 1){
-            $sql = "SELECT DISTINCT EMPLOYEE_ID, EMPLOYEE_CODE, FULL_NAME, MENU_NAME, QUANTITY, TOTAL_AMOUNT FROM (
-                SELECT hcms.menu_name AS MENU_NAME,
-                        sum(held.quantity) AS QUANTITY,
-                        sum(held.total_amount) AS TOTAL_AMOUNT
+            $sql = "SELECT hcms.menu_name AS menu_name,
+                    e.employee_id as employee_id,
+                    e.full_name as full_name,
+                    SUM(held.quantity) AS quantity,
+                    SUM(held.total_amount) AS total_amount 
                 FROM HRIS_CAFETERIA_LOG_DETAIL HELD JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID = HELD.EMPLOYEE_ID
                 ) JOIN HRIS_CAFETERIA_MENU_SETUP HCMS ON (HELD.MENU_CODE = HCMS.MENU_ID)
                 WHERE 1=1 {$condition} AND HELD.LOG_DATE BETWEEN '$fromDate'";
+                
                 $sql.= $toDate=='' ? " AND TRUNC(SYSDATE)" : " AND '$toDate'";
                 $sql.= $time!='' && $time!=null ? " AND HELD.TIME_CODE IN ($time)" : '' ;
                 $sql.= $payType!='' && $payType!=null ? " AND HELD.PAY_TYPE IN ($payType)" : '' ;
-                $sql.=' group by
-                    hcms.menu_name),';
-                $sql.="(SELECT
-                        E.EMPLOYEE_ID AS EMPLOYEE_ID,
-                        E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
-                        E.FULL_NAME AS FULL_NAME
-                FROM HRIS_CAFETERIA_LOG_DETAIL HELD JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID = HELD.EMPLOYEE_ID
-                ) JOIN HRIS_CAFETERIA_MENU_SETUP HCMS ON (HELD.MENU_CODE = HCMS.MENU_ID)
-                WHERE 1=1 {$condition} AND HELD.LOG_DATE BETWEEN '$fromDate'";
-                $sql.= $toDate=='' ? " AND TRUNC(SYSDATE)" : " AND '$toDate'";
-                $sql.= $time!='' && $time!=null ? " AND HELD.TIME_CODE IN ($time)" : '' ;
-                $sql.= $payType!='' && $payType!=null ? " AND HELD.PAY_TYPE IN ($payType)" : '' ;
-                $sql.=')';
+                $sql.=' GROUP BY
+            hcms.menu_name, E.EMPLOYEE_ID, e.full_name
+            order by e.employee_id';
         }
         
         if($by['reportType'] == 3){
