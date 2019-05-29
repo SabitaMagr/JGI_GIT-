@@ -11,7 +11,6 @@ use Application\Helper\Helper;
 class CafeteriaReports implements RepositoryInterface {
 
     private $adapter;
-    private $tableGateway;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -42,7 +41,7 @@ class CafeteriaReports implements RepositoryInterface {
         $fromDate = $by['fromDate']=='' ? 'TRUNC(SYSDATE)' : $by['fromDate'] ;
         $toDate = $by['toDate'];
         $time = $by['time'] != '' ? implode(',', $by['time']) : '' ;
-        $payType = $by['payType'] != '' ? implode(',', $by['payType']) : '' ;
+        $payType = $by['payType'] != '' ? "'" . implode("','", $by['payType']) . "'" : '' ;
         
         $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
         $sql='';
@@ -103,7 +102,7 @@ class CafeteriaReports implements RepositoryInterface {
             WHERE
             1 = 1 {$condition} AND HEL.LOG_DATE BETWEEN '$fromDate'";
             $sql.= $toDate=='' ? " AND TRUNC(SYSDATE)" : " AND '$toDate'";
-            $sql.= $time!='' && $time!=null ? " AND HEL.TIME_CODE IN ($time)" : '' ;
+            $sql.= $time!='' && $time!=null ? " AND HEL.TIME_ID IN ($time)" : '' ;
             $sql.= $payType!='' && $payType!=null ? " AND HEL.PAY_TYPE IN ($payType)" : '' ;
             $sql.= ' GROUP BY E.EMPLOYEE_ID, E.EMPLOYEE_CODE, E.full_name' ;
         }
@@ -180,7 +179,7 @@ class CafeteriaReports implements RepositoryInterface {
             $sql.= " GROUP BY HELD.LOG_DATE, e.full_name) 
                     PIVOT(SUM(TOTAL_AMOUNT) FOR(LOG_DATE) IN ($datesIn))";
         }
-        //echo $sql; die;
+        echo $sql; die;
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
