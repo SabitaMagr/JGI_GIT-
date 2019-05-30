@@ -10,6 +10,7 @@ use Application\Model\FiscalYear;
 use Application\Model\Months;
 use Exception;
 use Payroll\Repository\PayrollReportRepo;
+use Payroll\Repository\RulesRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 
@@ -195,10 +196,9 @@ class PayrollReportController extends HrisController {
     }
 
     public function monthlySummaryAction() {
-
-
         return Helper::addFlashMessagesToArray($this, [
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference'=>$this->preference
         ]);
     }
 
@@ -209,6 +209,37 @@ class PayrollReportController extends HrisController {
             $resultData = [];
             $resultData['additionDetail'] = $this->repository->fetchMonthlySummary('A', $data);
             $resultData['deductionDetail'] = $this->repository->fetchMonthlySummary('D', $data);
+
+            $result = [];
+            $result['success'] = true;
+            $result['data'] = $resultData;
+//            $result['columns'] = $defaultColumnsList;
+            $result['error'] = "";
+            return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
+    
+    public function departmentWiseAction() {
+        $ruleRepo = new RulesRepository($this->adapter);
+        $ruleList = iterator_to_array($ruleRepo->fetchAll(), false);
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference'=>$this->preference,
+                    'ruleList'=>$ruleList
+        ]);
+    }
+    
+    
+    public function pulldepartmentWiseAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+//            $resultData = [];
+            $resultData = $this->repository->pulldepartmentWise($data);
+//            $resultData['deductionDetail'] = $this->repository->fetchMonthlySummary('D', $data);
 
             $result = [];
             $result['success'] = true;

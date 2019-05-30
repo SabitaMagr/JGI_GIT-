@@ -508,11 +508,11 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
-    public function getSalaryGroupColumns($type,$default=null) {
-        $defaultString=" ";
-                if($default!=null){
-                    $defaultString="AND Show_Default='{$default}'";
-                }
+    public function getSalaryGroupColumns($type, $default = null) {
+        $defaultString = " ";
+        if ($default != null) {
+            $defaultString = "AND Show_Default='{$default}'";
+        }
         $sql = "select VARIANCE_ID,VARIANCE_NAME from Hris_Variance 
             where status='E' 
             AND VARIABLE_TYPE='{$type}'
@@ -521,7 +521,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         return Helper::extractDbData($data);
     }
 
-    public function getGroupReport($variableType,$data) {
+    public function getGroupReport($variableType, $data) {
         $variable = $this->fetchSalaryGroupVariable($variableType);
 
         $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
@@ -607,9 +607,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $data = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($data);
     }
-    
+
     public function getGroupDetailReport($data) {
-        
+
 
         $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
         $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
@@ -624,10 +624,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $monthId = $data['monthId'];
 //        $fiscalId = $data['fiscalId'];
-        
+
         $groupVariable = $data['groupVariable'];
         $variable = $this->fetchGroupDetailVariable($groupVariable);
-        
+
 //        print_r($variable);
 //        die();
 
@@ -676,10 +676,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 WHERE 1=1 
              {$searchConditon}
              ";
-             
-             return EntityHelper::rawQueryResult($this->adapter, $sql);
+
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
-    
+
     public function getVarianceDetailColumns($varianceId) {
         $sql = "select 
             'V'||vp.pay_id  as VARIANCE,ps.pay_edesc as VARIANCE_NAME
@@ -687,14 +687,13 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             Hris_Variance_Payhead vp
             left join Hris_Pay_Setup ps on (vp.pay_id=ps.pay_id)
             where variance_id={$varianceId}";
-            
+
         $data = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($data);
     }
-    
-    
+
     private function fetchGroupDetailVariable($varianceId) {
-        $sql="select 
+        $sql = "select 
         vp.pay_id  as VARIANCE_ID,ps.pay_edesc as VARIANCE_NAME
         from 
         Hris_Variance_Payhead vp
@@ -711,20 +710,112 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         }
         return $dbArray;
     }
-    
-    public function fetchMonthlySummary($type,$data){
+
+    public function fetchMonthlySummary($type, $data) {
+
+        $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+        $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+        $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+        $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+        $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+        $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+        $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+        $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+        $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
+        $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
+        $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $monthId = $data['monthId'];
-        $sql="SELECT 
+
+        $searchConditon = EntityHelper::getSearchConditonPayroll($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+
+        $sql = "SELECT 
             PS.PAY_ID,PS.PAY_CODE,PS.PAY_EDESC,PS.PAY_TYPE_FLAG
-            ,SUM(SD.VAL)
+            ,CASE WHEN SUM(SD.VAL) IS NULL THEN 0 ELSE SUM(SD.VAL) END AS TOTAL
             FROM HRIS_PAY_SETUP PS 
             LEFT JOIN HRIS_SALARY_SHEET SS ON (SS.MONTH_ID={$monthId})
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND PS.PAY_ID=SD.PAY_ID)
+            LEFT JOIN Hris_Salary_Sheet_Emp_Detail SSED ON (SSED.SHEET_NO=SD.SHEET_NO AND SSED.EMPLOYEE_ID=SD.EMPLOYEE_ID)
             WHERE PS.PAY_Type_flag='{$type}'
+             {$searchConditon} 
             GROUP BY PS.PAY_ID,PS.PAY_CODE,PS.PAY_EDESC,PS.PAY_TYPE_FLAG";
-        
-         $result=EntityHelper::rawQueryResult($this->adapter, $sql);
-          return Helper::extractDbData($result);
+
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($result);
+    }
+
+    public function pulldepartmentWise($data) {
+
+        $salarySheetRepo = new SalarySheetDetailRepo($this->adapter);
+
+        $in = $salarySheetRepo->fetchPayIdsAsArray();
+
+        $departmentId = (isset($data['departmentId']) && $data['departmentId'] != -1 ) ? $data['departmentId'] : null;
+        $monthId = $data['monthId'];
+
+        $othersList = array();
+
+        $departmentList = $this->fetchDepartmentList($departmentId);
+        $counter = 0;
+        foreach ($departmentList as $dep) {
+            $tempVal = $this->getMonthlySummaryByDep($monthId, $dep['DEPARTMENT_ID'], $in);
+            if (isset($tempVal['PARENT_DEPARTMENT']) && $departmentId && $counter == 0) {
+                $tempVal['PARENT_DEPARTMENT'] = null;
+                $counter++;
+            }
+            if ($tempVal) {
+                array_push($othersList, $tempVal);
+            }
+        }
+        return $othersList;
+    }
+
+    public function fetchDepartmentList($departmentId = null) {
+        if ($departmentId != null) {
+            $sql = "
+                        select {$departmentId} as DEPARTMENT_ID from dual
+                            union all
+                SELECT CD.DEPARTMENT_ID FROM
+                         HRIS_DEPARTMENTS CD
+                        START WITH CD.PARENT_DEPARTMENT={$departmentId}
+                        CONNECT BY CD.PARENT_DEPARTMENT= PRIOR CD.DEPARTMENT_ID
+                        ";
+        } else {
+            $sql = "select * from hris_departments where status='E' ";
+        }
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($result);
+    }
+
+    public function getMonthlySummaryByDep($monthId, $departmentId, $inVal) {
+        $sql = "select D.Department_Name,D.Parent_Department,p.* from (SELECT 
+            Department_Id
+            ,PAY_ID
+            ,CASE WHEN SUM(VAL) IS NULL THEN 0 ELSE SUM(VAL) END AS TOTAL
+            from
+             (SELECT 
+            {$departmentId} as Department_Id
+            ,PS.PAY_ID
+            ,SD.VAL
+            FROM HRIS_PAY_SETUP PS 
+            left JOIN HRIS_SALARY_SHEET SS ON (SS.MONTH_ID={$monthId})
+            LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND PS.PAY_ID=SD.PAY_ID)
+            LEFT JOIN Hris_Salary_Sheet_Emp_Detail SSED ON (SSED.SHEET_NO=SD.SHEET_NO AND SSED.EMPLOYEE_ID=SD.EMPLOYEE_ID and Ssed.Department_Id in (
+            SELECT CD.DEPARTMENT_ID FROM
+                         HRIS_DEPARTMENTS CD
+                        START WITH CD.PARENT_DEPARTMENT={$departmentId}
+                        CONNECT BY CD.PARENT_DEPARTMENT= PRIOR CD.DEPARTMENT_ID
+                        union
+                        select {$departmentId} from dual
+            )) where Department_Id is not null
+            )
+             GROUP BY Department_Id,PAY_ID
+            ) P
+            PIVOT (
+            MAX(total) FOR PAY_ID IN ({$inVal})
+            ) P 
+            LEFT JOIN Hris_Departments D ON (D.Department_Id=P.Department_Id)";
+        $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return $result->current();
     }
 
 }

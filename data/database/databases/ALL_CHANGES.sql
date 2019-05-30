@@ -1379,3 +1379,15 @@ ADD PAY_ID_AMT NUMBER(7,0);
 
 ALTER TABLE HRIS_LOAN_MASTER_SETUP
 ADD PAY_ID_INT NUMBER(7,0);
+
+-- ONLY FOR SOALTEE START
+insert into  Hris_Preferences
+values ('COMPANY_NAME','SOALTEE CROWN PLAZA');
+
+insert into  Hris_Preferences
+values ('COMPANY_ADDRESS','Tachal Kathmandu');
+
+insert into  Hris_Preferences
+values ('COMPANY_ACCOUNT_NO','0101011126901');
+
+-- ONLT FOR SOALTEE END
