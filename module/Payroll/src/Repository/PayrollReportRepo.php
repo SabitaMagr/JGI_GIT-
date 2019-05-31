@@ -195,15 +195,15 @@ AND Show_Default='N'";
         $monthId = $data['monthId'];
 //        $fiscalId = $data['fiscalId'];
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchConditon = EntityHelper::getSearchConditonPayroll($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
         $sql = "SELECT 
-            E.FULL_NAME,
+            SSED.FULL_NAME,
             E.EMPLOYEE_CODE
             ,E.BIRTH_DATE
-            ,E.JOIN_DATE
-            ,D.DEPARTMENT_NAME
-            ,FUNT.FUNCTIONAL_TYPE_EDESC
+            ,SSED.JOIN_DATE
+            ,SSED.DEPARTMENT_NAME
+            ,SSED.FUNCTIONAL_TYPE_EDESC
             ,GB.*
             ,SSED.SERVICE_TYPE_NAME
             ,SSED.DESIGNATION_TITlE
@@ -220,7 +220,7 @@ AND Show_Default='N'";
             FROM HRIS_VARIANCE V
             LEFT JOIN HRIS_VARIANCE_PAYHEAD VP ON (V.VARIANCE_ID=VP.VARIANCE_ID)
             LEFT JOIN (select * from HRIS_SALARY_SHEET) SS ON (1=1)
-            LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
+            JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
             WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='O' 
             and SS.MONTH_ID={$monthId}
             GROUP BY SD.EMPLOYEE_ID,V.VARIANCE_NAME,Vp.Variance_Id,SS.Month_ID,SS.SHEET_NO)
@@ -237,7 +237,8 @@ AND Show_Default='N'";
              {$searchConditon}
              ";
 
-
+//             echo $sql;
+//             die();
 
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
@@ -463,7 +464,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
         $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
-        $fiscalId = $data['fiscalId'];
+//        $fiscalId = $data['fiscalId'];
+        $monthId = $data['monthId'];
+        $extraMonth = $data['extraMonth'];
 
         $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
@@ -488,9 +491,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             FROM HRIS_VARIANCE V
             LEFT JOIN HRIS_VARIANCE_PAYHEAD VP ON (V.VARIANCE_ID=VP.VARIANCE_ID)
             LEFT JOIN (select * from HRIS_SALARY_SHEET) SS ON (1=1)
-            LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
-            LEFT JOIN HRIS_MONTH_CODE MC ON (SS.MONTH_ID=MC.MONTH_ID) 
-            WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='O'  AND Mc.Fiscal_Year_Id={$fiscalId} 
+            JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
+            JOIN HRIS_MONTH_CODE MC ON (SS.MONTH_ID=MC.MONTH_ID) 
+            WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='O' 
+            AND (SS.MONTH_ID between  {$monthId} and {$extraMonth})
             GROUP BY SD.EMPLOYEE_ID,V.VARIANCE_NAME,Vp.Variance_Id)
             PIVOT ( MAX( TOTAL )
                 FOR Variance_Id 
@@ -816,6 +820,14 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             LEFT JOIN Hris_Departments D ON (D.Department_Id=P.Department_Id)";
         $result = EntityHelper::rawQueryResult($this->adapter, $sql);
         return $result->current();
+    }
+
+    public function getMonthList() {
+        $sql = "select * from Hris_Month_Code where 
+                Fiscal_Year_Id=(select max(Fiscal_Year_Id) 
+                from Hris_Fiscal_Years) order by Fiscal_Year_Month_No";
+        $data = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($data);
     }
 
 }

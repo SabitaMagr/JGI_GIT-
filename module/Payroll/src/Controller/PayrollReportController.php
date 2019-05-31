@@ -61,6 +61,7 @@ class PayrollReportController extends HrisController {
 
     public function gradeBasicAction() {
         $datas['otVariables'] = $this->repository->getGbVariables();
+        $datas['monthList'] = $this->repository->getMonthList();
 
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
@@ -76,6 +77,8 @@ class PayrollReportController extends HrisController {
             $reportType = $data['reportType'];
             if ($reportType == 'S') {
                 $results = $this->repository->getGradeBasicSummary($data);
+            } elseif ($reportType == 'D') {
+                $results = $this->repository->getGradeBasicReport($data);
             } else {
                 $results = $this->repository->getGradeBasicReport($data);
             }

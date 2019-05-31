@@ -53,7 +53,8 @@
                 toolbar: ["excel"],
                 excel: {
                     fileName: "Kendo UI TreeList Export.xlsx",
-                    filterable: true
+                    filterable: true,
+                    allPages:true
                 },
                 dataSource: {
                     data: treeData,
