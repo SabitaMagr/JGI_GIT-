@@ -384,7 +384,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                      LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                      WHERE 1=1 {$searchConditon}
                 ";
-
+                        
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
@@ -505,6 +505,42 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 WHERE 1=1 
              {$searchConditon}
                 ";
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    public function getSpecialMonthly($data){
+        $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
+        $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
+        $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
+        $designationId = isset($data['designationId']) ? $data['designationId'] : -1;
+        $positionId = isset($data['positionId']) ? $data['positionId'] : -1;
+        $serviceTypeId = isset($data['serviceTypeId']) ? $data['serviceTypeId'] : -1;
+        $serviceEventTypeId = isset($data['serviceEventTypeId']) ? $data['serviceEventTypeId'] : -1;
+        $employeeTypeId = isset($data['employeeTypeId']) ? $data['employeeTypeId'] : -1;
+        $genderId = isset($data['genderId']) ? $data['genderId'] : -1;
+        $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
+        $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
+        $fiscalId = $data['fiscalId'];
+
+        $varianceVariable = $this->fetchOtVariableMonthly();
+        $monthIdList = $this->fetchMonthIdList($fiscalId);
+
+        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+
+        $sql = "SELECT HLSED.ACCOUNT_NO, HLSED.FULL_NAME, HLSED.SALARY,(
+                    SELECT HLSED.SALARY +
+                    sum((case when hps.pay_type_flag = 'D' then -1 else 1 end)* 
+                    val) FROM HRIS_SALARY_SHEET_DETAIL  hssd
+                    join hris_pay_setup hps on hssd.pay_id = hps.pay_id where hssd.employee_id = hlsed.employee_id 
+                    and hps.include_in_salary = 'Y') CR_AMOUNT FROM HRIS_SALARY_SHEET_EMP_DETAIL HLSED
+                     LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=HLSED.EMPLOYEE_ID)
+                     LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
+                     LEFT JOIN HRIS_DESIGNATIONS DES ON (E.DESIGNATION_ID=DES.DESIGNATION_ID)
+                     LEFT JOIN HRIS_POSITIONS P ON (E.POSITION_ID=P.POSITION_ID)
+                     LEFT JOIN HRIS_SERVICE_TYPES ST ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
+                     LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
+                     WHERE 1=1 {$searchConditon}";
+                     
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 

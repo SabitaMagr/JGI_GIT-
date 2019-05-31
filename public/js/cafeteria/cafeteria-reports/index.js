@@ -12,6 +12,12 @@
         
         function generateEmployeeWiseReport(reportData) {
             $employeeTable.kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "Department Wise Attendance Report.xlsx",
+                    filterable: true,
+                    allPages: true
+                },
                 dataSource: {
                     data: reportData,
                     //pageSize: 20,
@@ -57,6 +63,12 @@
         
         function generateEmployeeDateWiseReport(reportData) {
             $employeeTable.kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "Department Wise Attendance Report.xlsx",
+                    filterable: true,
+                    allPages: true
+                },
                 dataSource: {
                     data: reportData,
                     //pageSize: 20,
@@ -105,6 +117,12 @@
         
         function generateMenuConsumptionReport(reportData) {
             $employeeTable.kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "Department Wise Attendance Report.xlsx",
+                    filterable: true,
+                    allPages: true
+                },
                 dataSource: {
                     data: reportData,
                     //pageSize: 20,
@@ -152,6 +170,12 @@
         
         function generateEmployeeCalendar(reportData, columns){
               $employeeTable.kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "Department Wise Attendance Report.xlsx",
+                    filterable: true,
+                    allPages: true
+                },
                 dataSource: {
                     data: reportData,
                     //pageSize: 20,
@@ -172,16 +196,11 @@
         app.populateSelect($time, document.timeList, 'TIME_ID', 'TIME_NAME');
         
         $('#excelExport').on('click', function () {
-            if($("#reportType").val() == 1){
-                app.excelExport($employeeTable, map, 'Employee List.xlsx');
-            }
-            else{
                 $employeeTable.table2excel({
                     exclude: ".noExl",
                     name: "Employee-Wise-Summary",
                     filename: "Employee Wise Summary" 
                 });
-            }
         });
         $('#pdfExport').on('click', function () {
             app.exportToPDF($employeeTable, map, 'Employee List.pdf');

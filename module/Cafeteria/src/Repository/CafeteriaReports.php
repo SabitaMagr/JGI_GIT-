@@ -179,7 +179,7 @@ class CafeteriaReports implements RepositoryInterface {
             $sql.= " GROUP BY HELD.LOG_DATE, e.full_name) 
                     PIVOT(SUM(TOTAL_AMOUNT) FOR(LOG_DATE) IN ($datesIn))";
         }
-        echo $sql; die;
+        //echo $sql; die;
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }

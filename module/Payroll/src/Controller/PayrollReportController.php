@@ -12,6 +12,7 @@ use Exception;
 use Payroll\Repository\PayrollReportRepo;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 
 class PayrollReportController extends HrisController {
 
@@ -113,6 +114,22 @@ class PayrollReportController extends HrisController {
         } catch (Exception $e) {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
+    }
+
+    public function specialMonthlyReportAction() {
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $data = $request->getPost();
+            $result = Helper::extractDbData($this->repository->getSpecialMonthly($data));
+            return new JsonModel(['success' => true, 'data' => $result, 'message' => null]);
+        }
+        
+        $otVariables = $this->repository->getGbVariables();
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'otVariables' => $otVariables
+        ]);
     }
 
 }

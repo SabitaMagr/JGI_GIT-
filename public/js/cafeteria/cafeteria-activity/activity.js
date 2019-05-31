@@ -33,7 +33,7 @@
                 grandTotal += a;
             }
             $("tr:nth-of-type(" + (tableRow) + ") .totalAmount").text(grandTotal);
-            $("tr:nth-of-type(" + (tableRow) + ") .totalAmountVal input").val(total);
+            $("tr:nth-of-type(" + (tableRow) + ") .totalAmountVal input").val(grandTotal);
         });
 
         var employeeChange = function (obj) {
@@ -85,6 +85,7 @@
                 alert("No items in the list!");
                 return false;
             }
+            
             return true;
         })
     });
