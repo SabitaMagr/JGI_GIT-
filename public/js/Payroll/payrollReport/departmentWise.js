@@ -2,7 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $('Select').select2();
-
+        let aggredCols = [];
         var monthList = null;
         var $fiscalYear = $('#fiscalYearId');
         var $month = $('#monthId');
@@ -11,7 +11,7 @@
 //        var exportType = {
 //            "ACCOUNT_NO": "STRING",
 //        };
-//        
+//      
         var exportMap = {
             "DEPARTMENT_NAME": "Department"
         };
@@ -46,7 +46,7 @@
             exportMap["P_" + value['PAY_ID']] = value['PAY_EDESC'] + "(" + signFn(value['PAY_TYPE_FLAG']) + ")";
         });
 
-
+        columns.push({field: "TOTAL", title: "Total", width: 160});
 
         function loadKendo(treeData, columns) {
             $table.kendoTreeList({
@@ -58,6 +58,7 @@
                 },
                 dataSource: {
                     data: treeData,
+                    aggregate: aggredCols,
                     schema: {
                         model: {
                             id: "DEPARTMENT_ID",
@@ -90,6 +91,16 @@
             q['monthId'] = $month.val();
             app.serverRequest(document.pulldepartmentWiseLink, q).then(function (response) {
                 if (response.success) {
+                    for(let i = 0; i < response.data.length; i++){
+                        response.data[i].TOTAL = 0;
+                        for(let j in response.data[0]){
+                            if(j == 'DEPARTMENT_NAME' || j == 'DEPARTMENT_ID' || j == 'PARENT_DEPARTMENT' || j == 'TOTAL'){
+                                continue;
+                            }
+                            response.data[i].TOTAL+=parseFloat(response.data[i][j]);
+                        }
+                    }
+                    
                     $("#table").data("kendoTreeList").dataSource.data(response.data);
                 } else {
                     app.showMessage(response.error, 'error');
