@@ -460,7 +460,7 @@ class LoanStatusRepository implements RepositoryInterface {
          WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
      select trunc(add_Months('{$fromDate}', level-1),'month') result
       from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+2
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
       ) AND HELR.EMPLOYEE_ID = $emp_id
       GROUP BY HLPD.FROM_DATE
       
@@ -475,7 +475,7 @@ class LoanStatusRepository implements RepositoryInterface {
          WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
      select trunc(add_Months('{$fromDate}', level-1),'month') result
       from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+2
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
       ) AND HELR.EMPLOYEE_ID = $emp_id
       GROUP BY HLPD.FROM_DATE
      
@@ -490,7 +490,7 @@ class LoanStatusRepository implements RepositoryInterface {
          WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
      select trunc(add_Months('{$fromDate}', level-1),'month') result
       from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+2
+      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
       ) AND HELR.EMPLOYEE_ID = $emp_id
       GROUP BY HLPD.FROM_DATE
       
