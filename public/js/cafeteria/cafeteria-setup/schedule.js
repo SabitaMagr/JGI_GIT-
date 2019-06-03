@@ -57,7 +57,12 @@
             document.scheduleDetails[data.id-1].TIME_ID = response[0].TIME_ID;
             document.scheduleDetails[data.id-1].TIME_NAME = response[0].TIME_NAME;
             document.scheduleDetails[data.id-1].REMARKS = response[0].REMARKS;
+            $("#tr-"+document.scheduleDetails[data.id-1].TIME_ID+" button").html(document.scheduleDetails[data.id-1].TIME_NAME);
         }
+
+        $(document).on("keypress", function(e){
+            if(e.keyCode == 13 && !$("#remarks").is(":focus")){ return false; }
+        });
         
         $("#submit").click(function(){
            if($(".edit-cancel").html().toUpperCase() == 'EDIT'){

@@ -93,14 +93,13 @@
 //                    }
 //                }
 //            });
-
 //            console.log(map);
 //            app.initializeKendoGrid($table, columns);
 
             $table.kendoGrid({
                 toolbar: ["excel"],
                 excel: {
-                    fileName: "Department Wise Attendance Report.xlsx",
+                    fileName: "Basic Monthly Report.xlsx",
                     filterable: true,
                     allPages: true
                 },
@@ -125,8 +124,6 @@
                 },
                 columns: columns
             });
-
-
         }
 
 

@@ -25,10 +25,6 @@
             {ID: "JOIN_DATE", VALUE: "Join Date"}
         ];
 
-
-
-
-
         app.setFiscalMonth($fiscalYear, $month, function (years, months, currentMonth) {
             monthList = months;
         });
@@ -40,9 +36,10 @@
         app.populateSelect($extraFields, extraFieldsList, 'ID', 'VALUE', '---', '');
 
 
-        var initKendoGrid = function (defaultColumns, otVariables, extraVariable) {
+        var initKendoGrid = function (defaultColumns, otVariables, extraVariable, data) {
+            let dataSchemaCols = {};
+            let aggredCols = [];
             $table.empty();
-//            console.log(defaultColumns);
             map = {
                 'EMPLOYEE_CODE': 'Employee Code',
                 'FULL_NAME': 'Employee',
@@ -79,9 +76,13 @@
                 columns.push({
                     field: value['VARIANCE'],
                     title: value['VARIANCE_NAME'],
-                    width: 100
+                    width: 100,
+                    aggregates: ["sum"],
+                    footerTemplate: "#=sum||0#"
                 });
                 map[value['VARIANCE']] = value['VARIANCE_NAME'];
+                dataSchemaCols[value['VARIANCE']] = {type: "number"};
+                aggredCols.push({field: value['VARIANCE'], aggregate: "sum"});
             });
 
             $.each(otVariables, function (index, value) {
@@ -90,25 +91,46 @@
                         columns.push({
                             field: 'V' + value,
                             title: document.nonDefaultList[i]['VARIANCE_NAME'],
-                            width: 100
+                            width: 100,
+                            aggregates: ["sum"],
+                            footerTemplate: "#=sum||0#"
                         });
                         map['V' + value] = document.nonDefaultList[i]['VARIANCE_NAME'];
+                        dataSchemaCols['V' + value] = {type: "number"};
+                        aggredCols.push({field: 'V' + value, aggregate: "sum"});
                     }
                 }
             });
 
-            console.log(map);
-            app.initializeKendoGrid($table, columns);
-
-
-
-
+            $table.kendoGrid({
+                toolbar: ["excel"],
+                excel: {
+                    fileName: "Group Tax Report.xlsx",
+                    filterable: true,
+                    allPages: true
+                },
+                dataSource: {
+                    data: data,
+                    schema: {
+                        model: {
+                            fields: dataSchemaCols
+                        }
+                    },
+                    pageSize: 20,
+                    aggregate: aggredCols
+                },
+                height: 550,
+                scrollable: true,
+                sortable: true,
+                groupable: true,
+                filterable: true,
+                pageable: {
+                    input: true,
+                    numeric: false
+                },
+                columns: columns
+            });
         }
-
-
-
-
-
 
         $('#searchEmployeesBtn').on('click', function () {
             var q = document.searchManager.getSearchValues();
@@ -118,34 +140,29 @@
             q['extField'] = $extraFields.val();
             q['reportType'] = $reportType.val();
             q['groupVariable'] = $groupVariable.val();
-            console.log(q);
 
             app.serverRequest(document.pullGroupTaxReportLink, q).then(function (response) {
                 if (response.success) {
                     console.log(response);
                     if(q['reportType']=='GS'){
-                    initKendoGrid(response.columns, $otVariable.val(), $extraFields.val());
+                    initKendoGrid(response.columns, $otVariable.val(), $extraFields.val(), response.data);
                 }else if(q['reportType']=='GD'){
-                    initKendoGrid(response.columns, [], $extraFields.val());
+                    initKendoGrid(response.columns, [], $extraFields.val(), response.data);
                 }
-                    app.renderKendoGrid($table, response.data);
+                    //app.renderKendoGrid($table, response.data);
                 } else {
                     app.showMessage(response.error, 'error');
                 }
             }, function (error) {
                 app.showMessage(error, 'error');
             });
-
-
         });
-
-
 
         $('#excelExport').on('click', function () {
-            app.excelExport($table, map, 'GroupSheet.xlsx',exportType);
+            app.excelExport($table, map, 'GroupTax.xlsx',exportType);
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($table, map, 'GroupSheet.pdf');
+            app.exportToPDF($table, map, 'GroupTax.pdf');
         });
 
 

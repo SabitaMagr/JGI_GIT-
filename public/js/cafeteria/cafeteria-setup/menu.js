@@ -64,6 +64,7 @@
             document.menuDetails[data.id-1].QUANTITY = response[0].QUANTITY;
             document.menuDetails[data.id-1].RATE = response[0].RATE;
             document.menuDetails[data.id-1].REMARKS = response[0].REMARKS;
+            $("#tr-"+document.menuDetails[data.id-1].MENU_ID+" button").html(document.menuDetails[data.id-1].MENU_NAME);
         }
         
         $("#submit").click(function(){
@@ -99,6 +100,10 @@
                 app.showMessage(error, 'error');
             });
            }
+        });
+
+        $(document).on("keypress", function(e){
+            if(e.keyCode == 13 && !$("#remarks").is(":focus")){ return false; }
         });
         
         $(".delete").click(function(){

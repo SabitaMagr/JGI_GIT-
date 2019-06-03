@@ -513,8 +513,6 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
     }
 
     public function getSpecialMonthly($data) {
-        $variable = $this->fetchSalaryGroupVariable($variableType);
-
         $companyId = isset($data['companyId']) ? $data['companyId'] : -1;
         $branchId = isset($data['branchId']) ? $data['branchId'] : -1;
         $departmentId = isset($data['departmentId']) ? $data['departmentId'] : -1;
