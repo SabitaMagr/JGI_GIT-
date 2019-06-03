@@ -7,7 +7,8 @@ $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
         ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/Payroll/payrollReport/gradeBasic.js'));
+        ->appendFile($this->basePath('js/table2excel/src/jquery.table2excel.js'))
+        ->appendFile($this->basePath('js/Payroll/payrollReport/monthlySummary.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -18,9 +19,8 @@ $this->headScript()
 
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
-    document.datas =<?php echo json_encode($datas); ?>;
     document.getFiscalYearMonthLink = '<?php echo $this->url('payrollReport', ['action' => 'getFiscalYearMonth']); ?>';
-    document.pullGradeBasicLink = '<?= $this->url("payrollReport", ["action" => "pullGradeBasic"]) ?>';
+    document.pullMonthlySummaryLink = '<?= $this->url("payrollReport", ["action" => "pullMonthlySummary"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -107,32 +107,9 @@ $this->headScript()
                             <select id="monthId">
                             </select>
                         </div>
-                        <div class="col-sm-2">
-                            <label>Variables</label>
-                            <select multiple class="form-control" name="otVariable" id="otVariable">
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <label>Extra Fields</label>
-                            <select multiple class="form-control" name="extraFields" id="extraFields">
-                            </select>
-                        </div>
-                        <div class="col-sm-2">
-                            <label>Report Type</label>
-                            <select class="form-control" name="reportType" id="reportType">
-                                <option value="B">Basic</option>
-                                <option value="D">Days</option>
-                                <option value="S">Summary</option>
-                            </select>
-                        </div>
                     </div>
-                    <div class="row margin-top-10">
-                        <div class="col-sm-2">
-                            <label> To Month</label>
-                            <select id="extraMonth">
-                            </select>
-                        </div>
-                    </div>
+                    
+                    
                     <div class="row margin-top-10">
                         <div class="col-sm-4 col-sm-offset-8">
                             <button id="reset" class="btn default btn-sm pull-right">
@@ -181,7 +158,29 @@ $this->headScript()
 
                 </div>
                 <div class="portlet-body">
-                    <div id="table">
+                    <div id="summaryDiv">
+                        <div class="col-sm-offset-2">
+                        <h3><?=$preference['companyName']; ?></h3>
+                        <b><?=$preference['companyAddress']; ?></b> </br>
+                        Salary Summary 
+                        </div>
+                        <table id="tableSummary" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Particular</th>
+                                    <th>Amount</th>
+                                    <th>SN</th>
+                                    <th>Particular</th>
+                                    <th>Amount</th>
+                                </tr>
+                                
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                        
                     </div>
 
                 </div>

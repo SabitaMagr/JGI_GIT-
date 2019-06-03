@@ -48,11 +48,11 @@ class Variance {
     public $showDifference;
     
     /**
-     * @Annotation\Type("Zend\Form\Element\Radio")
-     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
-     * @Annotation\Options({"value_options":{"V":"Variance","O":"Other"},"label":"Variable Type"})
-     * @Annotation\Required(false)
-     * @Annotation\Attributes({"id":"variableType","value":"V"})
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"fa"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Variable Type"})
+     * @Annotation\Attributes({ "id":"variableType","class":"form-control"})
      */
     public $variableType;
 
@@ -71,5 +71,15 @@ class Variance {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Required(false)
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"label":"Order No"})
+     * @Annotation\Attributes({ "id":"orderNo","class":"form-control","min":"0"})
+     */
+    public $orderNo;
 
 }

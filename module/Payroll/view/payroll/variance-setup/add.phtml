@@ -7,6 +7,8 @@ $payId = $form->get('payId');
 $showDefault = $form->get('showDefault');
 $showDifference = $form->get('showDifference');
 $variableType = $form->get('variableType');
+$variableType->setValueOptions($variableTypeList);
+$orderNo = $form->get('orderNo');
 $remarks = $form->get('remarks');
 $submit = $form->get('submit');
 $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'add']));
@@ -80,13 +82,23 @@ $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'add']));
                     <div class="col-sm-4 col-md-6 col-lg-4">
                         <div class="form-group">
                             <?php print $this->formLabel($variableType); ?>
-                            <div class="md-radio-inline">
-                                <?php $customRenderer($variableType); ?>
-                            </div>
+                            <?php print $this->formElement($variableType); ?>
+                            <?php print $this->formElementErrors()->render($variableType, ['class' => 'help-block']); ?>
                         </div>
-
+                    </div>
+                    
+                    <div class="col-sm-4 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($orderNo); ?>
+                            <?php print $this->formElement($orderNo); ?>
+                            <?php print $this->formElementErrors()->render($orderNo, ['class' => 'help-block']); ?>
+                        </div>
                     </div>
 
+
+                </div>
+
+                <div class="row">
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
@@ -94,9 +106,8 @@ $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'add']));
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
                         </div>
                     </div>
-
                 </div>
-
+                
                 <?php
                 print $this->formSubmit($submit);
                 print $this->form()->closeTag();

@@ -423,5 +423,58 @@ class EntityHelper {
         }
         return ' ORDER BY '.$orderByString;
     }
+    
+    
+     public static function getSearchConditonPayroll($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId = null, $locationId = null, $functionalTypeId = null) {
+        $conditon = "";
+        if ($companyId != null && $companyId != -1) {
+            $conditon .= self::conditionBuilder($companyId, "SSED.COMPANY_ID", "AND");
+        }
+        if ($branchId != null && $branchId != -1) {
+            $conditon .= self::conditionBuilder($branchId, "SSED.BRANCH_ID", "AND");
+        }
+        if ($departmentId != null && $departmentId != -1) {
+            $parentQuery = "(SELECT DEPARTMENT_ID FROM
+                         HRIS_DEPARTMENTS 
+                        START WITH PARENT_DEPARTMENT in (INVALUES)
+                        CONNECT BY PARENT_DEPARTMENT= PRIOR DEPARTMENT_ID
+                        UNION 
+                        SELECT DEPARTMENT_ID FROM HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN (INVALUES)
+                        UNION
+                        SELECT  TO_NUMBER(TRIM(REGEXP_SUBSTR(EXCEPTIONAL,'[^,]+', 1, LEVEL) )) DEPARTMENT_ID
+  FROM (SELECT EXCEPTIONAL  FROM  HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN  (INVALUES))
+   CONNECT BY  REGEXP_SUBSTR(EXCEPTIONAL, '[^,]+', 1, LEVEL) IS NOT NULL
+                        )";
+            $conditon .= self::conditionBuilder($departmentId, "SSED.DEPARTMENT_ID", "AND", false, $parentQuery);
+        }
+        if ($positionId != null && $positionId != -1) {
+            $conditon .= self::conditionBuilder($positionId, "SSED.POSITION_ID", "AND");
+        }
+        if ($designationId != null && $designationId != -1) {
+            $conditon .= self::conditionBuilder($designationId, "SSED.DESIGNATION_ID", "AND");
+        }
+        if ($serviceTypeId != null && $serviceTypeId != -1) {
+            $conditon .= self::conditionBuilder($serviceTypeId, "SSED.SERVICE_TYPE_ID", "AND");
+        }
+//        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
+//            $conditon .= self::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
+//        }
+//        if ($employeeTypeId != null && $employeeTypeId != -1) {
+//            $conditon .= self::conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND", true);
+//        }
+        if ($employeeId != null && $employeeId != -1) {
+            $conditon .= self::conditionBuilder($employeeId, "SSED.EMPLOYEE_ID", "AND");
+        }
+        if ($genderId != null && $genderId != -1) {
+            $conditon .= self::conditionBuilder($genderId, "SSED.GENDER_ID", "AND");
+        }
+//        if ($locationId != null && $locationId != -1) {
+//            $conditon .= self::conditionBuilder($locationId, "E.LOCATION_ID", "AND");
+//        }
+        if ($functionalTypeId != null && $functionalTypeId != -1) {
+            $conditon .= self::conditionBuilder($functionalTypeId, "SSED.FUNCTIONAL_TYPE_ID", "AND");
+        }
+        return $conditon;
+    }
 
 }

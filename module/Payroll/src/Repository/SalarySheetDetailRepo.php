@@ -71,7 +71,7 @@ class SalarySheetDetailRepo extends HrisRepository {
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
-    private function fetchPayIdsAsArray() {
+    public function fetchPayIdsAsArray() {
         $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT PAY_ID FROM HRIS_PAY_SETUP WHERE STATUS ='E'");
         $dbArray = "";
         foreach ($rawList as $key => $row) {

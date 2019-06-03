@@ -20,6 +20,7 @@ class VarianceSetup extends Model {
     CONST DELETED_DT = "DELETED_DT";
     CONST DELETED_BY = "DELETED_BY";
     CONST REMARKS = "REMARKS";
+    CONST ORDER_NO = "ORDER_NO";
 
     public $varianceId;
     public $varianceName;
@@ -34,6 +35,7 @@ class VarianceSetup extends Model {
     public $deletedDt;
     public $deletedBy;
     public $remarks;
+    public $orderNo;
     
     public $mappings = [
         'varianceId' => self::VARIANCE_ID,
@@ -48,7 +50,8 @@ class VarianceSetup extends Model {
         'modifiedDt' => self::MODIFIED_DT,
         'deletedDt' => self::DELETED_DT,
         'deletedBy' => self::DELETED_BY,
-        'remarks' => self::REMARKS
+        'remarks' => self::REMARKS,
+        'orderNo' => self::ORDER_NO
     ];
 
 }

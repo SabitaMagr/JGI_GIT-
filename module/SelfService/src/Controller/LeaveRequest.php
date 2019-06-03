@@ -107,7 +107,7 @@ class LeaveRequest extends HrisController {
                 $leaveRequest->endDate = Helper::getExpressionDate($leaveRequest->endDate);
                 $leaveRequest->requestedDt = Helper::getcurrentExpressionDate();
                 $leaveRequest->status = "RQ";
-                if (isset($postedData['subRefId'])  && $postedData['subRefId']!=' ') {
+                if (isset($postData['subRefId'])  && $postData['subRefId']!=' ') {
                     $leaveRequest->subRefId = $postData['subRefId'];
                 }
                 $this->repository->add($leaveRequest);
@@ -145,6 +145,12 @@ class LeaveRequest extends HrisController {
         if(isset($this->preference['subLeaveReference'])){
         $subLeaveReference=$this->preference['subLeaveReference'];
         }
+        
+        $subLeaveMaxDays = '500';
+        if (isset($this->preference['subLeaveMaxDays'])) {
+            $subLeaveMaxDays = $this->preference['subLeaveMaxDays'];
+        }
+        
 //        echo $subLeaveReference;
 //        die();
         return Helper::addFlashMessagesToArray($this, [
@@ -154,6 +160,7 @@ class LeaveRequest extends HrisController {
                     'customRenderer' => Helper::renderCustomView(),
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true),
                     'subLeaveReference' => $subLeaveReference,
+                    'subLeaveMaxDays' => $subLeaveMaxDays
         ]);
     }
 

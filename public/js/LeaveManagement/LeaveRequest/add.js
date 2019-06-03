@@ -4,7 +4,8 @@
         $('select').select2();
 
         var subLeaveReference = document.subLeaveReference;
-        console.log(subLeaveReference);
+        var subLeaveMaxDays = document.subLeaveMaxDays;
+//        console.log(subLeaveMaxDays);
 
         var $employee = $('#employeeId');
         var $leave = $('#leaveId');
@@ -74,7 +75,19 @@
                 } else {
                     $errorMsg.html("");
                     $request.prop("disabled", false);
+                // to check substitute leave
+                if (subLeaveReference == 'Y') {
+                    var selectedSubRefId = $subRefId.val();
+                    $.each(substituteDetails, function (index, value) {
+                        if (selectedSubRefId == value.ID) {
+                            validateSubstitueLeave(startDateStr,endDateStr,value);
+                        }
+                    });
                 }
+                }
+                
+                
+                
 
             }, function (error) {
                 app.showMessage(error, 'error');
@@ -337,6 +350,31 @@
                 });
             }
         });
+        
+        var validateSubstitueLeave= function (startDate,endDate,$subDetail){
+            let sD= new Date(startDate);
+            let eD= new Date(endDate);
+            let subEndD= new Date($subDetail['SUB_END_DATE']);
+            let subValD= new Date($subDetail['SUB_VALIDATE_DAYS']);
+            console.log('--s');
+            console.log(sD);
+            console.log(eD);
+            console.log(subEndD);
+            console.log(subValD);
+            console.log('--e');
+            
+            if (sD <= subEndD) {
+                    $('#errorMsgSubRef').html("* LeaveCant Be Taken Before Event");
+                    $request.prop("disabled", true);
+                } else if (sD > subValD) {
+                    $('#errorMsgSubRef').html("* Leave Has been Expired");
+                    $request.prop("disabled", true);
+                } else {
+                    $('#errorMsgSubRef').html("");
+                    $request.prop("disabled", false);
+                }
+            
+        }
 
     });
 })(window.jQuery, window.app);

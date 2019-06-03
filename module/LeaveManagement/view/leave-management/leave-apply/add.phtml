@@ -45,6 +45,7 @@ print $this->form()->openTag($form);
     document.wsFetchAvailableDays = '<?= $this->url("leaveapply", ["action" => "fetchAvailableDays"]) ?>';
     document.wsValidateLeaveRequest = '<?= $this->url("leaveapply", ["action" => "validateLeaveRequest"]) ?>';
     document.subLeaveReference = '<?=$subLeaveReference?>';
+    document.subLeaveMaxDays = '<?=$subLeaveMaxDays?>';
 </script>
 
 <div class="row margin-top-20" >
@@ -99,6 +100,7 @@ print $this->form()->openTag($form);
                             <label>IN SUB LEAVE</label>
                             <select name="subRefId" id="subRefId" class="form-control" >
                             </select>
+                              <span id="errorMsgSubRef" style="font-size:11px; color:red;"></span>
                         </div>
                     </div>
                     
