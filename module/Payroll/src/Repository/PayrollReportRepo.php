@@ -521,17 +521,24 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $fiscalId = $data['fiscalId'];
+        $monthId = $data['monthId'];
 
         $varianceVariable = $this->fetchOtVariableMonthly();
         $monthIdList = $this->fetchMonthIdList($fiscalId);
 
         $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
-        $sql = "SELECT HLSED.ACCOUNT_NO, HLSED.FULL_NAME, HLSED.SALARY,(
+        $sql = "SELECT ROWNUM AS S_NO, HLSED.ACCOUNT_NO, HLSED.FULL_NAME, (
                     SELECT HLSED.SALARY +
                     sum((case when hps.pay_type_flag = 'D' then -1 else 1 end)* 
                     val) FROM HRIS_SALARY_SHEET_DETAIL  hssd
-                    join hris_pay_setup hps on hssd.pay_id = hps.pay_id where hssd.employee_id = hlsed.employee_id 
+                    join hris_pay_setup hps on hssd.pay_id = hps.pay_id where hssd.employee_id = hlsed.employee_id
+                    AND 
+                    hssd.pay_id IN(
+                    SELECT PAY_ID FROM HRIS_SALARY_SHEET_DETAIL
+                    WHERE SHEET_NO IN(
+                    SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID = $monthId
+                    )) 
                     and hps.include_in_salary = 'Y') CR_AMOUNT FROM HRIS_SALARY_SHEET_EMP_DETAIL HLSED
                      LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=HLSED.EMPLOYEE_ID)
                      LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
@@ -540,7 +547,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                      LEFT JOIN HRIS_SERVICE_TYPES ST ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
                      LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                      WHERE 1=1 {$searchConditon}";
-                     
+                     //echo $sql; die;
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 

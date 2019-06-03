@@ -30,13 +30,15 @@
         });
 
         var columns = [
+            {field: "S_NO", title: "S. NO", width: 100, locked: true},
             {field: "ACCOUNT_NO", title: "Account Number", width: 200, locked: true},
             {field: "FULL_NAME", title: "Employee", width: 200, locked: true},
-            {field: "DR_AMOUNT", title: "Dr. Amount", width: 200},
-            {field: "CR_AMOUNT", title: "Cr. Amount", width: 200}
+            {field: "DR_AMOUNT", title: "Dr. Amount", width: 200, format: "{0:0.##}"},
+            {field: "CR_AMOUNT", title: "Cr. Amount", width: 200, format: "{0:0.##}"}
         ];
 
         map = {
+            'S_NO': 'S.NO',
             'ACCOUNT_NO': 'Account Number',
             'FULL_NAME': 'Employee',
             'DR_AMOUNT': 'Dr. Amount',
@@ -75,6 +77,7 @@
         $('#searchEmployeesBtn').on('click', function () {
             var q = document.searchManager.getSearchValues();
             q['fiscalId'] = $fiscalYear.val();
+            q['monthId'] = $month.val();
             q['extVar'] = $otVariable.val();
             q['extField'] = $extraFields.val();
             if (!($fiscalYear.val() > 0)) {
@@ -86,12 +89,14 @@
                 if (response.success) {
                     $table.empty();
                     response.data.push({
-                        ACCOUNT_NO: "000099908890",
+                        S_NO: parseInt(response.data[response.data.length-1]["S_NO"])+1,
+                        ACCOUNT_NO: "0101011126901",
                         FULL_NAME: "SOALTEE CROWN PLAZA",
                         DR_AMOUNT: response.data.reduce((a, b) => +a + +b.CR_AMOUNT, 0),
                         CR_AMOUNT: ''
                     });
                     response.data.push({
+                        S_NO: '',
                         ACCOUNT_NO: "TOTAL",
                         FULL_NAME: "",
                         DR_AMOUNT: response.data[response.data.length-1]["DR_AMOUNT"],
