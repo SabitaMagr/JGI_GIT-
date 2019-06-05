@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Controller;
 
 use Application\Custom\CustomViewModel;
@@ -14,6 +15,7 @@ use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
+use Setup\Model\HrEmployees;
 
 class BranchController extends AbstractActionController {
 
@@ -44,7 +46,8 @@ class BranchController extends AbstractActionController {
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
-                $result = $this->repository->fetchAllWithCompany();
+//                $result = $this->repository->fetchAllWithCompany();
+                $result = $this->repository->fetchAllWithBranchManager(); //use where BranchManager is required
                 $branchList = Helper::extractDbData($result);
                 return new CustomViewModel(['success' => true, 'data' => $branchList, 'error' => '']);
             } catch (Exception $e) {
@@ -75,26 +78,36 @@ class BranchController extends AbstractActionController {
             }
         }
         $countryKV = HrisQuery::singleton()
-            ->setAdapter($this->adapter)
-            ->setTableName("HRIS_COUNTRIES")
-            ->setColumnList(["COUNTRY_ID", "COUNTRY_NAME"])
-            ->setKeyValue("COUNTRY_ID", "COUNTRY_NAME")
-            ->setIncludeEmptyRow(true)
-            ->result();
+                ->setAdapter($this->adapter)
+                ->setTableName("HRIS_COUNTRIES")
+                ->setColumnList(["COUNTRY_ID", "COUNTRY_NAME"])
+                ->setKeyValue("COUNTRY_ID", "COUNTRY_NAME")
+                ->setIncludeEmptyRow(true)
+                ->result();
         $companyKV = HrisQuery::singleton()
-            ->setAdapter($this->adapter)
-            ->setTableName(Company::TABLE_NAME)
-            ->setColumnList([Company::COMPANY_ID, Company::COMPANY_NAME])
-            ->setWhere([Company::STATUS => 'E'])
-            ->setKeyValue(Company::COMPANY_ID, Company::COMPANY_NAME)
-            ->setIncludeEmptyRow(true)
-            ->result();
+                ->setAdapter($this->adapter)
+                ->setTableName(Company::TABLE_NAME)
+                ->setColumnList([Company::COMPANY_ID, Company::COMPANY_NAME])
+                ->setWhere([Company::STATUS => 'E'])
+                ->setKeyValue(Company::COMPANY_ID, Company::COMPANY_NAME)
+                ->setIncludeEmptyRow(true)
+                ->result();
+        $employeeKV = HrisQuery::singleton()
+                ->setAdapter($this->adapter)
+                ->setTableName(HrEmployees::TABLE_NAME)
+                ->setColumnList([HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME])
+                ->setWhere([HrEmployees::STATUS => 'E'])
+                ->setKeyValue(HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME)
+                ->setIncludeEmptyRow(TRUE)
+                ->result();
+
         return Helper::addFlashMessagesToArray($this, [
-                'form' => $this->form,
-                'countries' => $countryKV,
-                'companies' => $companyKV,
-                'customRenderer' => Helper::renderCustomView()
-                ]
+                    'form' => $this->form,
+                    'countries' => $countryKV,
+                    'companies' => $companyKV,
+                    'employees' => $employeeKV,
+                    'customRenderer' => Helper::renderCustomView()
+                        ]
         );
     }
 
@@ -121,26 +134,35 @@ class BranchController extends AbstractActionController {
             }
         }
         $countryKV = HrisQuery::singleton()
-            ->setAdapter($this->adapter)
-            ->setTableName("HRIS_COUNTRIES")
-            ->setColumnList(["COUNTRY_ID", "COUNTRY_NAME"])
-            ->setKeyValue("COUNTRY_ID", "COUNTRY_NAME")
-            ->setIncludeEmptyRow(true)
-            ->result();
+                ->setAdapter($this->adapter)
+                ->setTableName("HRIS_COUNTRIES")
+                ->setColumnList(["COUNTRY_ID", "COUNTRY_NAME"])
+                ->setKeyValue("COUNTRY_ID", "COUNTRY_NAME")
+                ->setIncludeEmptyRow(true)
+                ->result();
         $companyKV = HrisQuery::singleton()
-            ->setAdapter($this->adapter)
-            ->setTableName(Company::TABLE_NAME)
-            ->setColumnList([Company::COMPANY_ID, Company::COMPANY_NAME])
-            ->setWhere([Company::STATUS => 'E'])
-            ->setKeyValue(Company::COMPANY_ID, Company::COMPANY_NAME)
-            ->setIncludeEmptyRow(true)
-            ->result();
+                ->setAdapter($this->adapter)
+                ->setTableName(Company::TABLE_NAME)
+                ->setColumnList([Company::COMPANY_ID, Company::COMPANY_NAME])
+                ->setWhere([Company::STATUS => 'E'])
+                ->setKeyValue(Company::COMPANY_ID, Company::COMPANY_NAME)
+                ->setIncludeEmptyRow(true)
+                ->result();
+        $employeeKV = HrisQuery::singleton()
+                ->setAdapter($this->adapter)
+                ->setTableName(HrEmployees::TABLE_NAME)
+                ->setColumnList([HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME])
+                ->setWhere([HrEmployees::STATUS => 'E'])
+                ->setKeyValue(HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME)
+                ->setIncludeEmptyRow(true)
+                ->result();
         return Helper::addFlashMessagesToArray($this, [
-                'form' => $this->form,
-                'id' => $id,
-                'countries' => $countryKV,
-                'companies' => $companyKV,
-                'customRenderer' => Helper::renderCustomView()
+                    'form' => $this->form,
+                    'id' => $id,
+                    'countries' => $countryKV,
+                    'companies' => $companyKV,
+                    'employees' => $employeeKV,
+                    'customRenderer' => Helper::renderCustomView()
         ]);
     }
 
@@ -157,4 +179,5 @@ class BranchController extends AbstractActionController {
         $this->flashmessenger()->addMessage("Branch Successfully Deleted!!!");
         return $this->redirect()->toRoute('branch');
     }
+
 }

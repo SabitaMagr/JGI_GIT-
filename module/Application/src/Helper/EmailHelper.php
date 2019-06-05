@@ -13,15 +13,15 @@ class EmailHelper {
     public static function getSmtpTransport(): Smtp {
         $transport = new Smtp();
         $options = new SmtpOptions([
-            'host' => 'duster.websitewelcome.com',
-            'port' => 587,
+            'host' => 'smtp.ionos.com',
+            'port' => 465,
             'connection_class' => 'login',
             'connection_config' => [
-//                'username' => 'ukesh.gaiju@itnepal.com',
-//                'password' => 'ukesh@123',
+// 'username' => 'ukesh.gaiju@itnepal.com',
+// 'password' => 'ukesh@123',
                 'username' => 'prabin.maharjan@itnepal.com',
                 'password' => 'prabin@123',
-                'ssl' => 'tls',
+                'ssl' => 'ssl',
             ],
         ]);
         $transport->setOptions($options);

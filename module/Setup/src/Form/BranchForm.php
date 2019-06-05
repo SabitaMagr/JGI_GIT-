@@ -87,5 +87,13 @@ class BranchForm {
      * @Annotation\Attributes({"value":"Submit","class":"btn btn-success"})
      */
     public $submit;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Branch Manager"})
+     * @Annotation\Attributes({ "id":"branchManager","class":"form-control"})
+     */
+    public $branchManager;
 
 }

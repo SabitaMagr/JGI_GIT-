@@ -17,6 +17,9 @@ $countryId->setValueOptions($countries);
 $companyId = $form->get('companyId');
 $companyId->setValueOptions($companies);
 
+$branchManager= $form->get('branchManager');
+$branchManager->setValueOptions($employees);
+
 //custom validatin message
 if (key($telephone->getMessages()) == "regexNotMatch") {
     $telephone->setMessages(["regexNotMatch" => "Invalid Phone Number"]);
@@ -109,6 +112,13 @@ $form->prepare();
                             <?php print $this->formLabel($remarks); ?>
                             <?php print $this->formElement($remarks); ?>
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block error']); ?>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($branchManager); ?>
+                            <?php print $this->formElement($branchManager); ?>
+                            <?php print $this->formElementErrors()->render($branchManager, ['class' => 'help-block']); ?>
                         </div>
                     </div>
                 </div>
