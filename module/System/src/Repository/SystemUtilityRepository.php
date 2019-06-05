@@ -202,4 +202,12 @@ class SystemUtilityRepository implements RepositoryInterface {
         return Helper::extractDbData($result);
     }
 
+    public function runQuery($query) {
+        $sql = $query;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+//    return $this->rawQuery($sql);
+    }
+
 }

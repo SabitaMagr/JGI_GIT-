@@ -1142,7 +1142,7 @@ INTO HRIS_MENUS
     is_visible
 ) VALUES (
     NULL,
-    3081,
+    (select max(menu_id)+1 from hris_menus),
     'Basic Report',
     85,
     NULL,
@@ -1177,7 +1177,7 @@ INSERT INTO hris_menus (
     is_visible
 ) VALUES (
     NULL,
-    3081,
+    (select max(menu_id)+1 from hris_menus),
     'Employee Statement',
     85,
     NULL,
@@ -1192,6 +1192,45 @@ INSERT INTO hris_menus (
     NULL,
     'Y'
 );
+
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Query Helper',
+    (select menu_id from hris_menus where lower(menu_name) like '%utility%'),
+    NULL,
+    'system-utility',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'query',
+    (select max(menu_index)+1  from hris_menus where lower(menu_name) like '%utility%'),
+    NULL,
+    NULL,
+    'Y'
+  );
 
 
 
