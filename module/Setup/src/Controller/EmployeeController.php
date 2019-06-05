@@ -436,8 +436,10 @@ class EmployeeController extends HrisController {
 
         $assetRepo = new IssueRepository($this->adapter);
         $assetDetails = $assetRepo->fetchAssetByEmployee($id);
-
-
+        
+        $relationRepo = new \Setup\Repository\EmployeeRelationRepo($this->adapter);
+        $relationDetails = $relationRepo->getByEmpId($id);
+        
         return Helper::addFlashMessagesToArray($this, [
                 'formOne' => $this->formOne,
                 'formTwo' => $this->formTwo,
@@ -460,6 +462,7 @@ class EmployeeController extends HrisController {
                 'jobHistoryList' => $jobHistoryList,
                 "employeeFile" => $employeeFile,
                 "assetDetails" => $assetDetails,
+                "relationDetails" => $relationDetails,
                 'acl' => $this->acl,
         ]);
     }

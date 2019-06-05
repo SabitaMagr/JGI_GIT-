@@ -9,7 +9,7 @@ use Application\Repository\RepositoryInterface;
 use LeaveManagement\Model\LeaveApply;
 use LeaveManagement\Model\LeaveAssign;
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\Db\Sql\Expression; 
+use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -24,19 +24,19 @@ class LeaveRequestRepository implements RepositoryInterface {
         $this->adapter = $adapter;
     }
 
-    public function pushFileLink($data){ 
+    public function pushFileLink($data) {
         $fileName = $data['fileName'];
         $fileInDir = $data['filePath'];
         $sql = "INSERT INTO HRIS_LEAVE_FILES(FILE_ID, FILE_NAME, FILE_IN_DIR_NAME, LEAVE_ID) VALUES((SELECT MAX(FILE_ID)+1 FROM HRIS_LEAVE_FILES), '$fileName', '$fileInDir', null)";
         $statement = $this->adapter->query($sql);
-        $statement->execute(); 
+        $statement->execute();
         $sql = "SELECT * FROM HRIS_LEAVE_FILES WHERE FILE_ID IN (SELECT MAX(FILE_ID) AS FILE_ID FROM HRIS_LEAVE_FILES)";
         $statement = $this->adapter->query($sql);
         return Helper::extractDbData($statement->execute());
     }
 
-    public function linkLeaveWithFiles(){
-        if(!empty($_POST['fileUploadList'])){
+    public function linkLeaveWithFiles() {
+        if (!empty($_POST['fileUploadList'])) {
             $filesList = $_POST['fileUploadList'];
             $filesList = implode(',', $filesList);
 
@@ -109,6 +109,7 @@ class LeaveRequestRepository implements RepositoryInterface {
                   'N'
                   END AS IS_SUBSTITUTE_MANDATORY,
                   L.ENABLE_SUBSTITUTE       AS ENABLE_SUBSTITUTE
+                  ,L.IS_SUBSTITUTE
                 FROM HRIS_EMPLOYEE_LEAVE_ASSIGN LA
                 INNER JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID                =LA.LEAVE_ID
@@ -170,7 +171,7 @@ class LeaveRequestRepository implements RepositoryInterface {
         $select = $sql->select();
         $select->from(LeaveApply::TABLE_NAME);
         $select->where([
-            "ID=".$id
+            "ID=" . $id
         ]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $resultset = $statement->execute();
@@ -262,13 +263,36 @@ class LeaveRequestRepository implements RepositoryInterface {
                 ], true);
 
         $select->from(['LA' => LeaveApply::TABLE_NAME])
-                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("INITCAP(L.LEAVE_ENAME)")])
+                ->join(['L' => 'HRIS_LEAVE_MASTER_SETUP'], "L.LEAVE_ID=LA.LEAVE_ID", ['LEAVE_CODE', 'LEAVE_ENAME' => new Expression("CASE WHEN SUB_REF_ID IS NULL THEN 
+INITCAP(L.LEAVE_ENAME)
+ELSE
+INITCAP(L.LEAVE_ENAME)||'('||SLR.SUB_NAME||')'
+END")])
                 ->join(['E' => 'HRIS_EMPLOYEES'], 'LA.EMPLOYEE_ID=E.EMPLOYEE_ID', ["FULL_NAME" => new Expression("INITCAP(E.FULL_NAME)")], "left")
                 ->join(['E2' => "HRIS_EMPLOYEES"], "E2.EMPLOYEE_ID=LA.RECOMMENDED_BY", ['RECOMMENDED_BY_NAME' => new Expression("INITCAP(E2.FULL_NAME)")], "left")
                 ->join(['E3' => "HRIS_EMPLOYEES"], "E3.EMPLOYEE_ID=LA.APPROVED_BY", ['APPROVED_BY_NAME' => new Expression("INITCAP(E3.FULL_NAME)")], "left")
                 ->join(['RA' => "HRIS_RECOMMENDER_APPROVER"], "RA.EMPLOYEE_ID=LA.EMPLOYEE_ID", ['RECOMMENDER_ID' => 'RECOMMEND_BY', 'APPROVER_ID' => 'APPROVED_BY'], "left")
                 ->join(['RECM' => "HRIS_EMPLOYEES"], "RECM.EMPLOYEE_ID=RA.RECOMMEND_BY", ['RECOMMENDER_NAME' => new Expression("INITCAP(RECM.FULL_NAME)")], "left")
-                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left");
+                ->join(['APRV' => "HRIS_EMPLOYEES"], "APRV.EMPLOYEE_ID=RA.APPROVED_BY", ['APPROVER_NAME' => new Expression("INITCAP(APRV.FULL_NAME)")], "left")
+                ->join(['SLR' => "(SELECT 
+WOD_ID AS ID
+,LA.EMPLOYEE_ID
+,NO_OF_DAYS
+,WD.FROM_DATE||' - '||WD.TO_DATE AS SUB_NAME
+from 
+HRIS_EMPLOYEE_LEAVE_ADDITION LA
+JOIN Hris_Employee_Work_Dayoff WD ON (LA.WOD_ID=WD.ID)
+UNION
+SELECT 
+WOH_ID AS ID
+,LA.EMPLOYEE_ID
+,NO_OF_DAYS
+,H.Holiday_Ename||'-'||WH.FROM_DATE||' - '||WH.TO_DATE AS SUB_NAME
+from 
+HRIS_EMPLOYEE_LEAVE_ADDITION LA
+JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID)
+LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID))"], "SLR.ID=LA.SUB_REF_ID", [], "left");
+        
         $select->where([
             "L.STATUS='E'",
             "E.EMPLOYEE_ID=" . $employeeId
@@ -313,7 +337,6 @@ class LeaveRequestRepository implements RepositoryInterface {
         return $rawResult->current();
     }
 
-
     public function fetchByEmpId($employeeId) {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
@@ -322,7 +345,7 @@ class LeaveRequestRepository implements RepositoryInterface {
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
         return $result;
-}
+    }
     public function getLeaveFrontOrBack($id) {
         $sql = "SELECT START_DATE,TRUNC(SYSDATE) AS CURDATE,
             CASE WHEN
@@ -341,6 +364,68 @@ class LeaveRequestRepository implements RepositoryInterface {
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST WHERE ID={$id}";
         $statement = $this->adapter->query($sql);
         return $statement->execute()->current();
+    }
+
+    public function getSubstituteList($leaveId, $employeeId,$maxSubDays=500) {
+        $sql = " 
+        SELECT 
+sl.*
+        ,lt.*
+        ,sl.no_of_days -NVL(lt.Taken_Days,0)
+        as AVAILABLE_DAYS        
+FROM (select 
+WOD_ID AS ID
+,LA.EMPLOYEE_ID
+,NO_OF_DAYS
+,WD.FROM_DATE||' - '||WD.TO_DATE AS SUB_NAME
+,WD.TO_DATE AS SUB_END_DATE
+,WD.TO_DATE+{$maxSubDays} AS SUB_VALIDATE_DAYS
+--,WD.* 
+from 
+HRIS_EMPLOYEE_LEAVE_ADDITION LA
+JOIN Hris_Employee_Work_Dayoff WD ON (LA.WOD_ID=WD.ID) 
+where 
+LA.employee_id={$employeeId}
+and LA.leave_id={$leaveId}
+AND WD.STATUS='AP'
+--AND WD.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
+UNION
+select 
+WOH_ID AS ID
+,LA.EMPLOYEE_ID
+,NO_OF_DAYS
+,WH.FROM_DATE||' - '||WH.TO_DATE AS SUB_NAME
+,WH.TO_DATE AS SUB_END_DATE
+,WH.TO_DATE+{$maxSubDays} AS SUB_VALIDATE_DAYS
+--,WH.* 
+from 
+HRIS_EMPLOYEE_LEAVE_ADDITION LA
+JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID) 
+where 
+LA.employee_id={$employeeId}
+and LA.leave_id={$leaveId}
+AND WH.STATUS='AP'
+--AND WH.TO_DATE>TRUNC(SYSDATE-{$maxSubDays})
+) sl
+left join (
+SELECT Sub_Ref_Id,
+SUM(
+CASE 
+WHEN HALF_DAY IN ('F','S')
+THEN NO_OF_DAYS/2
+ELSE NO_OF_DAYS
+END) AS TAKEN_DAYS
+FROM HRIS_EMPLOYEE_LEAVE_REQUEST
+WHERE EMPLOYEE_ID={$employeeId}
+AND LEAVE_ID={$leaveId}
+AND STATUS IN ('AP','RQ','RC','CP','CR')
+and Sub_Ref_Id is not null
+ group by Sub_Ref_Id) lt on (lt.Sub_Ref_Id=sl.id)
+            
+            ";
+        $statement = $this->adapter->query($sql);
+        $result=$statement->execute();
+        return Helper::extractDbData($result);
     }
 
 }

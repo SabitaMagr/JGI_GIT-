@@ -7,14 +7,19 @@
         var $search = $('#search');
 
         var columns = [
-            {field: "FULL_NAME", title: "Employee", width: 200},
+            {field: "EMPLOYEE_CODE", title: "Emp. Code", width: 150},
+            {field: "FULL_NAME", title: "Employee", width: 150},
             {field: "LOAN_NAME", title: "Loan", width: 120},
+            {field: "RECOMMENDED_BY_NAME", title: "Recommender", width: 120},
+            {field: "APPROVED_BY_NAME", title: "Approver", width: 120},
             {title: "Requested Date",
                 columns: [{
                         field: "REQUESTED_DATE_AD",
-                        title: "AD"},
+                        title: "AD",
+                        width: 120},
                     {field: "REQUESTED_DATE_BS",
                         title: "BS",
+                        width: 120
                     }
                 ]
             },
@@ -22,24 +27,34 @@
                 columns: [{
                         field: "LOAN_DATE_AD",
                         title: "AD",
+                        width: 120
                     },
                     {
                         field: "LOAN_DATE_BS",
                         title: "BS",
+                        width: 120
                     }]},
             {field: "REQUESTED_AMOUNT", title: "Requested Amount", width: 150},
             {field: "STATUS", title: "Status", width: 90},
+            {field: "LOAN_STATUS", title: "Loan Status", width: 90},
             {field: ["LOAN_REQUEST_ID"], title: "Action", template: `
             <span> 
                 <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
                     <i class="fa fa-search-plus"></i>
                 </a>
             </span>
+            #if(ALLOW_EDIT == 'Y'){#
             <span> 
-            <a class="btn  btn-icon-only btn-success" href="${document.editLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="view">
+            <a class="btn  btn-icon-only btn-success" href="${document.editLink}/#: LOAN_REQUEST_ID #" style="height:17px;" title="edit">
                 <i class="fa fa-edit"></i>
             </a>
-        </span>`}
+        </span>
+          <span> 
+            <a class="btn  btn-icon-only btn-success" href="${document.loanClosing}/#: LOAN_REQUEST_ID #" style="height:17px;" title="Loan Closing">
+                <i>Pay</i>
+            </a>
+        </span>
+            #}#`,  width: 120}
         ];
  
         var map = {

@@ -4,7 +4,8 @@
         $('select').select2();
         app.datePickerWithNepali("form-loanDate","nepaliDate");
         /* prevent past event post */
-        $('#form-loanDate').datepicker("setStartDate", new Date());
+//        $('#form-loanDate').datepicker("setStartDate", new Date());
+        $('#form-loanDate').datepicker("setStartDate",);
         /* end of  prevent past event post */
         app.setLoadingOnSubmit("loanApprove-form");
         app.setLoadingOnSubmit("loan-form");

@@ -1,6 +1,6 @@
 window.nepaliCalendar = (function ($) {
     "use strict";
-    console.log('Calender Type',document.calendarType);
+    console.log('Calender Type', document.calendarType);
     var bsadMap = {
         "N": {"2074":
                     {
@@ -31,7 +31,22 @@ window.nepaliCalendar = (function ($) {
                         '10': {from: "2019-01-15", to: "2019-02-12"},
                         '11': {from: "2019-02-13", to: "2019-03-14"},
                         '12': {from: "2019-03-15", to: "2019-04-13"}
-                    }},
+                    },
+            "2076": {
+                '01': {from: "2019-04-14", to: "2019-05-14"},
+                '02': {from: "2019-05-15", to: "2019-06-15"},
+                '03': {from: "2019-06-16", to: "2019-07-16"},
+                '04': {from: "2019-07-17", to: "2019-08-17"},
+                '05': {from: "2019-08-18", to: "2019-09-17"},
+                '06': {from: "2019-09-19", to: "2019-10-17"},
+                '07': {from: "2019-10-18", to: "2019-11-16"},
+                '08': {from: "2019-11-17", to: "2019-12-16"},
+                '09': {from: "2019-12-17", to: "2020-01-14"},
+                '10': {from: "2020-01-15", to: "2020-02-12"},
+                '11': {from: "2020-02-13", to: "2020-03-13"},
+                '12': {from: "2020-03-14", to: "2020-04-12"}
+            }
+        },
         "E": {
             "2019":
                     {
@@ -39,7 +54,7 @@ window.nepaliCalendar = (function ($) {
                         '02': {from: "2019-02-01", to: "2019-02-28"},
                         '03': {from: "2019-03-01", to: "2019-03-31"},
                         '04': {from: "2019-04-01", to: "2019-04-30"},
-                        '05': {from: "2018-05-01", to: "2019-05-31"},
+                        '05': {from: "2019-05-01", to: "2019-05-31"},
                         '06': {from: "2019-06-01", to: "2019-06-30"},
                         '07': {from: "2019-07-01", to: "2019-07-31"},
                         '08': {from: "2019-08-01", to: "2019-08-31"},
@@ -191,7 +206,7 @@ window.nepaliCalendar = (function ($) {
         });
 
         var serverDate = (document.calendarType == 'E') ? 'getServerDateForCalender' : 'getServerDateBS';
-        
+
         app.pullDataById(document.restfulUrl, {action: serverDate}).then(function (response) {
             var currentDate = (document.calendarType == 'E') ? response.data.serverDate : response.data.CURRENT_DATE;
             var currentYear = currentDate.split('-')[0];

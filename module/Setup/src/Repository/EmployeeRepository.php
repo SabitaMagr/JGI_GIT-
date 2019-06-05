@@ -1,4 +1,5 @@
 <?php
+
 namespace Setup\Repository;
 
 use Application\Helper\EntityHelper;
@@ -107,14 +108,14 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     public function fetchById($id) {
         $rowset = $this->tableGateway->select(function (Select $select) use ($id) {
             $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FULL_NAME, HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
-                    HrEmployees::BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_BIRTH_DATE,
-                    HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
-                    HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
-                    HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
-                    HrEmployees::ID_PASSPORT_EXPIRY,
-                    HrEmployees::JOIN_DATE
-                ]), false);
+                        HrEmployees::BIRTH_DATE,
+                        HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+                        HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                        HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+                        HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+                        HrEmployees::ID_PASSPORT_EXPIRY,
+                        HrEmployees::JOIN_DATE
+                    ]), false);
             $select->where(['EMPLOYEE_ID' => $id]);
         });
         return $rowset->current();
@@ -125,31 +126,31 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         $select = $sql->select();
         $E = 'E';
         $columns = EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME, HrEmployees::FULL_NAME], [
-                HrEmployees::BIRTH_DATE,
-                HrEmployees::FAM_SPOUSE_BIRTH_DATE,
-                HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
-                HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
-                HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
-                HrEmployees::ID_PASSPORT_EXPIRY,
-                HrEmployees::JOIN_DATE
-                ], NULL, NULL, NULL, $E);
+                    HrEmployees::BIRTH_DATE,
+                    HrEmployees::FAM_SPOUSE_BIRTH_DATE,
+                    HrEmployees::FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                    HrEmployees::ID_DRIVING_LICENCE_EXPIRY,
+                    HrEmployees::ID_CITIZENSHIP_ISSUE_DATE,
+                    HrEmployees::ID_PASSPORT_EXPIRY,
+                    HrEmployees::JOIN_DATE
+                        ], NULL, NULL, NULL, $E);
         $select->columns($columns, false);
 
         $select->from(['E' => HrEmployees::TABLE_NAME]);
         $select
-            ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME' => new Expression('INITCAP(B.BRANCH_NAME)')], 'left')
-            ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME' => new Expression('INITCAP(C.COMPANY_NAME)')], 'left')
-            ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME' => new Expression('INITCAP(G.GENDER_NAME)')], 'left')
-            ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
-            ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME' => new Expression('INITCAP(RG.RELIGION_NAME)')], 'left')
-            ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(CN.COUNTRY_NAME)')], 'left')
-            ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME' => new Expression('INITCAP(VM.VDC_MUNICIPALITY_NAME)')], 'left')
-            ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
-            ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME' => new Expression('INITCAP(D1.DEPARTMENT_NAME)')], 'left')
-            ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE' => new Expression('INITCAP(DES1.DESIGNATION_TITLE)')], 'left')
-            ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME' => new Expression('INITCAP(P1.POSITION_NAME)'), "LEVEL_NO" => "P1.LEVEL_NO"], 'left')
-            ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
-            ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
+                ->join(['B' => Branch::TABLE_NAME], "E." . HrEmployees::BRANCH_ID . "=B." . Branch::BRANCH_ID, ['BRANCH_NAME' => new Expression('(B.BRANCH_NAME)')], 'left')
+                ->join(['C' => Company::TABLE_NAME], "E." . HrEmployees::COMPANY_ID . "=C." . Company::COMPANY_ID, ['COMPANY_NAME' => new Expression('(C.COMPANY_NAME)')], 'left')
+                ->join(['G' => Gender::TABLE_NAME], "E." . HrEmployees::GENDER_ID . "=G." . Gender::GENDER_ID, ['GENDER_NAME' => new Expression('INITCAP(G.GENDER_NAME)')], 'left')
+                ->join(['BG' => "HRIS_BLOOD_GROUPS"], "E." . HrEmployees::BLOOD_GROUP_ID . "=BG.BLOOD_GROUP_ID", ['BLOOD_GROUP_CODE'], 'left')
+                ->join(['RG' => "HRIS_RELIGIONS"], "E." . HrEmployees::RELIGION_ID . "=RG.RELIGION_ID", ['RELIGION_NAME' => new Expression('INITCAP(RG.RELIGION_NAME)')], 'left')
+                ->join(['CN' => "HRIS_COUNTRIES"], "E." . HrEmployees::COUNTRY_ID . "=CN.COUNTRY_ID", ['COUNTRY_NAME' => new Expression('INITCAP(CN.COUNTRY_NAME)')], 'left')
+                ->join(['VM' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID . "=VM.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME' => new Expression('INITCAP(VM.VDC_MUNICIPALITY_NAME)')], 'left')
+                ->join(['VM1' => "HRIS_VDC_MUNICIPALITIES"], "E." . HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID . "=VM1.VDC_MUNICIPALITY_ID", ['VDC_MUNICIPALITY_NAME_TEMP' => 'VDC_MUNICIPALITY_NAME'], 'left')
+                ->join(['D1' => Department::TABLE_NAME], "E." . HrEmployees::DEPARTMENT_ID . "=D1." . Department::DEPARTMENT_ID, ['DEPARTMENT_NAME' => new Expression('(D1.DEPARTMENT_NAME)')], 'left')
+                ->join(['DES1' => Designation::TABLE_NAME], "E." . HrEmployees::DESIGNATION_ID . "=DES1." . Designation::DESIGNATION_ID, ['DESIGNATION_TITLE' => new Expression('(DES1.DESIGNATION_TITLE)')], 'left')
+                ->join(['P1' => Position::TABLE_NAME], "E." . HrEmployees::POSITION_ID . "=P1." . Position::POSITION_ID, ['POSITION_NAME' => new Expression('(P1.POSITION_NAME)'), "LEVEL_NO" => "P1.LEVEL_NO"], 'left')
+                ->join(['S1' => ServiceType::TABLE_NAME], "E." . HrEmployees::SERVICE_TYPE_ID . "=S1." . ServiceType::SERVICE_TYPE_ID, ['SERVICE_TYPE_NAME' => new Expression('INITCAP(S1.SERVICE_TYPE_NAME)')], 'left')
+                ->join(['SE1' => ServiceEventType::TABLE_NAME], "E." . HrEmployees::SERVICE_EVENT_TYPE_ID . "=SE1." . ServiceEventType::SERVICE_EVENT_TYPE_ID, ['SERVICE_EVENT_TYPE_NAME' => new Expression('INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)')], 'left');
         $select->where(["E." . HrEmployees::EMPLOYEE_ID . "=$id"]);
         $statement = $sql->prepareStatementForSqlObject($select);
         $result = $statement->execute();
@@ -335,9 +336,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function add(Model $model) {
-        $employeeData=$model->getArrayCopyForDB();
+        $employeeData = $model->getArrayCopyForDB();
         // for hr with empower nbb bank start
-        $employeeData['EMPLOYEE_STATUS']='Working';
+        $employeeData['EMPLOYEE_STATUS'] = 'Working';
         // for hr with empower nbb bank end
         $this->tableGateway->insert($employeeData);
     }
@@ -468,21 +469,21 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
               E.LOCATION_ID                                                     AS LOCATION_ID,
               E.FUNCTIONAL_TYPE_ID                                              AS FUNCTIONAL_TYPE_ID,
               E.FUNCTIONAL_LEVEL_ID                                             AS FUNCTIONAL_LEVEL_ID,
-              INITCAP(B.BRANCH_NAME)                                            AS BRANCH_NAME,
-              INITCAP(D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
-              INITCAP(DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
-              INITCAP(P.POSITION_NAME)                                          AS POSITION_NAME,
+              B.BRANCH_NAME                                                     AS BRANCH_NAME,
+              D.DEPARTMENT_NAME                                                 AS DEPARTMENT_NAME,
+              DES.DESIGNATION_TITLE                                             AS DESIGNATION_TITLE,
+              P.POSITION_NAME                                                   AS POSITION_NAME,
               P.LEVEL_NO                                                        AS LEVEL_NO,
-              INITCAP(C.COMPANY_NAME)                                           AS COMPANY_NAME,
+              C.COMPANY_NAME                                                    AS COMPANY_NAME,
               INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
               BG.BLOOD_GROUP_CODE                                               AS BLOOD_GROUP_CODE,
               RG.RELIGION_NAME                                                  AS RELIGION_NAME,
               INITCAP(CN.COUNTRY_NAME)                                          AS COUNTRY_NAME,
               INITCAP(VM.VDC_MUNICIPALITY_NAME)                                 AS VDC_MUNICIPALITY_NAME,
               VM1.VDC_MUNICIPALITY_NAME                                         AS VDC_MUNICIPALITY_NAME_TEMP,
-              INITCAP(D1.DEPARTMENT_NAME)                                       AS APP_DEPARTMENT_NAME,
-              INITCAP(DES1.DESIGNATION_TITLE)                                   AS APP_DESIGNATION_TITLE,
-              INITCAP(P1.POSITION_NAME)                                         AS APP_POSITION_NAME,
+              D1.DEPARTMENT_NAME                                                AS APP_DEPARTMENT_NAME,
+              DES1.DESIGNATION_TITLE                                            AS APP_DESIGNATION_TITLE,
+              P1.POSITION_NAME                                                  AS APP_POSITION_NAME,
               P1.LEVEL_NO                                                       AS APP_LEVEL_NO,
               INITCAP(S1.SERVICE_TYPE_NAME)                                     AS APP_SERVICE_TYPE_NAME,
               INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)                              AS APP_SERVICE_EVENT_TYPE_NAME,
@@ -549,17 +550,17 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     }
 
     public function fetchBy($by) {
-        $orderByString=EntityHelper::getOrderBy('E.FULL_NAME ASC',null,'E.SENIORITY_LEVEL','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
-        $columIfSynergy="";
-        $joinIfSyngery="";
+        $orderByString = EntityHelper::getOrderBy('E.FULL_NAME ASC', null, 'E.SENIORITY_LEVEL', 'P.LEVEL_NO', 'E.JOIN_DATE', 'DES.ORDER_NO', 'E.FULL_NAME');
+        $columIfSynergy = "";
+        $joinIfSyngery = "";
         if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
-            $columIfSynergy="FCAS.ACC_EDESC AS BANK_ACCOUNT,";
-            $joinIfSyngery="LEFT JOIN FA_CHART_OF_ACCOUNTS_SETUP FCAS 
+            $columIfSynergy = "FCAS.ACC_EDESC AS BANK_ACCOUNT,";
+            $joinIfSyngery = "LEFT JOIN FA_CHART_OF_ACCOUNTS_SETUP FCAS 
                 ON(FCAS.ACC_CODE=E.ID_ACC_CODE AND C.COMPANY_CODE=FCAS.COMPANY_CODE)";
         }
-        
-        
-        $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'],$by['functionalTypeId']);
+
+
+        $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
         $sql = "SELECT 
             {$columIfSynergy}
                 E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
@@ -629,11 +630,11 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   E.ID_CITIZENSHIP_ISSUE_PLACE                                      AS ID_CITIZENSHIP_ISSUE_PLACE,
                   E.ID_PASSPORT_NO                                                  AS ID_PASSPORT_NO,
                   INITCAP(TO_CHAR(E.ID_PASSPORT_EXPIRY, 'DD-MON-YYYY'))             AS ID_PASSPORT_EXPIRY,
-                  INITCAP(C.COMPANY_NAME)                                           AS COMPANY_NAME,
-                  INITCAP(B.BRANCH_NAME)                                            AS BRANCH_NAME,
-                  INITCAP(D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
-                  INITCAP(DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
-                  INITCAP(P.POSITION_NAME)                                          AS POSITION_NAME,
+                  C.COMPANY_NAME                                                    AS COMPANY_NAME,
+                  B.BRANCH_NAME                                                     AS BRANCH_NAME,
+                  D.DEPARTMENT_NAME                                                 AS DEPARTMENT_NAME,
+                  DES.DESIGNATION_TITLE                                             AS DESIGNATION_TITLE,
+                  P.POSITION_NAME                                                   AS POSITION_NAME,
                   P.LEVEL_NO                                                        AS LEVEL_NO,
                   INITCAP(ST.SERVICE_TYPE_NAME)                                     AS SERVICE_TYPE_NAME,
                   (CASE WHEN E.EMPLOYEE_TYPE='R' THEN 'REGULAR' ELSE 'WORKER' END)  AS EMPLOYEE_TYPE,
@@ -698,8 +699,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
-                HrEmployees::BIRTH_DATE
-            ]), false);
+                    HrEmployees::BIRTH_DATE
+                ]), false);
 
         $select->from("HRIS_EMPLOYEES");
         $select->where(["STATUS='E' AND RETIRED_FLAG='N'"]);
@@ -737,28 +738,28 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         $sql = new Sql($this->adapter);
         $select = $sql->select();
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(HrEmployees::class, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [
-                HrEmployees::BIRTH_DATE
-                ], null, null, null, 'E'), false);
+                    HrEmployees::BIRTH_DATE
+                        ], null, null, null, 'E'), false);
         $select->from(['E' => "HRIS_EMPLOYEES"])
-            ->join(['SA' => ShiftAssign::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=SA." . ShiftAssign::EMPLOYEE_ID, ['EMPLOYEE_ID', 'SHIFT_ID'], 'left')
-            ->join(['S' => ShiftSetup::TABLE_NAME], "SA." . ShiftAssign::SHIFT_ID . "=S." . ShiftSetup::SHIFT_ID, ['SHIFT_CODE',
-                'SHIFT_ENAME' => new Expression('INITCAP(S.SHIFT_ENAME)'),
-                'SHIFT_LNAME' => new Expression('INITCAP(S.SHIFT_LNAME)'),
-                'START_DATE' => new Expression("INITCAP(TO_CHAR(S.START_DATE, 'DD-MON-YYYY'))"),
-                'END_DATE' => new Expression("INITCAP(TO_CHAR(S.END_DATE, 'DD-MON-YYYY'))"),
-                'START_TIME' => new Expression("TO_CHAR(S.START_TIME, 'HH:MI AM')"),
-                'END_TIME' => new Expression("TO_CHAR(S.END_TIME, 'HH:MI AM')"),
-                'HALF_TIME' => new Expression("TO_CHAR(S.HALF_TIME, 'HH:MI AM')"),
-                'HALF_DAY_END_TIME' => new Expression("TO_CHAR(S.HALF_DAY_END_TIME, 'HH:MI AM')"),
-                'LATE_IN' => new Expression("TO_CHAR(S.LATE_IN, 'HH24:MI')"),
-                'EARLY_OUT' => new Expression("TO_CHAR(S.EARLY_OUT, 'HH24:MI')"),
-                'TOTAL_WORKING_HR' => new Expression("TO_CHAR(S.TOTAL_WORKING_HR, 'HH24:MI')"),
-                'ACTUAL_WORKING_HR' => new Expression("TO_CHAR(S.ACTUAL_WORKING_HR, 'HH24:MI')"),
-                ], 'left')
-            ->join(['AD' => AttendanceDetail::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AD." . AttendanceDetail::EMPLOYEE_ID, [
-                'IN_TIME' => new Expression("TO_CHAR(AD.IN_TIME, 'HH:MI AM')"),
-                'OUT_TIME' => new Expression("TO_CHAR(AD.OUT_TIME, 'HH:MI AM')"),
-                ], "left");
+                ->join(['SA' => ShiftAssign::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=SA." . ShiftAssign::EMPLOYEE_ID, ['EMPLOYEE_ID', 'SHIFT_ID'], 'left')
+                ->join(['S' => ShiftSetup::TABLE_NAME], "SA." . ShiftAssign::SHIFT_ID . "=S." . ShiftSetup::SHIFT_ID, ['SHIFT_CODE',
+                    'SHIFT_ENAME' => new Expression('INITCAP(S.SHIFT_ENAME)'),
+                    'SHIFT_LNAME' => new Expression('INITCAP(S.SHIFT_LNAME)'),
+                    'START_DATE' => new Expression("INITCAP(TO_CHAR(S.START_DATE, 'DD-MON-YYYY'))"),
+                    'END_DATE' => new Expression("INITCAP(TO_CHAR(S.END_DATE, 'DD-MON-YYYY'))"),
+                    'START_TIME' => new Expression("TO_CHAR(S.START_TIME, 'HH:MI AM')"),
+                    'END_TIME' => new Expression("TO_CHAR(S.END_TIME, 'HH:MI AM')"),
+                    'HALF_TIME' => new Expression("TO_CHAR(S.HALF_TIME, 'HH:MI AM')"),
+                    'HALF_DAY_END_TIME' => new Expression("TO_CHAR(S.HALF_DAY_END_TIME, 'HH:MI AM')"),
+                    'LATE_IN' => new Expression("TO_CHAR(S.LATE_IN, 'HH24:MI')"),
+                    'EARLY_OUT' => new Expression("TO_CHAR(S.EARLY_OUT, 'HH24:MI')"),
+                    'TOTAL_WORKING_HR' => new Expression("TO_CHAR(S.TOTAL_WORKING_HR, 'HH24:MI')"),
+                    'ACTUAL_WORKING_HR' => new Expression("TO_CHAR(S.ACTUAL_WORKING_HR, 'HH24:MI')"),
+                        ], 'left')
+                ->join(['AD' => AttendanceDetail::TABLE_NAME], "E." . HrEmployees::EMPLOYEE_ID . "=AD." . AttendanceDetail::EMPLOYEE_ID, [
+                    'IN_TIME' => new Expression("TO_CHAR(AD.IN_TIME, 'HH:MI AM')"),
+                    'OUT_TIME' => new Expression("TO_CHAR(AD.OUT_TIME, 'HH:MI AM')"),
+                        ], "left");
         if ($currentDate != null) {
             $startDate = " AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') >= S.START_DATE AND TO_DATE('" . $currentDate . "','DD-MON-YYYY') <= S.END_DATE";
         } else {
@@ -938,8 +939,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   E.ADDR_TEMP_DISTRICT_ID                                           AS ADDR_TEMP_DISTRICT_ID,
                   E.ADDR_PERM_ZONE_ID                                               AS ADDR_PERM_ZONE_ID,
                   E.ADDR_PERM_DISTRICT_ID                                           AS ADDR_PERM_DISTRICT_ID,
-                  INITCAP(B.BRANCH_NAME)                                            AS BRANCH_NAME,
-                  INITCAP(C.COMPANY_NAME)                                           AS COMPANY_NAME,
+                  (B.BRANCH_NAME)                                            AS BRANCH_NAME,
+                  (C.COMPANY_NAME)                                           AS COMPANY_NAME,
                   CF.FILE_PATH                                                      AS COMPANY_FILE_PATH,
                   INITCAP(C.ADDRESS)                                                AS COMPANY_ADDRESS,
                   INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
@@ -948,9 +949,9 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
                   INITCAP(CN.COUNTRY_NAME)                                          AS COUNTRY_NAME,
                   INITCAP(VM.VDC_MUNICIPALITY_NAME)                                 AS VDC_MUNICIPALITY_NAME,
                   VM1.VDC_MUNICIPALITY_NAME                                         AS VDC_MUNICIPALITY_NAME_TEMP,
-                  INITCAP(D1.DEPARTMENT_NAME)                                       AS DEPARTMENT_NAME,
-                  INITCAP(DES1.DESIGNATION_TITLE)                                   AS DESIGNATION_TITLE,
-                  INITCAP(P1.POSITION_NAME)                                         AS POSITION_NAME,
+                  (D1.DEPARTMENT_NAME)                                       AS DEPARTMENT_NAME,
+                  (DES1.DESIGNATION_TITLE)                                   AS DESIGNATION_TITLE,
+                  (P1.POSITION_NAME)                                         AS POSITION_NAME,
                   P1.LEVEL_NO                                                       AS LEVEL_NO,
                   INITCAP(S1.SERVICE_TYPE_NAME)                                     AS SERVICE_TYPE_NAME,
                   INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)                              AS SERVICE_EVENT_TYPE_NAME,
@@ -1009,8 +1010,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
         $statement->execute();
     }
 
-    public function fetchBankAccountList($companyCode=null): array {
-        $companyCode=($companyCode==null)?'01':$companyCode;
+    public function fetchBankAccountList($companyCode = null): array {
+        $companyCode = ($companyCode == null) ? '01' : $companyCode;
         if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
             $sql = "SELECT ACC_CODE,
                   ACC_EDESC,
@@ -1025,8 +1026,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
             return [];
         }
     }
-    
-    public function fetchEmpowerCompany(): array{
+
+    public function fetchEmpowerCompany(): array {
         if ($this->checkIfTableExists("COMPANY_SETUP")) {
             $sql = "select * from COMPANY_SETUP WHERE DELETED_FLAG='N'";
             return $this->rawQuery($sql);
@@ -1034,9 +1035,8 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
             return [];
         }
     }
-    
-     
-    public function fetchEmpowerBranch($empowerCompanyCode): array{
+
+    public function fetchEmpowerBranch($empowerCompanyCode): array {
         if ($this->checkIfTableExists("FA_BRANCH_SETUP")) {
             $sql = "SELECT * FROM FA_BRANCH_SETUP WHERE GROUP_SKU_FLAG='I' AND DELETED_FLAG='N' AND COMPANY_CODE='{$empowerCompanyCode}'";
             return $this->rawQuery($sql);
@@ -1044,20 +1044,19 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
             return [];
         }
     }
-    
-    public function checkIfTableExists($tableName): bool  {
-          return parent::checkIfTableExists($tableName);
+
+    public function checkIfTableExists($tableName): bool {
+        return parent::checkIfTableExists($tableName);
     }
-    
-    
-    public function getCompanyCodeByEmpId($employeeId){
-        $sql="SELECT NVL(C.COMPANY_CODE,TO_CHAR(C.COMPANY_ID)) AS COMPANY_CODE FROM HRIS_EMPLOYEES E LEFT JOIN HRIS_COMPANY C ON (E.COMPANY_ID=C.COMPANY_ID) "
+
+    public function getCompanyCodeByEmpId($employeeId) {
+        $sql = "SELECT NVL(C.COMPANY_CODE,TO_CHAR(C.COMPANY_ID)) AS COMPANY_CODE FROM HRIS_EMPLOYEES E LEFT JOIN HRIS_COMPANY C ON (E.COMPANY_ID=C.COMPANY_ID) "
                 . "WHERE E.EMPLOYEE_ID={$employeeId}";
-               $statement = $this->adapter->query($sql);
-                $result = $statement->execute();
-                return $result->current();
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
     }
-    
+
     public function filterRecordsWithAR($employeeId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $getResult = null, $companyId = null, $employeeTypeId = null) {
         $condition = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
         $sql = "SELECT 
@@ -1155,21 +1154,21 @@ E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
               E.LOCATION_ID                                                     AS LOCATION_ID,
               E.FUNCTIONAL_TYPE_ID                                              AS FUNCTIONAL_TYPE_ID,
               E.FUNCTIONAL_LEVEL_ID                                             AS FUNCTIONAL_LEVEL_ID,
-              INITCAP(B.BRANCH_NAME)                                            AS BRANCH_NAME,
-              INITCAP(D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
-              INITCAP(DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
-              INITCAP(P.POSITION_NAME)                                          AS POSITION_NAME,
+              (B.BRANCH_NAME)                                            AS BRANCH_NAME,
+              (D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
+              (DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
+              (P.POSITION_NAME)                                          AS POSITION_NAME,
               P.LEVEL_NO                                                        AS LEVEL_NO,
-              INITCAP(C.COMPANY_NAME)                                           AS COMPANY_NAME,
+              (C.COMPANY_NAME)                                           AS COMPANY_NAME,
               INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
               BG.BLOOD_GROUP_CODE                                               AS BLOOD_GROUP_CODE,
               RG.RELIGION_NAME                                                  AS RELIGION_NAME,
               INITCAP(CN.COUNTRY_NAME)                                          AS COUNTRY_NAME,
               INITCAP(VM.VDC_MUNICIPALITY_NAME)                                 AS VDC_MUNICIPALITY_NAME,
               VM1.VDC_MUNICIPALITY_NAME                                         AS VDC_MUNICIPALITY_NAME_TEMP,
-              INITCAP(D1.DEPARTMENT_NAME)                                       AS APP_DEPARTMENT_NAME,
-              INITCAP(DES1.DESIGNATION_TITLE)                                   AS APP_DESIGNATION_TITLE,
-              INITCAP(P1.POSITION_NAME)                                         AS APP_POSITION_NAME,
+              (D1.DEPARTMENT_NAME)                                       AS APP_DEPARTMENT_NAME,
+              (DES1.DESIGNATION_TITLE)                                   AS APP_DESIGNATION_TITLE,
+              (P1.POSITION_NAME)                                         AS APP_POSITION_NAME,
               P1.LEVEL_NO                                                       AS APP_LEVEL_NO,
               INITCAP(S1.SERVICE_TYPE_NAME)                                     AS APP_SERVICE_TYPE_NAME,
               INITCAP(SE1.SERVICE_EVENT_TYPE_NAME)                              AS APP_SERVICE_EVENT_TYPE_NAME,
@@ -1250,6 +1249,5 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
             return $tempArray;
         }
     }
-    
-        
+
 }

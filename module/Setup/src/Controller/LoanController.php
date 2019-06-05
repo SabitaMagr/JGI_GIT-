@@ -79,14 +79,16 @@ class LoanController extends AbstractActionController {
         $positionFormElement->setValueOptions($positions);
         $positionFormElement->setAttributes(["id" => "positionId", "class" => "form-control", "multiple" => "multiple"]);
         $positionFormElement->setLabel("Position");
-
+        
         $serviceTypeFormElement = new Select();
         $serviceTypeFormElement->setName("serviceType");
         $serviceTypes = EntityHelper2::getTableKVListWithSortOption($this->adapter, ServiceType::TABLE_NAME, ServiceType::SERVICE_TYPE_ID, [ServiceType::SERVICE_TYPE_NAME], [ServiceType::STATUS => 'E'], "SERVICE_TYPE_NAME", "ASC", null, false, true);
         $serviceTypeFormElement->setValueOptions($serviceTypes);
         $serviceTypeFormElement->setAttributes(["id" => "serviceTypeId", "class" => "form-control", "multiple" => "multiple"]);
         $serviceTypeFormElement->setLabel("Service Type");
-
+        
+        $payCodes = $this->repository->getPayCodesList();
+     
         if ($request->isPost()) {
             $postRecord = $request->getPost();
             $this->form->setData($postRecord);
@@ -160,6 +162,7 @@ class LoanController extends AbstractActionController {
                     'designation' => $designationFormElement,
                     'position' => $positionFormElement,
                     'serviceType' => $serviceTypeFormElement,
+                    'pay_codes' => $payCodes,
                     'companies' => EntityHelper2::getTableKVListWithSortOption($this->adapter, Company::TABLE_NAME, Company::COMPANY_ID, [Company::COMPANY_NAME], ["STATUS" => "E"], Company::COMPANY_NAME, "ASC", null, false, true)
         ]);
     }

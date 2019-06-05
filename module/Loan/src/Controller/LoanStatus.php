@@ -97,7 +97,6 @@ class LoanStatus extends AbstractActionController {
             $getData = $request->getPost();
             $reason = $getData->approvedRemarks;
             $action = $getData->submit;
-
             $loanRequest->approvedDate = Helper::getcurrentExpressionDate();
             if ($action == "Reject") {
                 $loanRequest->status = "R";
@@ -131,6 +130,11 @@ class LoanStatus extends AbstractActionController {
  
     public function editAction(){
         $id = (int) $this->params()->fromRoute('id');
+        $status = Helper::extractDbData($this->loanStatusRepository->getApprovedStatus($id));
+        if($status[0]['STATUS'] == 'RQ'){
+            $this->flashmessenger()->addMessage('The request has not been approved yet.');
+            return $this->redirect()->toRoute('loanStatus');
+        }
         $request = $this->getRequest();
         if ($request->isPost()) {
             $id = (int) $this->params()->fromRoute('id');
@@ -147,7 +151,7 @@ class LoanStatus extends AbstractActionController {
             'searchValues' => EntityHelper::getSearchData($this->adapter)
         ]);
     }
- 
+
     public function skipAction(){
         $id = (int) $this->params()->fromRoute('id');
         $loanStatusRepository = new LoanStatusRepository($this->adapter);
@@ -188,21 +192,13 @@ class LoanStatus extends AbstractActionController {
             $result = $loanStatusRepository->getLoanRequestList($data);
             $recordList = Helper::extractDbData($result);
 
-            // $request_ids = array();
-            // foreach($recordList as $record){
-            //     array_push($request_ids, $record['LOAN_REQUEST_ID']);
-            // }
-             
-            // $additionalDetails =  Helper::extractDbData($loanStatusRepository->getLoanRequestDetails($request_ids));
             return new JsonModel([
                 "success" => "true",
                 "data" => $recordList
-                //'additionalDetails' => $additionalDetails
             ]);
 
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
-
 }

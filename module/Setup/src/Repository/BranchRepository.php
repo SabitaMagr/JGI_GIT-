@@ -49,7 +49,7 @@ class BranchRepository implements RepositoryInterface {
         $select->columns(EntityHelper::getColumnNameArrayWithOracleFns(Branch::class, [Branch::BRANCH_NAME], null, null, null, null, 'B'), false);
         $companyIdKey = Company::COMPANY_ID;
         $companyNameKey = Company::COMPANY_NAME;
-        $select->join(['C' => Company::TABLE_NAME], "C.{$companyIdKey} = B.{$companyIdKey}", [Company::COMPANY_NAME => new Expression("INITCAP(C.{$companyNameKey})")], Join::JOIN_LEFT);
+        $select->join(['C' => Company::TABLE_NAME], "C.{$companyIdKey} = B.{$companyIdKey}", [Company::COMPANY_NAME => new Expression("(C.{$companyNameKey})")], Join::JOIN_LEFT);
         $select->where(['B.' . Branch::STATUS => EntityHelper::STATUS_ENABLED]);
         $select->order([
             'B.' . Branch::BRANCH_NAME => Select::ORDER_ASCENDING,

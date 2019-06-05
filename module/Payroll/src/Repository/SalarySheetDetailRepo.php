@@ -71,7 +71,7 @@ class SalarySheetDetailRepo extends HrisRepository {
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
-    private function fetchPayIdsAsArray() {
+    public function fetchPayIdsAsArray() {
         $rawList = EntityHelper::rawQueryResult($this->adapter, "SELECT PAY_ID FROM HRIS_PAY_SETUP WHERE STATUS ='E'");
         $dbArray = "";
         foreach ($rawList as $key => $row) {
@@ -113,4 +113,37 @@ class SalarySheetDetailRepo extends HrisRepository {
                 AND EMPLOYEE_ID ={$employeeId} ORDER BY P.PRIORITY_INDEX";
         return $this->rawQuery($sql);
     }
+
+    public function fetchEmployeeLoanAmt($monthId,$employeeId,$loanId) {
+        $sql="select 
+        sum(amount) as AMT
+        from Hris_Loan_Payment_Detail pd
+        left join hris_employee_loan_request lr on (pd.Loan_Request_Id=lr.loan_request_id)
+        join hris_month_code mc on (Mc.From_Date=trunc(Pd.From_Date,'month') and Mc.To_Date=Pd.To_Date)
+        where 
+        lr.loan_status='OPEN'
+        and Lr.Employee_Id={$employeeId}
+        and mc.month_id={$monthId}
+        and lr.loan_id={$loanId}";
+        $resultList = $this->rawQuery($sql);
+        return ($resultList[0]['AMT'])?$resultList[0]['AMT']:0;
+        
+    }
+    public function fetchEmployeeLoanIntrestAmt($monthId,$employeeId,$loanId) {
+        $sql="select 
+        sum(INTEREST_AMOUNT) as AMT
+        from Hris_Loan_Payment_Detail pd
+        left join hris_employee_loan_request lr on (pd.Loan_Request_Id=lr.loan_request_id)
+        join hris_month_code mc on (Mc.From_Date=trunc(Pd.From_Date,'month') and Mc.To_Date=Pd.To_Date)
+        where 
+        lr.loan_status='OPEN'
+        and Lr.Employee_Id={$employeeId}
+        and mc.month_id={$monthId}
+        and lr.loan_id={$loanId}";
+        $resultList = $this->rawQuery($sql);
+        
+        return ($resultList[0]['AMT'])?$resultList[0]['AMT']:0;
+        
+    }
+
 }

@@ -48,12 +48,15 @@ class PayrollGenerator {
         "TOTAL_DAYS_TO_PAY",
         "BRANCH_ALLOWANCE",
         "MONTH",
+        "BRANCH_ID",
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",
         "TOTAL_AMOUNT",
         "SELF_PREV_TOTAL",
-        "MULTIPLICATION_FACTOR"
+        "MULTIPLICATION_FACTOR",
+        "LOAN_AMT",
+        "LOAN_INT"
     ];
 
     public function __construct($adapter) {
@@ -91,6 +94,9 @@ class PayrollGenerator {
         $this->sheetNo = $sheetNo;
         $payList = $this->ruleRepo->fetchAll();
         $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $employeeId, null, $monthId, null);
+        
+        $file = Helper::UPLOAD_DIR . "/PAYROLL_LOG.txt";
+        file_put_contents($file,"Generate Start for employeeId=".$employeeId." monthId=".$monthId." sheetNo=".$sheetNo);
 
         $ruleValueMap = [];
         $ruleTaxValueMap = [];
@@ -118,8 +124,14 @@ class PayrollGenerator {
                 foreach ($this->formattedSystemRuleList as $key => $systemRule) {
                     $formula = $this->convertSystemRuleToValue($formula, $key, $systemRule, $ruleId);
                 }
+                //added by prabin to remoeve extra params PARS and PARAe start
+                $formula=$this->deleteAllBetweenString("PARS", "PARE", $formula);
+                //added by prabin to remoeve extra params PARS and PARAe end
 
                 $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
+                
+                $current = file_get_contents($file);
+                file_put_contents($file, $current."\r\nstartRuleId=".$ruleId." ".$processedformula);
                 $ruleValue = eval("return {$processedformula} ;");
             }
             $rule = ["ruleValue" => $ruleValue, "rule" => $ruleDetail];
@@ -214,4 +226,16 @@ class PayrollGenerator {
         return $payValue;
     }
 
+    // added by prabin start
+    private function deleteAllBetweenString($beginning, $end, $string) {
+        $beginningPos = strpos($string, $beginning);
+        $endPos = strpos($string, $end);
+        if ($beginningPos === false || $endPos === false) {
+            return $string;
+        }
+        $textToDelete = substr($string, $beginningPos, ($endPos + strlen($end)) - $beginningPos);
+        return $this->deleteAllBetweenString($beginning, $end, str_replace($textToDelete, '', $string)); // recursion to ensure all occurrences are replaced
+    }
+    // added by prabin end
+    
 }

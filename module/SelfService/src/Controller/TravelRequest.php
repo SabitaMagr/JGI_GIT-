@@ -59,7 +59,7 @@ class TravelRequest extends HrisController {
             $postData = $request->getPost();
             $travelSubstitute = $postData->travelSubstitute;
             $this->form->setData($postData);
-            
+
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
                 $model->requestedAmount = ($model->requestedAmount == null) ? 0 : $model->requestedAmount;
@@ -91,6 +91,12 @@ class TravelRequest extends HrisController {
                     if (!isset($this->preference['travelSubCycle']) OR ( isset($this->preference['travelSubCycle']) && $this->preference['travelSubCycle'] == 'Y')) {
                         try {
                             HeadNotification::pushNotification(NotificationEvents::TRAVEL_SUBSTITUTE_APPLIED, $model, $this->adapter, $this);
+                        } catch (Exception $e) {
+                            $this->flashmessenger()->addMessage($e->getMessage());
+                        }
+                    } else {
+                        try {
+                            HeadNotification::pushNotification(NotificationEvents::TRAVEL_APPLIED, $model, $this->adapter, $this);
                         } catch (Exception $e) {
                             $this->flashmessenger()->addMessage($e->getMessage());
                         }
@@ -176,7 +182,7 @@ class TravelRequest extends HrisController {
             $model->fromDate = $detail['FROM_DATE'];
             $model->toDate = $detail['TO_DATE'];
             $model->destination = $detail['DESTINATION'];
-            $model ->departure = $detail ['DEPARTURE'];
+            $model->departure = $detail ['DEPARTURE'];
             $model->purpose = $detail['PURPOSE'];
             $model->travelCode = $detail['TRAVEL_CODE'];
             $model->requestedType = 'ep';
@@ -255,18 +261,18 @@ class TravelRequest extends HrisController {
                     'detail' => $detail,
                     'todayDate' => date('d-M-Y'),
                     'advanceAmount' => $advanceAmount
-                    //'files' => $fileDetails
+                        //'files' => $fileDetails
         ]);
     }
-    
+
     public function editAction() {
         $request = $this->getRequest();
-        
+
         $id = (int) $this->params()->fromRoute('id');
         if ($id === 0) {
             return $this->redirect()->toRoute("travelRequest");
         }
-        if($this->repository->checkAllowEdit($id) == 'N'){
+        if ($this->repository->checkAllowEdit($id) == 'N') {
             return $this->redirect()->toRoute("travelRequest");
         }
 
@@ -274,7 +280,7 @@ class TravelRequest extends HrisController {
             $travelRequest = new TravelRequestModel();
             $postedData = $request->getPost();
             $this->form->setData($postedData);
-            
+
             if ($this->form->isValid()) {
                 $travelRequest->exchangeArrayFromForm($this->form->getData());
                 $travelRequest->modifiedDt = Helper::getcurrentExpressionDate();
@@ -284,7 +290,7 @@ class TravelRequest extends HrisController {
                 return $this->redirect()->toRoute("travelRequest");
             }
         }
-        
+
         $detail = $this->repository->fetchById($id);
         //$fileDetails = $this->repository->fetchAttachmentsById($id);
         $model = new TravelRequestModel();
@@ -301,7 +307,7 @@ class TravelRequest extends HrisController {
                     'detail' => $detail,
                     'todayDate' => date('d-M-Y'),
                     'advanceAmount' => $advanceAmount
-                    //'files' => $fileDetails
+                        //'files' => $fileDetails
         ]);
     }
 
