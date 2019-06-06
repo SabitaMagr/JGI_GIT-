@@ -188,6 +188,7 @@ class LoanStatusRepository implements RepositoryInterface {
         $loanId = $data['loanId'];
         $loanRequestStatusId = $data['loanRequestStatusId'];
         $employeeTypeId = $data['employeeTypeId'];
+        $loanStatus = $data['loanStatus'];
 
         $sql = "SELECT
                   E.EMPLOYEE_CODE as EMPLOYEE_CODE, 
@@ -301,9 +302,11 @@ class LoanStatusRepository implements RepositoryInterface {
         if ($serviceEventTypeId != -1) {
             $sql .= " AND E." . HrEmployees::EMPLOYEE_ID . " IN (SELECT " . HrEmployees::EMPLOYEE_ID . " FROM " . HrEmployees::TABLE_NAME . " WHERE " . HrEmployees::SERVICE_EVENT_TYPE_ID . "= $serviceEventTypeId)";
         }
+        if ($loanStatus != 'BOTH') {
+          $sql .= " AND LR.LOAN_STATUS = '".$loanStatus."'";
+        }
 
         $sql .= " ORDER BY LR.LOAN_REQUEST_ID DESC";
-
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return $result;
@@ -378,172 +381,5 @@ class LoanStatusRepository implements RepositoryInterface {
       $sql = "SELECT STATUS FROM HRIS_EMPLOYEE_LOAN_REQUEST WHERE LOAN_REQUEST_ID = $id";
       $statement = $this->adapter->query($sql); 
       return $statement->execute();
-    }
-
-    public function fetchEmployeeLoanDetails($emp_id, $loan_id){
-      $sql = "SELECT DISTINCT
-      e.employee_code,
-      e.full_name,
-      initcap(l.loan_name) AS loan_name,
-      lr.requested_amount,
-      lr.loan_request_id,
-      NVL(ROUND((
-          SELECT
-              SUM(amount)
-          FROM
-              hris_loan_payment_detail
-          WHERE
-                  paid_flag = 'Y'
-              AND
-                  loan_request_id = lr.loan_request_id
-      )), 0)AS paid_amount,
-      ( 
-          SELECT
-              ROUND(SUM(amount))
-          FROM
-              hris_loan_payment_detail
-          WHERE
-                  paid_flag = 'N'
-              AND
-                  loan_request_id = lr.loan_request_id
-      )  AS balance,
-      trunc(hlpd.amount, 2) AS current_installment,
-      initcap(TO_CHAR(lr.loan_date,'DD-MON-YYYY') ) AS loan_date_ad,
-      bs_date(TO_CHAR(lr.loan_date,'DD-MON-YYYY') ) AS loan_date_bs,
-      initcap(TO_CHAR(lr.requested_date,'DD-MON-YYYY') ) AS requested_date_ad,
-      bs_date(TO_CHAR(lr.requested_date,'DD-MON-YYYY') ) AS requested_date_bs,
-      lr.loan_status AS status,
-      lr.employee_id AS employee_id
-  FROM
-      hris_employee_loan_request lr
-      LEFT OUTER JOIN hris_loan_master_setup l ON l.loan_id = lr.loan_id
-      LEFT OUTER JOIN hris_employees e ON e.employee_id = lr.employee_id
-      LEFT OUTER JOIN hris_loan_payment_detail hlpd ON hlpd.loan_request_id = lr.loan_request_id
-  WHERE
-      1 = 1 ";
-
-    $sql.= $emp_id != null ? " AND e.employee_id = $emp_id " : '' ;
-    $sql.= $loan_id != null ? " AND l.loan_id = $loan_id " : '' ;
-    $sql.=' ORDER BY lr.LOAN_REQUEST_ID';
-
-      $statement = $this->adapter->query($sql); 
-      return $statement->execute();
-    }
-
-    public function fetchLoanVoucher($emp_id, $fromDate, $toDate, $loanId){
-      $sql = "SELECT DT, particulars, debit_amount, credit_amount, balance FROM(
-          SELECT to_date(HLPD.FROM_DATE) AS DT, 'Opening Balance' as PARTICULARS,
-      TRUNC(SUM(HLPD.PRINCIPLE_AMOUNT), 2) AS DEBIT_AMOUNT,
-      0 AS CREDIT_AMOUNT, 0 AS BALANCE
-      FROM 
-      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
-      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE 
-        to_char(to_date(hlpd.from_date,'dd-mon-yy'),'mm') = 7
-        AND HLPD.FROM_DATE >= trunc(TO_DATE('{$fromDate}'),'month') 
-         AND hlpd.paid_flag = 'Y'
-            AND  HELR.LOAN_ID = $loanId
-         AND HELR.EMPLOYEE_ID = $emp_id
-         AND HLPD.LOAN_REQUEST_ID IN(
-        SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
-        WHERE EMPLOYEE_ID = $emp_id)
-      GROUP BY HLPD.FROM_DATE
-     
-     UNION ALL
-     
-      SELECT LAST_DAY(HLPD.FROM_DATE) AS DT, 'Interest Due' as PARTICULARS,
-      TRUNC(SUM(HLPD.INTEREST_AMOUNT), 2) AS DEBIT_AMOUNT, 
-      0 AS CREDIT_AMOUNT, 0 AS BALANCE
-      FROM 
-      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
-      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
-     select trunc(add_Months('{$fromDate}', level-1),'month') result
-      from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
-      ) AND HELR.EMPLOYEE_ID = $emp_id
-      GROUP BY HLPD.FROM_DATE
-      
-     UNION ALL
-     
-     SELECT LAST_DAY(HLPD.FROM_DATE) AS DT, 'Interest Paid' as PARTICULARS,
-       0 AS DEBIT_AMOUNT,
-       TRUNC(SUM(HLPD.INTEREST_AMOUNT), 2) AS CREDIT_AMOUNT, 0 AS BALANCE
-      FROM 
-      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
-      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
-     select trunc(add_Months('{$fromDate}', level-1),'month') result
-      from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
-      ) AND HELR.EMPLOYEE_ID = $emp_id
-      GROUP BY HLPD.FROM_DATE
-     
-      UNION ALL
-      
-      SELECT LAST_DAY(HLPD.FROM_DATE) AS DT, 'Amount Paid' as PARTICULARS,
-       0 AS DEBIT_AMOUNT,
-       TRUNC(SUM(HLPD.AMOUNT), 2) AS CREDIT_AMOUNT, 0 AS BALANCE
-      FROM 
-      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
-      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
-     select trunc(add_Months('{$fromDate}', level-1),'month') result
-      from DUAL
-      connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
-      ) AND HELR.EMPLOYEE_ID = $emp_id
-      GROUP BY HLPD.FROM_DATE
-      
-     ORDER BY DT, DEBIT_AMOUNT DESC, CREDIT_AMOUNT DESC)
-              
-              UNION ALL
-    SELECT
-    LOAN_DATE AS dt,
-    'Loan Taken' AS particulars,
-    REQUESTED_AMOUNT AS debit_amount,
-    0 AS credit_amount,
-    0 AS balance
-FROM
-    hris_employee_loan_request
-WHERE
-        loan_id = $loanId
-    AND
-        LOAN_DATE BETWEEN '{$fromDate}' AND '{$toDate}'    
-    AND
-       employee_id = $emp_id
-ORDER BY
-    dt,
-    debit_amount DESC,
-    credit_amount DESC
-            ";        
-    //echo $sql; die;
-      $statement = $this->adapter->query($sql); 
-      return $statement->execute();
-    }
-    
-    public function getLoanlist(){
-      $sql = "SELECT LOAN_ID, LOAN_NAME FROM HRIS_LOAN_MASTER_SETUP ORDER BY LOAN_ID";
-      $statement = $this->adapter->query($sql); 
-      return $statement->execute();
-    }
-    
-    public function fetchOpeningBalance($emp_id, $fromDate, $loanId){
-        $sql = " SELECT 
-      TRUNC(SUM(HLPD.PRINCIPLE_AMOUNT), 2) AS OPENING_BALANCE
-      FROM 
-      HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
-      HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-         WHERE 
-        HLPD.FROM_DATE = trunc(TO_DATE('{$fromDate}'),'month') 
-         AND hlpd.paid_flag = 'Y'
-            AND  HELR.LOAN_ID = $loanId
-         AND HELR.EMPLOYEE_ID = $emp_id
-         AND HLPD.LOAN_REQUEST_ID IN(
-        SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
-        WHERE EMPLOYEE_ID = $emp_id) 
-        group by hlpd.from_date";
-        
-        $statement = $this->adapter->query($sql); 
-        return $statement->execute();
     }
 }

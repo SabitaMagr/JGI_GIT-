@@ -11,6 +11,8 @@ class LoanClosing extends Model{
     const PAYMENT_AMOUNT = "PAYMENT_AMOUNT";
     const PAYMENT_ID = "PAYMENT_ID";
     const NEW_LOAN_REQ_ID = "NEW_LOAN_REQ_ID";
+    const INTEREST = "INTEREST";
+    const RECEIPT_NO = "RECEIPT_NO";
     const REMARKS = "REMARKS";
      
     public $id;
@@ -19,6 +21,8 @@ class LoanClosing extends Model{
     public $paymentAmount;
     public $paymentId;
     public $newLoanReqId;
+    public $interest;
+    public $receiptNo;
     public $remarks;
      
     public $mappings = [
@@ -28,6 +32,8 @@ class LoanClosing extends Model{
         'paymentAmount'=> self::PAYMENT_AMOUNT,
         'paymentId'=>self::PAYMENT_ID,
         'newLoanReqId'=>self::NEW_LOAN_REQ_ID,
+        'interest'=>self::INTEREST,
+        'receiptNo'=>self::RECEIPT_NO,
         'remarks'=>self::REMARKS
     ];
 }
