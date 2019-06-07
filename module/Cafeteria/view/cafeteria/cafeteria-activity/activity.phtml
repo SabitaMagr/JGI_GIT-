@@ -14,13 +14,16 @@ $this->headScript()
    
 </script>
 <style>
+    input[type="number"], select, input[type="text"]{
+        width: 80%;
+    }
     .table-wrapper {
-        font-size: 150%;
-        max-height: 300px;
+        font-size: 100%;
+        max-height: 450px;
         max-width: 80%;
         overflow: scroll;
         display:inline-block;
-      }
+    }
 </style>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\loanApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -41,10 +44,10 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <?php } ?>
 
 <script>
-    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.menuList = <?=json_encode($menuList)?>;
     document.timeList = <?=json_encode($timeList)?>;
     document.mapList = <?=json_encode($mapList)?>;
+    document.fetchProfileLink = '<?=$this->url("cafeteria-activity", ["action" => "fetchEmployeeProfile"])?>';
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.acl =<?php echo json_encode($acl); ?>;
 </script>   
@@ -54,7 +57,12 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div class="caption">
             <i class="icon-paper-plane font-green-haze"></i>
             <span class="caption-subject bold font-green-haze uppercase">Data Record Entry System</span>
+            <label style="margin-left: 100px;">Type:
+            <label>SCP <input type="radio" id="scp" name="type" value="SCP"></label>
+            <label>LSG <input type="radio" id="lsg" name="type" value="LSG"></label>
+            </label>
         </div>
+        
         <div class="tools">
             <a href="" class="collapse" data-original-title="" title=""> </a>
             <a href="" class="fullscreen" data-original-title="" title=""> </a>
@@ -101,7 +109,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 <form method="post" action="<?=$this->url('cafeteria-activity', ['action' => 'activity'])?>" id="cafeteria-activity">
 <div class="container">
     <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-5">
     <div class="row">
         <div class="col-sm-12">
             <table class="table table-bordered left-table">
@@ -122,7 +130,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <tr>
                     <td>
                         <label class="control-label">
-                            Menu Time:</label></td><td>
+                            Menu Time:</label>
                                 <div class="form-group">
                             <select name="menuTime" id="menuTime">
                                 <option value="-">--</option>
@@ -130,12 +138,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                 <option value="<?=$item['TIME_ID']?>"><?=$item['TIME_NAME']?></option>
                                 <?php } ?>
                             </select></div>
-                        </td>
+                        </td><td rowspan="2"><div class="image">
+        </div></td>
                 </tr>
                 <tr>
                     <td>
                             <label class="control-label">
-                                Pay Type:</label></td><td><div class="form-group">
+                                Pay Type:</label><div class="form-group">
                             <select name="payType" id="payType">
                                 <option value="p">payable</option>
                                 <option value="c">complementary</option>
@@ -145,16 +154,29 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 </tr>
                 <tr>
                     <td>
-                        <label>Employee</label></td><td><div class="form-group">
-                        <select name="employee" required="required" id="employeeId" class="form-control">
-                    </select>
+                        <label>Code</label></td><td><div class="form-group">
+                        <input type="number" name="empCode" id="empCode">
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <div class="form-group">
-                            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                        <label>Name</label></td><td><div class="form-group">
+                        <input type="text" readonly name="empName" id="empName" tabindex="-1">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Department</label></td><td><div class="form-group">
+                        <input type="text" readonly name="dept" id="dept" tabindex="-1">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Designation</label></td><td><div class="form-group">
+                        <input type="text" readonly name="desg" id="desg" tabindex="-1">
                         </div>
                     </td>
                 </tr>
@@ -162,10 +184,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
     </div>
-        <div class="col-sm-8 right-table" id="menuTable">
-            
+        <div class="col-sm-7 right-table" id="menuTable">
         </div>
-        </div>
-</form>    
     </div>
+    
+    <div class="form-group">
+        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>    
+</div>
     
