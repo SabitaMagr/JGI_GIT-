@@ -25,7 +25,7 @@
             {field: "LOAN_NAME", title: "Loan Name", width: 100, locked: true},
             {field: "FROM_DATE", title: "From Date", width: 100, locked: true},
             {field: "TO_DATE", title: "To Date", width: 100, locked: true},
-            {field: "AMOUNT", title: "Amount", width: 80, locked: true},
+            {field: "AMOUNT", title: "Installment", width: 110, locked: true},
             {field: "PAYMENT_ID", title: "skip", width: 80, locked: true, template: app.genKendoActionTemplate(actiontemplateConfig)},
             {field: "PRINCIPLE_AMOUNT", title: "Principle", width: 80},
             {field: "INTEREST_AMOUNT", title: "Interest", width: 80},
@@ -40,7 +40,7 @@
             'FROM_DATE': 'FROM_DATE',
             'TO_DATE': 'TO_DATE',
             'PAYMENT_ID': 'PAYMENT_ID',
-            'AMOUNT': 'AMOUNT',
+            'AMOUNT': 'INSTALLMENT',
             'PAID': 'PAID',
             'PRINCIPLE_AMOUNT': 'PRINCIPLE_AMOUNT',
             'INTEREST_AMOUNT': 'INTEREST_AMOUNT'

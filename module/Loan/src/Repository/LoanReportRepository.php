@@ -167,7 +167,7 @@ class LoanReportRepository implements RepositoryInterface {
     FROM 
     HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
     HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-        WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
+        WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND trunc(HLPD.FROM_DATE, 'month') IN(
     select trunc(add_Months('{$fromDate}', level-1),'month') result
     from DUAL
     connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
@@ -182,7 +182,7 @@ class LoanReportRepository implements RepositoryInterface {
     FROM 
     HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
     HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-        WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
+        WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND trunc(HLPD.FROM_DATE, 'month') IN(
     select trunc(add_Months('{$fromDate}', level-1),'month') result
     from DUAL
     connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
@@ -197,17 +197,17 @@ class LoanReportRepository implements RepositoryInterface {
     FROM 
     HRIS_LOAN_PAYMENT_DETAIL HLPD JOIN 
     HRIS_EMPLOYEE_LOAN_REQUEST HELR ON(HELR.LOAN_REQUEST_ID = HLPD.LOAN_REQUEST_ID)
-        WHERE hlpd.PAID_FLAG = 'Y' AND  HELR.LOAN_ID = $loanId AND HLPD.FROM_DATE IN(
+    WHERE hlpd.PAID_FLAG = 'Y' AND  trunc(HELR.LOAN_ID) = $loanId AND trunc(HLPD.FROM_DATE, 'month') IN(
     select trunc(add_Months('{$fromDate}', level-1),'month') result
     from DUAL
     connect by level <= MONTHS_BETWEEN('{$toDate}', '{$fromDate}')+1
     ) AND HELR.EMPLOYEE_ID = $emp_id
     GROUP BY HLPD.FROM_DATE
-    
     ORDER BY DT, DEBIT_AMOUNT DESC, CREDIT_AMOUNT DESC)
             
-            UNION ALL
-    SELECT
+    UNION ALL
+
+    (SELECT
     LOAN_DATE AS dt,
     'Loan Taken' AS particulars,
     REQUESTED_AMOUNT AS debit_amount,
@@ -220,7 +220,59 @@ WHERE
     AND
         LOAN_DATE BETWEEN '{$fromDate}' AND '{$toDate}'    
     AND
-        employee_id = $emp_id
+        employee_id = $emp_id)
+
+        UNION ALL
+
+    (SELECT
+    PAYMENT_DATE AS dt,
+    'Interest Paid' AS particulars,
+    INTEREST AS debit_amount,
+    0 AS credit_amount,
+    0 AS balance
+    FROM
+    HRIS_LOAN_CASH_PAYMENT
+    WHERE
+        LOAN_REQ_ID IN (SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
+        WHERE LOAN_ID = $loanId and EMPLOYEE_ID = $emp_id)
+    AND
+        PAYMENT_DATE BETWEEN '{$fromDate}' AND '{$toDate}'    
+    )
+
+    UNION ALL
+
+    (SELECT
+    PAYMENT_DATE AS dt,
+    'Interest Paid' AS particulars,
+    0 AS debit_amount,
+    INTEREST AS credit_amount,
+    0 AS balance
+    FROM
+    HRIS_LOAN_CASH_PAYMENT
+    WHERE
+        LOAN_REQ_ID IN (SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
+        WHERE LOAN_ID = $loanId and EMPLOYEE_ID = $emp_id)
+    AND
+        PAYMENT_DATE BETWEEN '{$fromDate}' AND '{$toDate}'    
+    )
+
+    UNION ALL
+
+    (SELECT
+    PAYMENT_DATE AS dt,
+    'Interest Paid' AS particulars,
+    0 AS debit_amount,
+    PAYMENT_AMOUNT AS credit_amount,
+    0 AS balance
+    FROM
+    HRIS_LOAN_CASH_PAYMENT
+    WHERE
+        LOAN_REQ_ID IN (SELECT LOAN_REQUEST_ID FROM hris_employee_loan_request
+        WHERE LOAN_ID = $loanId and EMPLOYEE_ID = $emp_id)
+    AND
+        PAYMENT_DATE BETWEEN '{$fromDate}' AND '{$toDate}'    
+    )
+
 ORDER BY
     dt,
     debit_amount DESC,

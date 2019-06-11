@@ -4,7 +4,6 @@ $this->headLink()
 
 $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
-        ->appendFile($this->basePath('js/search.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/cafeteria/cafeteria-activity/activity.js'));
 
@@ -18,11 +17,14 @@ $this->headScript()
         width: 80%;
     }
     .table-wrapper {
-        font-size: 100%;
+        background-color: lightgreen;
         max-height: 450px;
         max-width: 80%;
         overflow: scroll;
         display:inline-block;
+    }
+    .bg-inverse{
+        background-color: lightblue !important;
     }
 </style>
 <div class="page-bar">
@@ -47,8 +49,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     document.menuList = <?=json_encode($menuList)?>;
     document.timeList = <?=json_encode($timeList)?>;
     document.mapList = <?=json_encode($mapList)?>;
+    document.employeeProfiles = <?=json_encode($employeeDetails)?>;
     document.fetchProfileLink = '<?=$this->url("cafeteria-activity", ["action" => "fetchEmployeeProfile"])?>';
-    document.searchValues =<?php echo json_encode($searchValues) ?>;
+    document.fetchPresentStatusLink = '<?=$this->url("cafeteria-activity", ["action" => "fetchPresentStatus"])?>';
     document.acl =<?php echo json_encode($acl); ?>;
 </script>   
     

@@ -10,11 +10,24 @@
     d.getFullYear());
     //$("#logDate").datepicker('setStartDate', new Date());
     var tableData = '<table class="table table-wrapper"><tr><td>S.NO</td><td>Menu Description</td><td>Qty</td><td>Rate</td><td>Amount</td></tr></table>';
-    var empId = 0;
+    let empId = 0;
+    let presentStatus;
+
+    $.post(
+        document.fetchPresentStatusLink,
+        {
+            date : $("#logDate").val()
+        },
+        function(response){
+            presentStatus = response.data;
+        }
+    );
+
     $("#scp").prop("checked", true);
+
     function saveRecord(){
         if(confirm("Are you sure to save this record?")){
-            alert("Record saves successfully.");
+            alert("Record saved successfully.");
             $("#empCode").focus();
         }
         else{
@@ -54,15 +67,45 @@
         return false;
     }
 
+    function validateData(){
+        var qtyValues = $("input[name='qty[]']").map(function(){return $(this).val();}).get();
+        var qtyValidate = false;
+        if(empId == 0){
+            alert("Invalid Employee");
+            $("#empCode").val('');
+            $("#empCode").focus();
+            return false;
+        }
+        if($("#menuTime option:selected").index() == 0){
+            alert("Time is not selected."); return false;
+        }
+        for(let i = 0; i < qtyValues.length; i++){
+            if(qtyValues[i] > 0){
+                qtyValidate = true;
+            }
+        }
+        if(!qtyValidate){
+            alert("No items in the list!");
+            return false;
+        }
+        return true;
+    }
+
     function clearForm(){
-        $('input[type="text"]').val('');
-        $('input[type="number"]').val('');
-        $("#logDate").val(("0" + d.getDate()).slice(-2) + "-" + monthShortNames[(d.getMonth())] + "-" +
-        d.getFullYear());
+        $(".image").empty();
+        $("#empName").val('');
+        $("#dept").val('');
+        $("#empCode").val('');
+        $("#desg").val('');
+        $('.totalAmount input').val('');
+        $('.qty input').val('');
     }
 
     $("#submit").click(function(){
-        saveRecord();
+        if(validateData()){
+            saveRecord(); clearForm();
+        } 
+        return false;
     });
 
     $(document).on('keydown', ':tabbable', function (e) {
@@ -73,62 +116,72 @@
             if (index >= $canfocus.length) index = 0;
             $canfocus.eq(index).focus();
             if(this.id == 'empCode'){ 
-                var date = $("#logDate").val();
+                empId = 0;
+                var index = 0;
+                var empPresentStatus = '';
                 var empCode = this.value;
-                for(let i = 0; i <  document.searchValues.employee.length; i++){
-                    if(document.searchValues.employee[i].EMPLOYEE_CODE == empCode){
-                        empId = document.searchValues.employee[i].EMPLOYEE_ID;
+                for(let i = 0; i <  document.employeeProfiles.length; i++){
+                    if(document.employeeProfiles[i].EMPLOYEE_CODE == empCode){
+                        empId = document.employeeProfiles[i].EMPLOYEE_ID;
+                        index = i;
                         break;
                     }
                 }
-                if(empId == 0){
-                    alert("Invalid Employee Id");
+                if(index != 0){
+                    $(".image").empty();
+                    $("#empName").val(document.employeeProfiles[index].FULL_NAME);
+                    $("#dept").val(document.employeeProfiles[index].DEPARTMENT_NAME);
+                    $("#desg").val(document.employeeProfiles[index].DESIGNATION_TITLE);
+                    $(".image").append('<img src="'+document.basePath+'/uploads/'+document.employeeProfiles[index].FILE_PATH+'" width="125" height="125">');
+                }
+                else{
+                    alert("Invalid Employee Code");
+                    clearForm();
+                    $("#empCode").focus();
                     return;
                 }
-                $.post(
-                    document.fetchProfileLink,
-                    {'id':empId, 'date': date},
-                    function(response){
-                        $(".image").empty();
-                        $("#empName").val(response.data[0].FULL_NAME);
-                        $("#dept").val(response.data[0].DEPARTMENT_NAME);
-                        $("#desg").val(response.data[0].DESIGNATION_TITLE);
-                        $(".image").append('<img src="'+document.basePath+'/uploads/'+response.data[0].FILE_PATH+'" width="125" height="125">');
-                        if(response.status.STATUS == 'AB'){
-                            alert(response.data[0].FULL_NAME + " is Absent.");
-                        }
+                index = 0;
+                for(let i = 0; i < presentStatus.length; i++){
+                    if(presentStatus[i].EMPLOYEE_ID == empId){
+                        index = i;
+                        break;
                     }
-                );
+                }
+                if(index == 0){
+                    //alert("Employee is Absent.");
+                    app.showMessage( $("#empName").val()+" is Absent.", 'warning');
+                }
+                else{
+                    empPresentStatus = presentStatus[index].STATUS;
+                    if(empPresentStatus == 'AB'){
+                        //alert(presentStatus[index].FULL_NAME + " is Absent.");
+                        app.showMessage(presentStatus[index].FULL_NAME + " is Absent.", 'warning');
+                    }
+                }
             }
 
             if(this.id == 'submit'){ 
-                saveRecord(); clearForm();
+                if(validateData()){
+                    saveRecord(); clearForm();
+                } 
+                return false;
             }
         }   
     });
 
-
-    // $('body').on('keydown', 'input, textarea', function(e) {
-    //     var self = $(this)
-    //       , form = self.parents('form:eq(0)')
-    //       , focusable
-    //       , next
-    //       ;
-    //     if (e.keyCode == 13) {
-    //         focusable = form.find('input,a,select,button,textarea').filter(':visible');
-    //         next = focusable.eq(focusable.index(this)+1);
-    //         if (next.length) {
-    //             next.focus();
-    //         } else {
-    //             form.submit();
-    //         }
-    //         return false;
-    //     }
-    // });
-
-
     $(document).ready(function () {
-        var menuItems = [];
+        $(document).on('input change', '#logDate', function () {
+            $.post(
+                document.fetchPresentStatusLink,
+                {
+                    date : $("#logDate").val()
+                },
+                function(response){
+                    presentStatus = response.data;
+                }
+            );
+        });
+
         $(document).on('input', '.qty', function () {
             var tableRow = $('#menuTable tr').length;
             let grandTotal = 0;
@@ -150,21 +203,13 @@
             $("tr:nth-of-type(" + (tableRow) + ") .totalAmount input").val(grandTotal);
         });
 
-        // var employeeChange = function (obj) {
-        //     var $this = $(obj);
-        //     app.floatingProfile.setDataFromRemote($this.val());
-        // };
-
-        // $employee.on('change', function () {
-        //     employeeChange(this);
-        // });
-
         $('#menuTime, input[name="type"]').change(function () {
             var type = $('input[name="type"]:checked').val();
-            menuItems = [];
+            var menuItems = [];
             $('#menuTable').empty();
             $('#menuTable').append(tableData);
             let time = $("#menuTime option:selected").text();
+            if(time == '--'){return;}
             for (let i = 0; i < document.menuList.length; i++) {
                 if (document.menuList[i] != null) {
                     for (let j = 0; j < document.mapList[time].length; j++) {
@@ -175,32 +220,12 @@
                 }
             }
             var counter = 1;
+            
             for (let i = 0; i < menuItems.length; i++) {
                 $('#menuTable tr:last').after('<tr><td>' + counter + '</td><td>' + menuItems[i].MENU_NAME + '</td><td class="qty"><input type="number" value="" name="qty[]" id="qty"' + counter + '></td><td class="rate"><input type="number" readonly name="rate[]" tabindex="-1" value="'+menuItems[i].RATE+'"></td><td class="totalAmount"><input type="number" readonly name="total[]" tabindex="-1" value=""></td><td><input type="hidden" name="menu_id[]" value="' + menuItems[i].MENU_ID + '"></td></tr>');
                 counter++;
             }
             $('#menuTable tr:last').after('<tr><td>-</td><td>Total</td><td>-</td><td>-</td><td class="totalAmount"><input type="number" readonly name="total[]" tabindex="-1"></td></tr>');
         });
-        
-        $("#cafeteria-activity").on('submit', function(){
-            var qtyValues = $("input[name='qty[]']").map(function(){return $(this).val();}).get();
-            var qtyValidate = false;
-            if($("#employeeId option:selected").index() == 0){
-                alert("Please select an employee."); return false;
-            }
-            if($("#menuTime option:selected").index() == 0){
-                alert("Time is not selected."); return false;
-            }
-            for(let i = 0; i < qtyValues.length; i++){
-                if(qtyValues[i] > 0){
-                    qtyValidate = true;
-                }
-            }
-            if(!qtyValidate){
-                alert("No items in the list!");
-                return false;
-            }
-            return true;
-        })
     });
 })(window.jQuery, window.app);

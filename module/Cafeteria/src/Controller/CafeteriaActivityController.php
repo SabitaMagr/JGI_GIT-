@@ -51,22 +51,24 @@ class CafeteriaActivityController extends HrisController{
             $result = $this->cafeteriaMapRepo->fetchMappingDetailsByTime($timeList[$i]['TIME_ID']);
             $mapList[$timeList[$i]['TIME_NAME']] = Helper::extractDbData($result);
         }
+
+        $result = $this->repository->getEmployeesDetails();
+        $details = Helper::extractDbData($result);
+
         return Helper::addFlashMessagesToArray($this, [
             'timeList' => $timeList,
             'menuList' => $menuList,
             'mapList' => $mapList,
-            'searchValues' => EntityHelper::getSearchData($this->adapter),
-            'acl' => $this->acl,
+            'employeeDetails' => $details,
+            'acl' => $this->acl
         ]);
     }
 
-    public function fetchEmployeeProfileAction(){
+    public function fetchPresentStatusAction(){
         $request = $this->getRequest();
         $data = $request->getPost();
-        $id = $data['id'];
         $date = $data['date']!=null || $data['date']!='' ? $data['date'] : date('d-M-Y', strtotime('now'));
-        $profile = Helper::extractDbData($this->repository->fetchEmployeeProfileById($id));
-        $status = Helper::extractDbData($this->repository->getPresentStatus($id, $date))[0];
-        return new JsonModel(['success' => true, 'data' => $profile, 'status' => $status]);
+        $data = Helper::extractDbData($this->repository->getPresentStatus($date));
+        return new JsonModel(['success' => true, 'data' => $data]);
     }
 }
