@@ -205,8 +205,6 @@ class CafeteriaSetupController extends HrisController{
             $result = $this->cafeteriaMapRepo->fetchMappingDetailsByTime($timeList[$i]['TIME_ID']);
             $mapList[$timeList[$i]['TIME_NAME']] = Helper::extractDbData($result);
         }
-//        echo '<pre>';
-//        print_r($mapList); die;
         return Helper::addFlashMessagesToArray($this, [
             'menuList' => $menuList,
             'timeList' => $timeList,

@@ -10,10 +10,13 @@ $this->headScript()->appendFile($this->basePath('js/Loan/loan-status/loan-closin
 
 
 $form->setAttribute('role', 'form');
-$form->setAttribute('id', 'loan-form');
+$form->setAttribute('id', 'cash-payment');
 
 $paidAmount = $form->get('paymentAmount');
 $paidDate = $form->get('paymentDate');
+$interest = $form->get('interest');
+$receiptNo = $form->get('receiptNo');
+$totalPaid = $form->get('totalPaid');
 $remarks = $form->get('remarks');
  
 $submit = $form->get('submit');
@@ -25,10 +28,11 @@ $form->prepare();
 ?>
 <script>
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
+    document.rate = <?=json_encode($rate)?>;
     document.pullLoanListLink = '<?= $this->url("loanRequest", ["action" => "pullLoanList"]) ?>';
 </script>
 <div class="page-bar">
-    <?= $this->navigation('Zend\Navigation\loanApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
+    <?= ''//$this->navigation('Zend\Navigation\loanApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
 <?php
 if ($this->messages && (sizeof($this->messages) > 1)) {
@@ -50,7 +54,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div class="portlet box custom-box">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-user"></i>New Entry
+                    <i class="fa fa-user"></i>New Cash Payment
                 </div>
                 <div class="actions">
                     <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title=""> </a>
@@ -81,18 +85,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     </div>
                     <input type="hidden" class="forn-control" name="repaymentMonths" id="repaymentMonths" value="">
                     <div class="col-sm-4">
-                        <div class="form-group">
-                            <?php print $this->formLabel($paidAmount); ?>
-                            <span class="required" aria-required="true">*</span>
-                            <?php print $this->formElement($paidAmount); ?>
-                            <?php print $this->formElementErrors()->render($paidAmount, ['class' => 'help-block']); ?>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class=" row">
-                    <div class="col-sm-4">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -113,7 +105,48 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             </div>     
                         </div> 
                     </div>
+                    
+                </div>
 
+
+                <div class=" row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($paidAmount); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($paidAmount); ?>
+                            <?php print $this->formElementErrors()->render($paidAmount, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <div class="form-group">
+                            <?php print $this->formLabel($interest); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($interest); ?>
+                            <?php print $this->formElementErrors()->render($interest, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($totalPaid); ?>
+                            <?php print $this->formElement($totalPaid); ?>
+                            <?php print $this->formElementErrors()->render($totalPaid, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($receiptNo); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($receiptNo); ?>
+                            <?php print $this->formElementErrors()->render($receiptNo, ['class' => 'help-block']); ?>
+                        </div>
+                    </div>
+                    
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
@@ -121,11 +154,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-
-                    <div class="col-sm-4">
-                    </div>
+                    <!-- <div class="col-sm-2">
+                        <div class="form-group">
+                        <label>Calculate Interest by date</label>
+                        <button type="button" class="btn btn-primary form-control" id="calculate-interest">Calculate</button>
+                        </div>
+                    </div> -->
                 </div>
-
 
 
                 <?php

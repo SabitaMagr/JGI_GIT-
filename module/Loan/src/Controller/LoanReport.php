@@ -9,7 +9,8 @@ use Application\Helper\Helper;
 use Application\Model\FiscalYear;
 use Application\Model\HrisQuery;
 use Exception;
-use Loan\Repository\LoanStatusRepository;
+use Setup\Model\Loan;
+use Loan\Repository\LoanReportRepository;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select as Select2;
@@ -21,16 +22,15 @@ class LoanReport extends HrisController {
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
         parent::__construct($adapter, $storage);
-        $this->initializeRepository(LoanStatusRepository::class);
+        $this->initializeRepository(LoanReportRepository::class);
     }
 
     public function indexAction(){
         $request = $this->getRequest();
         if ($request->isPost()){
             try {
-                $emp_id = !empty($_POST['emp_id']) ? $_POST['emp_id'] : null ;
-                $loan_id = !empty($_POST['loan_id']) ? $_POST['loan_id'] : null ;
-                $result = $this->repository->fetchEmployeeLoanDetails($emp_id, $loan_id);
+                $data = $request->getPost();
+                $result = $this->repository->fetchEmployeeLoanDetails($data);
                 $loanDetails = Helper::extractDbData($result);
                 return new JsonModel(['success' => true, 'data' => $loanDetails, 'message' => null]);
             } catch (Exception $e) {
@@ -73,5 +73,42 @@ class LoanReport extends HrisController {
                 'employeeDetail' => $this->storageData['employee_detail'],
                 'loanList' => $loanList
         ]);
+    }
+
+    public function cashPaymentReportAction(){
+        $loanFormElement = new Select();
+        $loanFormElement->setName("loan");
+        $loans = EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => 'E'], Loan::LOAN_NAME, "ASC", NULL, FALSE, TRUE);
+        $loans1 = [-1 => "All Loans"] + $loans;
+        $loanFormElement->setValueOptions($loans1);
+        $loanFormElement->setAttributes(["id" => "loanId", "class" => "form-control"]);
+        $loanFormElement->setLabel("Loan Type");
+
+        $loanStatus = [
+            '-1' => 'All Status',
+            'RQ' => 'Pending',
+            'RC' => 'Recommended',
+            'AP' => 'Approved',
+            'R' => 'Rejected',
+            'C' => 'Cancelled'
+        ];
+        $loanStatusFormElement = new Select();
+        $loanStatusFormElement->setName("loanStatus");
+        $loanStatusFormElement->setValueOptions($loanStatus);
+        $loanStatusFormElement->setAttributes(["id" => "loanRequestStatusId", "class" => "form-control"]);
+        $loanStatusFormElement->setLabel("Status");
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'loans' => $loanFormElement,
+                    'loanStatus' => $loanStatusFormElement,
+                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+        ]);
+    }
+
+    public function pullCashPaymentListAction(){
+        $request = $this->getRequest();
+        $postedData = $getData = $request->getPost();
+        $data = Helper::extractDbData($this->repository->getCashPaymentsList($postedData));
+        return new JSONModel(['success' => true, 'data' => $data, 'message' => null]);
     }
 }
