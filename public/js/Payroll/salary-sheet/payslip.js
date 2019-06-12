@@ -10,6 +10,8 @@
         var $paySlipBody = $('#paySlipBody');
         var $excelExport = $('#excelExport');
         var $pdfExport = $('#pdfExport');
+        var $salaryTypeId = $('#salaryTypeId');
+        app.populateSelect($salaryTypeId, document.salaryType, 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', null, null, 1);
 
         var employeeList = null;
         app.setFiscalMonth($year, $month, function (yearList, monthList, currentMonth) {
@@ -70,6 +72,7 @@
             
             var monthId = $month.val();
             var employeeId = $employeeId.val();
+            var salaryTypeId =$salaryTypeId.val();
             var employee = employeeList.find(function (item) {
                 return item['EMPLOYEE_ID'] == employeeId;
             });
@@ -77,7 +80,8 @@
                 monthId: monthId,
                 employeeId: employeeId,
                 companyId: employee['COMPANY_ID'],
-                groupId: employee['GROUP_ID']
+                groupId: employee['GROUP_ID'],
+                salaryTypeId: salaryTypeId
             }).then(function (response) {
                 showPaySlip(response.data);
             }, function (error) {

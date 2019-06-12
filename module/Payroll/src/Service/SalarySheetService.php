@@ -82,19 +82,20 @@ class SalarySheetService {
         }
     }
 
-    private function findSalarySheetNo($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId) {
+    private function findSalarySheetNo($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId,$salaryTypeId) {
         $by = [
             SalarySheetModel::MONTH_ID => $monthId,
             SalarySheetModel::COMPANY_ID => $companyId,
             SalarySheetModel::GROUP_ID => $groupId,
+            SalarySheetModel::SALARY_TYPE_ID => $salaryTypeId,
         ];
         $data = $this->salarySheetRepo->fetchOneBy($by);
 
         return $data == null ? null : $data[SalarySheetModel::SHEET_NO];
     }
 
-    public function newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId) {
-        $sheetNo = $this->findSalarySheetNo($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId);
+    public function newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId,$salaryTypeId) {
+        $sheetNo = $this->findSalarySheetNo($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId,$salaryTypeId);
         if ($sheetNo != null) {
             return $sheetNo;
         }
@@ -110,6 +111,7 @@ class SalarySheetService {
         $salarySheetModal->status = 'CR';
         $salarySheetModal->companyId = $companyId;
         $salarySheetModal->groupId = $groupId;
+        $salarySheetModal->salaryTypeId = $salaryTypeId;
 
         $this->salarySheetRepo->add($salarySheetModal);
         return $salarySheetModal->sheetNo;

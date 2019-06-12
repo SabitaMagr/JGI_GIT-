@@ -583,7 +583,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $monthId = $data['monthId'];
+        $salaryTypeId = $data['salaryTypeId'];
 //        $fiscalId = $data['fiscalId'];
+        
+        $strSalaryType=($salaryTypeId!=null && $salaryTypeId!=-1)?" WHERE SALARY_TYPE_ID={$salaryTypeId}":" ";
 
         $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
@@ -609,7 +612,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             ,SUM(VAL) AS TOTAL
             FROM HRIS_VARIANCE V
             LEFT JOIN HRIS_VARIANCE_PAYHEAD VP ON (V.VARIANCE_ID=VP.VARIANCE_ID)
-            LEFT JOIN (select * from HRIS_SALARY_SHEET) SS ON (1=1)
+            LEFT JOIN (select * from HRIS_SALARY_SHEET {$strSalaryType}) SS ON (1=1)
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
             WHERE  V.STATUS='E' AND V.VARIABLE_TYPE='{$variableType}' 
             and SS.MONTH_ID={$monthId}
@@ -670,7 +673,10 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $monthId = $data['monthId'];
+        $salaryTypeId = $data['salaryTypeId'];
 //        $fiscalId = $data['fiscalId'];
+        
+        $strSalaryType=($salaryTypeId!=null && $salaryTypeId!=-1)?" WHERE SALARY_TYPE_ID={$salaryTypeId}":" ";
 
         $groupVariable = $data['groupVariable'];
         $variable = $this->fetchGroupDetailVariable($groupVariable);
@@ -703,7 +709,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             ,VAL AS TOTAL
             FROM HRIS_VARIANCE V
             LEFT JOIN HRIS_VARIANCE_PAYHEAD VP ON (V.VARIANCE_ID=VP.VARIANCE_ID)
-            LEFT JOIN (select * from HRIS_SALARY_SHEET) SS ON (1=1)
+            LEFT JOIN (select * from HRIS_SALARY_SHEET {$strSalaryType}) SS ON (1=1)
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND SD.Pay_Id=VP.Pay_Id)
             WHERE  V.STATUS='E' 
             and V.VARIANCE_ID={$groupVariable}
@@ -804,7 +810,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $departmentList = $this->fetchDepartmentList($departmentId);
         $counter = 0;
         foreach ($departmentList as $dep) {
-            $tempVal = $this->getMonthlySummaryByDep($monthId, $dep['DEPARTMENT_ID'], $in);
+            $tempVal = $this->getMonthlySummaryByDep($monthId, $dep['DEPARTMENT_ID'], $in,$data['salaryTypeId']);
             if (isset($tempVal['PARENT_DEPARTMENT']) && $departmentId && $counter == 0) {
                 $tempVal['PARENT_DEPARTMENT'] = null;
                 $counter++;
@@ -833,7 +839,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         return Helper::extractDbData($result);
     }
 
-    public function getMonthlySummaryByDep($monthId, $departmentId, $inVal) {
+    public function getMonthlySummaryByDep($monthId, $departmentId, $inVal,$salaryTypeId) {
+        $strSalaryType=($salaryTypeId!=null && $salaryTypeId!=-1)?" AND SS.SALARY_TYPE_ID={$salaryTypeId}":" ";
+        
         $sql = "select D.Department_Name,D.Parent_Department,p.* from (SELECT 
             Department_Id
             ,PAY_ID
@@ -844,7 +852,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             ,PS.PAY_ID
             ,SD.VAL
             FROM HRIS_PAY_SETUP PS 
-            left JOIN HRIS_SALARY_SHEET SS ON (SS.MONTH_ID={$monthId})
+            left JOIN HRIS_SALARY_SHEET SS ON (SS.MONTH_ID={$monthId} {$strSalaryType})
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND PS.PAY_ID=SD.PAY_ID)
             LEFT JOIN Hris_Salary_Sheet_Emp_Detail SSED ON (SSED.SHEET_NO=SD.SHEET_NO AND SSED.EMPLOYEE_ID=SD.EMPLOYEE_ID and Ssed.Department_Id in (
             SELECT CD.DEPARTMENT_ID FROM

@@ -11,6 +11,7 @@
         var $extraFields = $('#extraFields');
         var $groupVariable = $('#groupVariable');
         var $table = $('#table');
+        var $salaryTypeId = $('#salaryTypeId');
         var map = {};
          var exportType = {
             "ACCOUNT_NO": "STRING",
@@ -29,12 +30,13 @@
             monthList = months;
         });
 
-        console.log(document.groupVariables);
+//        console.log(document.groupVariables);
 
         app.populateSelect($otVariable, document.nonDefaultList, 'VARIANCE_ID', 'VARIANCE_NAME', '---', '');
         app.populateSelect($groupVariable, document.groupVariables, 'VARIANCE_ID', 'VARIANCE_NAME', '---', '');
         app.populateSelect($extraFields, extraFieldsList, 'ID', 'VALUE', '---', '');
-
+        
+         app.populateSelect($salaryTypeId, document.salaryType, 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', 'All',-1,-1);
 
         var initKendoGrid = function (defaultColumns, otVariables, extraVariable, data) {
             let dataSchemaCols = {};
@@ -140,6 +142,7 @@
             q['extField'] = $extraFields.val();
             q['reportType'] = $reportType.val();
             q['groupVariable'] = $groupVariable.val();
+            q['salaryTypeId'] = $salaryTypeId.val();
 
             app.serverRequest(document.pullGroupTaxReportLink, q).then(function (response) {
                 if (response.success) {

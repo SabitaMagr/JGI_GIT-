@@ -34,6 +34,7 @@ class SalarySheetController extends HrisController {
 
     public function indexAction() {
         $ruleRepo = new RulesRepository($this->adapter);
+        $data['salaryType'] = iterator_to_array($this->salarySheetRepo->fetchAllSalaryType(), false);
         $data['ruleList'] = iterator_to_array($ruleRepo->fetchAll(), false);
         $data['salarySheetList'] = iterator_to_array($this->salarySheetRepo->fetchAll(), false);
         $links['viewLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'viewSalarySheet']);
@@ -88,12 +89,13 @@ class SalarySheetController extends HrisController {
                     $toDate = $data['toDate'];
                     $companyIdList = $data['companyId'];
                     $groupIdList = $data['groupId'];
+                    $salaryTypeId = $data['salaryTypeId'];
                     /*  */
                     /*  */
                     $returnData = [];
                     foreach ($companyIdList as $companyId) {
                         foreach ($groupIdList as $groupId) {
-                            $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId);
+                            $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId,$salaryTypeId);
                             $this->salarySheetRepo->generateSalShReport($sheetNo);
                             $salarySheetDetailRepo->delete($sheetNo);
                             $taxSheetRepo->delete($sheetNo);
@@ -250,17 +252,19 @@ class SalarySheetController extends HrisController {
     }
 
     public function payslipAction() {
+        $salaryType = iterator_to_array($this->salarySheetRepo->fetchAllSalaryType(), false);
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
                 $postedData = $request->getPost();
                 $salarySheetDetailRepo = new SalarySheetDetailRepo($this->adapter);
-                $data = $salarySheetDetailRepo->fetchEmployeePaySlip($postedData['monthId'], $postedData['employeeId']);
+                $data = $salarySheetDetailRepo->fetchEmployeePaySlip($postedData['monthId'], $postedData['employeeId'],$postedData['salaryTypeId']);
                 return new JsonModel(['success' => true, 'data' => $data, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
+        return $this->stickFlashMessagesTo(['salaryType' => json_encode($salaryType)]);
     }
 
     public function getGroupListAction() {

@@ -7,6 +7,7 @@
         var $fiscalYear = $('#fiscalYearId');
         var $month = $('#monthId');
         var $table = $('#table');
+        var $salaryTypeId = $('#salaryTypeId');
 //        var map = {};
 //        var exportType = {
 //            "ACCOUNT_NO": "STRING",
@@ -24,6 +25,8 @@
         app.setFiscalMonth($fiscalYear, $month, function (years, months, currentMonth) {
             monthList = months;
         });
+        
+          app.populateSelect($salaryTypeId, document.salaryType, 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', 'All',-1,-1);
 
 
         $.each(document.ruleList, function (key, value) {
@@ -89,6 +92,7 @@
             var q = document.searchManager.getSearchValues();
             q['fiscalId'] = $fiscalYear.val();
             q['monthId'] = $month.val();
+            q['salaryTypeId'] = $salaryTypeId.val();
             app.serverRequest(document.pulldepartmentWiseLink, q).then(function (response) {
                 if (response.success) {
                     for(let i = 0; i < response.data.length; i++){

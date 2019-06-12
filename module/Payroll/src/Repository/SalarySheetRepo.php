@@ -1,4 +1,5 @@
 <?php
+
 namespace Payroll\Repository;
 
 use Application\Helper\Helper;
@@ -26,11 +27,11 @@ class SalarySheetRepo extends HrisRepository {
 
     public function fetchAll() {
         return $this->tableGateway->select(function (Select $select) {
-                $select->columns(Helper::convertColumnDateFormat($this->adapter, new SalarySheet(), [
-                        'startDate',
-                        'endDate',
-                    ]), false);
-            });
+                    $select->columns(Helper::convertColumnDateFormat($this->adapter, new SalarySheet(), [
+                                'startDate',
+                                'endDate',
+                            ]), false);
+                });
     }
 
     public function fetchById($id) {
@@ -50,7 +51,7 @@ class SalarySheetRepo extends HrisRepository {
         $select = $sql->select();
         $select->columns([]);
         $select->from(['S' => SalarySheet::TABLE_NAME])
-            ->join(['M' => Months::TABLE_NAME], 'S.' . SalarySheet::MONTH_ID . '=M.' . Months::MONTH_ID);
+                ->join(['M' => Months::TABLE_NAME], 'S.' . SalarySheet::MONTH_ID . '=M.' . Months::MONTH_ID);
         if ($monthId != null) {
             $select->where([Months::MONTH_ID => $monthId]);
         }
@@ -71,11 +72,21 @@ class SalarySheetRepo extends HrisRepository {
                             HRIS_GEN_SAL_SH_REPORT({$sheetNo});
                         END;");
     }
-    
+
     public function updateLoanPaymentFlag($employeeId, $sheetNo) {
         $this->executeStatement("BEGIN
                             hris_loan_payment_flag_change({$employeeId},{$sheetNo});
                         END;");
+    }
+
+    public function fetchAllSalaryType() {
+        $sql = new Sql($this->adapter);
+        $select = $sql->select();
+        $select->columns(['*']);
+        $select->from('HRIS_SALARY_TYPE');
+        $statement = $sql->prepareStatementForSqlObject($select);
+        $result = $statement->execute();
+        return $result;
     }
 
 }

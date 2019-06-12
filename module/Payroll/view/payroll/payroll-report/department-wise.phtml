@@ -22,6 +22,7 @@ $this->headScript()
     document.getFiscalYearMonthLink = '<?php echo $this->url('payrollReport', ['action' => 'getFiscalYearMonth']); ?>';
     document.pulldepartmentWiseLink = '<?= $this->url("payrollReport", ["action" => "pulldepartmentWise"]) ?>';
     document.ruleList =<?php echo json_encode($ruleList); ?>;
+    document.salaryType =<?php echo json_encode($salaryType); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -64,6 +65,11 @@ $this->headScript()
                         <div class="col-sm-2">
                             <label>Month</label>
                             <select id="monthId">
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Salary Type</label>
+                            <select class="form-control" name="salaryType" id="salaryTypeId">
                             </select>
                         </div>
                     </div>

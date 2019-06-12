@@ -22,6 +22,7 @@ $this->headScript()
     document.groupVariables =<?php echo json_encode($groupVariables); ?>;
     document.getFiscalYearMonthLink = '<?php echo $this->url('payrollReport', ['action' => 'getFiscalYearMonth']); ?>';
     document.pullGroupSheetLink = '<?= $this->url("payrollReport", ["action" => "pullGroupSheet"]) ?>';
+    document.salaryType =<?php echo json_encode($salaryType); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -124,6 +125,11 @@ $this->headScript()
                                 <option value="GS">Group Sheet</option>
                                 <option value="GD">Group Detail</option>
                                 <!--<option value="S">Summary</option>-->
+                            </select>
+                        </div>
+                        <div class="col-sm-2">
+                            <label>Salary Type</label>
+                            <select class="form-control" name="salaryType" id="salaryTypeId">
                             </select>
                         </div>
                     </div>

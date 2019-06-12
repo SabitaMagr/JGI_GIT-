@@ -30,6 +30,9 @@
         var $generateBtn = $('#generateBtn');
         var $companyId = $('#companyId');
         var $groupId = $('#groupId');
+        var $salaryTypeId = $('#salaryTypeId');
+        
+        app.populateSelect($salaryTypeId, data['salaryType'], 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', null,null,1);
 //        
         var loading_screen = null;
         var loadingMessage = "Payroll generation started.";
@@ -97,6 +100,7 @@
         $month.select2();
         $companyId.select2();
         $groupId.select2();
+        $salaryTypeId.select2();
 
         $viewBtn.hide();
 
@@ -110,6 +114,7 @@
             }
             var companyValue = $companyId.val();
             var groupValue = $groupId.val();
+            var salaryType = $salaryTypeId.val();
             for (var i in monthList) {
                 if (monthList[i]['MONTH_ID'] == monthValue) {
                     selectedMonth = monthList[i];
@@ -118,7 +123,12 @@
             }
             selectedSalarySheetList = [];
             for (var i in salarySheetList) {
-                if (salarySheetList[i]['MONTH_ID'] == monthValue && (companyValue == -1 || companyValue == salarySheetList[i]['COMPANY_ID']) && (groupValue == -1 || groupValue == salarySheetList[i]['GROUP_ID'])) {
+                if (salarySheetList[i]['MONTH_ID'] == monthValue &&
+                        (companyValue == -1 || companyValue == salarySheetList[i]['COMPANY_ID'])
+                        && (groupValue == -1 || groupValue == salarySheetList[i]['GROUP_ID'])
+                        && (salaryType == -1 || salaryType == salarySheetList[i]['SALARY_TYPE_ID'])
+                        
+                        ) {
                     selectedSalarySheetList.push(salarySheetList[i]);
                     if (groupValue != '-1') {
                         break;
@@ -145,6 +155,10 @@
         });
 
         $groupId.on('change', function () {
+            monthChangeAction();
+        });
+        
+        $salaryTypeId.on('change', function () {
             monthChangeAction();
         });
 
@@ -264,6 +278,7 @@
                 company = [company];
             }
             var group = $groupId.val();
+            var salaryType = $salaryTypeId.val();
             if (group === null || group === '-1') {
                 group = [];
                 $.each(groupList, function (key, value) {
@@ -281,7 +296,8 @@
                     fromDate: fromDate,
                     toDate: toDate,
                     companyId: company,
-                    groupId: group
+                    groupId: group,
+                    salaryTypeId:salaryType
                 }).then(function (response) {
                     stage2(response.data);
                 }, function (error) {

@@ -11,6 +11,7 @@ use Application\Model\Months;
 use Exception;
 use Payroll\Repository\PayrollReportRepo;
 use Payroll\Repository\RulesRepository;
+use Payroll\Repository\SalarySheetRepo;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\View\Model\JsonModel;
@@ -141,8 +142,12 @@ class PayrollReportController extends HrisController {
         $nonDefaultList = $this->repository->getSalaryGroupColumns('S', 'N');
         $groupVariables = $this->repository->getSalaryGroupColumns('S');
 
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $salaryType = iterator_to_array($salarySheetRepo->fetchAllSalaryType(), false);
+
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'salaryType' => $salaryType,
 //                    'fiscalYears' => $fiscalYears,
 //                    'months' => $months,
                     'nonDefaultList' => $nonDefaultList,
@@ -179,9 +184,13 @@ class PayrollReportController extends HrisController {
     public function groupTaxReportAction() {
         $nonDefaultList = $this->repository->getSalaryGroupColumns('T', 'N');
         $groupVariables = $this->repository->getSalaryGroupColumns('T');
+        
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $salaryType = iterator_to_array($salarySheetRepo->fetchAllSalaryType(), false);
 
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'salaryType' => $salaryType,
 //                    'fiscalYears' => $fiscalYears,
 //                    'months' => $months,
                     'nonDefaultList' => $nonDefaultList,
@@ -245,14 +254,18 @@ class PayrollReportController extends HrisController {
     public function departmentWiseAction() {
         $ruleRepo = new RulesRepository($this->adapter);
         $ruleList = iterator_to_array($ruleRepo->fetchAll(), false);
+
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $salaryType = iterator_to_array($salarySheetRepo->fetchAllSalaryType(), false);
+        
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'preference'=>$this->preference,
-                    'ruleList'=>$ruleList
+                    'preference' => $this->preference,
+                    'ruleList' => $ruleList,
+                    'salaryType' => $salaryType
         ]);
     }
-    
-    
+
     public function pulldepartmentWiseAction() {
         try {
             $request = $this->getRequest();
@@ -260,7 +273,7 @@ class PayrollReportController extends HrisController {
 //            $resultData = [];
             $resultData = $this->repository->pulldepartmentWise($data);
 //            $resultData['deductionDetail'] = $this->repository->fetchMonthlySummary('D', $data);
-
+            
             $result = [];
             $result['success'] = true;
             $result['data'] = $resultData;

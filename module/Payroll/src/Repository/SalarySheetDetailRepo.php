@@ -99,7 +99,7 @@ class SalarySheetDetailRepo extends HrisRepository {
         return $this->rawQuery($sql);
     }
 
-    public function fetchEmployeePaySlip($monthId, $employeeId) {
+    public function fetchEmployeePaySlip($monthId, $employeeId,$salaryTypeId=1) {
         $sql = "SELECT TS.*,
                   P.PAY_TYPE_FLAG,
                   P.PAY_EDESC
@@ -109,6 +109,7 @@ class SalarySheetDetailRepo extends HrisRepository {
                 WHERE P.INCLUDE_IN_SALARY='Y'
                 AND TS.SHEET_NO       IN
                   (SELECT SHEET_NO FROM HRIS_SALARY_SHEET WHERE MONTH_ID ={$monthId} 
+                      AND SALARY_TYPE_ID={$salaryTypeId}
                   )
                 AND EMPLOYEE_ID ={$employeeId} ORDER BY P.PRIORITY_INDEX";
         return $this->rawQuery($sql);
