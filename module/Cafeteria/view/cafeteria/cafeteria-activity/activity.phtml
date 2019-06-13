@@ -26,6 +26,16 @@ $this->headScript()
     .bg-inverse{
         background-color: lightblue !important;
     }
+    table td {
+        padding-bottom:0 !important; 
+        padding-top:0 !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+    }
+
+    table {
+        border-collapse: collapse;
+    }
 </style>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\loanApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

@@ -128,7 +128,7 @@ class DepartmentRepository extends HrisRepository implements RepositoryInterface
     }
 
     public function fetchJvDetails($deptId){
-        $sql = "SELECT HPS.PAY_ID, HPS.PAY_EDESC, HPJ.JV_NAME, HPJ.FLAG 
+        $sql = "SELECT HPS.PAY_ID, HPS.PAY_EDESC, HPJ.JV_NAME, HPJ.FLAG, HPJ.PAY_TYPE_FLAG
         FROM 
         HRIS_PAY_SETUP HPS
         LEFT JOIN HRIS_PAYROLL_JV HPJ ON HPS.PAY_ID = HPJ.PAY_ID AND HPJ.DEPARTMENT_ID = $deptId
@@ -147,6 +147,7 @@ class DepartmentRepository extends HrisRepository implements RepositoryInterface
             $payId = $data['payId'][$i];
             $jvName = $data['jvName'][$i];
             $flag = $data['flag'][$i];
+            $payTypeFlag = $data['payTypeFlag'][$i];
             
             $sql = "
             declare
@@ -164,12 +165,12 @@ class DepartmentRepository extends HrisRepository implements RepositoryInterface
             end;
             if v_exists = 'T' then
                 update HRIS_PAYROLL_JV
-                set JV_NAME = '$jvName', FLAG = '$flag', MODIFIED_BY = $employeeId
+                set JV_NAME = '$jvName', FLAG = '$flag', MODIFIED_BY = $employeeId, PAY_TYPE_FLAG = '$payTypeFlag'
                 where DEPARTMENT_ID = $deptId
                 and PAY_ID = $payId;
             else
-            INSERT INTO HRIS_PAYROLL_JV(DEPARTMENT_ID, PAY_ID, JV_NAME, STATUS, FLAG, CREATED_BY)
-            VALUES($deptId, $payId, '$jvName', 'E', '$flag', $employeeId);
+            INSERT INTO HRIS_PAYROLL_JV(DEPARTMENT_ID, PAY_ID, JV_NAME, STATUS, PAY_TYPE_FLAG, FLAG, CREATED_BY)
+            VALUES($deptId, $payId, '$jvName', 'E', '$payTypeFlag', '$flag', $employeeId);
             end if;
             end;
             ";

@@ -38,7 +38,7 @@
             {field: "STATUS", title: "Status", width: 90},
             {field: "REQUESTED_AMOUNT", title: "Amount", width: 120},
             {field: "PAID_AMOUNT", title: "Paid Amount", width: 120},
-            {field: "CURRENT_INSTALLMENT", title: "Cur. Instalment", width: 120},
+            //{field: "CURRENT_INSTALLMENT", title: "Cur. Instalment", width: 120},
             {field: "BALANCE", title: "Balance", width: 120}
         ];
  
@@ -53,7 +53,7 @@
             'REQUESTED_AMOUNT': 'Reqest Amt',
             'STATUS': 'Status',
             'PAID_AMOUNT': 'Paid Amount',
-            'CURRENT_INSTALLMENT': 'Cur. Instalment',
+            //'CURRENT_INSTALLMENT': 'Cur. Instalment',
             'BALANCE': 'Balance'
         }
         app.initializeKendoGrid($tableContainer, columns);

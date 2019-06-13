@@ -881,4 +881,30 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         return Helper::extractDbData($data);
     }
 
+    public function getJvReport($data){
+        $salaryType = ($data['salaryTypeId']!=null && $data['salaryTypeId']!=-1)? $data['salaryTypeId'] : '' ;
+        $monthId = $data['monthId'];
+        $deptId = $data['departmentId']!=-1 ? $data['departmentId'] : '' ;
+
+        $sql = "select 
+        Pjv.Jv_Name,
+        Sed.Department_Id,
+        SED.DEPARTMENT_NAME
+        ,PJV.Pay_Id,
+        (CASE WHEN PJV.PAY_TYPE_FLAG = 'D' THEN 'DEBIT' ELSE 'CREDIT' END) PAY_TYPE_FLAG, 
+        SUM(SSD.VAL) JV_VALUE
+        from Hris_Salary_Sheet SS
+        JOIN Hris_Salary_Sheet_Emp_Detail SED ON (SS.SHEET_NO=SED.SHEET_NO )
+        JOIN Hris_Salary_Sheet_Detail SSD ON (SED.EMPLOYEE_ID=SSD.EMPLOYEE_ID AND SS.SHEET_NO=SSD.SHEET_NO)
+        JOIN Hris_Payroll_Jv PJV ON (PJV.STATUS='E' AND PJV.FLAG='Y' AND PJV.DEPARTMENT_ID=SED.DEPARTMENT_ID AND SSD.PAY_ID=PJV.PAY_ID)
+        WHERE SS.MONTH_ID=$monthId ";
+
+        $sql.= $deptId!='' ? " AND Sed.Department_Id = $deptId " : '' ;
+        $sql.= $salaryType!='' ? " AND SS.SALARY_TYPE_ID = $salaryType " : '' ;
+        $sql.=" GROUP BY Pjv.Jv_Name,Sed.Department_Id,SED.DEPARTMENT_NAME,PJV.Pay_Id,PAY_TYPE_FLAG
+        ORDER BY Sed.Department_Id";
+        //echo $sql; die;
+        $data = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($data);
+    }
 }
