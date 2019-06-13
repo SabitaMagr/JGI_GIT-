@@ -339,8 +339,11 @@ FROM
         held.menu_code = hcms.menu_id
     )
     left join (select * from hris_month_code  where 
-(select from_date-3 from hris_month_code where month_id={$monthId})
- between from_date and to_date) mc on (1=1)
+(
+select to_char( add_months (from_date,-1),'DD-Mon-YY') as from_date
+, to_char( add_months (to_date,-1),'DD-Mon-YY') as to_date
+from hris_month_code where month_id={$monthId}
+) mc on (1=1)
 WHERE
 held.log_date BETWEEN mc.from_date AND mc.to_date and 
 e.employee_id={$employeeId}

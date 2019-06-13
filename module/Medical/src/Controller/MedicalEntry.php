@@ -168,7 +168,7 @@ class MedicalEntry extends HrisController {
         return $statusFormElement;
     }
 
-    public function pullEmpMedicalDetailAction($employeeId) {
+    public function pullEmpMedicalDetailAction() {
         try {
             $request = $this->getRequest();
             $data = $request->getPost();
