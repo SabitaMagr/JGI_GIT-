@@ -1,13 +1,12 @@
 (function ($, app) {
     'use strict';
     app.datePickerWithNepali("logDate", "nepaliLogDate");
-    var $employee = $('#employeeId');
-    $("#employeeId").select2();
     var monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var d = new Date();
     $("#logDate").val(("0" + d.getDate()).slice(-2) + "-" + monthShortNames[(d.getMonth())] + "-" +
     d.getFullYear());
+    $("#nepaliLogDate").val(window.nepaliDatePickerExt.fromEnglishToNepali($("#logDate").val()));
     //$("#logDate").datepicker('setStartDate', new Date());
     var tableData = '<table class="table table-wrapper"><tr><td>S.NO</td><td>Menu Description</td><td>Qty</td><td>Rate</td><td>Amount</td></tr></table>';
     let empId = 0;
@@ -86,6 +85,7 @@
         }
         if(!qtyValidate){
             alert("No items in the list!");
+            clearForm();
             return false;
         }
         return true;
@@ -99,6 +99,7 @@
         $("#desg").val('');
         $('.totalAmount input').val('');
         $('.qty input').val('');
+        $("#empCode").focus();
     }
 
     $("#submit").click(function(){
@@ -109,6 +110,25 @@
     });
 
     $(document).on('keydown', ':tabbable', function (e) {
+        if (e.which == 38  || e.keyCode == 38  ) { 
+            e.preventDefault();
+            var $canfocus = $(':tabbable:visible')
+            var index = $canfocus.index(document.activeElement) - 1;
+            if (index >= $canfocus.length) index = 0;
+            $canfocus.eq(index).focus();
+        }
+        if (e.which == 40  || e.keyCode == 40  ) { 
+            e.preventDefault();
+            var $canfocus = $(':tabbable:visible')
+            var index = $canfocus.index(document.activeElement) + 1;
+            if (index >= $canfocus.length) index = 0;
+            $canfocus.eq(index).focus();
+        }
+        if (e.which == 116  || e.code == 116  ) { 
+            e.preventDefault();
+            $("#submit").focus();
+            $("#submit").click();
+        }
         if (e.which == 13  || e.keyCode == 13  ) {      
             e.preventDefault();
             var $canfocus = $(':tabbable:visible')
@@ -137,7 +157,6 @@
                 else{
                     alert("Invalid Employee Code");
                     clearForm();
-                    $("#empCode").focus();
                     return;
                 }
                 index = 0;

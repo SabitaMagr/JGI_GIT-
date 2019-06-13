@@ -226,7 +226,7 @@ WHERE
 
     (SELECT
     PAYMENT_DATE AS dt,
-    'Interest Paid' AS particulars,
+    'Cash Interest Paid' AS particulars,
     INTEREST AS debit_amount,
     0 AS credit_amount,
     0 AS balance
@@ -243,7 +243,7 @@ WHERE
 
     (SELECT
     PAYMENT_DATE AS dt,
-    'Interest Paid' AS particulars,
+    'Cash Interest Paid' AS particulars,
     0 AS debit_amount,
     INTEREST AS credit_amount,
     0 AS balance
@@ -260,7 +260,7 @@ WHERE
 
     (SELECT
     PAYMENT_DATE AS dt,
-    'Interest Paid' AS particulars,
+    'Cash Amount Paid' AS particulars,
     0 AS debit_amount,
     PAYMENT_AMOUNT AS credit_amount,
     0 AS balance
@@ -366,9 +366,6 @@ ORDER BY
                     THEN ('E')
                   END
                 OR APRV.STATUS   IS NULL)";
-        if ($loanRequestStatusId != -1) {
-            $sql .= " AND  LR.STATUS='{$loanRequestStatusId}') ";
-        }
 
         if ($loanId != -1) {
             $sql .= " AND LR.LOAN_ID ='" . $loanId . "'";

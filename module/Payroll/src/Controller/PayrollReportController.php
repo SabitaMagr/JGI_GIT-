@@ -280,7 +280,7 @@ class PayrollReportController extends HrisController {
             $result = [];
             $result['success'] = true;
             $result['data'] = $resultData;
-//            $result['columns'] = $defaultColumnsList;
+//           $result['columns'] = $defaultColumnsList;
             $result['error'] = "";
             return new CustomViewModel($result);
         } catch (Exception $e) {
@@ -288,4 +288,27 @@ class PayrollReportController extends HrisController {
         }
     }
 
+    public function jvReportAction(){
+        $ruleRepo = new RulesRepository($this->adapter);
+        $ruleList = iterator_to_array($ruleRepo->fetchAll(), false);
+
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $salaryType = iterator_to_array($salarySheetRepo->fetchAllSalaryType(), false);
+        $request = $this->getRequest();
+        if($request->isPost()){
+            try {
+                $data = $request->getPost();
+                $resultData = $this->repository->getJvReport($data);
+                return new JSONModel(['success' => true, 'data' => $resultData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JSONModel(['success' => false, 'data' => [], 'error' => '']);
+            }
+        }
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference' => $this->preference,
+                    'ruleList' => $ruleList,
+                    'salaryType' => $salaryType
+        ]);
+    }
 }

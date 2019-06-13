@@ -21,6 +21,10 @@
         var pay_codes = document.pay_codes;
         app.populateSelect($payIdInt, pay_codes, 'PAY_ID', 'PAY_EDESC');
         app.populateSelect($payIdAmt, pay_codes, 'PAY_ID', 'PAY_EDESC');
+        if(document.selected_pay_codes != null){
+            $('#payIdInt option:eq('+document.selected_pay_codes[0].PAY_ID_INT+')').prop('selected', true);
+            $('#payIdAmt option:eq('+document.selected_pay_codes[0].PAY_ID_AMT+')').prop('selected', true);
+        }
     });
 })(window.jQuery,window.app);
 
