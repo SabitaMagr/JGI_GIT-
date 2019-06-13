@@ -778,6 +778,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $functionalTypeId = isset($data['functionalTypeId']) ? $data['functionalTypeId'] : -1;
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $monthId = $data['monthId'];
+        $salaryTypeId = $data['salaryTypeId'];
+        
+        $strSalaryType=($salaryTypeId!=null && $salaryTypeId!=-1)?" and ss.Salary_Type_Id={$salaryTypeId}":" ";
 
         $searchConditon = EntityHelper::getSearchConditonPayroll($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
@@ -785,13 +788,13 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
             PS.PAY_ID,PS.PAY_CODE,PS.PAY_EDESC,PS.PAY_TYPE_FLAG
             ,CASE WHEN SUM(SD.VAL) IS NULL THEN 0 ELSE SUM(SD.VAL) END AS TOTAL
             FROM HRIS_PAY_SETUP PS 
-            LEFT JOIN HRIS_SALARY_SHEET SS ON (SS.MONTH_ID={$monthId})
+            LEFT JOIN HRIS_SALARY_SHEET SS ON (SS.MONTH_ID={$monthId} {$strSalaryType})
             LEFT JOIN HRIS_SALARY_SHEET_DETAIL SD ON (SS.SHEET_NO=SD.SHEET_NO AND PS.PAY_ID=SD.PAY_ID)
             LEFT JOIN Hris_Salary_Sheet_Emp_Detail SSED ON (SSED.SHEET_NO=SD.SHEET_NO AND SSED.EMPLOYEE_ID=SD.EMPLOYEE_ID)
             WHERE PS.PAY_Type_flag='{$type}'
              {$searchConditon} 
             GROUP BY PS.PAY_ID,PS.PAY_CODE,PS.PAY_EDESC,PS.PAY_TYPE_FLAG";
-
+             
         $result = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($result);
     }

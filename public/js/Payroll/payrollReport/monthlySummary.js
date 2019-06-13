@@ -7,10 +7,13 @@
         var $fiscalYear = $('#fiscalYearId');
         var $month = $('#monthId');
         var $table = $('#table');
+        var $salaryTypeId = $('#salaryTypeId');
         var map = {};
         var exportType = {
             "ACCOUNT_NO": "STRING",
         };
+        
+        app.populateSelect($salaryTypeId, document.salaryType, 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', 'All',-1,-1);
 
 
 
@@ -29,6 +32,7 @@
             var q = document.searchManager.getSearchValues();
             q['fiscalId'] = $fiscalYear.val();
             q['monthId'] = $month.val();
+            q['salaryTypeId'] = $salaryTypeId.val();
 //            console.log(q);
 
             app.serverRequest(document.pullMonthlySummaryLink, q).then(function (response) {
