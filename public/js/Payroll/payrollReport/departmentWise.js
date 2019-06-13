@@ -78,6 +78,7 @@
                 filterable: true,
                 sortable: true,
                 columns: columns,
+                groupable: true,
                 pageable: {
                     pageSize: 15,
                     pageSizes: true

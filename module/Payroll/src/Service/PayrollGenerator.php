@@ -49,6 +49,8 @@ class PayrollGenerator {
         "BRANCH_ALLOWANCE",
         "MONTH",
         "BRANCH_ID",
+        "CAFE_MEAL_PREVIOUS",
+        "CAFE_MEAL_CURRENT"
     ];
     const SYSTEM_RULE = [
         "TOTAL_ANNUAL_AMOUNT",

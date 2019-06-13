@@ -225,8 +225,11 @@ class PayrollReportController extends HrisController {
     }
 
     public function monthlySummaryAction() {
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $salaryType = iterator_to_array($salarySheetRepo->fetchAllSalaryType(), false);
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'salaryType' => $salaryType,
                     'preference'=>$this->preference
         ]);
     }
