@@ -116,16 +116,16 @@ class SystemRuleProcessor {
                 $ruleRepo = new RulesRepository($this->adapter);
                 $ruleDetails = $ruleRepo->fetchById($this->ruleId);
                 $ruleFormula = $ruleDetails['FORMULA'];
-                $id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
-                $processedValue = $this->ssdRepo->fetchEmployeeLoanAmt($this->monthId, $this->employeeId, $id);
+                //$id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
+                $processedValue = $this->ssdRepo->fetchEmployeeLoanAmt($this->monthId, $this->employeeId, $this->ruleId);
                 break;
             //LOAN_INT for soaltee loan variable
             case PayrollGenerator::SYSTEM_RULE[5]:
                 $ruleRepo = new RulesRepository($this->adapter);
                 $ruleDetails = $ruleRepo->fetchById($this->ruleId);
                 $ruleFormula = $ruleDetails['FORMULA'];
-                $id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
-                $processedValue = $this->ssdRepo->fetchEmployeeLoanIntrestAmt($this->monthId, $this->employeeId, $id);
+               // $id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
+                $processedValue = $this->ssdRepo->fetchEmployeeLoanIntrestAmt($this->monthId, $this->employeeId, $this->ruleId);
                 break;
         }
         return $processedValue;
