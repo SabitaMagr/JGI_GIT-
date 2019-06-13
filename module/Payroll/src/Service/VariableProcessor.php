@@ -154,6 +154,18 @@ class VariableProcessor {
             case PayrollGenerator::VARIABLES[20]:
                 $processedValue = $this->payrollRepo->getBranch($this->employeeId);
                 break;
+            /*
+             * BRANCH_ID
+             */
+            case PayrollGenerator::VARIABLES[21]:
+                $processedValue = $this->payrollRepo->getCafeMealPrevious($this->employeeId,$this->monthId);
+                break;
+            /*
+             * BRANCH_ID
+             */
+            case PayrollGenerator::VARIABLES[22]:
+                $processedValue = $this->payrollRepo->getCafeMealCurrent($this->employeeId,$this->monthId);
+                break;
             default:
 
 
