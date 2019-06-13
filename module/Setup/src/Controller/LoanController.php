@@ -184,6 +184,9 @@ class LoanController extends AbstractActionController {
         $designationFormElement->setAttributes(["id" => "designationId", "class" => "form-control", "multiple" => "multiple"]);
         $designationFormElement->setLabel("Designation");
 
+        $payCodes = $this->repository->getPayCodesList();
+        $selectedPayCodes = $this->repository->getSelectedPayCodes($id);
+
         $positionFormElement = new Select();
         $positionFormElement->setName("position");
         $positions = EntityHelper2::getTableKVListWithSortOption($this->adapter, Position::TABLE_NAME, Position::POSITION_ID, [Position::POSITION_NAME], [Position::STATUS => 'E'], "POSITION_NAME", "ASC", null, false, true);
@@ -280,6 +283,8 @@ class LoanController extends AbstractActionController {
                     'serviceType' => $serviceTypeFormElement,
                     'salaryRange' => $salaryRange,
                     'workingPeriod' => $workingPeriod,
+                    'pay_codes' => $payCodes,
+                    'selectedPayCodes' => $selectedPayCodes,
                     'serviceTypeRestriction' => $serviceTypeRestriction,
                     'designationRestriction' => $designationRestriction,
                     'positionRestriction' => $positionRestriction,

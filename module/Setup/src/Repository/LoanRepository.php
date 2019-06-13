@@ -88,4 +88,11 @@ class LoanRepository implements RepositoryInterface {
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
+
+    public function getSelectedPayCodes($id){
+        $sql = "SELECT PAY_ID_AMT, PAY_ID_INT FROM hris_loan_master_setup WHERE LOAN_ID = $id";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
 }
