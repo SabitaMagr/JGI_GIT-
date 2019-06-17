@@ -338,12 +338,12 @@ FROM
     JOIN hris_cafeteria_menu_setup hcms ON (
         held.menu_code = hcms.menu_id
     )
-    left join (select * from hris_month_code  where 
+    left join (select * from 
 (
 select to_char( add_months (from_date,-1),'DD-Mon-YY') as from_date
 , to_char( add_months (to_date,-1),'DD-Mon-YY') as to_date
 from hris_month_code where month_id={$monthId}
-) mc on (1=1)
+)) mc on (1=1)
 WHERE
 held.log_date BETWEEN mc.from_date AND mc.to_date and 
 e.employee_id={$employeeId}
