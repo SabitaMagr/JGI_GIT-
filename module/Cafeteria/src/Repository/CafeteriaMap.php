@@ -56,7 +56,7 @@ class CafeteriaMap implements RepositoryInterface {
     }
     
     public function fetchMappingDetailsByTime($timeId){
-        $sql = "SELECT MENU_ID FROM HRIS_CAFETERIA_MENU_TIME_MAP WHERE TIME_ID = $timeId AND MENU_ID IN(SELECT MENU_ID FROM HRIS_CAFETERIA_MENU_SETUP WHERE STATUS = 'E')";
+        $sql = "SELECT MENU_ID, TYPE FROM HRIS_CAFETERIA_MENU_TIME_MAP WHERE TIME_ID = $timeId AND MENU_ID IN(SELECT MENU_ID FROM HRIS_CAFETERIA_MENU_SETUP WHERE STATUS = 'E')";
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }

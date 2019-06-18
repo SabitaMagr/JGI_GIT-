@@ -4,131 +4,43 @@
             .controller('detailController', function ($scope, $http, $window) {
                 $scope.overtimeDetailList = [];
                 $scope.calculateHour = function (startTime, endTime) {
-                    var hrs = Number(startTime.match(/^(\d+)/)[1]);
-                    var mnts = Number(startTime.match(/:(\d+)/)[1]);
-                    var format = startTime.match(/\s(.*)$/)[1];
-                    if (format == "PM" && hrs < 12)
-                        hrs = hrs + 12;
-                    if (format == "AM" && hrs == 12)
-                        hrs = hrs - 12;
-                    var hours = hrs.toString();
-                    var minutes = mnts.toString();
-                    if (hrs < 10)
-                        hours = "0" + hours;
-                    if (mnts < 10)
-                        minutes = "0" + minutes;
-                    //alert(hours + ":" + minutes);
+                    var tim_i = new Date("01/01/2007 " + startTime);
+                    var tim_o = new Date("01/01/2007 " + endTime);
 
-                    var date1 = new Date();
-                    date1.setHours(hours);
-                    date1.setMinutes(minutes);
-
-                    var hrs = Number(endTime.match(/^(\d+)/)[1]);
-                    var mnts = Number(endTime.match(/:(\d+)/)[1]);
-                    var format = endTime.match(/\s(.*)$/)[1];
-                    if (format == "PM" && hrs < 12)
-                        hrs = hrs + 12;
-                    if (format == "AM" && hrs == 12)
-                        hrs = hrs - 12;
-                    var hours = hrs.toString();
-                    var minutes = mnts.toString();
-                    if (hrs < 10)
-                        hours = "0" + hours;
-                    if (mnts < 10)
-                        minutes = "0" + minutes;
-                    //alert(hours+ ":" + minutes);
-
-                    var date2 = new Date();
-                    date2.setHours(hours);
-                    date2.setMinutes(minutes);
-
-                    var diff = date2.getTime() - date1.getTime();
-                    var hours = Math.floor(diff / (1000 * 60 * 60));
-                    diff -= hours * (1000 * 60 * 60);
-                    var mins = Math.floor(diff / (1000 * 60));
-                    diff -= mins * (1000 * 60);
-
-                    if (hours <= -1) {
-                        hours += 24;
+                    var diff1 = (tim_i - tim_o) / 60000; //dividing by seconds and milliseconds
+                    if (startTime.includes('PM') && endTime.includes('AM')) {
+                     diff1=1440-diff1;  
                     }
-                    var total_tim = hours + ':' + ("0" + mins).slice(-2);
+                    var diff = Math.abs(diff1);
+                    var minutes = diff % 60;
+                    var hours = (diff - minutes) / 60;
+
+                    var total_tim = hours + ':' + minutes;
                     return total_tim;
                 }
 
                 $scope.totalCalculateHour = function (startTime, endTime) {
-                    var hrs = Number(startTime.match(/^(\d+)/)[1]);
-                    var mnts = Number(startTime.match(/:(\d+)/)[1]);
-                    var format = startTime.match(/\s(.*)$/)[1];
-                    if (format == "PM" && hrs < 12)
-                        hrs = hrs + 12;
-                    if (format == "AM" && hrs == 12)
-                        hrs = hrs - 12;
-                    var hours = hrs.toString();
-                    var minutes = mnts.toString();
-                    if (hrs < 10)
-                        hours = "0" + hours;
-                    if (mnts < 10)
-                        minutes = "0" + minutes;
-                    //alert(hours + ":" + minutes);
+                    var tim_i = new Date("01/01/2007 " + startTime);
+                    var tim_o = new Date("01/01/2007 " + endTime);
 
-                    var date1 = new Date();
-                    date1.setHours(hours);
-                    date1.setMinutes(minutes);
-
-                    var hrs = Number(endTime.match(/^(\d+)/)[1]);
-                    var mnts = Number(endTime.match(/:(\d+)/)[1]);
-                    var format = endTime.match(/\s(.*)$/)[1];
-                    if (format == "PM" && hrs < 12)
-                        hrs = hrs + 12;
-                    if (format == "AM" && hrs == 12)
-                        hrs = hrs - 12;
-                    var hours = hrs.toString();
-                    var minutes = mnts.toString();
-                    if (hrs < 10)
-                        hours = "0" + hours;
-                    if (mnts < 10)
-                        minutes = "0" + minutes;
-                    //alert(hours+ ":" + minutes);
-
-                    var date2 = new Date();
-                    date2.setHours(hours);
-                    date2.setMinutes(minutes);
-
-                    var diff = date2.getTime() - date1.getTime();
-                    var hours = Math.floor(diff / (1000 * 60 * 60));
-                    diff -= hours * (1000 * 60 * 60);
-                    var mins = Math.floor(diff / (1000 * 60));
-                    diff -= mins * (1000 * 60);
-
-                    if (hours <= -1) {
-                        hours += 24;
+                    var diff1 = (tim_i - tim_o) / 60000; //dividing by seconds and milliseconds
+                    if (startTime.includes('PM') && endTime.includes('AM')) {
+                     diff1=1440-diff1;  
                     }
-                    
-                    var total = {
-                        hour: hours,
-                        minute: mins
-                    };
-                    return total;
-
-//                    var diff1 = (tim_i - tim_o) / 60000; //dividing by seconds and milliseconds
-//                    var diff = Math.abs(diff1);
-//                    return diff;
+                    var diff = Math.abs(diff1);
+                    return diff;
                 }
 
                 $scope.sumAllTotalHour = function (list) {
-                    var totalHour = 0;
-                    var totalMinute = 0;
+                    var total = 0;
                     angular.forEach(list, function (item) {
                         var total1 = $scope.totalCalculateHour(item.startTime, item.endTime);
-                        totalHour += parseFloat(total1.hour);
-                        totalMinute += parseFloat(total1.minute);
-                        console.log(totalHour, totalMinute);
+                        total += parseFloat(total1);
                     });
-                    var minutes = totalMinute % 60;
-                    var formattedMinute = ("0" + minutes).slice(-2);
-                    var hours = parseInt(totalHour + totalMinute/60);
+                    var minutes = total % 60;
+                    var hours = (total - minutes) / 60;
 
-                    var total_tim = hours + ':' + formattedMinute;
+                    var total_tim = hours + ':' + minutes;
                     return total_tim;
                 }
 

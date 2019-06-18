@@ -5,7 +5,7 @@ $this->headLink()
 $this->headScript()
         ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
         ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
-        ->appendFile($this->basePath('js/setup/department/index.js'));
+        ->appendFile($this->basePath('js/setup/department/jv.js'));
 ?>
 
 <?php if ($this->messages) { ?>
@@ -18,6 +18,7 @@ $this->headScript()
 document.editLink='<?= $this->url("department", ["action" => "edit"]); ?>';
 document.deleteLink='<?= $this->url("department", ["action" => "delete"]); ?>';
 document.jvLink='<?= $this->url("department", ["action" => "jv"]); ?>';
+document.jvUpdateLink='<?= $this->url("department", ["action" => "jvUpdate"]); ?>';
 document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
@@ -25,9 +26,7 @@ document.acl =<?php echo json_encode($acl); ?>;
 </div>
 
 <div class="margin-top-20">
-
     <div class="portlet light bg-inverse">
-
         <div class="portlet-title">
             <div class="tools">
                 <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
@@ -60,8 +59,11 @@ document.acl =<?php echo json_encode($acl); ?>;
                 </div>
             </div>
         </div>
-
-        <div id="departmentTable">
+        <form method="POST" id="jvForm" action="<?= $this->url("department", ["action" => "jvUpdate"]) ?>">
+        <input type="hidden" name="deptId" id="deptId" value="<?=json_encode($dept)?>">
+        <div id="jvTable">
         </div>
+        <button type="button" class="btn btn-primary" id="submit">SUBMIT</button>
+        </form>
     </div>
 </div>

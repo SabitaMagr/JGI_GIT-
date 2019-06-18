@@ -15,7 +15,7 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
         ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
         ->appendFile($this->basePath('js/search.js'))
-        ->appendFile($this->basePath('js/loan/loan-report/index.js'));
+        ->appendFile($this->basePath('js/loan/loan-report/cash-payment-report.js'));
 ?>
 
 <script>
@@ -25,7 +25,7 @@ $this->headScript()
     document.viewLink = '<?= $this->url("loanStatus", ["action" => "view"]) ?>';
     document.editLink = '<?= $this->url("loanStatus", ["action" => "edit"]) ?>';
     document.loanClosing = '<?= $this->url("loanApply", ["action" => "loanClosing"]) ?>';
-    document.pullLoanDetailsLink = '<?= $this->url("loanReport", ["action" => "index"]) ?>';
+    document.pullCashPaymentListLink = '<?= $this->url("loanReport", ["action" => "pullCashPaymentList"]) ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\loanStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -117,15 +117,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <select class="form-control" name="employee" id="employeeId">
                 </select>
             </div>
-            <div class="col-sm-2">
-                <select class="form-control" name="loanStatus" id="loanStatus">
-                    <option value="BOTH">Both</option>
-                    <option value="OPEN">Open</option>
-                    <option value="CLOSED">Closed</option>
-                </select>
+            <div class="col-sm-2 ">
+                <?php print $this->formElement($loans); ?>
             </div>
         </div>
         <div class="row margin-top-10">
+            <div class="col-sm-2 ">
+                <?php print $this->formElement($loanStatus); ?>
+            </div>
             <div class="col-sm-2">
                 <input type="text" id="fromDate" name="fromDate" class="form-control" placeholder="From Date"/>
             </div>
@@ -141,9 +140,8 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div>
         </div>
         <div class="row margin-top-10">
-            
             <div class=" col-sm-offset-8 col-sm-4">
-                <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
+                <button id="reset" class="btn default btn-sm pull-right">
                     Reset
                     <i class="fa fa-refresh"></i>
                 </button>

@@ -8,6 +8,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Cafeteria\Repository\CafeteriaActivity;
 use Cafeteria\Repository\CafeteriaMap;
 use Zend\Authentication\Storage\StorageInterface;
+use Zend\View\Model\JsonModel;
 
 class CafeteriaActivityController extends HrisController{
     
@@ -34,13 +35,9 @@ class CafeteriaActivityController extends HrisController{
             $data = $request->getPost();
             $result = $this->repository->getNextLogNo();
             $logNo = Helper::extractDbData($result)[0]['LOG_NO'];
-            $this->repository->saveLog($data, $logNo, $this->employeeId);
-            $this->repository->saveLogDetails($data, $logNo, $this->employeeId);
-            $this->flashmessenger()->addMessage("Record Saved Successfully.");
-            return $this->redirect()->toRoute('cafeteria-activity', array(
-                'controller' => 'CafeteriaActivityController',
-                'action' =>  'activity'
-            ));
+            $this->repository->saveLog($data['data'], $logNo, $this->employeeId);
+            $this->repository->saveLogDetails($data['data'], $logNo, $this->employeeId);
+            return new JSONModel(['success' => true]);            
         }
         
         $result = $this->repository->fetchTimes();
@@ -54,14 +51,24 @@ class CafeteriaActivityController extends HrisController{
             $result = $this->cafeteriaMapRepo->fetchMappingDetailsByTime($timeList[$i]['TIME_ID']);
             $mapList[$timeList[$i]['TIME_NAME']] = Helper::extractDbData($result);
         }
-        
+
+        $result = $this->repository->getEmployeesDetails();
+        $details = Helper::extractDbData($result);
+
         return Helper::addFlashMessagesToArray($this, [
             'timeList' => $timeList,
             'menuList' => $menuList,
             'mapList' => $mapList,
-            'searchValues' => EntityHelper::getSearchData($this->adapter),
-            'acl' => $this->acl,
-            'employeeDetail' => $this->storageData['employee_detail']
+            'employeeDetails' => $details,
+            'acl' => $this->acl
         ]);
+    }
+
+    public function fetchPresentStatusAction(){
+        $request = $this->getRequest();
+        $data = $request->getPost();
+        $date = $data['date']!=null || $data['date']!='' ? $data['date'] : date('d-M-Y', strtotime('now'));
+        $data = Helper::extractDbData($this->repository->getPresentStatus($date));
+        return new JsonModel(['success' => true, 'data' => $data]);
     }
 }

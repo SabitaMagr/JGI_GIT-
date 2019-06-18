@@ -15,7 +15,8 @@
     
     $(document).ready(function () {
         $("#scp").prop("checked", true);
-        $("#time").change(function(){
+        $('input[name="type"], #time').on('click', function(){
+            var type = $('input[name="type"]:checked').val();
             let time = $("#time option:selected").text();
             for(let i = 0; i < document.menuList.length; i++){
                 if(document.menuList[i] != null){
@@ -25,7 +26,7 @@
             for(let i = 0; i < document.menuList.length; i++){
                 if(document.menuList[i] != null){
                     for(let j = 0; j < document.mapList[time].length; j++){
-                        if(document.menuList[i].MENU_ID == document.mapList[time][j].MENU_ID){
+                        if(document.menuList[i].MENU_ID == document.mapList[time][j].MENU_ID && document.mapList[time][j].TYPE == type){
                             $("#menu"+document.menuList[i].MENU_ID).prop( "checked", true );
                         }
                     }

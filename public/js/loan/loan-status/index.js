@@ -51,7 +51,7 @@
         </span>
           <span> 
             <a class="btn  btn-icon-only btn-success" href="${document.loanClosing}/#: LOAN_REQUEST_ID #" style="height:17px;" title="Loan Closing">
-                <i>Pay</i>
+                <i class="fa fa-money"></i>
             </a>
         </span>
             #}#`, width: 120}
@@ -82,6 +82,7 @@
             q['fromDate'] = $('#fromDate').val();
             q['toDate'] = $('#toDate').val();
             q['recomApproveId'] = $('#recomApproveId').val();
+            q['loanStatus'] = $('#loanStatus').val();
             App.blockUI({target: "#hris-page-content"});
             window.app.pullDataById(document.pullLoanRequestStatusListLink, q).then(function (success) {
                 App.unblockUI("#hris-page-content");

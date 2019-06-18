@@ -57,23 +57,13 @@ class RoasterRepo extends HrisRepository implements RepositoryInterface {
                   V_SHIFT_ID_NEW NUMBER :={$shiftId};
                   V_SHIFT_ID_OLD NUMBER;
                 BEGIN
+                BEGIN
                   SELECT SHIFT_ID
                   INTO V_SHIFT_ID_OLD
                   FROM HRIS_EMPLOYEE_SHIFT_ROASTER
                   WHERE EMPLOYEE_ID = V_EMPLOYEE_ID
                   AND FOR_DATE      =V_FOR_DATE;
-                  
-                  IF(V_SHIFT_ID_NEW=-1)
-                THEN
-                DELETE FROM HRIS_EMPLOYEE_SHIFT_ROASTER WHERE EMPLOYEE_ID =V_EMPLOYEE_ID AND FOR_DATE=V_FOR_DATE;
-                ELSE
-                  UPDATE HRIS_EMPLOYEE_SHIFT_ROASTER
-                  SET SHIFT_ID     = V_SHIFT_ID_NEW
-                  WHERE EMPLOYEE_ID=V_EMPLOYEE_ID
-                  AND FOR_DATE     =V_FOR_DATE;
-                END IF;
-                  
-                EXCEPTION
+                   EXCEPTION
                 WHEN NO_DATA_FOUND THEN
                 IF(V_SHIFT_ID_NEW!=-1) THEN
                   INSERT
@@ -90,6 +80,22 @@ class RoasterRepo extends HrisRepository implements RepositoryInterface {
                       V_SHIFT_ID_NEW
                     );
                     END IF;
+                    END;
+                  IF(V_SHIFT_ID_NEW=-1)
+                THEN
+                DELETE FROM HRIS_EMPLOYEE_SHIFT_ROASTER WHERE EMPLOYEE_ID =V_EMPLOYEE_ID AND FOR_DATE=V_FOR_DATE;
+                ELSE
+                  UPDATE HRIS_EMPLOYEE_SHIFT_ROASTER
+                  SET SHIFT_ID     = V_SHIFT_ID_NEW
+                  WHERE EMPLOYEE_ID=V_EMPLOYEE_ID
+                  AND FOR_DATE     =V_FOR_DATE;
+                END IF;
+                    IF( V_FOR_DATE<=TRUNC(SYSDATE)  AND ((V_SHIFT_ID_OLD!=V_SHIFT_ID_NEW)
+                    OR (V_SHIFT_ID_OLD IS NULL AND V_SHIFT_ID_NEW!=-1 ))  )
+                    THEN
+                    Hris_Reattendance(V_FOR_DATE,V_EMPLOYEE_ID,V_FOR_DATE);
+                    END IF;
+                    COMMIT;
                 END;");
     }
 

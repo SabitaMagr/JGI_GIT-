@@ -71,7 +71,7 @@
                 }
                 data[data.length - 1].BALANCE = data[data.length - 1].DEBIT_AMOUNT - data[data.length - 1].CREDIT_AMOUNT;
                 var htmlData = '<table class="table table-bordered table-dark">';
-                htmlData += '<tr><th>Date</th><th>Particulars</th><th>Debit Amount</th><th>Credt Amount</th><th>Balance</th></tr>';
+                htmlData += '<tr><th>Date</th><th>Particulars</th><th>Debit Amount</th><th>Credit Amount</th><th>Balance</th></tr>';
                 
                 var span = true;
                 var spanTracker = 0;

@@ -81,4 +81,24 @@ class CafeteriaActivity implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
+
+    public function getPresentStatus($date){
+        $sql = "SELECT E.EMPLOYEE_ID, E.FULL_NAME, (CASE WHEN HAD.IN_TIME
+                IS NULL THEN 'AB' ELSE 'PR' END) AS STATUS 
+                FROM HRIS_EMPLOYEES E JOIN HRIS_ATTENDANCE_DETAIL HAD
+                ON E.EMPLOYEE_ID = HAD.EMPLOYEE_ID WHERE 
+                HAD.ATTENDANCE_DT = '{$date}'";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
+    }
+
+    public function getEmployeesDetails(){
+        $sql = "SELECT E.EMPLOYEE_ID, E.EMPLOYEE_CODE, E.FULL_NAME, D1.DEPARTMENT_NAME, D2.DESIGNATION_TITLE, HEF.FILE_PATH 
+        FROM HRIS_EMPLOYEES E 
+        JOIN HRIS_DEPARTMENTS D1 ON E.DEPARTMENT_ID = D1.DEPARTMENT_ID
+        JOIN HRIS_DESIGNATIONS D2 ON E.DESIGNATION_ID = D2.DESIGNATION_ID
+        JOIN HRIS_EMPLOYEE_FILE HEF ON E.PROFILE_PICTURE_ID = HEF.FILE_CODE";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
+    }
 }

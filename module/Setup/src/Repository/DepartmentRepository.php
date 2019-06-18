@@ -2,6 +2,7 @@
 namespace Setup\Repository;
 
 use Application\Helper\EntityHelper;
+use Application\Helper\Helper;
 use Application\Model\Model;
 use Application\Repository\HrisRepository;
 use Application\Repository\RepositoryInterface;
@@ -15,7 +16,10 @@ use Zend\Db\Sql\Sql;
 
 class DepartmentRepository extends HrisRepository implements RepositoryInterface {
 
+    protected $adapter;
+
     public function __construct(AdapterInterface $adapter) {
+        $this->adapter = $adapter;
         parent::__construct($adapter, Department::TABLE_NAME);
     }
 
@@ -113,5 +117,64 @@ class DepartmentRepository extends HrisRepository implements RepositoryInterface
             $departmentList[$newKey][] = $val;
         }
         return $departmentList;
+    }
+
+    public function jvTableFlag(){
+        $sql = "SELECT (CASE WHEN (SELECT COUNT(*) FROM TABS WHERE UPPER(TABLE_NAME) = 'HRIS_PAYROLL_JV') < 1 
+                THEN 'N' ELSE 'Y' END) JV_TABLE_FLAG FROM DUAL";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function fetchJvDetails($deptId){
+        $sql = "SELECT HPS.PAY_ID, HPS.PAY_EDESC, HPJ.JV_NAME, HPJ.FLAG 
+        FROM 
+        HRIS_PAY_SETUP HPS
+        LEFT JOIN HRIS_PAYROLL_JV HPJ ON HPS.PAY_ID = HPJ.PAY_ID AND HPJ.DEPARTMENT_ID = $deptId
+        ORDER BY PAY_ID";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+
+    public function updateJv($data, $employeeId){
+        $deptId = $data['deptId'];
+        for($i = 0; $i < count($data['payId']); $i++){
+            if($data['jvName'][$i] == '' || $data['jvName'][$i] == null){
+                continue;
+            }
+            $payId = $data['payId'][$i];
+            $jvName = $data['jvName'][$i];
+            $flag = $data['flag'][$i];
+            
+            $sql = "
+            declare
+            v_exists varchar2(1) := 'F';
+            begin
+            begin
+                select 'T'
+                into v_exists
+                from HRIS_PAYROLL_JV
+                where DEPARTMENT_ID = $deptId
+                and PAY_ID = $payId;
+            exception
+                when no_data_found then
+                null;
+            end;
+            if v_exists = 'T' then
+                update HRIS_PAYROLL_JV
+                set JV_NAME = '$jvName', FLAG = '$flag', MODIFIED_BY = $employeeId
+                where DEPARTMENT_ID = $deptId
+                and PAY_ID = $payId;
+            else
+            INSERT INTO HRIS_PAYROLL_JV(DEPARTMENT_ID, PAY_ID, JV_NAME, STATUS, FLAG, CREATED_BY)
+            VALUES($deptId, $payId, '$jvName', 'E', '$flag', $employeeId);
+            end if;
+            end;
+            ";
+            $statement = $this->adapter->query($sql);
+            $statement->execute();
+        }
     }
 }

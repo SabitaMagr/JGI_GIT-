@@ -2,13 +2,50 @@
     'use strict';
     $(document).ready(function () {
         $('select').select2();
-        app.datePickerWithNepali("form-paidDate","nepaliDate");
+        app.datePickerWithNepali("paidDate","nepaliDate");
+        var rate = parseFloat(document.rate);
+        var principlePaid, interestPaid = 0, totalPaid;
+        
+        $("#totalPaid").on('change paste input',function(){
+            totalPaid = parseInt($("#totalPaid").val());
+            principlePaid = totalPaid - interestPaid;
+            totalPaid != '' ? $("#principlePaid").val(principlePaid) : $("#principlePaid").val('') ;
+        });
 
-        $('#form-paidDate').datepicker("setStartDate", new Date());
-        $('#submit').on('click', function(){
-            var paidAmount = $('#form-paidAmount').val();
-            var unpaidTotal = $('#unpaidTotal').val();
-            var remainingAmount = unpaidTotal - paidAmount;
+        $("#interestPaid").on('change paste input',function(){
+            interestPaid = parseInt($("#interestPaid").val());
+            totalPaid = parseInt($("#totalPaid").val());
+            principlePaid = totalPaid - interestPaid;
+            totalPaid != '' ? $("#principlePaid").val(principlePaid) : $("#principlePaid").val('') ;
+        });
+
+        // $("#principlePaid").on('change paste input',function(){
+        //     principlePaid = $("#principlePaid").val();
+        //     totalPaid = parseInt(principlePaid) + parseInt(interestPaid);
+        //     principlePaid != '' ? $("#totalPaid").val(totalPaid) : $("#totalPaid").val('') ;
+        // });
+
+        $('#calculate-interest').on('click', function(){
+            if($("#paidDate").val() != ''){
+                var paidDate = new Date($("#paidDate").val());
+                var paidDay = paidDate.getDate();
+                interestPaid = parseInt(($('#unpaidTotal').val()*rate/100)/365*paidDay);
+                $("#interestPaid").val(interestPaid||'');
+                totalPaid = $("#totalPaid").val();
+                principlePaid = totalPaid - interestPaid;
+                totalPaid != '' ? $("#principlePaid").val(principlePaid) : $("#principlePaid").val('') ;
+            }
+            else{
+                alert('Date is required.');
+            }
+        });
+
+        //$('#paidDate').datepicker("setStartDate", new Date());
+
+        $('#cash-payment').on('submit', function(){ 
+            principlePaid = parseInt($('#principlePaid').val());
+            var unpaidTotal = parseInt($('#unpaidTotal').val());
+            var remainingAmount = unpaidTotal - principlePaid;
             if(remainingAmount > 0){
                 var repaymentmonths = prompt("Sum of " + remainingAmount + " is still remaining. This sum will be treated as a new loan. Please specify its repayment months.");
                 $("#repaymentMonths").val(repaymentmonths);

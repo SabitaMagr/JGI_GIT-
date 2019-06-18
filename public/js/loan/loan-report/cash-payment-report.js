@@ -2,59 +2,41 @@
     'use strict';
     $(document).ready(function () {
         $("select").select2();
-        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, false);
+        app.startEndDatePickerWithNepali('nepaliFromDate', 'fromDate', 'nepaliToDate', 'toDate', null, true);
         var $tableContainer = $("#loanRequestStatusTable");
         var $search = $('#search');
 
         var columns = [
-            {field: "EMPLOYEE_CODE", title: "Code", width: 100},
+            {field: "EMPLOYEE_CODE", title: "Emp. Code", width: 100},
             {field: "FULL_NAME", title: "Employee", width: 150},
             {field: "LOAN_NAME", title: "Loan", width: 120},
-            {title: "Requested Date",
+            {title: "Paid Date",
                 columns: [{
-                        field: "REQUESTED_DATE_AD",
+                        field: "PAID_DATE_AD",
                         title: "AD",
-                        width: 120
-                    },
-                    {field: "REQUESTED_DATE_BS",
+                        width: 120},
+                    {field: "PAID_DATE_BS",
                         title: "BS",
                         width: 120
                     }
                 ]
             },
-            {title: "Loan Date",
-                columns: [{
-                        field: "LOAN_DATE_AD",
-                        title: "AD",
-                        width: 120
-                    },
-                    {
-                        field: "LOAN_DATE_BS",
-                        title: "BS",
-                        width: 120
-                    }
-                ]
-            },
-            {field: "STATUS", title: "Status", width: 90},
-            {field: "REQUESTED_AMOUNT", title: "Amount", width: 120},
-            {field: "PAID_AMOUNT", title: "Paid Amount", width: 120},
-            {field: "CURRENT_INSTALLMENT", title: "Cur. Instalment", width: 120},
-            {field: "BALANCE", title: "Balance", width: 120}
+            {field: "TOTAL_AMOUNT", title: "Total Amount", width: 150},
+            {field: "PAID_AMOUNT", title: "Paid Amount", width: 150},
+            {field: "BALANCE", title: "Balance Amount", width: 150},
+            {field: "REMARKS", title: "Remarks", width: 200}
         ];
  
         var map = {
-            'EMPLOYEE_CODE': 'Code',
+            'EMPLOYEE_CODE': 'Emp. Code',
             'FULL_NAME': 'Name',
             'LOAN_NAME': 'Loan',
-            'REQUESTED_DATE_AD': 'Request Date(AD)',
-            'REQUESTED_DATE_BS': 'Request Date(BS)',
-            'LOAN_DATE_AD': 'Loan Date(AD)',
-            'LOAN_DATE_BS': 'Loan Date(BS)',
-            'REQUESTED_AMOUNT': 'Reqest Amt',
-            'STATUS': 'Status',
+            'PAID_DATE_AD': 'Paid Date(AD)',
+            'PAID_DATE_BS': 'Paid Date(BS)',
+            'TOTAL_AMOUNT': 'Total Amt',
             'PAID_AMOUNT': 'Paid Amount',
-            'CURRENT_INSTALLMENT': 'Cur. Instalment',
-            'BALANCE': 'Balance'
+            'BALANCE': 'Balance',
+            'REMARKS': 'Remarks'
         }
         app.initializeKendoGrid($tableContainer, columns);
         app.searchTable($tableContainer, ['FULL_NAME']);
@@ -66,9 +48,8 @@
             q['fromDate'] = $('#fromDate').val();
             q['toDate'] = $('#toDate').val();
             q['recomApproveId'] = $('#recomApproveId').val();
-            q['loanStatus'] = $('#loanStatus').val();
             App.blockUI({target: "#hris-page-content"});
-            window.app.pullDataById('', q).then(function (success) {
+            window.app.pullDataById(document.pullCashPaymentListLink, q).then(function (success) {
                 App.unblockUI("#hris-page-content");
                 app.renderKendoGrid($tableContainer, success.data);
             }, function (failure) {
@@ -81,10 +62,5 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($tableContainer, map, "Loan Request List.pdf");
         });
-
-$("#reset").on("click", function () {
-            $(".form-control").val("");
-        });
-
     });
 })(window.jQuery, window.app);
