@@ -54,9 +54,9 @@
                 <i>Pay</i>
             </a>
         </span>
-            #}#`,  width: 120}
+            #}#`, width: 120}
         ];
- 
+
         var map = {
             'FULL_NAME': 'Name',
             'LOAN_NAME': 'Loan',
@@ -97,7 +97,9 @@
             app.exportToPDF($tableContainer, map, "Loan Request List.pdf");
         });
 
-
+        $("#reset").on("click", function () {
+            $(".form-control").val("");
+        });
 
     });
 })(window.jQuery, window.app);

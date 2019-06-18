@@ -123,5 +123,9 @@
             var month = app.findOneBy(months, {'MONTH_ID': selectedMonth})
             app.exportToPDF($table, exportMap, `OT Monthly ${month['MONTH_EDESC']}.pdf`);
         });
+        
+        $('#reset').on('click', function () {
+            $('.form-control').val("");
+        });
     });
 })(window.jQuery, window.app);

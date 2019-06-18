@@ -1,4 +1,5 @@
 <?php
+
 namespace Overtime\Repository;
 
 use Application\Helper\EntityHelper;
@@ -81,11 +82,11 @@ class OvertimeReportRepo extends HrisRepository {
         return $this->rawQuery($sql)[0]['MONTH_DAY_IN'];
     }
 
-    public function fetchMonthlyForGrid($by,$calenderType): array {
+    public function fetchMonthlyForGrid($by, $calenderType): array {
         $monthId = $by['monthId'];
         $pivotIn = $this->fetchColumnsForPivot($monthId);
         $searchConditon = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId']);
-        
+
         if ($calenderType == 'E') {
             $sql = "SELECT *
                 FROM
@@ -149,4 +150,62 @@ class OvertimeReportRepo extends HrisRepository {
         $sql = "BEGIN HRIS_OT_MANUAL_CR_OR_UP({$m},{$d},{$e},{$hour}); END;";
         $this->executeStatement($sql);
     }
+
+    public function fetchOvertimeReport($data, $dates) {
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
+
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        
+        $datesIn = "'";
+        for ($i = 0; $i < count($dates); $i++) {
+            $i == 0 ? $datesIn .= $dates[$i] . "' as DATE_" . str_replace('-', '_', $dates[$i]) : $datesIn .= ",'" . $dates[$i] . "' as DATE_" . str_replace('-', '_', $dates[$i]);
+        }
+        $sql = "
+            select E.FULL_NAME, E.EMPLOYEE_CODE, OVD.* from (SELECT *
+FROM
+  (SELECT
+    CASE
+      WHEN OM.EMPLOYEE_ID IS NOT NULL
+      THEN OM.EMPLOYEE_ID
+      ELSE O.EMPLOYEE_ID
+    END AS EMPLOYEE_ID,
+    CASE
+      WHEN OM.ATTENDANCE_DATE IS NOT NULL
+      THEN OM.ATTENDANCE_DATE
+      ELSE O.OVERTIME_DATE
+    END AS ATTENDANCE_DATE,
+    CASE
+      WHEN OM.OVERTIME_HOUR IS NOT NULL
+      THEN min_to_hour(OM.OVERTIME_HOUR*60)
+      ELSE min_to_hour(O.TOTAL)
+    END AS OVERTIME,
+    min_to_hour(OM.OVERTIME_HOUR*60) AS OVERTIME_HOUR,
+    min_to_hour(O.TOTAL) AS TOTAL
+  FROM
+    (SELECT EMPLOYEE_ID,
+      OVERTIME_DATE,
+      SUM(TOTAL_HOUR) AS TOTAL
+    FROM HRIS_OVERTIME
+    WHERE STATUS='AP'
+    GROUP BY EMPLOYEE_ID,
+      OVERTIME_DATE
+    ) O
+  FULL JOIN HRIS_OVERTIME_MANUAL OM
+  ON (O.OVERTIME_DATE = OM.ATTENDANCE_DATE
+  AND O.EMPLOYEE_ID  = OM.EMPLOYEE_ID)
+  ) PIVOT ( MAX( TOTAL ) AS R, MAX( OVERTIME_HOUR ) AS M, MAX( OVERTIME ) AS A FOR ATTENDANCE_DATE IN ($datesIn) )
+  )OVD
+  left JOIN HRIS_EMPLOYEES E on (OVD.employee_id = E.employee_id)
+WHERE 1=1 {$searchCondition}";
+        return $this->rawQuery($sql);
+    }
+
 }

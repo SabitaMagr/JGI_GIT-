@@ -24,8 +24,8 @@ class LoanDetail extends AbstractActionController {
         try {
             $request = $this->getRequest();
 
-            $this->employeeId = $request->getHeader('Employee-Id')->getFieldValue();
-            $this->loanId = $request->getHeader('Loan-Id')->getFieldValue();
+            $this->employeeId = $request->getHeader('EmployeeId')->getFieldValue();
+            $this->loanId = $request->getHeader('LoanId')->getFieldValue();
 
             $requestType = $request->getMethod();
 

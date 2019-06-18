@@ -28,7 +28,7 @@ class Loanlist extends AbstractActionController {
             $request = $this->getRequest();
 
             //$postedData = $request->getPost();
-            $this->employeeId = $request->getHeader('Employee-Id')->getFieldValue();
+            $this->employeeId = $request->getHeader('EmployeeId')->getFieldValue();
 
             $requestType = $request->getMethod();
 

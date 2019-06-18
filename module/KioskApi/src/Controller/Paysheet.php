@@ -23,7 +23,7 @@ class Paysheet extends AbstractActionController {
         try {
             $request = $this->getRequest();
 
-            $this->employeeId = $request->getHeader('Employee-Id')->getFieldValue();
+            $this->employeeId = $request->getHeader('EmployeeId')->getFieldValue();
 
             $requestType = $request->getMethod();
 

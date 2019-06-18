@@ -75,19 +75,19 @@
                 } else {
                     $errorMsg.html("");
                     $request.prop("disabled", false);
-                // to check substitute leave
-                if (subLeaveReference == 'Y') {
-                    var selectedSubRefId = $subRefId.val();
-                    $.each(substituteDetails, function (index, value) {
-                        if (selectedSubRefId == value.ID) {
-                            validateSubstitueLeave(startDateStr,endDateStr,value);
-                        }
-                    });
+                    // to check substitute leave
+                    if (subLeaveReference == 'Y') {
+                        var selectedSubRefId = $subRefId.val();
+                        $.each(substituteDetails, function (index, value) {
+                            if (selectedSubRefId == value.ID) {
+                                validateSubstitueLeave(startDateStr, endDateStr, value);
+                            }
+                        });
+                    }
                 }
-                }
-                
-                
-                
+
+
+
 
             }, function (error) {
                 app.showMessage(error, 'error');
@@ -195,10 +195,9 @@
 //                app.populateSelect($leave, substituteDetails, 'id', 'name', 'Select a Leave', null, null, false);
                 app.populateSelect($subRefId, substituteDetails, 'ID', 'SUB_NAME', 'Select Substitute Date ', ' ', $subRefId.val(), false);
                 $subRefId.prop('required', true);
-                console.log(leaveDetail);
                 if (success.data.IS_SUBSTITUTE == 'Y') {
                     $('#SubReferenceDiv').show();
-                    (subLeaveReference=='Y')?$('#request').attr("disabled", true):$('#request').attr("disabled", false);
+                    (subLeaveReference == 'Y') ? $('#request').attr("disabled", true) : $('#request').attr("disabled", false);
                 } else {
                     $('#request').attr("disabled", false);
                     $('#SubReferenceDiv').hide()
@@ -206,10 +205,10 @@
                 availableDays = (typeof leaveDetail.BALANCE == 'undefined') ? 0 : parseFloat(leaveDetail.BALANCE);
 
 
-                if ($subRefId.val() == ' '||subLeaveReference!='Y') {
+                if ($subRefId.val() == ' ' || subLeaveReference != 'Y') {
                     $availableDays.val(availableDays);
                 }
-                if ($subRefId.val() == ' ' && success.data.IS_SUBSTITUTE == 'Y' && subLeaveReference=='Y') {
+                if ($subRefId.val() == ' ' && success.data.IS_SUBSTITUTE == 'Y' && subLeaveReference == 'Y') {
                     $availableDays.val(0);
                 }
 
@@ -350,33 +349,76 @@
                 });
             }
         });
-        
-        var validateSubstitueLeave= function (startDate,endDate,$subDetail){
-            let sD= new Date(startDate);
-            let eD= new Date(endDate);
-            let subEndD= new Date($subDetail['SUB_END_DATE']);
-            let subValD= new Date($subDetail['SUB_VALIDATE_DAYS']);
-            console.log('--s');
-            console.log(sD);
-            console.log(eD);
-            console.log(subEndD);
-            console.log(subValD);
-            console.log('--e');
-            
+
+        var validateSubstitueLeave = function (startDate, endDate, $subDetail) {
+            let sD = new Date(startDate);
+            let eD = new Date(endDate);
+            let subEndD = new Date($subDetail['SUB_END_DATE']);
+            let subValD = new Date($subDetail['SUB_VALIDATE_DAYS']);
+
             if (sD <= subEndD) {
-                    $('#errorMsgSubRef').html("* LeaveCant Be Taken Before Event");
-                    $request.prop("disabled", true);
-                } else if (sD > subValD) {
-                    $('#errorMsgSubRef').html("* Leave Has been Expired");
-                    $request.prop("disabled", true);
-                } else {
-                    $('#errorMsgSubRef').html("");
-                    $request.prop("disabled", false);
-                }
-            
+                $('#errorMsgSubRef').html("* LeaveCant Be Taken Before Event");
+                $request.prop("disabled", true);
+            } else if (sD > subValD) {
+                $('#errorMsgSubRef').html("* Leave Has been Expired");
+                $request.prop("disabled", true);
+            } else {
+                $('#errorMsgSubRef').html("");
+                $request.prop("disabled", false);
+            }
+
         }
 
+        var daysForDocs = [];
+        var leaveId = null;
+        var noOfDays = null;
+        var rowCount = document.getElementById('fileDetailsTbl').rows.length;
+
+        $endDate.on('change', function () {
+            daysForDocument(this);
+        });
+
+        $leave.on('change', function () {
+            daysForDocument(this);
+        });
+
+        var daysForDocument = function (obj) {
+            var sd = new Date($startDate.val());
+            var ed = new Date($endDate.val());
+            leaveId = $leave.val();
+            noOfDays = app.getDateRangeBetween(sd, ed).length;
+            app.pullDataById(document.wsRequiredDaysForDocument, {
+                'leaveId': leaveId
+            }).then(function (success) {
+                daysForDocs = success.data[0]['DOCS_COMP_DAYS'];
+
+                if (noOfDays != null) {
+                    if (leaveId == 2 && noOfDays > daysForDocs) {
+                        app.showMessage('Sick Leave for more than ' + daysForDocs + ' days so you need to submit documents', 'warning');
+
+                    }
+                }
+            }, function (failure) {
+            });
+        };
+
+
+        window.setInterval(function () {
+            var rowCount = document.getElementById('fileDetailsTbl').rows.length;
+            if (noOfDays != null) {
+                if (leaveId == 2 && rowCount <= 1 && noOfDays > 3) {
+                    $($request).attr('disabled', 'disabled');
+
+                } else {
+//               $($request).removeAttr('disabled');
+                    $($request).prop("disabled", false);
+                }
+            }
+        }, 1000);
+
+
     });
+
 })(window.jQuery, window.app);
 
 

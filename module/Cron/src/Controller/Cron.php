@@ -31,14 +31,21 @@ class Cron extends AbstractActionController {
 
             $deviceIpList = $this->getDeviceIp();
             $registeredDevices = $this->getValuesFromArray($deviceIpList);
+            
+            print_r($registeredDevices);
 
             $attendanceIpList = $this->getAttendanceIp();
             $attendanceDevices = $this->getValuesFromArray($attendanceIpList);
+            
+            print_r($attendanceDevices);
 
             $missingIps = array_diff($registeredDevices, $attendanceDevices);
 
             $missingIpWithData = $this->getDataofMissingIp($missingIps);
-
+            
+            print_r($missingIps);
+            die;
+            
             if ($missingIpWithData == NULL) {
                 return new JsonModel(['success' => false, 'data' => $missingIpWithData, 'message' => 'No record found']);
             } else {

@@ -10,6 +10,7 @@
                     $("#" + key).val(value).change();
                 });
             }
+             $(".form-control").val("");
         });
 
         var $table = $('#table');

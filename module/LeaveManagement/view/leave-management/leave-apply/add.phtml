@@ -46,6 +46,7 @@ print $this->form()->openTag($form);
     document.wsValidateLeaveRequest = '<?= $this->url("leaveapply", ["action" => "validateLeaveRequest"]) ?>';
     document.subLeaveReference = '<?=$subLeaveReference?>';
     document.subLeaveMaxDays = '<?=$subLeaveMaxDays?>';
+    document.wsRequiredDaysForDocument = '<?= $this->url("leaveapply", ["action" => "validateRequiredDaysForDocument"]) ?>';
 </script>
 
 <div class="row margin-top-20" >

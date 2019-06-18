@@ -10,12 +10,14 @@
                     $("#" + key).val(value).change();
                 });
             }
+            $(".form-control").val("");
+
         });
-        
-        
+
+
 
         var $table = $('#table');
-        
+
         var actiontemplateConfig = {
             update: {
                 'ALLOW_UPDATE': document.acl.ALLOW_UPDATE,
@@ -28,24 +30,24 @@
                 'url': document.deleteLink
             }
         };
-        
+
         app.initializeKendoGrid($table, [
             {field: "FULL_NAME", title: "Employee"},
             {field: "LEAVE_ENAME", title: "Leave Type"},
             {field: "CARRY_FORWARD_DAYS", title: "Carry Forwarded Days"},
             {field: "ENCASH_DAYS", title: "Leave days For Encashment"},
-            {field: "ID", title: "Action", width: 120,  template: app.genKendoActionTemplate(actiontemplateConfig)}
+            {field: "ID", title: "Action", width: 120, template: app.genKendoActionTemplate(actiontemplateConfig)}
         ]);
 
 
         $('#viewLeaveRequestStatus').on('click', function () {
-           
+
             var data = $("#employeeId").val();
-           
-            app.serverRequest(document.viewLink,{
-                'employees' : data
+
+            app.serverRequest(document.viewLink, {
+                'employees': data
             }).then(function (response) {
-          
+
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);
                 } else {
@@ -54,7 +56,7 @@
             }, function (error) {
                 app.showMessage(error, 'error');
             });
- 
+
         });
 
 
