@@ -888,12 +888,20 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $salaryType = ($data['salaryTypeId']!=null && $data['salaryTypeId']!=-1)? $data['salaryTypeId'] : '' ;
         $monthId = $data['monthId'];
         $deptId = $data['departmentId']!=-1 ? $data['departmentId'] : '' ;
+        $reportTypeId = $data['reportTypeId'];
+        $sql = '';
 
-        $sql = "select 
+        if($reportTypeId == 2){
+            $sql .= "SELECT jv_name,
+            listagg(department_name,',') within group( order by department_name) DEPARTMENT_NAME, 
+            SUM(jv_value) JV_VALUE, PAY_TYPE_FLAG FROM( ";
+        }
+
+        $sql .= "select 
         Pjv.Jv_Name,
         Sed.Department_Id,
-        SED.DEPARTMENT_NAME
-        ,PJV.Pay_Id,
+        SED.DEPARTMENT_NAME,
+        PJV.Pay_Id,
         (CASE WHEN PJV.PAY_TYPE_FLAG = 'D' THEN 'DEBIT' ELSE 'CREDIT' END) PAY_TYPE_FLAG, 
         SUM(SSD.VAL) JV_VALUE
         from Hris_Salary_Sheet SS
@@ -906,6 +914,14 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $sql.= $salaryType!='' ? " AND SS.SALARY_TYPE_ID = $salaryType " : '' ;
         $sql.=" GROUP BY Pjv.Jv_Name,Sed.Department_Id,SED.DEPARTMENT_NAME,PJV.Pay_Id,PAY_TYPE_FLAG
         ORDER BY Sed.Department_Id";
+
+        if($reportTypeId == 2){
+            $sql .= ")
+            GROUP BY jv_name,
+            pay_id,
+            department_name, pay_type_flag";
+        }
+
         //echo $sql; die;
         $data = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($data);

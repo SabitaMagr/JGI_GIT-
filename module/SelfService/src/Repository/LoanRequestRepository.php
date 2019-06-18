@@ -120,4 +120,10 @@ class LoanRequestRepository implements RepositoryInterface {
         $statement = $this->adapter->query($sql);
         return $statement->execute();
     }
+
+    public function getLoanDetails(){
+        $sql = "SELECT LOAN_ID, IS_RATE_FLEXIBLE, INTEREST_RATE, MIN_AMOUNT, MAX_AMOUNT FROM HRIS_LOAN_MASTER_SETUP";
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
+    }
 }

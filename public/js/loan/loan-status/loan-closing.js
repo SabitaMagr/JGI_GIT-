@@ -26,18 +26,13 @@
         // });
 
         $('#calculate-interest').on('click', function(){
-            if($("#paidDate").val() != ''){
-                var paidDate = new Date($("#paidDate").val());
-                var paidDay = paidDate.getDate();
-                interestPaid = parseInt(($('#unpaidTotal').val()*rate/100)/365*paidDay);
-                $("#interestPaid").val(interestPaid||'');
-                totalPaid = $("#totalPaid").val();
-                principlePaid = totalPaid - interestPaid;
-                totalPaid != '' ? $("#principlePaid").val(principlePaid) : $("#principlePaid").val('') ;
-            }
-            else{
-                alert('Date is required.');
-            }
+            var days = $("#days").val();
+            var rate = $("#rate").val();
+            interestPaid = parseInt(($('#unpaidTotal').val()*rate/100)/365*days);
+            $("#interestPaid").val(interestPaid||'');
+            totalPaid = $("#totalPaid").val();
+            principlePaid = totalPaid - interestPaid;
+            totalPaid != '' ? $("#principlePaid").val(principlePaid) : $("#principlePaid").val('') ;
         });
 
         //$('#paidDate').datepicker("setStartDate", new Date());

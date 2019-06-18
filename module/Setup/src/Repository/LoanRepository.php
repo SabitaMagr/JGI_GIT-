@@ -95,4 +95,11 @@ class LoanRepository implements RepositoryInterface {
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
+
+    public function getRateFlexibleFlag($id){
+        $sql = "SELECT IS_RATE_FLEXIBLE FROM hris_loan_master_setup WHERE LOAN_ID = $id";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result)[0]['IS_RATE_FLEXIBLE'];
+    }
 }

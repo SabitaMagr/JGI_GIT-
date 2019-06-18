@@ -2,12 +2,12 @@
     'use strict';
     $(document).ready(function () {
         $('Select').select2();
-        let aggredCols = [];
         var monthList = null;
         var $fiscalYear = $('#fiscalYearId');
         var $month = $('#monthId');
         var $table = $('#table');
         var $salaryTypeId = $('#salaryTypeId');
+        var $reportTypeId = $('#reportTypeId');
 
         var columns = [
             {field: "DEPARTMENT_NAME", title: "Department", width: 200},
@@ -53,6 +53,7 @@
                 scrollable: true,
                 sortable: true,
                 filterable: true,
+                groupable: true,
                 pageable: {
                     input: true,
                     numeric: false
@@ -67,6 +68,7 @@
             q['fiscalId'] = $fiscalYear.val();
             q['monthId'] = $month.val();
             q['salaryTypeId'] = $salaryTypeId.val();
+            q['reportTypeId'] = $reportTypeId.val();
             app.serverRequest('', q).then(function (response) {
                 if (response.success) {
                     $table.empty();

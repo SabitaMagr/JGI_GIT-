@@ -46,13 +46,12 @@ class LoanApply extends AbstractActionController{
     public function addAction() {
         $this->initializeForm();
         $request = $this->getRequest();
-        $model = new LoanRequestModel();      
+        $model = new LoanRequestModel();  
+
         if ($request->isPost()) {
             $this->form->setData($request->getPost());
             if ($this->form->isValid()) {
                 $model->exchangeArrayFromForm($this->form->getData());
-                $interestRate = $this->loanRequesteRepository->getDefaultInterestRate($model->loanId);
-                $model->interestRate = Helper::extractDbData($interestRate)[0]['INTEREST_RATE'];
                 $model->loanRequestId = ((int) Helper::getMaxId($this->adapter, LoanRequestModel::TABLE_NAME, LoanRequestModel::LOAN_REQUEST_ID)) + 1;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
                 $model->status = 'RQ';
@@ -62,9 +61,12 @@ class LoanApply extends AbstractActionController{
                 return $this->redirect()->toRoute("loanStatus");
             }
         }
-        
+
+        $rateDetails = $this->loanRequesteRepository->getLoanDetails();
+
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
+                    'rateDetails' => Helper::extractDbData($rateDetails),
                     'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E','RETIRED_FLAG'=>'N'],"FIRST_NAME","ASC"," ",FALSE,TRUE),
                     'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC",NULL,FALSE,TRUE)
         ]);
