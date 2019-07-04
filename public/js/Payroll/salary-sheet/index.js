@@ -284,9 +284,10 @@
                 $.each(groupList, function (key, value) {
                     group.push(value['GROUP_ID']);
                 });
-            } else {
-                group = [group];
-            }
+            } 
+//            else {
+//                group = [group];
+//            }
             var stage1 = function () {
                 app.pullDataById(data['links']['generateLink'], {
                     stage: stage,
