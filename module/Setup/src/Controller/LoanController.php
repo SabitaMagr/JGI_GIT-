@@ -139,6 +139,7 @@ class LoanController extends AbstractActionController {
                 $loanModel->loanId = ((int) Helper::getMaxId($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID)) + 1;
                 $loanModel->createdDate = Helper::getcurrentExpressionDate();
                 $loanModel->status = 'E';
+                $loanModel->isRateFlexible = $postRecord['isRateFlexible'];
                 $loanModel->createdBy = $this->employeeId;
                 $this->repository->add($loanModel);
 
@@ -260,6 +261,7 @@ class LoanController extends AbstractActionController {
                 $loanModel->exchangeArrayFromForm($this->form->getData());
                 $loanModel->modifiedDate = Helper::getcurrentExpressionDate();
                 $loanModel->modifiedBy = $this->employeeId;
+                $loanModel->isRateFlexible = $postRecord['isRateFlexible'];
                 $this->repository->edit($loanModel, $id);
 
                 foreach ($loanRestrictionList as $loanRestrictionType => $loanRestrictionValue) {
@@ -283,6 +285,7 @@ class LoanController extends AbstractActionController {
                     'serviceType' => $serviceTypeFormElement,
                     'salaryRange' => $salaryRange,
                     'workingPeriod' => $workingPeriod,
+                    'isRateFexible' => $this->repository->getRateFlexibleFlag($id),
                     'pay_codes' => $payCodes,
                     'selectedPayCodes' => $selectedPayCodes,
                     'serviceTypeRestriction' => $serviceTypeRestriction,

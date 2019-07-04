@@ -94,7 +94,7 @@ class PayrollGenerator {
         $this->employeeId = $employeeId;
         $this->monthId = $monthId;
         $this->sheetNo = $sheetNo;
-        $payList = $this->ruleRepo->fetchAll();
+        $payList = $this->ruleRepo->fetchAllTypeWise($sheetNo);
         $systemRuleProcessor = new SystemRuleProcessor($this->adapter, $employeeId, null, $monthId, null);
         
         $file = Helper::UPLOAD_DIR . "/PAYROLL_LOG.txt";
@@ -106,6 +106,17 @@ class PayrollGenerator {
         foreach ($payList as $ruleDetail) {
             $ruleId = $ruleDetail[Rules::PAY_ID];
             $formula = $ruleDetail[Rules::FORMULA];
+            
+            // to override formula start
+            $salaryTypeId=$ruleDetail['SALARY_TYPE_ID'];
+            $salaryTypeFlag=$ruleDetail['TYPE_FLAG'];
+            $salaryTypeFormula=$ruleDetail['TYPE_FORMULA'];
+            if ($salaryTypeId != 1  && ( $salaryTypeFlag!==null OR $salaryTypeFlag == 'Y')) {
+                $formula = $salaryTypeFormula;
+            }else if($salaryTypeId != 1 && ($salaryTypeFlag!==null OR $salaryTypeFlag != 'Y')){
+                $formula = 0;
+            }
+            // to override formula end
             $q = ['MONTH_ID' => $this->monthId, 'PAY_ID' => $ruleId, 'EMPLOYEE_ID' => $this->employeeId];
             $ruleValue = $this->sspvmRepo->fetch($q);
             if ($ruleValue == null) {

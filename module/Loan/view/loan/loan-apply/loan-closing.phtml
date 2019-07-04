@@ -31,6 +31,13 @@ $form->prepare();
     document.rate = <?=json_encode($rate)?>;
     document.pullLoanListLink = '<?= $this->url("loanRequest", ["action" => "pullLoanList"]) ?>';
 </script>
+
+<style>
+.interest-calculator{
+    background-color: lightsteelblue;
+}
+</style>
+
 <div class="page-bar">
     <?= ''//$this->navigation('Zend\Navigation\loanApply')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>
@@ -110,7 +117,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 
                 <div class=" row">
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div class="form-group">
                             <?php print $this->formLabel($paidAmount); ?>
                             <span class="required" aria-required="true">*</span>
@@ -128,16 +135,14 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         </div>
                     </div>
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                         <div class="form-group">
                             <?php print $this->formLabel($totalPaid); ?>
                             <?php print $this->formElement($totalPaid); ?>
                             <?php print $this->formElementErrors()->render($totalPaid, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($receiptNo); ?>
@@ -146,7 +151,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($receiptNo, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    
+                </div>
+
+                <div class="row">
                     <div class="col-sm-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>
@@ -154,12 +161,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <?php print $this->formElementErrors()->render($remarks, ['class' => 'help-block']); ?>
                         </div>
                     </div>
-                    <!-- <div class="col-sm-2">
+                    
+                    <div class="col-sm-2 interest-calculator">
                         <div class="form-group">
-                        <label>Calculate Interest by date</label>
+                            <label for="days">Days</label>
+                            <input type="number" id="days" class="form-control" value="">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2 interest-calculator">
+                        <div class="form-group">
+                            <label for="days">Interest Rate</label>
+                            <input type="number" id="rate" class="form-control" value="">
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2 interest-calculator">
+                        <div class="form-group">
+                        <label>Calculate Interest</label>
                         <button type="button" class="btn btn-primary form-control" id="calculate-interest">Calculate</button>
                         </div>
-                    </div> -->
+                    </div>
                 </div>
 
 

@@ -24,8 +24,9 @@
         if(document.selected_pay_codes != null){
             document.getElementById("payIdInt").value = document.selected_pay_codes[0].PAY_ID_INT;
             document.getElementById("payIdAmt").value = document.selected_pay_codes[0].PAY_ID_AMT;
-            // $('#payIdInt option:eq('+document.selected_pay_codes[0].PAY_ID_INT+')').prop('selected', true);
-            // $('#payIdAmt option:eq('+document.selected_pay_codes[0].PAY_ID_AMT+')').prop('selected', true);
+        }
+        if(document.is_rate_flexible != null){
+            $('#isRateFlexible option[value="'+document.is_rate_flexible+'"]').prop('selected', true).change();
         }
     });
 })(window.jQuery,window.app);

@@ -140,6 +140,15 @@ $form->prepare();
                         </div>
                     </div>
                     <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Rate Flexible Flag</label>
+                            <select name="isRateFlexible" id="isRateFlexible">
+                                <option value="N">No</option>
+                                <option value="Y">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
                 <div class="form-group" >
                     <?php print $this->formLabel($remarks); ?>
                     <?php print $this->formElement($remarks); ?>

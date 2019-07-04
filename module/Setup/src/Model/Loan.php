@@ -22,10 +22,12 @@ class Loan extends Model{
     const COMPANY_ID = "COMPANY_ID";
     const PAY_ID_INT = "PAY_ID_INT";
     const PAY_ID_AMT = "PAY_ID_AMT";
+    const IS_RATE_FLEXIBLE = "IS_RATE_FLEXIBLE";
     
     public $loanId;
     public $payIdInt;
     public $payIdAmt;
+    public $isRateFlexible;
     public $loanCode;
     public $loanName;
     public $minAmount;
@@ -45,6 +47,7 @@ class Loan extends Model{
         'loanId'=>self::LOAN_ID,
         'payIdInt'=>self::PAY_ID_INT,
         'payIdAmt'=>self::PAY_ID_AMT,
+        'isRateFlexible'=>self::IS_RATE_FLEXIBLE,
         'loanCode'=>self::LOAN_CODE,
         'loanName'=>self::LOAN_NAME,
         'minAmount'=>self::MIN_AMOUNT,
