@@ -129,8 +129,10 @@ class PayrollGenerator {
                 //added by prabin to remoeve extra params PARS and PARAe start
                 $formula=$this->deleteAllBetweenString("PARS", "PARE", $formula);
                 //added by prabin to remoeve extra params PARS and PARAe end
-
+//                    print_r($formula);
                 $processedformula = $this->convertReferencingRuleToValue($formula, $refRules);
+                
+                //print_r($processedformula);
                 
                 $current = file_get_contents($file);
                 file_put_contents($file, $current."\r\nstartRuleId=".$ruleId." ".$processedformula);

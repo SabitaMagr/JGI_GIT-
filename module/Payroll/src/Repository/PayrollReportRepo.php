@@ -385,6 +385,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                      LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                      WHERE 1=1 {$searchConditon}
                 ";
+                     //echo $sql; die;
 
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
