@@ -104,8 +104,13 @@ AND GROUP_ID IN ({$group})";
     }
     
     public function fetchGeneratedSheetByGroup($monthId,$group,$salaryTypeId){
-        $sql="select sheet_no from HRIS_SALARY_SHEET 
-                where Month_Id={$monthId} and salary_type_id=$salaryTypeId  and Group_Id in ($group)";
+        $sql="select 
+                ss.sheet_no,ssg.Group_Name,Mc.Month_Edesc,St.Salary_Type_Name 
+                from HRIS_SALARY_SHEET ss 
+                join hris_salary_sheet_group ssg on (ssg.group_id=ss.group_id)
+                join Hris_Month_Code mc on (mc.month_id=ss.month_id)
+                join HRIS_SALARY_TYPE st on (St.Salary_Type_Id=Ss.Salary_Type_Id)
+                where ss.Month_Id={$monthId} and ss.salary_type_id=$salaryTypeId  and ss.Group_Id in ($group)";
         $data = $this->rawQuery($sql);
         return $data;
     }
@@ -117,6 +122,19 @@ AND GROUP_ID IN ({$group})";
             $tempSql = "INSERT INTO HRIS_PAYROLL_EMP_LIST VALUES ({$employeeId})";
             $this->executeStatement($tempSql);
         }
+    }
+    
+    public function deleteSheetBySheetNo($sheetNo){
+        $sql="
+BEGIN            
+delete from HRIS_TAX_SHEET where sheet_no={$sheetNo};
+delete from HRIS_SALARY_SHEET_DETAIL where sheet_no={$sheetNo};
+delete from HRIS_SALARY_SHEET_EMP_DETAIL where sheet_no={$sheetNo};
+delete from HRIS_SALARY_SHEET where sheet_no={$sheetNo};
+END;
+";
+        $this->executeStatement($sql);
+        return true;
     }
 
 }

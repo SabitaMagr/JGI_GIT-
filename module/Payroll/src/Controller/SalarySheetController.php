@@ -369,5 +369,16 @@ class SalarySheetController extends HrisController {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
+    
+    
+    public function deleteSheetAction() {
+        $id = $this->params()->fromRoute('id');
+        if ($id == 0) {
+            $this->redirect()->toRoute('salarySheet');
+        }
+        $this->salarySheetRepo->deleteSheetBySheetNo($id);
+        $this->flashmessenger()->addMessage("Sheet Successfully Deleted!!!");
+        return $this->redirect()->toRoute("salarySheet");
+    }
 
 }

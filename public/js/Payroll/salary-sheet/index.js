@@ -156,6 +156,36 @@
         $companyId.on('change', function () {
             monthChangeAction();
         });
+        
+        // salary sheet details start
+         var $sheetTable = $('#sheetTable');
+//         app.searchTable($sheetTable, ['SHEET_NO']);
+         var actiontemplateConfigSheet = {
+             update: {
+                'ALLOW_UPDATE': 'N',
+                'params': ["ADVANCE_ID"],
+                'url': ''
+            },
+            delete: {
+                'ALLOW_DELETE': 'Y',
+                'params': ["SHEET_NO"],
+                'url': document.deleteLink
+            }
+        };
+        app.initializeKendoGrid($sheetTable, [
+            {field: "SHEET_NO", title: "Sheet", width: 80},
+            {field: "MONTH_EDESC", title: "Month", width: 130},
+            {field: "SALARY_TYPE_NAME", title: "Salary Type", width: 130},
+            {field: "GROUP_NAME", title: "Group", width: 130},
+            {field: ["SHEET_NO"], title: "Action", width: 100,template: app.genKendoActionTemplate(actiontemplateConfigSheet)}
+        ]);
+        
+        
+        
+        // salary sheet details end
+        
+        
+        
 
 //        $groupId.on('change.select2', function () {
         var $empTable = $('#employeeTable');
@@ -239,6 +269,7 @@
 //                    console.log(response);
                     app.populateSelect($allSheetId, response.sheetData, 'SHEET_NO', 'SHEET_NO', 'ALL', -1, -1);
                     app.renderKendoGrid($empTable, response.data);
+                    app.renderKendoGrid($sheetTable, response.sheetData);
                 });
             }
         }
