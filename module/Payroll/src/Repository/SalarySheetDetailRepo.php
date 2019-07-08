@@ -159,7 +159,7 @@ class SalarySheetDetailRepo extends HrisRepository {
         
     }
     
-    public function fetchSalarySheetByGroupSheet($groupId,$sheetNo) {
+    public function fetchSalarySheetByGroupSheet($groupId,$sheetNo,$salaryTypeId) {
         $valuesinCSV = "";
         for ($i = 0; $i < sizeof($groupId); $i++) {
             $value = $groupId[$i];
@@ -173,7 +173,7 @@ class SalarySheetDetailRepo extends HrisRepository {
         
            $sheetString = $sheetNo;
         if ($sheetNo == -1) {
-            $sheetString = "select sheet_no from HRIS_SALARY_SHEET where group_id in ($valuesinCSV)";
+            $sheetString = "select sheet_no from HRIS_SALARY_SHEET where salary_type_id={$salaryTypeId} and group_id in ($valuesinCSV)";
         }
 
         $in = $this->fetchPayIdsAsArray();

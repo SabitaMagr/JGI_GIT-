@@ -89,20 +89,23 @@ class SalarySheetRepo extends HrisRepository {
         return $result;
     }
     
-    public function fetchEmployeeByGroup($monthId,$group) {
+    public function fetchEmployeeByGroup($monthId,$group,$salaryTypeId) {
         $sql = "SELECT 
             employee_id,employee_code,full_name,'Y' AS CHECKED_FLAG
             FROM HRIS_EMPLOYEES 
             WHERE 
-employee_id not in (select employee_id from HRIS_SALARY_SHEET_EMP_DETAIL where month_id={$monthId})            
+            STATUS='E' AND 
+employee_id not in (SELECT employee_id FROM HRIS_SALARY_SHEET_EMP_DETAIL SED
+JOIN HRIS_SALARY_SHEET SS ON (SS.SHEET_NO=SED.SHEET_NO) 
+where SS.month_id={$monthId} AND SS.SALARY_TYPE_ID=$salaryTypeId)            
 AND GROUP_ID IN ({$group})";
         $data = $this->rawQuery($sql);
         return $data;
     }
     
-    public function fetchGeneratedSheetByGroup($monthId,$group){
+    public function fetchGeneratedSheetByGroup($monthId,$group,$salaryTypeId){
         $sql="select sheet_no from HRIS_SALARY_SHEET 
-                where Month_Id={$monthId} and Group_Id in ($group)";
+                where Month_Id={$monthId} and salary_type_id=$salaryTypeId  and Group_Id in ($group)";
         $data = $this->rawQuery($sql);
         return $data;
     }

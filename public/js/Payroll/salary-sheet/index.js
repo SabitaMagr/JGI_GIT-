@@ -228,11 +228,13 @@
         
         var groupChangeFn=function(){
             let selectedGroups = $groupId.val();
+            let selectedSalaryTypeId = $salaryTypeId.val();
 //            console.log('gval', $(this).val());
             if (selectedGroups !== null || selectedGroups !== '-1') {
                 app.serverRequest(document.pullGroupEmployeeLink, {
                     group: selectedGroups,
-                    monthId: selectedMonth['MONTH_ID']
+                    monthId: selectedMonth['MONTH_ID'],
+                    salaryTypeId: selectedSalaryTypeId
                 }).then(function (response) {
 //                    console.log(response);
                     app.populateSelect($allSheetId, response.sheetData, 'SHEET_NO', 'SHEET_NO', 'ALL', -1, -1);
@@ -337,12 +339,14 @@
 
             let sheetNo=$allSheetId.val();
             let selectedGroups = $groupId.val();
+            let selectedSalaryTypeId = $salaryTypeId.val();
             
             if (selectedGroups !== null || selectedGroups !== '-1') {
                 
             app.serverRequest(data['links']['viewLink'], {
                 sheetNo: sheetNo,
-                groupId: selectedGroups
+                groupId: selectedGroups,
+                salaryTypeId: selectedSalaryTypeId
             }).then(function (response) {
                 app.renderKendoGrid($table, response.data);
             });

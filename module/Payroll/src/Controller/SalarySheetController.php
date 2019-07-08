@@ -62,13 +62,14 @@ class SalarySheetController extends HrisController {
 //        $sheetNoList = $data['sheetNo'];
         $sheetNo = $data['sheetNo'];
         $groupId = $data['groupId'];
+        $salaryTypeId = $data['salaryTypeId'];
         $salarySheetController = new SalarySheetService($this->adapter);
 //        $salarySheetList = [];
 //        foreach ($sheetNoList as $sheetNo) {
 //            $salarySheet = $salarySheetController->viewSalarySheet($sheetNo);
 //            $salarySheetList = array_merge($salarySheetList, $salarySheet);
 //        }
-        $salarySheetList=$salarySheetController->viewSalarySheetByGroupSheet($groupId,$sheetNo);
+        $salarySheetList=$salarySheetController->viewSalarySheetByGroupSheet($groupId,$sheetNo,$salaryTypeId);
 
         return new JsonModel(['success' => true, 'data' => $salarySheetList, 'error' => '']);
     }
@@ -342,6 +343,8 @@ class SalarySheetController extends HrisController {
             $data = $request->getPost();
             $group=$data['group'];
             $monthId=$data['monthId'];
+            $salaryTypeId=$data['salaryTypeId'];
+            
             
             
             $valuesinCSV = "";
@@ -356,8 +359,8 @@ class SalarySheetController extends HrisController {
             }
             
             
-            $employeeList=$this->salarySheetRepo->fetchEmployeeByGroup($monthId,$valuesinCSV);
-            $sheetList=$this->salarySheetRepo->fetchGeneratedSheetByGroup($monthId,$valuesinCSV);
+            $employeeList=$this->salarySheetRepo->fetchEmployeeByGroup($monthId,$valuesinCSV,$salaryTypeId);
+            $sheetList=$this->salarySheetRepo->fetchGeneratedSheetByGroup($monthId,$valuesinCSV,$salaryTypeId);
 
 
 
