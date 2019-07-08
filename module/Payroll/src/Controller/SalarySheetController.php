@@ -59,13 +59,16 @@ class SalarySheetController extends HrisController {
     public function viewSalarySheetAction() {
         $request = $this->getRequest();
         $data = $request->getPost();
-        $sheetNoList = $data['sheetNo'];
+//        $sheetNoList = $data['sheetNo'];
+        $sheetNo = $data['sheetNo'];
+        $groupId = $data['groupId'];
         $salarySheetController = new SalarySheetService($this->adapter);
-        $salarySheetList = [];
-        foreach ($sheetNoList as $sheetNo) {
-            $salarySheet = $salarySheetController->viewSalarySheet($sheetNo);
-            $salarySheetList = array_merge($salarySheetList, $salarySheet);
-        }
+//        $salarySheetList = [];
+//        foreach ($sheetNoList as $sheetNo) {
+//            $salarySheet = $salarySheetController->viewSalarySheet($sheetNo);
+//            $salarySheetList = array_merge($salarySheetList, $salarySheet);
+//        }
+        $salarySheetList=$salarySheetController->viewSalarySheetByGroupSheet($groupId,$sheetNo);
 
         return new JsonModel(['success' => true, 'data' => $salarySheetList, 'error' => '']);
     }
@@ -90,16 +93,21 @@ class SalarySheetController extends HrisController {
                     $companyIdList = $data['companyId'];
                     $groupIdList = $data['groupId'];
                     $salaryTypeId = $data['salaryTypeId'];
+                    $empList = $data['empList'];
                     /*  */
                     /*  */
                     $returnData = [];
+                    $this->salarySheetRepo->insertPayrollEmp($empList);
                     foreach ($companyIdList as $companyId) {
                         foreach ($groupIdList as $groupId) {
                             $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId,$salaryTypeId);
                             $this->salarySheetRepo->generateSalShReport($sheetNo);
-                            $salarySheetDetailRepo->delete($sheetNo);
-                            $taxSheetRepo->delete($sheetNo);
-                            $employeeList = $salarySheet->fetchEmployeeList($companyId, $groupId);
+//                            $salarySheetDetailRepo->delete($sheetNo);
+//                            $taxSheetRepo->delete($sheetNo);
+//                            $employeeList = $salarySheet->fetchEmployeeList($companyId, $groupId);
+                            $employeeList = $salarySheet->fetchEmployeeListFiltered($companyId, $groupId);
+//                            print_r($employeeList);
+//                            die();
                             $data = null;
                             $data['sheetNo'] = $sheetNo;
                             $data['employeeList'] = $employeeList;
@@ -327,4 +335,36 @@ class SalarySheetController extends HrisController {
         $sspvmRepo->bulkEdit($dataToUpdate);
         return new JsonModel($data);
     }
+    
+    public function pullGroupEmployeeAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $group=$data['group'];
+            $monthId=$data['monthId'];
+            
+            
+            $valuesinCSV = "";
+            for ($i = 0; $i < sizeof($group); $i++) {
+                $value= $group[$i];
+//                $value = isString ? "'{$group[$i]}'" : $group[$i];
+                if ($i + 1 == sizeof($group)) {
+                    $valuesinCSV .= "{$value}";
+                } else {
+                    $valuesinCSV .= "{$value},";
+                }
+            }
+            
+            
+            $employeeList=$this->salarySheetRepo->fetchEmployeeByGroup($monthId,$valuesinCSV);
+            $sheetList=$this->salarySheetRepo->fetchGeneratedSheetByGroup($monthId,$valuesinCSV);
+
+
+
+            return new JsonModel(['success' => true, 'data' => $employeeList, 'sheetData' => $sheetList, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

@@ -158,5 +158,44 @@ class SalarySheetDetailRepo extends HrisRepository {
         return ($resultList[0]['AMT'])?$resultList[0]['AMT']:0;
         
     }
+    
+    public function fetchSalarySheetByGroupSheet($groupId,$sheetNo) {
+        $valuesinCSV = "";
+        for ($i = 0; $i < sizeof($groupId); $i++) {
+            $value = $groupId[$i];
+//                $value = isString ? "'{$group[$i]}'" : $group[$i];
+            if ($i + 1 == sizeof($groupId)) {
+                $valuesinCSV .= "{$value}";
+            } else {
+                $valuesinCSV .= "{$value},";
+            }
+        }
+        
+           $sheetString = $sheetNo;
+        if ($sheetNo == -1) {
+            $sheetString = "select sheet_no from HRIS_SALARY_SHEET where group_id in ($valuesinCSV)";
+        }
+
+        $in = $this->fetchPayIdsAsArray();
+        $sql = "SELECT P.*,E.FULL_NAME AS EMPLOYEE_NAME,E.EMPLOYEE_CODE,B.BRANCH_NAME,PO.POSITION_NAME,E.ID_ACCOUNT_NO
+                FROM
+                  (SELECT *
+                  FROM
+                    (SELECT SHEET_NO,
+                      EMPLOYEE_ID,
+                      PAY_ID,
+                      VAL
+                    FROM HRIS_SALARY_SHEET_DETAIL
+                    WHERE SHEET_NO in ({$sheetString})
+                    ) PIVOT (MAX(VAL) FOR PAY_ID IN ({$in}))
+                  ) P
+                JOIN HRIS_EMPLOYEES E
+                ON (P.EMPLOYEE_ID=E.EMPLOYEE_ID) 
+                LEFT JOIN HRIS_BRANCHES B ON (B.BRANCH_ID=E.BRANCH_ID)
+                LEFT JOIN HRIS_POSITIONS PO ON (PO.POSITION_ID=E.POSITION_ID)";
+//                    echo $sql;
+//                    die();
+        return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
 
 }

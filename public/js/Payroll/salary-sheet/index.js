@@ -31,8 +31,9 @@
         var $companyId = $('#companyId');
         var $groupId = $('#groupId');
         var $salaryTypeId = $('#salaryTypeId');
-        
-        app.populateSelect($salaryTypeId, data['salaryType'], 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', null,null,1);
+        var $allSheetId = $('#allSheetId');
+
+        app.populateSelect($salaryTypeId, data['salaryType'], 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', null, null, 1);
 //        
         var loading_screen = null;
         var loadingMessage = "Payroll generation started.";
@@ -102,7 +103,7 @@
         $groupId.select2();
         $salaryTypeId.select2();
 
-        $viewBtn.hide();
+//        $viewBtn.hide();
 
         app.setFiscalMonth($fiscalYear, $month, function (years, months, currentMonth) {
             monthList = months;
@@ -127,7 +128,7 @@
                         (companyValue == -1 || companyValue == salarySheetList[i]['COMPANY_ID'])
                         && (groupValue == -1 || groupValue == salarySheetList[i]['GROUP_ID'])
                         && (salaryType == -1 || salaryType == salarySheetList[i]['SALARY_TYPE_ID'])
-                        
+
                         ) {
                     selectedSalarySheetList.push(salarySheetList[i]);
                     if (groupValue != '-1') {
@@ -135,15 +136,17 @@
                     }
                 }
             }
-            if (selectedSalarySheetList.length > 0) {
-                $viewBtn.show();
-            } else {
-                $viewBtn.hide();
-            }
+//            if (selectedSalarySheetList.length > 0) {
+//                $viewBtn.show();
+//            } else {
+//                $viewBtn.hide();
+//            }
             $fromDate.val(selectedMonth['FROM_DATE']);
             $nepaliFromDate.val(nepaliDatePickerExt.fromEnglishToNepali(selectedMonth['FROM_DATE']));
             $toDate.val(selectedMonth['TO_DATE']);
             $nepaliToDate.val(nepaliDatePickerExt.fromEnglishToNepali(selectedMonth['TO_DATE']));
+            
+            groupChangeFn();
 
         };
         $month.on('change', function () {
@@ -154,10 +157,90 @@
             monthChangeAction();
         });
 
-        $groupId.on('change', function () {
-            monthChangeAction();
+//        $groupId.on('change.select2', function () {
+        var $empTable = $('#employeeTable');
+        app.searchTable($empTable, ['FULL_NAME', 'EMPLOYEE_CODE']);
+        app.initializeKendoGrid($empTable, [
+            {field: "CHECKED_FLAG",
+                headerTemplate: "<input type='checkbox' id='header-chb2' class='k-checkbox2 header-checkbox2'><label class='k-checkbox-label2' for='header-chb2'></label>",
+//                headerTemplate: "<input type='checkbox' id='header-chb'>",
+                title: "Select", width: 50,
+                sortable: false,
+                filterable: false,
+                template: "<input type='checkbox' class='k-checkbox2 row-checkbox2' #if(CHECKED_FLAG == 'Y'){#checked#}#><label class='k-checkbox-label2'></label>"},
+//                template: '<input class="employeeCheck" type="checkbox" name="FLAG_#EMPLOYEE_CODE#" VALUE="Y" #if(CHECKED_FLAG == "Y"){#checked#}#>'},
+            {field: "EMPLOYEE_CODE", title: "Code", width: 80},
+            {field: "FULL_NAME", title: "Employee", width: 130}
+        ]);
+
+        function grid_dataBound(e) {
+            $('.row-checkbox2').each(function (idx, item) {
+                let checkStatus = $(this).prop("checked");
+                if (checkStatus == true) {
+                    let row = $(this).closest("tr");
+                    row.addClass("k-state-selected");
+                }
+            });
+        }
+        var tt = $empTable.data("kendoGrid");
+        tt.bind("dataBound", grid_dataBound);
+
+
+
+
+        $empTable.on("click", ".k-checkbox2", function () {
+            var checked = this.checked,
+                    row = $(this).closest("tr"),
+                    grid = $empTable.data("kendoGrid"),
+                    dataItem = grid.dataItem(row);
+            if (checked) {
+                row.addClass("k-state-selected");
+                dataItem.CHECKED_FLAG = 'Y';
+            } else {
+                row.removeClass("k-state-selected");
+                dataItem.CHECKED_FLAG = 'N';
+            }
+        });
+
+        $('#header-chb2').change(function (ev) {
+            var checked = ev.target.checked;
+            $('.row-checkbox2').each(function (idx, item) {
+                if (checked) {
+                    if (!($(item).closest('tr').is('.k-state-selected'))) {
+                        $(item).click();
+                    }
+                } else {
+                    if ($(item).closest('tr').is('.k-state-selected')) {
+                        $(item).click();
+                    }
+                }
+            });
         });
         
+
+
+
+        $groupId.on("select2:select select2:unselect", function (event) {
+            monthChangeAction();
+//            groupChangeFn();
+
+        });
+        
+        var groupChangeFn=function(){
+            let selectedGroups = $groupId.val();
+//            console.log('gval', $(this).val());
+            if (selectedGroups !== null || selectedGroups !== '-1') {
+                app.serverRequest(document.pullGroupEmployeeLink, {
+                    group: selectedGroups,
+                    monthId: selectedMonth['MONTH_ID']
+                }).then(function (response) {
+//                    console.log(response);
+                    app.populateSelect($allSheetId, response.sheetData, 'SHEET_NO', 'SHEET_NO', 'ALL', -1, -1);
+                    app.renderKendoGrid($empTable, response.data);
+                });
+            }
+        }
+
         $salaryTypeId.on('change', function () {
             monthChangeAction();
         });
@@ -247,15 +330,28 @@
         app.initializeKendoGrid($table, columns);
 
         $viewBtn.on('click', function () {
-            var sheetNoList = [];
-            for (var i in selectedSalarySheetList) {
-                sheetNoList.push(selectedSalarySheetList[i]['SHEET_NO']);
-            }
+//            var sheetNoList = [];
+//            for (var i in selectedSalarySheetList) {
+//                sheetNoList.push(selectedSalarySheetList[i]['SHEET_NO']);
+//            }
 
-            app.serverRequest(data['links']['viewLink'], {sheetNo: sheetNoList}).then(function (response) {
+            let sheetNo=$allSheetId.val();
+            let selectedGroups = $groupId.val();
+            
+            if (selectedGroups !== null || selectedGroups !== '-1') {
+                
+            app.serverRequest(data['links']['viewLink'], {
+                sheetNo: sheetNo,
+                groupId: selectedGroups
+            }).then(function (response) {
                 app.renderKendoGrid($table, response.data);
             });
+                
+            }
+
+
         });
+        
         $generateBtn.on('click', function () {
             payrollGeneration();
         });
@@ -284,10 +380,27 @@
                 $.each(groupList, function (key, value) {
                     group.push(value['GROUP_ID']);
                 });
-            } 
+            }
 //            else {
 //                group = [group];
 //            }
+
+            let empList = [];
+
+            let empGridData = $empTable.data("kendoGrid").dataSource.data();
+
+            $.each(empGridData, function (index, value) {
+                if (value['CHECKED_FLAG'] == 'Y') {
+                    empList.push(value['EMPLOYEE_ID']);
+                }
+            });
+            console.log(empList);
+
+
+
+
+
+
             var stage1 = function () {
                 app.pullDataById(data['links']['generateLink'], {
                     stage: stage,
@@ -298,7 +411,8 @@
                     toDate: toDate,
                     companyId: company,
                     groupId: group,
-                    salaryTypeId:salaryType
+                    salaryTypeId: salaryType,
+                    empList: empList
                 }).then(function (response) {
                     stage2(response.data);
                 }, function (error) {
@@ -345,6 +459,7 @@
                                 loading_screen.finish();
                                 $pleaseWaitOptions.hide();
                                 stage3();
+                                groupChangeFn();
                                 return;
                             }
                             if (play) {

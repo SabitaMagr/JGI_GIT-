@@ -19,6 +19,7 @@ $this->headScript()
     document.data =<?php echo $data; ?>;
     document.data['loading-icon'] = '<?php echo $this->basePath('img/payroll-icon.png'); ?>';
     document.getFiscalYearMonthLink = '<?php echo $this->url('salarySheet', ['action' => 'getFiscalYearMonth']); ?>';
+    document.pullGroupEmployeeLink = '<?php echo $this->url('salarySheet', ['action' => 'pullGroupEmployee']); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\salarySheet')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -55,6 +56,11 @@ $this->headScript()
     <div class="portlet-body">
         <div class="row">
             <div class="col-sm-2">
+                <label>Salary Type</label>
+                <select class="form-control" name="salaryType" id="salaryTypeId">
+                </select>
+            </div>
+            <div class="col-sm-2">
                 <label>Company</label>
                 <select  class="form-control" name="company" id="companyId">
                 </select>
@@ -65,8 +71,8 @@ $this->headScript()
                 </select>
             </div>
             <div class="col-sm-2">
-                <label>Salary Type</label>
-                <select class="form-control" name="salaryType" id="salaryTypeId">
+                <label>Sheet</label>
+                <select class="form-control" name="allSheetId" id="allSheetId">
                 </select>
             </div>
         </div>
@@ -111,6 +117,53 @@ $this->headScript()
                 <button id="viewBtn" class="btn yellow-saffron pull-right">View</button>
             </div>
         </div>
+        
+        <!--<div id="employeeTableDiv" class="row" style="height:200px;overflow:auto;">-->
+        <div id="employeeTableDiv" class="row">
+            <div class="col-lg-6 col-ms-6 col-sm-6">
+                
+                <div id="employeeTable">
+                    
+                </div>
+                    
+                
+<!--               <table id="employeeTable" class="table table-striped table-bordered table-hover no-footer custometbletwo">
+                    <thead>
+                        <tr>
+                            <th>
+                                Code
+                            </th>
+                            <th>
+                                Employee
+                            </th>
+                            <th>
+                                Branch
+                            </th>
+                            <th>
+                                Department
+                            </th>
+                            <th>
+                                Designation
+                            </th>
+                            <th>
+                                Position
+                            </th>
+                            <th class="bs-checkbox " style="width: 36px; " data-field="state" tabindex="0">
+                                <div class="th-inner ">
+                                    <label class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
+                                        <input id="masterCheckElement" class="" type="checkbox" />
+                                        <span></span>
+                                    </label>
+                                </div>
+                                <div class="fht-cell" style="width: 46px;"></div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>-->
+                
+            </div>
+        </div>
+        
         <div id="table" class="margin-top-10">
         </div>
     </div>
