@@ -258,6 +258,15 @@
         
         var groupChangeFn=function(){
             let selectedGroups = $groupId.val();
+            
+            if(selectedGroups==null){
+                let allGroup=[];
+                $.each(groupList, function (key, value) {
+                    console.log(value);
+                    allGroup.push(value['GROUP_ID']);
+                });
+                selectedGroups=allGroup;
+            }
             let selectedSalaryTypeId = $salaryTypeId.val();
 //            console.log('gval', $(this).val());
             if (selectedGroups !== null || selectedGroups !== '-1') {
@@ -371,10 +380,12 @@
             let sheetNo=$allSheetId.val();
             let selectedGroups = $groupId.val();
             let selectedSalaryTypeId = $salaryTypeId.val();
+            let selectedMonthId = selectedMonth['MONTH_ID'];
             
             if (selectedGroups !== null || selectedGroups !== '-1') {
                 
             app.serverRequest(data['links']['viewLink'], {
+                monthId: selectedMonthId,
                 sheetNo: sheetNo,
                 groupId: selectedGroups,
                 salaryTypeId: selectedSalaryTypeId

@@ -122,6 +122,12 @@ AND GROUP_ID IN ({$group})";
             $tempSql = "INSERT INTO HRIS_PAYROLL_EMP_LIST VALUES ({$employeeId})";
             $this->executeStatement($tempSql);
         }
+        $toGenerateGroupSql="select  distinct group_id 
+                from 
+                 hris_employees where employee_id in
+                 (select employee_id from HRIS_PAYROLL_EMP_LIST)";
+        $groupData = $this->rawQuery($toGenerateGroupSql);
+        return $groupData;
     }
     
     public function deleteSheetBySheetNo($sheetNo){

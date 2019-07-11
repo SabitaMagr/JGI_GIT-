@@ -159,21 +159,29 @@ class SalarySheetDetailRepo extends HrisRepository {
         
     }
     
-    public function fetchSalarySheetByGroupSheet($groupId,$sheetNo,$salaryTypeId) {
-        $valuesinCSV = "";
-        for ($i = 0; $i < sizeof($groupId); $i++) {
-            $value = $groupId[$i];
-//                $value = isString ? "'{$group[$i]}'" : $group[$i];
-            if ($i + 1 == sizeof($groupId)) {
-                $valuesinCSV .= "{$value}";
-            } else {
-                $valuesinCSV .= "{$value},";
-            }
-        }
+    public function fetchSalarySheetByGroupSheet($monthId,$groupId,$sheetNo,$salaryTypeId) {
+        
         
            $sheetString = $sheetNo;
         if ($sheetNo == -1) {
-            $sheetString = "select sheet_no from HRIS_SALARY_SHEET where salary_type_id={$salaryTypeId} and group_id in ($valuesinCSV)";
+//            echo is_array($groupId);
+            if (is_array($groupId)) {
+
+                $valuesinCSV = "";
+                for ($i = 0; $i < sizeof($groupId); $i++) {
+                    $value = $groupId[$i];
+//                $value = isString ? "'{$group[$i]}'" : $group[$i];
+                    if ($i + 1 == sizeof($groupId)) {
+                        $valuesinCSV .= "{$value}";
+                    } else {
+                        $valuesinCSV .= "{$value},";
+                    }
+                }
+
+                $sheetString = "select sheet_no from HRIS_SALARY_SHEET where month_id={$monthId} and salary_type_id={$salaryTypeId} and group_id in ($valuesinCSV)";
+            }else{
+                $sheetString = "select sheet_no from HRIS_SALARY_SHEET where month_id={$monthId} and salary_type_id={$salaryTypeId}";
+            }
         }
 
         $in = $this->fetchPayIdsAsArray();

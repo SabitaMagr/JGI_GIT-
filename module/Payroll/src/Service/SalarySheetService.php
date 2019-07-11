@@ -133,8 +133,8 @@ class SalarySheetService {
         return iterator_to_array($iterator, false);
     }
     
-    public function viewSalarySheetByGroupSheet($groupId, $sheetNo,$salaryTypeId) {
-        return Helper::extractDbData($this->salarySheetDetailRepo->fetchSalarySheetByGroupSheet($groupId, $sheetNo,$salaryTypeId));
+    public function viewSalarySheetByGroupSheet($monthId,$groupId, $sheetNo,$salaryTypeId) {
+        return Helper::extractDbData($this->salarySheetDetailRepo->fetchSalarySheetByGroupSheet($monthId,$groupId, $sheetNo,$salaryTypeId));
     }
 
 }

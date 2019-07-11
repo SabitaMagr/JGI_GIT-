@@ -60,6 +60,7 @@ class SalarySheetController extends HrisController {
         $request = $this->getRequest();
         $data = $request->getPost();
 //        $sheetNoList = $data['sheetNo'];
+        $monthId = $data['monthId'];
         $sheetNo = $data['sheetNo'];
         $groupId = $data['groupId'];
         $salaryTypeId = $data['salaryTypeId'];
@@ -69,7 +70,7 @@ class SalarySheetController extends HrisController {
 //            $salarySheet = $salarySheetController->viewSalarySheet($sheetNo);
 //            $salarySheetList = array_merge($salarySheetList, $salarySheet);
 //        }
-        $salarySheetList=$salarySheetController->viewSalarySheetByGroupSheet($groupId,$sheetNo,$salaryTypeId);
+        $salarySheetList=$salarySheetController->viewSalarySheetByGroupSheet($monthId,$groupId,$sheetNo,$salaryTypeId);
 
         return new JsonModel(['success' => true, 'data' => $salarySheetList, 'error' => '']);
     }
@@ -98,9 +99,14 @@ class SalarySheetController extends HrisController {
                     /*  */
                     /*  */
                     $returnData = [];
-                    $this->salarySheetRepo->insertPayrollEmp($empList);
+                    $groupListArray=$this->salarySheetRepo->insertPayrollEmp($empList);
+                    $groupToGenerate=[];
+                    foreach ($groupListArray as $list ){
+                        array_push($groupToGenerate, $list['GROUP_ID']);
+                    }
                     foreach ($companyIdList as $companyId) {
-                        foreach ($groupIdList as $groupId) {
+//                        foreach ($groupIdList as $groupId) {
+                        foreach ($groupToGenerate as $groupId) {
                             $sheetNo = $salarySheet->newSalarySheet($monthId, $year, $monthNo, $fromDate, $toDate, $companyId, $groupId,$salaryTypeId);
                             $this->salarySheetRepo->generateSalShReport($sheetNo);
 //                            $salarySheetDetailRepo->delete($sheetNo);
