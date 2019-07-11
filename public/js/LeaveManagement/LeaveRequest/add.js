@@ -20,7 +20,13 @@
 
         var substituteDetails = [];
 
-        var dateDiff = "";
+        var dateDiff1 = "";
+
+        var daysForDocs = "";
+        var rowCount = "";
+        var requireDocument = "";
+        var leaveName = "";
+
         var substituteEmp = {
             list: [],
             disable: function (employeeIds) {
@@ -86,6 +92,14 @@
                     }
                 }
 
+                rowCount = document.getElementById('fileDetailsTbl').rows.length;
+                dateDiff1 = dateDiff;
+                if (dateDiff1 != null) {
+                    if (requireDocument == 'Y' && dateDiff1 > daysForDocs && rowCount <= 1) {
+                        app.showMessage('Sick Leave for more than ' + daysForDocs + ' days so you need to submit documents', 'warning');
+                        $($request).attr('disabled', 'disabled');
+                    }
+                }
 
 
 
@@ -226,6 +240,15 @@
                 toggleHalfDay(leaveDetail.ALLOW_HALFDAY === "Y");
                 toggleSubstituteEmployee(leaveDetail.ENABLE_SUBSTITUTE === "Y");
                 toggleSubstituteEmployeeReq(leaveDetail.IS_SUBSTITUTE_MANDATORY === 'Y');
+                
+                requireDocument = leaveDetail.DOCUMENT_REQUIRED;
+                daysForDocs = leaveDetail.DOCS_COMP_DAYS;
+                leaveName = leaveDetail.LEAVE_ENAME;
+                
+                var rowCount1 = document.getElementById('fileDetailsTbl').rows.length;
+                if(requireDocument == 'Y' && dateDiff1 > daysForDocs && rowCount1 <= 1 ){
+                    $($request).attr('disabled', 'disabled');
+                }
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
                 console.log(failure);
@@ -316,6 +339,9 @@
                             + '<input type="hidden" name="fileUploadList[]" value="' + success.data.FILE_ID + '"><td>' + success.data.FILE_NAME + '</td>'
                             + '<td><a target="blank" href="' + document.basePath + '/uploads/leave_documents/' + success.data.FILE_IN_DIR_NAME + '"><i class="fa fa-download"></i></a></td>'
                             + '<td><button type="button" class="btn btn-danger deleteFile">DELETE</button></td></tr>');
+                
+                sickLeaveCheck();
+                    
                 }
             }, function (failure) {
             });
@@ -328,11 +354,28 @@
         $('#fileDetailsTbl').on('click', '.deleteFile', function () {
             var selectedtr = $(this).parent().parent();
             selectedtr.remove();
+            var rowCount1 = document.getElementById('fileDetailsTbl').rows.length;
+        sickLeaveCheck();
         });
+        
+        
+        var sickLeaveCheck=function(){
+            let availableDays=$availableDays.val();
+            var rowCount1 = document.getElementById('fileDetailsTbl').rows.length;
+            console.log('availableDays',availableDays);
+            console.log('dateDiff1',dateDiff1);
+            if ((requireDocument == 'Y'  && rowCount1<=1 && dateDiff1 > daysForDocs) || (availableDays<dateDiff1)) {
+                app.showMessage(leaveName + ' for more than ' + daysForDocs + ' days so you need to submit documents', 'warning');
+                $($request).attr('disabled',true);
+            }else{
+                 $($request).attr("disabled", false);
+            }
+            
+        }
 
         $subRefId.on('change', function () {
             if (subLeaveReference == 'Y') {
-                console.log('dsfsd');
+                
                 calculateAvailableDays($startDate.val(), $endDate.val(), $halfDay.val(), $employee.val(), $leave.val());
 
                 var selectedSubRefId = $(this).val();
@@ -368,54 +411,6 @@
             }
 
         }
-
-        var daysForDocs = [];
-        var leaveId = null;
-        var noOfDays = null;
-        var rowCount = document.getElementById('fileDetailsTbl').rows.length;
-
-        $endDate.on('change', function () {
-            daysForDocument(this);
-        });
-
-        $leave.on('change', function () {
-            daysForDocument(this);
-        });
-
-        var daysForDocument = function (obj) {
-            var sd = new Date($startDate.val());
-            var ed = new Date($endDate.val());
-            leaveId = $leave.val();
-            noOfDays = app.getDateRangeBetween(sd, ed).length;
-            app.pullDataById(document.wsRequiredDaysForDocument, {
-                'leaveId': leaveId
-            }).then(function (success) {
-                daysForDocs = success.data[0]['DOCS_COMP_DAYS'];
-
-                if (noOfDays != null) {
-                    if (leaveId == 2 && noOfDays > daysForDocs) {
-                        app.showMessage('Sick Leave for more than ' + daysForDocs + ' days so you need to submit documents', 'warning');
-
-                    }
-                }
-            }, function (failure) {
-            });
-        };
-
-
-        window.setInterval(function () {
-            var rowCount = document.getElementById('fileDetailsTbl').rows.length;
-            if (noOfDays != null) {
-                if (leaveId == 2 && rowCount <= 1 && noOfDays > 3) {
-                    $($request).attr('disabled', 'disabled');
-
-                } else {
-//               $($request).removeAttr('disabled');
-                    $($request).prop("disabled", false);
-                }
-            }
-        }, 1000);
-
 
     });
 

@@ -1123,49 +1123,138 @@ EOT;
         
         
         $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
-        $sql = <<<EOT
-             SELECT PL.*,
-                CL.PRESENT,
-                CL.ABSENT,
-                CL.LEAVE,
-                CL.DAYOFF,
-                CL.HOLIDAY,
-                CL.WORK_DAYOFF,
-                CL.WORK_HOLIDAY,
-                 (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) as TOTAL
-      FROM
-      (SELECT * FROM 
-(SELECT 
-E.FULL_NAME,
-AD.EMPLOYEE_ID,
-E.EMPLOYEE_CODE,
-CASE WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
-THEN 'PR' ELSE AD.OVERALL_STATUS END AS OVERALL_STATUS,
---AD.ATTENDANCE_DT,
-(AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
-FROM HRIS_ATTENDANCE_DETAIL AD
-LEFT JOIN HRIS_MONTH_CODE MC ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
-JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
-WHERE MC.MONTH_ID={$searchQuery['monthCodeId']}
-{$searchConditon}
-    )
-PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
-                        IN ({$pivotString}))
-                        ) PL
-   LEFT JOIN (SELECT
-    EMPLOYEE_ID,
-    COUNT(case  when OVERALL_STATUS  IN ('TV','TN','PR','BA','LA','TP','LP','VP') then 1 end) AS PRESENT,
-    COUNT(case OVERALL_STATUS when 'AB' then 1 end) AS ABSENT,
-    COUNT(case OVERALL_STATUS when 'LV' then 1 end) AS LEAVE,
-    COUNT(case OVERALL_STATUS when 'DO' then 1 end) AS DAYOFF,
-    COUNT(case OVERALL_STATUS when 'HD' then 1 end) AS HOLIDAY,
-    COUNT(case OVERALL_STATUS when 'WD' then 1 end) AS WORK_DAYOFF,
-    COUNT(case OVERALL_STATUS when 'WH' then 1 end) AS WORK_HOLIDAY
-        FROM HRIS_ATTENDANCE_DETAIL
-        WHERE
-         ATTENDANCE_DT BETWEEN   TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND   TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
-        GROUP BY EMPLOYEE_ID)CL ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
-                
+//        $sql = <<<EOT
+//             SELECT PL.*,
+//                CL.PRESENT,
+//                CL.ABSENT,
+//                CL.LEAVE,
+//                CL.DAYOFF,
+//                CL.HOLIDAY,
+//                CL.WORK_DAYOFF,
+//                CL.WORK_HOLIDAY,
+//                 (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) as TOTAL
+//      FROM
+//      (SELECT * FROM 
+//(SELECT 
+//E.FULL_NAME,
+//AD.EMPLOYEE_ID,
+//E.EMPLOYEE_CODE,
+//CASE WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+//THEN 'PR' ELSE AD.OVERALL_STATUS END AS OVERALL_STATUS,
+//--AD.ATTENDANCE_DT,
+//(AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
+//FROM HRIS_ATTENDANCE_DETAIL AD
+//LEFT JOIN HRIS_MONTH_CODE MC ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
+//JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=AD.EMPLOYEE_ID)
+//WHERE MC.MONTH_ID={$searchQuery['monthCodeId']}
+//{$searchConditon}
+//    )
+//PIVOT (MAX (OVERALL_STATUS)  FOR DAY_COUNT
+//                        IN ({$pivotString}))
+//                        ) PL
+//   LEFT JOIN (SELECT
+//    EMPLOYEE_ID,
+//    COUNT(case  when OVERALL_STATUS  IN ('TV','TN','PR','BA','LA','TP','LP','VP') then 1 end) AS PRESENT,
+//    COUNT(case OVERALL_STATUS when 'AB' then 1 end) AS ABSENT,
+//    COUNT(case OVERALL_STATUS when 'LV' then 1 end) AS LEAVE,
+//    COUNT(case OVERALL_STATUS when 'DO' then 1 end) AS DAYOFF,
+//    COUNT(case OVERALL_STATUS when 'HD' then 1 end) AS HOLIDAY,
+//    COUNT(case OVERALL_STATUS when 'WD' then 1 end) AS WORK_DAYOFF,
+//    COUNT(case OVERALL_STATUS when 'WH' then 1 end) AS WORK_HOLIDAY
+//        FROM HRIS_ATTENDANCE_DETAIL
+//        WHERE
+//         ATTENDANCE_DT BETWEEN   TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND   TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
+//        GROUP BY EMPLOYEE_ID)CL ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
+//                
+//EOT;
+         
+         $sql = <<<EOT
+                SELECT PL.*,
+         CL.PRESENT,
+         CL.ABSENT,
+         CL.LEAVE,
+         CL.DAYOFF,
+         CL.HOLIDAY,
+         CL.WORK_DAYOFF,
+         CL.WORK_HOLIDAY,
+         CL.NIGHT_SHIFT,
+         CL.C_SHIFT,
+         (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) AS TOTAL
+       FROM
+         (SELECT *
+         FROM
+           (SELECT E.FULL_NAME,
+             AD.EMPLOYEE_ID,
+             E.EMPLOYEE_CODE,
+             CASE
+               WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+               THEN 'PR'
+               ELSE AD.OVERALL_STATUS
+             END AS OVERALL_STATUS,
+             --AD.ATTENDANCE_DT,
+             (AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
+           FROM HRIS_ATTENDANCE_DETAIL AD
+           LEFT JOIN HRIS_MONTH_CODE MC
+           ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
+           JOIN HRIS_EMPLOYEES E
+           ON (E.EMPLOYEE_ID =AD.EMPLOYEE_ID)
+           WHERE MC.MONTH_ID = {$searchQuery['monthCodeId']}
+       {$searchConditon}
+           ) PIVOT (MAX (OVERALL_STATUS) FOR DAY_COUNT IN ({$pivotString})) 
+         ) PL
+       LEFT JOIN
+         (SELECT EMPLOYEE_ID,
+           COUNT(
+           CASE
+             WHEN OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS PRESENT,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'AB'
+             THEN 1
+           END) AS ABSENT,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'LV'
+             THEN 1
+           END) AS LEAVE,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'DO'
+             THEN 1
+           END) AS DAYOFF,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'HD'
+             THEN 1
+           END) AS HOLIDAY,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'WD'
+             THEN 1
+           END) AS WORK_DAYOFF,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'WH'
+             THEN 1
+           END) AS WORK_HOLIDAY,
+           COUNT(
+           CASE 
+           WHEN SHIFT_ID = 35 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS NIGHT_SHIFT,
+           COUNT(
+           CASE 
+           WHEN SHIFT_ID = 32 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS C_SHIFT
+         FROM HRIS_ATTENDANCE_DETAIL
+         WHERE ATTENDANCE_DT BETWEEN TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
+         GROUP BY EMPLOYEE_ID
+         )CL
+       ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
+                 
 EOT;
          
 //         echo $sql;

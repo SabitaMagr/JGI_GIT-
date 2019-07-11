@@ -115,10 +115,11 @@ class TravelRequest extends HrisController {
             'ad' => 'Advance'
         );
         $transportTypes = array(
-            'AP' => 'Aero Plane',
+            'AP' => 'Aeroplane',
             'OV' => 'Office Vehicles',
             'TI' => 'Taxi',
-            'BS' => 'Bus'
+            'BS' => 'Bus',
+            'F'  => 'On Foot'
         );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,

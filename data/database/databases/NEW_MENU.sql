@@ -1232,5 +1232,43 @@ INTO HRIS_MENUS
     'Y'
   );
 
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Overall Overtime Report',
+    280,
+    NULL,
+    'overtime-report',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-list-alt',
+    'overtimeReport',
+    select max(menu_index)+1  from hris_menus where lower(ROUTE) like '%overtime-report%',
+    NULL,
+    NULL,
+    'Y'
+  );
+
 
 

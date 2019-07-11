@@ -50,15 +50,15 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-    document.pushLeaveFileLink = '<?php echo $this->url('leaveapply', ['action' => 'pushLeaveFileLink']); ?>';
-    document.uploadUrl = '<?= $this->url('leaveapply', ['action' => 'fileUpload']); ?>';
+    document.pushLeaveFileLink = '<?php echo $this->url('leaverequest', ['action' => 'pushLeaveFileLink']); ?>';
+    document.uploadUrl = '<?= $this->url('leaverequest', ['action' => 'fileUpload']); ?>';
     document.wsPullLeaveDetailWidEmployeeId = '<?= $this->url("leaverequest", ["action" => "pullLeaveDetailWidEmployeeId"]) ?>';
     document.wsPullLeaveDetail = '<?= $this->url("leaverequest", ["action" => "pullLeaveDetail"]) ?>';
     document.wsFetchAvailableDays = '<?= $this->url("leaverequest", ["action" => "fetchAvailableDays"]) ?>';
     document.wsValidateLeaveRequest = '<?= $this->url("leaverequest", ["action" => "validateLeaveRequest"]) ?>';
     document.subLeaveReference = '<?=$subLeaveReference?>';
     document.subLeaveMaxDays = '<?=$subLeaveMaxDays?>';
-    document.wsRequiredDaysForDocument = '<?= $this->url("leaverequest", ["action" => "validateRequiredDaysForDocument"]) ?>';
+
 </script>
 
 <div class="row margin-top-20" >

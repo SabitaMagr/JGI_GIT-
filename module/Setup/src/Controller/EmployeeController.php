@@ -171,7 +171,7 @@ class EmployeeController extends HrisController {
     public function editAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         $tab = (int) $this->params()->fromRoute('tab', 1);
-
+//echo $tab; die;
         if (11 === $tab) {
             $this->flashmessenger()->addMessage("Employee Successfully Submitted!!!");
             return $this->redirect()->toRoute('employee', ['action' => 'index']);
@@ -1019,11 +1019,11 @@ class EmployeeController extends HrisController {
     public function setupEmployeeAction() {
         $id = (int) $this->params()->fromRoute("id", 0);
         if ($id === 0) {
-            return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]);
+            return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 11]);
         }
 
         $this->repository->setupEmployee($id);
-        return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 10]);
+        return $this->redirect()->toRoute('employee', ['action' => 'edit', 'id' => $id, 'tab' => 11]);
     }
 
     public function districtAction() {

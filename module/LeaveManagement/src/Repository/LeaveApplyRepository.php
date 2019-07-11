@@ -76,11 +76,5 @@ class LeaveApplyRepository implements RepositoryInterface {
         // TODO: Implement delete() method.
     }
     
-     public function fetchDaysForDocs($leaveId){
-        $sql = "SELECT DOCS_COMP_DAYS FROM HRIS_LEAVE_MASTER_SETUP WHERE LEAVE_ID = {$leaveId}";
-        $statement = $this->adapter->query($sql);
-        $result=$statement->execute();
-        return Helper::extractDbData($result);
-    }
 
 }

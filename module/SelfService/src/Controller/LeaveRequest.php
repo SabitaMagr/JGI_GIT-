@@ -311,23 +311,5 @@ class LeaveRequest extends HrisController {
         }
     }
     
-    public function validateRequiredDaysForDocumentAction() {
-        try {
-            $request = $this->getRequest();
-            if ($request->isPost()) {
-                $postedData = $request->getPost();
-                $leaveApplyRepository = new LeaveApplyRepository($this->adapter);
-                $leaveId = $postedData['leaveId'];
-                $leaveDetail = $leaveApplyRepository->fetchDaysForDocs($leaveId);
-                                
-                return new CustomViewModel(['success' => true, 'data' => $leaveDetail, 'error' => '']);
-            } else {
-                throw new Exception("The request should be of type post");
-            }
-        } catch (Exception $e) {
-            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-        }
-            
-    }
 
 }
