@@ -99,10 +99,11 @@ class TravelApproveController extends HrisController {
             array_push($expenseDtlList, $row);
         }
         $transportType = [
-            "AP" => "Aero Plane",
+            "AP" => "Aeroplane",
             "OV" => "Office Vehicles",
             "TI" => "Taxi",
-            "BS" => "Bus"
+            "BS" => "Bus",
+            "F"  => "On Foot"
         ];
         $numberInWord = new NumberHelper();
         $totalAmountInWords = $numberInWord->toText($totalAmount);

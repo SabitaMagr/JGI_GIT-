@@ -171,7 +171,7 @@ class EmployeeController extends HrisController {
     public function editAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         $tab = (int) $this->params()->fromRoute('tab', 1);
-
+//echo $tab; die;
         if (11 === $tab) {
             $this->flashmessenger()->addMessage("Employee Successfully Submitted!!!");
             return $this->redirect()->toRoute('employee', ['action' => 'index']);

@@ -101,7 +101,7 @@ class Cron extends AbstractActionController {
         $msg->setSubject($subject);
         $msg->setBody($body);
         $msg->setTo($to);
-//        EmailHelper::sendEmail($msg);
+        EmailHelper::sendEmail($msg);
     }
 
 }

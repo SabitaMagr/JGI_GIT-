@@ -155,5 +155,10 @@
                 app.showMessage(error, 'error');
             }); 
         });
+        
+        $("#reset").on('click', function () {
+            $(".form-control").val("");
+            $("#exparamsId").val("");
+        });
     }); 
 })(window.jQuery, window.app);

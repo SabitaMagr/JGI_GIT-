@@ -25,4 +25,19 @@ class AuthenticationRepository {
         return Helper::extractDBData($result);
     }
 
+    public function fetchWithAuthenticate($username, $password) {
+        $sql = "
+            SELECT U.EMPLOYEE_ID, 
+            E.FULL_NAME 
+            FROM HRIS_USERS U 
+            JOIN HRIS_EMPLOYEES E 
+            ON (U.EMPLOYEE_ID = E.EMPLOYEE_ID) 
+            WHERE U.USER_NAME = '{$username}' 
+            AND FN_DECRYPT_PASSWORD(PASSWORD) = '{$password}'
+            ";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDBData($result);
+    }
+
 }

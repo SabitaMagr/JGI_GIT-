@@ -99,6 +99,8 @@ class LeaveRequestRepository implements RepositoryInterface {
                   LA.FISCAL_YEAR            AS FISCAL_YEAR,
                   LA.FISCAL_YEAR_MONTH_NO   AS FISCAL_YEAR_MONTH_NO,
                   LA.LEAVE_ID               AS LEAVE_ID,
+                  L.DOCUMENT_REQUIRED       AS DOCUMENT_REQUIRED,
+                  L.DOCS_COMP_DAYS          AS DOCS_COMP_DAYS,
                   L.LEAVE_CODE              AS LEAVE_CODE,
                   INITCAP(L.LEAVE_ENAME)    AS LEAVE_ENAME,
                   L.ALLOW_HALFDAY           AS ALLOW_HALFDAY,
@@ -427,5 +429,6 @@ and Sub_Ref_Id is not null
         $result=$statement->execute();
         return Helper::extractDbData($result);
     }
+    
 
 }

@@ -31,6 +31,8 @@ $requestedAmount = $form->get('requestedAmount');
 $remarks = $form->get('remarks');
 $recommendedRemarks = $form->get('recommendedRemarks');
 $approvedRemarks = $form->get('approvedRemarks');
+$noOfDays = $form->get('noOfDays');
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'SUBMIT');
 $form->setAttribute('action', '');
@@ -156,6 +158,17 @@ print $this->form()->openTag($form);
                                 </div>
                             </div>     
                         </div>     
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div
+                            class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($noOfDays); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($noOfDays); ?>
+                            <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
 

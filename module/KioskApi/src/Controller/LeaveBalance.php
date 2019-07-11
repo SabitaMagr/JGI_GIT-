@@ -23,8 +23,8 @@ class LeaveBalance extends AbstractActionController {
         try {
             $request = $this->getRequest();
 
-            $this->employeeId = $request->getHeader('Employee-Id')->getFieldValue();
-            
+            $this->employeeId = $request->getHeader('EmployeeId')->getFieldValue();
+//            $this->employeeId = 728;
             $requestType = $request->getMethod();
 
             $responseData = [];

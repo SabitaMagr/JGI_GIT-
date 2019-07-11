@@ -39,6 +39,9 @@ $recommendedRemarks->setAttributes(['required' => 'true']);
 $approvedRemarks = $form->get('approvedRemarks');
 $approvedRemarks->setAttributes(['required' => 'true']);
 
+$noOfDays = $form->get('noOfDays');
+$noOfDays->setAttributes(['disabled' => "disabled"]);
+
 $submit = $form->get('submit');
 $submit->setAttribute('value', 'Approve');
 $submit->setAttribute('id', 'approve');
@@ -225,6 +228,17 @@ print $this->form()->openTag($form);
                             <?php print $this->formElement($requestedType); ?>
                             <?php print $this->formElementErrors()->render($requestedType, ['class' => 'help-block']); ?>
                         </div> 
+                    </div>
+                    
+                    <div class="col-sm-4">
+                        <div
+                            class="form-group required <?= empty($noOfDays->getMessages()) ? "" : "error" ?>">
+                                <?php print $this->formLabel($noOfDays); ?>
+                            <span class="required" aria-required="true">*</span>
+                            <?php print $this->formElement($noOfDays); ?>
+                            <span id="errorMsg" style="font-size:11px; color:red;"></span>
+                        </div>
+                        <?php print $this->formElementErrors()->render($noOfDays, ['class' => 'help-block error']); ?>
                     </div>
                 </div>
 

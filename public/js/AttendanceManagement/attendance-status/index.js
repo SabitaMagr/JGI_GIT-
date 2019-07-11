@@ -99,7 +99,7 @@
 
             var selectedValues = [];
             for (var i in list) {
-                selectedValues.push({id: list[i][pk], action: action});
+                selectedValues.push({id: list[i][pk], action: action, status: list[i]['STATUS'] });
             }
             app.bulkServerRequest(document.bulkLink, selectedValues, function () {
                 $search.trigger('click');
@@ -108,6 +108,9 @@
             });
         });
 
+        $("#reset").on("click", function () {
+            $(".form-control").val("");
+        });
     });
 })(window.jQuery, window.app);
 

@@ -310,5 +310,6 @@ class LeaveRequest extends HrisController {
             return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+    
 
 }

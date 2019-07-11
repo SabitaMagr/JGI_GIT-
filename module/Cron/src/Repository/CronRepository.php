@@ -52,7 +52,7 @@ class CronRepository {
     }
 
     public function fetchAllAttendanceIp() {
-        $sql = "SELECT DISTINCT IP_ADDRESS as IP_ADDRESS from ITNEPAL_HRIS_APR2.HRIS_ATTENDANCE where ATTENDANCE_DT = TRUNC(SYSDATE-0)";
+        $sql = "SELECT DISTINCT IP_ADDRESS as IP_ADDRESS from HRIS_ATTENDANCE where ATTENDANCE_DT = TRUNC(SYSDATE-0)";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

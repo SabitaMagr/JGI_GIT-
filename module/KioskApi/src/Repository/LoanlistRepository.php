@@ -15,7 +15,7 @@ class LoanlistRepository {
 
     public function fetchLoanList($employeeId) {
         $sql = "
-            SELECT LR.LOAN_ID,
+            SELECT DISTINCT LR.LOAN_ID,
             E.FULL_NAME,
             LMS.LOAN_NAME
             FROM HRIS_EMPLOYEE_LOAN_REQUEST LR

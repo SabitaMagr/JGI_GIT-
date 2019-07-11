@@ -18,7 +18,7 @@ class PaysheetRepository {
            select * from HRIS_SALARY_SHEET_EMP_DETAIL
            where employee_id = {$employeeId}
                and end_date = (select max(end_date) from HRIS_SALARY_SHEET_EMP_DETAIL
-                                    where employee_id={$employeeId})
+                                    where employee_id={$employeeId}) AND ROWNUM = 1
             ";
             
         $statement = $this->adapter->query($sql);

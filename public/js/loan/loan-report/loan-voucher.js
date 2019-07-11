@@ -74,5 +74,9 @@
         $('#pdfExport').on('click', function () {
             app.exportToPDF($tableContainer, map, "Loan Request List.pdf");
         });
+        
+        $("#reset").on("click", function () {
+            $(".form-control").val("");
+        });
     });
 })(window.jQuery, window.app);

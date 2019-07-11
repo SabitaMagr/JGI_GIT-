@@ -1186,6 +1186,12 @@ window.app = (function ($, toastr, App) {
 
         }
         var kendoConfig = {
+            toolbar: ["excel"],
+            excel: {
+                fileName: "Kendo Export.xlsx",
+                filterable: true,
+                allPages: true
+            },
             height: 500,
             scrollable: true,
             sortable: true,

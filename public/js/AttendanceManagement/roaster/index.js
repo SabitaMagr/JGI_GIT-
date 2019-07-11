@@ -219,7 +219,9 @@
 //            console.log('sdfsdf');
 //            console.log("clicked", e.ctrlKey, e.altKey, e.shiftKey);
 //        });
-
+        $('#reset').on('click', function () {
+            $('.form-control').val("");
+        });
 
     });
 })(window.jQuery, window.app);

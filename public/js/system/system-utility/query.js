@@ -34,7 +34,7 @@
                         columns.push({field: x, title: x, width: 130});
                         map[x] = x;
                     }
-
+                    
                     app.initializeKendoGrid($table, columns);
                     app.renderKendoGrid($table, resData);
 

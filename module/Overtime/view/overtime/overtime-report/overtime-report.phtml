@@ -1,20 +1,23 @@
 <?php
 $this->headLink()
     ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.common.min.css'))
-    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'));
+    ->appendStylesheet($this->basePath('telerik_kendoui/styles/kendo.default.min.css'))
+        ->appendStylesheet($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.css'));
 
 $this->headScript()
     ->appendFile($this->basePath('jszip/dist/jszip.min.js'))
-    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'));
+    ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
+        ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
+->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 $this->headScript()->appendFile($this->basePath('js/search.js'));
-$this->headScript()->appendFile($this->basePath('js/overtime/report/index.js'));
+$this->headScript()->appendFile($this->basePath('js/overtime/report/overtime-report.js'));
 
 ?>
 <script>
+    document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
-    window.data =<?php echo $data; ?>;
-    document.getSearchDataLink = data.getSearchDataLink;
+    document.getOvertimeReportLink = "<?php echo $this->url('overtime-report', ['action' => 'overtimeReport']);?>";
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\overtime-report')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -91,18 +94,20 @@ $this->headScript()->appendFile($this->basePath('js/overtime/report/index.js'));
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-2">
-                        <label>&nbsp;</label>
-                        <select class="form-control" id="fiscalYearId" >
-                        </select>
-                    </div>
-                    <div class="col-sm-2">
-                        <label>&nbsp;</label>
-                        <select class="form-control" id="monthId" >
-                        </select>
-                    </div>
-                </div>
+                <div class="row margin-top-10">
+            <div class="col-sm-2">
+                <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
+            </div>
+            <div class="col-sm-2">
+                <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control" placeholder="From Date Nepali"/>
+            </div>
+            <div class="col-sm-2">
+                <input type="text"  id="toDate" name="toDate"  class="form-control" placeholder="To Date"/>
+            </div>
+            <div class="col-sm-2">
+                <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
+            </div>
+        </div>
                 <div class="row">
                     <div class="col-sm-12">
                         <button id="reset" class="btn default btn-sm pull-right hris-filter-reset-btn hris-reset">
@@ -153,7 +158,6 @@ $this->headScript()->appendFile($this->basePath('js/overtime/report/index.js'));
                     <div class="col-sm-12">
                         <div id="table">
                         </div>
-
                     </div>
                 </div>
             </div>
