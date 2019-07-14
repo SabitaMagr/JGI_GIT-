@@ -40,23 +40,48 @@ class PayrollReportRepo implements RepositoryInterface {
         $data['previous'] = $this->varianceColumnsPre();
         $data['current'] = $this->varianceColumnsCur();
         $data['difference'] = $this->varianceColumnsDif();
+        $data['addition'] = $this->varianceColumnsAddi();
         return $data;
     }
 
     public function varianceColumnsPre() {
-        $sql = "select 'V'||Variance_Id||'_P'  as VARIANCE,VARIANCE_NAME from Hris_Variance where status='E' and Show_Default='Y' AND VARIABLE_TYPE='V' ";
+        $sql = "select 'V'||Variance_Id||'_P'  as VARIANCE,VARIANCE_NAME from Hris_Variance where status='E' and Show_Default='Y' AND VARIABLE_TYPE='V'  order by order_no asc ";
         $data = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($data);
     }
 
     public function varianceColumnsCur() {
-        $sql = "select 'V'||Variance_Id||'_C'  as VARIANCE,VARIANCE_NAME from Hris_Variance where status='E' and Show_Default='Y' AND VARIABLE_TYPE='V' ";
+        $sql = "select 'V'||Variance_Id||'_C'  as VARIANCE,VARIANCE_NAME from Hris_Variance where status='E' and Show_Default='Y' AND VARIABLE_TYPE='V'  order by order_no asc ";
         $data = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($data);
     }
 
     public function varianceColumnsDif() {
-        $sql = "select 'V'||Variance_Id||'_D'  as VARIANCE,VARIANCE_NAME from Hris_Variance where status='E' and Show_Default='Y' and Show_Difference='Y' AND VARIABLE_TYPE='V' ";
+        $sql = "select 'V'||Variance_Id||'_D'  as VARIANCE,VARIANCE_NAME from Hris_Variance where status='E' and Show_Default='Y' and Show_Difference='Y' AND VARIABLE_TYPE='V' order by order_no asc ";
+        $data = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($data);
+    }
+    
+    public function varianceColumnsAddi() {
+        $sql = "SELECT
+variance_id
+,
+    'V'
+     || variance_id
+     || '_P' AS PREV,
+      'V'
+     || variance_id
+     || '_C' AS CURR
+FROM
+    hris_variance
+WHERE
+        status = 'E'
+    AND
+        show_default = 'Y'
+    AND
+        is_sum = 'Y'
+    AND
+        variable_type = 'V'";
         $data = EntityHelper::rawQueryResult($this->adapter, $sql);
         return Helper::extractDbData($data);
     }
@@ -77,7 +102,7 @@ class PayrollReportRepo implements RepositoryInterface {
         $employeeId = isset($data['employeeId']) ? $data['employeeId'] : -1;
         $monthId = $data['monthId'];
 
-        $searchConditon = EntityHelper::getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
+        $searchConditon = EntityHelper::getSearchConditonPayroll($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId, null, $functionalTypeId);
 
         $sql = "SELECT 
             E.FULL_NAME,
@@ -164,7 +189,7 @@ class PayrollReportRepo implements RepositoryInterface {
                 LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=VARY.EMPLOYEE_ID)
                 LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
                 LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
-            WHERE 1=1 {$searchConditon}
+            WHERE 1=1 AND VARY.EMPLOYEE_ID IS NOT NULL {$searchConditon}
             ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }

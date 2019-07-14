@@ -48,6 +48,15 @@ class Variance {
     public $showDifference;
     
     /**
+     * @Annotation\Type("Zend\Form\Element\Radio")
+     * @Annotation\Filter({"name":"StringTrim","name":"StripTags"})
+     * @Annotation\Options({"value_options":{"Y":"Yes","N":"No"},"label":" Calc Sum"})
+     * @Annotation\Required(false)
+     * @Annotation\Attributes({"id":"isSum","value":"N"})
+     */
+    public $isSum;
+    
+    /**
      * @Annotation\Type("Zend\Form\Element\Select")
      * @Annotation\Required({"required":"fa"})
      * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
