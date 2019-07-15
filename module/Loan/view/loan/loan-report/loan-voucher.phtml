@@ -83,7 +83,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div class="row margin-top-10">
             <div class="col-sm-2">
                 <label>Employee</label>
-                <select required class="form-control" name="employee" id="employeeId">
+                <select multiple="multiple" required class="form-control" name="employee" id="employeeId">
                 </select>
             </div>
 
@@ -116,16 +116,15 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <label>To Date Nepali</label>
                 <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
             </div>
-
         </div>
 
         <div class="row margin-top-10">   
             <div class=" col-sm-offset-8 col-sm-4">
-                <div style="float: left; display: none;" id="summary1">
+                <div style="float: left;" id="summary1">
                     <label for="summary">Summary</label>
                     <input type="checkbox" id="summary">
                     </div>
-                <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
+                <button id="reset" class="btn default btn-sm pull-right">
                     Reset
                     <i class="fa fa-refresh"></i>
                 </button>
