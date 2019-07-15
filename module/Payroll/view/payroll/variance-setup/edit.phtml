@@ -6,6 +6,7 @@ $varianceName = $form->get('varianceName');
 $payId = $form->get('payId');
 $showDefault = $form->get('showDefault');
 $showDifference = $form->get('showDifference');
+$isSum = $form->get('isSum');
 $variableType = $form->get('variableType');
 $variableType->setValueOptions($variableTypeList);
 $orderNo = $form->get('orderNo');
@@ -101,6 +102,16 @@ $form->setAttribute('action', $this->url('varianceSetup', ['action' => 'edit', '
                 </div>
                 
                 <div class="row">
+                    <div class="col-sm-4 col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <?php print $this->formLabel($isSum); ?>
+                            <div class="md-radio-inline">
+                                <?php $customRenderer($isSum); ?>
+                            </div>
+                        </div>
+
+                    </div>
+                    
                     <div class="col-sm-12 col-md-6 col-lg-4">
                         <div class="form-group">
                             <?php print $this->formLabel($remarks); ?>

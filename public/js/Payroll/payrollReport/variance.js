@@ -2,6 +2,7 @@
     'use strict';
     $(document).ready(function () {
         $('Select').select2();
+        console.log(document.columnList);
 
         var monthList = null;
         var $fiscalYear = $('#fiscalYearId');
@@ -21,8 +22,35 @@
 
 
         function initKendoGrid(data){
+            let varianceData=[];
+            
+            $.each(data, function (index, value)
+            {
+                let tempPreTot=0;
+                let tempCurTot=0;
+                $.each(document.columnList.addition, function (i, v)
+                {
+                    let tempPreVal=(value[v['PREV']])?value[v['PREV']]:0;
+                    let tempCurVal=(value[v['CURR']])?value[v['CURR']]:0;
+                    tempPreTot+=parseFloat(tempPreVal);
+                    tempCurTot+=parseFloat(tempCurVal);
+                });
+                data[index]['P_TOTAL']=tempPreTot;
+                data[index]['C_TOTAL']=tempCurTot;
+                data[index]['D_TOTAL']=tempPreTot-tempCurTot;
+                
+                if ((tempPreTot - tempCurTot) != 0 ||
+                value['ADDRESS_REMARKS'] != "Not Changed" || value['ACCOUNT_REMARKS'] != "Not Changed")
+                {
+                    varianceData.push(value);
+                }
+
+            });
+            
             let dataSchemaCols = {};
             let aggredCols = [];
+            previousColumns=[];
+            currentColumns=[];
             var columns = [
                 {field: "EMPLOYEE_CODE", title: "Code", width: 80, locked: true},
                 {field: "FULL_NAME", title: "Employee", width: 120, locked: true},
@@ -37,39 +65,73 @@
                     field: value['VARIANCE'],
                     title: value['VARIANCE_NAME'],
                     width: 100,
+//                    aggregates: ["sum"],
+//                    footerTemplate: "#=sum||''#"
+                });
+                map[value['VARIANCE']] = 'Previous_' + value['VARIANCE_NAME'];
+//                dataSchemaCols[value['VARIANCE']] = {type: "number"};
+//                aggredCols.push({field: value['VARIANCE'], aggregate: "sum"});
+            });
+            
+             previousColumns.push({
+                    field: "P_TOTAL",
+                    title: "Total",
+                    width: 100,
                     aggregates: ["sum"],
                     footerTemplate: "#=sum||''#"
                 });
-                map[value['VARIANCE']] = 'Previous_' + value['VARIANCE_NAME'];
-                dataSchemaCols[value['VARIANCE']] = {type: "number"};
-                aggredCols.push({field: value['VARIANCE'], aggregate: "sum"});
-            });
+                map["P_TOTAL"] = 'Previous_' + 'Total';
+                dataSchemaCols["P_TOTAL"] = {type: "number"};
+                aggredCols.push({field: "P_TOTAL", aggregate: "sum"});
     
             $.each(document.columnList.current, function (index, value) {
                 currentColumns.push({
                     field: value['VARIANCE'],
                     title: value['VARIANCE_NAME'],
                     width: 100,
+//                    aggregates: ["sum"],
+//                    footerTemplate: "#=sum||''#"
+                });
+//                map[value['VARIANCE']] = 'Current_' + value['VARIANCE_NAME'];
+//                dataSchemaCols[value['VARIANCE']] = {type: "number"};
+//                aggredCols.push({field: value['VARIANCE'], aggregate: "sum"});
+            });
+            
+            currentColumns.push({
+                    field: "C_TOTAL",
+                    title: "Total",
+                    width: 100,
                     aggregates: ["sum"],
                     footerTemplate: "#=sum||''#"
                 });
-                map[value['VARIANCE']] = 'Current_' + value['VARIANCE_NAME'];
-                dataSchemaCols[value['VARIANCE']] = {type: "number"};
-                aggredCols.push({field: value['VARIANCE'], aggregate: "sum"});
-            });
+                map["C_TOTAL"] = 'Previous_' + 'Total';
+                dataSchemaCols["C_TOTAL"] = {type: "number"};
+                aggredCols.push({field: "C_TOTAL", aggregate: "sum"});
     
             $.each(document.columnList.difference, function (index, value) {
                 columns.push({
                     field: value['VARIANCE'],
                     title: value['VARIANCE_NAME'],
                     width: 100,
+//                    aggregates: ["sum"],
+//                    footerTemplate: "#=sum||''#"
+                });
+//                map[value['VARIANCE']] = 'Difference_' + value['VARIANCE_NAME'];
+//                dataSchemaCols[value['VARIANCE']] = {type: "number"};
+//                aggredCols.push({field: value['VARIANCE'], aggregate: "sum"});
+            });
+            
+            columns.push({
+                    field: "D_TOTAL",
+                    title: "Variance",
+                    width: 100,
                     aggregates: ["sum"],
                     footerTemplate: "#=sum||''#"
                 });
-                map[value['VARIANCE']] = 'Difference_' + value['VARIANCE_NAME'];
-                dataSchemaCols[value['VARIANCE']] = {type: "number"};
-                aggredCols.push({field: value['VARIANCE'], aggregate: "sum"});
-            });
+                map["D_TOTAL"] = 'Variance';
+                dataSchemaCols["D_TOTAL"] = {type: "number"};
+                aggredCols.push({field: "D_TOTAL", aggregate: "sum"});
+            
     
             map['PRE_ADDRESS'] = 'Previous Address';
             map['CUR_ADDRESS'] = 'Address';
@@ -94,7 +156,7 @@
                     allPages: true
                 },
                 dataSource: {
-                    data: data,
+                    data: varianceData,
                     schema: {
                         model: {
                             fields: dataSchemaCols

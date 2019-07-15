@@ -21,6 +21,7 @@ class VarianceSetup extends Model {
     CONST DELETED_BY = "DELETED_BY";
     CONST REMARKS = "REMARKS";
     CONST ORDER_NO = "ORDER_NO";
+    CONST IS_SUM = "IS_SUM";
 
     public $varianceId;
     public $varianceName;
@@ -36,6 +37,7 @@ class VarianceSetup extends Model {
     public $deletedBy;
     public $remarks;
     public $orderNo;
+    public $isSum;
     
     public $mappings = [
         'varianceId' => self::VARIANCE_ID,
@@ -51,7 +53,8 @@ class VarianceSetup extends Model {
         'deletedDt' => self::DELETED_DT,
         'deletedBy' => self::DELETED_BY,
         'remarks' => self::REMARKS,
-        'orderNo' => self::ORDER_NO
+        'orderNo' => self::ORDER_NO,
+        'isSum' => self::IS_SUM
     ];
 
 }
