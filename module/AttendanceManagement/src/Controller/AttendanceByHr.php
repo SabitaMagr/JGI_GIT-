@@ -306,4 +306,22 @@ class AttendanceByHr extends HrisController {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
+
+    public function dailyPerformanceReportAction() {
+        $request = $this->getRequest();
+        $data = $request->getPost();
+
+        if($request->isPost()){
+            $reportData = Helper::extractDbData($this->repository->fetchDailyPerformanceReport($data));
+            return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+        }
+
+        return Helper::addFlashMessagesToArray($this, [
+                'status' => $this->getStatusSelect(),
+                'presentStatus' => $this->getPresentStatusSelect(),
+                'searchValues' => EntityHelper::getSearchData($this->adapter),
+                'acl' => $this->acl, 
+                'employeeDetail' => $this->storageData['employee_detail'],
+        ]);
+    }
 }
