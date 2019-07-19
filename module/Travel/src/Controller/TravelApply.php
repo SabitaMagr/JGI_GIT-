@@ -17,14 +17,15 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
+use Application\Controller\HrisController;
 
-class TravelApply extends AbstractActionController {
+class TravelApply extends HrisController {
 
-    private $form;
-    private $adapter;
-    private $travelRequesteRepository;
-    private $employeeId;
-    private $preference;
+//    private $form;
+//    private $adapter;
+//    private $travelRequesteRepository;
+//    private $employeeId;
+//    private $preference;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
@@ -34,11 +35,11 @@ class TravelApply extends AbstractActionController {
         $this->preference = $auth->getStorage()->read()['preference'];
     }
 
-    public function initializeForm() {
-        $builder = new AnnotationBuilder();
-        $form = new TravelRequestForm();
-        $this->form = $builder->createForm($form);
-    }
+//    public function initializeForm(string $formClass) {
+//        $builder = new AnnotationBuilder();
+//        $form = new TravelRequestForm();
+//        $this->form = $builder->createForm($form);
+//    }
 
     public function indexAction() {
         return $this->redirect()->toRoute("travelStatus");
@@ -86,7 +87,7 @@ class TravelApply extends AbstractActionController {
      */
 
     public function addAction() {
-        $this->initializeForm();
+        $this->initializeForm(TravelRequestForm::class);
         $request = $this->getRequest();
 
         $model = new TravelRequestModel();
@@ -98,8 +99,9 @@ class TravelApply extends AbstractActionController {
                 $model->exchangeArrayFromForm($this->form->getData());
                 $model->travelId = ((int) Helper::getMaxId($this->adapter, TravelRequestModel::TABLE_NAME, TravelRequestModel::TRAVEL_ID)) + 1;
                 $model->requestedDate = Helper::getcurrentExpressionDate();
-                $model->status = 'RQ';
+//                $model->status = 'RQ';
                 $model->deductOnSalary = 'Y';
+                $model->status = ($postData['applyStatus'] == 'AP') ? 'AP' : 'RQ';
                 $this->travelRequesteRepository->add($model);
                 $this->flashmessenger()->addMessage("Travel Request Successfully added!!!");
 
@@ -153,13 +155,20 @@ class TravelApply extends AbstractActionController {
             'OV' => 'Office Vehicles',
             'TI' => 'Taxi',
             'BS' => 'Bus',
-            'F'  => 'On Foot'
+            'OF'  => 'On Foot'
         );
+        
+        $applyOptionValues = [
+            'RQ' => 'Pending',
+            'AP' => 'Approved'
+        ];
+        $applyOption = $this->getSelectElement(['name' => 'applyStatus', 'id' => 'applyStatus', 'class' => 'form-control', 'label' => 'Type'], $applyOptionValues);
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'requestTypes' => $requestType,
                     'transportTypes' => $transportTypes,
+                    'applyOption' => $applyOption,
                     'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE", "FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FULL_NAME", "ASC", "-", false, true),
         ]);
     }
