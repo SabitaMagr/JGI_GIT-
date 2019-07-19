@@ -178,19 +178,25 @@ class LeaveBalanceRepository {
         $sql = "
            SELECT LA.*,E.FULL_NAME, E.EMPLOYEE_CODE AS EMPLOYEE_CODE FROM (SELECT *
             FROM
-              (SELECT EMPLOYEE_ID,
-              PREVIOUS_YEAR_BAL,
-                LEAVE_ID,
-                TOTAL_DAYS AS TOTAL,
-                BALANCE,
-                (TOTAL_DAYS+PREVIOUS_YEAR_BAL-BALANCE) AS TAKEN
-              FROM HRIS_EMPLOYEE_LEAVE_ASSIGN
-              WHERE EMPLOYEE_ID IN
+              (SELECT 
+              HA.EMPLOYEE_ID,
+                    HA.PREVIOUS_YEAR_BAL,
+                    HA.LEAVE_ID,
+                    HA.TOTAL_DAYS AS TOTAL,
+                    HA.BALANCE,
+                    HS.ENCASH_DAYS as ENCASHED,
+                    ( ha.total_days + ha.previous_year_bal - ha.balance ) AS taken
+              FROM 
+              HRIS_EMPLOYEE_LEAVE_ASSIGN HA
+                    left JOIN 
+                    HRIS_EMP_SELF_LEAVE_CLOSING HS
+                    on (HA.EMPLOYEE_ID = HS.EMPLOYEE_ID and HA.leave_id = HS.leave_id)
+              WHERE ha.EMPLOYEE_ID IN
                 ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 AND E.STATUS='E' {$searchConditon}
                 ){$monthlyCondition}
-              ) PIVOT (MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
+              ) PIVOT (sum ( ENCASHED ) AS ENCASHED, MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
             ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID) 
-";
+"; 
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
