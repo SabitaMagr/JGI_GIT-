@@ -178,7 +178,7 @@ class TravelStatus extends HrisController {
             "OV" => "Office Vehicles",
             "TI" => "Taxi",
             "BS" => "Bus",
-            "F"  => "On Foot"
+            "OF"  => "On Foot"
         ];
         $numberInWord = new NumberHelper();
         $totalAmountInWords = $numberInWord->toText($totalAmount);

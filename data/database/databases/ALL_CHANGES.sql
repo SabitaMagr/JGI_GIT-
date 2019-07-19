@@ -1408,6 +1408,7 @@ values ('COMPANY_ACCOUNT_NO','0101011126901');
 
 
 
+
 -- leave encash lanet
 
 CREATE TABLE "HRIS_EMP_SELF_LEAVE_CLOSING" 
@@ -1427,3 +1428,8 @@ CREATE TABLE "HRIS_EMP_SELF_LEAVE_CLOSING"
 
 
 -- leave encash
+=======
+alter table HRIS_EMP_TRAVEL_EXPENSE_DTL modify TRANSPORT_TYPE 
+char(2) check (TRANSPORT_TYPE IN ('AP','OV','TI','BS','OF'));
+
+
