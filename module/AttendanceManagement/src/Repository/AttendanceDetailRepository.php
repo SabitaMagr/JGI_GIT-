@@ -940,4 +940,47 @@ FROM (SELECT
                 ";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
+
+    public function fetchDailyPerformanceReport($data){
+      $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
+
+      $fromDate = $data['fromDate'];
+      $toDate = $data['toDate'];
+
+      $sql = "select
+            e.full_name as full_name,
+            e.employee_code as employee_code,
+            D.Department_Name as department_name
+            ,to_char(s.start_time,'HH:MI AM') as shift_start_time
+            ,to_char(s.end_time,'HH:MI AM') as shift_end_time
+            ,min_to_hour(s.total_working_hr) as total_working_hr
+            ,min_to_hour(s.actual_working_hr) as actual_working_hr
+            , case when ad.ot_minutes>0
+            then
+            trunc(ad.ot_minutes/60,2)
+            else
+            0
+            end
+            as OT
+            ,ad.employee_id,
+            ad.Attendance_Dt,
+            to_char(ad.in_time,'HH:MI AM') as in_time,
+            lunch_in_time(ad.employee_id,ad.Attendance_Dt,ad.Shift_Id) as lunch_in_time
+            ,lunch_out_time(ad.employee_id,ad.Attendance_Dt,ad.Shift_Id) as lunch_out_time
+            , to_char(ad.Out_Time,'HH:MI AM') as Out_Time
+            from Hris_Attendance_detail ad 
+            left join hris_shifts s on (s.shift_id=ad.shift_id)
+            left join hris_employees e on (e.employee_id=ad.employee_id)
+            left join Hris_Departments d on (d.department_id=e.department_id)
+            where 
+            ad.Attendance_Dt between ";
+
+      $sql .= $data['fromDate'] == null ? "trunc(sysdate) " : " '$fromDate' "  ; 
+      $sql .= " and ";
+      $sql .= $data['toDate'] == null ? "trunc(sysdate) " : " '$toDate' " ; 
+            
+      $sql .= " {$condition} ";
+
+      return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
 }
