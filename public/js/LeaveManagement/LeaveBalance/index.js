@@ -18,6 +18,7 @@
         columnOptions.push({'VALUES' : '0', 'COLUMNS' : 'Previous'});
         columnOptions.push({'VALUES' : '1', 'COLUMNS' : 'Total'});
         columnOptions.push({'VALUES' : '2', 'COLUMNS' : 'Taken'});
+        columnOptions.push({'VALUES' : '3', 'COLUMNS' : 'Encashed'});
 
         var $options = $('#options');
         app.populateSelect($options, columnOptions, 'VALUES', 'COLUMNS');
@@ -45,6 +46,11 @@
                         {
                             title: 'Total',
                             field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'TOTAL',
+                            width: 100
+                        },
+                        {
+                            title: 'Encashed',
+                            field: 'L' + leaveList[i]['LEAVE_ID'] + '_' + 'ENCASHED',
                             width: 100
                         },
                         {
@@ -84,6 +90,7 @@
                         columnsList.columns.splice(1,1);
                     }
                 }
+                
                 
                 columns.push(columnsList);
 
