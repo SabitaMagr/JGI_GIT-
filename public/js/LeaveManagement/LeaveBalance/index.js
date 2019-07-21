@@ -26,6 +26,7 @@
         var leaveList = document.leaves;
 
         function reinitializeKendo(optionalColumns){
+            console.log('oplist',optionalColumns);
             columns = [
                 {field: "EMPLOYEE_CODE", title: "Code", width: 150, locked: true},
                 {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
@@ -66,6 +67,11 @@
                     ]
                 };
                 
+                
+                console.log('aaa1',optionalColumns.indexOf("0"));
+                console.log('aaa2',optionalColumns.indexOf("1"));
+                console.log('aaa3',optionalColumns.indexOf("2"));
+                
                 if(optionalColumns.indexOf("0") == -1){
                     columnsList.columns.splice(0,1);
                     flag = true;
@@ -80,6 +86,17 @@
                     }
                 }
                 if(optionalColumns.indexOf("2") == -1){
+                    if(flag == true && flag2 == true){
+                        columnsList.columns.splice(0,1);
+                    }
+                    else if(flag == false && flag2 == false){
+                        columnsList.columns.splice(2,1);
+                    }
+                    else{
+                        columnsList.columns.splice(1,1);
+                    }
+                }
+                if(optionalColumns.indexOf("3") == -1){
                     if(flag == true && flag2 == true){
                         columnsList.columns.splice(0,1);
                     }
