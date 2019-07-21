@@ -124,7 +124,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
         }
           $orderByString=EntityHelper::getOrderBy('A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','A.ATTENDANCE_DT DESC ,A.IN_TIME ASC','E.SENIORITY_LEVEL','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
         $sql = "
-               SELECT * FROM (SELECT 
+               SELECT ROWNUM AS SN,Q.* FROM (SELECT 
                   ROWNUM                                           AS R,
                   A.ID                                             AS ID,
                   A.EMPLOYEE_ID                                    AS EMPLOYEE_ID,

@@ -217,6 +217,28 @@
             app.exportToPDF($table, exportMap, "AttendanceList.pdf");
 
         });
+        
+        $('#pdfExportDaily').on('click', function () {
+            app.exportToPDF($table, {
+                'SN':'Sn',
+            'EMPLOYEE_CODE': 'Code',
+            'EMPLOYEE_NAME': ' Name',
+            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
+            'ATTENDANCE_DT': 'Date',
+            'IN_TIME': 'In Time',
+            'OUT_TIME': 'Out Time'}, "DailyAttendance.pdf");
+
+        });
+        $('#excelExportDaily').on('click',function(){
+            app.excelExport($table, {
+                'SN':'Sn',
+            'EMPLOYEE_CODE': 'Code',
+            'EMPLOYEE_NAME': ' Name',
+            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
+            'ATTENDANCE_DT': 'Date',
+            'IN_TIME': 'In Time',
+            'OUT_TIME': 'Out Time'}, "DailyAttendance.xlsx");
+        });
 
         var selectItems = {};
         var $bulkBtnContainer = $('#acceptRejectDiv');
