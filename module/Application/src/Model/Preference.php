@@ -36,6 +36,7 @@ class Preference extends Model {
     public $companyName='';
     public $companyAddress='';
     public $companyAccountNo='';
+    public $leaveEncashMaxDays='500';
     
     CONST ALLOW_SYSTEM_ATTENANCE = "ALLOW_SYSTEM_ATTENDANCE";
     CONST NEED_APPROVAL_FOR_LATE_CHECK_IN = "NEED_APPROVAL_FOR_LATE_CHECK";
@@ -69,6 +70,7 @@ class Preference extends Model {
     CONST COMPANY_NAME="COMPANY_NAME";
     CONST COMPANY_ADDRESS="COMPANY_ADDRESS";
     CONST COMPANY_ACCOUNT_NO="COMPANY_ACCOUNT_NO";
+    CONST LEAVE_ENCASH_MAX_DAYS="LEAVE_ENCASH_MAX_DAYS";
 
     public $mappings = [
         'allowSystemAttendance' => self::ALLOW_SYSTEM_ATTENANCE,
@@ -102,7 +104,8 @@ class Preference extends Model {
         'subLeaveMaxDays' =>self::SUB_LEAVE_MAX_DAYS,
         'companyName' =>self::COMPANY_NAME,
         'companyAddress' =>self::COMPANY_ADDRESS,
-        'companyAccountNo' =>self::COMPANY_ACCOUNT_NO
+        'companyAccountNo' =>self::COMPANY_ACCOUNT_NO,
+        'leaveEncashMaxDays' =>self::LEAVE_ENCASH_MAX_DAYS
     ];
     
 }

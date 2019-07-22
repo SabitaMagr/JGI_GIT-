@@ -157,6 +157,12 @@ class SystemSettingForm {
      */
     public $subLeaveMaxDays;
     
+    /**
+     * @Annotation\Type("Zend\Form\Element\Number")
+     * @Annotation\Options({"label":"leave Encash Max Days"})
+     * @Annotation\Attributes({ "id":"leaveEncashMaxDays", "class":" form-control","min":"0"})
+     */
+    public $leaveEncashMaxDays;
     
     /**
      * @Annotation\Type("Zend\Form\Element\Radio")

@@ -53,7 +53,7 @@ class LeaveCarryForward extends HrisController {
         return $this->redirect()->toRoute("leavecarryforward");
     }
 
-    public function addAction() {  
+    public function addAction() {
         
         $request = $this->getRequest();
         if ($request->isPost()) { 
@@ -80,6 +80,7 @@ class LeaveCarryForward extends HrisController {
         }
 
         return Helper::addFlashMessagesToArray($this, [
+                    'leaveMaxEncash' => $this->preference[leaveEncashMaxDays],
                     'form' => $this->form,
                     'employeeId' => $this->employeeId,
                     'leave' => $this->repository->getLeaveList($this->employeeId),
@@ -107,6 +108,7 @@ class LeaveCarryForward extends HrisController {
         $ad = $details['ENCASH_DAYS']+$balance[0]['BALANCE'];
        
        return $this->stickFlashMessagesTo([
+          'leaveMaxEncash' => $this->preference[leaveEncashMaxDays],
              'form' => $this->form,
             'employeeId' => $this->employeeId,
            'availabledays' => $ad,
