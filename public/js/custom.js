@@ -1163,7 +1163,7 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config) {
+    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config,exportName) {
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1185,10 +1185,15 @@ window.app = (function ($, toastr, App) {
             }
 
         }
+        var excelExportName='HrisExcel.xlsx';
+        if (typeof exportName !== 'undefined' && exportName !== null) {
+            excelExportName=exportName;
+            }
+        console.log(typeof excelExportName);
         var kendoConfig = {
             toolbar: ["excel"],
             excel: {
-                fileName: "Kendo Export.xlsx",
+                fileName: excelExportName,
                 filterable: true,
                 allPages: true
             },

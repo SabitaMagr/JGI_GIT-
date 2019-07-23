@@ -66,6 +66,7 @@
         var map = {
             'EMPLOYEE_CODE': 'Code',
             'FULL_NAME': 'Name',
+            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
             'LEAVE_ENAME': 'Leave',
             'APPLIED_DATE_AD': 'Applied Date(AD)',
             'APPLIED_DATE_BS': 'Applied Date(BS)',

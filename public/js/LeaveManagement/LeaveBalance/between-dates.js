@@ -15,11 +15,12 @@
         function reinitializeKendo(optionalColumns) {
             console.log(optionalColumns);
             var columns = [
-                {field: "EMPLOYEE_CODE", title: "Code", width: 80, locked: true},
-                {field: "FULL_NAME", title: "Employee", width: 120, locked: true},
-                {field: "DEPARTMENT_NAME", title: "Department", width: 120, locked: true},
-                {field: "DESIGNATION_TITLE", title: "Designation", width: 120, locked: true},
-                {field: "POSITION_NAME", title: "Position", width: 120, locked: true},
+                {field: "EMPLOYEE_CODE", title: "Code", width: 70, locked: true},
+                {field: "FULL_NAME", title: "Employee", width: 110, locked: true},
+                {field: "DEPARTMENT_NAME", title: "Department", width: 110, locked: true},
+                {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 110, locked: true},
+                {field: "DESIGNATION_TITLE", title: "Designation", width: 110, locked: true},
+                {field: "POSITION_NAME", title: "Position", width: 100, locked: true},
             ];
              map = {
                 'EMPLOYEE_CODE': 'Code',
@@ -80,7 +81,7 @@
                 }
 
             }
-            app.initializeKendoGrid($table, columns);
+            app.initializeKendoGrid($table, columns,null,null,null,'LeaveTakenBetweenDates.xlsx');
 
         }
         app.searchTable($table, ['EMPLOYEE_CODE', 'FULL_NAME']);
