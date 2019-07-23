@@ -13,15 +13,14 @@ $this->headScript()
     ->appendFile($this->basePath('telerik_kendoui/js/kendo.all.min.js'))
     ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
     ->appendFile($this->basePath('js/nepali-datepicker-ext.js'))
-    ->appendFile($this->basePath('js/AttendanceManagement/by-hr/index.js'));
+    ->appendFile($this->basePath('js/AttendanceManagement/by-hr/daily-performance-report.js'));
 
 ?>
 
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.picUrl = '<?= $this->basePath('img/nobody_m.original.jpg'); ?>';
-    document.pullAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'pullAttendance']); ?>';
-    document.bulkAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'bulkAttendanceWS']); ?>';
+    document.pullAttendanceWS = '<?php echo $this->url('attendancebyhr', ['action' => 'dailyPerformanceReport']); ?>';
     document.pullInOutTimeLink = '<?php echo $this->url('attendancebyhr', ['action' => 'pullInOutTime']); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
@@ -58,11 +57,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <a href="" class="fullscreen" data-original-title="" title=""> </a>
         </div>
         <div class="actions">
-            <?php if ($acl['ALLOW_ADD'] == 'Y'): ?>
-                <a href="<?= $this->url('attendancebyhr', ['action' => 'add']) ?>" class="btn default btn-sm">
-                    <i class="fa fa-plus-square icon-black"></i> New </a>
-            <?php endif; ?>
-
             <div class="btn-group">
                 <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-copy"></i> Tools
@@ -79,18 +73,6 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                         <a href="javascript:;" id="pdfExport">
                             <i class="fa fa-file-pdf-o" ></i> 
                             Export to PDF 
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" id="excelExportDaily">
-                            <i class="fa fa-file-pdf-o" ></i> 
-                            Export to Excel Daily 
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" id="pdfExportDaily">
-                            <i class="fa fa-file-pdf-o" ></i> 
-                            Export to Pdf Daily 
                         </a>
                     </li>
                 </ul>
@@ -192,10 +174,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             </div> 
         </div>
         <div class="row margin-top-10">
-            <div class="col-sm-4">
-                <label><input id="impact_other_days" type="checkbox">Impact Other Days</label>
-            </div>
-            <div class="col-sm-offset-4 col-sm-4">
+            <div class="col-sm-offset-4 col-sm-8">
                 <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
                     Reset
                     <i class="fa fa-refresh"></i>
@@ -208,47 +187,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         </div>
     </div>
 </div> 
-  
 
 <div id="table">
 </div>
-<div style="display: none;" class="row margin-top-20" id="acceptRejectDiv" >
-    <div class="col-sm-2 ">
-        <button id="A" class="btn btn-danger btnApproveReject">Absent</button>
-    </div>
-    <div class="col-sm-2 manualShift">
-        <label>Shift</label>
-        <select id="shiftId" name="shiftId">
-        <option value="0" selected="selected">---</option>
-        <?php foreach($shiftList as $shift){ ?>
-            <option value="<?=$shift['SHIFT_ID']?>"><?=$shift['SHIFT_ENAME']?></option>
-        <?php } ?>
-        </select>
-    </div>
 
-    <div class="col-sm-3 manualTime">
-        <div class="form-group ">
-            <label for="inTime">In Time</label>                            
-            <!--<span class="required" aria-required="true">*</span>-->
-            <div class="input-group dropdown-select">
-                <input type="text" name="inTime" id="inTime" data-format="h&#x3A;mm&#x20;a" data-template="hh&#x20;&#x3A;&#x20;mm&#x20;A" class="form-control" value="">     
-            </div>
-        </div>
-    </div>
-
-    <div class="col-sm-3 manualTime">
-        <div class="form-group ">
-            <label for="outTime">Out Time</label>                            
-            <div class="input-group dropdown-select">
-                <input type="text" name="outTime" id="outTime" data-format="h&#x3A;mm&#x20;a" data-template="hh&#x20;&#x3A;&#x20;mm&#x20;A" class="form-control" value="">    
-            </div>
-        </div>
-    </div>
-
-
-
-    <!-- <div class="col-sm-2 col-sm-offset-8"> -->
-    <div class="col-sm-2 pull-right">
-        <button id="P" class="btn btn-info btnApproveReject pull-right">Present</button>
-    </div>
-</div>

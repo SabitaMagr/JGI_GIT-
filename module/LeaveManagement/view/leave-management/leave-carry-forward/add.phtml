@@ -44,7 +44,7 @@ $form->prepare();
 print $this->form()->openTag($form);
 ?>
 <script>
-   
+    document.leaveMaxEncash = '<?php echo $leaveMaxEncash; ?>';
     document.pushLeaveFileLink = '<?php echo $this->url('leaveapply', ['action' => 'pushLeaveFileLink']); ?>';
     document.uploadUrl = '<?= $this->url('leaveapply', ['action' => 'fileUpload']); ?>';
     document.wsPullLeaveDetailWidEmployeeId = '<?= $this->url("leavecarryforward", ["action" => "pullLeaveDetailWidEmployeeId"]) ?>';

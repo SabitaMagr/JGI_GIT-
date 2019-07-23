@@ -13,46 +13,67 @@ class CronRepository {
         $this->adapter = $adapter;
     }
 
-    public function fetchEmailList() {
-        $sql = "select e.EMAIL_OFFICIAL,ad.ATTENDANCE_DT 
-            from HRIS_EMPLOYEES e 
-            join HRIS_ATTENDANCE_DETAIL ad 
-            on e.EMPLOYEE_ID = ad.EMPLOYEE_ID 
-            where ATTENDANCE_DT=(trunc(sysdate-0)) 
-            and OVERALL_STATUS='AB'";
+    public function fetchAbsentOrLate() {
+        $sql = "SELECT DISTINCT AD.EMPLOYEE_ID,
+  E.FULL_NAME                       AS EMPLOYEE_NAME,
+  TO_CHAR(AD.IN_TIME, 'HH:MM AM')   AS IN_TIME,
+  TO_CHAR(S.START_TIME, 'HH:MM AM') AS START_TIME,
+  TO_CHAR(AD.OUT_TIME, 'HH:MM AM')  AS OUT_TIME,
+  TO_CHAR(S.END_TIME, 'HH:MM AM')   AS END_TIME,
+  AD.OVERALL_STATUS,
+  AD.LATE_STATUS,
+  E.EMAIL_OFFICIAL AS EMPLOYEE_MAIL,
+  E.BRANCH_ID,
+  B.BRANCH_MANAGER_ID,
+  EE.FULL_NAME      AS MANAGER_NAME,
+  EE.EMAIL_OFFICIAL AS MANAGER_MAIL,
+  AD.ATTENDANCE_DT
+FROM HRIS_ATTENDANCE_DETAIL AD
+LEFT JOIN HRIS_EMPLOYEES E
+ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
+LEFT JOIN HRIS_BRANCHES B
+ON (E.BRANCH_ID = B.BRANCH_ID)
+LEFT JOIN HRIS_EMPLOYEES EE
+ON (B.BRANCH_MANAGER_ID = EE.EMPLOYEE_ID)
+LEFT JOIN HRIS_SHIFTS S
+  ON (AD.SHIFT_ID        = S.SHIFT_ID)
+WHERE AD.ATTENDANCE_DT = trunc(sysdate)
+AND (AD.LATE_STATUS  = 'L' OR AD.OVERALL_STATUS = 'AB') 
+AND E.STATUS = 'E'
+ORDER BY AD.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
 
-    public function fetchDataOfMissingIp($missingIp) {
-        $sql = "select e.EMAIL_OFFICIAL,
-            ad.BRANCH_MANAGER_ID, 
-            e.FULL_NAME, 
-            ad.DEVICE_IP, 
-            trunc(SYSDATE-0) as ATT_DT 
-            from HRIS_ATTD_DEVICE_MASTER ad 
-            join HRIS_EMPLOYEES e on ad.branch_manager_id = e.EMPLOYEE_ID 
-            where ad.BRANCH_MANAGER_ID = 
-            (select BRANCH_MANAGER_ID from HRIS_ATTD_DEVICE_MASTER 
-            where DEVICE_IP = '{$missingIp}')";
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
-    }
-
-    public function fetchAllDeviceIp() {
-        $sql = "SELECT DEVICE_IP as IP_ADDRESS from HRIS_ATTD_DEVICE_MASTER";
-
-        $statement = $this->adapter->query($sql);
-        $result = $statement->execute();
-        return Helper::extractDbData($result);
-    }
-
-    public function fetchAllAttendanceIp() {
-        $sql = "SELECT DISTINCT IP_ADDRESS as IP_ADDRESS from HRIS_ATTENDANCE where ATTENDANCE_DT = TRUNC(SYSDATE-0)";
+    public function fetchMissedOrEarlyOut() {
+        $sql = "SELECT DISTINCT AD.EMPLOYEE_ID,
+  E.FULL_NAME                       AS EMPLOYEE_NAME,
+  TO_CHAR(AD.IN_TIME, 'HH:MM AM')   AS IN_TIME,
+  TO_CHAR(S.START_TIME, 'HH:MM AM') AS START_TIME,
+  TO_CHAR(AD.OUT_TIME, 'HH:MM AM')  AS OUT_TIME,
+  TO_CHAR(S.END_TIME, 'HH:MM AM')   AS END_TIME,
+  AD.OVERALL_STATUS,
+  AD.LATE_STATUS,
+  E.EMAIL_OFFICIAL AS EMPLOYEE_MAIL,
+  E.BRANCH_ID,
+  B.BRANCH_MANAGER_ID,
+  EE.FULL_NAME      AS MANAGER_NAME,
+  EE.EMAIL_OFFICIAL AS MANAGER_MAIL,
+  AD.ATTENDANCE_DT
+FROM HRIS_ATTENDANCE_DETAIL AD
+LEFT JOIN HRIS_EMPLOYEES E
+ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID)
+LEFT JOIN HRIS_BRANCHES B
+ON (E.BRANCH_ID = B.BRANCH_ID)
+LEFT JOIN HRIS_EMPLOYEES EE
+ON (B.BRANCH_MANAGER_ID = EE.EMPLOYEE_ID)
+LEFT JOIN HRIS_SHIFTS S
+ON (AD.SHIFT_ID        = S.SHIFT_ID)
+WHERE AD.ATTENDANCE_DT = trunc(sysdate-1)
+AND AD.LATE_STATUS    IN ('E', 'B', 'X', 'Y')
+ORDER BY AD.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();

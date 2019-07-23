@@ -134,7 +134,7 @@ class TravelStatusRepository extends HrisRepository {
                     THEN 'Taxi'
                     WHEN TR.TRANSPORT_TYPE = 'BS'
                     THEN 'Bus'
-                    WHEN TR.TRANSPORT_TYPE = 'F'
+                    WHEN TR.TRANSPORT_TYPE = 'OF'
                     THEN 'On Foot'
                   END)                                                            AS TRANSPORT_TYPE_DETAIL,
                   TO_CHAR(TR.DEPARTURE_DATE)                                      AS DEPARTURE_DATE_AD,

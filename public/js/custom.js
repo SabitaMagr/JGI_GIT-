@@ -1192,6 +1192,7 @@ window.app = (function ($, toastr, App) {
                 filterable: true,
                 allPages: true
             },
+            columnMenu: true,
             height: 500,
             scrollable: true,
             sortable: true,

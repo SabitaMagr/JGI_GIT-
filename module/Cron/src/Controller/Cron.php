@@ -21,87 +21,173 @@ class Cron extends AbstractActionController {
     }
 
     public function indexAction() {
+        $responseData = [];
+        try {
+            $request = $this->getRequest();
+            $requestType = $request->getMethod();
 
-        $request = $this->getRequest();
-        $registeredDevices = [];
-        $attendanceDevices = [];
-        $missingIpWithData = [];
+            switch ($requestType) {
+                case Request::METHOD_GET:
+                    $responseData = $this->getAbsentOrLateList();
+                    if ($responseData == NULL) {
+                        return new JsonModel(['success' => true, 'data' => $responseData, 'message' => 'No data found']);
+                    }
+                    break;
+                default :
+                    throw new Exception('The request is unknown');
+            }
 
-        if ($request->isGET()) {
+            $this->getAbsentList($responseData);
+            $this->getLateList($responseData);
 
-            $deviceIpList = $this->getDeviceIp();
-            $registeredDevices = $this->getValuesFromArray($deviceIpList);
+            return new JsonModel(['success' => true, 'data' => $responseData, 'message' => $requestType]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => $responseData, 'message' => $e->getMessage()]);
+        }
+    }
 
-            $attendanceIpList = $this->getAttendanceIp();
-            $attendanceDevices = $this->getValuesFromArray($attendanceIpList);
+    public function nextDayAction() {
+        $responseData = [];
+        try {
+            $request = $this->getRequest();
+            $requestType = $request->getMethod();
 
-            $missingIps = array_diff($registeredDevices, $attendanceDevices);
+            switch ($requestType) {
+                case Request::METHOD_GET:
+                    $responseData = $this->getMissedOrEarlyOutList();
+                    if ($responseData == NULL) {
+                        return new JsonModel(['success' => true, 'data' => $responseData, 'message' => 'No data found']);
+                    }
+                    break;
+                default :
+                    throw new Exception('The request is unknown');
+            }
 
-            $missingIpWithData = $this->getDataofMissingIp($missingIps);
+            $this->getEarlyOut($responseData);
+            $this->getMissedPunch($responseData);
 
-            if ($missingIpWithData == NULL) {
-                return new JsonModel(['success' => false, 'data' => $missingIpWithData, 'message' => 'No record found']);
-            } else {
-                $this->prepareEmail($missingIpWithData);
-                return new JsonModel(['success' => true, 'data' => $missingIpWithData]);
+            return new JsonModel(['success' => true, 'data' => $responseData, 'message' => $requestType]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => $responseData, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function getAbsentOrLateList() {
+        $cronRepo = new CronRepository($this->adapter);
+        return $cronRepo->fetchAbsentOrLate();
+    }
+
+    public function getMissedOrEarlyOutList() {
+        $cronRepo = new CronRepository($this->adapter);
+        return $cronRepo->fetchMissedOrEarlyOut();
+    }
+
+    public function getAbsentList($data) {
+        $absentList = array();
+        for ($i = 0; $i < count($data); $i++) {
+            if ($data[$i]['OVERALL_STATUS'] == 'AB' && $data[$i]['MANAGER_MAIL'] != null) {
+                array_push($absentList, $data[$i]);
             }
         }
+        $this->prepareAbsentEmail($absentList);
     }
 
-    public function getDataofMissingIp($missingIps) {
-        $cronRepo = new CronRepository($this->adapter);
-        for ($x = 0; $x < count($missingIps); $x++) {
-            $reqiredData[$x] = $cronRepo->fetchDataOfMissingIp($missingIps[$x])[0];
+    public function getLateList($data) {
+        $lateList = array();
+        for ($i = 0; $i < count($data); $i++) {
+            $lateStatus = $data[$i]['LATE_STATUS'];
+            if (($lateStatus == 'L' || $lateStatus == 'B' || $lateStatus == 'Y') && $data[$i]['EMPLOYEE_MAIL'] != null) {
+                array_push($lateList, $data[$i]);
+            }
         }
-        return $reqiredData;
+        $this->prepareLateEmail($lateList);
     }
 
-    // function to extract only ip values from key-value pair array
-    public function getValuesFromArray($ipArray) {
-        for ($i = 0; $i < count($ipArray); $i++) {
-            $ipAddresses[$i] = $ipArray[$i]['IP_ADDRESS'];
+    public function getMissedPunch($data) {
+        $missedPunch = array();
+        for ($i = 0; $i < count($data); $i++) {
+            $lateStatus = $data[$i]['LATE_STATUS'];
+            if (($lateStatus == 'X' || $lateStatus == 'Y') && $data[$i]['EMPLOYEE_MAIL'] != null) {
+                array_push($missedPunch, $data[$i]);
+            }
         }
-        return $ipAddresses;
+        $this->prepareMissedEmail($missedPunch);
     }
 
-//    public function getEmailList() {
-//        $cronRepo = new CronRepository($this->adapter);
-//        return $cronRepo->fetchEmailList();
-//    }
-
-    public function getDataOfDevice($missingIp) {
-        $cronRepo = new CronRepository($this->adapter);
-        return $cronRepo->fetchEmailOfManager($missingIp);
+    public function getEarlyOut($data) {
+        $earlyOut = array();
+        for ($i = 0; $i < count($data); $i++) {
+            $lateStatus = $data[$i]['LATE_STATUS'];
+            if (($lateStatus == 'E' || $lateStatus == 'B') && $data[$i]['EMPLOYEE_MAIL'] != null) {
+                array_push($earlyOut, $data[$i]);
+            }
+        }
+        $this->prepareEarlyOutEmail($earlyOut);
     }
 
-    public function getDeviceIp() {
-        $cronRepo = new CronRepository($this->adapter);
-        return $cronRepo->fetchAllDeviceIp();
+    public function prepareEarlyOutEmail($early) {
+        for ($i = 0; $i < count($early); $i++) {
+            $to = $early[$i]['EMPLOYEE_MAIL'];
+            $cc = $early[$i]['MANAGER_MAIL'];
+            $body = 'Dear ' . $early[$i]['EMPLOYEE_NAME'] . ', '
+                    . 'This is to inform you that your OUT time yesterday was ' . $early[$i]['OUT_TIME'] . '. But your shift ends at ' . $early[$i]['END_TIME'] . '. I hope your supervisor was informed about the early out.';
+            $subject = "Early Check Out";
+
+            $this->sendEmail($to, $body, $subject, $cc);
+        }
     }
 
-    public function getAttendanceIp() {
-        $cronRepo = new CronRepository($this->adapter);
-        return $cronRepo->fetchAllAttendanceIp();
+    public function prepareMissedEmail($missed) {
+        for ($i = 0; $i < count($missed); $i++) {
+            $to = $missed[$i]['EMPLOYEE_MAIL'];
+            $cc = $missed[$i]['MANAGER_MAIL'];
+            $body = 'Dear ' . $missed[$i]['EMPLOYEE_NAME'] . ', '
+                    . 'This is to inform you that your check out was missed for yesterday.';
+            $subject = "Missed Punch";
+
+            $this->sendEmail($to, $body, $subject, $cc);
+        }
     }
 
-    public function prepareEmail($missingIpInfo) {
-        for ($i = 0; $i < count($missingIpInfo); $i++) {
-            $to = $missingIpInfo[$i]['EMAIL_OFFICIAL'];
-            $absentDate = (string) $missingIpInfo[$i]['ATT_DT'];
-            $body = 'Dear ' . $missingIpInfo[$i]['FULL_NAME'] . ', '
-                    . 'Attendances from your device with IP: ' . $missingIpInfo[$i]['DEVICE_IP'] . ' for ' . $absentDate . ' has not been recorded.';
+    public function prepareLateEmail($late) {
+        for ($i = 0; $i < count($late); $i++) {
+            $to = $late[$i]['EMPLOYEE_MAIL'];
+            $cc = $late[$i]['MANAGER_MAIL'];
+            $body = 'Dear ' . $late[$i]['EMPLOYEE_NAME'] . ', '
+                    . 'This is to inform you that your IN time today was ' . $late[$i]['IN_TIME'] . '. But your shift starts at ' . $late[$i]['START_TIME'] . '. I hope your supervisor was informed about the delay.';
+            $subject = "Late Check In";
+
+            $this->sendEmail($to, $body, $subject, $cc);
+        }
+    }
+
+    public function prepareAbsentEmail($absent) {
+        for ($i = 0; $i < count($absent); $i++) {
+            $to = $absent[$i]['MANAGER_MAIL'];
+            $cc = $absent[$i]['EMPLOYEE_MAIL'];
+            $date = (string) $absent[$i]['ATTENDANCE_DT'];
+            $body = 'Dear ' . $absent[$i]['MANAGER_NAME'] . ', '
+                    . 'Attendance of ' . $absent[$i]['EMPLOYEE_NAME'] . ' for date ' . $date . ' is not recorded.';
             $subject = "Missing Attendance";
 
-            $this->sendEmail($to, $body, $subject);
+            $this->sendEmail($to, $body, $subject, $cc);
         }
     }
 
-    public function sendEmail($to, $body, $subject) {
-        $msg = new Message();
-        $msg->setSubject($subject);
-        $msg->setBody($body);
-        $msg->setTo($to);
-        EmailHelper::sendEmail($msg);
+    public function sendEmail($to, $body, $subject, $cc) {
+
+        try {
+            $msg = new Message();
+            $msg->setSubject($subject);
+            $msg->setBody($body);
+            $msg->setTo($to);
+            if ($cc != null) {
+                $msg->setCc($cc);
+            }
+            return EmailHelper::sendEmail($msg);
+        } catch (Exception $ex) {
+            return $ex;
+        }
     }
 
 }

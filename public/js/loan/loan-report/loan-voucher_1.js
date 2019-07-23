@@ -31,8 +31,6 @@
 
         $search.on('click', function () {
             var employee = $("#employeeId").val();
-            console.log(employee);
-            if(employee == null || employee == '')
             var empName = [];
             $('#employeeId option:selected').each(function() {
                 empName.push($(this).text());

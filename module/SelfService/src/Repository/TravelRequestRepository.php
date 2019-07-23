@@ -55,7 +55,16 @@ class TravelRequestRepository implements RepositoryInterface {
      */
     
     public function add(Model $model) {
-        $this->tableGateway->insert($model->getArrayCopyForDB());
+        $addData=$model->getArrayCopyForDB();
+        $this->tableGateway->insert($addData);
+        
+        if ($addData['STATUS']=='AP' && date('Y-m-d', strtotime($model->fromDate)) <= date('Y-m-d')) {
+            $sql = "BEGIN 
+            HRIS_REATTENDANCE('{$model->fromDate}',$model->employeeId,'{$model->toDate}');
+               END; ";
+
+            EntityHelper::rawQueryResult($this->adapter, $sql);
+        }
         //$this->linkTravelWithFiles();
     }
 

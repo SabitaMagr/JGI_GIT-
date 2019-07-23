@@ -119,7 +119,7 @@ class TravelRequest extends HrisController {
             'OV' => 'Office Vehicles',
             'TI' => 'Taxi',
             'BS' => 'Bus',
-            'F'  => 'On Foot'
+            'OF'  => 'On Foot'
         );
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,

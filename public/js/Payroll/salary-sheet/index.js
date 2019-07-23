@@ -262,7 +262,7 @@
             if(selectedGroups==null){
                 let allGroup=[];
                 $.each(groupList, function (key, value) {
-                    console.log(value);
+//                    console.log(value);
                     allGroup.push(value['GROUP_ID']);
                 });
                 selectedGroups=allGroup;
@@ -275,9 +275,21 @@
                     monthId: selectedMonth['MONTH_ID'],
                     salaryTypeId: selectedSalaryTypeId
                 }).then(function (response) {
+                    let empLoadData=[];
+                    
+                    if ($groupId.val() == null) {
+                        $.each(response.data, function (index, value) {
+                            value['CHECKED_FLAG'] = 'N';
+                            empLoadData.push(value);
+                        });
+                    } else {
+                        empLoadData = response.data;
+                    }
+//                    console.log(empLoadData);
+                    
 //                    console.log(response);
                     app.populateSelect($allSheetId, response.sheetData, 'SHEET_NO', 'SHEET_NO', 'ALL', -1, -1);
-                    app.renderKendoGrid($empTable, response.data);
+                    app.renderKendoGrid($empTable, empLoadData);
                     app.renderKendoGrid($sheetTable, response.sheetData);
                 });
             }

@@ -167,7 +167,7 @@ class TravelNotification extends AbstractActionController {
             'OV' => 'Office Vehicles',
             'TI' => 'Taxi',
             'BS' => 'Bus',
-            'F'  => 'On Foot'
+            'OF'  => 'On Foot'
         );
         $requestType = array(
             'ad' => 'Advance',
