@@ -1186,9 +1186,9 @@ window.app = (function ($, toastr, App) {
 
         }
         var kendoConfig = {
-            toolbar: ["excel"],
+            toolbar: ["excel", "pdf"],
             excel: {
-                fileName: "Kendo Export.xlsx",
+                fileName: "Exported from HRIS.xlsx",
                 filterable: true,
                 allPages: true
             },
