@@ -24,7 +24,11 @@ class VarianceSetupController extends HrisController {
     'S'=>'Salary Group',
     'V'=>'Variance',
     'O'=>'OT',
-    'T'=>'Tax Group'
+    'T'=>'Tax Group',
+    'B'=>'Basic',
+    'C'=>'Grade',
+    'A'=>'Allowance',
+    'G'=>'Gross',
     ];
 
     public function __construct(AdapterInterface $adapter, StorageInterface $storage) {

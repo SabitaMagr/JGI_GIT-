@@ -11,7 +11,9 @@
         var map = {
             'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_ID': 'Id', 
-            'FULL_NAME': 'Name'
+            'FULL_NAME': 'Name',
+            'DEPARTMENT_NAME': 'Department',
+            'FUNCTIONAL_TYPE_EDESC': 'Functional Type'
         };
 
         var columnOptions = [];
@@ -28,8 +30,10 @@
         function reinitializeKendo(optionalColumns){
             console.log('oplist',optionalColumns);
             columns = [
-                {field: "EMPLOYEE_CODE", title: "Code", width: 150, locked: true},
-                {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
+                {field: "EMPLOYEE_CODE", title: "Code", width: 70, locked: true},
+                {field: "FULL_NAME", title: "Employee", width: 100, locked: true},
+                {field: "DEPARTMENT_NAME", title: "Department", width: 100, locked: true},
+                {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 100, locked: true},
             ];
             var flag, flag2;
             var columnsList;
@@ -122,7 +126,7 @@
             } 
         }
         reinitializeKendo([]);
-        app.initializeKendoGrid($table, columns);
+        app.initializeKendoGrid($table, columns,null,null,null,'LeaveBalance.xlsx');
         app.searchTable($table, ['EMPLOYEE_ID', 'EMPLOYEE_CODE','FULL_NAME']);
 
         $search.on('click', function () {
@@ -131,7 +135,7 @@
             
             if(optionalColumns != null){ reinitializeKendo(optionalColumns); }
             else{ reinitializeKendo([]); }
-            app.initializeKendoGrid($table, columns);
+            app.initializeKendoGrid($table, columns,null,null,null,'LeaveBalance.xlsx');
 
             var q = document.searchManager.getSearchValues();
             App.blockUI({target: "#hris-page-content"});

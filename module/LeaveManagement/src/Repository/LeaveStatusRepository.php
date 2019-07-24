@@ -205,6 +205,7 @@ class LeaveStatusRepository extends HrisRepository {
         $serviceTypeId = $data['serviceTypeId'];
         $serviceEventTypeId = $data['serviceEventTypeId'];
         $employeeTypeId = $data['employeeTypeId'];
+        $functionalTypeId = $data['functionalTypeId'];
 
         $leaveRequestStatusId = $data['leaveRequestStatusId'];
         $leaveId = $data['leaveId'];
@@ -212,7 +213,7 @@ class LeaveStatusRepository extends HrisRepository {
         $toDate = $data['toDate'];
 
 
-        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId,null,null,$functionalTypeId);
         $statusCondition = '';
         $leaveCondition = '';
         $fromDateCondition = "";
@@ -234,6 +235,7 @@ class LeaveStatusRepository extends HrisRepository {
         }
 
         $sql = "SELECT 
+             FUNT.FUNCTIONAL_TYPE_EDESC                                        AS FUNCTIONAL_TYPE_EDESC,
             --INITCAP(L.LEAVE_ENAME) AS LEAVE_ENAME,
             CASE WHEN SUB_REF_ID IS NULL THEN 
 INITCAP(L.LEAVE_ENAME)
@@ -305,7 +307,8 @@ from
 HRIS_EMPLOYEE_LEAVE_ADDITION LA
 JOIN Hris_Employee_Work_Holiday WH ON (LA.WOH_ID=WH.ID)
 LEFT JOIN Hris_Holiday_Master_Setup H ON (WH.HOLIDAY_ID=H.HOLIDAY_ID)) SLR ON (SLR.ID=LA.SUB_REF_ID)
-                
+LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
+    ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID                
 
 
                 WHERE L.STATUS ='E'
