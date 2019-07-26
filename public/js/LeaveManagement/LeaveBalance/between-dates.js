@@ -91,7 +91,7 @@
                 }
 
             }
-            app.initializeKendoGrid($table, columns,null,null,null,'LeaveTakenBetweenDates.xlsx');
+            app.initializeKendoGrid($table, columns,null,null,null,'Leave Taken Between Dates Report.xlsx');
 
         }
         app.searchTable($table, ['EMPLOYEE_CODE', 'FULL_NAME']);

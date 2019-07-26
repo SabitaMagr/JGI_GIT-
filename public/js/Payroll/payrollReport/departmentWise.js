@@ -55,10 +55,39 @@
             $table.kendoTreeList({
                 toolbar: ["excel"],
                 excel: {
-                    fileName: "Kendo UI TreeList Export.xlsx",
-                    filterable: true,
+                    fileName: "Department Wise Report.xlsx",
+                    filterable: false,
                     allPages:true
                 },
+                excelExport: function(e) {
+                var rows = e.workbook.sheets[0].rows;
+                var columns = e.workbook.sheets[0].columns;
+                
+                
+                rows.unshift({
+                    cells: [
+                    {value: "Department Wise Report", colSpan: columns.length, textAlign: "left"}
+                    ]
+                });
+                if(document.preference != undefined){
+                    if(document.preference.companyAddress != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyAddress, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+                if(document.preference != undefined){
+                    if(document.preference.companyName != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyName, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+            },
                 dataSource: {
                     data: treeData,
                     aggregate: aggredCols,

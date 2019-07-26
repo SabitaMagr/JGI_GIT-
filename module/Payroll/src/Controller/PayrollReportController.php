@@ -25,8 +25,8 @@ class PayrollReportController extends HrisController {
     }
 
     public function indexAction() {
-        echo 'NO Action';
         die();
+        echo 'NO Action';
     }
 
     public function varianceAction() {
@@ -34,12 +34,12 @@ class PayrollReportController extends HrisController {
         $months = EntityHelper::getTableList($this->adapter, Months::TABLE_NAME, [Months::MONTH_ID, Months::MONTH_EDESC, Months::FISCAL_YEAR_ID]);
 
         $columnsList = $this->repository->getVarianceColumns();
-
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'fiscalYears' => $fiscalYears,
                     'months' => $months,
                     'columnsList' => $columnsList,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -67,7 +67,8 @@ class PayrollReportController extends HrisController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'datas' => $datas
+                    'datas' => $datas,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -100,7 +101,8 @@ class PayrollReportController extends HrisController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'otVariables' => $otVariables
+                    'otVariables' => $otVariables,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -133,7 +135,8 @@ class PayrollReportController extends HrisController {
 
         return Helper::addFlashMessagesToArray($this, [
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'otVariables' => $otVariables
+                    'otVariables' => $otVariables,
+                    'preference' => $this->preference
         ]);
     }
         
@@ -151,7 +154,8 @@ class PayrollReportController extends HrisController {
 //                    'fiscalYears' => $fiscalYears,
 //                    'months' => $months,
                     'nonDefaultList' => $nonDefaultList,
-                    'groupVariables' => $groupVariables
+                    'groupVariables' => $groupVariables,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -194,7 +198,8 @@ class PayrollReportController extends HrisController {
 //                    'fiscalYears' => $fiscalYears,
 //                    'months' => $months,
                     'nonDefaultList' => $nonDefaultList,
-                    'groupVariables' => $groupVariables
+                    'groupVariables' => $groupVariables,
+                    'preference' => $this->preference
         ]);
     }
 

@@ -27,7 +27,7 @@
             {field: "LOCATION_EDESC", title: "Location", width: 150},
             {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 150},
             {field: "FUNCTIONAL_LEVEL_EDESC", title: "Functional Level", width: 150}*/
-        ]);
+        ], null, null, null, 'Job Duration Report.xlsx');
 
         app.searchTable('employeeTable', ['EMPLOYEE_CODE', 'FULL_NAME'], false);
   

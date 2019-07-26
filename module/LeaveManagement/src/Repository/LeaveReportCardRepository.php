@@ -15,7 +15,7 @@ class LeaveReportCardRepository extends HrisRepository {
     $employees = $by['data']['employeeId'];
     //$employees = implode(',', $employees);
 
-    $sql = "SELECT LA.ID AS ID, LA.EMPLOYEE_ID AS EMPLOYEE_ID, E.EMPLOYEE_CODE AS 
+    $sql = "SELECT LA.ID AS ID, E.EMPLOYEE_CODE AS EMPLOYEE_ID, E.EMPLOYEE_CODE AS 
     EMPLOYEE_CODE,E.JOIN_DATE AS JOIN_DATE, LA.LEAVE_ID AS LEAVE_ID, 
     (CASE WHEN  E.ADDR_PERM_STREET_ADDRESS IS NULL THEN '-' ELSE E.ADDR_PERM_STREET_ADDRESS END) AS ADDR_PERM_STREET_ADDRESS,
     (CASE WHEN  E.ADDR_TEMP_STREET_ADDRESS IS NULL THEN '-' ELSE E.ADDR_TEMP_STREET_ADDRESS END) AS ADDR_TEMP_STREET_ADDRESS,
@@ -56,7 +56,7 @@ class LeaveReportCardRepository extends HrisRepository {
     la.Total_Days
     from hris_leave_master_setup lms
     left join Hris_Employee_Leave_Assign la on (lms.leave_id=la.leave_id )
-    where la.employee_id= $empId";
+    where la.employee_id= $empId order by Lms.LEAVE_ID asc";
     
     return $this->rawQuery($sql);
   }

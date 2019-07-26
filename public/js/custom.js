@@ -1163,7 +1163,7 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config,exportName) {
+    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config, exportName) {
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1183,21 +1183,85 @@ window.app = (function ($, toastr, App) {
             } else {
                 columns.splice(0, 0, column);
             }
-
         }
         var excelExportName='HrisExcel.xlsx';
         if (typeof exportName !== 'undefined' && exportName !== null) {
             excelExportName=exportName;
-            }
-        console.log(typeof excelExportName);
+        }
+        var reportName = excelExportName != 'HrisExcel.xlsx' ? excelExportName.substring(0,excelExportName.length-5) : 'HRIS Report';
         var kendoConfig = {
             toolbar: ["excel"],
             excel: {
                 fileName: excelExportName,
-                filterable: true,
+                filterable: false,
                 allPages: true
             },
-            columnMenu: true,
+            excelExport: function(e) {
+                var rows = e.workbook.sheets[0].rows;
+                var columns = e.workbook.sheets[0].columns;
+                // for(let i = 0; i < e.sender.columns.length; i++){
+                //     if(e.sender.columns[i].title == 'Select All'){
+                //         for(let j = 0; j < rows.length; j++){
+                //             rows[i].cells.splice(i, 1);
+                //         }
+                //     }
+                // }
+                let d = new Date();
+                var monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                let today = d.getDate()+"-"+monthShortNames[d.getMonth()]+"-"+d.getFullYear();
+                let fromDate = document.getElementById("fromDate") != undefined ? document.getElementById("fromDate").value : '' ;
+                let toDate = today;
+                if(document.getElementById("toDate") != undefined){
+                    if(document.getElementById("toDate").value != null && document.getElementById("toDate").value != '')
+                    toDate = document.getElementById("toDate").value;
+                }  
+                let fiscalYear = document.getElementById("fiscalYearId") != undefined ? document.getElementById("fiscalYearId").value : '' ;
+                let month = '';
+                if(document.getElementById("monthId") != undefined){
+                    month = document.getElementById("monthId").value;
+                }
+
+                if(fromDate != ''){
+                    rows.unshift({
+                        cells: [
+                        {value: reportName+" of date: "+fromDate+" to "+toDate, colSpan: columns.length, textAlign: "left"}
+                        ]
+                    });
+                }
+                else{
+                    rows.unshift({
+                        cells: [
+                        {value: reportName, colSpan: columns.length, textAlign: "left"}
+                        ]
+                    });
+                }
+                if(fiscalYear != ''){
+                    rows.unshift({
+                        cells: [
+                        {value: reportName+" of Fiscal Year: "+fiscalYear+" "+month, colSpan: columns.length, textAlign: "left"}
+                        ]
+                    });
+                }
+                if(document.preference != undefined){
+                    if(document.preference.companyAddress != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyAddress, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+                if(document.preference != undefined){
+                    if(document.preference.companyName != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyName, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+            },
             height: 500,
             scrollable: true,
             sortable: true,

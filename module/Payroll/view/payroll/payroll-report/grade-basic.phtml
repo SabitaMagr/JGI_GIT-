@@ -21,6 +21,7 @@ $this->headScript()
     document.datas =<?php echo json_encode($datas); ?>;
     document.getFiscalYearMonthLink = '<?php echo $this->url('payrollReport', ['action' => 'getFiscalYearMonth']); ?>';
     document.pullGradeBasicLink = '<?= $this->url("payrollReport", ["action" => "pullGradeBasic"]) ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
