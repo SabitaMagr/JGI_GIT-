@@ -19,7 +19,7 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/reportthree
 <script>
     document.getSearchDataLink = '<?php echo $this->url('allreport', ['action' => 'getSearchData']); ?>';
     document.getFiscalYearMonthLink = '<?php echo $this->url('allreport', ['action' => 'getFiscalYearMonth']); ?>';
-    
+    document.preference =<?php echo json_encode($preference) ?>;
 //    document.wsDepartmentWiseDailyReport = '<?php // echo $this->url('allreport', ['action' => 'departmentWiseDailyReport']); ?>';
 //    document.comBraDepList =<?php // echo json_encode($comBraDepList); ?>;
 //    document.monthId =<?php // echo $monthId; ?>;

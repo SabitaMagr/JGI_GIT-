@@ -65,7 +65,8 @@ class LoanStatus extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'loans' => $loanFormElement,
                     'loanStatus' => $loanStatusFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference' => $this->preference
         ]);
     }
 

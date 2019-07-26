@@ -135,7 +135,7 @@
             
             if(optionalColumns != null){ reinitializeKendo(optionalColumns); }
             else{ reinitializeKendo([]); }
-            app.initializeKendoGrid($table, columns,null,null,null,'LeaveBalance.xlsx');
+            app.initializeKendoGrid($table, columns,null,null,null,'Leave Balance Report.xlsx');
 
             var q = document.searchManager.getSearchValues();
             App.blockUI({target: "#hris-page-content"});

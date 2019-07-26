@@ -27,6 +27,7 @@ $this->headScript()
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.allowShiftChange ='<?php echo $allowShiftChange; ?>';
     document.allowTimeChange ='<?php echo $allowTimeChange; ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
     var d = new Date();
 </script>
 

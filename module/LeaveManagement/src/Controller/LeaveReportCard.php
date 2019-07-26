@@ -25,7 +25,8 @@ class LeaveReportCard extends HrisController {
         return $this->stickFlashMessagesTo([
             'searchValues' => EntityHelper::getSearchData($this->adapter),
             'acl' => $this->acl,
-            'employeeDetail' => $this->storageData['employee_detail']
+            'employeeDetail' => $this->storageData['employee_detail'],
+            'preference' => $this->preference
         ]);
     }
   

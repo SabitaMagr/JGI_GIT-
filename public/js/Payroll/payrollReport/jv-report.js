@@ -42,13 +42,41 @@
                 toolbar: ["excel"],
                 excel: {
                     fileName: "JV.xlsx",
-                    filterable: true,
+                    filterable: false,
                     allPages:true
                 },
                 dataSource: {
                     data: treeData,
                     pageSize: 20
                 },
+                excelExport: function(e) {
+                var rows = e.workbook.sheets[0].rows;
+                var columns = e.workbook.sheets[0].columns;
+                
+                rows.unshift({
+                    cells: [
+                    {value: "Grade Basic Report", colSpan: columns.length, textAlign: "left"}
+                    ]
+                });
+                if(document.preference != undefined){
+                    if(document.preference.companyAddress != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyAddress, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+                if(document.preference != undefined){
+                    if(document.preference.companyName != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyName, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+            },
                 height: 550,
                 scrollable: true,
                 sortable: true,

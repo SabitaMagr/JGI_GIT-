@@ -10,7 +10,9 @@
             
             $assignTable.find("tr:gt(0)").remove();
             $("#table").empty();
-
+            $("#table").append('<h3 style="text-align: center;">'+document.preference.companyName+'</h3>');
+            $("#table").append('<h3 style="text-align: center;">'+document.preference.companyAddress+'</h3>');
+            $("#table").append('<h3 style="text-align: center;">Employee Leave Report Card</h3><hr />');
             // var data = document.searchManager.getSearchValues();
             let id = $("#employeeId").val();
             

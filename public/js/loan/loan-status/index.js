@@ -72,7 +72,7 @@
             'APPROVED_REMARKS': 'Approved Remarks',
             'APPROVED_DATE': 'Approved Date'
         }
-        app.initializeKendoGrid($tableContainer, columns);
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'Loan Status Report.xlsx');
         app.searchTable($tableContainer, ['FULL_NAME']);
 
         $search.on('click', function () {

@@ -60,7 +60,7 @@
                 } else {
                     $bulkActionDiv.hide();
                 }
-            }});
+            }}, null, 'Leave Status Report.xlsx');
         app.searchTable($tableContainer, ["FULL_NAME", "EMPLOYEE_CODE"]);
   
         var map = {
