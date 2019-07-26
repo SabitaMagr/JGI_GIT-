@@ -10,7 +10,7 @@ window.app = (function ($, toastr, App) {
 
     var format = "dd-M-yyyy";
     window.toastr.options = {"positionClass": "toast-bottom-right"};
-
+    let bulkId;
 
     var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {
@@ -1174,7 +1174,10 @@ window.app = (function ($, toastr, App) {
                 sortable: false,
                 filterable: false
             };
+            bulkId = '';
             if (bulkOptions.id !== 'undefined' && bulkOptions.id !== null) {
+                bulkOptions.id = "BULK_"+bulkOptions.id;
+                bulkId = bulkOptions.id;
                 column.field = bulkOptions.id;
                 column.template = "<input id='#:" + bulkOptions.id + "#' type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             }
@@ -1353,6 +1356,13 @@ window.app = (function ($, toastr, App) {
         }
     }
     var renderKendoGrid = function ($table, data) {
+        for(let i in data[0]){
+            if(i == bulkId){
+                for(let j = 0 ; j < data.length; j++){
+                    data[j].BULK_ID = data[j].ID;
+                }
+            }
+        }
         var dataSource = new kendo.data.DataSource({data: data, pageSize: 20});
         var grid = $table.data("kendoGrid");
         dataSource.read();
