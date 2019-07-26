@@ -13,14 +13,14 @@
 
 
         function reinitializeKendo(optionalColumns) {
-            console.log(optionalColumns);
+//            console.log(optionalColumns);
             var columns = [
                 {field: "EMPLOYEE_CODE", title: "Code", width: 70, locked: true},
                 {field: "FULL_NAME", title: "Employee", width: 110, locked: true},
                 {field: "DEPARTMENT_NAME", title: "Department", width: 110, locked: true},
                 {field: "FUNCTIONAL_TYPE_EDESC", title: "Functional Type", width: 110, locked: true},
                 {field: "DESIGNATION_TITLE", title: "Designation", width: 110, locked: true},
-                {field: "POSITION_NAME", title: "Position", width: 100, locked: true},
+                {field: "POSITION_NAME", title: "Position", width: 100},
             ];
              map = {
                 'EMPLOYEE_CODE': 'Code',
@@ -34,25 +34,35 @@
 
             if (optionalColumns != null) {
                 $.each(optionalColumns, function (i, val) {
+                    
+                    for (var ii in leaveList) {
+//                        console.log(leaveList[ii]['LEAVE_ID']);
+                        if (leaveList[ii]['LEAVE_ID'] == val) {
+//                            console.log(leaveList[ii]);
 
-                    columnsList = {
-                        title: leaveList[i]['LEAVE_ENAME'],
-                        columns: [
-                            {
-                                title: 'TAKEN',
-                                field: 'L' + val + '_' + 'TAKEN',
-                                width: 100
-                            },
+                            columnsList = {
+                                title: leaveList[ii]['LEAVE_ENAME'],
+                                columns: [
+                                    {
+                                        title: 'TAKEN',
+                                        field: 'L' + val + '_' + 'TAKEN',
+                                        width: 100
+                                    },
 //                            {
 //                                title: 'BALANCE',
 //                                field: 'L' + val + '_' + 'BALANCE',
 //                                width: 100
 //                            },
-                        ]
-                    };
-                    map['L' + val + '_TAKEN'] = leaveList[i]['LEAVE_ENAME'] + 'TAKEN';
+                                ]
+                            };
+                            map['L' + val + '_TAKEN'] = leaveList[ii]['LEAVE_ENAME'] + 'TAKEN';
 //                    map['L' + val + '_BALANCE'] = leaveList[i]['LEAVE_ENAME'] + 'BALANCE';
-                    columns.push(columnsList);
+                            columns.push(columnsList);
+
+                        }
+
+                    }
+
 
                 });
             } else {
