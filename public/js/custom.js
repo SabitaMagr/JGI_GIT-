@@ -1262,6 +1262,7 @@ window.app = (function ($, toastr, App) {
                     }
                 }
             },
+			columnMenu: true,
             height: 500,
             scrollable: true,
             sortable: true,

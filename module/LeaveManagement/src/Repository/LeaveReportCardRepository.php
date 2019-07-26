@@ -45,7 +45,7 @@ class LeaveReportCardRepository extends HrisRepository {
                             WHEN LA.STATUS = 'C'
                             THEN 20
                             ELSE 365
-                            END) AND E.EMPLOYEE_ID IN ($employees) ORDER BY LA.REQUESTED_DT DESC";  
+                            END) AND E.EMPLOYEE_ID IN ($employees) ORDER BY LA.REQUESTED_DT ASC";  
     
     return $this->rawQuery($sql);    
   }
