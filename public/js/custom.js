@@ -2,6 +2,9 @@ window.app = (function ($, toastr, App) {
     "use strict";
     $(document).ready(function () {
         App.setAssetsPath(document.basePath + '/assets/');
+        // only for soaltee start
+//        $('#functionalTypeId').parent().children(':first-child').html('Main Department');
+        // only for soaltee end
     });
 
     $(document).on('focus', ':input', function () {
