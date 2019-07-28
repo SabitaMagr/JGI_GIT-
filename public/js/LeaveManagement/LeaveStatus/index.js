@@ -128,6 +128,7 @@
         
         $("#reset").on("click", function () {
             $(".form-control").val("");
+            document.searchManager.reset();
         });
 
     });

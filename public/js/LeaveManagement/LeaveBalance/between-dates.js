@@ -132,6 +132,11 @@
         $('#pdfExport').on("click", function () {
             app.exportToPDF($table, map, "Employee Leave Balance Report.pdf", 'A2');
         });
+        
+         $("#reset").on("click", function () {
+            $(".form-control").val("");
+            document.searchManager.reset();
+        });
 
     });
 })(window.jQuery, window.app);

@@ -2,9 +2,18 @@ window.app = (function ($, toastr, App) {
     "use strict";
     $(document).ready(function () {
         App.setAssetsPath(document.basePath + '/assets/');
+        
         // only for soaltee start
 //        $('#functionalTypeId').parent().children(':first-child').html('Main Department');
+//        $('#branchId').parent().children(':first-child').prepend('<button id="filBranch">Fill</button>');
+//        $('#filBranch').on('click',function(){
+//            if($('#branchId').prop('disabled')==false){
+//            $('#branchId').val([4,5,9]);
+//            $('#branchId').trigger('change');
+//            }
+//        })
         // only for soaltee end
+        
     });
 
     $(document).on('focus', ':input', function () {
@@ -1359,10 +1368,12 @@ window.app = (function ($, toastr, App) {
         }
     }
     var renderKendoGrid = function ($table, data) {
-        for(let i in data[0]){
-            if(i == bulkId){
-                for(let j = 0 ; j < data.length; j++){
-                    data[j].BULK_ID = data[j].ID;
+        if(bulkId != undefined){
+            for(let i in data[0]){
+                if(i == bulkId.substring(5)){
+                    for(let j = 0 ; j < data.length; j++){
+                        data[j][bulkId] = data[j][i];
+                    }
                 }
             }
         }
