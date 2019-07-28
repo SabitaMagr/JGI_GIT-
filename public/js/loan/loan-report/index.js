@@ -56,7 +56,7 @@
             //'CURRENT_INSTALLMENT': 'Cur. Instalment',
             'BALANCE': 'Balance'
         }
-        app.initializeKendoGrid($tableContainer, columns);
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'Loan Basic Report.xlsx');
         app.searchTable($tableContainer, ['FULL_NAME']);
 
         $search.on('click', function () {

@@ -38,7 +38,7 @@
             'BALANCE': 'Balance',
             'REMARKS': 'Remarks'
         }
-        app.initializeKendoGrid($tableContainer, columns);
+        app.initializeKendoGrid($tableContainer, columns, null, null, null, 'Loan Cash Payment Report.xlsx');
         app.searchTable($tableContainer, ['FULL_NAME']);
 
         $search.on('click', function () {

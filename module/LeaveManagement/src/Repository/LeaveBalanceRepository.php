@@ -171,12 +171,15 @@ class LeaveBalanceRepository {
     }
 
     public function getPivotedList($searchQuery, $isMonthly = false) {
-        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], $searchQuery['genderId'], $searchQuery['locationId'], $searchQuery['functionalTypeId']);
         $monthlyCondition = $isMonthly ? " AND FISCAL_YEAR_MONTH_NO ={$searchQuery['fiscalYearMonthNo']} " : "";
         $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly);
 
         $sql = "
-           SELECT LA.*,E.FULL_NAME, E.EMPLOYEE_CODE AS EMPLOYEE_CODE FROM (SELECT *
+           SELECT LA.*,E.FULL_NAME, E.EMPLOYEE_CODE AS EMPLOYEE_CODE
+,D.Department_Name,
+    Funt.Functional_Type_Edesc                 
+FROM (SELECT *
             FROM
               (SELECT 
               HA.EMPLOYEE_ID,
@@ -196,7 +199,14 @@ class LeaveBalanceRepository {
                 ( SELECT E.EMPLOYEE_ID FROM HRIS_EMPLOYEES E WHERE 1=1 AND E.STATUS='E' {$searchConditon}
                 ){$monthlyCondition}
               ) PIVOT (sum ( ENCASHED ) AS ENCASHED, MAX(PREVIOUS_YEAR_BAL) AS PREVIOUS_YEAR_BAL,MAX(BALANCE) AS BALANCE,MAX(TOTAL) AS TOTAL,MAX(TAKEN) AS TAKEN FOR LEAVE_ID IN ({$leaveArrayDb}) )
-            ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID) 
+            ) LA LEFT JOIN HRIS_EMPLOYEES E ON (LA.EMPLOYEE_ID=E.EMPLOYEE_ID)
+            LEFT JOIN HRIS_DESIGNATIONS DES
+      ON E.DESIGNATION_ID=DES.DESIGNATION_ID 
+      LEFT JOIN HRIS_POSITIONS P
+      ON E.POSITION_ID=P.POSITION_ID
+      LEFT JOIN hris_departments d on d.department_id=e.department_id
+    left join Hris_Functional_Types funt on funt.Functional_Type_Id=e.Functional_Type_Id
+    left join Hris_Service_Types st on (st.service_type_id=E.Service_Type_Id)
 "; 
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }

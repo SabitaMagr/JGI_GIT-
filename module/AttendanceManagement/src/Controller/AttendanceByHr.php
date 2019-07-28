@@ -68,7 +68,8 @@ class AttendanceByHr extends HrisController {
                 'shiftList' => $shiftList,
                 'employeeDetail' => $this->storageData['employee_detail'],
                 'allowShiftChange' =>  isset($this->preference['attAppShiftChangeable'])? $this->preference['attAppShiftChangeable']  : 'N',
-                'allowTimeChange' =>  isset($this->preference['attAppTimeChangeable'])? $this->preference['attAppTimeChangeable']  : 'N'
+                'allowTimeChange' =>  isset($this->preference['attAppTimeChangeable'])? $this->preference['attAppTimeChangeable']  : 'N',
+                'preference' => $this->preference
         ]);
     } 
  
@@ -78,7 +79,8 @@ class AttendanceByHr extends HrisController {
                 'presentStatus' => $this->getPresentStatusSelect(),
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
  
@@ -273,7 +275,8 @@ class AttendanceByHr extends HrisController {
                 'presentStatus' => $this->getPresentStatusSelect(),
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
-                'employeeDetail' => $this->storageData['employee_detail']
+                'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 
@@ -322,6 +325,7 @@ class AttendanceByHr extends HrisController {
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
                 'acl' => $this->acl, 
                 'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 }

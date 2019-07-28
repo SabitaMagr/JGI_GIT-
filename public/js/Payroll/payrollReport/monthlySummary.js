@@ -100,8 +100,8 @@
         $('#excelExport').on('click', function () {
              $("#tableSummary").table2excel({
                 exclude: ".noExl",
-                name: "leave-card",
-                filename: "leave-report-card" 
+                name: "Monthly Summary",
+                filename: "Monthly Summary Report" 
             });
         });
         

@@ -20,6 +20,7 @@ $this->headScript()
     document.withOvertimeWs = '<?php echo $this->url('allreport', ['action' => 'withOvertime']); ?>';
     document.toEmpowerLink = '<?php echo $this->url('allreport', ['action' => 'toEmpower']); ?>';
     document.loadDataLink = '<?php echo $this->url('allreport', ['action' => 'loadData']); ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 
 <div class="page-bar">

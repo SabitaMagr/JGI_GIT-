@@ -85,7 +85,7 @@ class Cron extends AbstractActionController {
     public function getAbsentList($data) {
         $absentList = array();
         for ($i = 0; $i < count($data); $i++) {
-            if ($data[$i]['OVERALL_STATUS'] == 'AB' && $data[$i]['MANAGER_MAIL'] != null) {
+            if ($data[$i]['OVERALL_STATUS'] == 'AB' && $data[$i]['EMPLOYEE_MAIL'] != null) {
                 array_push($absentList, $data[$i]);
             }
         }
@@ -163,11 +163,11 @@ class Cron extends AbstractActionController {
 
     public function prepareAbsentEmail($absent) {
         for ($i = 0; $i < count($absent); $i++) {
-            $to = $absent[$i]['MANAGER_MAIL'];
-            $cc = $absent[$i]['EMPLOYEE_MAIL'];
+            $to = $absent[$i]['EMPLOYEE_MAIL'];
+            $cc = $absent[$i]['MANAGER_MAIL'];
             $date = (string) $absent[$i]['ATTENDANCE_DT'];
-            $body = 'Dear ' . $absent[$i]['MANAGER_NAME'] . ', '
-                    . 'Attendance of ' . $absent[$i]['EMPLOYEE_NAME'] . ' for date ' . $date . ' is not recorded.';
+            $body = 'This is to Inform you that '
+                    . 'Attendance   for date ' . $date . ' of '.$absent[$i]['EMPLOYEE_NAME'].' is not recorded.';
             $subject = "Missing Attendance";
 
             $this->sendEmail($to, $body, $subject, $cc);
@@ -175,7 +175,6 @@ class Cron extends AbstractActionController {
     }
 
     public function sendEmail($to, $body, $subject, $cc) {
-
         try {
             $msg = new Message();
             $msg->setSubject($subject);

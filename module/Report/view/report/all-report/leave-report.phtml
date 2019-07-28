@@ -19,6 +19,7 @@ $this->headScript()
     document.getLeaveReportWS = '<?= $this->url("allreport", ["action" => "getLeaveReportWS"]) ?>';
     document.allLeave = <?php echo json_encode($allLeave) ?>;
     document.ids=<?php echo json_encode(["fromDate"=>"","nepaliFromDate"=>"","toDate"=>"","nepaliToDate"=>""]) ?>;
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 
 

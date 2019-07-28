@@ -41,7 +41,7 @@
             map['L' + leaveList[i]['LEAVE_ID'] + '_' + 'BALANCE'] = leaveList[i]['LEAVE_ENAME'] + '(Balance)';
         }
 
-        app.initializeKendoGrid($table, columns);
+        app.initializeKendoGrid($table, columns, null, null, null, 'Monthly Leave Balance Report.xlsx');
         app.searchTable($table, ['EMPLOYEE_ID', 'EMPLOYEE_CODE']);
         var months = null;
         var $year = $('#fiscalYear');

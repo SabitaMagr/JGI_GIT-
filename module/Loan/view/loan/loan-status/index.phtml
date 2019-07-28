@@ -26,6 +26,7 @@ $this->headScript()
     document.editLink = '<?= $this->url("loanStatus", ["action" => "edit"]) ?>';
     document.loanClosing = '<?= $this->url("loanApply", ["action" => "loanClosing"]) ?>';
     document.pullLoanRequestStatusListLink = '<?= $this->url("loanStatus", ["action" => "pullLoanRequestStatusList"]) ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\loanStatus')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

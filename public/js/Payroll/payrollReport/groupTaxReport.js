@@ -111,7 +111,7 @@
                 toolbar: ["excel"],
                 excel: {
                     fileName: "Group Tax Report.xlsx",
-                    filterable: true,
+                    filterable: false,
                     allPages: true
                 },
                 dataSource: {

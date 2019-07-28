@@ -27,6 +27,7 @@ $this->headScript()
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
     document.allowShiftChange ='<?php echo $allowShiftChange; ?>';
     document.allowTimeChange ='<?php echo $allowTimeChange; ?>';
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\attendancebyhr')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
