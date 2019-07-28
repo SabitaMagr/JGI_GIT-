@@ -619,6 +619,9 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $sql = "SELECT 
             E.FULL_NAME,
             E.EMPLOYEE_CODE
+            ,E.ID_PAN_NO
+            ,E.ID_ACCOUNT_NO
+            ,BR.BRANCH_NAME
             ,E.BIRTH_DATE
             ,E.JOIN_DATE
             ,D.DEPARTMENT_NAME
@@ -652,12 +655,13 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
     (SSED.SHEET_NO=GB.SHEET_NO AND SSED.EMPLOYEE_ID=GB.EMPLOYEE_ID AND SSED.MONTH_ID=GB.MONTH_ID)
                 LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
                 LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
+                LEFT JOIN HRIS_BRANCHES BR ON ( E.BRANCH_ID=BR.BRANCH_ID)
                 WHERE 1=1 
              {$searchConditon}
              ";
 
-//        echo $sql;
-//        die();
+      //echo $sql;
+       // die();
 
 
 
@@ -715,6 +719,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         $sql = "SELECT 
             E.FULL_NAME,
             E.EMPLOYEE_CODE
+            ,E.ID_PAN_NO
             ,E.BIRTH_DATE
             ,E.JOIN_DATE
             ,D.DEPARTMENT_NAME
@@ -753,9 +758,11 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
                 LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
                 LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
                 WHERE 1=1 
+                
              {$searchConditon}
              ";
 
+             
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
