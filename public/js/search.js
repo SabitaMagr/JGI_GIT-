@@ -164,7 +164,7 @@
                 let acl = document.acl;
                 console.log(acl['CONTROL']);
                 $.each(this.ids, function (key, value) {
-//                    console.log(value);
+                    console.log(value);
                     let $company = $('#' + 'companyId');
                     let $branch = $('#' + 'branchId');
                     let $department = $('#' + 'departmentId');
@@ -184,6 +184,9 @@
                     if (typeof value !== "undefined") {
                         if (value == 'companyId' || value == 'branchId' || value == 'designationId' || value == 'departmentId' || value == 'positionId') {
                             switch (acl['CONTROL']) {
+                                case 'F':
+                                        $('#' + value).val(-1).change();
+                                        break;
                                 case 'C':
                                     if (value == 'companyId') {
                                         $company.val(populateValues);
