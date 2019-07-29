@@ -1483,7 +1483,7 @@ EOT;
       $fromDate = !empty($_POST['fromDate']) ? $_POST['fromDate'] : '01-Jan-2019'; 
       $toDate = !empty($_POST['toDate']) ? $_POST['toDate'] : '31-Dec-2019'; 
 
-      $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
+      $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'],$by['functionalTypeId']);
       $sql = "SELECT  
           {$columIfSynergy}
               E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
@@ -1623,8 +1623,14 @@ EOT;
   public function fetchJobDurationReport($by) {
     $orderByString=EntityHelper::getOrderBy('E.FULL_NAME ASC',null,'E.SENIORITY_LEVEL','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
 
-    $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
+    $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
     $sql = "SELECT E.EMPLOYEE_CODE, E.FULL_NAME, E.JOIN_DATE DOJ, E.BIRTH_DATE DOB,
+P.Position_Name,
+    Des.Designation_Title,
+    D.Department_Name,
+    Funt.Functional_Type_Edesc,        
+     St.Service_Type_Name,
+     aaa.Basic,aaa.Grade,aaa.Allowance,aaa.Gross,
     TRUNC((SYSDATE-BIRTH_DATE)/365)||' Years '||TRUNC(((SYSDATE-BIRTH_DATE)/365-TRUNC((SYSDATE-BIRTH_DATE)/365))*365)||' Days' AGE ,
     TRUNC((SYSDATE-JOIN_DATE)/365)||' Years '||TRUNC(((SYSDATE-JOIN_DATE)/365-TRUNC((SYSDATE-JOIN_DATE)/365))*365)||' Days' SERVICE_DURATION
     FROM HRIS_EMPLOYEES E 
@@ -1632,11 +1638,39 @@ EOT;
       ON E.DESIGNATION_ID=DES.DESIGNATION_ID 
       LEFT JOIN HRIS_POSITIONS P
       ON E.POSITION_ID=P.POSITION_ID
+      LEFT JOIN hris_departments d on d.department_id=e.department_id
+    left join Hris_Functional_Types funt on funt.Functional_Type_Id=e.Functional_Type_Id
+    left join Hris_Service_Types st on (st.service_type_id=E.Service_Type_Id)
+    left join 
+    (select 
+*
+ from 
+ (select 
+  bb.employee_id,bb.sheet_no,
+  bb.variable_type,bb.total
+ from 
+(SELECT 
+aa.employee_id,aa.sheet_no,v.variance_id,v.variable_type,sum(ssd.val) as total
+FROM (select a.*,b.sheet_no from (select  max(month_id) as month_id,employee_id from
+Hris_Salary_Sheet_Emp_Detail group by employee_id) a
+left join Hris_Salary_Sheet_Emp_Detail b on (a.employee_id=b.employee_id and a.month_id=b.month_id)
+) aa
+left join Hris_Salary_Sheet_Detail ssd on (aa.sheet_no=ssd.sheet_no and aa.employee_id=ssd.employee_id)
+left join (select * from HRIS_VARIANCE where variable_type in 
+('B','C','A','G')
+) v  on (1=1)
+  join hris_variance_payhead vp on (v.variance_id=vp.variance_id and ssd.pay_id=vp.pay_id)
+group by aa.employee_id,aa.sheet_no,v.variance_id,v.variable_type
+)bb) 
+PIVOT ( 
+SUM(total) FOR variable_type 
+                IN ('B' as Basic,'C' as Grade
+                ,'A' as Allowance,'G' as Gross))) aaa on (aaa.employee_id=e.employee_id)
       WHERE E.STATUS='E' AND E.RETIRED_FLAG='N' AND E.RESIGNED_FLAG='N'
     AND 1=1  
             {$condition}
             {$orderByString}"; 
-    //echo $sql; die;
+//    echo $sql; die;
     return $this->rawQuery($sql);
   }
  

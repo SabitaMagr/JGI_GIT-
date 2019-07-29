@@ -23,6 +23,7 @@ $this->headScript()
     document.pulldepartmentWiseLink = '<?= $this->url("payrollReport", ["action" => "pulldepartmentWise"]) ?>';
     document.ruleList =<?php echo json_encode($ruleList); ?>;
     document.salaryType =<?php echo json_encode($salaryType); ?>;
+    document.preference =<?php echo json_encode($preference) ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\monthlyValue')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

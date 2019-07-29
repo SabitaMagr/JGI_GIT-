@@ -2,6 +2,18 @@ window.app = (function ($, toastr, App) {
     "use strict";
     $(document).ready(function () {
         App.setAssetsPath(document.basePath + '/assets/');
+        
+        // only for soaltee start
+//        $('#functionalTypeId').parent().children(':first-child').html('Main Department');
+//        $('#branchId').parent().children(':first-child').prepend('<button id="filBranch">Fill</button>');
+//        $('#filBranch').on('click',function(){
+//            if($('#branchId').prop('disabled')==false){
+//            $('#branchId').val([4,5,9]);
+//            $('#branchId').trigger('change');
+//            }
+//        })
+        // only for soaltee end
+        
     });
 
     $(document).on('focus', ':input', function () {
@@ -10,7 +22,7 @@ window.app = (function ($, toastr, App) {
 
     var format = "dd-M-yyyy";
     window.toastr.options = {"positionClass": "toast-bottom-right"};
-
+    let bulkId;
 
     var pullDataById = function (url, data) {
         return new Promise(function (resolve, reject) {
@@ -1163,7 +1175,7 @@ window.app = (function ($, toastr, App) {
         var min = min % 60;
         return hour + ":" + min;
     };
-    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config) {
+    var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config, exportName) {
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1174,7 +1186,10 @@ window.app = (function ($, toastr, App) {
                 sortable: false,
                 filterable: false
             };
+            bulkId = '';
             if (bulkOptions.id !== 'undefined' && bulkOptions.id !== null) {
+                bulkOptions.id = "BULK_"+bulkOptions.id;
+                bulkId = bulkOptions.id;
                 column.field = bulkOptions.id;
                 column.template = "<input id='#:" + bulkOptions.id + "#' type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             }
@@ -1183,15 +1198,86 @@ window.app = (function ($, toastr, App) {
             } else {
                 columns.splice(0, 0, column);
             }
-
         }
+        var excelExportName='HrisExcel.xlsx';
+        if (typeof exportName !== 'undefined' && exportName !== null) {
+            excelExportName=exportName;
+        }
+        var reportName = excelExportName != 'HrisExcel.xlsx' ? excelExportName.substring(0,excelExportName.length-5) : 'HRIS Report';
         var kendoConfig = {
             toolbar: ["excel"],
             excel: {
-                fileName: "Kendo Export.xlsx",
-                filterable: true,
+                fileName: excelExportName,
+                filterable: false,
                 allPages: true
             },
+            excelExport: function(e) {
+                var rows = e.workbook.sheets[0].rows;
+                var columns = e.workbook.sheets[0].columns;
+                // for(let i = 0; i < e.sender.columns.length; i++){
+                //     if(e.sender.columns[i].title == 'Select All'){
+                //         for(let j = 0; j < rows.length; j++){
+                //             rows[i].cells.splice(i, 1);
+                //         }
+                //     }
+                // }
+                let d = new Date();
+                var monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                let today = d.getDate()+"-"+monthShortNames[d.getMonth()]+"-"+d.getFullYear();
+                let fromDate = document.getElementById("fromDate") != undefined ? document.getElementById("fromDate").value : '' ;
+                let toDate = today;
+                if(document.getElementById("toDate") != undefined){
+                    if(document.getElementById("toDate").value != null && document.getElementById("toDate").value != '')
+                    toDate = document.getElementById("toDate").value;
+                }  
+                let fiscalYear = document.getElementById("fiscalYearId") != undefined ? document.getElementById("fiscalYearId").value : '' ;
+                let month = '';
+                if(document.getElementById("monthId") != undefined){
+                    month = document.getElementById("monthId").value;
+                }
+
+                if(fromDate != ''){
+                    rows.unshift({
+                        cells: [
+                        {value: reportName+" of date: "+fromDate+" to "+toDate, colSpan: columns.length, textAlign: "left"}
+                        ]
+                    });
+                }
+                else{
+                    rows.unshift({
+                        cells: [
+                        {value: reportName, colSpan: columns.length, textAlign: "left"}
+                        ]
+                    });
+                }
+                if(fiscalYear != ''){
+                    rows.unshift({
+                        cells: [
+                        {value: reportName+" of Fiscal Year: "+fiscalYear+" "+month, colSpan: columns.length, textAlign: "left"}
+                        ]
+                    });
+                }
+                if(document.preference != undefined){
+                    if(document.preference.companyAddress != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyAddress, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+                if(document.preference != undefined){
+                    if(document.preference.companyName != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyName, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+            },
+			columnMenu: true,
             height: 500,
             scrollable: true,
             sortable: true,
@@ -1282,6 +1368,15 @@ window.app = (function ($, toastr, App) {
         }
     }
     var renderKendoGrid = function ($table, data) {
+        if(bulkId != undefined){
+            for(let i in data[0]){
+                if(i == bulkId.substring(5)){
+                    for(let j = 0 ; j < data.length; j++){
+                        data[j][bulkId] = data[j][i];
+                    }
+                }
+            }
+        }
         var dataSource = new kendo.data.DataSource({data: data, pageSize: 20});
         var grid = $table.data("kendoGrid");
         dataSource.read();

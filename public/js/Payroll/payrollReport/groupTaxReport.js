@@ -23,7 +23,10 @@
             {ID: "FUNCTIONAL_TYPE_EDESC", VALUE: "Functional Type"},
             {ID: "ACCOUNT_NO", VALUE: "Account No"},
             {ID: "BIRTH_DATE", VALUE: "Birth Date"},
-            {ID: "JOIN_DATE", VALUE: "Join Date"}
+            {ID: "JOIN_DATE", VALUE: "Join Date"},
+             {ID: "ID_PAN_NO", VALUE: "Pan No"},
+             {ID: "BRANCH_NAME", VALUE: "Branch Name"},
+             {ID: "ID_ACCOUNT_NO", VALUE: "Account No"}
         ];
 
         app.setFiscalMonth($fiscalYear, $month, function (years, months, currentMonth) {
@@ -108,7 +111,7 @@
                 toolbar: ["excel"],
                 excel: {
                     fileName: "Group Tax Report.xlsx",
-                    filterable: true,
+                    filterable: false,
                     allPages: true
                 },
                 dataSource: {

@@ -42,6 +42,7 @@ class LoanReport extends HrisController {
                 'searchValues' => ApplicationHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
 
@@ -71,7 +72,8 @@ class LoanReport extends HrisController {
                 'searchValues' => ApplicationHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
-                'loanList' => $loanList
+                'loanList' => $loanList,
+                'preference' => $this->preference
         ]);
     }
 
@@ -101,7 +103,8 @@ class LoanReport extends HrisController {
         return Helper::addFlashMessagesToArray($this, [
                     'loans' => $loanFormElement,
                     'loanStatus' => $loanStatusFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference' => $this->preference
         ]);
     }
 

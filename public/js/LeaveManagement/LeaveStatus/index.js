@@ -46,7 +46,7 @@
                         template: "<span>#: (END_DATE_BS == null) ? '-' : END_DATE_BS #</span>"}]},
             {field: "NO_OF_DAYS", title: "Duration"},
             {field: "STATUS", title: "Status"},
-            {field: ["ID"], title: "Action", template: `
+            {field: "ID", title: "Action", template: `
             <span>                                  
                 <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: ID #" style="height:17px;" title="view">
                 <i class="fa fa-search-plus"></i>
@@ -61,12 +61,13 @@
                 } else {
                     $bulkActionDiv.hide();
                 }
-            }});
+            }}, null, 'Leave Status Report.xlsx');
         app.searchTable($tableContainer, ["FULL_NAME", "EMPLOYEE_CODE"]);
   
         var map = {
             'EMPLOYEE_CODE': 'Code',
             'FULL_NAME': 'Name',
+            'FUNCTIONAL_TYPE_EDESC': 'Functional Type',
             'LEAVE_ENAME': 'Leave',
             'APPLIED_DATE_AD': 'Applied Date(AD)',
             'APPLIED_DATE_BS': 'Applied Date(BS)',
@@ -129,6 +130,7 @@
         
         $("#reset").on("click", function () {
             $(".form-control").val("");
+            document.searchManager.reset();
         });
 
     });

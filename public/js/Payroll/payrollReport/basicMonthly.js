@@ -100,8 +100,36 @@
                 toolbar: ["excel"],
                 excel: {
                     fileName: "Basic Monthly Report.xlsx",
-                    filterable: true,
+                    filterable: false,
                     allPages: true
+                },
+                excelExport: function(e) {
+                    var rows = e.workbook.sheets[0].rows;
+                    var columns = e.workbook.sheets[0].columns;
+                    
+                    rows.unshift({
+                        cells: [
+                        {value: "Basic Monthly Report", colSpan: columns.length, textAlign: "left"}
+                        ]
+                    });
+                    if(document.preference != undefined){
+                        if(document.preference.companyAddress != null){
+                            rows.unshift({
+                                cells: [
+                                {value: document.preference.companyAddress, colSpan: columns.length, textAlign: "left"}
+                                ]
+                            });
+                        }
+                    }
+                    if(document.preference != undefined){
+                        if(document.preference.companyName != null){
+                            rows.unshift({
+                                cells: [
+                                {value: document.preference.companyName, colSpan: columns.length, textAlign: "left"}
+                                ]
+                            });
+                        }
+                    }
                 },
                 dataSource: {
                     data: reportData,

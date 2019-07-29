@@ -35,7 +35,8 @@ class AllReportController extends HrisController {
                         'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
                     ],
                     'monthId' => $monthId,
-                    'branchId' => $branchId
+                    'branchId' => $branchId,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -70,7 +71,8 @@ class AllReportController extends HrisController {
                     'comBraDepList' => [
                         'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME], [Branch::STATUS => "E"])
                     ],
-                    'branchId' => $branchId
+                    'branchId' => $branchId,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -126,7 +128,8 @@ class AllReportController extends HrisController {
         }
 
 
-        return ['fiscalYearSE' => $this->getFiscalYearSE(),'calenderType'=> $this->getCanderType()];
+        return ['fiscalYearSE' => $this->getFiscalYearSE(),'calenderType'=> $this->getCanderType(),
+    'preference' => $this->preference];
     }
 
     public function departmentWiseAction() { 
@@ -141,7 +144,8 @@ class AllReportController extends HrisController {
             }
         }
 
-        return ['fiscalYearSE' => $this->getFiscalYearSE(),'calenderType'=> $this->getCanderType()];
+        return ['fiscalYearSE' => $this->getFiscalYearSE(),'calenderType'=> $this->getCanderType(),
+    'preference' => $this->preference];
     }
 
     public function departmentWiseDailyAction() {
@@ -169,7 +173,8 @@ class AllReportController extends HrisController {
 //                'monthList' => $monthList,
 //                'monthId' => $monthId,
 //                'departmentId' => $departmentId,
-                    'fiscalYearSE' => $this->getFiscalYearSE()
+                    'fiscalYearSE' => $this->getFiscalYearSE(),
+                    'preference' => $this->preference
         ]); 
     } 
 
@@ -195,7 +200,8 @@ class AllReportController extends HrisController {
 
         return $this->stickFlashMessagesTo([
                     'fiscalYearSE' => $this->getFiscalYearSE(),
-                    'employeeList' => $employeeList
+                    'employeeList' => $employeeList,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -213,7 +219,8 @@ class AllReportController extends HrisController {
 
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0
+                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -360,7 +367,8 @@ class AllReportController extends HrisController {
         return Helper::addFlashMessagesToArray($this, [
                     'customWise' => $customFormElement,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'allLeave' => $allLeave
+                    'allLeave' => $allLeave,
+                    'preference' => $this->preference
         ]);
     }
 
@@ -434,7 +442,8 @@ class AllReportController extends HrisController {
                     'fiscalYearSE' => $this->getFiscalYearSE(),
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'preference' => $this->preference
         ]);
     }
 
@@ -468,7 +477,8 @@ class AllReportController extends HrisController {
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail'],
-                    'companies' => $companies
+                    'companies' => $companies,
+                    'preference' => $this->preference
                 ]);
             }
         } catch (Exception $e) {
@@ -502,6 +512,7 @@ class AllReportController extends HrisController {
                 'searchValues' => ApplicationHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     } 
   
@@ -521,6 +532,7 @@ class AllReportController extends HrisController {
                 'searchValues' => ApplicationHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]);
     }
  
@@ -542,8 +554,10 @@ class AllReportController extends HrisController {
                 'searchValues' => ApplicationHelper::getSearchData($this->adapter),
                 'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
+                'preference' => $this->preference
         ]); 
     }
+
     
     public function rosterReportAction(){
         

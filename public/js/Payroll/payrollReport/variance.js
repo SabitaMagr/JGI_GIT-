@@ -152,9 +152,47 @@
                 toolbar: ["excel"],
                 excel: {
                     fileName: "Variance Report.xlsx",
-                    filterable: true,
+                    filterable: false,
                     allPages: true
                 },
+                // pdf: {
+                //     fileName: "Variance Report.pdf",
+                //     allPages: true,
+                //     paperSize: "A4",
+                //     margin: { top: "2cm", left: "1cm", right: "1cm", bottom: "1cm" },
+                //     landscape: true,
+                //     repeatHeaders: true,
+                //     template: $("#page-template").html(),
+                //     scale: 0.8
+                // },
+                excelExport: function(e) {
+                var rows = e.workbook.sheets[0].rows;
+                var columns = e.workbook.sheets[0].columns;
+                
+                rows.unshift({
+                    cells: [
+                    {value: "Variance Report", colSpan: columns.length, textAlign: "left"}
+                    ]
+                });
+                if(document.preference != undefined){
+                    if(document.preference.companyAddress != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyAddress, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+                if(document.preference != undefined){
+                    if(document.preference.companyName != null){
+                        rows.unshift({
+                            cells: [
+                            {value: document.preference.companyName, colSpan: columns.length, textAlign: "left"}
+                            ]
+                        });
+                    }
+                }
+            },
                 dataSource: {
                     data: varianceData,
                     schema: {
@@ -186,8 +224,8 @@
         $('#searchEmployeesBtn').on('click', function () {
             var q = document.searchManager.getSearchValues();
             q['monthId'] = $month.val();
-            console.log(q);
-
+            document.month = $("#monthId option:selected").text();
+            document.fiscalYear = $("#fiscalYearId option:selected").text();
             app.serverRequest(document.pullVarianceListLink, q).then(function (response) {
                 if (response.success) {
                     // app.renderKendoGrid($table, response.data);

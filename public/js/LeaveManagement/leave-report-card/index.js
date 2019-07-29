@@ -10,7 +10,9 @@
             
             $assignTable.find("tr:gt(0)").remove();
             $("#table").empty();
-
+            $("#table").append('<h3 style="text-align: center;">'+document.preference.companyName+'</h3>');
+            $("#table").append('<h3 style="text-align: center;">'+document.preference.companyAddress+'</h3>');
+            $("#table").append('<h3 style="text-align: center;">Employee Leave Report Card</h3><hr />');
             // var data = document.searchManager.getSearchValues();
             let id = $("#employeeId").val();
             
@@ -23,7 +25,7 @@
                 var leaveDetails = response.data;
                 var leaves = response.leaves;
                 var htmlData = '<table class="table table-bordered">';
-                htmlData+='<tr><th colspan="3">EMP ID: </th><td>'+leaveDetails[0].EMPLOYEE_ID+'</td></tr>';
+                htmlData+='<tr><th colspan="3">EMP CODE: </th><td>'+leaveDetails[0].EMPLOYEE_ID+'</td></tr>';
                 htmlData+='<tr><td colspan="2">Name </td><th colspan="3">Present Address</th><td>'+leaveDetails[0].ADDR_TEMP_STREET_ADDRESS+'</td><th colspan="3">LEAVE DETAILS</th>';
                 for(let i = 0; i < leaves.length; i++){
                     htmlData+='<td rowspan="2">'+leaves[i].LEAVE_ENAME+'</td>';

@@ -1433,3 +1433,6 @@ alter table HRIS_EMP_TRAVEL_EXPENSE_DTL modify TRANSPORT_TYPE
 char(2) check (TRANSPORT_TYPE IN ('AP','OV','TI','BS','OF'));
 
 
+
+update Hris_Preferences set value = 'SOALTEE CROWN PLAZA' where key = 'COMPANY_NAME';
+update Hris_Preferences set value = 'Tachal, Kathmandu' where key = 'COMPANY_ADDRESS';
