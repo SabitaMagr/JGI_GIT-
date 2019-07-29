@@ -215,5 +215,92 @@ PIVOT(
         $result = $statement->execute();
         return Helper::extractDbData($result);
     }
+    
+    public function getWeeklyRosterDetailList($data) {
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
+        
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+
+        $sql = "
+            SELECT *
+FROM
+  (SELECT E.employee_code,
+    E.employee_id,
+    E.full_name,
+    ER.SUN,
+    ER.MON,
+    ER.TUE,
+    ER.WED,
+    ER.THU,
+    ER.FRI,
+    ER.SAT
+  FROM hris_employees E
+  LEFT JOIN HRIS_WEEKLY_ROASTER ER
+  ON(E.EMPLOYEE_ID = ER.EMPLOYEE_ID)
+  WHERE 1=1 AND E.STATUS='E' {$searchCondition}
+  )
+  ";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+    
+    public function getWeeklyShiftDetail(){
+        $shiftId = $data['shiftId'];
+        $selectedDay = $data['selectedDay'];
+
+
+        $sql = "SELECT
+TO_CHAR(DATES,'DD')||TO_CHAR(DATES,'-MON-YYYY') AS DATES,
+WEEK_NO,
+DAY_OFF,
+DAY,
+{$shiftId} AS SHIFT_ID
+FROM
+(SELECT * FROM 
+       (select rownum - 1 + to_date('{$selectedDate}', 'dd-mon-yyyy') AS dates,
+        TO_CHAR(rownum - 1 + to_date('{$selectedDate}', 'dd-mon-yyyy'),'D') AS WEEK_NO
+        from all_objects 
+        where rownum < to_date('{$toDate}', 'dd-mon-yyyy') -
+       to_date('{$selectedDate}', 'dd-mon-yyyy') + 2) DATE_LIST) DL
+       JOIN (select 
+       TO_CHAR(to_date('{$selectedDate}'),'D') DAY,
+       CASE 
+       WHEN TO_CHAR(to_date('{$selectedDate}'),'D')=1
+       THEN
+       WEEKDAY1
+       WHEN TO_CHAR(to_date('{$selectedDate}'),'D')=2
+       THEN
+       WEEKDAY2
+       WHEN TO_CHAR(to_date('{$selectedDate}'),'D')=3
+       THEN
+       WEEKDAY3
+       WHEN TO_CHAR(to_date('{$selectedDate}'),'D')=4
+       THEN
+       WEEKDAY4
+       WHEN TO_CHAR(to_date('{$selectedDate}'),'D')=5
+       THEN
+       WEEKDAY5
+       WHEN TO_CHAR(to_date('{$selectedDate}'),'D')=6
+       THEN
+       WEEKDAY6
+       WHEN TO_CHAR(to_date('{$selectedDate}'),'D')=7
+       THEN
+       WEEKDAY7
+       END AS DAY_OFF
+       from hris_shifts where shift_id={$shiftId}) SD  ON (1=1)";
+       
+        $raw = EntityHelper::rawQueryResult($this->adapter, $sql);
+        return Helper::extractDbData($raw);
+    }
 
 }

@@ -166,8 +166,10 @@ class Cron extends AbstractActionController {
             $to = $absent[$i]['EMPLOYEE_MAIL'];
             $cc = $absent[$i]['MANAGER_MAIL'];
             $date = (string) $absent[$i]['ATTENDANCE_DT'];
+
             $body = 'This is to Inform you that '
                     . 'Attendance   for date ' . $date . ' of '.$absent[$i]['EMPLOYEE_NAME'].' is not recorded.';
+
             $subject = "Missing Attendance";
 
             $this->sendEmail($to, $body, $subject, $cc);
@@ -176,14 +178,19 @@ class Cron extends AbstractActionController {
 
     public function sendEmail($to, $body, $subject, $cc) {
         try {
-            $msg = new Message();
-            $msg->setSubject($subject);
-            $msg->setBody($body);
-            $msg->setTo($to);
-            if ($cc != null) {
-                $msg->setCc($cc);
+            if ($to != null) {
+                $msg = new Message();
+                $msg->setSubject($subject);
+                $msg->setBody($body);
+                $msg->setTo($to);
+                if ($cc != null) {
+                    $msg->setCc($cc);
+                }
+                return EmailHelper::sendEmail($msg);
+            } else {
+                return;
             }
-            return EmailHelper::sendEmail($msg);
+            
         } catch (Exception $ex) {
             return $ex;
         }

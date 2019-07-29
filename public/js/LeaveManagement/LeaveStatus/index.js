@@ -8,6 +8,7 @@
         var $search = $('#search');
         var $bulkActionDiv = $('#bulkActionDiv');
         var $bulkBtns = $(".btnApproveReject");
+        var $superpower = $("#super_power");
 
         $.each(document.searchManager.getIds(), function (key, value) {
             $('#' + value).select2();
@@ -114,10 +115,11 @@
         $bulkBtns.bind("click", function () {
             var list = grid.getSelected();
             var action = $(this).attr('action');
+            var superPower = $superpower.prop('checked');
 
             var selectedValues = [];
             for (var i in list) {
-                selectedValues.push({id: list[i][pk], action: action});
+                selectedValues.push({id: list[i][pk], action: action, status: list[i]['STATUS'], super_power: superPower});
             }
             app.bulkServerRequest(document.bulkLink, selectedValues, function () {
                 $search.trigger('click');
