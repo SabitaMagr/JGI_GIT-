@@ -164,7 +164,7 @@
                 let acl = document.acl;
                 console.log(acl['CONTROL']);
                 $.each(this.ids, function (key, value) {
-                    console.log(value);
+//                    console.log(value);
                     let $company = $('#' + 'companyId');
                     let $branch = $('#' + 'branchId');
                     let $department = $('#' + 'departmentId');

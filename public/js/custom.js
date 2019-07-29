@@ -4,7 +4,7 @@ window.app = (function ($, toastr, App) {
         App.setAssetsPath(document.basePath + '/assets/');
         
         // only for soaltee start
-//        $('#functionalTypeId').parent().children(':first-child').html('Main Department');
+//        $('#functionalTypeId').parent().children(':first-child').html('Main Dep(Funct Type)');
 //        $('#branchId').parent().children(':first-child').prepend('<button id="filBranch">Fill</button>');
 //        $('#filBranch').on('click',function(){
 //            if($('#branchId').prop('disabled')==false){
