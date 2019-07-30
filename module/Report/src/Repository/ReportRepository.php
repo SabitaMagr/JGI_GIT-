@@ -1483,7 +1483,7 @@ EOT;
       $fromDate = !empty($_POST['fromDate']) ? $_POST['fromDate'] : '01-Jan-2019'; 
       $toDate = !empty($_POST['toDate']) ? $_POST['toDate'] : '31-Dec-2019'; 
 
-      $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId']);
+      $condition = EntityHelper::getSearchConditon($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'],$by['functionalTypeId']);
       $sql = "SELECT  
           {$columIfSynergy}
               E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
@@ -1736,6 +1736,40 @@ SUM(total) FOR variable_type
     
     return $this->rawQuery($sql); 
   }
+  
+  public function fetchRosterReport($data, $dates) {
+        $employeeId = $data['employeeId'];
+        $companyId = $data['companyId'];
+        $branchId = $data['branchId'];
+        $departmentId = $data['departmentId'];
+        $designationId = $data['designationId'];
+        $positionId = $data['positionId'];
+        $serviceTypeId = $data['serviceTypeId'];
+        $serviceEventTypeId = $data['serviceEventTypeId'];
+        $employeeTypeId = $data['employeeTypeId'];
+
+        $searchCondition = $this->getSearchConditon($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId);
+
+        $datesIn = "'";
+        for ($i = 0; $i < count($dates); $i++) {
+            $i == 0 ? $datesIn .= $dates[$i] . "' as DATE_" . str_replace('-', '_', $dates[$i]) : $datesIn .= ",'" . $dates[$i] . "' as DATE_" . str_replace('-', '_', $dates[$i]);
+        }
+        $sql = "
+SELECT *
+FROM
+  (SELECT E.FULL_NAME,
+    E.EMPLOYEE_CODE,
+    R.FOR_DATE,
+    S.SHIFT_ENAME as SHIFT_NAME
+  FROM HRIS_EMPLOYEE_SHIFT_ROASTER R
+  JOIN HRIS_SHIFTS S
+  ON (S.SHIFT_ID = R.SHIFT_ID)
+  FULL OUTER JOIN HRIS_EMPLOYEES E
+  ON (E.EMPLOYEE_ID = R.EMPLOYEE_ID)
+  WHERE 1=1 {$searchCondition}
+  ) PIVOT ( MAX( SHIFT_NAME ) FOR FOR_DATE IN ($datesIn))";
+        return $this->rawQuery($sql);
+    }
 }
 
 

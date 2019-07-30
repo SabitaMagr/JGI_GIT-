@@ -341,6 +341,13 @@
             }
             $scope.view();
         }
+        
+        
+        $("#reset").on("click", function () {
+            $(".form-control").val("");
+            $("select .form-control").change();
+            document.searchManager.reset();
+        });
 
     });
 })(window.jQuery, window.app);

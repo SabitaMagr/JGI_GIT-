@@ -66,4 +66,53 @@ class Roaster extends HrisController {
         }
     }
 
+    public function weeklyRosterAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $request = $this->getRequest();
+                $data = $request->getPost();
+                $result = $this->repository->getWeeklyRosterDetailList($data['q']);
+                return new JsonModel(['success' => true, 'data' => $result, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+        
+        return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'shifts' => EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => EntityHelper::STATUS_ENABLED]),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
+    
+    public function getWeeklyShiftDetailsAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $result = $this->repository->getWeeklyShiftDetail($data);
+            return new JsonModel(['success' => true, 'data' => $result, 'error' => '']);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'error' => $e->getMessage()]);
+        }
+    }
+
+    public function assignWeeklyRosterAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+
+                foreach ($data['data'] as $item) {
+                    $this->repository->merge($item['EMPLOYEE_ID'], $item['FOR_DATE'], $item['SHIFT_ID']);
+                }
+                return new JsonModel(['success' => true, 'data' => null, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => null, 'error' => $e->getMessage()]);
+            }
+        }
+        
+    }
+
 }

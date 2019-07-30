@@ -48,11 +48,11 @@ class LeaveStatus extends HrisController {
         if ($id === 0) {
             return $this->redirect()->toRoute("leavestatus");
         }
-        $request = $this->getRequest(); 
+        $request = $this->getRequest();
         $leaveRequestRepository = new LeaveRequestRepository($this->adapter);
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
 
- 
+
         $detail = $leaveApproveRepository->fetchById($id);
         $fileDetails = $leaveApproveRepository->fetchAttachmentsById($id);
 
@@ -118,7 +118,7 @@ class LeaveStatus extends HrisController {
             }
 
             return $this->redirect()->toRoute("leavestatus");
-        }  
+        }
         $leaveApply->exchangeArrayFromDB($detail);
         $this->form->bind($leaveApply);
         return Helper::addFlashMessagesToArray($this, [
@@ -143,7 +143,7 @@ class LeaveStatus extends HrisController {
                     'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
                     'gp' => $detail['GRACE_PERIOD'],
-                    'files' => $fileDetails 
+                    'files' => $fileDetails
         ]);
     }
 
@@ -166,7 +166,11 @@ class LeaveStatus extends HrisController {
         $request = $this->getRequest();
         try {
             $postData = $request->getPost();
-            $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            if ($postData['super_power'] == 'true') {
+                $this->makeSuperDecision($postData['id'], $postData['action'] == "approve");
+            } else {
+                $this->makeDecision($postData['id'], $postData['action'] == "approve");
+            }
             return new JsonModel(['success' => true, 'data' => null]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'error' => $e->getMessage()]);
@@ -174,6 +178,7 @@ class LeaveStatus extends HrisController {
     }
 
     private function makeDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
         $detail = $leaveApproveRepository->fetchById($id);
         if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
@@ -207,6 +212,35 @@ class LeaveStatus extends HrisController {
             $model->status = $approve ? "C" : "AP";
             $message = $approve ? "Leave Cancel Request Approved" : "Leave Cancel Request Rejected";
             $notificationEvent = $approve ? NotificationEvents::LEAVE_CANCELLED_APPROVE_ACCEPTED : NotificationEvents::LEAVE_CANCELLED_APPROVE_REJECTED;
+            $leaveApproveRepository->edit($model, $id);
+            if ($enableFlashNotification) {
+                $this->flashmessenger()->addMessage($message);
+            }
+            try {
+                HeadNotification::pushNotification($notificationEvent, $model, $this->adapter, $this);
+            } catch (Exception $e) {
+                $this->flashmessenger()->addMessage($e->getMessage());
+            }
+        }
+    }
+
+    private function makeSuperDecision($id, $approve, $remarks = null, $enableFlashNotification = false) {
+
+        $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
+        $detail = $leaveApproveRepository->fetchById($id);
+
+        if ($detail['STATUS'] == 'AP') {
+            $model = new LeaveApply();
+            $model->id = $id;
+            $model->recommendedDate = Helper::getcurrentExpressionDate();
+            $model->recommendedBy = $this->employeeId;
+            $model->approvedRemarks = $remarks;
+            $model->approvedDate = Helper::getcurrentExpressionDate();
+            $model->approvedBy = $this->employeeId;
+            $model->status = $approve ? "AP" : "R";
+            
+            $message = $approve ? "Leave Request Approved" : "Leave Request Rejected";
+            $notificationEvent = $approve ? NotificationEvents::LEAVE_APPROVE_ACCEPTED : NotificationEvents::LEAVE_APPROVE_REJECTED;
             $leaveApproveRepository->edit($model, $id);
             if ($enableFlashNotification) {
                 $this->flashmessenger()->addMessage($message);
