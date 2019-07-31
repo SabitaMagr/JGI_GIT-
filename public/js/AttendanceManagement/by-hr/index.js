@@ -343,11 +343,9 @@
         }
         
         
-        $("#reset").on("click", function () {
-            $(".form-control").val("");
-            $("select .form-control").change();
-            document.searchManager.reset();
-        });
+//        $("#reset").on("click", function () {
+//                app.resetField();
+//        });
 
     });
 })(window.jQuery, window.app);

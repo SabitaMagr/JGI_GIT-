@@ -84,10 +84,10 @@
             app.exportToPDF($tableContainer, map, "AttendanceRequestList.pdf");
         });
 
-        $("#reset").on("click", function () {
-            $(".form-control").val("");
-            $("#fromDate").val("");
-        });
+//        $("#reset").on("click", function () {
+//            $(".form-control").val("");
+//            $("#fromDate").val("");
+//        });
     });
 })(window.jQuery, window.app);
 

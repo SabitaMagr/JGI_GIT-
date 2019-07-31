@@ -162,9 +162,9 @@
             },
             reset: function () {
                 let acl = document.acl;
-                console.log(acl['CONTROL']);
+//                console.log(acl['CONTROL']);
                 $.each(this.ids, function (key, value) {
-                    console.log(value);
+//                    console.log(value);
                     let $company = $('#' + 'companyId');
                     let $branch = $('#' + 'branchId');
                     let $department = $('#' + 'departmentId');
@@ -268,6 +268,7 @@
         (function () {
             $('.hris-reset-btn').on('click', function () {
                 document.searchManager.reset();
+                app.resetField();
             });
         })();
 

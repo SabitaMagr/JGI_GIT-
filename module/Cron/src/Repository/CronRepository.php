@@ -37,7 +37,7 @@ LEFT JOIN HRIS_EMPLOYEES EE
 ON (B.BRANCH_MANAGER_ID = EE.EMPLOYEE_ID)
 LEFT JOIN HRIS_SHIFTS S
   ON (AD.SHIFT_ID        = S.SHIFT_ID)
-WHERE AD.ATTENDANCE_DT = trunc(sysdate)
+WHERE AD.ATTENDANCE_DT = '25-JAN-19'
 AND (AD.LATE_STATUS  = 'L' OR AD.OVERALL_STATUS = 'AB') 
 AND E.STATUS = 'E'
 ORDER BY AD.EMPLOYEE_ID";
@@ -71,13 +71,26 @@ LEFT JOIN HRIS_EMPLOYEES EE
 ON (B.BRANCH_MANAGER_ID = EE.EMPLOYEE_ID)
 LEFT JOIN HRIS_SHIFTS S
 ON (AD.SHIFT_ID        = S.SHIFT_ID)
-WHERE AD.ATTENDANCE_DT = trunc(sysdate-1)
+WHERE AD.ATTENDANCE_DT = '25-JAN-19'
 AND AD.LATE_STATUS    IN ('E', 'B', 'X', 'Y')
 ORDER BY AD.EMPLOYEE_ID";
 
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
         return Helper::extractDbData($result);
+    }
+
+    public function doReattendance() {
+        print_r('inside reattendance');
+        $sql = "BEGIN 
+                HRIS_REATTENDANCE(trunc(sysdate));
+                END; 
+                ";
+        $statement = $this->adapter->query($sql);
+        $statement->execute();
+        print_r('out of reattendance');
+        return ;
+//        return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
 }

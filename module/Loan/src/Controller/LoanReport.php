@@ -83,7 +83,7 @@ class LoanReport extends HrisController {
         $loans = EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => 'E'], Loan::LOAN_NAME, "ASC", NULL, FALSE, TRUE);
         $loans1 = [-1 => "All Loans"] + $loans;
         $loanFormElement->setValueOptions($loans1);
-        $loanFormElement->setAttributes(["id" => "loanId", "class" => "form-control"]);
+        $loanFormElement->setAttributes(["id" => "loanId", "class" => "form-control reset-field"]);
         $loanFormElement->setLabel("Loan Type");
 
         $loanStatus = [
@@ -97,7 +97,7 @@ class LoanReport extends HrisController {
         $loanStatusFormElement = new Select();
         $loanStatusFormElement->setName("loanStatus");
         $loanStatusFormElement->setValueOptions($loanStatus);
-        $loanStatusFormElement->setAttributes(["id" => "loanRequestStatusId", "class" => "form-control"]);
+        $loanStatusFormElement->setAttributes(["id" => "loanRequestStatusId", "class" => "form-control reset-field"]);
         $loanStatusFormElement->setLabel("Status");
 
         return Helper::addFlashMessagesToArray($this, [
