@@ -944,4 +944,8 @@ class Profile extends HrisController {
             ->result();
         return new JsonModel($districtKV);
     }
+
+    public function getSelfNameAction(){
+        return new JsonModel(['name' => $this->storageData['employee_detail']['EMPLOYEE_CODE'].'-'.$this->storageData['employee_detail']['FULL_NAME']]);
+    }
 }
