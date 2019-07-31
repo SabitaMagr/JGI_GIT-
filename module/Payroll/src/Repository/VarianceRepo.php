@@ -37,6 +37,11 @@ WHEN 'S' THEN 'Salary Group'
 WHEN 'V' THEN 'Variance'
 WHEN 'O' THEN 'OT'
 WHEN 'T' THEN 'Tax Group'
+WHEN 'B' THEN 'Basic'
+WHEN 'C' THEN 'Grade'
+WHEN 'A' THEN 'Allowance'
+WHEN 'G' THEN 'Gross'
+WHEN 'Y' THEN 'Tax Yearly'
 END
 AS VARIABLE_TYPE_NAME
     FROM 
