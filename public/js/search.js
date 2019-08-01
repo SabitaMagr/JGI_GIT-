@@ -162,8 +162,7 @@
             },
             reset: function () {
                 let acl = document.acl;
-                
-                if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
+                let aclControlVal='F';
                     
                     $.each(this.ids, function (key, value) {
 //                    console.log(value);
@@ -177,15 +176,20 @@
 //                    let $employee = $('#' + 'employeeId');
 //                    
                         let populateValues = [];
+                    if (typeof acl !== 'undefined') {
+                        console.log('sdfsd');
+                        aclControlVal = acl['CONTROL'];
+
                         $.each(acl['CONTROL_VALUES'], function (k, v) {
                             if (v.CONTROL == acl['CONTROL']) {
                                 populateValues.push(v.VAL);
                             }
                         });
 //                console.log(acl['CONTROL']);
+                    }  //end if
                         if (typeof value !== "undefined") {
                             if (value == 'companyId' || value == 'branchId' || value == 'designationId' || value == 'departmentId' || value == 'positionId') {
-                                switch (acl['CONTROL']) {
+                                switch (aclControlVal) {
                                     case 'F':
                                         $('#' + value).val(-1).change();
                                         break;
@@ -235,7 +239,8 @@
                             }
                         }
                     });
-                }
+                
+                
                 if (this.resetEvent !== null) {
                     this.resetEvent();
                 }
