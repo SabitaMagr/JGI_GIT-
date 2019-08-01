@@ -1212,9 +1212,7 @@ window.app = (function ($, toastr, App) {
         return hour + ":" + min;
     };
     var initializeKendoGrid = function ($table, columns, detail, bulkOptions, config, exportName) {
-        // for(let i = 0; i < columns.length; i++){
-        //     columns[i].headerAttributes = {style: "white-space: normal"};
-        // }
+        
         if (typeof bulkOptions !== 'undefined' && bulkOptions !== null) {
             var template = "<input type='checkbox' class='k-checkbox row-checkbox'><label class='k-checkbox-label'></label>";
             var column = {
@@ -1249,6 +1247,9 @@ window.app = (function ($, toastr, App) {
         }
         var reportName = excelExportName != 'HrisExcel.xlsx' ? excelExportName.substring(0,excelExportName.length-5) : 'HRIS Report';
         globalReportName = reportName;
+        // for(let i = 0; i < columns.length; i++){
+        //     delete columns[i].width;
+        // }
         var kendoConfig = {
             toolbar: ["excel", "pdf"],
             excel: {
