@@ -327,6 +327,8 @@ class PayrollReportController extends HrisController {
         $miscellaneous=$this->repository->gettaxYearlyByHeads('MI');
         $bMiscellaneou=$this->repository->gettaxYearlyByHeads('BM');
         $cMiscellaneou=$this->repository->gettaxYearlyByHeads('CM');
+        $sumOfExemption=$this->repository->gettaxYearlyByHeads('SE','sin');
+        $sumOfOtherTax=$this->repository->gettaxYearlyByHeads('ST','sin');
         
         
         
@@ -342,7 +344,9 @@ class PayrollReportController extends HrisController {
                     'otherTax' => $otherTax,
                     'miscellaneous' => $miscellaneous,
                     'bMiscellaneou' => $bMiscellaneou,
-                    'cMiscellaneou' => $cMiscellaneou
+                    'cMiscellaneou' => $cMiscellaneou,
+                    'sumOfExemption' => $sumOfExemption,
+                    'sumOfOtherTax' => $sumOfOtherTax
         ]);
         
     }
