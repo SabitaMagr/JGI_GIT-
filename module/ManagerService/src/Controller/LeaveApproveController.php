@@ -202,7 +202,7 @@ class LeaveApproveController extends HrisController {
                     'leaves' => $leaveFormElement,
                     'leaveStatus' => $leaveStatusFormElement,
                     'recomApproveId' => $this->employeeId,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 

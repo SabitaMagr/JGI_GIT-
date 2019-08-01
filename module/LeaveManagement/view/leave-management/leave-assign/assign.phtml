@@ -11,6 +11,7 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
 
 <script>
     document.pullEmployeeLeaveLink = '<?php echo $this->url("leaveassign", ["action" => "pullEmployeeLeave"]) ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
     document.pushEmployeeLeaveLink = '<?php echo $this->url("leaveassign", ["action" => "pushEmployeeLeave"]) ?>';
     document.getSearchDataLink = '<?php echo $this->url('leaveassign', ['action' => 'getSearchData']); ?>';
 </script>

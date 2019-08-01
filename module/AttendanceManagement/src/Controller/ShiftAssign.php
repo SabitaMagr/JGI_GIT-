@@ -27,6 +27,7 @@ class ShiftAssign extends HrisController {
         return new ViewModel([
             'shiftList' => $shiftList,
             'searchValues' => EntityHelper::getSearchData($this->adapter),
+            'acl' => $this->acl,
         ]);
     }
 

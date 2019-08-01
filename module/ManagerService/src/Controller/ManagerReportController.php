@@ -88,7 +88,7 @@ class ManagerReportController extends AbstractActionController{
                     'employeeId' => $this->employeeId,
                     'status' => $statusFormElement,
                     'employeeFromElement'=>$employeeFormElement,
-                    'currentEmployeeId'=>$this->employeeId
+                    'currentEmployeeId'=>$this->employeeId,
             
         ]);
     }

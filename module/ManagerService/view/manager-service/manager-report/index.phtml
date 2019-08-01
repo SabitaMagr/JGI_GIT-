@@ -27,6 +27,7 @@ $this->headScript()
     document.ids =<?php echo json_encode(["fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => "","statusId" => "All","employeeId" => -1]) ?>;
     document.url = '<?= $this->url("managerReport", ["action" => "pullAttendance"]) ?>';
     document.currentEmployeeId = '<?= $currentEmployeeId?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
 <div class="page-bar">
@@ -129,7 +130,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div  style="float: left;margin-top: 1%;font-size: 12px;">
                                 <label>Missed-Punch Only</label>
                                 <label style="padding-left:0px!important;" class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                    <input class="" type="checkbox" id="missPunchOnly" name="missPunchOnly"/>
+                                    <input class="reset-field" type="checkbox" id="missPunchOnly" name="missPunchOnly"/>
                                     <span></span>
                                 </label>
                             </div>
