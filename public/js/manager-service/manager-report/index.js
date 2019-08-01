@@ -13,7 +13,7 @@
                     $("#" + key).val(value).change();
                 });
             }
-            $(".form-control").val("");
+//            $(".form-control").val("");
         });
     });
 })(window.jQuery, window.app);

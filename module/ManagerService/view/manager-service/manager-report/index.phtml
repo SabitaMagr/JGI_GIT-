@@ -27,6 +27,7 @@ $this->headScript()
     document.ids =<?php echo json_encode(["fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => "","statusId" => "All","employeeId" => -1]) ?>;
     document.url = '<?= $this->url("managerReport", ["action" => "pullAttendance"]) ?>';
     document.currentEmployeeId = '<?= $currentEmployeeId?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
 <div class="page-bar">
@@ -87,27 +88,27 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <label for="fromDate">From Date</label>
-                                                <input type="text" id="fromDate" name="fromDate" class="form-control"/>
+                                                <input type="text" id="fromDate" name="fromDate" class="form-control reset-field"/>
                                             </div>
 
                                         </div>
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <label for="nepaliFromDate">&nbsp;</label>
-                                                <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control"/>
+                                                <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control reset-field"/>
                                             </div>
 
                                         </div>
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <label for="toDate">To Date</label>
-                                                <input type="text"  id="toDate" name="toDate"  class="form-control"/>
+                                                <input type="text"  id="toDate" name="toDate"  class="form-control reset-field"/>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
                                             <div class="form-group">
                                                 <label for="nepaliToDate">&nbsp;</label>
-                                                <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control"/>
+                                                <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control reset-field"/>
                                             </div>
                                         </div>
                                     </div>
@@ -129,7 +130,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                             <div  style="float: left;margin-top: 1%;font-size: 12px;">
                                 <label>Missed-Punch Only</label>
                                 <label style="padding-left:0px!important;" class="mt-checkbox mt-checkbox-single mt-checkbox-outline">
-                                    <input class="" type="checkbox" id="missPunchOnly" name="missPunchOnly"/>
+                                    <input class="reset-field" type="checkbox" id="missPunchOnly" name="missPunchOnly"/>
                                     <span></span>
                                 </label>
                             </div>

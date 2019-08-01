@@ -88,10 +88,10 @@
             app.exportToPDF($tableContainer, map, "Work on Holiday Request List.pdf");
         });
         
-        $("#reset").on("click", function () {
-            $(".form-control").val("");
-            $("#fromDate").val("");
-        });
+//        $("#reset").on("click", function () {
+//            $(".form-control").val("");
+//            $("#fromDate").val("");
+//        });
 
     });
 })(window.jQuery, window.app);

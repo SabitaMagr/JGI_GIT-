@@ -80,8 +80,8 @@
             app.exportToPDF($table, exportMap, 'Employee Training Assigned List.pdf');
         });
         
-        $('#reset').on('click',function (){
-            $('.form-control').val("");
-        });
+//        $('#reset').on('click',function (){
+//            $('.form-control').val("");
+//        });
     });
 })(window.jQuery, window.app);

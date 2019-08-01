@@ -162,8 +162,7 @@
             },
             reset: function () {
                 let acl = document.acl;
-
-
+                
                 if (typeof acl !== 'undefined' && typeof employeeDetail !== 'undefined') {
                     
                     $.each(this.ids, function (key, value) {
@@ -272,6 +271,7 @@
         (function () {
             $('.hris-reset-btn').on('click', function () {
                 document.searchManager.reset();
+                app.resetField();
             });
         })();
 

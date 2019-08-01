@@ -1812,6 +1812,22 @@ window.app = (function ($, toastr, App) {
         }
         return null;
     };
+    
+    var resetField = function () {
+        $('.reset-field').each(function(i, obj) {
+//    console.log($(obj));
+//    $(obj).val('');
+    $(obj).val(-1);
+    $(obj).prop("checked", false);
+    $(obj).change();
+    });
+        
+//        console.log('here');
+//        document.getElementsByClassName("reset-field").values();
+//        $('.reset-field').val("");
+//        $('.reset-field').change();
+        
+    };
 
 
 
@@ -1859,6 +1875,7 @@ window.app = (function ($, toastr, App) {
         setEmployeeSearch: setEmployeeSearch,
         prependPrefColumns: prependPrefColumns,
         prependPrefExportMap: prependPrefExportMap,
-        findOneBy: findOneBy
+        findOneBy: findOneBy,
+        resetField: resetField
     };
 })(window.jQuery, window.toastr, window.App);

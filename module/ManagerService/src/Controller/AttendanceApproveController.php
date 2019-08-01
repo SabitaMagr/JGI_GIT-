@@ -143,7 +143,7 @@ class AttendanceApproveController extends HrisController {
         $attendanceStatusFormElement = new Select();
         $attendanceStatusFormElement->setName("attendanceStatus");
         $attendanceStatusFormElement->setValueOptions($attendanceStatus);
-        $attendanceStatusFormElement->setAttributes(["id" => "attendanceRequestStatusId", "class" => "form-control"]);
+        $attendanceStatusFormElement->setAttributes(["id" => "attendanceRequestStatusId", "class" => "form-control reset-field"]);
         $attendanceStatusFormElement->setLabel("Status");
 
         return Helper::addFlashMessagesToArray($this, [

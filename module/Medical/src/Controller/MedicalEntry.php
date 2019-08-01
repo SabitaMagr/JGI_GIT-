@@ -163,7 +163,7 @@ class MedicalEntry extends HrisController {
             "C" => "Cancelled",
         );
         $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
+        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control reset-field"]);
         $statusFormElement->setLabel("Status");
         return $statusFormElement;
     }
