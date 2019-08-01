@@ -106,36 +106,36 @@
 
 
         var repTemplate = `{{#employees}}
-<h4>{{COMPANY_NAME}}<h3>
+<div><h4>{{COMPANY_NAME}}<h3>
 <h5>{{BRANCH_NAME}}<h2>
 <table class="table table-bordered table-striped">
                     <tr>
-                        <td>Estimate Income Tax</td>
-                        <td>{{YEAR_MONTH_NAME}}</td>
+                        <td><b>Estimate Income Tax</b></td>
+                        <td><b>{{YEAR_MONTH_NAME}}</b></td>
                         <td></td>
                         <td></td>
-                        <td>Designation</td>
-                        <td>{{DESIGNATION_TITLE}}</td>
+                        <td><b>Designation</b></td>
+                        <td><b>{{DESIGNATION_TITLE}}</b></td>
                     </tr>
                     <tr>
-                        <td>Name</td>
-                        <td>{{FULL_NAME}}</td>
+                        <td><b>Name</b></td>
+                        <td><b>{{FULL_NAME}}</b></td>
                         <td></td>
                         <td></td>
-                        <td>Department</td>
-                        <td>{{DEPARTMENT_NAME}}</td>
+                        <td><b>Department</b></td>
+                        <td><b>{{DEPARTMENT_NAME}}</b></td>
                     </tr>
                     <tr>
-                        <td>Code</td>
-                        <td>{{EMPLOYEE_CODE}}</td>
+                        <td><b>Code</b></td>
+                        <td><b>{{EMPLOYEE_CODE}}</b></td>
                         <td></td>
                         <td></td>
-                        <td>Assessment Choice</td>
-                        <td>{{MARITAL_STATUS_DESC}}</td>
+                        <td><b>Assessment Choice</b></td>
+                        <td><b>{{MARITAL_STATUS_DESC}}</b></td>
                     </tr>
                     <tr>
-                        <td>PAN No</td>
-                        <td>{{ID_PAN_NO}}</td>
+                        <td><b>PAN No</b></td>
+                        <td><b>{{ID_PAN_NO}}</b></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -156,7 +156,7 @@
                         <td>{{`+document.sumOfOtherTax['TEMPLATE_NAME']+`}}</td>
                     </tr>
         ` + sencondLoop + `
-                </table>{{/employees}}`;
+                </table></div>{{/employees}}`;
         
 //        console.log(repTemplate);
         
@@ -195,6 +195,19 @@
             }, function (error) {
                 app.showMessage(error, 'error');
             });
+        });
+        
+        
+        $('#excelExport').on('click', function () {
+            
+            
+        });
+        
+        $('#pdfExport').on('click', function () {
+            kendo.drawing.drawDOM($("#table")).then(function (group) {
+                kendo.drawing.pdf.saveAs(group, "Tax Yearly.pdf");
+            });
+
         });
         
         

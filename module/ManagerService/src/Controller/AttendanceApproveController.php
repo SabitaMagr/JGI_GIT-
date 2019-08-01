@@ -93,7 +93,7 @@ class AttendanceApproveController extends HrisController {
         $detail = $attendanceRequestRepository->fetchByIdWithEmployeeId($id, $this->employeeId);
 
         if ($this->employeeId != $detail['RECOMMENDER_ID'] && $this->employeeId != $detail['APPROVER_ID']) {
-            return $this->redirect()->toRoute("leaveapprove");
+            return $this->redirect()->toRoute("attedanceapprove");
         }
 
         $employeeId = $detail['EMPLOYEE_ID'];
