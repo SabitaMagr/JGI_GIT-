@@ -115,7 +115,7 @@ class AttendanceByHr extends HrisController {
             }
             return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", "-", FALSE, TRUE)
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", "-", FALSE, TRUE, $this->employeeId)
                     ]
             );
         } catch (Exception $e) {

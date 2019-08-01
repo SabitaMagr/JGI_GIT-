@@ -316,4 +316,60 @@ class PayrollReportController extends HrisController {
                     'salaryType' => $salaryType
         ]);
     }
+    
+    
+    
+    public function taxYearlyAction() {
+        
+        $incomes=$this->repository->gettaxYearlyByHeads('IN');
+        $taxExcemptions=$this->repository->gettaxYearlyByHeads('TE');
+        $otherTax=$this->repository->gettaxYearlyByHeads('OT');
+        $miscellaneous=$this->repository->gettaxYearlyByHeads('MI');
+        $bMiscellaneou=$this->repository->gettaxYearlyByHeads('BM');
+        $cMiscellaneou=$this->repository->gettaxYearlyByHeads('CM');
+        $sumOfExemption=$this->repository->gettaxYearlyByHeads('SE','sin');
+        $sumOfOtherTax=$this->repository->gettaxYearlyByHeads('ST','sin');
+        
+        
+        
+        $salarySheetRepo = new SalarySheetRepo($this->adapter);
+        $salaryType = iterator_to_array($salarySheetRepo->fetchAllSalaryType(), false);
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'salaryType' => $salaryType,
+                    'preference' => $this->preference,
+                    'incomes' => $incomes,
+                    'taxExcemptions' => $taxExcemptions,
+                    'otherTax' => $otherTax,
+                    'miscellaneous' => $miscellaneous,
+                    'bMiscellaneou' => $bMiscellaneou,
+                    'cMiscellaneou' => $cMiscellaneou,
+                    'sumOfExemption' => $sumOfExemption,
+                    'sumOfOtherTax' => $sumOfOtherTax
+        ]);
+        
+    }
+    
+    
+     public function pulltaxYearlyAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            
+            $resultData = $this->repository->getTaxYearly($data);
+            
+            
+            
+            $result = [];
+            $result['success'] = true;
+            $result['data']['employees'] = Helper::extractDbData($resultData);
+            $result['error'] = "";
+            return new CustomViewModel($result);
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
+    
 }

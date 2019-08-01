@@ -91,4 +91,13 @@ class Variance {
      */
     public $orderNo;
 
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required({"required":"false"})
+     * @Annotation\Filter({"name":"StripTags","name":"StringTrim"})
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Heads"})
+     * @Annotation\Attributes({ "id":"vHeads","class":"form-control"})
+     */
+    public $vHeads;
+    
 }

@@ -76,7 +76,9 @@
                     title: value['VARIANCE_NAME'],
                     width: 100,
                     aggregates: ["sum"],
-                    footerTemplate: "#=sum||''#"
+                    //footerTemplate: "#=sum||''#"
+					footerTemplate: "#=kendo.toString(sum,'0.00')#"
+                
                 });
                 map[value['VARIANCE']] = value['VARIANCE_NAME'];
                 dataSchemaCols[value['VARIANCE']] = {type: "number"};
@@ -151,6 +153,8 @@
                 groupable: true,
                 filterable: true,
                 pageable: {
+					refresh:true,
+					pageSizes:true,
                     input: true,
                     numeric: false
                 },

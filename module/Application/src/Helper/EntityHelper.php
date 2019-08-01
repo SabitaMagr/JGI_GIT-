@@ -80,7 +80,10 @@ class EntityHelper {
         return $entitiesArray;
     }
 
-    public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null, $emptyColumn = false, $initCap = false) {
+    public static function getTableKVListWithSortOption(AdapterInterface $adapter, $tableName, $key, array $values, $where = null, $orderBy = null, $orderAs = null, $concatWith = null, $emptyColumn = false, $initCap = false, $employeeId = null) {
+        if($employeeId !== null){
+            $where = self::applyRoleControl($adapter, $employeeId, $where);
+        }
         return self::getTableKVList($adapter, $tableName, $key, $values, $where, $concatWith, $emptyColumn, $orderBy, $orderAs, $initCap);
     }
 
@@ -481,4 +484,76 @@ class EntityHelper {
         return $conditon;
     }
 
+    public static function applyRoleControl($adapter, $employeeId, $where){
+        $sql = "SELECT CONTROL FROM HRIS_ROLES WHERE ROLE_ID = (SELECT ROLE_ID FROM HRIS_USERS WHERE EMPLOYEE_ID = $employeeId)";
+        $roleControl = Helper::extractDbData(self::rawQueryResult($adapter, $sql))[0]['CONTROL'];
+        
+        switch ($roleControl) {
+            case 'B': 
+            $controlData = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT VAL FROM HRIS_ROLE_CONTROL WHERE ROLE_ID = (SELECT ROLE_ID FROM HRIS_USERS WHERE EMPLOYEE_ID = $employeeId) AND CONTROL = 'B'"));
+            if(count($controlData) == 0){
+                $where['BRANCH_ID'] = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT BRANCH_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = $employeeId"))[0]['BRANCH_ID'];
+            }
+            else{
+                $where['BRANCH_ID'] = [];
+                foreach ($controlData as $data) {
+                    array_push($where['BRANCH_ID'], $data['VAL']);
+                }
+            }
+            break;
+
+            case 'C': 
+            $controlData = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT VAL FROM HRIS_ROLE_CONTROL WHERE ROLE_ID = (SELECT ROLE_ID FROM HRIS_USERS WHERE EMPLOYEE_ID = $employeeId) AND CONTROL = 'C'"));
+            if(count($controlData) == 0){
+                $where['COMPANY_ID'] = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT COMPANY_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = $employeeId"))[0]['COMPANY_ID'];
+            }
+            else{
+                $where['COMPANY_ID'] = [];
+                foreach ($controlData as $data) {
+                    array_push($where['COMPANY_ID'], $data['VAL']);
+                }
+            }
+            break;
+
+            case 'DP': 
+            $controlData = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT VAL FROM HRIS_ROLE_CONTROL WHERE ROLE_ID = (SELECT ROLE_ID FROM HRIS_USERS WHERE EMPLOYEE_ID = $employeeId) AND CONTROL = 'DP'"));
+            if(count($controlData) == 0){
+                $where['DEPARTMENT_ID'] = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT DEPARTMENT_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = $employeeId"))[0]['DEPARTMENT_ID'];
+            }
+            else{
+                $where['DEPARTMENT_ID'] = [];
+                foreach ($controlData as $data) {
+                    array_push($where['DEPARTMENT_ID'], $data['VAL']);
+                }
+            }
+            break;
+
+            case 'DS': 
+            $controlData = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT VAL FROM HRIS_ROLE_CONTROL WHERE ROLE_ID = (SELECT ROLE_ID FROM HRIS_USERS WHERE EMPLOYEE_ID = $employeeId) AND CONTROL = 'DS'"));
+            if(count($controlData) == 0){
+                $where['DESIGNATION_ID'] = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT DESIGNATION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = $employeeId"))[0]['DESIGNATION_ID'];
+            }
+            else{
+                $where['DESIGNATION_ID'] = [];
+                foreach ($controlData as $data) {
+                    array_push($where['DESIGNATION_ID'], $data['VAL']);
+                }
+            }
+            break;
+
+            case 'P': 
+            $controlData = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT VAL FROM HRIS_ROLE_CONTROL WHERE ROLE_ID = (SELECT ROLE_ID FROM HRIS_USERS WHERE EMPLOYEE_ID = $employeeId) AND CONTROL = 'P'"));
+            if(count($controlData) == 0){
+                $where['POSITION_ID'] = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT POSITION_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = $employeeId"))[0]['POSITION_ID'];
+            }
+            else{
+                $where['POSITION_ID'] = [];
+                foreach ($controlData as $data) {
+                    array_push($where['POSITION_ID'], $data['VAL']);
+                }
+            }
+            break;
+        }
+        return $where;
+    }
 }

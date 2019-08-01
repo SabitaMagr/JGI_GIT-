@@ -109,7 +109,7 @@
             app.excelExport($tableContainer, map, "Leave Request List.xlsx");
         });
         $('#pdfExport').on('click', function () {
-            app.exportToPDF($tableContainer, map, "Leave Request List.pdf");
+            app.exportToPDF($tableContainer, map, "Leave Request List.pdf", 'A2');
         });
 
         $bulkBtns.bind("click", function () {

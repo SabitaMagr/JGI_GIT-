@@ -1,7 +1,7 @@
 <?php
 namespace Loan\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Application\Controller\HrisController;
 use Zend\Db\Adapter\AdapterInterface;
 use Application\Helper\Helper;
 use Application\Helper\EntityHelper;
@@ -9,6 +9,7 @@ use Zend\Form\Annotation\AnnotationBuilder;
 use SelfService\Form\LoanRequestForm;
 use Loan\Form\LoanCLosing AS LoanCLosingForm;
 use Setup\Model\HrEmployees;
+use Zend\Authentication\Storage\StorageInterface;
 use Loan\Model\LoanClosing AS LoanClosingModel;
 use SelfService\Repository\LoanRequestRepository;
 use Loan\Repository\LoanClosingRepository;
@@ -16,19 +17,19 @@ use SelfService\Model\LoanRequest as LoanRequestModel;
 use Setup\Model\Loan;
 use ManagerService\Repository\LoanApproveRepository;
 
-class LoanApply extends AbstractActionController{
-    private $form;
-    private $loanCLosingForm;
-    private $adapter;
-    private $loanRequesteRepository;
-    private $loanClosingRepository;
+class LoanApply extends HrisController{
+    protected $form;
+    protected $loanCLosingForm;
+    protected $adapter;
+    protected $loanRequesteRepository;
+    protected $loanClosingRepository;
     
-    public function __construct(AdapterInterface $adapter) {
-        $this->adapter = $adapter;
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
         $this->loanRequesteRepository = new LoanRequestRepository($adapter);
         $this->loanClosingRepository = new LoanClosingRepository($adapter);
     }
-    public function initializeForm(){
+    public function initializeLoanForm(){
         $builder = new AnnotationBuilder();
         $form = new LoanRequestForm();
         $this->form = $builder->createForm($form);
@@ -44,7 +45,7 @@ class LoanApply extends AbstractActionController{
     }
 
     public function addAction() {
-        $this->initializeForm();
+        $this->initializeLoanForm();
         $request = $this->getRequest();
         $model = new LoanRequestModel();  
 
@@ -61,13 +62,12 @@ class LoanApply extends AbstractActionController{
                 return $this->redirect()->toRoute("loanStatus");
             }
         }
-
         $rateDetails = $this->loanRequesteRepository->getLoanDetails();
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'rateDetails' => Helper::extractDbData($rateDetails),
-                    'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E','RETIRED_FLAG'=>'N'],"FIRST_NAME","ASC"," ",FALSE,TRUE),
+                    'employees'=> EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["FIRST_NAME", "MIDDLE_NAME", "LAST_NAME"],["STATUS"=>'E','RETIRED_FLAG'=>'N'],"FIRST_NAME","ASC"," ",FALSE,TRUE, $this->employeeId),
                     'loans' => EntityHelper::getTableKVListWithSortOption($this->adapter, Loan::TABLE_NAME, Loan::LOAN_ID, [Loan::LOAN_NAME], [Loan::STATUS => "E"], Loan::LOAN_ID, "ASC",NULL,FALSE,TRUE)
         ]);
     }
