@@ -1816,8 +1816,8 @@ window.app = (function ($, toastr, App) {
     var resetField = function () {
         $('.reset-field').each(function(i, obj) {
 //    console.log($(obj));
-//    $(obj).val('');
-    $(obj).val(-1);
+    $(obj).val('');
+//    $(obj).val(-1);
     $(obj).prop("checked", false);
     $(obj).change();
     });
