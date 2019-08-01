@@ -157,7 +157,7 @@ BEGIN
   WHERE (A.ATTENDANCE_TIME >= P_FROM_ATTENDANCE_TIME
   AND A.ATTENDANCE_TIME    <= P_TO_ATTENDANCE_TIME)
   AND A.EMPLOYEE_ID         = P_EMPLOYEE_ID
-  AND (ADM.PURPOSE           ='IN' OR A.ATTENDANCE_FROM='SYSTEM');
+  AND (ADM.PURPOSE           ='IN');
   --
   SELECT MAX(TO_DATE(TO_CHAR(A.ATTENDANCE_DT,'DD-MON-YYYY')
     ||' '
@@ -169,7 +169,7 @@ BEGIN
   WHERE (A.ATTENDANCE_TIME >= P_FROM_ATTENDANCE_TIME
   AND A.ATTENDANCE_TIME    <= P_TO_ATTENDANCE_TIME)
   AND A.EMPLOYEE_ID         = P_EMPLOYEE_ID
-  AND (ADM.PURPOSE           ='OUT' OR A.ATTENDANCE_FROM='SYSTEM');
+  AND (ADM.PURPOSE           ='OUT');
   --
   IF V_IN_TIME        IS NOT NULL THEN
     P_IN_TIME         :=V_IN_TIME;
@@ -1341,216 +1341,223 @@ end;
  
  /
             CREATE OR REPLACE PROCEDURE HRIS_GEN_SAL_SH_REPORT(
-    P_SHEET_NO HRIS_SALARY_SHEET.SHEET_NO%TYPE )
+P_SHEET_NO HRIS_SALARY_SHEET.SHEET_NO%TYPE )
 AS
-  V_GENERATED_COUNT NUMBER;
+V_GENERATED_COUNT NUMBER;
 BEGIN
-  SELECT COUNT(*)
-  INTO V_GENERATED_COUNT
-  FROM HRIS_SALARY_SHEET_EMP_DETAIL
-  WHERE SHEET_NO = P_SHEET_NO;
-  --
-  IF V_GENERATED_COUNT >0 THEN
-    DELETE FROM HRIS_SALARY_SHEET_EMP_DETAIL WHERE SHEET_NO=P_SHEET_NO;
-  END IF;
-  INSERT INTO HRIS_SALARY_SHEET_EMP_DETAIL
-  SELECT SS.SHEET_NO,
-    SS.MONTH_ID,
-    SS.YEAR,
-    SS.MONTH_NO,
-    SS.START_DATE,
-    SS.END_DATE,
-    (TRUNC(SS.END_DATE )-TRUNC(SS.START_DATE))+1 AS TOTAL_DAYS,
-    A.EMPLOYEE_ID,
-    E.FULL_NAME,
-    A.DAYOFF,
-    A.PRESENT,
-    A.HOLIDAY,
-    A.LEAVE,
-    A.PAID_LEAVE,
-    A.UNPAID_LEAVE,
-    A.ABSENT,
-    NVL(ROUND(OT.TOTAL_MIN/60,2),0) AS OVERTIME_HOUR,
-    A.TRAVEL,
-    A.TRAINING,
-    A.WORK_ON_HOLIDAY,
-    A.WORK_ON_DAYOFF,
-    (
-    CASE
-      WHEN EHM.SALARY IS NULL
-      THEN E.SALARY
-      ELSE EHM.SALARY
-    END),
-    (
-    CASE
-      WHEN EHM.MARITAL_STATUS IS NULL
-      THEN E.MARITAL_STATUS
-      ELSE EHM.MARITAL_STATUS
-    END) ,
-    (
-    CASE
-      WHEN (
-        CASE
-          WHEN EHM.MARITAL_STATUS IS NULL
-          THEN E.MARITAL_STATUS
-          ELSE EHM.MARITAL_STATUS
-        END) ='M'
-      THEN 'MARRIED'
-      ELSE 'UNMARRIED'
-    END) AS MARITAL_STATUS_DESC,
-    E.GENDER_ID,
-    G.GENDER_CODE,
-    G.GENDER_NAME,
-    E.JOIN_DATE,
-    C.COMPANY_ID,
-    C.COMPANY_NAME,
-    B.BRANCH_ID,
-    B.BRANCH_NAME,
-    DEP.DEPARTMENT_ID,
-    DEP.DEPARTMENT_NAME,
-    DES.DESIGNATION_ID,
-    DES.DESIGNATION_TITLE,
-    P.POSITION_ID,
-    P.POSITION_NAME,
-    P.LEVEL_NO,
-    ST.SERVICE_TYPE_ID,
-    ST.SERVICE_TYPE_NAME,
-    ST.TYPE AS SERVICE_TYPE,
-    (
-    CASE
-      WHEN EHM.PERMANENT_FLAG IS NULL
-      THEN E.PERMANENT_FLAG
-      ELSE EHM.PERMANENT_FLAG
-    END),
-    E.PERMANENT_DATE
-  FROM
-    (SELECT A.EMPLOYEE_ID,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS IN( 'DO','WD')
-        THEN 1
-        ELSE 0
-      END) AS DAYOFF,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP')
-        THEN 1
-        ELSE 0
-      END) AS PRESENT,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS IN ('HD','WH')
-        THEN 1
-        ELSE 0
-      END) AS HOLIDAY,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS IN ('LV','LP')
-        THEN 1
-        ELSE 0
-      END) AS LEAVE,
-      SUM(
-      CASE
-        WHEN L.PAID = 'Y'
-        THEN 1
-        ELSE 0
-      END) AS PAID_LEAVE,
-      SUM(
-      CASE
-        WHEN L.PAID = 'N'
-        THEN 1
-        ELSE 0
-      END) AS UNPAID_LEAVE,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS = 'AB'
-        THEN 1
-        ELSE 0
-      END) AS ABSENT,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS= 'TV'
-        THEN 1
-        ELSE 0
-      END) AS TRAVEL,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS ='TN'
-        THEN 1
-        ELSE 0
-      END) AS TRAINING,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS = 'WH'
-        THEN 1
-        ELSE 0
-      END) WORK_ON_HOLIDAY,
-      SUM(
-      CASE
-        WHEN A.OVERALL_STATUS ='WD'
-        THEN 1
-        ELSE 0
-      END) WORK_ON_DAYOFF
-    FROM
-      (SELECT SS.*,
-        E.EMPLOYEE_ID
-      FROM HRIS_SALARY_SHEET SS
-      JOIN HRIS_EMPLOYEES E
-      ON (SS.COMPANY_ID=E.COMPANY_ID
-      AND SS.GROUP_ID  = E.GROUP_ID)
-      WHERE SS.SHEET_NO=P_SHEET_NO
-      ) SS
-    LEFT JOIN HRIS_ATTENDANCE_DETAIL A
-    ON (( A.ATTENDANCE_DT BETWEEN SS.START_DATE AND SS.END_DATE)
-    AND (SS.EMPLOYEE_ID = A.EMPLOYEE_ID))
-    LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
-    ON (A.LEAVE_ID = L.LEAVE_ID)
-    GROUP BY A.EMPLOYEE_ID
-    ) A
-  LEFT JOIN
-    (SELECT OT.EMPLOYEE_ID,
-      SUM(OT.TOTAL_HOUR) AS TOTAL_MIN
-    FROM
-      (SELECT SS.*,
-        E.EMPLOYEE_ID
-      FROM HRIS_SALARY_SHEET SS
-      JOIN HRIS_EMPLOYEES E
-      ON (SS.COMPANY_ID=E.COMPANY_ID
-      AND SS.GROUP_ID  = E.GROUP_ID)
-      WHERE SS.SHEET_NO=P_SHEET_NO
-      ) SS
-    LEFT JOIN HRIS_OVERTIME OT
-    ON ( OT.OVERTIME_DATE BETWEEN SS.START_DATE AND SS.END_DATE)
-    WHERE 1        =1
-    AND SS.SHEET_NO=P_SHEET_NO
-    AND OT.STATUS  = 'AP'
-    GROUP BY OT.EMPLOYEE_ID
-    ) OT ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
-  LEFT JOIN HRIS_EMPLOYEES E
-  ON(A.EMPLOYEE_ID = E.EMPLOYEE_ID)
-  LEFT JOIN HRIS_GENDERS G
-  ON(E.GENDER_ID=G.GENDER_ID)
-  LEFT JOIN HRIS_COMPANY C
-  ON(E.COMPANY_ID= C.COMPANY_ID)
-  LEFT JOIN HRIS_BRANCHES B
-  ON (E.BRANCH_ID=B.BRANCH_ID)
-  LEFT JOIN HRIS_DEPARTMENTS DEP
-  ON (E.DEPARTMENT_ID= DEP.DEPARTMENT_ID)
-  LEFT JOIN HRIS_DESIGNATIONS DES
-  ON (E.DESIGNATION_ID=DES.DESIGNATION_ID)
-  LEFT JOIN HRIS_POSITIONS P
-  ON (E.POSITION_ID=P.POSITION_ID)
-  LEFT JOIN HRIS_SERVICE_TYPES ST
-  ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
-  LEFT JOIN HRIS_SALARY_SHEET SS
-  ON (SS.SHEET_NO=P_SHEET_NO)
-  LEFT JOIN HRIS_EMPLOYEE_HISTORY_MIG EHM
-  ON (EHM.EMPLOYEE_ID=A.EMPLOYEE_ID
-  AND EHM.MONTH_ID   =SS.MONTH_ID)
-  WHERE 1            =1
-  ORDER BY C.COMPANY_NAME,
-    DEP.DEPARTMENT_NAME,
-    E.FULL_NAME ;
+SELECT COUNT(*)
+INTO V_GENERATED_COUNT
+FROM HRIS_SALARY_SHEET_EMP_DETAIL
+WHERE SHEET_NO = P_SHEET_NO;
+--
+IF V_GENERATED_COUNT >0 THEN
+DELETE FROM HRIS_SALARY_SHEET_EMP_DETAIL WHERE SHEET_NO=P_SHEET_NO;
+END IF;
+INSERT INTO HRIS_SALARY_SHEET_EMP_DETAIL
+SELECT SS.SHEET_NO,
+SS.MONTH_ID,
+SS.YEAR,
+SS.MONTH_NO,
+SS.START_DATE,
+SS.END_DATE,
+(TRUNC(SS.END_DATE )-TRUNC(SS.START_DATE))+1 AS TOTAL_DAYS,
+A.EMPLOYEE_ID,
+E.FULL_NAME,
+A.DAYOFF,
+A.PRESENT,
+A.HOLIDAY,
+A.LEAVE,
+A.PAID_LEAVE,
+A.UNPAID_LEAVE,
+A.ABSENT,
+NVL(ROUND(OT.TOTAL_MIN/60,2),0) AS OVERTIME_HOUR,
+A.TRAVEL,
+A.TRAINING,
+A.WORK_ON_HOLIDAY,
+A.WORK_ON_DAYOFF,
+(
+CASE
+WHEN EHM.SALARY IS NULL
+THEN E.SALARY
+ELSE EHM.SALARY
+END),
+(
+CASE
+WHEN EHM.MARITAL_STATUS IS NULL
+THEN E.MARITAL_STATUS
+ELSE EHM.MARITAL_STATUS
+END) ,
+(
+CASE
+WHEN (
+CASE
+WHEN EHM.MARITAL_STATUS IS NULL
+THEN E.MARITAL_STATUS
+ELSE EHM.MARITAL_STATUS
+END) ='M'
+THEN 'MARRIED'
+ELSE 'UNMARRIED'
+END) AS MARITAL_STATUS_DESC,
+E.GENDER_ID,
+G.GENDER_CODE,
+G.GENDER_NAME,
+E.JOIN_DATE,
+C.COMPANY_ID,
+C.COMPANY_NAME,
+B.BRANCH_ID,
+B.BRANCH_NAME,
+DEP.DEPARTMENT_ID,
+DEP.DEPARTMENT_NAME,
+DES.DESIGNATION_ID,
+DES.DESIGNATION_TITLE,
+P.POSITION_ID,
+P.POSITION_NAME,
+P.LEVEL_NO,
+ST.SERVICE_TYPE_ID,
+ST.SERVICE_TYPE_NAME,
+ST.TYPE AS SERVICE_TYPE,
+(
+CASE
+WHEN EHM.PERMANENT_FLAG IS NULL
+THEN E.PERMANENT_FLAG
+ELSE EHM.PERMANENT_FLAG
+END),
+E.PERMANENT_DATE,
+E.ADDR_PERM_STREET_ADDRESS,
+E.ID_ACCOUNT_NO,
+FT.FUNCTIONAL_TYPE_ID,
+FT.FUNCTIONAL_TYPE_EDESC 
+FROM
+(SELECT SS.EMPLOYEE_ID,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS IN( 'DO','WD')
+THEN 1
+ELSE 0
+END) AS DAYOFF,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP')
+THEN 1
+ELSE 0
+END) AS PRESENT,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS IN ('HD','WH')
+THEN 1
+ELSE 0
+END) AS HOLIDAY,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS IN ('LV','LP')
+THEN 1
+ELSE 0
+END) AS LEAVE,
+SUM(
+CASE
+WHEN L.PAID = 'Y'
+THEN 1
+ELSE 0
+END) AS PAID_LEAVE,
+SUM(
+CASE
+WHEN L.PAID = 'N'
+THEN 1
+ELSE 0
+END) AS UNPAID_LEAVE,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS = 'AB'
+THEN 1
+ELSE 0
+END) AS ABSENT,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS= 'TV'
+THEN 1
+ELSE 0
+END) AS TRAVEL,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS ='TN'
+THEN 1
+ELSE 0
+END) AS TRAINING,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS = 'WH'
+THEN 1
+ELSE 0
+END) WORK_ON_HOLIDAY,
+SUM(
+CASE
+WHEN A.OVERALL_STATUS ='WD'
+THEN 1
+ELSE 0
+END) WORK_ON_DAYOFF
+FROM
+(SELECT SS.*,
+E.EMPLOYEE_ID
+FROM HRIS_SALARY_SHEET SS
+JOIN HRIS_EMPLOYEES E
+ON (SS.COMPANY_ID=E.COMPANY_ID
+AND SS.GROUP_ID = E.GROUP_ID)
+WHERE SS.SHEET_NO=P_SHEET_NO
+) SS
+LEFT JOIN HRIS_ATTENDANCE_DETAIL A
+ON (( A.ATTENDANCE_DT BETWEEN SS.START_DATE AND SS.END_DATE)
+AND (SS.EMPLOYEE_ID = A.EMPLOYEE_ID))
+LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+ON (A.LEAVE_ID = L.LEAVE_ID)
+GROUP BY SS.EMPLOYEE_ID
+) A
+LEFT JOIN
+(SELECT OT.EMPLOYEE_ID,
+SUM(OT.TOTAL_HOUR) AS TOTAL_MIN
+FROM
+(SELECT SS.*,
+E.EMPLOYEE_ID
+FROM HRIS_SALARY_SHEET SS
+JOIN HRIS_EMPLOYEES E
+ON (SS.COMPANY_ID=E.COMPANY_ID
+AND SS.GROUP_ID = E.GROUP_ID)
+WHERE SS.SHEET_NO=P_SHEET_NO
+) SS
+LEFT JOIN HRIS_OVERTIME OT
+ON ( OT.OVERTIME_DATE BETWEEN SS.START_DATE AND SS.END_DATE)
+WHERE 1 =1
+AND SS.SHEET_NO=P_SHEET_NO
+AND OT.STATUS = 'AP'
+GROUP BY OT.EMPLOYEE_ID
+) OT ON (A.EMPLOYEE_ID = OT.EMPLOYEE_ID)
+LEFT JOIN HRIS_EMPLOYEES E
+ON(A.EMPLOYEE_ID = E.EMPLOYEE_ID)
+LEFT JOIN HRIS_GENDERS G
+ON(E.GENDER_ID=G.GENDER_ID)
+LEFT JOIN HRIS_COMPANY C
+ON(E.COMPANY_ID= C.COMPANY_ID)
+LEFT JOIN HRIS_BRANCHES B
+ON (E.BRANCH_ID=B.BRANCH_ID)
+LEFT JOIN HRIS_DEPARTMENTS DEP
+ON (E.DEPARTMENT_ID= DEP.DEPARTMENT_ID)
+LEFT JOIN HRIS_DESIGNATIONS DES
+ON (E.DESIGNATION_ID=DES.DESIGNATION_ID)
+LEFT JOIN HRIS_POSITIONS P
+ON (E.POSITION_ID=P.POSITION_ID)
+LEFT JOIN HRIS_SERVICE_TYPES ST
+ON (E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID)
+LEFT JOIN HRIS_SALARY_SHEET SS
+ON (SS.SHEET_NO=P_SHEET_NO)
+LEFT JOIN HRIS_EMPLOYEE_HISTORY_MIG EHM
+ON (EHM.EMPLOYEE_ID=A.EMPLOYEE_ID
+AND EHM.MONTH_ID =SS.MONTH_ID)
+LEFT JOIN HRIS_FUNCTIONAL_TYPES FT
+ON (E.FUNCTIONAL_TYPE_ID=FT.FUNCTIONAL_TYPE_ID)
+WHERE 1 =1
+AND A.EMPLOYEE_ID IN (select EMPLOYEE_ID from HRIS_PAYROLL_EMP_LIST)
+ORDER BY C.COMPANY_NAME,
+DEP.DEPARTMENT_NAME,
+E.FULL_NAME ;
 END;/
             CREATE OR REPLACE PROCEDURE HRIS_HOLIDAY_ASSIGN_AUTO(
     P_HOLIDAY_ID HRIS_HOLIDAY_MASTER_SETUP.HOLIDAY_ID%TYPE,
@@ -3306,10 +3313,15 @@ BEGIN
       INTO V_TRAINING_ID,
         V_TRAINING_TYPE
       FROM HRIS_EMPLOYEE_TRAINING_ASSIGN TA
+      LEFT JOIN HRIS_EMP_TRAINING_ATTENDANCE ETA ON (
+        TA.TRAINING_ID = ETA.TRAINING_ID
+        AND ETA.TRAINING_DT=V_ATTENDANCE_DATE
+        AND ETA.EMPLOYEE_ID=V_EMPLOYEE_ID)
       INNER JOIN HRIS_TRAINING_MASTER_SETUP T
       ON TA.TRAINING_ID       = T.TRAINING_ID
       WHERE TA.EMPLOYEE_ID    = V_EMPLOYEE_ID
       AND TA.STATUS           = 'E'
+      AND ETA.ATTENDANCE_STATUS = 'P'
       AND T.IS_WITHIN_COMPANY ='N'
       AND V_ATTENDANCE_DATE BETWEEN T.START_DATE AND T.END_DATE;
       IF V_TRAINING_ID  IS NOT NULL THEN
@@ -5205,10 +5217,7 @@ END;/
     V_VOUCHER_NO   VARCHAR2(255 BYTE);
     TABLE_COUNT NUMBER(1,0);
 begin
-SELECT 
-voucher_no into V_VOUCHER_NO 
-FROM HRIS_EMPLOYEE_TRAVEL_REQUEST
-WHERE STATUS='C' and travel_id=P_TRAVEL_ID;
+DBMS_OUTPUT.PUT_LINE ('NOthing to do');
 
 end;
 
@@ -5397,7 +5406,7 @@ BEGIN
   SELECT LEAVE_ID
   INTO V_SUBSTITUTE_LEAVE_ID
   FROM HRIS_LEAVE_MASTER_SETUP
-  WHERE IS_SUBSTITUTE='Y'
+  WHERE STATUS='E' AND IS_SUBSTITUTE='Y'
   AND ROWNUM         = 1;
   --
   
@@ -5717,7 +5726,7 @@ BEGIN
   SELECT LEAVE_ID
   INTO V_SUBSTITUTE_LEAVE_ID
   FROM HRIS_LEAVE_MASTER_SETUP
-  WHERE IS_SUBSTITUTE='Y'
+  WHERE STATUS='E' AND IS_SUBSTITUTE='Y'
   AND ROWNUM         = 1;
   --
   SELECT FROM_DATE,
@@ -6355,6 +6364,128 @@ BEGIN
     
     
 END;/
+            CREATE OR REPLACE PROCEDURE hris_loan_payment_flag_change (
+    p_employee_id   hris_attendance_detail.employee_id%TYPE,
+    p_sheet_no      hris_salary_sheet.sheet_no%TYPE
+) AS
+V_MONTH_ID INT;
+    v_loan_amt      FLOAT;
+    v_intrest_amt   FLOAT;
+    v_loan_amt_pd      FLOAT;
+    v_intrest_amt_pd   FLOAT;
+BEGIN
+
+SELECT MONTH_ID INTO V_MONTH_ID FROM Hris_Salary_Sheet where sheet_no=p_sheet_no;
+
+    FOR loan_list IN (
+        SELECT
+            Loan_Id,
+            pay_id_amt,
+            pay_id_int
+        FROM
+            hris_loan_master_setup
+        WHERE
+            status = 'E'
+    ) LOOP
+        dbms_output.put_line('SDFSDF');
+        BEGIN
+            SELECT
+                val
+            INTO
+                v_loan_amt
+            FROM
+                hris_salary_sheet_detail
+            WHERE
+                    sheet_no = p_sheet_no
+                AND
+                    employee_id = p_employee_id
+                AND
+                    pay_id = loan_list.pay_id_amt;
+
+        EXCEPTION
+            WHEN no_data_found THEN
+                v_loan_amt := 0;
+        END;
+
+        BEGIN
+            SELECT
+                val
+            INTO
+                v_intrest_amt
+            FROM
+                hris_salary_sheet_detail
+            WHERE
+                    sheet_no = p_sheet_no
+                AND
+                    employee_id = p_employee_id
+                AND
+                    pay_id = loan_list.pay_id_int;
+
+        EXCEPTION
+            WHEN no_data_found THEN
+                v_intrest_amt := 0;
+        END;
+        
+        
+        BEGIN
+        select 
+        sum(AMOUNT) INTO v_loan_amt_pd
+        from Hris_Loan_Payment_Detail pd
+        left join hris_employee_loan_request lr on (pd.Loan_Request_Id=lr.loan_request_id)
+        join hris_month_code mc on (Mc.From_Date=trunc(Pd.From_Date,'month') and Mc.To_Date=Pd.To_Date)
+        where 
+        lr.loan_status='OPEN'
+        and Lr.Employee_Id=p_employee_id
+        and mc.month_id=V_MONTH_ID
+        and lr.loan_id=loan_list.Loan_Id;
+        EXCEPTION
+            WHEN no_data_found THEN
+                v_loan_amt_pd := 0;
+        END;
+        
+       
+        
+        BEGIN
+        select 
+        sum(INTEREST_AMOUNT) INTO v_intrest_amt_pd
+        from Hris_Loan_Payment_Detail pd
+        left join hris_employee_loan_request lr on (pd.Loan_Request_Id=lr.loan_request_id)
+        join hris_month_code mc on (Mc.From_Date=trunc(Pd.From_Date,'month') and Mc.To_Date=Pd.To_Date)
+        where 
+        lr.loan_status='OPEN'
+        and Lr.Employee_Id=p_employee_id
+        and mc.month_id=V_MONTH_ID
+        and lr.loan_id=loan_list.Loan_Id;
+        EXCEPTION
+            WHEN no_data_found THEN
+                v_intrest_amt_pd := 0;
+        END;
+        
+      --  dbms_output.put_line(ROUND(v_loan_amt,2));
+       --  dbms_output.put_line(ROUND(v_loan_amt_pd,2));
+      --   dbms_output.put_line(ROUND(v_intrest_amt,2));
+       --  dbms_output.put_line(ROUND(v_intrest_amt_pd,2));
+        
+        IF (ROUND(v_loan_amt,2)=ROUND(v_loan_amt_pd,2)  AND ROUND(v_intrest_amt,2)=ROUND(v_intrest_amt_pd,2))
+        THEN
+        UPDATE Hris_Loan_Payment_Detail SET Paid_Flag='Y' WHERE PAYMENT_ID IN (
+        select 
+        PAYMENT_ID
+        from Hris_Loan_Payment_Detail pd
+        left join hris_employee_loan_request lr on (pd.Loan_Request_Id=lr.loan_request_id)
+        join hris_month_code mc on (Mc.From_Date=trunc(Pd.From_Date,'month') and Mc.To_Date=Pd.To_Date)
+        where 
+        lr.loan_status='OPEN'
+        and Lr.Employee_Id=p_employee_id
+        and mc.month_id=V_MONTH_ID
+        and lr.loan_id=loan_list.Loan_Id);
+        
+        END IF;
+        
+        
+
+    END LOOP;
+END;/
             create or replace TRIGGER HRIS_AFTER_EMPLOYEE_PENALTY AFTER
   INSERT OR
   DELETE ON HRIS_EMPLOYEE_PENALTY_DAYS FOR EACH ROW BEGIN IF INSERTING THEN
@@ -6778,7 +6909,9 @@ BEGIN
             
             -- MONTHLY LEAVE END HERE
             
-            
+            begin
+            HRIS_QUEUE_REATTENDANCE(:new.START_DATE,:new.employee_id,:new.END_DATE);
+            end;
             
 
         END IF; -- END ID INSERT AP
@@ -7695,4 +7828,82 @@ BEGIN
     END);
   RETURN V_WORKING_CYCLE_DESC;
 END; /
+            create or replace function lunch_in_time(p_employee_id in number, p_attendnace_dt in date,p_shift_id in number)    
+return Char    
+is     
+-- variables
+v_half_time char(20 byte):=null;
+begin
+
+select 
+half_out_time
+into v_half_time
+from (select 
+to_char(Attendance_Time,'HH:MI AM') as half_out_time
+from  Hris_Attendance where employee_id=p_employee_id and Attendance_Dt=p_attendnace_dt
+and attendance_time>(
+select 
+to_timestamp(TO_CHAR(p_attendnace_dt,'DD-MON-YY')||TO_CHAR(start_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')+ INTERVAL '2' HOUR
+ from hris_shifts where shift_id=p_shift_id
+) 
+and 
+attendance_time<(
+select 
+to_timestamp(
+case when two_day_shift='E'
+then
+TO_CHAR(p_attendnace_dt+1,'DD-MON-YY')
+else
+TO_CHAR(p_attendnace_dt,'DD-MON-YY')
+end 
+||TO_CHAR(end_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')- INTERVAL '2' HOUR
+ from hris_shifts where shift_id=p_shift_id
+) 
+order by Attendance_Time asc) where Rownum=1;
+
+--select systimestamp into v_half_time from dual;
+
+
+return v_half_time;    
+end;  
+
+/
+            create or replace function lunch_out_time(p_employee_id in number, p_attendnace_dt in date,p_shift_id in number)    
+return Char    
+is     
+-- variables
+v_half_time char(20 byte):=null;
+begin
+
+select 
+half_out_time
+into v_half_time
+from (select 
+to_char(Attendance_Time,'HH:MI AM') as half_out_time
+from  Hris_Attendance where employee_id=p_employee_id and Attendance_Dt=p_attendnace_dt
+and attendance_time>(
+select 
+to_timestamp(TO_CHAR(p_attendnace_dt,'DD-MON-YY')||TO_CHAR(start_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')+ INTERVAL '2' HOUR
+ from hris_shifts where shift_id=p_shift_id
+) 
+and 
+attendance_time<(
+select 
+to_timestamp(
+case when two_day_shift='E'
+then
+TO_CHAR(p_attendnace_dt+1,'DD-MON-YY')
+else
+TO_CHAR(p_attendnace_dt,'DD-MON-YY')
+end 
+||TO_CHAR(end_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')- INTERVAL '2' HOUR
+ from hris_shifts where shift_id=p_shift_id
+) 
+order by Attendance_Time desc) where Rownum=1;
+
+--select systimestamp into v_half_time from dual;
+
+
+return v_half_time;    
+end;  /
             
