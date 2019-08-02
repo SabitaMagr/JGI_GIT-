@@ -44,7 +44,7 @@
                     }]},
             {field: "EMPLOYEE_CODE", title: "Code"},  
             {field: "EMPLOYEE_NAME", title: "Employee"},
-            {field: ["ALLOW_VIEW", 'ALLOW_DELETE', "TRAINING_ID", "EMPLOYEE_ID"], title: "Action", template: action}
+            {field: "EMPLOYEE_ID", title: "Action", template: action}
         ]);
         $search.on('click', function () {
             var search = document.searchManager.getSearchValues();

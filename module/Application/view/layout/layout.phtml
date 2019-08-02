@@ -69,7 +69,7 @@
             document.basePath = '<?= $this->basePath() ?>';
             document.settingUrl = '<?= $this->url("user-setting", ["action" => "index"]) ?>';
             document.updateSettingUrl = '<?= $this->url("user-setting", ["action" => "update"]) ?>';
-            document.selfDetailsUrl = '<?= $this->url("profile", ["action" => "getSelfName"]) ?>';
+            document.selfDetailsUrl = '<?= $this->url("profile", ["action" => "getSelfDetails"]) ?>';
 <?php if ($displayGlobalSearch) : ?>
                 document.globalSearchemployeeList = <?php echo json_encode($employeeList); ?>;
 <?php endif; ?>
