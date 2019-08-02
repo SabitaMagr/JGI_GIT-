@@ -521,10 +521,27 @@ class EntityHelper {
                 $where['DEPARTMENT_ID'] = Helper::extractDbData(self::rawQueryResult($adapter, "SELECT DEPARTMENT_ID FROM HRIS_EMPLOYEES WHERE EMPLOYEE_ID = $employeeId"))[0]['DEPARTMENT_ID'];
             }
             else{
-                $where['DEPARTMENT_ID'] = [];
+                $depVal;
+                $depCounter=1;
                 foreach ($controlData as $data) {
-                    array_push($where['DEPARTMENT_ID'], $data['VAL']);
+                    if($depCounter==1){
+                    $depVal.=$data['VAL'];
+                    }else{
+                    $depVal.=",";
+                    $depVal.=$data['VAL'];
+                    }
+                    $depCounter++;
                 }
+                    array_push($where,"DEPARTMENT_ID in (SELECT DEPARTMENT_ID FROM
+                         HRIS_DEPARTMENTS 
+                        START WITH PARENT_DEPARTMENT in ({$depVal})
+                        CONNECT BY PARENT_DEPARTMENT= PRIOR DEPARTMENT_ID
+                        UNION 
+                        SELECT DEPARTMENT_ID FROM HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN ({$depVal})
+                        UNION
+                        SELECT  TO_NUMBER(TRIM(REGEXP_SUBSTR(EXCEPTIONAL,'[^,]+', 1, LEVEL) )) DEPARTMENT_ID
+  FROM (SELECT EXCEPTIONAL  FROM  HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN  ({$depVal}))
+   CONNECT BY  REGEXP_SUBSTR(EXCEPTIONAL, '[^,]+', 1, LEVEL) IS NOT NULL)");
             }
             break;
 
