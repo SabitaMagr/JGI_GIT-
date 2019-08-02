@@ -15,13 +15,37 @@ window.app = (function ($, toastr, App) {
         // only for soaltee end
         
     });
+
+    function getDataUri(url, callback) {
+        var image = new Image();
+
+        image.onload = function () {
+            var canvas = document.createElement('canvas');
+            canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+            canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+            canvas.getContext('2d').drawImage(this, 0, 0);
+
+            // Get raw image data
+            callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+            // ... or get as Data URI
+            callback(canvas.toDataURL('image/png'));
+        };
+
+        image.src = url;
+    }
+
+    var companyImageUri;
     var selfEmployeeName = '';
     var globalReportName = '';
     $.get(document.selfDetailsUrl, function(data){
         selfEmployeeName = data.name;
+        getDataUri('../public/uploads/'+data.companyLogo, function(dataUri) {
+            companyImageUri = dataUri;
+        });
     }); 
     
-
     $(document).on('focus', ':input', function () {
         $(this).attr('autocomplete', 'off');
     });
@@ -961,6 +985,7 @@ window.app = (function ($, toastr, App) {
         });
 
     };
+
     var exportToPDF = function ($table, col, fileName, pageSize, fn) {
         if (!checkForFileExt(fileName)) {
             fileName = fileName + ".pdf";
@@ -1004,17 +1029,26 @@ window.app = (function ($, toastr, App) {
         }
         
         var docDefinition = {
-           header: [
-               {
-        			text: document.preference != undefined ? document.preference.companyName : '' , alignment: 'center'
-        		},
-                {
-        			text: document.preference != undefined ? document.preference.companyAddress : '' , alignment: 'center'
-        		},
-                {
-        			text: globalReportName, alignment: 'center'
-        		}
-           ],
+           header: {
+            columns:[
+                // {
+                //     image: companyImageUri,
+                //     width: 200,
+                //     height: 50
+                // },
+                [
+                    {
+                        text: document.preference != undefined ? document.preference.companyName : '' , alignment: 'center'
+                    },
+                    {
+                        text: document.preference != undefined ? document.preference.companyAddress : '' , alignment: 'center'
+                    },
+                    {
+                        text: globalReportName, alignment: 'center'
+                    }
+                ]
+           ]
+           },
            pageMargins: [ 40, 60, 40, 60 ],
            footer: {
                columns: [
@@ -1025,11 +1059,6 @@ window.app = (function ($, toastr, App) {
             pageSize: typeof pageSize === "undefined" ? "A4" : pageSize,
             pageOrientation: 'landscape',
             content: [
-//                {
-//			image: 'data:image/jpeg;1513852253.jpg'
-//			image: 'data:image/jpeg;base64,../../public/uploads/1508318202.png'
-//			image: 'http://localhost:8090/neo-hris/public/uploads/1508318202.png',
-//		},
                 {
                     table: {
                         headerRows: 1,

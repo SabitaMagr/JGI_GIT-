@@ -59,7 +59,7 @@
             {field: "REQUESTED_TYPE", title: "Request For"},
             {field: "TRANSPORT_TYPE_DETAIL", title: "Transport"},
             {field: "STATUS_DETAIL", title: "Status"},
-            {field: ["TRAVEL_ID", "ALLOW_EDIT", "ALLOW_DELETE", "ALLOW_EXPENSE_APPLY"], title: "Action", template: action}
+            {field: "TRAVEL_ID", title: "Action", template: action}
         ]);
 
 

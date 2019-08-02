@@ -53,7 +53,7 @@
                         title: "BS",
                     }]},
             {field: "STATUS_DETAIL", title: "Status"},
-            {field: ["REQUEST_ID"], title: "Action", template: action}
+            {field: "REQUEST_ID", title: "Action", template: action}
         ];
         columns=app.prependPrefColumns(columns);
         var pk = 'REQUEST_ID';
