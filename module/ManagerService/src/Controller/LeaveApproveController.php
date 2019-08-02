@@ -177,7 +177,7 @@ class LeaveApproveController extends HrisController {
         $leaves = EntityHelper::getTableKVListWithSortOption($this->adapter, LeaveMaster::TABLE_NAME, LeaveMaster::LEAVE_ID, [LeaveMaster::LEAVE_ENAME], [LeaveMaster::STATUS => 'E'], LeaveMaster::LEAVE_ENAME, "ASC", NULL, FALSE, TRUE);
         $leaves1 = [-1 => "All"] + $leaves;
         $leaveFormElement->setValueOptions($leaves1);
-        $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control"]);
+        $leaveFormElement->setAttributes(["id" => "leaveId", "class" => "form-control reset-field"]);
         $leaveFormElement->setLabel("Type");
 
         $leaveStatus = [
@@ -193,7 +193,7 @@ class LeaveApproveController extends HrisController {
         $leaveStatusFormElement = new Select();
         $leaveStatusFormElement->setName("leaveStatus");
         $leaveStatusFormElement->setValueOptions($leaveStatus);
-        $leaveStatusFormElement->setAttributes(["id" => "leaveRequestStatusId", "class" => "form-control"]);
+        $leaveStatusFormElement->setAttributes(["id" => "leaveRequestStatusId", "class" => "form-control reset-field"]);
         $leaveStatusFormElement->setLabel("Status");
 
 
@@ -202,7 +202,7 @@ class LeaveApproveController extends HrisController {
                     'leaves' => $leaveFormElement,
                     'leaveStatus' => $leaveStatusFormElement,
                     'recomApproveId' => $this->employeeId,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 

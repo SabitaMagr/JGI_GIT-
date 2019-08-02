@@ -38,7 +38,7 @@ class AttendanceByHr extends HrisController {
             "WOD" => "Work on DAYOFF",
         );
         $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control", "multiple" => "multiple"]);
+        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control reset-field", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Status");
         return $statusFormElement;
     }
@@ -52,7 +52,7 @@ class AttendanceByHr extends HrisController {
             "MP" => "Missed Punched",
         );
         $statusFormElement->setValueOptions($status);
-        $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control", "multiple" => "multiple"]);
+        $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control reset-field", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Present Status");
         return $statusFormElement;
     } 

@@ -960,7 +960,7 @@ and Show_Default='Y'  AND VARIABLE_TYPE='O'";
         return Helper::extractDbData($data);
     }
     
-    public function gettaxYearlyByHeads($heads) {
+    public function gettaxYearlyByHeads($heads,$type='arr') {
         $sql = "select 
  Variance_Id,variance_name, 'V'||Variance_Id as template_name             
 from hris_variance 
@@ -969,7 +969,11 @@ from hris_variance
             and status='E'
             order by order_no asc";
         $result = EntityHelper::rawQueryResult($this->adapter, $sql);
+        if($type=='sin'){
+        return $result->current();
+        }else{
         return Helper::extractDbData($result);
+        }
     }
     
     private function fetchSalaryTaxYearlyVariable() {
@@ -1019,12 +1023,15 @@ from hris_variance
             ,E.BIRTH_DATE
             ,E.JOIN_DATE
             ,D.DEPARTMENT_NAME
-            ,FUNT.FUNCTIONAL_TYPE_EDESC
+            ,SSED.FUNCTIONAL_TYPE_EDESC
             ,GB.*
             ,SSED.SERVICE_TYPE_NAME
             ,SSED.DESIGNATION_TITlE
             ,SSED.POSITION_NAME
             ,SSED.ACCOUNT_NO
+            ,SSED.MARITAL_STATUS_DESC
+            ,C.COMPANY_NAME
+            ,MCD.YEAR||'-'||MCD.MONTH_EDESC AS YEAR_MONTH_NAME
             FROM
             (
             SELECT * FROM (SELECT 
@@ -1047,13 +1054,15 @@ from hris_variance
                 LEFT JOIN HRIS_EMPLOYEES E ON (E.EMPLOYEE_ID=GB.EMPLOYEE_ID)
                 LEFT JOIN Hris_Salary_Sheet_Emp_Detail SSED ON 
     (SSED.SHEET_NO=GB.SHEET_NO AND SSED.EMPLOYEE_ID=GB.EMPLOYEE_ID AND SSED.MONTH_ID=GB.MONTH_ID)
-                LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=E.DEPARTMENT_ID)
-                LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
-                LEFT JOIN HRIS_BRANCHES BR ON ( E.BRANCH_ID=BR.BRANCH_ID)
+                LEFT JOIN HRIS_DEPARTMENTS D  ON (D.DEPARTMENT_ID=SSED.DEPARTMENT_ID)
+                LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT ON (SSED.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID)
+                LEFT JOIN HRIS_BRANCHES BR ON (SSED.BRANCH_ID=BR.BRANCH_ID)
+                LEFT JOIN HRIS_COMPANY C ON (SSED.COMPANY_ID=E.COMPANY_ID)
+                LEFT JOIN HRIS_MONTH_CODE MCD ON (MCD.MONTH_ID={$monthId})
                 WHERE 1=1 
              {$searchConditon}
              ";
-
+             
 
 
         return EntityHelper::rawQueryResult($this->adapter, $sql);

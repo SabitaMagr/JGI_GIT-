@@ -41,32 +41,30 @@
         var firstLoop = '';
         var sencondLoop = '';
         
+        var firstLoopArr=[document.incomes.length,
+        document.taxExcemptions.length,
+        document.otherTax.length];
+    
         var sendLoopArr=[document.miscellaneous.length,
         document.bMiscellaneou.length,
         document.cMiscellaneou.length];
     
+        var maxFirstLoop =  Math.max.apply(Math, firstLoopArr);
+        var maxSecLoop =  Math.max.apply(Math, sendLoopArr);
     
-//        document.miscellaneous.length;
-//        document.bMiscellaneou.length;
-//        document.cMiscellaneou.length;
-    
-    var maxSecLoop =  Math.max.apply(Math, sendLoopArr);
-//        console.log(sendLoopArr);
-//        console.log(maxSecLoop);
         
         
-        
-        console.log(document.incomes);
 
-        $.each(document.incomes, function (key, value) {
-//            console.log(document.taxExcemptions[key]['VARIANCE_NAME']);
-            let taxEmpName=(document.taxExcemptions[key])?document.taxExcemptions[key]['VARIANCE_NAME']:'';
-            let taxEmpTemp=(document.taxExcemptions[key])?document.taxExcemptions[key]['TEMPLATE_NAME']:'';
-            let otherTaxName=(document.otherTax[key])?document.otherTax[key]['VARIANCE_NAME']:'';
-            let otherTaxTemp=(document.otherTax[key])?document.otherTax[key]['TEMPLATE_NAME']:'';
+        for (var n = 0; n < maxFirstLoop; ++ n){
+            let incomeName=(document.incomes[n])?document.incomes[n]['VARIANCE_NAME']:'';
+            let incomeTemp=(document.incomes[n])?document.incomes[n]['TEMPLATE_NAME']:'';
+            let taxEmpName=(document.taxExcemptions[n])?document.taxExcemptions[n]['VARIANCE_NAME']:'';
+            let taxEmpTemp=(document.taxExcemptions[n])?document.taxExcemptions[n]['TEMPLATE_NAME']:'';
+            let otherTaxName=(document.otherTax[n])?document.otherTax[n]['VARIANCE_NAME']:'';
+            let otherTaxTemp=(document.otherTax[n])?document.otherTax[n]['TEMPLATE_NAME']:'';
             let temp='<tr>';
-             temp +='<td>' + value['VARIANCE_NAME'] + '</td>';
-             temp +='<td>{{' + value['TEMPLATE_NAME'] + '}}</td>';
+             temp +='<td>' + incomeName + '</td>';
+             temp +='<td>{{' + incomeTemp + '}}</td>';
              temp +='<td>' + taxEmpName + '</td>';
              temp +='<td>{{' + taxEmpTemp + '}}</td>';
              temp +='<td>' + otherTaxName + '</td>';
@@ -75,7 +73,7 @@
 
             firstLoop +=temp;
 
-        });
+        };
         
         
         for (var n = 0; n < maxSecLoop; ++ n)
@@ -108,36 +106,36 @@
 
 
         var repTemplate = `{{#employees}}
-{{COMPANY_NAME}}</br>
-{{BRANCH_NAME}}</br>
+<div><h4>{{COMPANY_NAME}}<h3>
+<h5>{{BRANCH_NAME}}<h2>
 <table class="table table-bordered table-striped">
                     <tr>
-                        <td>Estimate Income Tax</td>
+                        <td><b>Estimate Income Tax</b></td>
+                        <td><b>{{YEAR_MONTH_NAME}}</b></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td>Designation</td>
-                        <td>{{DESIGNATION_TITLE}}</td>
+                        <td><b>Designation</b></td>
+                        <td><b>{{DESIGNATION_TITLE}}</b></td>
                     </tr>
                     <tr>
-                        <td>Name</td>
-                        <td>{{FULL_NAME}}</td>
+                        <td><b>Name</b></td>
+                        <td><b>{{FULL_NAME}}</b></td>
                         <td></td>
                         <td></td>
-                        <td>Under Salary Sheet</td>
-                        <td>Hotel E 01</td>
+                        <td><b>Department</b></td>
+                        <td><b>{{DEPARTMENT_NAME}}</b></td>
                     </tr>
                     <tr>
-                        <td>Code</td>
-                        <td>{{EMPLOYEE_CODE}}</td>
+                        <td><b>Code</b></td>
+                        <td><b>{{EMPLOYEE_CODE}}</b></td>
                         <td></td>
                         <td></td>
-                        <td>Assessment Choice</td>
-                        <td>Married</td>
+                        <td><b>Assessment Choice</b></td>
+                        <td><b>{{MARITAL_STATUS_DESC}}</b></td>
                     </tr>
                     <tr>
-                        <td>PAN No</td>
-                        <td>{{ID_PAN_NO}}</td>
+                        <td><b>PAN No</b></td>
+                        <td><b>{{ID_PAN_NO}}</b></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -150,14 +148,17 @@
                     </tr>
         ` + firstLoop + `
                     <tr>
-                        <td colspan="2"><b>Total Income</b></td>
-                        <td colspan="2"><b>Total Excemption</b></td>
-                        <td colspan="2"><b>Tax Deu</b></td>
+                        <td><b>Total Income</b></td>
+                        <td>{{TOTAL_INCOME_VAL}}</td>
+                        <td><b>Total Exemption</b></td>
+                        <td>{{`+document.sumOfExemption['TEMPLATE_NAME']+`}}</td>
+                        <td><b>Tax Deu</b></td>
+                        <td>{{`+document.sumOfOtherTax['TEMPLATE_NAME']+`}}</td>
                     </tr>
         ` + sencondLoop + `
-                </table>{{/employees}}`;
+                </table></div>{{/employees}}`;
         
-        
+//        console.log(repTemplate);
         
          $('#searchEmployeesBtn').on('click', function () {
             var q = document.searchManager.getSearchValues();
@@ -172,48 +173,41 @@
 
             app.serverRequest(document.pulltaxYearlyLink, q).then(function (response) {
                 if (response.success) {
-                    
-                    console.log(response.data);
-                    
-                      var mustHtml = Mustache.to_html(repTemplate, response.data);
-                        $('#table').html(mustHtml);
+                    $.each(response.data.employees, function (index, value) {
+                        let tempTotal = 0;
+                        $.each(document.incomes, function (i, v) {
+                            let tempName = v['TEMPLATE_NAME'];
+                            tempTotal += parseFloat(value[tempName]);
+
+                        });
+
+                        response.data.employees[index]['TOTAL_INCOME_VAL'] = tempTotal;
+
+                    });
+//                    
+                    var mustHtml = Mustache.to_html(repTemplate, response.data);
+                    $('#table').html(mustHtml);
 
 
-//var data = {
-//    employees: [
-//    {   firstName: "Christophe",
-//        lastName: "Coenraets",
-//        fullTime: true,
-//        phone: "617-123-4567"
-//    },
-//    {   firstName: "John",
-//        lastName: "Smith",
-//        fullTime: false,
-//        phone: "617-987-6543"
-//    },
-//    {   firstName: "Lisa",
-//        lastName: "Jones",
-//        fullTime: true,
-//        phone: "617-111-2323"
-//    },
-//    ]};
-//                    console.log(response.data);
-//                    console.log(data);
-//var tpl = "Employees:<ul>{{#employees}}<li>{{firstName}} {{lastName}}" +
-//          "{{#fullTime}} {{phone}}{{/fullTime}}</li>{{/employees}}</ul>";
-//var html = Mustache.to_html(tpl, response.data);
-//$('#table').html(html);
-
-
-
-                    
-                    
                 } else {
                     app.showMessage(response.error, 'error');
                 }
             }, function (error) {
                 app.showMessage(error, 'error');
             });
+        });
+        
+        
+        $('#excelExport').on('click', function () {
+            
+            
+        });
+        
+        $('#pdfExport').on('click', function () {
+            kendo.drawing.drawDOM($("#table")).then(function (group) {
+                kendo.drawing.pdf.saveAs(group, "Tax Yearly.pdf");
+            });
+
         });
         
         

@@ -84,9 +84,9 @@
             app.exportToPDF($tableContainer, map, "DayoffWorkRequestList.pdf");
         });
         
-        $("#reset").on("click", function () {
-            $(".form-control").val("");
-            $("#fromDate").val("");
-        });
+//        $("#reset").on("click", function () {
+//            $(".form-control").val("");
+//            $("#fromDate").val("");
+//        });
     });
 })(window.jQuery, window.app);

@@ -70,9 +70,9 @@
             });  
         });
         
-        $("#reset").on("click", function () {
-            $(".form-control").val("");
-            document.searchManager.reset();
-        });
+//        $("#reset").on("click", function () {
+//            $(".form-control").val("");
+//            document.searchManager.reset();
+//        });
     }); 
 })(window.jQuery, window.app);

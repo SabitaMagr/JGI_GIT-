@@ -19,7 +19,7 @@ $this->headScript()
 <script>
     document.ids =<?php echo json_encode(["holidayId" => -1, "requestStatusId" => -1, "fromDate" => "", "nepaliFromDate" => "", "toDate" => "", "nepaliToDate" => ""]) ?>;
     document.url = '<?= $this->url("restful", ["action" => "index"]) ?>';
-    document.searchValues = '<?php echo json_encode($searchValues) ?>';
+    document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("holidayWorkApprove", ["action" => "view"]) ?>';
     document.pullHoliayWorkRequestStatusListLink = '<?= $this->url("holidayWorkApprove", ["action" => "pullHoliayWorkRequestStatusList"]) ?>';
 </script>
@@ -79,7 +79,7 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
         <div class="portlet-body">
             <div class="row">
                 <div class="col-sm-2">
-                    <select class="form-control" name="company" id="companyId">
+                    <select multiple class="form-control" name="company" id="companyId">
                     </select>
                 </div>
                 <div class="col-sm-2">
@@ -126,17 +126,17 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                     <?php print $this->formElement($status); ?>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="fromDate" name="fromDate"  class="form-control" placeholder="From Date"/>
+                    <input type="text" id="fromDate" name="fromDate"  class="form-control reset-field" placeholder="From Date"/>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control" placeholder="From Date Nepali"/>
+                    <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control reset-field" placeholder="From Date Nepali"/>
 
                 </div>
                 <div class="col-sm-2">
-                    <input type="text"  id="toDate" name="toDate"  class="form-control" placeholder="To Date"/>
+                    <input type="text"  id="toDate" name="toDate"  class="form-control reset-field" placeholder="To Date"/>
                 </div>
                 <div class="col-sm-2">
-                    <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control" placeholder="To Date Nepali"/>
+                    <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control reset-field" placeholder="To Date Nepali"/>
                 </div>
                 <input type="hidden" id="recomApproveId" value="<?php echo $recomApproveId; ?>"/>
 

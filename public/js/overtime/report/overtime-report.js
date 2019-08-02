@@ -50,8 +50,8 @@
             app.excelExport($table, map, 'Query result.xlsx');
         });
 
-        $('#reset').on('click', function () {
-            $('.form-control').val("");
-        });
+//        $('#reset').on('click', function () {
+//            $('.form-control').val("");
+//        });
     });
 })(window.jQuery, window.app);

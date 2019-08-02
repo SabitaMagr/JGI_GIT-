@@ -360,7 +360,7 @@ class AllReportController extends HrisController {
             "POS" => "Position Wise",
         );
         $customFormElement->setValueOptions($custom);
-        $customFormElement->setAttributes(["id" => "customWise", "class" => "form-control"]);
+        $customFormElement->setAttributes(["id" => "customWise", "class" => "form-control reset-field"]);
         $customFormElement->setLabel("Custom");
 
         $allLeave = $this->repository->fetchAllLeave();

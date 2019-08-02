@@ -40,7 +40,7 @@ class CalculateOvertime extends AbstractActionController {
         );
         $statusFormElement->setValueOptions($status);
         $statusFormElement->setValue("P");
-        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control"]);
+        $statusFormElement->setAttributes(["id" => "statusId", "class" => "form-control reset-field"]);
         $statusFormElement->setLabel("Status");
 
         $employeeTypeFormElement = new Select();

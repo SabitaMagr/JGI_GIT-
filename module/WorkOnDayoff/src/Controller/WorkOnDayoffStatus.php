@@ -29,7 +29,7 @@ class WorkOnDayoffStatus extends HrisController {
     }
 
     public function indexAction() {
-        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "requestStatusId", "class" => "form-control", 'label' => 'Status']);
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "requestStatusId", "class" => "form-control reset-field", 'label' => 'Status']);
         return $this->stickFlashMessagesTo([
                     'status' => $statusSE,
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
