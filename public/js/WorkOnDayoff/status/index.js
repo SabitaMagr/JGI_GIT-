@@ -38,7 +38,7 @@
                         template: "<span>#: (TO_DATE_BS == null) ? '-' : TO_DATE_BS #</span>"}]},
             {field: "DURATION", title: "Duration"},
             {field: "STATUS", title: "Status"},
-            {field: ["ID"], title: "Action", template: `
+            {field: "ID", title: "Action", template: `
             <span>  
             <a class="btn  btn-icon-only btn-success" href="${document.viewLink}/#: ID #" style="height:17px;" title="view">
             <i class="fa fa-search-plus"></i></a>

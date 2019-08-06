@@ -14,6 +14,7 @@ $this->headScript()->appendFile($this->basePath('js/LeaveManagement/LeaveAssign/
     document.pushEmployeeLeaveLink = '<?php echo $this->url("leaveassign", ["action" => "pushEmployeeLeave"]) ?>';
     document.getSearchDataLink = '<?php echo $this->url('leaveassign', ['action' => 'getSearchData']); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\leaveassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

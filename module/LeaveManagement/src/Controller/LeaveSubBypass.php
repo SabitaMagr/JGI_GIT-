@@ -59,7 +59,9 @@ class LeaveSubBypass extends HrisController {
 
         return $this->stickFlashMessagesTo([
                     'leaveFormElement' => $leaveSE,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
     

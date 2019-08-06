@@ -22,7 +22,8 @@ $this->headScript()->appendFile($this->basePath('js/AttendanceManagement/ShiftAs
     document.editWs = '<?= $this->url("shiftassign", ["action" => "editWs"]) ?>';
     document.deleteWs = '<?= $this->url("shiftassign", ["action" => "deleteWs"]) ?>';
     document.acl =<?php echo json_encode($acl); ?>;
-</script>sear
+    document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
+</script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\shiftassign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
 </div>

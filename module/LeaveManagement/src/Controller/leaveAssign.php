@@ -59,6 +59,7 @@ class leaveAssign extends HrisController {
             'leaveFormElement' => $leaveSE,
             'leaveYearFormElement' => $leaveYearSE,
             'acl' => $this->acl,
+            'employeeDetail' => $this->storageData['employee_detail']
                 ];
     }
 
