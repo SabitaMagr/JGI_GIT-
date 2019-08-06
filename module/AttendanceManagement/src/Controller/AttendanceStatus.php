@@ -24,7 +24,7 @@ class AttendanceStatus extends HrisController {
     }
 
     public function indexAction() {
-        $statusSE = $this->getStatusSelectElement(['name' => 'attendanceStatus', 'id' => 'attendanceRequestStatusId', "class" => "form-control", 'label' => 'Status']);
+        $statusSE = $this->getStatusSelectElement(['name' => 'attendanceStatus', 'id' => 'attendanceRequestStatusId', "class" => "form-control reset-field", 'label' => 'Status']);
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'attendanceStatus' => $statusSE,

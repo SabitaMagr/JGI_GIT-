@@ -11,7 +11,6 @@ use Zend\Mail\Headers;
 use Zend\Mail\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
-use Application\Controller\HrisController;
 
 class Cron extends AbstractActionController {
 
@@ -19,14 +18,15 @@ class Cron extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-        $reattendance = new CronRepository($this->adapter);
-        
-        
-//        $this->indexAction();
+//        $reattendance = new CronRepository($this->adapter);
     }
 
     public function indexAction() {
-        $this->doReattendance();
+        return new JsonModel(['success' => true, 'data' => '', 'message' => 'No data found']);
+    }
+
+    public function todayAction() {
+//        $this->doReattendance();
         $responseData = [];
         try {
             $request = $this->getRequest();
@@ -44,7 +44,7 @@ class Cron extends AbstractActionController {
             }
 
             $this->getAbsentList($responseData);
-//            $this->getLateList($responseData);
+            $this->getLateList($responseData);
 
             return new JsonModel(['success' => true, 'data' => $responseData, 'message' => $requestType]);
         } catch (Exception $e) {
@@ -69,8 +69,8 @@ class Cron extends AbstractActionController {
                     throw new Exception('The request is unknown');
             }
 
-//            $this->getEarlyOut($responseData);
-//            $this->getMissedPunch($responseData);
+            $this->getEarlyOut($responseData);
+            $this->getMissedPunch($responseData);
 
             return new JsonModel(['success' => true, 'data' => $responseData, 'message' => $requestType]);
         } catch (Exception $e) {
@@ -145,9 +145,6 @@ Head Office, Kamaladi</p>';
             $subject = "Early Check Out";
 
             $this->sendEmail($to, $body, $subject, $cc);
-
-            print_r($body);
-            die();
         }
     }
 
@@ -165,8 +162,6 @@ Head Office, Kamaladi</p>';
             $subject = "Missed Punch";
 
             $this->sendEmail($to, $body, $subject, $cc);
-            print_r($body);
-            die();
         }
     }
 
@@ -184,10 +179,7 @@ Head Office, Kamaladi</p>';
 
             $subject = "Late Check In";
 
-            print_r($body);
-
             $this->sendEmail($to, $body, $subject, $cc);
-            die();
         }
     }
 
@@ -206,12 +198,8 @@ Head Office, Kamaladi</p>';
 
             $subject = "Missing Attendance";
 
-            print_r($body);
-
-
             $this->sendEmail($to, $body, $subject, $cc);
 
-            die();
         }
     }
 
@@ -238,10 +226,10 @@ Head Office, Kamaladi</p>';
             return $ex;
         }
     }
-    
-    public function doReattendance(){
-        $cronRepo = new CronRepository($this->adapter);
-        return $cronRepo->doReattendance();
-    }
+
+//    public function doReattendance() {
+//        $cronRepo = new CronRepository($this->adapter);
+//        return $cronRepo->doReattendance();
+//    }
 
 }

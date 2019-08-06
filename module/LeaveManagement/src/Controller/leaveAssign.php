@@ -34,7 +34,7 @@ class leaveAssign extends HrisController {
         $config = [
             'name' => 'leave',
             'id' => 'leaveId',
-            'class' => 'form-control',
+            'class' => 'form-control reset-field',
             'label' => 'Type'
         ];
         $leaveSE = $this->getSelectElement($config, $leaveList);
@@ -51,13 +51,14 @@ class leaveAssign extends HrisController {
          $leaveYearConfig = [
             'name' => 'leaveYear',
             'id' => 'leaveYear',
-            'class' => 'form-control',
+            'class' => 'form-control reset-field',
             'label' => 'Leave Year'
         ];
          $leaveYearSE = $this->getSelectElement($leaveYearConfig, $leaveYearData);
         return [
             'leaveFormElement' => $leaveSE,
             'leaveYearFormElement' => $leaveYearSE,
+            'acl' => $this->acl,
                 ];
     }
 

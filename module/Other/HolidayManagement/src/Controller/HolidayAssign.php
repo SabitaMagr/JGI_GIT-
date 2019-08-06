@@ -25,7 +25,8 @@ class HolidayAssign extends HrisController {
         $holidayList = $holidayRepo->fetchAll();
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'holidayList' => iterator_to_array($holidayList, false)
+                    'holidayList' => iterator_to_array($holidayList, false),
+                    'acl' => $this->acl,
         ]);
     }
 

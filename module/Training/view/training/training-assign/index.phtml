@@ -18,6 +18,7 @@ $this->headScript()->appendFile($this->basePath('jszip/dist/jszip.min.js'))
     document.searchValues =<?php echo json_encode($searchValues) ?>;
     document.viewLink = '<?= $this->url("trainingAssign", ["action" => "view"]) ?>';
     document.deleteLink = '<?= $this->url("trainingAssign", ["action" => "delete"]) ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 
 <div class="page-bar">

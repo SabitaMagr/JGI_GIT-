@@ -57,7 +57,7 @@ class CalculateOvertime extends AbstractActionController {
         return Helper::addFlashMessagesToArray($this, [
                     'status' => $statusFormElement,
                     'employeeType' => $employeeTypeFormElement,
-                    'searchValues' => EntityHelper::getSearchData($this->adapter)
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
         ]);
     }
 

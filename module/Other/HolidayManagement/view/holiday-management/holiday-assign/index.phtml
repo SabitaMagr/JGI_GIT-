@@ -13,6 +13,7 @@ $this->headScript()
     document.wsAssignHolidayToEmployees = '<?php echo $this->url('holiday-assign', ['action' => 'assignHolidayToEmployees']); ?>';
     document.holidayList =<?php echo json_encode($holidayList); ?>;
     document.regenAttendanceLink = '<?php echo $this->url('holiday-assign', ['action' => 'regen-attendance']); ?>';
+    document.acl =<?php echo json_encode($acl); ?>;
 </script>
 <div class="page-bar">
 <?= $this->navigation('Zend\Navigation\holiday-assign')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>

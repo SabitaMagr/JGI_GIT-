@@ -110,7 +110,8 @@ class MonthlyValue extends HrisController {
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'monthlyValues' => $monthlyValues,
                     'fiscalYears' => $fiscalYears,
-                    'months' => $months
+                    'months' => $months,
+                    'acl' => $this->acl,
         ]);
     }
 

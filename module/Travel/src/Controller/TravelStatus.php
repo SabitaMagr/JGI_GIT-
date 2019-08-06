@@ -44,7 +44,7 @@ class TravelStatus extends HrisController {
             }
         }
 
-        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "status", "class" => "form-control", 'label' => 'status']);
+        $statusSE = $this->getStatusSelectElement(['name' => 'status', "id" => "status", "class" => "form-control reset-field", 'label' => 'status']);
         return Helper::addFlashMessagesToArray($this, [
                 'travelStatus' => $statusSE,
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
