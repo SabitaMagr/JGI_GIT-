@@ -12,6 +12,7 @@ use SelfService\Repository\WorkOnHolidayRepository;
 use WorkOnHoliday\Repository\WorkOnHolidayStatusRepository;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
+use Zend\Authentication\Storage\StorageInterface;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Application\Controller\HrisController;
@@ -22,7 +23,8 @@ class WorkOnHolidayApply extends HrisController {
 //    private $adapter;
 //    private $workOnHolidayRepository;
 
-    public function __construct(AdapterInterface $adapter) {
+    public function __construct(AdapterInterface $adapter, StorageInterface $storage) {
+        parent::__construct($adapter, $storage);
         $this->adapter = $adapter;
         $this->workOnHolidayRepository = new WorkOnHolidayRepository($adapter);
     }
@@ -66,7 +68,7 @@ class WorkOnHolidayApply extends HrisController {
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'applyOption' => $applyOption,
-                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", "-", false, true),
+                    'employees' => EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_EMPLOYEES", "EMPLOYEE_ID", ["EMPLOYEE_CODE","FULL_NAME"], ["STATUS" => 'E', 'RETIRED_FLAG' => 'N'], "FIRST_NAME", "ASC", "-", false, true, $this->employeeId),
                     'holidays' => EntityHelper::getTableKVListWithSortOption($this->adapter, Holiday::TABLE_NAME, Holiday::HOLIDAY_ID, [Holiday::HOLIDAY_ENAME], ["STATUS" => 'E'], "HOLIDAY_ENAME", "ASC", null, false, true)
         ]);
     }

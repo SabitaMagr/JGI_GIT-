@@ -109,6 +109,7 @@ class FlatValue extends HrisController {
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'flatValues' => $flatValues,
                     'fiscalYears' => $fiscalYears,
+                    'acl' => $this->acl,
         ]);
     }
 

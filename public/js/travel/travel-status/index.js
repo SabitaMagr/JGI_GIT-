@@ -69,7 +69,7 @@
             {field: "TRANSPORT_TYPE_DETAIL", title: "Transport", width: 100},
             {field: "STATUS_DETAIL", title: "Status", width: 90},
             {field: "VOUCHER_NO", title: "Voucher", width: 90},
-            {field: ["TRAVEL_ID", "REQUESTED_TYPE"], title: "Action", template: action, width: 80}
+            {field: "TRAVEL_ID", title: "Action", template: action, width: 80}
         ];
         columns=app.prependPrefColumns(columns);
         var pk = 'TRAVEL_ID';
@@ -146,8 +146,8 @@
             });
         });
         
-        $('#reset').on('click',function (){
-            $('.form-control').val("");
-        });
+//        $('#reset').on('click',function (){
+//            $('.form-control').val("");
+//        });
     });
 })(window.jQuery, window.app);

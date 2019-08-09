@@ -2,14 +2,15 @@
 
 namespace Cron\Controller;
 
-use Exception;
+use Application\Helper\EmailHelper;
 use Cron\Repository\CronRepository;
+use Exception;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Http\Request;
+use Zend\Mail\Headers;
+use Zend\Mail\Message;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
-use Zend\Mail\Message;
-use Application\Helper\EmailHelper;
 
 class Cron extends AbstractActionController {
 
@@ -17,10 +18,15 @@ class Cron extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-//        $this->indexAction();
+//        $reattendance = new CronRepository($this->adapter);
     }
 
     public function indexAction() {
+        return new JsonModel(['success' => true, 'data' => '', 'message' => 'No data found']);
+    }
+
+    public function todayAction() {
+//        $this->doReattendance();
         $responseData = [];
         try {
             $request = $this->getRequest();
@@ -129,8 +135,13 @@ class Cron extends AbstractActionController {
         for ($i = 0; $i < count($early); $i++) {
             $to = $early[$i]['EMPLOYEE_MAIL'];
             $cc = $early[$i]['MANAGER_MAIL'];
-            $body = 'Dear ' . $early[$i]['EMPLOYEE_NAME'] . ', '
-                    . 'This is to inform you that your OUT time yesterday was ' . $early[$i]['OUT_TIME'] . '. But your shift ends at ' . $early[$i]['END_TIME'] . '. I hope your supervisor was informed about the early out.';
+            $date = $early[$i]['ATTENDANCE_DT'];
+            $body = '<p>Dear Sir/Madam,</p>
+<p>You have left office early at <span style="color: red;">' . $early[$i]['OUT_TIME'] . '</span> on <span style="color: red;">' . $date . '</span>.</p>
+<p>Thank You.</p>
+<p>Human Resource Department <br>
+Nepal Bangladesh Bank Ltd.<br>
+Head Office, Kamaladi</p>';
             $subject = "Early Check Out";
 
             $this->sendEmail($to, $body, $subject, $cc);
@@ -141,8 +152,13 @@ class Cron extends AbstractActionController {
         for ($i = 0; $i < count($missed); $i++) {
             $to = $missed[$i]['EMPLOYEE_MAIL'];
             $cc = $missed[$i]['MANAGER_MAIL'];
-            $body = 'Dear ' . $missed[$i]['EMPLOYEE_NAME'] . ', '
-                    . 'This is to inform you that your check out was missed for yesterday.';
+            $date = (string) $missed[$i]['ATTENDANCE_DT'];
+            $body = '<p>Dear Sir/Madam,</p>
+<p>You have missed punch on departure from office on <span style="color: red;">' . $date . '</span>. Kindly remember to punch to mark your presence.</p>
+<p>Thank You.</p>
+<p>Human Resource Department <br>
+Nepal Bangladesh Bank Ltd.<br>
+Head Office, Kamaladi</p>';
             $subject = "Missed Punch";
 
             $this->sendEmail($to, $body, $subject, $cc);
@@ -153,8 +169,14 @@ class Cron extends AbstractActionController {
         for ($i = 0; $i < count($late); $i++) {
             $to = $late[$i]['EMPLOYEE_MAIL'];
             $cc = $late[$i]['MANAGER_MAIL'];
-            $body = 'Dear ' . $late[$i]['EMPLOYEE_NAME'] . ', '
-                    . 'This is to inform you that your IN time today was ' . $late[$i]['IN_TIME'] . '. But your shift starts at ' . $late[$i]['START_TIME'] . '. I hope your supervisor was informed about the delay.';
+
+            $body = '<p>Dear Sir/Madam,</p>
+<p>You have arrived office late today at <span style="color: red;">' . $late[$i]['IN_TIME'] . '</span>.</p>
+<p>Thank You.</p>
+<p>Human Resource Department <br>
+Nepal Bangladesh Bank Ltd.<br>
+Head Office, Kamaladi</p>';
+
             $subject = "Late Check In";
 
             $this->sendEmail($to, $body, $subject, $cc);
@@ -167,12 +189,17 @@ class Cron extends AbstractActionController {
             $cc = $absent[$i]['MANAGER_MAIL'];
             $date = (string) $absent[$i]['ATTENDANCE_DT'];
 
-            $body = 'This is to Inform you that '
-                    . 'Attendance   for date ' . $date . ' of '.$absent[$i]['EMPLOYEE_NAME'].' is not recorded.';
+            $body = '<p>Dear Sir/Madam,</p>
+<p>You have been marked absent on <span style="color: red;">' . $date . '</span>. Kindly apply for leave.</p>
+<p>Thank You.</p>
+<p>Human Resource Department <br>
+Nepal Bangladesh Bank Ltd.<br>
+Head Office, Kamaladi</p>';
 
             $subject = "Missing Attendance";
 
             $this->sendEmail($to, $body, $subject, $cc);
+
         }
     }
 
@@ -180,6 +207,11 @@ class Cron extends AbstractActionController {
         try {
             if ($to != null) {
                 $msg = new Message();
+                $headers = new Headers();
+                $headers->addHeaderLine('MIME-Version', '1.0');
+                $headers->addHeaderLine('Content-type', 'text/html');
+
+                $msg->setHeaders($headers);
                 $msg->setSubject($subject);
                 $msg->setBody($body);
                 $msg->setTo($to);
@@ -190,10 +222,14 @@ class Cron extends AbstractActionController {
             } else {
                 return;
             }
-            
         } catch (Exception $ex) {
             return $ex;
         }
     }
+
+//    public function doReattendance() {
+//        $cronRepo = new CronRepository($this->adapter);
+//        return $cronRepo->doReattendance();
+//    }
 
 }

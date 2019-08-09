@@ -124,8 +124,8 @@
             app.exportToPDF($table, exportMap, `OT Monthly ${month['MONTH_EDESC']}.pdf`);
         });
         
-        $('#reset').on('click', function () {
-            $('.form-control').val("");
-        });
+//        $('#reset').on('click', function () {
+//            $('.form-control').val("");
+//        });
     });
 })(window.jQuery, window.app);

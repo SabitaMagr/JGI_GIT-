@@ -53,7 +53,7 @@
                         title: "BS",
                     }]},
             {field: "STATUS_DETAIL", title: "Status"},
-            {field: ["REQUEST_ID"], title: "Action", template: action}
+            {field: "REQUEST_ID", title: "Action", template: action}
         ];
         columns=app.prependPrefColumns(columns);
         var pk = 'REQUEST_ID';
@@ -130,8 +130,8 @@
             });
         });
         
-        $('#reset').on('click',function (){
-            $('.form-control').val("");
-        });
+//        $('#reset').on('click',function (){
+//            $('.form-control').val("");
+//        });
     });
 })(window.jQuery, window.app);
