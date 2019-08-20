@@ -351,8 +351,6 @@ class SalarySheetController extends HrisController {
             $monthId=$data['monthId'];
             $salaryTypeId=$data['salaryTypeId'];
             
-            
-            
             $valuesinCSV = "";
             for ($i = 0; $i < sizeof($group); $i++) {
                 $value= $group[$i];
@@ -364,18 +362,14 @@ class SalarySheetController extends HrisController {
                 }
             }
             
-            
             $employeeList=$this->salarySheetRepo->fetchEmployeeByGroup($monthId,$valuesinCSV,$salaryTypeId);
             $sheetList=$this->salarySheetRepo->fetchGeneratedSheetByGroup($monthId,$valuesinCSV,$salaryTypeId);
-
-
 
             return new JsonModel(['success' => true, 'data' => $employeeList, 'sheetData' => $sheetList, 'message' => null]);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
         }
     }
-    
     
     public function deleteSheetAction() {
         $id = $this->params()->fromRoute('id');
@@ -384,7 +378,27 @@ class SalarySheetController extends HrisController {
         }
         $this->salarySheetRepo->deleteSheetBySheetNo($id);
         $this->flashmessenger()->addMessage("Sheet Successfully Deleted!!!");
-        return $this->redirect()->toRoute("salarySheet");
+        return $this->redirect()->toRoute("salarySheet", ['action' => 'sheetWise']);
     }
 
+    public function sheetWiseAction(){
+        $ruleRepo = new RulesRepository($this->adapter);
+        $data['salaryType'] = iterator_to_array($this->salarySheetRepo->fetchAllSalaryType(), false);
+        $data['ruleList'] = iterator_to_array($ruleRepo->fetchAll(), false);
+        $data['salarySheetList'] = iterator_to_array($this->salarySheetRepo->fetchAll(), false);
+        $links['viewLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'viewSalarySheet']);
+        $links['getSearchDataLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getSearchData']);
+        $links['getGroupListLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'getGroupList']);
+        $links['regenEmpSalSheLink'] = $this->url()->fromRoute('salarySheet', ['action' => 'regenEmpSalShe']);
+        $data['links'] = $links;
+        return $this->stickFlashMessagesTo(['data' => json_encode($data)]);
+    }
+
+    public function deleteSheetInBulkAction(){
+        $data = $_POST['data'];
+        foreach ($data as $key) {
+            $this->salarySheetRepo->deleteSheetBySheetNo($key);
+        } 
+        return new JSONModel(['success' => true]);
+    }
 }

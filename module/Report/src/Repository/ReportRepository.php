@@ -1177,8 +1177,6 @@ EOT;
          CL.HOLIDAY,
          CL.WORK_DAYOFF,
          CL.WORK_HOLIDAY,
-         CL.NIGHT_SHIFT,
-         CL.C_SHIFT,
          (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) AS TOTAL
        FROM
          (SELECT *
@@ -1238,17 +1236,7 @@ EOT;
            CASE OVERALL_STATUS
              WHEN 'WH'
              THEN 1
-           END) AS WORK_HOLIDAY,
-           COUNT(
-           CASE 
-           WHEN SHIFT_ID = 35 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
-             THEN 1
-           END) AS NIGHT_SHIFT,
-           COUNT(
-           CASE 
-           WHEN SHIFT_ID = 32 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
-             THEN 1
-           END) AS C_SHIFT
+           END) AS WORK_HOLIDAY
          FROM HRIS_ATTENDANCE_DETAIL
          WHERE ATTENDANCE_DT BETWEEN TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
          GROUP BY EMPLOYEE_ID
@@ -1769,6 +1757,323 @@ FROM
   WHERE 1=1 {$searchCondition}
   ) PIVOT ( MAX( SHIFT_NAME ) FOR FOR_DATE IN ($datesIn))";
         return $this->rawQuery($sql);
+    }
+    
+    public function reportWithOTforShivam($data) {
+        $fromCondition = "";
+        $toCondition = "";
+
+        $otFromCondition = "";
+        $otToCondition = "";
+
+        $condition = EntityHelper::getSearchConditon($data['companyId'], $data['branchId'], $data['departmentId'], $data['positionId'], $data['designationId'], $data['serviceTypeId'], $data['serviceEventTypeId'], $data['employeeTypeId'], $data['employeeId'], $data['genderId'], $data['locationId']);
+
+        if (isset($data['fromDate']) && $data['fromDate'] != null && $data['fromDate'] != -1) {
+            $fromDate = Helper::getExpressionDate($data['fromDate']);
+            $fromCondition = "AND A.ATTENDANCE_DT >= {$fromDate->getExpression()}";
+            $otFromCondition = "AND OVERTIME_DATE >= {$fromDate->getExpression()} ";
+        }
+        if (isset($data['toDate']) && $data['toDate'] != null && $data['toDate'] != -1) {
+            $toDate = Helper::getExpressionDate($data['toDate']);
+            $toCondition = "AND A.ATTENDANCE_DT <= {$toDate->getExpression()}";
+            $otToCondition = "AND OVERTIME_DATE <= {$toDate->getExpression()} ";
+        }
+
+
+
+        $sql = <<<EOT
+            SELECT C.COMPANY_NAME,
+              D.DEPARTMENT_NAME,
+              A.EMPLOYEE_ID,
+              E.EMPLOYEE_CODE,
+              E.FULL_NAME,
+              A.DAYOFF,
+              A.PRESENT,
+              A.HOLIDAY,
+              A.LEAVE,
+              A.PAID_LEAVE,
+              A.UNPAID_LEAVE,
+              A.ABSENT,
+              NVL(ROUND(A.TOTAL_MIN/60,2),0) AS OVERTIME_HOUR,
+              A.TRAVEL,
+              A.TRAINING,
+              A.WORK_ON_HOLIDAY,
+              A.WORK_ON_DAYOFF,
+              A.NIGHT_SHIFT_6,
+              A.NIGHT_SHIFT_8,
+              A.C_SHIFT
+            FROM
+              (SELECT A.EMPLOYEE_ID,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN( 'DO','WD')
+                  THEN 1
+                  ELSE 0
+                END) AS DAYOFF,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('PR','BA','LA','TV','VP','TN','TP','LP')
+                  THEN (
+                    CASE
+                      WHEN A.OVERALL_STATUS = 'LP'
+                      AND A.HALFDAY_PERIOD IS NOT NULL
+                      THEN 0.5
+                      ELSE 1
+                    END)
+                  ELSE 0
+                END) AS PRESENT,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('HD','WH')
+                  THEN 1
+                  ELSE 0
+                END) AS HOLIDAY,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('LV','LP')
+                  AND A.GRACE_PERIOD    IS NULL
+                  THEN (
+                    CASE
+                      WHEN A.OVERALL_STATUS = 'LP'
+                      AND A.HALFDAY_PERIOD IS NOT NULL
+                      THEN 0.5
+                      ELSE 1
+                    END)
+                  ELSE 0
+                END) AS LEAVE,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('LV','LP')
+                  AND A.GRACE_PERIOD    IS NULL
+                  AND L.PAID             = 'Y'
+                  THEN (
+                    CASE
+                      WHEN A.OVERALL_STATUS = 'LP'
+                      AND A.HALFDAY_PERIOD IS NOT NULL
+                      THEN 0.5
+                      ELSE 1
+                    END)
+                  ELSE 0
+                END) AS PAID_LEAVE,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS IN ('LV','LP')
+                  AND A.GRACE_PERIOD    IS NULL
+                  AND L.PAID             = 'N'
+                  THEN (
+                    CASE
+                      WHEN A.OVERALL_STATUS = 'LP'
+                      AND A.HALFDAY_PERIOD IS NOT NULL
+                      THEN 0.5
+                      ELSE 1
+                    END)
+                  ELSE 0
+                END) AS UNPAID_LEAVE,
+                SUM(
+                CASE
+                  WHEN A.SHIFT_ID = 35 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+                  THEN 1
+                  ELSE 0
+                END) AS NIGHT_SHIFT_6,
+                SUM(
+                CASE
+                  WHEN A.SHIFT_ID = 37 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+                  THEN 1
+                  ELSE 0
+                END) AS NIGHT_SHIFT_8,
+                SUM(
+                CASE
+                  WHEN A.SHIFT_ID = 32 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+                  THEN 1
+                  ELSE 0
+                END) AS C_SHIFT,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS = 'AB'
+                  THEN 1
+                  ELSE 0
+                END) AS ABSENT,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS= 'TV'
+                  THEN 1
+                  ELSE 0
+                END) AS TRAVEL,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS ='TN'
+                  THEN 1
+                  ELSE 0
+                END) AS TRAINING,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS = 'WH'
+                  THEN 1
+                  ELSE 0
+                END) WORK_ON_HOLIDAY,
+                SUM(
+                CASE
+                  WHEN A.OVERALL_STATUS ='WD'
+                  THEN 1
+                  ELSE 0
+                END) WORK_ON_DAYOFF,
+                 SUM(
+                  CASE
+                    WHEN OTM.OVERTIME_HOUR IS NULL
+                    THEN OT.TOTAL_HOUR
+                    ELSE OTM.OVERTIME_HOUR*60
+                  END ) AS TOTAL_MIN
+              FROM HRIS_ATTENDANCE_PAYROLL A
+              LEFT JOIN (SELECT
+    employee_id,
+    overtime_date,
+    SUM(total_hour) AS total_hour
+FROM
+    hris_overtime where status ='AP'
+GROUP BY
+    employee_id,
+    overtime_date) OT
+              ON (A.EMPLOYEE_ID   =OT.EMPLOYEE_ID
+              AND A.ATTENDANCE_DT =OT.OVERTIME_DATE)
+              LEFT JOIN HRIS_OVERTIME_MANUAL OTM
+              ON (A.EMPLOYEE_ID   =OTM.EMPLOYEE_ID
+              AND A.ATTENDANCE_DT =OTM.ATTENDANCE_DATE)
+              LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
+              ON (A.LEAVE_ID= L.LEAVE_ID)
+              WHERE 1       =1 {$fromCondition} {$toCondition}
+              GROUP BY A.EMPLOYEE_ID
+              ) A
+            LEFT JOIN HRIS_EMPLOYEES E
+            ON(A.EMPLOYEE_ID = E.EMPLOYEE_ID)
+            LEFT JOIN HRIS_COMPANY C
+            ON(E.COMPANY_ID= C.COMPANY_ID)
+            LEFT JOIN HRIS_DEPARTMENTS D
+            ON (E.DEPARTMENT_ID= D.DEPARTMENT_ID)
+            WHERE 1 = 1 {$condition}
+            ORDER BY C.COMPANY_NAME,
+              D.DEPARTMENT_NAME,
+              E.FULL_NAME 
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return Helper::extractDbData($result);
+    }
+    
+    public function employeeDailyReportShivam($searchQuery){
+        $monthDetail=$this->getMonthDetails($searchQuery['monthCodeId']);
+        
+         $pivotString = '';
+        for ($i = 1; $i <= $monthDetail['DAYS']; $i++) {
+            if ($i != $monthDetail['DAYS']) {
+                $pivotString .= $i . ' AS ' . 'D' . $i . ', ';
+            } else {
+                $pivotString .= $i . ' AS ' . 'D' . $i;
+            }
+        }
+        
+        
+        
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+         $sql = <<<EOT
+                SELECT PL.*,
+         CL.PRESENT,
+         CL.ABSENT,
+         CL.LEAVE,
+         CL.DAYOFF,
+         CL.HOLIDAY,
+         CL.WORK_DAYOFF,
+         CL.WORK_HOLIDAY,
+         CL.NIGHT_SHIFT_6,
+         CL.NIGHT_SHIFT_8,
+         CL.C_SHIFT,
+         (CL.PRESENT+CL.ABSENT+CL.LEAVE+CL.DAYOFF+CL.HOLIDAY+CL.WORK_DAYOFF+CL.WORK_HOLIDAY) AS TOTAL
+       FROM
+         (SELECT *
+         FROM
+           (SELECT E.FULL_NAME,
+             AD.EMPLOYEE_ID,
+             E.EMPLOYEE_CODE,
+             CASE
+               WHEN AD.OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+               THEN 'PR'
+               ELSE AD.OVERALL_STATUS
+             END AS OVERALL_STATUS,
+             --AD.ATTENDANCE_DT,
+             (AD.ATTENDANCE_DT-MC.FROM_DATE+1) AS DAY_COUNT
+           FROM HRIS_ATTENDANCE_DETAIL AD
+           LEFT JOIN HRIS_MONTH_CODE MC
+           ON (AD.ATTENDANCE_DT BETWEEN MC.FROM_DATE AND MC.TO_DATE)
+           JOIN HRIS_EMPLOYEES E
+           ON (E.EMPLOYEE_ID =AD.EMPLOYEE_ID)
+           WHERE MC.MONTH_ID = {$searchQuery['monthCodeId']}
+       {$searchConditon}
+           ) PIVOT (MAX (OVERALL_STATUS) FOR DAY_COUNT IN ({$pivotString})) 
+         ) PL
+       LEFT JOIN
+         (SELECT EMPLOYEE_ID,
+           COUNT(
+           CASE
+             WHEN OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS PRESENT,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'AB'
+             THEN 1
+           END) AS ABSENT,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'LV'
+             THEN 1
+           END) AS LEAVE,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'DO'
+             THEN 1
+           END) AS DAYOFF,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'HD'
+             THEN 1
+           END) AS HOLIDAY,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'WD'
+             THEN 1
+           END) AS WORK_DAYOFF,
+           COUNT(
+           CASE OVERALL_STATUS
+             WHEN 'WH'
+             THEN 1
+           END) AS WORK_HOLIDAY,
+           COUNT(
+           CASE 
+           WHEN SHIFT_ID = 35 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS NIGHT_SHIFT_6,
+           COUNT(
+           CASE 
+           WHEN SHIFT_ID = 37 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS NIGHT_SHIFT_8,
+           COUNT(
+           CASE 
+           WHEN SHIFT_ID = 32 AND OVERALL_STATUS IN ('TV','TN','PR','BA','LA','TP','LP','VP')
+             THEN 1
+           END) AS C_SHIFT
+         FROM HRIS_ATTENDANCE_DETAIL
+         WHERE ATTENDANCE_DT BETWEEN TO_DATE('{$monthDetail['FROM_DATE']}','DD-MON-YY') AND TO_DATE('{$monthDetail['TO_DATE']}','DD-MON-YY')
+         GROUP BY EMPLOYEE_ID
+         )CL
+       ON (PL.EMPLOYEE_ID=CL.EMPLOYEE_ID)
+                 
+EOT;
+         
+//         echo $sql;
+//         die();
+                $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return ['monthDetail'=>$monthDetail,'data'=>Helper::extractDbData($result)];
     }
 }
 

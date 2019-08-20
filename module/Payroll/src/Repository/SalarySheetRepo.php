@@ -132,12 +132,12 @@ AND GROUP_ID IN ({$group})";
     
     public function deleteSheetBySheetNo($sheetNo){
         $sql="
-BEGIN            
-delete from HRIS_TAX_SHEET where sheet_no={$sheetNo};
-delete from HRIS_SALARY_SHEET_DETAIL where sheet_no={$sheetNo};
-delete from HRIS_SALARY_SHEET_EMP_DETAIL where sheet_no={$sheetNo};
-delete from HRIS_SALARY_SHEET where sheet_no={$sheetNo};
-END;
+        BEGIN            
+        delete from HRIS_TAX_SHEET where sheet_no={$sheetNo};
+        delete from HRIS_SALARY_SHEET_DETAIL where sheet_no={$sheetNo};
+        delete from HRIS_SALARY_SHEET_EMP_DETAIL where sheet_no={$sheetNo};
+        delete from HRIS_SALARY_SHEET where sheet_no={$sheetNo};
+        END;
 ";
         $this->executeStatement($sql);
         return true;
