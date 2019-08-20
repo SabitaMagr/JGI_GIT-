@@ -83,7 +83,7 @@ class AuthController extends AbstractActionController {
             $this->getAuthService()->clearIdentity();
         }
         //end
-
+        
         if ($this->getAuthService()->hasIdentity()) {
             return $this->redirect()->toRoute('dashboard');
         }
@@ -130,9 +130,12 @@ class AuthController extends AbstractActionController {
                 /*
                  * user authentication
                  */
+
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
-                        ->setCredential($request->getPost('password'));
+                        ->setCredential($request->getPost('password'))
+                        ->getDbSelect()->where("STATUS = 'E'");
+
                 $result = $this->getAuthService()->authenticate();
                 foreach ($result->getMessages() as $message) {
                     $this->flashmessenger()->addMessage($message);
