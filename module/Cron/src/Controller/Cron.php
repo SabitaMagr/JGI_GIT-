@@ -18,7 +18,6 @@ class Cron extends AbstractActionController {
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
-//        $reattendance = new CronRepository($this->adapter);
     }
 
     public function indexAction() {
@@ -26,7 +25,6 @@ class Cron extends AbstractActionController {
     }
 
     public function todayAction() {
-//        $this->doReattendance();
         $responseData = [];
         try {
             $request = $this->getRequest();
@@ -91,7 +89,7 @@ class Cron extends AbstractActionController {
     public function getAbsentList($data) {
         $absentList = array();
         for ($i = 0; $i < count($data); $i++) {
-            if ($data[$i]['OVERALL_STATUS'] == 'AB' && $data[$i]['EMPLOYEE_MAIL'] != null) {
+            if ($data[$i]['ABS_LATE'] == 'ABSENT' && $data[$i]['EMPLOYEE_MAIL'] != null) {
                 array_push($absentList, $data[$i]);
             }
         }
@@ -101,8 +99,7 @@ class Cron extends AbstractActionController {
     public function getLateList($data) {
         $lateList = array();
         for ($i = 0; $i < count($data); $i++) {
-            $lateStatus = $data[$i]['LATE_STATUS'];
-            if (($lateStatus == 'L' || $lateStatus == 'B' || $lateStatus == 'Y') && $data[$i]['EMPLOYEE_MAIL'] != null) {
+            if ($data[$i]['ABS_LATE'] == 'LATE'  && $data[$i]['EMPLOYEE_MAIL'] != null) {
                 array_push($lateList, $data[$i]);
             }
         }
@@ -199,7 +196,7 @@ Head Office, Kamaladi</p>';
             $subject = "Missing Attendance";
 
             $this->sendEmail($to, $body, $subject, $cc);
-
+          
         }
     }
 
@@ -226,10 +223,5 @@ Head Office, Kamaladi</p>';
             return $ex;
         }
     }
-
-//    public function doReattendance() {
-//        $cronRepo = new CronRepository($this->adapter);
-//        return $cronRepo->doReattendance();
-//    }
 
 }
