@@ -99,7 +99,7 @@ class SalarySheetController extends HrisController {
                     /*  */
                     /*  */
                     $returnData = [];
-                    $groupListArray=$this->salarySheetRepo->insertPayrollEmp($empList);
+                    $groupListArray=$this->salarySheetRepo->insertPayrollEmp($empList,$monthId);
                     $groupToGenerate=[];
                     foreach ($groupListArray as $list ){
                         array_push($groupToGenerate, $list['GROUP_ID']);
