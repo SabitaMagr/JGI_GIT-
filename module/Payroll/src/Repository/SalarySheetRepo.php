@@ -115,11 +115,14 @@ AND GROUP_ID IN ({$group})";
         return $data;
     }
     
-    public function insertPayrollEmp($empList) {
+    public function insertPayrollEmp($empList,$monthId) {
         $deleteSql = "delete from HRIS_PAYROLL_EMP_LIST";
         $this->executeStatement($deleteSql);
         foreach ($empList as $employeeId) {
-            $tempSql = "INSERT INTO HRIS_PAYROLL_EMP_LIST VALUES ({$employeeId})";
+//            $tempSql = "INSERT INTO HRIS_PAYROLL_EMP_LIST VALUES ({$employeeId})";
+            $tempSql = "INSERT INTO HRIS_PAYROLL_EMP_LIST 
+                    select * from (select {$employeeId} as employee_id from dual) 
+where employee_id not in (select employee_id from Hris_Salary_Sheet_Emp_Detail where month_id={$monthId})";
             $this->executeStatement($tempSql);
         }
         $toGenerateGroupSql="select  distinct group_id 
