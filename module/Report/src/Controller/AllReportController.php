@@ -73,8 +73,8 @@ class AllReportController extends HrisController {
                     ],
                     'branchId' => $branchId,
                     'preference' => $this->preference,
-            'acl' => $this->acl,
-            'employeeDetail' => $this->storageData['employee_detail']
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 
@@ -148,12 +148,12 @@ class AllReportController extends HrisController {
             }
         }
 
-        return ['fiscalYearSE' => $this->getFiscalYearSE(), 
+        return ['fiscalYearSE' => $this->getFiscalYearSE(),
             'calenderType' => $this->getCanderType(),
-            'preference' => $this->preference, 
+            'preference' => $this->preference,
             'acl' => $this->acl,
             'employeeDetail' => $this->storageData['employee_detail']
-                ];
+        ];
     }
 
     public function departmentWiseDailyAction() {
@@ -187,9 +187,9 @@ class AllReportController extends HrisController {
                     'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
-    
+
     public function departmentWiseDailyShivamAction() {
-        
+
 //        $monthId = (int) $this->params()->fromRoute('id1');
 //        $departmentId = (int) $this->params()->fromRoute('id2');
 //        $monthList = $this->repository->getMonthList();
@@ -219,7 +219,7 @@ class AllReportController extends HrisController {
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail']
         ]);
-    } 
+    }
 
     public function employeeWiseAction() {
 
@@ -268,7 +268,6 @@ class AllReportController extends HrisController {
                     'preference' => $this->preference,
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail']
-            
         ]);
     }
 
@@ -639,9 +638,9 @@ class AllReportController extends HrisController {
             'employeeDetail' => $this->storageData['employee_detail']
         ];
     }
-    
+
     public function withOvertimeShivamAction() {
-         $request = $this->getRequest();
+        $request = $this->getRequest();
         if ($request->isPost()) {
             try {
                 $data = $request->getPost();
@@ -654,11 +653,53 @@ class AllReportController extends HrisController {
 
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
-                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0,
                     'preference' => $this->preference,
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail']
-            
+        ]);
+    }
+
+    public function ageReportAction() {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $reportData = $this->repository->checkAge($data);
+
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference' => $this->preference,
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
+    
+    public function contractExpiryReportAction() {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $reportData = $this->repository->checkContract($data);
+
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference' => $this->preference,
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
 

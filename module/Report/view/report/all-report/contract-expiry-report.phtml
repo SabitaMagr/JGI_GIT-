@@ -10,14 +10,14 @@ $this->headScript()
         ->appendFile($this->basePath('assets/global/plugins/nepalidate/nepali.datepicker.v2.1.min.js'))
 ->appendFile($this->basePath('js/nepali-datepicker-ext.js'));
 $this->headScript()->appendFile($this->basePath('js/search.js'));
-$this->headScript()->appendFile($this->basePath('js/Report/AllReport/roster-report.js'));
+$this->headScript()->appendFile($this->basePath('js/Report/AllReport/contract-expiry-report.js'));
 
 ?>
 <script>
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
-    document.getRosterReportLink = "<?php echo $this->url('allreport', ['action' => 'rosterReport']);?>";
+    document.getContractExpiry = "<?php echo $this->url('allreport', ['action' => 'contractExpiryReport']);?>";
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\overtime-report')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -27,8 +27,7 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/roster-repo
     <div class="col-sm-12 ">
         <div class="portlet box green">
             <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-gift"></i> Filter Employees </div>
+                <div class="caption"> Search </div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
                     <a href="" class="fullscreen" data-original-title="" title=""> </a>
@@ -96,15 +95,19 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/roster-repo
                 </div>
                 <div class="row margin-top-10">
             <div class="col-sm-2">
+                <label>From Date</label>
                 <input type="text" id="fromDate" name="fromDate"  class="form-control reset-field" placeholder="From Date"/>
             </div>
             <div class="col-sm-2">
+                <label>From Date Nepali</label>
                 <input type="text" id="nepaliFromDate" name="nepaliFromDate"  class="form-control reset-field" placeholder="From Date Nepali"/>
             </div>
             <div class="col-sm-2">
+                <label>To Date</label>
                 <input type="text"  id="toDate" name="toDate"  class="form-control reset-field" placeholder="To Date"/>
             </div>
             <div class="col-sm-2">
+                <label>To Date Nepali</label>
                 <input type="text"  id="nepaliToDate" name="nepaliToDate" class="form-control reset-field" placeholder="To Date Nepali"/>
             </div>
         </div>
@@ -124,8 +127,6 @@ $this->headScript()->appendFile($this->basePath('js/Report/AllReport/roster-repo
         </div>
         <div class="portlet box blue">
             <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-gift"></i> Grid </div>
                 <div class="tools">
                     <a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
                     <a href="" class="fullscreen" data-original-title="" title=""> </a>
