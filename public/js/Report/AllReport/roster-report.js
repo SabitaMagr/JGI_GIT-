@@ -31,7 +31,7 @@
                     columns.push({field: "DATE_"+ temp.toUpperCase(), title: columnTitle, width: 150 });
                    
                 }
-                app.initializeKendoGrid($table, columns);
+                app.initializeKendoGrid($table, columns, null, null, null, 'Roster Report');
                 app.renderKendoGrid($table, response.data);
             }, function (error) {
                 
@@ -39,10 +39,10 @@
         });
 
         $('#excelExport').on('click', function () {
-            app.excelExport($table, map, 'Overtime Report.xlsx');
+            app.excelExport($table, map, 'Roster Report.xlsx');
         });
         $('#pdfExport').on('click', function () {
-            app.excelExport($table, map, 'Query result.xlsx');
+            app.excelExport($table, map, 'Roster Report.pdf');
         });
 
 //        $('#reset').on('click', function () {

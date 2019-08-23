@@ -1428,11 +1428,40 @@ CREATE TABLE "HRIS_EMP_SELF_LEAVE_CLOSING"
 
 
 -- leave encash
-=======
+
 alter table HRIS_EMP_TRAVEL_EXPENSE_DTL modify TRANSPORT_TYPE 
 char(2) check (TRANSPORT_TYPE IN ('AP','OV','TI','BS','OF'));
 
 
-
 update Hris_Preferences set value = 'SOALTEE CROWN PLAZA' where key = 'COMPANY_NAME';
 update Hris_Preferences set value = 'Tachal, Kathmandu' where key = 'COMPANY_ADDRESS';
+
+
+------for Provinces-----------
+
+CREATE TABLE HRIS_PROVINCES
+  (
+    PROVINCE_ID   NUMBER(7) NOT NULL,
+    PROVINCE_NAME VARCHAR2(150),
+    STATUS        CHAR(1)
+  );
+  
+Insert into HRIS_PROVINCES (PROVINCE_ID,PROVINCE_NAME,STATUS) values (1,'Province No. 1','E');
+Insert into HRIS_PROVINCES (PROVINCE_ID,PROVINCE_NAME,STATUS) values (2,'Province No. 2','E');
+Insert into HRIS_PROVINCES (PROVINCE_ID,PROVINCE_NAME,STATUS) values (3,'Province No. 3','E');
+Insert into HRIS_PROVINCES (PROVINCE_ID,PROVINCE_NAME,STATUS) values (4,'Gandaki','E');
+Insert into HRIS_PROVINCES (PROVINCE_ID,PROVINCE_NAME,STATUS) values (5,'Province No. 5','E');
+Insert into HRIS_PROVINCES (PROVINCE_ID,PROVINCE_NAME,STATUS) values (6,'Karnali','E');
+Insert into HRIS_PROVINCES (PROVINCE_ID,PROVINCE_NAME,STATUS) values (7,'Sudurpashchim','E');
+
+
+ALTER TABLE HRIS_ZONES 
+ADD PROVINCE_ID NUMBER(7);
+
+ALTER TABLE HRIS_DISTRICTS 
+ADD PROVINCE_ID NUMBER(7);
+
+ALTER TABLE HRIS_BRANCHES 
+ADD PROVINCE_ID NUMBER(7);
+
+-------end for Provinces-----------

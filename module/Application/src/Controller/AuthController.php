@@ -134,7 +134,7 @@ class AuthController extends AbstractActionController {
                 $this->getAuthService()->getAdapter()
                         ->setIdentity($request->getPost('username'))
                         ->setCredential($request->getPost('password'))
-                        ->getDbSelect()->where("STATUS = 'E'");
+                        ->getDbSelect()->where("STATUS = 'E' AND IS_LOCKED = 'N'");
 
                 $result = $this->getAuthService()->authenticate();
                 foreach ($result->getMessages() as $message) {
