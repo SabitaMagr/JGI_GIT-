@@ -127,6 +127,22 @@ class SystemRuleProcessor {
                // $id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
                 $processedValue = $this->ssdRepo->fetchEmployeeLoanIntrestAmt($this->monthId, $this->employeeId, $this->ruleId);
                 break;
+            //PREVIOUS_TOTAL
+            case PayrollGenerator::SYSTEM_RULE[6]:
+                $ruleRepo = new RulesRepository($this->adapter);
+                $ruleDetails = $ruleRepo->fetchById($this->ruleId);
+                $ruleFormula = $ruleDetails['FORMULA'];
+                $id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
+                $processedValue = $this->ssdRepo->fetchEmployeePreviousSum($this->monthId, $this->employeeId, $id);
+                break;
+            //PREVIOUS_MONTH_AMOUNT
+            case PayrollGenerator::SYSTEM_RULE[7]:
+                $ruleRepo = new RulesRepository($this->adapter);
+                $ruleDetails = $ruleRepo->fetchById($this->ruleId);
+                $ruleFormula = $ruleDetails['FORMULA'];
+                $id=$this->getFistParamenters($systemRule, $ruleFormula, 9);
+                $processedValue = $this->ssdRepo->fetchEmployeePreviousMonthAmount($this->monthId, $this->employeeId, $id);
+                break;
         }
         return $processedValue;
     }
