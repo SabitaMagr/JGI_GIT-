@@ -137,7 +137,7 @@ class AttendanceStatus extends HrisController {
         $model->approvedDate = Helper::getcurrentExpressionDate();
         $model->approvedBy = $this->employeeId;
         $model->status = $approve ? "AP" : "R";
-        $message = $approve ? "Leave Request Approved" : "Leave Request Rejected";
+        $message = $approve ? "Attendance Request Approved" : "Attendance Request Rejected";
         $notificationEvent = $approve ? NotificationEvents::ATTENDANCE_APPROVE_ACCEPTED : NotificationEvents::ATTENDANCE_APPROVE_REJECTED;
         $attendanceRequestRepository = new AttendanceApproveRepository($this->adapter);
         $attendanceRequestRepository->edit($model, $id);

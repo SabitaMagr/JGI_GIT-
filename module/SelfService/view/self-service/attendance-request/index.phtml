@@ -51,8 +51,13 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             <a href="" class="fullscreen" data-original-title="" title=""> </a>
         </div>
         <div class="actions">
+            <a href="<?= $this->url('attendancerequest', ['action' => 'checkIn']) ?>" id="sample_editable_1_new" class="btn default btn-sm">
+                <i class="fa fa-plus-square icon-black"></i> Check in </a>
+            <a href="<?= $this->url('attendancerequest', ['action' => 'checkOut']) ?>" id="sample_editable_1_new" class="btn default btn-sm">
+                <i class="fa fa-plus-square icon-black"></i> Check out </a>
             <a href="<?= $this->url('attendancerequest', ['action' => 'add']) ?>" id="sample_editable_1_new" class="btn default btn-sm">
                 <i class="fa fa-plus-square icon-black"></i> New </a>
+            
             <div class="btn-group">
                 <a class="btn btn-sm blue-soft" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-copy"></i> Tools

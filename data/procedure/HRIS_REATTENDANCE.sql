@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE HRIS_REATTENDANCE(
+create or replace PROCEDURE HRIS_REATTENDANCE(
     P_FROM_ATTENDANCE_DT HRIS_ATTENDANCE.ATTENDANCE_DT%TYPE,
     P_EMPLOYEE_ID HRIS_ATTENDANCE.EMPLOYEE_ID%TYPE:=NULL,
     P_TO_ATTENDANCE_DT DATE                       :=NULL)
@@ -382,7 +382,9 @@ BEGIN
           OVERALL_STATUS    = V_OVERALL_STATUS,
           LATE_STATUS       = V_LATE_STATUS,
           TOTAL_HOUR        = V_DIFF_IN_MIN,
-          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN)
+          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN),
+          IN_REMARKS  = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_IN_TIME),
+          OUT_REMARKS =(select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_OUT_TIME)
         WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
         AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
         --
@@ -441,7 +443,7 @@ BEGIN
                      EXCEPTION
                 WHEN no_data_found THEN
                     dbms_output.put('NO training for the day ON DAYOFF FOUND');
-            
+
 
 
                      IF v_training_id IS NOT NULL
