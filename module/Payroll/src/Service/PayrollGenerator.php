@@ -58,7 +58,9 @@ class PayrollGenerator {
         "SELF_PREV_TOTAL",
         "MULTIPLICATION_FACTOR",
         "LOAN_AMT",
-        "LOAN_INT"
+        "LOAN_INT",
+        "PREVIOUS_TOTAL",
+        "PREVIOUS_MONTH_AMOUNT"
     ];
 
     public function __construct($adapter) {

@@ -205,5 +205,48 @@ class SalarySheetDetailRepo extends HrisRepository {
 //                    die();
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
+    
+    public function fetchEmployeePreviousSum($monthId,$employeeId,$ruleId) {
+                $sql="select 
+        nvl(sum(val),0) as value
+        from 
+        (
+        select 
+        Ssd.val,
+        Mc.Fiscal_Year_Id,ssed.* 
+        from 
+        Hris_Salary_Sheet_Emp_Detail  ssed
+        left join Hris_Month_Code mc on (mc.month_id=ssed.month_id)
+        left join Hris_Salary_Sheet_Detail ssd on (pay_id={$ruleId})
+        where 
+        ssed.month_id<{$monthId} and 
+        ssed.employee_id={$employeeId}
+        and Mc.Fiscal_Year_Id = (select fiscal_year_id from Hris_Month_Code where Month_Id={$monthId})
+        )";
+        $resultList = $this->rawQuery($sql);
+        return $resultList[0]['VALUE'];
+    }
+    
+    public function fetchEmployeePreviousMonthAmount($monthId,$employeeId,$ruleId) {
+                $sql="select 
+        nvl(sum(val),0) as value
+        from 
+        (
+        select 
+        Ssd.val,
+        Mc.Fiscal_Year_Id,ssed.* 
+        from 
+        Hris_Salary_Sheet_Emp_Detail  ssed
+        left join Hris_Month_Code mc on (mc.month_id=ssed.month_id)
+        left join Hris_Salary_Sheet_Detail ssd on (pay_id={$ruleId})
+        where 
+        ssed.month_id<{$monthId} and 
+        ssed.employee_id={$employeeId}
+        and Mc.Fiscal_Year_Id = (select fiscal_year_id from Hris_Month_Code where Month_Id={$monthId})
+        and Mc.Month_Id = (SELECT Month_Id FROM hris_month_code WHERE month_id = ({$monthId}-1) )
+        )";
+        $resultList = $this->rawQuery($sql);
+        return $resultList[0]['VALUE'];
+    }
 
 }
