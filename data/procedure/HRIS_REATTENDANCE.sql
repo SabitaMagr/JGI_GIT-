@@ -383,8 +383,8 @@ BEGIN
           LATE_STATUS       = V_LATE_STATUS,
           TOTAL_HOUR        = V_DIFF_IN_MIN,
           OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN),
-          IN_REMARKS  = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_IN_TIME),
-          OUT_REMARKS =(select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_OUT_TIME)
+          IN_REMARKS  = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_IN_TIME AND ROWNUM=1),
+          OUT_REMARKS = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_OUT_TIME AND ROWNUM=1)
         WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
         AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
         --
