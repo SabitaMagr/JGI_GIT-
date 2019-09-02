@@ -80,6 +80,16 @@ class LeaveApproveController extends HrisController {
                 $recommenderId = $detail['RECOMMENDER_ID'];
             }
         } else {
+            
+            
+            $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
+            if($checkSameDateApproved['LEAVE_COUNT']>0){
+                return $this->redirect()->toRoute("leaveapprove");
+            }
+            
+            
+            
+            
             $getData = $request->getPost();
             $action = $getData->submit;
 
@@ -232,6 +242,11 @@ class LeaveApproveController extends HrisController {
 
                     $detail = $this->repository->fetchById($id);
                     $requestedEmployeeID = $detail['EMPLOYEE_ID'];
+                    
+                    $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
+                    if($checkSameDateApproved['LEAVE_COUNT']>0){
+                        continue;
+                    }
 
                     if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
                         if ($role == 2) {

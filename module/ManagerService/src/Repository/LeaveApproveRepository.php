@@ -381,5 +381,18 @@ class LeaveApproveRepository implements RepositoryInterface {
         $result = $statement->execute();
         return $result->current();
     }
+    
+     public function getSameDateApprovedStatus($employeeId, $startDate, $endDate) {
+        $sql = "SELECT COUNT(*) as LEAVE_COUNT
+  FROM HRIS_EMPLOYEE_LEAVE_REQUEST
+  WHERE (('{$startDate}' BETWEEN START_DATE AND END_DATE)
+  OR ('{$endDate}' BETWEEN START_DATE AND END_DATE))
+  AND STATUS  IN ('AP','CP','CR')
+  AND EMPLOYEE_ID = $employeeId
+                ";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
+    }
 
 }
