@@ -24,8 +24,6 @@ $this->headScript()
     document.pullInOutTimeLink = '<?php echo $this->url('attendancebyhr', ['action' => 'pullInOutTime']); ?>';
     document.acl =<?php echo json_encode($acl); ?>;
     document.employeeDetail =<?php echo json_encode($employeeDetail); ?>;
-    document.allowShiftChange ='<?php echo $allowShiftChange; ?>';
-    document.allowTimeChange ='<?php echo $allowTimeChange; ?>';
     document.preference =<?php echo json_encode($preference) ?>;
 </script>
 

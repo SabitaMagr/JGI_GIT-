@@ -5,19 +5,19 @@ namespace Report\Controller;
 use Application\Controller\HrisController;
 use Application\Custom\CustomViewModel;
 use Application\Helper\EntityHelper;
+use Application\Helper\EntityHelper as ApplicationHelper;
 use Application\Helper\Helper;
 use Application\Model\FiscalYear;
 use Application\Model\HrisQuery;
+use Application\Repository\DashboardRepository;
 use Exception;
 use Report\Repository\ReportRepository;
 use Setup\Model\Branch;
-use Setup\Model\Department;
 use Zend\Authentication\Storage\StorageInterface;
 use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Select as Select2;
 use Zend\Form\Element\Select;
 use Zend\View\Model\JsonModel;
-use Application\Helper\EntityHelper as ApplicationHelper;
 
 class AllReportController extends HrisController {
 
@@ -702,5 +702,51 @@ class AllReportController extends HrisController {
                     'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
+    
+    
+    public function calendarReportAction(){
+        $empRawList= EntityHelper::rawQueryResult($this->adapter, "select 
+employee_id,employee_code||'-'||full_name as full_name
+from hris_employees where status='E'
+and Retired_Flag!='Y' and Resigned_Flag!='Y'");
+        $empList=Helper::extractDbData($empRawList);
+        
+         return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference' => $this->preference,
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    "calendarType"=>$this->storageData['preference']['calendarView'],
+                    'empList' => $empList
+        ]);
+        
+    }
+    
+    public function fetchEmployeeCalendarJsonFeedAction() {
+        try {
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+
+                $employeeId = $this->employeeId;
+                
+                $dahsboardRepo = new DashboardRepository($this->adapter);
+
+                $startDate = $this->getRequest()->getPost('startDate');
+                $endDate = $this->getRequest()->getPost('endDate');
+                $selEmp = $this->getRequest()->getPost('selEmp');
+                if($selEmp>0){
+                $employeeId = $selEmp;
+                }
+                $calendarData = $dahsboardRepo->fetchEmployeeCalendarData($employeeId, $startDate, $endDate);
+                $calendarJsonFeedArray = Helper::extractDbData($calendarData);
+                return new CustomViewModel($calendarJsonFeedArray);
+            } else {
+                throw new Exception("The request should be of type post");
+            }
+        } catch (Exception $e) {
+            return new CustomViewModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+        }
+    }
+    
 
 }
