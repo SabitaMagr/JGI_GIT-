@@ -213,7 +213,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
 
 <div id="table">
 </div>
+    
 <div style="display: none;" class="row margin-top-20" id="acceptRejectDiv" >
+    <?php  if($acl['HR_APPROVE']=='Y'){  ?>
     <div class="col-sm-2 ">
         <button id="A" class="btn btn-danger btnApproveReject">Absent</button>
     </div>
@@ -252,4 +254,5 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
     <div class="col-sm-2 pull-right">
         <button id="P" class="btn btn-info btnApproveReject pull-right">Present</button>
     </div>
+    <?php }      ?>
 </div>

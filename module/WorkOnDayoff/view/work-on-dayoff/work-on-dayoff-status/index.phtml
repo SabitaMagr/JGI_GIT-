@@ -151,7 +151,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
             
             <div class="row margin-top-10">
             <div class="col-sm-4">
+                <?php  if($acl['HR_CANCEL']=='Y'){  ?>
                 <label><input id="super_power" type="checkbox" class="reset-field">Use Super Power</label>
+                <?php }      ?>
             </div>
             <div class=" col-sm-offset-8 col-sm-4">
                 <button id="reset" class="btn default btn-sm pull-right hris-reset-btn">
@@ -175,7 +177,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <button action="reject" class="btn btn-danger btnApproveReject">Reject</button>
             </div>
             <div class="col-sm-2 col-sm-offset-8">
+                <?php  if($acl['HR_APPROVE']=='Y'){  ?>
                 <button action="approve" class="btn btn-info btnApproveReject pull-right">Approve</button>
+                <?php }      ?>
             </div>
         </div>
     </div>
