@@ -189,7 +189,7 @@ class LeaveStatus extends HrisController {
         $detail = $leaveApproveRepository->fetchById($id);
         if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
             $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
-            if($checkSameDateApproved['LEAVE_COUNT']>0){
+            if($checkSameDateApproved['LEAVE_COUNT']>0 && $approve){
                 throw new Exception('Leave Overlap Detected');
             }
             $model = new LeaveApply();

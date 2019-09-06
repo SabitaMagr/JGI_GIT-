@@ -82,17 +82,14 @@ class LeaveApproveController extends HrisController {
         } else {
             
             
-            $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
-            if($checkSameDateApproved['LEAVE_COUNT']>0){
-                return $this->redirect()->toRoute("leaveapprove");
-            }
-            
-            
-            
-            
             $getData = $request->getPost();
             $action = $getData->submit;
 
+            $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
+            if($checkSameDateApproved['LEAVE_COUNT']>0 && $action == "Approve"){
+                return $this->redirect()->toRoute("leaveapprove");
+            }
+            
             if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
                 if ($role == 2) {
                     $leaveApply->recommendedDt = Helper::getcurrentExpressionDate();
@@ -244,7 +241,7 @@ class LeaveApproveController extends HrisController {
                     $requestedEmployeeID = $detail['EMPLOYEE_ID'];
                     
                     $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
-                    if($checkSameDateApproved['LEAVE_COUNT']>0){
+                    if($checkSameDateApproved['LEAVE_COUNT']>0 && $action == "Approve"){
                         continue;
                     }
 
