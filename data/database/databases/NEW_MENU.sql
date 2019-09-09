@@ -1378,3 +1378,23 @@ INTO HRIS_MENUS
     NULL,
     'Y'
   );
+
+
+Insert into HRIS_MENUS 
+(MENU_CODE,MENU_ID,MENU_NAME,PARENT_MENU,
+MENU_DESCRIPTION,ROUTE,STATUS,CREATED_DT,
+MODIFIED_DT,ICON_CLASS,ACTION,MENU_INDEX,
+IS_VISIBLE)
+values (null,
+(select max(menu_id)+1 from hris_menus)
+,'Weekly Roster',
+(select menu_id from hris_menus where lower(menu_name) like '%assign%' and PARENT_MENU is null),
+null,
+'roaster',
+'E',
+trunc(sysdate),
+null,
+'fa fa-square-o',
+'weeklyRoster',
+(select max(menu_index)+1  from hris_menus where lower(menu_name) like '%assign%' and PARENT_MENU is null),
+'Y');

@@ -77,7 +77,7 @@ class LeaveStatus extends HrisController {
             if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
                 
                 $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
-                if($checkSameDateApproved['LEAVE_COUNT']>0){
+                if($checkSameDateApproved['LEAVE_COUNT']>0 && $action == "Approve"){
                     return $this->redirect()->toRoute("leavestatus");
                 }
                 
