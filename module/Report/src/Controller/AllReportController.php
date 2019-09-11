@@ -653,6 +653,7 @@ class AllReportController extends HrisController {
 
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0,
                     'preference' => $this->preference,
                     'acl' => $this->acl,
                     'employeeDetail' => $this->storageData['employee_detail']

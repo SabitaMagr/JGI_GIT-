@@ -241,17 +241,46 @@ FROM
     ER.WED,
     ER.THU,
     ER.FRI,
-    ER.SAT
+    ER.SAT,
+    s1.shift_ename as SUN_NAME,
+    s2.shift_ename as MON_NAME,
+    s3.shift_ename as TUE_NAME,
+    s4.shift_ename as WED_NAME,
+    s5.shift_ename as THU_NAME,
+    s6.shift_ename as FRI_NAME,
+    s7.shift_ename as SAT_NAME
+  
   FROM hris_employees E
   LEFT JOIN HRIS_WEEKLY_ROASTER ER
+  left join hris_shifts s1 on (s1.shift_id=er.sun) 
+            left join hris_shifts s2 on (s2.shift_id=er.mon) 
+            left join hris_shifts s3 on (s3.shift_id=er.tue)  
+            left join hris_shifts s4 on (s4.shift_id=er.wed) 
+            left join hris_shifts s5 on (s5.shift_id=er.thu) 
+            left join hris_shifts s6 on (s6.shift_id=er.fri)
+            left join hris_shifts s7 on (s7.shift_id=er.sat)
   ON(E.EMPLOYEE_ID = ER.EMPLOYEE_ID)
   WHERE 1=1 AND E.STATUS='E' {$searchCondition}
   )
   ";
-
+  
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return Helper::extractDbData($result);
+//        
+        $retData=[];
+        foreach ($result as $data){
+            $tempArr=$data;
+            $tempArr['SUNARR']=array('SHIFT_ID'=>$data['SUN'] ,'SHIFT_ENAME'=>$data['SUN_NAME']);
+            $tempArr['MONARR']=array('SHIFT_ID'=>$data['MON'] ,'SHIFT_ENAME'=>$data['MON_NAME']);
+            $tempArr['TUEARR']=array('SHIFT_ID'=>$data['TUE'] ,'SHIFT_ENAME'=>$data['TUE_NAME']);
+            $tempArr['WEDARR']=array('SHIFT_ID'=>$data['WED'] ,'SHIFT_ENAME'=>$data['WED_NAME']);
+            $tempArr['THUARR']=array('SHIFT_ID'=>$data['THU'] ,'SHIFT_ENAME'=>$data['THU_NAME']);
+            $tempArr['FRIARR']=array('SHIFT_ID'=>$data['FRI'] ,'SHIFT_ENAME'=>$data['FRI_NAME']);
+            $tempArr['SATARR']=array('SHIFT_ID'=>$data['SAT'] ,'SHIFT_ENAME'=>$data['SAT_NAME']);
+            array_push($retData, $tempArr);
+        }
+        
+        return $retData;
     }
     
     public function getWeeklyShiftDetail(){

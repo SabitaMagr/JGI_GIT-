@@ -73,17 +73,22 @@ class Roaster extends HrisController {
                 $request = $this->getRequest();
                 $data = $request->getPost();
                 $result = $this->repository->getWeeklyRosterDetailList($data['q']);
-                return new JsonModel(['success' => true, 'data' => $result, 'error' => '']);
+                return new JsonModel($result);
+//                return new JsonModel(['success' => true, 'data' => $result, 'error' => '']);
             } catch (Exception $e) {
                 return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
             }
         }
         
+        $data['pvmReadLink'] = $this->url()->fromRoute('roaster', ['action' => 'weeklyRoster']);
+        $data['pvmUpdateLink'] = $this->url()->fromRoute('roaster', ['action' => 'assignWeeklyRoster']);
+        
         return $this->stickFlashMessagesTo([
                     'searchValues' => EntityHelper::getSearchData($this->adapter),
                     'shifts' => EntityHelper::getTableList($this->adapter, ShiftSetup::TABLE_NAME, [ShiftSetup::SHIFT_ID, ShiftSetup::SHIFT_ENAME], [ShiftSetup::STATUS => EntityHelper::STATUS_ENABLED]),
                     'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'data' => json_encode($data)
         ]);
     }
     
@@ -99,6 +104,9 @@ class Roaster extends HrisController {
     }
 
     public function assignWeeklyRosterAction() {
+        
+//        echo 'sdfsdf';
+//        die();
         $request = $this->getRequest();
         if ($request->isPost()) {
             try {
