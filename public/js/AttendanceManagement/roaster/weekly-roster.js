@@ -44,6 +44,9 @@
                         update: {
                             url: data.pvmUpdateLink,
                             type: "POST",
+                            success: function (result) {
+                                console.log('sdfsdf');
+                            }
 //                                    url: crudServiceBaseUrl + "/Products/Update",
 //                                    dataType: "jsonp"
                         },
@@ -56,6 +59,10 @@
                                     q: q
                                 };
                             }
+//                            if (operation === "update") {
+//                                $table.data('kendoGrid').dataSource.read();
+//                                $table.data('kendoGrid').refresh();
+//                            }
 
                             if (operation !== "read" && options.models) {
                                 return {models: kendo.stringify(options.models)};
@@ -93,6 +100,12 @@
                 });
 
         $table.kendoGrid({
+            toolbar: ["excel", "pdf"],
+             excel: {
+                fileName: 'WeeklyRoaster.xlsx',
+                filterable: false,
+                allPages: true
+            },
             dataSource: dataSource,
             pageable: true,
             height: 550,
