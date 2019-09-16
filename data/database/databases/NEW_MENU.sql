@@ -1439,3 +1439,38 @@ null,
 (select max(menu_index)+1  from hris_menus where lower(menu_name) like '%assign%' and PARENT_MENU is null),
 'Y');
 
+
+INSERT INTO hris_menus (
+    menu_code,
+    menu_id,
+    menu_name,
+    parent_menu,
+    menu_description,
+    route,
+    status,
+    created_dt,
+    modified_dt,
+    icon_class,
+    action,
+    menu_index,
+    created_by,
+    modified_by,
+    is_visible
+) VALUES (
+    NULL,
+    3114,
+    'Group Shift Assign',
+    301,
+    NULL,
+    'groupshiftassign',
+    'E',
+    TO_DATE('12-SEP-19', 'DD-MON-RR'),
+    TO_DATE('12-SEP-19', 'DD-MON-RR'),
+    'fa fa-users',
+    'index',
+    2,
+    12,
+    12,
+    'Y'
+);
+
