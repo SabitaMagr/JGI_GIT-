@@ -171,6 +171,7 @@ class OvertimeReportRepo extends HrisRepository {
         $sql = "
 SELECT E.FULL_NAME,
   E.EMPLOYEE_CODE,
+  D.DEPARTMENT_NAME,
   OVD.*
   FROM (SELECT * 
      FROM
@@ -208,6 +209,8 @@ SELECT E.FULL_NAME,
   ) OVD
 LEFT JOIN HRIS_EMPLOYEES E
 ON (OVD.employee_id = E.employee_id)
+LEFT JOIN HRIS_DEPARTMENTS D
+ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
 WHERE 1=1 {$searchCondition}";
         return $this->rawQuery($sql);
     }
