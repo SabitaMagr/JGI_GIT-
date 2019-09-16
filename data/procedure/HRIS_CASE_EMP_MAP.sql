@@ -11,21 +11,13 @@ BEGIN
             select 'T'
             into v_exists
             from hris_best_case_emp_map
-            where EMPLOYEE_ID = P_EMPLOYEE_ID;
+            where EMPLOYEE_ID = P_EMPLOYEE_ID
+            and case_id = P_CASE_ID;
         exception
             when no_data_found then
             null;
         end;
-        if v_exists = 'T' then
-        update hris_best_case_emp_map
-        set CASE_ID = P_CASE_ID, EMPLOYEE_ID = P_EMPLOYEE_ID
-        where EMPLOYEE_ID = P_EMPLOYEE_ID;
-
-        DELETE FROM HRIS_EMPLOYEE_SHIFTS WHERE EMPLOYEE_ID = P_EMPLOYEE_ID AND SHIFT_ID NOT IN(
-            SELECT SHIFT_ID FROM hris_best_case_shift_map WHERE CASE_ID = P_CASE_ID
-        );
-
-        else
+        if v_exists <> 'T' then
 
         INSERT INTO hris_best_case_emp_map(CASE_ID, EMPLOYEE_ID)
         VALUES(P_CASE_ID, P_EMPLOYEE_ID);

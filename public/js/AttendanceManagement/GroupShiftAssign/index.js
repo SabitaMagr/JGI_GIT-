@@ -66,7 +66,7 @@ angular.module('hris', [])
                     $scope.$apply(function () {
                         $scope.view();
                     });
-                    window.toastr.success("Leave assigned successfully", "Notifications");
+                    window.toastr.success("Shift assigned successfully", "Notifications");
                 });
             };
 
