@@ -16,6 +16,7 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Form\Annotation\AnnotationBuilder;
 use Zend\Mvc\Controller\AbstractActionController;
 use Setup\Model\HrEmployees;
+use Application\Helper\EntityHelper;
 
 class BranchController extends AbstractActionController {
 
@@ -100,13 +101,16 @@ class BranchController extends AbstractActionController {
                 ->setKeyValue(HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME)
                 ->setIncludeEmptyRow(TRUE)
                 ->result();
+        
+        $provinces = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_PROVINCES", "PROVINCE_ID", ["PROVINCE_NAME"], null ,"PROVINCE_ID", "ASC", "-", true, true, null);
 
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'countries' => $countryKV,
                     'companies' => $companyKV,
                     'employees' => $employeeKV,
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'provinces' => $provinces
                         ]
         );
     }
@@ -156,13 +160,17 @@ class BranchController extends AbstractActionController {
                 ->setKeyValue(HrEmployees::EMPLOYEE_ID, HrEmployees::FULL_NAME)
                 ->setIncludeEmptyRow(true)
                 ->result();
+        
+        $provinces = EntityHelper::getTableKVListWithSortOption($this->adapter, "HRIS_PROVINCES", "PROVINCE_ID", ["PROVINCE_NAME"], null ,"PROVINCE_ID", "ASC", "-", true, true, null);
+        
         return Helper::addFlashMessagesToArray($this, [
                     'form' => $this->form,
                     'id' => $id,
                     'countries' => $countryKV,
                     'companies' => $companyKV,
                     'employees' => $employeeKV,
-                    'customRenderer' => Helper::renderCustomView()
+                    'customRenderer' => Helper::renderCustomView(),
+                    'provinces' => $provinces
         ]);
     }
 

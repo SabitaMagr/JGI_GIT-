@@ -52,6 +52,8 @@ $addrTempStreetAddress = $formOne->get('addrTempStreetAddress');
 $addrTempVdcMunicipalityId = $formOne->get('addrTempVdcMunicipalityId');
 $addrTempDistrictId = $formOne->get('addrTempDistrictId');
 $addrTempZoneId = $formOne->get('addrTempZoneId');
+$addrPermProvinceId = $formOne->get('addrPermProvinceId');
+$addrTempProvinceId = $formOne->get('addrTempProvinceId');
 
 $famFatherName = $formTwo->get('famFatherName');
 $famFatherOccupation = $formTwo->get('famFatherOccupation');
@@ -432,6 +434,19 @@ if ($this->messages) {
                     </div>
 
                 </div>
+                
+                <div class="col-xs-12 col-sm-6 col-md-4 col-box">
+                    <div class="row bottomgap">
+
+                        <div class="form-group  <?= empty($addrPermProvinceId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                <?php print $this->formLabel($addrPermProvinceId); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                <?php print $perProvinceName; ?></div>
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
         </div>
@@ -502,6 +517,17 @@ if ($this->messages) {
                                 <?php print $this->formLabel($addrTempVdcMunicipalityId); ?></div>
                             <div class="col-xs-6 col-sm-6 col-md-6 cgap">
                                 <?php print $employeeData['VDC_MUNICIPALITY_NAME_TEMP']; ?></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xs-12 col-sm-6 col-md-4 col-box">
+                    <div class="row bottomgap">
+                        <div class="form-group  <?= empty($addrTempProvinceId->getMessages()) ? "" : "error" ?>">
+                            <div class="col-xs-6 col-sm-6 col-md-6 rightalign">
+                                <?php print $this->formLabel($addrTempProvinceId); ?></div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 cgap">
+                                <?php print $tempProvinceName; ?></div>
                         </div>
                     </div>
                 </div>

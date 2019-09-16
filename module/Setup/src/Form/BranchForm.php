@@ -95,5 +95,13 @@ class BranchForm {
      * @Annotation\Attributes({ "id":"branchManager","class":"form-control"})
      */
     public $branchManager;
+    
+    /**
+     * @Annotation\Type("Zend\Form\Element\Select")
+     * @Annotation\Required(false)
+     * @Annotation\Options({"disable_inarray_validator":"true","label":"Province"})
+     * @Annotation\Attributes({ "id":"province","class":"form-control"})
+     */
+    public $province;
 
 }

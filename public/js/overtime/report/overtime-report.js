@@ -25,7 +25,8 @@
                     'Employee Name' : 'FULL_NAME'
                 };
                 columns = [{field: "EMPLOYEE_CODE", title: "Code", locked: true, width: 100},
-                        {field: "FULL_NAME", title: "Employee Name", locked: true, width: 100}
+                        {field: "FULL_NAME", title: "Employee Name", locked: true, width: 100},
+                        {field: "DEPARTMENT_NAME", title: "Department", locked: true, width: 100}
                     ];
                 for(var i = 0; i < response.dates.length; i++){
                     let temp = response.dates[i].replace(/-/g, '_');
@@ -36,7 +37,7 @@
                     ]});
                     
                 }
-                app.initializeKendoGrid($table, columns);
+                app.initializeKendoGrid($table, columns,null,null,null,'Overtime Report.xlsx');
                 app.renderKendoGrid($table, response.data);
             }, function (error) {
                 

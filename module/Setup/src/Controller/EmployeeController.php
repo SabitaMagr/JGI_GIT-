@@ -114,12 +114,15 @@ class EmployeeController extends HrisController {
             $addrTempZoneId = $this->formOne->get('addrTempZoneId');
             $companyId = $this->formOne->get('companyId');
             $countryId = $this->formOne->get('countryId');
+            $addrPermProvinceId = $this->formOne->get('addrPermProvinceId');
+            $addrTempProvinceId = $this->formOne->get('addrTempProvinceId');
 
             $genderList = ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Gender::TABLE_NAME, \Setup\Model\Gender::GENDER_ID, [\Setup\Model\Gender::GENDER_NAME], null, null, true);
             $bloodGroupList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_BLOOD_GROUPS', 'BLOOD_GROUP_ID', ['BLOOD_GROUP_CODE'], NULL, NULL, TRUE);
             $zoneList = ApplicationHelper::getTableKVList($this->adapter, \Setup\Model\Zones::TABLE_NAME, \Setup\Model\Zones::ZONE_ID, [\Setup\Model\Zones::ZONE_NAME], null, null, true);
             $religionList = ApplicationHelper::getTableKVList($this->adapter, 'HRIS_RELIGIONS', 'RELIGION_ID', ['RELIGION_NAME'], null, null, true);
             $companyList = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_COMPANY", "COMPANY_ID", ["COMPANY_NAME"], ["STATUS" => "E"], "COMPANY_NAME", "ASC", null, false, true);
+            $provinceList = ApplicationHelper::getTableKVListWithSortOption($this->adapter, "HRIS_PROVINCES", "PROVINCE_ID", ["PROVINCE_NAME"], null ,"PROVINCE_ID", "ASC", "-", true, true, null);
 
 
             $genderId->setValueOptions($genderList);
@@ -129,6 +132,8 @@ class EmployeeController extends HrisController {
             $addrTempZoneId->setValueOptions($zoneList);
             $companyId->setValueOptions($companyList);
             $countryId->setValueOptions($this->getCountryList());
+            $addrPermProvinceId->setValueOptions($provinceList);
+            $addrTempProvinceId->setValueOptions($provinceList);
         }
         if (!$this->formTwo) {
             $this->formTwo = $builder->createForm($formTabTwo);
@@ -312,7 +317,9 @@ class EmployeeController extends HrisController {
                 $address['addrTempZoneId'] = $formOneModel->addrTempZoneId;
                 $address['addrTempDistrictId'] = $formOneModel->addrTempDistrictId;
                 $address['addrTempVdcMunicipalityId'] = $formOneModel->addrTempVdcMunicipalityId;
-
+                $address['addrPermProvinceId'] = $formOneModel->addrPermProvinceId;
+                $address['addrTempProvinceId'] = $formOneModel->addrTempProvinceId;
+                
                 $formOneModel->addrPermVdcMunicipalityId = $this->repository->vdcIdToString($formOneModel->addrPermVdcMunicipalityId);
                 $formOneModel->addrTempVdcMunicipalityId = $this->repository->vdcIdToString($formOneModel->addrTempVdcMunicipalityId);
                 $this->formOne->bind($formOneModel);
@@ -419,11 +426,13 @@ class EmployeeController extends HrisController {
         $perVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_PERM_VDC_MUNICIPALITY_ID]);
         $perDistrictDtl = $this->repository->getDistrictDtl($perVdcMunicipalityDtl['DISTRICT_ID']);
         $perZoneDtl = $this->repository->getZoneDtl($perDistrictDtl['ZONE_ID']);
+        $perProvinceDtl = $this->repository->getProvinceDtl($id)['PERM_PROVINCE'];
 
         $tempVdcMunicipalityDtl = $this->repository->getVdcMunicipalityDtl($employeeData[HrEmployees::ADDR_TEMP_VDC_MUNICIPALITY_ID]);
         $tempDistrictDtl = $this->repository->getDistrictDtl($tempVdcMunicipalityDtl['DISTRICT_ID']);
         $tempZoneDtl = $this->repository->getZoneDtl($tempDistrictDtl['ZONE_ID']);
-
+        $tempProvinceDtl = $this->repository->getProvinceDtl($id)['TEMP_PROVINCE'];
+        
         $empQualificationDtl = $empQualificationRepo->getByEmpId($id);
         $empExperienceList = $empExperienceRepo->getByEmpId($id);
         $empTrainingList = $empTrainingRepo->getByEmpId($id);
@@ -464,6 +473,8 @@ class EmployeeController extends HrisController {
                 "assetDetails" => $assetDetails,
                 "relationDetails" => $relationDetails,
                 'acl' => $this->acl,
+                'tempProvinceName' => $tempProvinceDtl,
+                'perProvinceName' => $perProvinceDtl,
         ]);
     }
 

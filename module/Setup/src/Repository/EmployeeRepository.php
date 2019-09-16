@@ -30,12 +30,14 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
     private $vdcGateway;
     private $districtGateway;
     private $zoneGateway;
+    private $provinceGateway;
 
     public function __construct(AdapterInterface $adapter, $tableName = null) {
         parent::__construct($adapter, HrEmployees::TABLE_NAME);
         $this->vdcGateway = new TableGateway('HRIS_VDC_MUNICIPALITIES', $adapter);
         $this->districtGateway = new TableGateway('HRIS_DISTRICTS', $adapter);
         $this->zoneGateway = new TableGateway('HRIS_ZONES', $adapter);
+        $this->provinceGateway = new TableGateway('HRIS_PROVINCES', $adapter);
     }
 
     public function fetchAll() {
@@ -731,6 +733,21 @@ class EmployeeRepository extends HrisRepository implements RepositoryInterface {
 
     public function getZoneDtl($id) {
         $result = $this->zoneGateway->select(['ZONE_ID' => $id]);
+        return $result->current();
+    }
+    
+    public function getProvinceDtl($id) {
+        $sql = "SELECT P1.PROVINCE_NAME AS PERM_PROVINCE,
+                P2.PROVINCE_NAME AS TEMP_PROVINCE
+                FROM HRIS_EMPLOYEES E
+                JOIN HRIS_PROVINCES P1
+                ON (E.ADDR_PERM_PROVINCE_ID = P1.PROVINCE_ID)
+                JOIN HRIS_PROVINCES P2
+                ON (E.ADDR_TEMP_PROVINCE_ID = P2.PROVINCE_ID)
+                WHERE EMPLOYEE_ID = {$id}";
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        
         return $result->current();
     }
 

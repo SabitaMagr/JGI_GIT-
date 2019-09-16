@@ -656,7 +656,8 @@ class AllReportController extends HrisController {
                     'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0,
                     'preference' => $this->preference,
                     'acl' => $this->acl,
-                    'employeeDetail' => $this->storageData['employee_detail']
+                    'employeeDetail' => $this->storageData['employee_detail'],
+                    'linkToEmpower' => $this->repository->checkIfEmpowerTableExists() ? 1 : 0,
         ]);
     }
 
@@ -681,7 +682,7 @@ class AllReportController extends HrisController {
                     'employeeDetail' => $this->storageData['employee_detail']
         ]);
     }
-    
+
     public function contractExpiryReportAction() {
         $request = $this->getRequest();
 
@@ -749,5 +750,25 @@ and Retired_Flag!='Y' and Resigned_Flag!='Y'");
         }
     }
     
+
+    public function employeeWSBetnDateAction() {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            try {
+                $data = $request->getPost();
+                $reportData = $this->repository->workingSummaryBetnDateReport($data);
+                return new JsonModel(['success' => true, 'data' => $reportData, 'error' => '']);
+            } catch (Exception $e) {
+                return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
+            }
+        }
+
+        return $this->stickFlashMessagesTo([
+                    'searchValues' => EntityHelper::getSearchData($this->adapter),
+                    'preference' => $this->preference,
+                    'acl' => $this->acl,
+                    'employeeDetail' => $this->storageData['employee_detail']
+        ]);
+    }
 
 }
