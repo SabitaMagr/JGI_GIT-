@@ -160,6 +160,7 @@ class TravelApproveRepository implements RepositoryInterface {
         $sql = "SELECT TR.TRAVEL_ID                        AS TRAVEL_ID,
                   TR.TRAVEL_CODE                           AS TRAVEL_CODE,
                   TR.EMPLOYEE_ID                           AS EMPLOYEE_ID,
+                  E.EMPLOYEE_CODE                             AS EMPLOYEE_CODE,
                   E.FULL_NAME                              AS EMPLOYEE_NAME,
                   TO_CHAR(TR.REQUESTED_DATE,'DD-MON-YYYY') AS REQUESTED_DATE_AD,
                   BS_DATE(TR.REQUESTED_DATE)               AS REQUESTED_DATE_BS,
@@ -217,9 +218,15 @@ class TravelApproveRepository implements RepositoryInterface {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
+                LEFT JOIN HRIS_ALTERNATE_R_A ALR
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID={$search['employeeId']})
+                LEFT JOIN HRIS_ALTERNATE_R_A ALA
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID={$search['employeeId']})
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID      = RA.RECOMMEND_BY
-                OR U.EMPLOYEE_ID      =RA.APPROVED_BY)
+                OR U.EMPLOYEE_ID      =RA.APPROVED_BY
+                OR U.EMPLOYEE_ID = ALR.R_A_ID
+                OR U.EMPLOYEE_ID = ALA.R_A_ID )
                 WHERE 1               =1
                 AND (TS.APPROVED_FLAG =
                   CASE
@@ -293,15 +300,25 @@ class TravelApproveRepository implements RepositoryInterface {
                 ON (RA.RECOMMEND_BY=RAR.EMPLOYEE_ID)
                 LEFT JOIN HRIS_EMPLOYEES RAA
                 ON(RA.APPROVED_BY=RAA.EMPLOYEE_ID)
+                LEFT JOIN HRIS_ALTERNATE_R_A ALR
+                ON(ALR.R_A_FLAG='R' AND ALR.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALR.R_A_ID={$employeeId})
+                LEFT JOIN HRIS_ALTERNATE_R_A ALA
+                ON(ALA.R_A_FLAG='A' AND ALA.EMPLOYEE_ID=TR.EMPLOYEE_ID AND ALA.R_A_ID={$employeeId})
                 LEFT JOIN HRIS_EMPLOYEES U
                 ON(U.EMPLOYEE_ID      = RA.RECOMMEND_BY
-                OR U.EMPLOYEE_ID      =RA.APPROVED_BY)
+                OR U.EMPLOYEE_ID      =RA.APPROVED_BY
+                OR
+                U.EMPLOYEE_ID = ALR.R_A_ID
+                OR
+                U.EMPLOYEE_ID = ALA.R_A_ID )
                 WHERE 1               =1
                 AND E.STATUS          ='E'
                 AND E.RETIRED_FLAG    ='N'
-                AND ((RA.RECOMMEND_BY = U.EMPLOYEE_ID
+                AND ((
+                ((RA.RECOMMEND_BY = U.EMPLOYEE_ID) OR (ALR.R_A_ID = U.EMPLOYEE_ID))
                 AND TR.STATUS         ='RQ')
-                OR (RA.APPROVED_BY    = U.EMPLOYEE_ID
+                OR 
+                (((RA.APPROVED_BY    = U.EMPLOYEE_ID)  OR (ALA.R_A_ID = U.EMPLOYEE_ID))
                 AND TR.STATUS         ='RC') )
                 AND U.EMPLOYEE_ID     ={$employeeId}
                 AND (TS.APPROVED_FLAG =
