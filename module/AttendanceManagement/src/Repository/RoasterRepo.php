@@ -235,23 +235,52 @@ FROM
   (SELECT E.employee_code,
     E.employee_id,
     E.full_name,
-    ER.SUN,
-    ER.MON,
-    ER.TUE,
-    ER.WED,
-    ER.THU,
-    ER.FRI,
-    ER.SAT
+    case when ER.SUN is null then 0 else ER.SUN end as SUN,
+    case when ER.MON is null then 0 else ER.MON end as MON,
+    case when ER.TUE is null then 0 else ER.TUE end as TUE,
+    case when ER.WED is null then 0 else ER.WED end as WED,
+    case when ER.THU is null then 0 else ER.THU end as THU,
+    case when ER.FRI is null then 0 else ER.FRI end as FRI,
+    case when ER.SAT is null then 0 else ER.SAT end as SAT,
+    case when s1.shift_ename is null then 'select shift' else s1.shift_ename end as SUN_NAME,
+    case when s2.shift_ename is null then 'select shift' else s2.shift_ename end as MON_NAME,
+    case when s3.shift_ename is null then 'select shift' else s3.shift_ename end as TUE_NAME,
+    case when s4.shift_ename is null then 'select shift' else s4.shift_ename end as WED_NAME,
+    case when s5.shift_ename is null then 'select shift' else s5.shift_ename end as THU_NAME,
+    case when s6.shift_ename is null then 'select shift' else s6.shift_ename end as FRI_NAME,
+    case when s7.shift_ename is null then 'select shift' else s7.shift_ename end as SAT_NAME
+  
   FROM hris_employees E
   LEFT JOIN HRIS_WEEKLY_ROASTER ER
+  left join hris_shifts s1 on (s1.shift_id=er.sun) 
+            left join hris_shifts s2 on (s2.shift_id=er.mon) 
+            left join hris_shifts s3 on (s3.shift_id=er.tue)  
+            left join hris_shifts s4 on (s4.shift_id=er.wed) 
+            left join hris_shifts s5 on (s5.shift_id=er.thu) 
+            left join hris_shifts s6 on (s6.shift_id=er.fri)
+            left join hris_shifts s7 on (s7.shift_id=er.sat)
   ON(E.EMPLOYEE_ID = ER.EMPLOYEE_ID)
   WHERE 1=1 AND E.STATUS='E' {$searchCondition}
   )
   ";
-
+  
         $statement = $this->adapter->query($sql);
         $result = $statement->execute();
-        return Helper::extractDbData($result);
+//        
+        $retData=[];
+        foreach ($result as $data){
+            $tempArr=$data;
+            $tempArr['SUNARR']=array('SHIFT_ID'=>$data['SUN'] ,'SHIFT_ENAME'=>$data['SUN_NAME']);
+            $tempArr['MONARR']=array('SHIFT_ID'=>$data['MON'] ,'SHIFT_ENAME'=>$data['MON_NAME']);
+            $tempArr['TUEARR']=array('SHIFT_ID'=>$data['TUE'] ,'SHIFT_ENAME'=>$data['TUE_NAME']);
+            $tempArr['WEDARR']=array('SHIFT_ID'=>$data['WED'] ,'SHIFT_ENAME'=>$data['WED_NAME']);
+            $tempArr['THUARR']=array('SHIFT_ID'=>$data['THU'] ,'SHIFT_ENAME'=>$data['THU_NAME']);
+            $tempArr['FRIARR']=array('SHIFT_ID'=>$data['FRI'] ,'SHIFT_ENAME'=>$data['FRI_NAME']);
+            $tempArr['SATARR']=array('SHIFT_ID'=>$data['SAT'] ,'SHIFT_ENAME'=>$data['SAT_NAME']);
+            array_push($retData, $tempArr);
+        }
+        
+        return $retData;
     }
     
     public function getWeeklyShiftDetail(){

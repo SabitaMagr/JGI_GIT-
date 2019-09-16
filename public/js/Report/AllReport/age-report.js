@@ -24,7 +24,7 @@
             {field: "AGE", title: "Age", width: 150},
             {field: "BIRTH_DATE", title: "Birth Date", width: 180}
 
-        ], null, null, null, 'Age Report');
+        ], null, null, null, 'Age Report.xlsx');
 
         $search.on('click', function () {
             var data = document.searchManager.getSearchValues();

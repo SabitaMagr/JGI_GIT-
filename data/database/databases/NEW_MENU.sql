@@ -1380,6 +1380,46 @@ INTO HRIS_MENUS
   );
 
 
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Best Case Shift Group',
+    (select menu_id from hris_menus where lower(menu_name) like 'setup%' and parent_menu is null),
+    NULL,
+    'shiftGroup',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil-square-o',
+    'index',
+    (select max(menu_index)+1 from hris_menus where parent_menu=(select menu_id from hris_menus where lower(menu_name) like 'setup%'
+and parent_menu is null)),
+    NULL,
+    NULL,
+    'Y'
+  );
+
+
 Insert into HRIS_MENUS 
 (MENU_CODE,MENU_ID,MENU_NAME,PARENT_MENU,
 MENU_DESCRIPTION,ROUTE,STATUS,CREATED_DT,
@@ -1398,6 +1438,7 @@ null,
 'weeklyRoster',
 (select max(menu_index)+1  from hris_menus where lower(menu_name) like '%assign%' and PARENT_MENU is null),
 'Y');
+
 
 INSERT INTO hris_menus (
     menu_code,
@@ -1432,3 +1473,4 @@ INSERT INTO hris_menus (
     12,
     'Y'
 );
+

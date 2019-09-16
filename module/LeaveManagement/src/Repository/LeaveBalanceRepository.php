@@ -11,6 +11,9 @@ use Zend\Db\Adapter\AdapterInterface;
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\TableGateway;
+use Application\Helper\Helper;
+use Zend\Db\Sql\Select;
+use LeaveManagement\Model\LeaveMonths;
 
 class LeaveBalanceRepository {
 
@@ -18,12 +21,14 @@ class LeaveBalanceRepository {
     private $tableGateway;
     private $leaveTableGateway;
     private $employeeTableGateway;
+    private $leaveMonthTableGateway;
 
     public function __construct(AdapterInterface $adapter) {
         $this->adapter = $adapter;
         $this->tableGateway = new TableGateway(LeaveAssign::TABLE_NAME, $adapter);
         $this->leaveTableGateway = new TableGateway(LeaveMaster::TABLE_NAME, $adapter);
         $this->employeeTableGateway = new TableGateway("HRIS_EMPLOYEES", $adapter);
+        $this->leaveMonthTableGateway = new TableGateway("HRIS_LEAVE_MONTH_CODE", $adapter);
     }
 
     public function getAllLeave($isMonthly = false) {
@@ -207,7 +212,7 @@ FROM (SELECT *
       LEFT JOIN hris_departments d on d.department_id=e.department_id
     left join Hris_Functional_Types funt on funt.Functional_Type_Id=e.Functional_Type_Id
     left join Hris_Service_Types st on (st.service_type_id=E.Service_Type_Id)
-"; 
+";
         return EntityHelper::rawQueryResult($this->adapter, $sql);
     }
 
@@ -224,15 +229,15 @@ FROM (SELECT *
         }
         return $dbArray;
     }
-    
+
     public function getPivotedListBetnDates($searchQuery, $isMonthly = false) {
-        $orderByString=EntityHelper::getOrderBy('E.FULL_NAME ASC',null,'E.SENIORITY_LEVEL','P.LEVEL_NO','E.JOIN_DATE','DES.ORDER_NO','E.FULL_NAME');
-        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null,$searchQuery['functionalTypeId']);
+        $orderByString = EntityHelper::getOrderBy('E.FULL_NAME ASC', null, 'E.SENIORITY_LEVEL', 'P.LEVEL_NO', 'E.JOIN_DATE', 'DES.ORDER_NO', 'E.FULL_NAME');
+        $searchConditon = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId'], null, null, $searchQuery['functionalTypeId']);
         $leaveArrayDb = $this->fetchLeaveAsDbArray($isMonthly);
-        $fromDate="to_date('{$searchQuery['fromDate']}')";
-        $toDate="to_date('{$searchQuery['toDate']}')";
-        
-        $sql="SELECT LB.*,E.FULL_NAME,
+        $fromDate = "to_date('{$searchQuery['fromDate']}')";
+        $toDate = "to_date('{$searchQuery['toDate']}')";
+
+        $sql = "SELECT LB.*,E.FULL_NAME,
             E.EMPLOYEE_CODE AS EMPLOYEE_CODE,
             (D.DEPARTMENT_NAME)                                        AS DEPARTMENT_NAME,
             (DES.DESIGNATION_TITLE)                                    AS DESIGNATION_TITLE,
@@ -306,6 +311,109 @@ END as leave_days
 //    echo $sql;
 //    die();
         return EntityHelper::rawQueryResult($this->adapter, $sql);
+    }
+
+    public function getLeaveTypes() {
+
+        $sql = " SELECT DISTINCT ELA.LEAVE_ID,
+  LMS.LEAVE_ENAME
+FROM HRIS_EMPLOYEE_LEAVE_ADDITION ELA
+LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
+ON (ELA.LEAVE_ID = LMS.LEAVE_ID)
+where LMS.STATUS = 'E' ";
+
+        $statement = $this->adapter->query($sql);
+        return $statement->execute();
+    }
+
+    public function fetchLeaveAddition($searchQuery) {
+
+        $fromDate = $searchQuery['fromDate'];
+        $toDate = $searchQuery['toDate'];
+        $leaveId = $searchQuery['leave_id'];
+        
+        $leaveCondition = " ";
+        
+        if($leaveId != null){
+            $leaveCondition = " AND ELA.LEAVE_ID = {$leaveId[0]} ";
+        }
+        
+//        $fromCondition = "";
+//        $toCondition = "";
+//        
+//        if($fromDate != null){
+//            $fromCondition = " AND ";
+//        }
+
+        $searchCondition = EntityHelper::getSearchConditon($searchQuery['companyId'], $searchQuery['branchId'], $searchQuery['departmentId'], $searchQuery['positionId'], $searchQuery['designationId'], $searchQuery['serviceTypeId'], $searchQuery['serviceEventTypeId'], $searchQuery['employeeTypeId'], $searchQuery['employeeId']);
+
+
+        $sql = " SELECT E.EMPLOYEE_CODE, E.FULL_NAME, LMS.LEAVE_ENAME, ELA.*,
+  CASE
+    WHEN ELA.WOD_ID IS NOT NULL
+    THEN WD.FROM_DATE ||' - '|| WD.TO_DATE
+    WHEN ELA.WOH_ID IS NOT NULL
+    THEN WH.FROM_DATE ||' - '|| WH.TO_DATE
+    WHEN ELA.TRAVEL_ID IS NOT NULL
+    THEN T.FROM_DATE ||' - '|| T.TO_DATE
+    WHEN ELA.TRAINING_ID IS NOT NULL
+    THEN TR.START_DATE ||' - '|| TR.END_DATE
+  END as LEAVE_DATE
+FROM HRIS_EMPLOYEE_LEAVE_ADDITION ELA
+LEFT JOIN HRIS_EMPLOYEE_WORK_DAYOFF WD
+ON (ELA.WOD_ID = WD.ID)
+LEFT JOIN HRIS_EMPLOYEE_WORK_HOLIDAY WH
+ON (ELA.WOH_ID = WH.ID)
+LEFT JOIN HRIS_EMPLOYEE_TRAVEL_REQUEST T
+ON (ELA.TRAVEL_ID = T.TRAVEL_ID)
+LEFT JOIN HRIS_EMPLOYEE_TRAINING_REQUEST TR
+ON (ELA.TRAINING_ID = TR.REQUEST_ID)
+LEFT JOIN HRIS_EMPLOYEES E
+ON (ELA.EMPLOYEE_ID = E.EMPLOYEE_ID)
+LEFT JOIN HRIS_LEAVE_MASTER_SETUP LMS
+ON (ELA.LEAVE_ID = LMS.LEAVE_ID)
+where 1=1  {$leaveCondition} {$searchCondition} 
+";
+
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+
+        return Helper::extractDbData($result);
+    }
+
+    public function fetchLeaveYearMonth() {
+        $rowset = $this->leaveMonthTableGateway->select(function (Select $select) {
+            $select->columns(Helper::convertColumnDateFormat($this->adapter, new LeaveMonths(), [
+                        'fromDate',
+                        'toDate',
+                    ]), false);
+
+            $select->where([LeaveMonths::STATUS => 'E']);
+        });
+        return $rowset;
+    }
+
+    public function getCurrentLeaveMonth() {
+        $sql = <<<EOT
+            SELECT MONTH_ID,
+              LEAVE_YEAR_ID,
+              LEAVE_YEAR_MONTH_NO,
+              YEAR,
+              MONTH_NO,
+              MONTH_EDESC,
+              MONTH_NDESC,
+              FROM_DATE,
+              INITCAP(TO_CHAR(FROM_DATE,'DD-MON-YYYY')) AS FROM_DATE_AD,
+              BS_DATE(FROM_DATE) AS FROM_DATE_BS,
+              TO_DATE ,
+              INITCAP(TO_CHAR(TO_DATE,'DD-MON-YYYY')) AS TO_DATE_AD,
+              BS_DATE(TO_DATE) AS TO_DATE_BS
+            FROM HRIS_LEAVE_MONTH_CODE
+            WHERE TRUNC(SYSDATE) BETWEEN FROM_DATE AND TO_DATE
+EOT;
+        $statement = $this->adapter->query($sql);
+        $result = $statement->execute();
+        return $result->current();
     }
 
 }
