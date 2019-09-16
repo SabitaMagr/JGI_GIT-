@@ -216,11 +216,10 @@ class SalarySheetDetailRepo extends HrisRepository {
         Mc.Fiscal_Year_Id,ssed.* 
         from 
         Hris_Salary_Sheet_Emp_Detail  ssed
-        left join Hris_Month_Code mc on (mc.month_id=ssed.month_id)
-        left join Hris_Salary_Sheet_Detail ssd on (pay_id={$ruleId})
+        join Hris_Month_Code mc on (mc.month_id=ssed.month_id AND EMPLOYEE_ID={$employeeId})
+        join Hris_Salary_Sheet_Detail ssd on (ssed.sheet_no=ssd.sheet_no and ssed.employee_id=ssd.employee_id and pay_id={$ruleId})
         where 
-        ssed.month_id<{$monthId} and 
-        ssed.employee_id={$employeeId}
+        ssed.month_id<{$monthId} 
         and Mc.Fiscal_Year_Id = (select fiscal_year_id from Hris_Month_Code where Month_Id={$monthId})
         )";
         $resultList = $this->rawQuery($sql);
