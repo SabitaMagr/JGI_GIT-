@@ -31,15 +31,15 @@ class GroupShiftAssignRepository implements RepositoryInterface {
     dep.department_name,
     e.employee_id,
     e.employee_code,
-    e.full_name,
-    bcem.case_id as case_id,
-    bcs.case_name as case_name
+    e.full_name
+    --bcem.case_id as case_id,
+    --bcs.case_name as case_name
 FROM
     hris_employees                                                                    e
-    LEFT JOIN
-    hris_best_case_emp_map
-    bcem ON ( e.employee_id = bcem.employee_id )
-    LEFT JOIN hris_best_case_setup                                                           bcs ON ( bcs.case_id = $caseId and bcem.case_id = bcs.case_id)
+    --LEFT JOIN
+    --hris_best_case_emp_map
+    --bcem ON ( e.employee_id = bcem.employee_id )
+    --LEFT JOIN hris_best_case_setup                                                           bcs ON ( bcs.case_id = $caseId and bcem.case_id = bcs.case_id)
     LEFT JOIN hris_company                                                                      c ON ( e.company_id = c.company_id )
     LEFT JOIN hris_branches                                                                     b ON ( e.branch_id = b.branch_id )
     LEFT JOIN hris_departments                                                                  dep ON ( e.department_id = dep.department_id )
@@ -53,6 +53,7 @@ ORDER BY
     dep.department_name,
     e.full_name
 ";
+//echo $sql; die;
       $statement = $this->adapter->query($sql);
       $result = $statement->execute();
       return Helper::extractDbData($result);
