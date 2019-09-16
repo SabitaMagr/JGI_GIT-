@@ -182,7 +182,9 @@ if ($this->messages && (sizeof($this->messages) > 1)) {
                 <button action="reject" class="btn btn-danger btnApproveReject">Reject</button>
             </div>
             <div class="col-sm-2 col-sm-offset-8">
+                <?php  if($acl['HR_APPROVE']=='Y'){  ?>
                 <button action="approve" class="btn btn-info btnApproveReject pull-right">Approve</button>
+                <?php }      ?>
             </div>
         </div>
     </div>

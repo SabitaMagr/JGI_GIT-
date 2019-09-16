@@ -204,6 +204,11 @@ window.nepaliCalendar = (function ($) {
         $month.on('change', function () {
             loadCalendar($year.val(), $month.val());
         });
+        
+        $('#cal_emp').on('change', function () {
+            console.log('sdfsdf');
+            loadCalendar($year.val(), $month.val());
+        });
 
         var serverDate = (document.calendarType == 'E') ? 'getServerDateForCalender' : 'getServerDateBS';
 
@@ -291,7 +296,14 @@ window.nepaliCalendar = (function ($) {
                 $saturday.append($template);
             }
             var m = (document.calendarType == 'E') ? nc.bsadMap['E'][year][month] : nc.bsadMap['N'][year][month];
-            app.pullDataById(document.calendarJsonFeedUrl, {'startDate': m.from, 'endDate': m.to}).then(function (response) {
+            
+            var selEmp=$('#cal_emp').val();
+//            console.log(selEmp);
+            
+            
+            
+            
+            app.pullDataById(document.calendarJsonFeedUrl, {'startDate': m.from, 'endDate': m.to,'selEmp':selEmp}).then(function (response) {
                 $.each(response, function (key, value) {
                     var $date = $nepaliCalendar.find('[date=' + value.ATTENDANCE_DT + ']');
                     $date.find('.in-time').html(value.IN_TIME);

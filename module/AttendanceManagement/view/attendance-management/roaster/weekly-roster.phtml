@@ -18,6 +18,7 @@ $this->headScript()
     </script>
 <?php } ?>
 <script>
+    window.data =<?php echo $data; ?>;
     document.searchValues =<?php echo json_encode($searchValues); ?>;
     document.shifts =<?php echo json_encode($shifts); ?>;
     document.getWeeklyRosterListLink = '<?php echo $this->url('roaster', ['action' => 'weeklyRoster']); ?>';

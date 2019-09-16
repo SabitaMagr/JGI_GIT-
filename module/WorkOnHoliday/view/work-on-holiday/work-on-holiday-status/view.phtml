@@ -254,7 +254,9 @@ print $this->form()->openTag($form);
                 <?php } ?>
 
                 <?php if ($status == 'RQ' || $status == 'RC') { ?>
+                  <?php  if($acl['HR_APPROVE']=='Y'){  ?>
                     <?php print $this->formSubmit($submit); ?>
+                  <?php }      ?>
                     <input type="submit" name="submit" class="btn btn-success pull-right" value="Reject">
                 <?php } ?>
             </div>

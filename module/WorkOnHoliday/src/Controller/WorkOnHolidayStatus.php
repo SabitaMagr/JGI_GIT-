@@ -106,7 +106,8 @@ class WorkOnHolidayStatus extends HrisController {
                     'holidays' => $holidays["holidayKVList"],
                     'holidayObjList' => $holidays["holidayList"],
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove' => $recommApprove
+                    'recommApprove' => $recommApprove,
+                    'acl' => $this->acl
         ]);
     }
 

@@ -137,7 +137,25 @@ AS
   V_IN_TIME          TIMESTAMP;
   V_OUT_TIME         TIMESTAMP;
   V_IS_TWO_DAY_SHIFT CHAR:='N';
+  V_YESTERDAY_OUT_TIME TIMESTAMP;
 BEGIN
+
+
+begin
+select out_time
+INTO V_YESTERDAY_OUT_TIME
+from Hris_Attendance_Detail
+where Attendance_Dt=trunc(P_FROM_ATTENDANCE_TIME)-1 and employee_id=P_EMPLOYEE_ID;
+EXCEPTION
+WHEN no_data_found THEN
+raise_application_error(-20344,'no attendance in that date');
+END;
+
+if(V_YESTERDAY_OUT_TIME is null)
+then
+V_YESTERDAY_OUT_TIME:=trunc(P_FROM_ATTENDANCE_TIME)-1;
+end if;
+
   SELECT MIN(A.ATTENDANCE_TIME) AS IN_TIME,
     MAX(A.ATTENDANCE_TIME)      AS OUT_TIME
   INTO P_IN_TIME,
@@ -145,7 +163,8 @@ BEGIN
   FROM HRIS_ATTENDANCE A
   WHERE (A.ATTENDANCE_TIME >= P_FROM_ATTENDANCE_TIME
   AND A.ATTENDANCE_TIME    <= P_TO_ATTENDANCE_TIME)
-  AND A.EMPLOYEE_ID         = P_EMPLOYEE_ID;
+  AND A.EMPLOYEE_ID         = P_EMPLOYEE_ID 
+  and A.ATTENDANCE_TIME>V_YESTERDAY_OUT_TIME;
   --
   SELECT MIN(TO_DATE(TO_CHAR(A.ATTENDANCE_DT,'DD-MON-YYYY')
     ||' '
@@ -157,7 +176,8 @@ BEGIN
   WHERE (A.ATTENDANCE_TIME >= P_FROM_ATTENDANCE_TIME
   AND A.ATTENDANCE_TIME    <= P_TO_ATTENDANCE_TIME)
   AND A.EMPLOYEE_ID         = P_EMPLOYEE_ID
-  AND (ADM.PURPOSE           ='IN');
+  AND (ADM.PURPOSE           ='IN') 
+  and A.ATTENDANCE_TIME>V_YESTERDAY_OUT_TIME;
   --
   SELECT MAX(TO_DATE(TO_CHAR(A.ATTENDANCE_DT,'DD-MON-YYYY')
     ||' '
@@ -169,7 +189,8 @@ BEGIN
   WHERE (A.ATTENDANCE_TIME >= P_FROM_ATTENDANCE_TIME
   AND A.ATTENDANCE_TIME    <= P_TO_ATTENDANCE_TIME)
   AND A.EMPLOYEE_ID         = P_EMPLOYEE_ID
-  AND (ADM.PURPOSE           ='OUT');
+  AND (ADM.PURPOSE           ='OUT') 
+  and A.ATTENDANCE_TIME>V_YESTERDAY_OUT_TIME;
   --
   IF V_IN_TIME        IS NOT NULL THEN
     P_IN_TIME         :=V_IN_TIME;
@@ -649,72 +670,106 @@ BEGIN
   END IF;
 END;    
 /
-            CREATE OR REPLACE PROCEDURE HRIS_BACKDATE_ATTENDANCE(
-    P_ID HRIS_ATTENDANCE_REQUEST.ID%TYPE )
-AS
-  P_ATTENDANCE_DT HRIS_ATTENDANCE_REQUEST.ATTENDANCE_DT%TYPE;
-  P_EMPLOYEE_ID HRIS_EMPLOYEES.EMPLOYEE_ID%TYPE;
-  P_IN_TIME HRIS_ATTENDANCE_REQUEST.IN_TIME%TYPE;
-  P_OUT_TIME HRIS_ATTENDANCE_REQUEST.OUT_TIME%TYPE;
-  P_STATUS HRIS_ATTENDANCE_REQUEST.STATUS%TYPE;
+            create or replace PROCEDURE hris_backdate_attendance ( p_id hris_attendance_request.id%TYPE ) AS
+
+    p_attendance_dt   hris_attendance_request.attendance_dt%TYPE;
+    p_employee_id     hris_employees.employee_id%TYPE;
+    p_in_time         hris_attendance_request.in_time%TYPE;
+    p_out_time        hris_attendance_request.out_time%TYPE;
+    p_status          hris_attendance_request.status%TYPE;
+    p_in_remarks      hris_attendance_request.in_remarks%TYPE;
+    p_out_remarks      hris_attendance_request.out_remarks%TYPE;
 BEGIN
-  SELECT ATTENDANCE_DT,
-    EMPLOYEE_ID,
-    IN_TIME,
-    OUT_TIME,
-    STATUS
-  INTO P_ATTENDANCE_DT,
-    P_EMPLOYEE_ID,
-    P_IN_TIME,
-    P_OUT_TIME,
-    P_STATUS
-  FROM HRIS_ATTENDANCE_REQUEST
-  WHERE ID     =P_ID;
-  IF P_STATUS != 'AP' THEN
-    RETURN;
-  END IF;
-  IF P_IN_TIME IS NOT NULL THEN
-    INSERT
-    INTO HRIS_ATTENDANCE
-      (
-        ATTENDANCE_DT,
-        EMPLOYEE_ID,
-        ATTENDANCE_TIME,
-        ATTENDANCE_FROM
-      )
-      VALUES
-      (
-        P_ATTENDANCE_DT,
-        P_EMPLOYEE_ID,
-       TO_DATE(TO_CHAR(P_ATTENDANCE_DT,'DD-MON-YYYY')||' '||TO_CHAR(P_IN_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
-        'SYSTEM'
-      );
-    HRIS_ATTENDANCE_AFTER_INSERT(P_EMPLOYEE_ID,P_ATTENDANCE_DT,P_IN_TIME,'SYSTEM');
-  END IF;
-  IF P_OUT_TIME IS NOT NULL THEN
-    INSERT
-    INTO HRIS_ATTENDANCE
-      (
-        ATTENDANCE_DT,
-        EMPLOYEE_ID,
-        ATTENDANCE_TIME,
-        ATTENDANCE_FROM
-      )
-      VALUES
-      (
-        P_ATTENDANCE_DT,
-        P_EMPLOYEE_ID,
-        TO_DATE(TO_CHAR(P_ATTENDANCE_DT,'DD-MON-YYYY')||' '||TO_CHAR(P_OUT_TIME,'HH:MI AM'),'DD-MON-YYYY HH:MI AM'),
-        'SYSTEM'
-      );
-    HRIS_ATTENDANCE_AFTER_INSERT(P_EMPLOYEE_ID,P_ATTENDANCE_DT,P_OUT_TIME,'SYSTEM');
-  END IF;
-  IF(TRUNC(P_ATTENDANCE_DT)<TRUNC(SYSDATE)) THEN
-    HRIS_QUEUE_REATTENDANCE(TRUNC(P_ATTENDANCE_DT),P_EMPLOYEE_ID,TRUNC(P_ATTENDANCE_DT));
-  END IF;
+    SELECT
+        attendance_dt,
+        employee_id,
+        in_time,
+        out_time,
+        status,
+        in_remarks,
+        out_remarks
+    INTO
+        p_attendance_dt,p_employee_id,p_in_time,p_out_time,p_status,p_in_remarks,p_out_remarks
+    FROM
+        hris_attendance_request
+    WHERE
+        id = p_id;
+
+    IF
+        p_status != 'AP'
+    THEN
+        return;
+    END IF;
+    IF
+        p_in_time IS NOT NULL
+    THEN
+        INSERT INTO hris_attendance (
+            attendance_dt,
+            employee_id,
+            attendance_time,
+            attendance_from,
+            remarks
+        ) VALUES (
+            p_attendance_dt,
+            p_employee_id,
+            TO_DATE(
+                TO_CHAR(p_attendance_dt,'DD-MON-YYYY') || ' ' || TO_CHAR(p_in_time,'HH:MI AM'),
+                'DD-MON-YYYY HH:MI AM'
+            ),
+            'SYSTEM',
+            p_in_remarks
+        );
+
+        hris_attendance_after_insert(
+            p_employee_id,
+            p_attendance_dt,
+            p_in_time,
+            p_in_remarks
+        );
+    END IF;
+
+    IF
+        p_out_time IS NOT NULL
+    THEN
+        INSERT INTO hris_attendance (
+            attendance_dt,
+            employee_id,
+            attendance_time,
+            attendance_from,
+            remarks
+        ) VALUES (
+            p_attendance_dt,
+            p_employee_id,
+            TO_DATE(
+                TO_CHAR(p_attendance_dt,'DD-MON-YYYY') || ' ' || TO_CHAR(p_out_time,'HH:MI AM'),
+                'DD-MON-YYYY HH:MI AM'
+            ),
+            'SYSTEM',
+            p_out_remarks
+            
+        );
+
+        hris_attendance_after_insert(
+            p_employee_id,
+            p_attendance_dt,
+            p_out_time,
+            p_out_remarks
+        );
+    END IF;
+
+    IF
+        ( trunc(p_attendance_dt) < trunc(SYSDATE) )
+    THEN
+        hris_queue_reattendance(
+            trunc(p_attendance_dt),
+            p_employee_id,
+            trunc(p_attendance_dt)
+        );
+    END IF;
+
 EXCEPTION
-WHEN NO_DATA_FOUND THEN
-  NULL;
+    WHEN no_data_found THEN
+        NULL;
 END;/
             CREATE OR REPLACE PROCEDURE HRIS_COMPULSORY_OT_CANCEL(
     P_COMPULSORY_OT_ID HRIS_COMPULSORY_OVERTIME.COMPULSORY_OVERTIME_ID%TYPE)
@@ -4077,7 +4132,7 @@ BEGIN
       || ' END;'
     );
 END;/
-            CREATE OR REPLACE PROCEDURE HRIS_REATTENDANCE(
+            create or replace PROCEDURE HRIS_REATTENDANCE(
     P_FROM_ATTENDANCE_DT HRIS_ATTENDANCE.ATTENDANCE_DT%TYPE,
     P_EMPLOYEE_ID HRIS_ATTENDANCE.EMPLOYEE_ID%TYPE:=NULL,
     P_TO_ATTENDANCE_DT DATE                       :=NULL)
@@ -4461,7 +4516,9 @@ BEGIN
           OVERALL_STATUS    = V_OVERALL_STATUS,
           LATE_STATUS       = V_LATE_STATUS,
           TOTAL_HOUR        = V_DIFF_IN_MIN,
-          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN)
+          OT_MINUTES        = (V_DIFF_IN_MIN - V_TOTAL_WORKING_MIN),
+          IN_REMARKS  = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_IN_TIME AND ROWNUM=1),
+          OUT_REMARKS = (select remarks from HRIS_ATTENDANCE where EMPLOYEE_ID = employee.EMPLOYEE_ID and ATTENDANCE_TIME=V_OUT_TIME AND ROWNUM=1)
         WHERE ATTENDANCE_DT = TO_DATE (employee.ATTENDANCE_DT, 'DD-MON-YY')
         AND EMPLOYEE_ID     = employee.EMPLOYEE_ID;
         --
@@ -4520,7 +4577,7 @@ BEGIN
                      EXCEPTION
                 WHEN no_data_found THEN
                     dbms_output.put('NO training for the day ON DAYOFF FOUND');
-            
+
 
 
                      IF v_training_id IS NOT NULL
@@ -7623,7 +7680,7 @@ BEGIN
   FROM HRIS_EMPLOYEE_LEAVE_REQUEST
   WHERE ((TRUNC(P_START_DATE) BETWEEN START_DATE AND END_DATE)
   OR (TRUNC(P_END_DATE) BETWEEN START_DATE AND END_DATE))
-  AND STATUS      = 'AP'
+  AND STATUS IN  ('RQ','RC','AP','CP','CR')
   AND EMPLOYEE_ID = P_EMPLOYEE_ID ;
   --
   IF(V_OVERLAPPING_LEAVE_NO >0) THEN
@@ -7828,26 +7885,32 @@ BEGIN
     END);
   RETURN V_WORKING_CYCLE_DESC;
 END; /
-            create or replace function lunch_in_time(p_employee_id in number, p_attendnace_dt in date,p_shift_id in number)    
-return Char    
-is     
+            create or replace function lunch_in_time
+(p_employee_id in number,
+p_attendnace_dt in date
+,p_shift_id in number,
+p_in_time in timestamp,
+p_out_time in timestamp
+) 
+return Char 
+is 
 -- variables
 v_half_time char(20 byte):=null;
+v_count number:=0;
+v_in_time timestamp:=p_in_time;
+v_out_time timestamp:=p_out_time;
 begin
 
+if(v_in_time is null)
+then
 select 
-half_out_time
-into v_half_time
-from (select 
-to_char(Attendance_Time,'HH:MI AM') as half_out_time
-from  Hris_Attendance where employee_id=p_employee_id and Attendance_Dt=p_attendnace_dt
-and attendance_time>(
-select 
-to_timestamp(TO_CHAR(p_attendnace_dt,'DD-MON-YY')||TO_CHAR(start_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')+ INTERVAL '2' HOUR
- from hris_shifts where shift_id=p_shift_id
-) 
-and 
-attendance_time<(
+to_timestamp(TO_CHAR(p_attendnace_dt,'DD-MON-YY')||TO_CHAR(start_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')+ INTERVAL '30'
+MINUTE into v_in_time
+from hris_shifts where shift_id=p_shift_id;
+end if;
+
+if(v_out_time is null)
+then
 select 
 to_timestamp(
 case when two_day_shift='E'
@@ -7856,38 +7919,58 @@ TO_CHAR(p_attendnace_dt+1,'DD-MON-YY')
 else
 TO_CHAR(p_attendnace_dt,'DD-MON-YY')
 end 
-||TO_CHAR(end_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')- INTERVAL '2' HOUR
- from hris_shifts where shift_id=p_shift_id
-) 
-order by Attendance_Time asc) where Rownum=1;
+||TO_CHAR(end_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')- INTERVAL '30' MINUTE
+into v_out_time
+from hris_shifts where shift_id=p_shift_id;
+end if;
 
---select systimestamp into v_half_time from dual;
+select Count(*) into v_count from Hris_Attendance where employee_id=p_employee_id and Attendance_Dt=trunc(p_attendnace_dt);
 
-
-return v_half_time;    
-end;  
-
-/
-            create or replace function lunch_out_time(p_employee_id in number, p_attendnace_dt in date,p_shift_id in number)    
-return Char    
-is     
--- variables
-v_half_time char(20 byte):=null;
-begin
+if v_count>2 and mod(v_count,2)=0 then
 
 select 
 half_out_time
 into v_half_time
 from (select 
 to_char(Attendance_Time,'HH:MI AM') as half_out_time
-from  Hris_Attendance where employee_id=p_employee_id and Attendance_Dt=p_attendnace_dt
-and attendance_time>(
-select 
-to_timestamp(TO_CHAR(p_attendnace_dt,'DD-MON-YY')||TO_CHAR(start_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')+ INTERVAL '2' HOUR
- from hris_shifts where shift_id=p_shift_id
-) 
+from Hris_Attendance where employee_id=p_employee_id and Attendance_Dt=p_attendnace_dt
+and attendance_time>v_in_time
 and 
-attendance_time<(
+attendance_time<P_Out_Time
+order by Attendance_Time DESC) where Rownum=1;
+
+--select systimestamp into v_half_time from dual;
+end if;
+
+return v_half_time; 
+end;
+ /
+            create or replace function lunch_out_time
+(p_employee_id in number,
+p_attendnace_dt in date,
+p_shift_id in number,
+p_in_time in timestamp,
+p_out_time in timestamp
+) 
+return Char 
+is 
+-- variables
+v_half_time char(20 byte):=null;
+v_count number:=0;
+v_in_time timestamp:=p_in_time;
+v_out_time timestamp:=p_out_time;
+begin
+
+if(v_in_time is null)
+then
+select 
+to_timestamp(TO_CHAR(p_attendnace_dt,'DD-MON-YY')||TO_CHAR(start_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')+ INTERVAL '30'
+MINUTE into v_in_time
+from hris_shifts where shift_id=p_shift_id;
+end if;
+
+if(v_out_time is null)
+then
 select 
 to_timestamp(
 case when two_day_shift='E'
@@ -7896,14 +7979,31 @@ TO_CHAR(p_attendnace_dt+1,'DD-MON-YY')
 else
 TO_CHAR(p_attendnace_dt,'DD-MON-YY')
 end 
-||TO_CHAR(end_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')- INTERVAL '2' HOUR
- from hris_shifts where shift_id=p_shift_id
-) 
-order by Attendance_Time desc) where Rownum=1;
+||TO_CHAR(end_time,'HH:MI AM'),'DD-MON-YY HH:MI AM')- INTERVAL '30' MINUTE
+into v_out_time
+from hris_shifts where shift_id=p_shift_id;
+end if;
+
+select Count(*) into v_count from Hris_Attendance where employee_id=p_employee_id and Attendance_Dt=trunc(p_attendnace_dt);
+
+
+if v_count>2 and mod(v_count,2)=0 then
+
+select 
+half_out_time
+into v_half_time
+from (select 
+to_char(Attendance_Time,'HH:MI AM') as half_out_time
+from Hris_Attendance where employee_id=p_employee_id 
+and attendance_time>v_in_time
+and 
+attendance_time<v_out_time
+order by Attendance_Time ASC) where Rownum=1;
 
 --select systimestamp into v_half_time from dual;
+end if;
 
-
-return v_half_time;    
-end;  /
+return v_half_time; 
+end;
+ /
             

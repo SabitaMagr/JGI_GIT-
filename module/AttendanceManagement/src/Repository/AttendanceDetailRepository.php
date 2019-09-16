@@ -965,8 +965,8 @@ FROM (SELECT
             ,ad.employee_id,
             ad.Attendance_Dt,
             to_char(ad.in_time,'HH:MI AM') as in_time,
-            lunch_in_time(ad.employee_id,ad.Attendance_Dt,ad.Shift_Id) as lunch_in_time
-            ,lunch_out_time(ad.employee_id,ad.Attendance_Dt,ad.Shift_Id) as lunch_out_time
+            lunch_in_time(ad.employee_id,ad.Attendance_Dt,ad.Shift_Id,ad.in_time,ad.out_time) as lunch_in_time
+            ,lunch_out_time(ad.employee_id,ad.Attendance_Dt,ad.Shift_Id,ad.in_time,ad.out_time) as lunch_out_time
             , to_char(ad.Out_Time,'HH:MI AM') as Out_Time
             from Hris_Attendance_detail ad 
             left join hris_shifts s on (s.shift_id=ad.shift_id)

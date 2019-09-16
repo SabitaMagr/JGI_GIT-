@@ -97,7 +97,8 @@ class WorkOnDayoffStatus extends HrisController {
                     'approver' => $authApprover,
                     'status' => $status,
                     'customRenderer' => Helper::renderCustomView(),
-                    'recommApprove' => $recommApprove
+                    'recommApprove' => $recommApprove,
+                    'acl' => $this->acl,
         ]);
     }
 

@@ -82,6 +82,7 @@ class AttendanceStatus extends HrisController {
                         'employeeId' => $employeeId,
                         'status' => $status,
                         'requestedDt' => $detail['REQUESTED_DT'],
+                        'acl' => $this->acl
             ]);
         } catch (\Exception $e) {
             $this->flashmessenger()->addMessage($e->getMessage());
@@ -93,6 +94,7 @@ class AttendanceStatus extends HrisController {
                         'employeeId' => $employeeId,
                         'status' => $status,
                         'requestedDt' => $detail['REQUESTED_DT'],
+                        'acl' => $this->acl
             ]);
         }
     }

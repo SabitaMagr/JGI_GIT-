@@ -75,6 +75,12 @@ class LeaveStatus extends HrisController {
             $action = $getData->submit;
 
             if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
+                
+                $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
+                if($checkSameDateApproved['LEAVE_COUNT']>0 && $action == "Approve"){
+                    return $this->redirect()->toRoute("leavestatus");
+                }
+                
                 $leaveApply->approvedDt = Helper::getcurrentExpressionDate();
                 if ($action == "Reject") {
                     $leaveApply->status = "R";
@@ -143,6 +149,7 @@ class LeaveStatus extends HrisController {
                     'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
                     'gp' => $detail['GRACE_PERIOD'],
+                    'acl' => $this->acl,
                     'files' => $fileDetails
         ]);
     }
@@ -182,6 +189,10 @@ class LeaveStatus extends HrisController {
         $leaveApproveRepository = new LeaveApproveRepository($this->adapter);
         $detail = $leaveApproveRepository->fetchById($id);
         if ($detail['STATUS'] == 'RQ' || $detail['STATUS'] == 'RC') {
+            $checkSameDateApproved = $this->repository->getSameDateApprovedStatus($detail['EMPLOYEE_ID'],$detail['START_DATE'],$detail['END_DATE']);
+            if($checkSameDateApproved['LEAVE_COUNT']>0 && $approve){
+                throw new Exception('Leave Overlap Detected');
+            }
             $model = new LeaveApply();
             $model->id = $id;
             $model->recommendedDate = Helper::getcurrentExpressionDate();
