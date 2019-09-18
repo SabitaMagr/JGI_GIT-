@@ -79,7 +79,7 @@ angular.module('hris', [])
                     $scope.$apply(function () {
                         $scope.leaveList = success.data;
                         for (var i = 0; i < $scope.leaveList.length; i++) {
-                            $scope.leaveList[i].checked = false;
+                            $scope.leaveList[i].CHECKED == 'Y' ? $scope.leaveList[i].checked = true : $scope.leaveList[i].checked = false;
                         }
                     });
                     $('select').select2();
