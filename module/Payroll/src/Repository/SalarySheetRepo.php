@@ -105,7 +105,8 @@ AND GROUP_ID IN ({$group})";
     
     public function fetchGeneratedSheetByGroup($monthId,$group,$salaryTypeId){
         $sql="select 
-                ss.sheet_no,ssg.Group_Name,Mc.Month_Edesc,St.Salary_Type_Name 
+                ss.sheet_no,ssg.Group_Name,Mc.Month_Edesc,St.Salary_Type_Name,
+                ss.approved, ss.locked 
                 from HRIS_SALARY_SHEET ss 
                 join hris_salary_sheet_group ssg on (ssg.group_id=ss.group_id)
                 join Hris_Month_Code mc on (mc.month_id=ss.month_id)
@@ -146,4 +147,15 @@ where employee_id not in (select employee_id from Hris_Salary_Sheet_Emp_Detail w
         return true;
     }
 
+    public function bulkApproveLock($sheetNo, $col, $val){
+        $sql = "UPDATE HRIS_SALARY_SHEET set $col = '$val' where sheet_no={$sheetNo}";
+        $this->executeStatement($sql);
+        return true;
+    }
+
+    public function checkApproveLock($sheetNo){
+        $sql = "SELECT SHEET_NO, APPROVED, LOCKED FROM HRIS_SALARY_SHEET WHERE SHEET_NO = $sheetNo";
+        $data = $this->rawQuery($sql);
+        return Helper::extractDbData($data);
+    }
 }
