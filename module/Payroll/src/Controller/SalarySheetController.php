@@ -398,7 +398,7 @@ class SalarySheetController extends HrisController {
         $data = $_POST['data'];
         foreach ($data as $key) {
             $this->salarySheetRepo->deleteSheetBySheetNo($key);
-        } 
+        }
         return new JSONModel(['success' => true]);
     }
 }

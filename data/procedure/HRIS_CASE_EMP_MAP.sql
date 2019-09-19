@@ -25,7 +25,7 @@ BEGIN
         end if;
 
         FOR SHIFT_LIST IN (SELECT SHIFT_ID FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = P_CASE_ID) LOOP
-        
+
         begin
         select 'T'
             into v_exists
@@ -36,13 +36,14 @@ BEGIN
             when no_data_found then
             null;
         end;
-        
+
         if v_exists <> 'T' then
         INSERT INTO HRIS_EMPLOYEE_SHIFTS VALUES(
         P_EMPLOYEE_ID,
         SHIFT_LIST.SHIFT_ID,
         (SELECT START_DATE FROM hris_best_case_setup WHERE CASE_ID = P_CASE_ID), 
-        (SELECT END_DATE FROM hris_best_case_setup WHERE CASE_ID = P_CASE_ID)
+        (SELECT END_DATE FROM hris_best_case_setup WHERE CASE_ID = P_CASE_ID),
+        p_case_id
         );
         end if;
         END LOOP;
@@ -51,9 +52,11 @@ ELSE
 
 DELETE FROM hris_best_case_emp_map WHERE EMPLOYEE_ID = P_EMPLOYEE_ID AND CASE_ID = P_CASE_ID;
 
-FOR SHIFT_LIST IN (SELECT SHIFT_ID FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = P_CASE_ID) LOOP
-DELETE FROM HRIS_EMPLOYEE_SHIFTS WHERE SHIFT_ID = SHIFT_LIST.SHIFT_ID AND EMPLOYEE_ID = P_EMPLOYEE_ID;
-END LOOP;
+DELETE FROM hris_employee_shifts WHERE EMPLOYEE_ID = P_EMPLOYEE_ID AND CASE_ID = P_CASE_ID;
+
+--FOR SHIFT_LIST IN (SELECT SHIFT_ID FROM HRIS_BEST_CASE_SHIFT_MAP WHERE CASE_ID = P_CASE_ID) LOOP
+--DELETE FROM HRIS_EMPLOYEE_SHIFTS WHERE SHIFT_ID = SHIFT_LIST.SHIFT_ID AND EMPLOYEE_ID = P_EMPLOYEE_ID;
+--END LOOP;
 
 END IF;
 end;
