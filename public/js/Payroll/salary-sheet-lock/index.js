@@ -29,6 +29,10 @@
         var $groupId = $('#groupId');
         var $salaryTypeId = $('#salaryTypeId');
         var $allSheetId = $('#allSheetId');
+        var $bulkApproveDiv = $('#bulkApproveDiv');
+        var $bulkNotApproveDiv = $('#bulkNotApproveDiv');
+        var $bulkLockDiv = $('#bulkLockDiv');
+        var $bulkUnlockDiv = $('#bulkUnlockDiv');
         var $bulkActionDiv = $('#bulkActionDiv');
 
         app.populateSelect($salaryTypeId, data['salaryType'], 'SALARY_TYPE_ID', 'SALARY_TYPE_NAME', null, null, 1);
@@ -115,23 +119,14 @@
         });
         
          var $sheetTable = $('#sheetTable');
-         var actiontemplateConfigSheet = {
-             update: {
-                'ALLOW_UPDATE': 'N',
-                'params': ["ADVANCE_ID"],
-                'url': ''
-            },
-            delete: {
-                'ALLOW_DELETE': 'Y',
-                'params': ["SHEET_NO"],
-                'url': document.deleteLink
-            }
-        };
+         
         var grid = app.initializeKendoGrid($sheetTable, [
             {field: "SHEET_NO", title: "Sheet", width: 80},
-            {field: "MONTH_EDESC", title: "Month", width: 130},
-            {field: "SALARY_TYPE_NAME", title: "Salary Type", width: 130},
-            {field: "GROUP_NAME", title: "Group", width: 130},
+            {field: "MONTH_EDESC", title: "Month", width: 100},
+            {field: "SALARY_TYPE_NAME", title: "Salary Type", width: 100},
+            {field: "GROUP_NAME", title: "Group", width: 100},
+            {field: "LOCKED", title: "Locked", width: 100},
+            {field: "APPROVED", title: "Approved", width: 100},
         ], null, {id: "SHEET_NO", atLast: false, fn: function (selected) {
                 if (selected) {
                     $bulkActionDiv.show();
@@ -171,7 +166,6 @@
         
         var groupChangeFn=function(){
             let selectedGroups = $groupId.val();
-            
             if(selectedGroups==null){
                 let allGroup=[];
                 $.each(groupList, function (key, value) {
@@ -302,18 +296,42 @@
             app.exportToPDF($table, exportMap, 'Salary Sheet');
         });
 
-
-
-        $bulkActionDiv.bind("click", function () {
+        function getSelectedSheets(){
             var list = grid.getSelected();
-            console.log(list);
-            var action = $(this).attr('action');
-
             var selectedValues = [];
             for (var i in list) {
                 selectedValues.push(list[i].SHEET_NO);
             }
-            app.serverRequest(document.bulkDeleteLink, {data : selectedValues}).then(function (success) {
+            return selectedValues;
+        }
+
+        $bulkApproveDiv.bind("click", function () {
+            var selectedValues = getSelectedSheets();
+            app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'A'}).then(function (success) {
+                $viewBtn.trigger('click');
+            }, function (failure) {
+
+            });
+        });
+        $bulkNotApproveDiv.bind("click", function () {
+            var selectedValues = getSelectedSheets();
+            app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'NA'}).then(function (success) {
+                $viewBtn.trigger('click');
+            }, function (failure) {
+
+            });
+        });
+        $bulkLockDiv.bind("click", function () {
+            var selectedValues = getSelectedSheets();
+            app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'L'}).then(function (success) {
+                $viewBtn.trigger('click');
+            }, function (failure) {
+
+            });
+        });
+        $bulkUnlockDiv.bind("click", function () {
+            var selectedValues = getSelectedSheets();
+            app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'UL'}).then(function (success) {
                 $viewBtn.trigger('click');
             }, function (failure) {
 
