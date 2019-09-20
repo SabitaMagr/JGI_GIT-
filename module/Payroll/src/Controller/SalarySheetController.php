@@ -397,8 +397,10 @@ class SalarySheetController extends HrisController {
     public function deleteSheetInBulkAction(){
         $data = $_POST['data'];
         foreach ($data as $key) {
+            $checkData = $this->salarySheetRepo->checkApproveLock($key);
+            if($checkData[0]['LOCKED'] == 'Y' || $checkData[0]['APPROVED'] == 'Y'){ continue; }
             $this->salarySheetRepo->deleteSheetBySheetNo($key);
-        } 
+        }
         return new JSONModel(['success' => true]);
     }
 }

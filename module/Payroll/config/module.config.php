@@ -7,6 +7,7 @@ use Payroll\Controller\FlatValue;
 use Payroll\Controller\MonthlyValue;
 use Payroll\Controller\Rules;
 use Payroll\Controller\SalarySheetController;
+use Payroll\Controller\SalarySheetLockController;
 use Payroll\Controller\TaxSheetController;
 use Zend\Router\Http\Segment;
 
@@ -49,6 +50,16 @@ return [
                     'route' => '/payroll/salarysheet[/:action[/:id]]',
                     'defaults' => [
                         'controller' => SalarySheetController::class,
+                        'action' => 'index'
+                    ]
+                ]
+            ],
+            'salarysheetlock' => [
+                'type' => Segment::class,
+                'options' => [
+                    'route' => '/payroll/salarysheetlock[/:action[/:id]]',
+                    'defaults' => [
+                        'controller' => SalarySheetLockController::class,
                         'action' => 'index'
                     ]
                 ]
@@ -262,6 +273,7 @@ return [
             FlatValue::class => ControllerFactory::class,
             Rules::class => ControllerFactory::class,
             SalarySheetController::class => ControllerFactory::class,
+            SalarySheetLockController::class => ControllerFactory::class,
             TaxSheetController::class => ControllerFactory::class,
             Controller\VarianceSetupController::class => ControllerFactory::class,
             Controller\PayrollReportController::class => ControllerFactory::class,

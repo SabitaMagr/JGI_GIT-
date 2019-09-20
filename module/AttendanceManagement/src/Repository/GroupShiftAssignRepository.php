@@ -31,7 +31,8 @@ class GroupShiftAssignRepository implements RepositoryInterface {
     dep.department_name,
     e.employee_id,
     e.employee_code,
-    e.full_name
+    e.full_name,
+    (case when (select count(*) from hris_best_case_emp_map where employee_id = e.employee_id and case_id = $caseId) > 0 then 'Y' else 'N' end) CHECKED
     --bcem.case_id as case_id,
     --bcs.case_name as case_name
 FROM
@@ -53,7 +54,7 @@ ORDER BY
     dep.department_name,
     e.full_name
 ";
-//echo $sql; die;
+
       $statement = $this->adapter->query($sql);
       $result = $statement->execute();
       return Helper::extractDbData($result);
