@@ -200,7 +200,10 @@ class LeaveRequest extends HrisController {
         //to get the previous balance of selected leave from assigned leave detail
         $result = $leaveApproveRepository->assignedLeaveDetail($detail['LEAVE_ID'], $detail['EMPLOYEE_ID']);
         $preBalance = $result['BALANCE'];
- 
+        
+        $actualDays = ($detail['ACTUAL_DAYS']<1)?'0'+$detail['ACTUAL_DAYS']:$detail['ACTUAL_DAYS'];
+        $halfDayDetail = $detail['HALF_DAY_DETAIL'];
+        
         $leaveApply = new LeaveApply();
         $leaveApply->exchangeArrayFromDB($detail);
         $this->form->bind($leaveApply);
@@ -226,7 +229,9 @@ class LeaveRequest extends HrisController {
                     'subApprovedFlag' => $detail['SUB_APPROVED_FLAG'],
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", false, true),
                     'gp' => $detail['GRACE_PERIOD'],
-                    'files' => $fileDetails
+                    'files' => $fileDetails,
+                    'actualDays' => $actualDays,
+                    'halfdayDetail' => $halfDayDetail
         ]);
     }
 

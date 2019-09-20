@@ -1248,7 +1248,7 @@ window.app = (function ($, toastr, App) {
                 title: 'Select All',
                 headerTemplate: "<input type='checkbox' id='header-chb' class='k-checkbox header-checkbox'><label class='k-checkbox-label' for='header-chb'></label>",
                 template: template,
-                width: 80,
+                width: 40,
                 sortable: false,
                 filterable: false
             };

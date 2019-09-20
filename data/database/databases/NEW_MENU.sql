@@ -1458,7 +1458,7 @@ INSERT INTO hris_menus (
     is_visible
 ) VALUES (
     NULL,
-    3114,
+    (select max(menu_id)+1 from hris_menus),
     'Group Shift Assign',
     301,
     NULL,
@@ -1473,4 +1473,42 @@ INSERT INTO hris_menus (
     12,
     'Y'
 );
+
+INSERT
+INTO HRIS_MENUS
+  (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+  )
+  VALUES
+  (
+    NULL,
+    (select max(menu_id)+1 from hris_menus),
+    'Branch Wise Daily IN OUT',
+    148,
+    NULL,
+    'allreport',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-pencil',
+    'branchWiseDailyInOut',
+    (select max(menu_index)+1 from hris_menus where parent_menu=148),
+    NULL,
+    NULL,
+    'Y'
+  );
 

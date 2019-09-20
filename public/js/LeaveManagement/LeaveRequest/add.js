@@ -17,6 +17,7 @@
         var $startDate = $('#startDate'), $endDate = $('#endDate');
         var $leaveSubstitute = $('#leaveSubstitute');
         var $subRefId = $('#subRefId');
+        var $halfDayMsg = $('#halfDayMsg');
 
         var substituteDetails = [];
 
@@ -249,6 +250,7 @@
                 if(requireDocument == 'Y' && dateDiff1 > daysForDocs && rowCount1 <= 1 ){
                     $($request).attr('disabled', 'disabled');
                 }
+                checkHalfDay(this);
             }, function (failure) {
                 App.unblockUI("#hris-page-content");
                 console.log(failure);
@@ -259,9 +261,11 @@
             leaveChange(this);
         });
 
-
+        
 
         var employeeChange = function (obj) {
+            checkHalfDay(this);
+            
             var $this = $(obj);
             app.floatingProfile.setDataFromRemote($this.val());
             App.blockUI({target: "#hris-page-content", message: "Fetching Employee Leaves"});
@@ -286,14 +290,23 @@
         $employee.on('change', function () {
             employeeChange(this);
         });
+        
         $halfDay.on('change', function () {
+            checkHalfDay(this);
             if ($startDate.val() !== '' && $endDate.val() !== '') {
                 var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
                 calculateAvailableDays($startDate.val(), $endDate.val(), halfDayValue, $employee.val(), $leave.val());
             }
         });
 
-
+        var checkHalfDay = function(obj){
+            $halfDayMsg.html("");
+            if ($startDate.val() !== '' && $endDate.val() !== '') {
+                var halfDayValue = $halfDay.is(':visible') ? $halfDay.val() : 'N';
+                if(halfDayValue != 'N'){
+                    $halfDayMsg.html("Actual Days: " + ($noOfDays.val())/2);
+                }
+        }};
 
         var myDropzone;
         Dropzone.autoDiscover = false;

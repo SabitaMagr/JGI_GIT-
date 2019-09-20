@@ -39,6 +39,20 @@ class AllReportController extends HrisController {
                     'preference' => $this->preference
         ]);
     }
+    
+    public function branchWiseDailyInOutAction() {
+        $monthId = (int) $this->params()->fromRoute('id1');
+        $branchId = (int) $this->params()->fromRoute('id2');
+
+        return Helper::addFlashMessagesToArray($this, [
+                    'comBraList' => [
+                        'BRANCH_LIST' => EntityHelper::getTableList($this->adapter, Branch::TABLE_NAME, [Branch::BRANCH_ID, Branch::BRANCH_NAME, Branch::COMPANY_ID], [Branch::STATUS => "E"])
+                    ],
+                    'monthId' => $monthId,
+                    'branchId' => $branchId,
+                    'preference' => $this->preference
+        ]);
+    }
 
     public function branchWiseDailyReportAction() {
         try {
@@ -64,7 +78,7 @@ class AllReportController extends HrisController {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
         }
     }
-
+    
     public function branchWiseAction() {
         $branchId = (int) $this->params()->fromRoute('id1');
         return $this->stickFlashMessagesTo([
