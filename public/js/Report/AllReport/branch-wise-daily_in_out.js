@@ -9,6 +9,7 @@
 
         app.setFiscalMonth($year, $month);
 
+        app.searchTable('reportTable', ['code', 'employee'], false);
 
         var extractDetailData = function (rawData, branchId) {
             var data = {};
@@ -105,73 +106,11 @@
                     }
                 }
                 row['employee'] = data[k].FULL_NAME;
-                row['code'] = (data[k].EMPLOYEE_CODE == null)?'': data[k].EMPLOYEE_CODE ;
+                row['code'] = (data[k].EMPLOYEE_CODE == null) ? '' : data[k].EMPLOYEE_CODE;
                 returnData.rows.push(row);
 //                row['total'] = JSON.stringify(data[k].TOTAL);
             }
             return returnData;
-        };
-        var displayDataInBtnGroup = function (selector) {
-            $(selector).each(function (k, group) {
-                var $group = $(group);
-
-                var data = $group.attr('data');
-                if (data == 'null') {
-
-                } else {
-                    data = JSON.parse(data);
-                    if (data.IS_PRESENT == 1) {
-                        $group.html('</br>' + ((data.IN_TIME == null) ? '-' : data.IN_TIME) + '</br>' + ((data.OUT_TIME == null) ? '-' : data.OUT_TIME) + '</br>' + ((data.TOTAL_HOUR == null) ? '-' : data.TOTAL_HOUR));
-                        $group.parent().addClass('bg-green');
-                    } else {
-                        if (data.IS_ABSENT == 1) {
-                            $group.html('A');
-                            $group.parent().addClass('bg-red1 textcolor1');
-
-                        } else {
-                            if (data.ON_LEAVE == 1) {
-                                $group.html('L');
-                                $group.parent().addClass('bg-blue1 textcolor2');
-
-                            } else {
-                                $group.html('H');
-                                $group.parent().addClass('bg-white1 textcolor3 ');
-                            }
-
-                        }
-
-                    }
-                }
-
-//                $group.html((data.IS_PRESENT == 1) ? 'P' : ((data.IS_ABSENT == 1) ? 'A' : (data.ON_LEAVE == 1) ? 'L' : 'H'));
-//                $group.parent().addClass('bg-red');
-            });
-
-        };
-        var displayTotalInGrid = function (selector) {
-            $(selector).each(function (k, group) {
-                var $group = $(group);
-                var data = JSON.parse($group.attr('data'));
-                var $childrens = $group.children();
-                var $present = $($childrens[0]);
-                var $absent = $($childrens[1]);
-                var $leave = $($childrens[2]);
-
-                var presentDays = parseFloat(data['IS_PRESENT']);
-                var absentDays = parseFloat(data['IS_ABSENT']);
-                var leaveDays = parseFloat(data['ON_LEAVE']);
-
-                $present.html(data['IS_PRESENT']);
-                $absent.html(data['IS_ABSENT']);
-                $leave.html(data['ON_LEAVE']);
-
-                var total = presentDays + absentDays + leaveDays;
-
-                $present.attr('title', Number((presentDays * 100 / total).toFixed(1)));
-                $absent.attr('title', Number((absentDays * 100 / total).toFixed(1)));
-                $leave.attr('title', Number((leaveDays * 100 / total).toFixed(1)));
-            });
-
         };
         var firstTime = true;
         var initializeReport = function (monthId, branchId) {
@@ -192,20 +131,59 @@
                 console.log('branchWiseEmployeeMonthlyR', response);
                 var extractedDetailData = extractDetailData(response.data, branchId);
                 console.log('extractedDetailData', extractedDetailData);
-//                $tableContainer.remove();
                 $tableContainer.kendoGrid({
                     dataSource: {
                         data: extractedDetailData.rows,
                         pageSize: 500
+                    },
+                    dataBound: function (e) {
+                        var grid = e.sender;
+                        if (grid.dataSource.total() === 0) {
+                            var colCount = grid.columns.length;
+                            $(e.sender.wrapper)
+                                    .find('tbody')
+                                    .append('<tr class="kendo-data-row"><td colspan="' + colCount + '" class="no-data">There is no data to show in the grid.</td></tr>');
+                        }
+
+                        $('.daily-attendance').each(function (k, group) {
+                            var $group = $(group);
+
+                            var data = $group.attr('data');
+                            if (data == 'null') {
+
+                            } else {
+                                data = JSON.parse(data);
+                                if (data.IS_PRESENT == 1) {
+                                    $group.html('</br>' + ((data.IN_TIME == null) ? '-' : data.IN_TIME) + '</br>' + ((data.OUT_TIME == null) ? '-' : data.OUT_TIME) + '</br>' + ((data.TOTAL_HOUR == null) ? '-' : data.TOTAL_HOUR));
+                                    $group.parent().addClass('bg-green');
+                                } else {
+                                    if (data.IS_ABSENT == 1) {
+                                        $group.html('A');
+                                        $group.parent().addClass('bg-red1 textcolor1');
+
+                                    } else {
+                                        if (data.ON_LEAVE == 1) {
+                                            $group.html('L');
+                                            $group.parent().addClass('bg-blue1 textcolor2');
+
+                                        } else {
+                                            $group.html('H');
+                                            $group.parent().addClass('bg-white1 textcolor3 ');
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+                        });
+
                     },
                     scrollable: false,
                     sortable: false,
                     pageable: false,
                     columns: extractedDetailData.cols
                 });
-                displayDataInBtnGroup('.daily-attendance');
-                displayTotalInGrid('.total-attendance');
-
 
             }, function (error) {
                 if (firstTime) {
@@ -247,7 +225,6 @@
         $generateReport.on('click', function () {
             var branchId = $branchList.val();
             var monthId = $('#fiscalMonth').val();
-
 
             console.log(branchId);
             console.log(monthId);
