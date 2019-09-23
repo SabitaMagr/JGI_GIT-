@@ -10,6 +10,7 @@
         var $toDate = $('#toDate');
         var $bulkActionDiv = $('#bulkActionDiv');
         var $bulkBtns = $(".btnApproveReject");
+        var $superpower = $("#super_power");
         var action = `
             <div class="clearfix">
                 #if(REQUESTED_TYPE=='ad'){#
@@ -134,10 +135,11 @@
         $bulkBtns.bind("click", function () {
             var list = grid.getSelected();
             var action = $(this).attr('action');
+            var superPower = $superpower.prop('checked');
 
             var selectedValues = [];
             for (var i in list) {
-                selectedValues.push({id: list[i][pk], action: action});
+                selectedValues.push({id: list[i][pk], action: action, status: list[i]['STATUS'], super_power: superPower});
             }
             app.bulkServerRequest(document.bulkLink, selectedValues, function () {
                 $search.trigger('click');

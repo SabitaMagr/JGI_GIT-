@@ -673,6 +673,7 @@ EOT;
                       SELECT 
                       TRUNC(AD.ATTENDANCE_DT)-TRUNC(M.FROM_DATE)+1                              AS DAY_COUNT, 
                       E.EMPLOYEE_ID                                                             AS EMPLOYEE_ID ,
+                      E.EMPLOYEE_CODE                                                               AS EMPLOYEE_CODE,
                       E.FIRST_NAME                                                                   AS FIRST_NAME,
                       E.MIDDLE_NAME                                                                  AS MIDDLE_NAME,
                       E.LAST_NAME                                                                    AS LAST_NAME,
@@ -721,7 +722,10 @@ EOT;
                           AND  AD.DAYOFF_FLAG='Y'
                         THEN 1
                         ELSE 0
-                      END) AS IS_DAYOFF
+                      END) AS IS_DAYOFF,
+                      TO_CHAR(AD.IN_TIME, 'HH24:mi') as IN_TIME,
+                      TO_CHAR(AD.OUT_TIME, 'HH24:mi') as OUT_TIME,
+                      MIN_TO_HOUR(AD.TOTAL_HOUR)      AS TOTAL_HOUR
                     FROM HRIS_ATTENDANCE_DETAIL AD
                     JOIN HRIS_EMPLOYEES E
                     ON (AD.EMPLOYEE_ID = E.EMPLOYEE_ID),

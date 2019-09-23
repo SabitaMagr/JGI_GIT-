@@ -109,7 +109,12 @@
                 },
                 pageable: true,
                 height: 550,
-                toolbar: ["save", "cancel"],
+                toolbar: ["excel","save", "cancel"],
+                excel: {
+                fileName: 'Manual Overtime',
+                filterable: false,
+                allPages: true
+            },
                 columns: c,
                 editable: true
             };

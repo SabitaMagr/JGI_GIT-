@@ -192,6 +192,7 @@
         app.searchTable($table, ['EMPLOYEE_NAME', 'EMPLOYEE_CODE']);
         var exportMap = {
             'COMPANY_NAME': ' Company',
+            'BRANCH_NAME': 'Branch',
             'DEPARTMENT_NAME': ' Department',
             'EMPLOYEE_CODE': 'Code',
             'EMPLOYEE_NAME': ' Name',

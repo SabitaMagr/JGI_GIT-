@@ -67,6 +67,8 @@ class LeaveStatus extends HrisController {
 
         //to get the previous balance of selected leave from assigned leave detail
         $preBalance = $detail['BALANCE'];
+        
+        $actualDays = ($detail['ACTUAL_DAYS']<1)?'0'+$detail['ACTUAL_DAYS']:$detail['ACTUAL_DAYS'];
 
         $leaveApply = new LeaveApply();
         if ($request->isPost()) {
@@ -150,7 +152,8 @@ class LeaveStatus extends HrisController {
                     'employeeList' => EntityHelper::getTableKVListWithSortOption($this->adapter, HrEmployees::TABLE_NAME, HrEmployees::EMPLOYEE_ID, [HrEmployees::FIRST_NAME, HrEmployees::MIDDLE_NAME, HrEmployees::LAST_NAME], [HrEmployees::STATUS => "E", HrEmployees::RETIRED_FLAG => "N"], HrEmployees::FIRST_NAME, "ASC", " ", FALSE, TRUE),
                     'gp' => $detail['GRACE_PERIOD'],
                     'acl' => $this->acl,
-                    'files' => $fileDetails
+                    'files' => $fileDetails,
+                    'actualDays' => $actualDays
         ]);
     }
 

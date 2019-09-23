@@ -144,6 +144,7 @@ class AttendanceDetailRepository implements RepositoryInterface {
                   A.DAYOFF_FLAG                                    AS DAYOFF_FLAG,
                   A.LATE_STATUS                                    AS LATE_STATUS,
                   COM.COMPANY_NAME                                 AS COMPANY_NAME,
+                  BR.BRANCH_NAME                                   AS BRANCH_NAME, 
                   DEP.DEPARTMENT_NAME                              AS DEPARTMENT_NAME,
                   INITCAP(E.FULL_NAME)                             AS EMPLOYEE_NAME,
                   H.HOLIDAY_ENAME                                  AS HOLIDAY_ENAME,
@@ -223,6 +224,8 @@ class AttendanceDetailRepository implements RepositoryInterface {
                 ON E.COMPANY_ID=COM.COMPANY_ID
                 LEFT JOIN HRIS_DEPARTMENTS DEP
                 ON E.DEPARTMENT_ID = DEP.DEPARTMENT_ID
+                LEFT JOIN HRIS_BRANCHES BR
+                ON E.BRANCH_ID = BR.BRANCH_ID
                 LEFT JOIN HRIS_POSITIONS P
                 ON E.POSITION_ID=P.POSITION_ID
                 LEFT JOIN HRIS_DESIGNATIONS DES

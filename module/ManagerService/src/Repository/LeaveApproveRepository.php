@@ -183,7 +183,15 @@ class LeaveApproveRepository implements RepositoryInterface {
                   INITCAP(RECM.FULL_NAME)                             AS RECOMMENDER_NAME,
                   INITCAP(APRV.FULL_NAME)                             AS APPROVER_NAME,
                   ELA.TOTAL_DAYS                                      AS TOTAL_DAYS,
-                  ELA.BALANCE                                         AS BALANCE
+                  ELA.BALANCE                                         AS BALANCE,
+                  case when L.ALLOW_HALFDAY = 'Y'
+                  then LA.NO_OF_DAYS/2
+                  else LA.NO_OF_DAYS
+                  END as ACTUAL_DAYS,
+                  (CASE WHEN (LA.HALF_DAY IS NULL OR LA.HALF_DAY = 'N') 
+                  THEN 'Full Day' 
+                  WHEN (LA.HALF_DAY = 'F') THEN 'First Half' 
+                  ELSE 'Second Half' END) AS HALF_DAY_DETAIL
                 FROM HRIS_EMPLOYEE_LEAVE_REQUEST LA
                 LEFT JOIN HRIS_LEAVE_MASTER_SETUP L
                 ON L.LEAVE_ID=LA.LEAVE_ID
