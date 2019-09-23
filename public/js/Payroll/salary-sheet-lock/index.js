@@ -309,6 +309,7 @@
             var selectedValues = getSelectedSheets();
             app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'A'}).then(function (success) {
                 $viewBtn.trigger('click');
+                app.showMessage('Sheets Approved', 'success');
             }, function (failure) {
 
             });
@@ -317,6 +318,7 @@
             var selectedValues = getSelectedSheets();
             app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'NA'}).then(function (success) {
                 $viewBtn.trigger('click');
+                app.showMessage('Sheets Unapproved', 'success');
             }, function (failure) {
 
             });
@@ -325,6 +327,7 @@
             var selectedValues = getSelectedSheets();
             app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'L'}).then(function (success) {
                 $viewBtn.trigger('click');
+                app.showMessage('Sheets Locked', 'success');
             }, function (failure) {
 
             });
@@ -333,6 +336,7 @@
             var selectedValues = getSelectedSheets();
             app.serverRequest(document.bulkActionLink, {data : selectedValues, action : 'UL'}).then(function (success) {
                 $viewBtn.trigger('click');
+                app.showMessage('Sheets Unlocked', 'success');
             }, function (failure) {
 
             });
