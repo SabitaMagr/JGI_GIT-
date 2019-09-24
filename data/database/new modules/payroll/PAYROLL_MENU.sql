@@ -520,3 +520,72 @@ Parent_Menu=(select menu_id from hris_menus  where menu_name like 'Payroll Repor
     NULL,
     'Y'
   );
+
+INSERT INTO HRIS_MENUS (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+) VALUES (
+    NULL,
+    (select max(MENU_ID)+1 from  HRIS_MENUS),
+    'SheetWise Delete/Regenerate',
+    (select menu_id from hris_menus where lower(menu_name)='salary'),
+    NULL,
+    'salarySheet',
+    'E',
+    TRUNC(sysdate),
+    NULL,
+    'fa fa-square-o',
+    'sheetWise',
+    5,
+    NULL,
+    NULL,
+    'Y'
+);
+
+
+INSERT INTO HRIS_MENUS (
+    MENU_CODE,
+    MENU_ID,
+    MENU_NAME,
+    PARENT_MENU,
+    MENU_DESCRIPTION,
+    ROUTE,
+    STATUS,
+    CREATED_DT,
+    MODIFIED_DT,
+    ICON_CLASS,
+    ACTION,
+    MENU_INDEX,
+    CREATED_BY,
+    MODIFIED_BY,
+    IS_VISIBLE
+) VALUES (
+    NULL,
+    (select max(MENU_ID)+1 from  HRIS_MENUS),
+    'Salary Sheet Lock',
+    (select menu_id from hris_menus where lower(menu_name)='salary'),
+    NULL,
+    'salarysheetlock',
+    'E',
+    trunc(sysdate),
+    NULL,
+    'fa fa-money',
+    'index',
+    2,
+    NULL,
+    NULL,
+    'Y'
+);

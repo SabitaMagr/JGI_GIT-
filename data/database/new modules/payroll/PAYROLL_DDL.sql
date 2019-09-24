@@ -360,8 +360,8 @@ MODIFY VARIABLE_TYPE CHAR(1 BYTE) DEFAULT 'V' CHECK (VARIABLE_TYPE IN  ('V','O',
 ALTER TABLE HRIS_VARIANCE
 ADD V_HEADS CHAR(2 BYTE);
 
-alter table hris_salary_sheet add locked char(1) DEFAULT 'Y'
+alter table hris_salary_sheet add locked char(1) DEFAULT 'N'
 check (locked in ('Y', 'N'));
 
-alter table hris_salary_sheet add approved char(1) DEFAULT 'Y'
+alter table hris_salary_sheet add approved char(1) DEFAULT 'N'
 check (approved in ('Y', 'N'));

@@ -99,7 +99,7 @@ class SalarySheetController extends HrisController {
                     /*  */
                     /*  */
                     $returnData = [];
-                    $groupListArray=$this->salarySheetRepo->insertPayrollEmp($empList,$monthId);
+                    $groupListArray=$this->salarySheetRepo->insertPayrollEmp($empList,$monthId,$salaryTypeId);
                     $groupToGenerate=[];
                     foreach ($groupListArray as $list ){
                         array_push($groupToGenerate, $list['GROUP_ID']);
@@ -170,6 +170,12 @@ class SalarySheetController extends HrisController {
             $employeeId = $data['employeeId'];
             $monthId = $data['monthId'];
             $sheetNo = $data['sheetNo'];
+            
+            $checkData = $this->salarySheetRepo->checkApproveLock($sheetNo);
+            if($checkData[0]['LOCKED'] == 'Y' || $checkData[0]['APPROVED'] == 'Y'){ 
+                throw new Exception('Cant Regenerate approved or locked');
+            }
+            
             $salarySheetDetailRepo->deleteBy([SalarySheetDetail::SHEET_NO => $sheetNo, SalarySheetDetail::EMPLOYEE_ID => $employeeId]);
             $taxSheetRepo->deleteBy([TaxSheet::SHEET_NO => $sheetNo, TaxSheet::EMPLOYEE_ID => $employeeId]);
             $payrollGenerator = new PayrollGenerator($this->adapter);
@@ -403,4 +409,17 @@ class SalarySheetController extends HrisController {
         }
         return new JSONModel(['success' => true]);
     }
+    
+    public function getEmployeeSheetWiseAction() {
+        try {
+            $request = $this->getRequest();
+            $data = $request->getPost();
+            $sheetNo = $data['sheetNo'];
+            $employeeList = $this->salarySheetRepo->fetchSheetWiseEmployeeList($sheetNo);
+            return new JsonModel(['success' => true, 'data' => $employeeList, 'message' => null]);
+        } catch (Exception $e) {
+            return new JsonModel(['success' => false, 'data' => null, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

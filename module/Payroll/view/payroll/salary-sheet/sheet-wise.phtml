@@ -17,10 +17,12 @@ $this->headScript()
 ?>
 <script>
     document.data =<?php echo $data; ?>;
+    document.data['loading-icon'] = '<?php echo $this->basePath('img/payroll-icon.png'); ?>';
     document.getFiscalYearMonthLink = '<?php echo $this->url('salarySheet', ['action' => 'getFiscalYearMonth']); ?>';
     document.pullGroupEmployeeLink = '<?php echo $this->url('salarySheet', ['action' => 'pullGroupEmployee']); ?>';
     document.deleteLink = '<?= $this->url("salarySheet", ["action" => "deleteSheet"]); ?>';
     document.bulkDeleteLink = '<?= $this->url("salarySheet", ["action" => "deleteSheetInBulk"]); ?>';
+    document.getEmployeeSheetWise = '<?= $this->url("salarySheet", ["action" => "getEmployeeSheetWise"]); ?>';
 </script>
 <div class="page-bar">
     <?= $this->navigation('Zend\Navigation\salarySheet')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb') ?>
@@ -102,3 +104,7 @@ $this->headScript()
         </div>
     </div>
 </div>
+<h4 class="close-please-wait" id="please-wait-options" >
+    <button type="button" class="btn red default btn-lg" id="cancelBtn">Cancel</button>
+    <button type="button" class="btn blue default btn-lg" action="pause" id="pauseBtn">Pause</button>
+</h4>
