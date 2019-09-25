@@ -55,7 +55,7 @@ class AttendanceByHr extends HrisController {
         $statusFormElement->setAttributes(["id" => "presentStatusId", "class" => "form-control reset-field", "multiple" => "multiple"]);
         $statusFormElement->setLabel("Present Status");
         return $statusFormElement;
-    } 
+    }
 
     public function indexAction() {
         $shiftRepo = new ShiftRepository($this->adapter);
@@ -64,15 +64,15 @@ class AttendanceByHr extends HrisController {
                 'status' => $this->getStatusSelect(),
                 'presentStatus' => $this->getPresentStatusSelect(),
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
-                'acl' => $this->acl, 
+                'acl' => $this->acl,
                 'shiftList' => $shiftList,
                 'employeeDetail' => $this->storageData['employee_detail'],
                 'allowShiftChange' =>  isset($this->preference['attAppShiftChangeable'])? $this->preference['attAppShiftChangeable']  : 'N',
                 'allowTimeChange' =>  isset($this->preference['attAppTimeChangeable'])? $this->preference['attAppTimeChangeable']  : 'N',
                 'preference' => $this->preference
         ]);
-    } 
- 
+    }
+
     public function reportAction() {
         return Helper::addFlashMessagesToArray($this, [
                 'status' => $this->getStatusSelect(),
@@ -83,9 +83,9 @@ class AttendanceByHr extends HrisController {
                 'preference' => $this->preference
         ]);
     }
- 
+
     public function addAction() {
-        $request = $this->getRequest(); 
+        $request = $this->getRequest();
         try {
             if ($request->isPost()) {
                 $this->form->setData($request->getPost());
@@ -160,7 +160,7 @@ class AttendanceByHr extends HrisController {
     }
 
     public function deleteAction() {
-        
+
     }
 
     public function pullAttendanceAction() {
@@ -183,8 +183,9 @@ class AttendanceByHr extends HrisController {
             $toDate = $data['toDate'];
             $status = $data['status'];
             $presentStatus = $data['presentStatus'];
-            
-            $results = $this->repository->filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate, $toDate, $status, $presentStatus);
+            $presentType = $data['presentType'];
+
+            $results = $this->repository->filterRecord($companyId, $branchId, $departmentId, $designationId, $positionId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $genderId, $functionalTypeId, $employeeId, $fromDate, $toDate, $status, $presentStatus, null, null, $presentType);
             $result = [];
             $result['success'] = true;
             $result['data'] = Helper::extractDbData($results);
@@ -245,8 +246,8 @@ class AttendanceByHr extends HrisController {
             return new JsonModel(['success' => true, 'data' => [], 'error' => '']);
         } catch (Exception $e) {
             return new JsonModel(['success' => false, 'data' => [], 'error' => $e->getMessage()]);
-        } 
-    } 
+        }
+    }
 
     public function pullInOutTimeAction() {
         try {
@@ -323,7 +324,7 @@ class AttendanceByHr extends HrisController {
                 'status' => $this->getStatusSelect(),
                 'presentStatus' => $this->getPresentStatusSelect(),
                 'searchValues' => EntityHelper::getSearchData($this->adapter),
-                'acl' => $this->acl, 
+                'acl' => $this->acl,
                 'employeeDetail' => $this->storageData['employee_detail'],
                 'preference' => $this->preference
         ]);

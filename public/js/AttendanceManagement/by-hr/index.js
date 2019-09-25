@@ -7,6 +7,7 @@
         var $status = $('#statusId');
         var $table = $('#table');
         var $search = $('#search');
+        var $presentType = $("#presentType");
 
         $('select').select2();
         $('#inTime').combodate({
@@ -167,12 +168,14 @@
                 ]}
         ], detailInit, null, null, 'Attendance Report.xlsx');
 
-        $search.on('click', function () {
+        $search.on("click", function () {
+
             var q = document.searchManager.getSearchValues();
             q['fromDate'] = $fromDate.val();
             q['toDate'] = $toDate.val();
             q['status'] = $status.val();
             q['presentStatus'] = $presentStatusId.val();
+            q.presentType = $presentType.val();
             app.serverRequest(document.pullAttendanceWS, q).then(function (response) {
                 if (response.success) {
                     app.renderKendoGrid($table, response.data);

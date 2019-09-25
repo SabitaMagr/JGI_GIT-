@@ -79,14 +79,21 @@
             returnData.cols.push({
                 field: 'Employee',
                 title: 'EMPLOYEES',
-                template: '<span><b>#=employee#</b><i></br>In time</br>Out time</br>Total hour</i></span>'
+                template: '<span><b>#=employee#</b></span>'
             });
+
+            returnData.cols.push({
+                title: 'Time',
+                width: 400,
+                template: '<span style="text-align: center"><i>In_time</br>Out_time</br>Total_hour</i></span>'
+            });
+
             for (var i = 1; i < 33; i++) {
                 var temp = 'C' + i;
                 returnData.cols.push({
                     field: temp,
                     title: "" + i,
-                    template: '<span data="#: ' + temp + ' #" class="daily-attendance"></span>'
+                    template: '<span " data="#: ' + temp + ' #" class="daily-attendance"></span>'
                 });
             }
 //            returnData.cols.push({
@@ -154,21 +161,21 @@
                             } else {
                                 data = JSON.parse(data);
                                 if (data.IS_PRESENT == 1) {
-                                    $group.html('</br>' + ((data.IN_TIME == null) ? '-' : data.IN_TIME) + '</br>' + ((data.OUT_TIME == null) ? '-' : data.OUT_TIME) + '</br>' + ((data.TOTAL_HOUR == null) ? '-' : data.TOTAL_HOUR));
-                                    $group.parent().addClass('bg-green');
+                                    $group.html(((data.IN_TIME == null) ? '-' : data.IN_TIME) + '</br>' + ((data.OUT_TIME == null) ? '-' : data.OUT_TIME) + '</br>' + ((data.TOTAL_HOUR == null) ? '-' : data.TOTAL_HOUR));
+                                    $group.parent().addClass('bg-success text-center');
                                 } else {
                                     if (data.IS_ABSENT == 1) {
                                         $group.html('A');
-                                        $group.parent().addClass('bg-red1 textcolor1');
+                                        $group.parent().addClass('bg-red1 textcolor1 text-center');
 
                                     } else {
                                         if (data.ON_LEAVE == 1) {
                                             $group.html('L');
-                                            $group.parent().addClass('bg-blue1 textcolor2');
+                                            $group.parent().addClass('bg-blue1 textcolor2 text-center');
 
                                         } else {
                                             $group.html('H');
-                                            $group.parent().addClass('bg-white1 textcolor3 ');
+                                            $group.parent().addClass('bg-white1 textcolor3 text-center');
                                         }
 
                                     }
@@ -263,7 +270,7 @@
             var newWin = window.open('', 'Print-Window');
 
             newWin.document.open();
-            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body><style>table {border-collapse: collapse;}table, th, td {border: 1px solid black;}</style></html>');
+            newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body><style>table {border-collapse: collapse;}table, th, td {border: 1px solid black;text-align: center;}</style></html>');
             newWin.document.close();
 
             setTimeout(function () {
