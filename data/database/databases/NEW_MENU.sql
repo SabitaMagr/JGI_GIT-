@@ -1440,75 +1440,149 @@ null,
 'Y');
 
 
-INSERT INTO hris_menus (
-    menu_code,
-    menu_id,
-    menu_name,
-    parent_menu,
-    menu_description,
-    route,
-    status,
-    created_dt,
-    modified_dt,
-    icon_class,
-    action,
-    menu_index,
-    created_by,
-    modified_by,
-    is_visible
-) VALUES (
-    NULL,
-    (select max(menu_id)+1 from hris_menus),
-    'Group Shift Assign',
-    301,
-    NULL,
-    'groupshiftassign',
-    'E',
-    TO_DATE('12-SEP-19', 'DD-MON-RR'),
-    TO_DATE('12-SEP-19', 'DD-MON-RR'),
-    'fa fa-users',
-    'index',
-    2,
-    12,
-    12,
-    'Y'
-);
+    INSERT INTO hris_menus (
+        menu_code,
+        menu_id,
+        menu_name,
+        parent_menu,
+        menu_description,
+        route,
+        status,
+        created_dt,
+        modified_dt,
+        icon_class,
+        action,
+        menu_index,
+        created_by,
+        modified_by,
+        is_visible
+    ) VALUES (
+        NULL,
+        (select max(menu_id)+1 from hris_menus),
+        'Group Shift Assign',
+        301,
+        NULL,
+        'groupshiftassign',
+        'E',
+        TO_DATE('12-SEP-19', 'DD-MON-RR'),
+        TO_DATE('12-SEP-19', 'DD-MON-RR'),
+        'fa fa-users',
+        'index',
+        2,
+        12,
+        12,
+        'Y'
+    );
 
-INSERT
-INTO HRIS_MENUS
-  (
-    MENU_CODE,
-    MENU_ID,
-    MENU_NAME,
-    PARENT_MENU,
-    MENU_DESCRIPTION,
-    ROUTE,
-    STATUS,
-    CREATED_DT,
-    MODIFIED_DT,
-    ICON_CLASS,
-    ACTION,
-    MENU_INDEX,
-    CREATED_BY,
-    MODIFIED_BY,
-    IS_VISIBLE
-  )
-  VALUES
-  (
-    NULL,
-    (select max(menu_id)+1 from hris_menus),
-    'Branch Wise Daily IN OUT',
-    148,
-    NULL,
-    'allreport',
-    'E',
-    trunc(sysdate),
-    NULL,
-    'fa fa-pencil',
-    'branchWiseDailyInOut',
-    (select max(menu_index)+1 from hris_menus where parent_menu=148),
-    NULL,
-    NULL,
-    'Y'
-  );
+    INSERT
+    INTO HRIS_MENUS
+      (
+        MENU_CODE,
+        MENU_ID,
+        MENU_NAME,
+        PARENT_MENU,
+        MENU_DESCRIPTION,
+        ROUTE,
+        STATUS,
+        CREATED_DT,
+        MODIFIED_DT,
+        ICON_CLASS,
+        ACTION,
+        MENU_INDEX,
+        CREATED_BY,
+        MODIFIED_BY,
+        IS_VISIBLE
+      )
+      VALUES
+      (
+        NULL,
+        (select max(menu_id)+1 from hris_menus),
+        'Branch Wise Daily IN OUT',
+        148,
+        NULL,
+        'allreport',
+        'E',
+        trunc(sysdate),
+        NULL,
+        'fa fa-pencil',
+        'branchWiseDailyInOut',
+        (select max(menu_index)+1 from hris_menus where parent_menu=148),
+        NULL,
+        NULL,
+        'Y'
+      );
 
+        INSERT INTO HRIS_MENUS
+          (
+            MENU_CODE,
+            MENU_ID,
+            MENU_NAME,
+            PARENT_MENU,
+            MENU_DESCRIPTION,
+            ROUTE,
+            STATUS,
+            CREATED_DT,
+            MODIFIED_DT,
+            ICON_CLASS,
+            ACTION,
+            MENU_INDEX,
+            CREATED_BY,
+            MODIFIED_BY,
+            IS_VISIBLE
+          )
+          VALUES
+          (
+            NULL,
+            (select max(menu_id)+1 from hris_menus),
+            'Leave Addition Report',
+            2,
+            NULL,
+            'leavebalance',
+            'E',
+            trunc(sysdate),
+            NULL,
+            'fa fa-pencil-square-o',
+            'leaveAdditionReport',
+            (select max(menu_index)+1 from hris_menus where parent_menu=2),
+            NULL,
+            NULL,
+            'Y'
+          );
+
+
+        INSERT INTO HRIS_MENUS
+          (
+            MENU_CODE,
+            MENU_ID,
+            MENU_NAME,
+            PARENT_MENU,
+            MENU_DESCRIPTION,
+            ROUTE,
+            STATUS,
+            CREATED_DT,
+            MODIFIED_DT,
+            ICON_CLASS,
+            ACTION,
+            MENU_INDEX,
+            CREATED_BY,
+            MODIFIED_BY,
+            IS_VISIBLE
+          )
+          VALUES
+          (
+            NULL,
+            (select max(menu_id)+1 from hris_menus),
+            'Resigned or Retired Employees',
+            302,
+            NULL,
+            'employee',
+            'E',
+            trunc(sysdate),
+            NULL,
+            'fa fa-pencil-square-o',
+            'resignedOrRetired',
+            (select max(menu_index)+1 from hris_menus where parent_menu=302),
+            NULL,
+            NULL,
+            'Y'
+          );

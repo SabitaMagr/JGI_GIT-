@@ -1266,5 +1266,203 @@ GROUP BY IARA.EMPLOYEE_ID) AA ON (AA.EMPLOYEE_ID=E.EMPLOYEE_ID)
             return $tempArray;
         }
     }
+    
+    public function fetchResignedOrRetired($by) {
+        $orderByString = EntityHelper::getOrderBy('E.FULL_NAME ASC', null, 'E.SENIORITY_LEVEL', 'P.LEVEL_NO', 'E.JOIN_DATE', 'DES.ORDER_NO', 'E.FULL_NAME');
+        $columIfSynergy = "";
+        $joinIfSyngery = "";
+        if ($this->checkIfTableExists("FA_CHART_OF_ACCOUNTS_SETUP")) {
+            $columIfSynergy = "FCAS.ACC_EDESC AS BANK_ACCOUNT,";
+            $joinIfSyngery = "LEFT JOIN FA_CHART_OF_ACCOUNTS_SETUP FCAS 
+                ON(FCAS.ACC_CODE=E.ID_ACC_CODE AND C.COMPANY_CODE=FCAS.COMPANY_CODE)";
+        }
+
+        $condition = $this->getSearchConditonforRetiredorResigned($by['companyId'], $by['branchId'], $by['departmentId'], $by['positionId'], $by['designationId'], $by['serviceTypeId'], $by['serviceEventTypeId'], $by['employeeTypeId'], $by['employeeId'], $by['genderId'], $by['locationId'], $by['functionalTypeId']);
+        $sql = "SELECT 
+            {$columIfSynergy}
+                E.ID_ACCOUNT_NO  AS ID_ACCOUNT_NO,
+                  E.EMPLOYEE_ID                                                AS EMPLOYEE_ID,
+                  (CASE WHEN E.GENDER_ID = 1 THEN 'MR.'
+                  WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'U' THEN 'MS.'
+                  WHEN E.GENDER_ID = 2 AND E.MARITAL_STATUS = 'M' THEN 'MRS.' END) AS TITLE,
+                  E.EMPLOYEE_CODE                                                   AS EMPLOYEE_CODE,
+                  INITCAP(E.FULL_NAME)                                              AS FULL_NAME,
+                  INITCAP(G.GENDER_NAME)                                            AS GENDER_NAME,
+                  TO_CHAR(E.BIRTH_DATE, 'DD-MON-YYYY')                              AS BIRTH_DATE_AD,
+                  BS_DATE(E.BIRTH_DATE)                                             AS BIRTH_DATE_BS,
+                  TO_CHAR(E.JOIN_DATE, 'DD-MON-YYYY')                               AS JOIN_DATE_AD,
+                  BS_DATE(E.JOIN_DATE)                                              AS JOIN_DATE_BS,
+                  INITCAP(CN.COUNTRY_NAME)                                          AS COUNTRY_NAME,
+                  RG.RELIGION_NAME                                                  AS RELIGION_NAME,
+                  BG.BLOOD_GROUP_CODE                                               AS BLOOD_GROUP_CODE,
+                  E.MOBILE_NO                                                       AS MOBILE_NO,
+                  E.TELEPHONE_NO                                                    AS TELEPHONE_NO,
+                  E.SOCIAL_ACTIVITY                                                 AS SOCIAL_ACTIVITY,
+                  E.EXTENSION_NO                                                    AS EXTENSION_NO,
+                  E.EMAIL_OFFICIAL                                                  AS EMAIL_OFFICIAL,
+                  E.EMAIL_PERSONAL                                                  AS EMAIL_PERSONAL,
+                  E.SOCIAL_NETWORK                                                  AS SOCIAL_NETWORK,
+                  E.ADDR_PERM_HOUSE_NO                                              AS ADDR_PERM_HOUSE_NO,
+                  E.ADDR_PERM_WARD_NO                                               AS ADDR_PERM_WARD_NO,
+                  E.ADDR_PERM_STREET_ADDRESS                                        AS ADDR_PERM_STREET_ADDRESS,
+                  CNP.COUNTRY_NAME                                                  AS ADDR_PERM_COUNTRY_NAME,
+                  ZP.ZONE_NAME                                                      AS ADDR_PERM_ZONE_NAME,
+                  DP.DISTRICT_NAME                                                  AS ADDR_PERM_DISTRICT_NAME,
+                  INITCAP(VMP.VDC_MUNICIPALITY_NAME)                                AS VDC_MUNICIPALITY_NAME_PERM,
+                  E.ADDR_TEMP_HOUSE_NO                                              AS ADDR_TEMP_HOUSE_NO,
+                  E.ADDR_TEMP_WARD_NO                                               AS ADDR_TEMP_WARD_NO,
+                  E.ADDR_TEMP_STREET_ADDRESS                                        AS ADDR_TEMP_STREET_ADDRESS,
+                  CNT.COUNTRY_NAME                                                  AS ADDR_TEMP_COUNTRY_NAME,
+                  ZT.ZONE_NAME                                                      AS ADDR_TEMP_ZONE_NAME,
+                  DT.DISTRICT_NAME                                                  AS ADDR_TEMP_DISTRICT_NAME,
+                  VMT.VDC_MUNICIPALITY_NAME                                         AS VDC_MUNICIPALITY_NAME_TEMP,
+                  E.EMRG_CONTACT_NAME                                               AS EMRG_CONTACT_NAME,
+                  E.EMERG_CONTACT_RELATIONSHIP                                      AS EMERG_CONTACT_RELATIONSHIP,
+                  E.EMERG_CONTACT_ADDRESS                                           AS EMERG_CONTACT_ADDRESS,
+                  E.EMERG_CONTACT_NO                                                AS EMERG_CONTACT_NO,
+                  E.FAM_FATHER_NAME                                                 AS FAM_FATHER_NAME,
+                  E.FAM_FATHER_OCCUPATION                                           AS FAM_FATHER_OCCUPATION,
+                  E.FAM_MOTHER_NAME                                                 AS FAM_MOTHER_NAME,
+                  E.FAM_MOTHER_OCCUPATION                                           AS FAM_MOTHER_OCCUPATION,
+                  E.FAM_GRAND_FATHER_NAME                                           AS FAM_GRAND_FATHER_NAME,
+                  E.FAM_GRAND_MOTHER_NAME                                           AS FAM_GRAND_MOTHER_NAME,
+                  E.MARITAL_STATUS                                                  AS MARITAL_STATUS,
+                  E.FAM_SPOUSE_NAME                                                 AS FAM_SPOUSE_NAME,
+                  E.FAM_SPOUSE_OCCUPATION                                           AS FAM_SPOUSE_OCCUPATION,
+                  INITCAP(TO_CHAR(E.FAM_SPOUSE_BIRTH_DATE, 'DD-MON-YYYY'))          AS FAM_SPOUSE_BIRTH_DATE,
+                  INITCAP(TO_CHAR(E.FAM_SPOUSE_WEDDING_ANNIVERSARY, 'DD-MON-YYYY')) AS FAM_SPOUSE_WEDDING_ANNIVERSARY,
+                  E.ID_CARD_NO                                                      AS ID_CARD_NO,
+                  E.ID_LBRF                                                         AS ID_LBRF,
+                  E.ID_BAR_CODE                                                     AS ID_BAR_CODE,
+                  E.ID_PROVIDENT_FUND_NO                                            AS ID_PROVIDENT_FUND_NO,
+                  E.ID_DRIVING_LICENCE_NO                                           AS ID_DRIVING_LICENCE_NO,
+                  E.ID_DRIVING_LICENCE_TYPE                                         AS ID_DRIVING_LICENCE_TYPE,
+                  INITCAP(TO_CHAR(E.ID_DRIVING_LICENCE_EXPIRY, 'DD-MON-YYYY'))      AS ID_DRIVING_LICENCE_EXPIRY,
+                  E.ID_THUMB_ID                                                     AS ID_THUMB_ID,
+                  E.ID_PAN_NO                                                       AS ID_PAN_NO,
+                  E.ID_ACCOUNT_NO                                                   AS ID_ACCOUNT_NO,
+                  E.ID_RETIREMENT_NO                                                AS ID_RETIREMENT_NO,
+                  E.ID_CITIZENSHIP_NO                                               AS ID_CITIZENSHIP_NO,
+                  INITCAP(TO_CHAR(E.ID_CITIZENSHIP_ISSUE_DATE, 'DD-MON-YYYY'))      AS ID_CITIZENSHIP_ISSUE_DATE,
+                  E.ID_CITIZENSHIP_ISSUE_PLACE                                      AS ID_CITIZENSHIP_ISSUE_PLACE,
+                  E.ID_PASSPORT_NO                                                  AS ID_PASSPORT_NO,
+                  INITCAP(TO_CHAR(E.ID_PASSPORT_EXPIRY, 'DD-MON-YYYY'))             AS ID_PASSPORT_EXPIRY,
+                  C.COMPANY_NAME                                                    AS COMPANY_NAME,
+                  B.BRANCH_NAME                                                     AS BRANCH_NAME,
+                  D.DEPARTMENT_NAME                                                 AS DEPARTMENT_NAME,
+                  DES.DESIGNATION_TITLE                                             AS DESIGNATION_TITLE,
+                  P.POSITION_NAME                                                   AS POSITION_NAME,
+                  P.LEVEL_NO                                                        AS LEVEL_NO,
+                  INITCAP(ST.SERVICE_TYPE_NAME)                                     AS SERVICE_TYPE_NAME,
+                  (CASE WHEN E.EMPLOYEE_TYPE='R' THEN 'REGULAR' ELSE 'WORKER' END)  AS EMPLOYEE_TYPE,
+                  LOC.LOCATION_EDESC                                                AS LOCATION_EDESC,
+                  FUNT.FUNCTIONAL_TYPE_EDESC                                        AS FUNCTIONAL_TYPE_EDESC,
+                  FUNL.FUNCTIONAL_LEVEL_NO                                          AS FUNCTIONAL_LEVEL_NO,
+                  FUNL.FUNCTIONAL_LEVEL_EDESC                                       AS FUNCTIONAL_LEVEL_EDESC,
+                  E.SALARY                                                          AS SALARY,
+                  E.SALARY_PF                                                       AS SALARY_PF,
+                  E.REMARKS                                                         AS REMARKS
+                FROM HRIS_EMPLOYEES E
+                LEFT JOIN HRIS_COMPANY C
+                ON E.COMPANY_ID=C.COMPANY_ID
+                LEFT JOIN HRIS_BRANCHES B
+                ON E.BRANCH_ID=B.BRANCH_ID
+                LEFT JOIN HRIS_DEPARTMENTS D
+                ON E.DEPARTMENT_ID=D.DEPARTMENT_ID
+                LEFT JOIN HRIS_DESIGNATIONS DES
+                ON E.DESIGNATION_ID=DES.DESIGNATION_ID
+                LEFT JOIN HRIS_POSITIONS P
+                ON E.POSITION_ID=P.POSITION_ID
+                LEFT JOIN HRIS_SERVICE_TYPES ST
+                ON E.SERVICE_TYPE_ID=ST.SERVICE_TYPE_ID
+                LEFT JOIN HRIS_GENDERS G
+                ON E.GENDER_ID=G.GENDER_ID
+                LEFT JOIN HRIS_BLOOD_GROUPS BG
+                ON E.BLOOD_GROUP_ID=BG.BLOOD_GROUP_ID
+                LEFT JOIN HRIS_RELIGIONS RG
+                ON E.RELIGION_ID=RG.RELIGION_ID
+                LEFT JOIN HRIS_COUNTRIES CN
+                ON E.COUNTRY_ID=CN.COUNTRY_ID
+                LEFT JOIN HRIS_COUNTRIES CNP
+                ON (E.ADDR_PERM_COUNTRY_ID=CNP.COUNTRY_ID)
+                LEFT JOIN HRIS_ZONES ZP
+                ON (E.ADDR_PERM_ZONE_ID=ZP.ZONE_ID)
+                LEFT JOIN HRIS_DISTRICTS DP
+                ON (E.ADDR_PERM_DISTRICT_ID=DP.DISTRICT_ID)
+                LEFT JOIN HRIS_VDC_MUNICIPALITIES VMP
+                ON E.ADDR_PERM_VDC_MUNICIPALITY_ID=VMP.VDC_MUNICIPALITY_ID
+                LEFT JOIN HRIS_COUNTRIES CNT
+                ON (E.ADDR_TEMP_COUNTRY_ID=CNT.COUNTRY_ID)
+                LEFT JOIN HRIS_ZONES ZT
+                ON (E.ADDR_TEMP_ZONE_ID=ZT.ZONE_ID)
+                LEFT JOIN HRIS_DISTRICTS DT
+                ON (E.ADDR_TEMP_DISTRICT_ID=DT.DISTRICT_ID)
+                LEFT JOIN HRIS_VDC_MUNICIPALITIES VMT
+                ON E.ADDR_TEMP_VDC_MUNICIPALITY_ID=VMT.VDC_MUNICIPALITY_ID
+                LEFT JOIN HRIS_LOCATIONS LOC
+                ON E.LOCATION_ID=LOC.LOCATION_ID
+                LEFT JOIN HRIS_FUNCTIONAL_TYPES FUNT
+                ON E.FUNCTIONAL_TYPE_ID=FUNT.FUNCTIONAL_TYPE_ID
+                LEFT JOIN HRIS_FUNCTIONAL_LEVELS FUNL
+                ON E.FUNCTIONAL_LEVEL_ID=FUNL.FUNCTIONAL_LEVEL_ID
+                {$joinIfSyngery}
+                WHERE 1=1 AND (E.RETIRED_FLAG = 'Y' OR E.RESIGNED_FLAG = 'Y')
+                {$condition}
+                {$orderByString}";
+                
+        return $this->rawQuery($sql);
+    }
+    
+    public static function getSearchConditonforRetiredorResigned($companyId, $branchId, $departmentId, $positionId, $designationId, $serviceTypeId, $serviceEventTypeId, $employeeTypeId, $employeeId, $genderId = null, $locationId = null, $functionalTypeId = null) {
+        $conditon = "";
+        if ($companyId != null && $companyId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($companyId, "E.COMPANY_ID", "AND");
+        }
+        if ($branchId != null && $branchId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($branchId, "E.BRANCH_ID", "AND");
+        }
+        if ($departmentId != null && $departmentId != -1) {
+            $parentQuery = "(SELECT DEPARTMENT_ID FROM
+                         HRIS_DEPARTMENTS 
+                        START WITH PARENT_DEPARTMENT in (INVALUES)
+                        CONNECT BY PARENT_DEPARTMENT= PRIOR DEPARTMENT_ID
+                        UNION 
+                        SELECT DEPARTMENT_ID FROM HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN (INVALUES)
+                        UNION
+                        SELECT  TO_NUMBER(TRIM(REGEXP_SUBSTR(EXCEPTIONAL,'[^,]+', 1, LEVEL) )) DEPARTMENT_ID
+  FROM (SELECT EXCEPTIONAL  FROM  HRIS_DEPARTMENTS WHERE DEPARTMENT_ID IN  (INVALUES))
+   CONNECT BY  REGEXP_SUBSTR(EXCEPTIONAL, '[^,]+', 1, LEVEL) IS NOT NULL
+                        )";
+            $conditon .= EntityHelper::conditionBuilder($departmentId, "E.DEPARTMENT_ID", "AND", false, $parentQuery);
+        }
+        if ($positionId != null && $positionId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($positionId, "E.POSITION_ID", "AND");
+        }
+        if ($designationId != null && $designationId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($designationId, "E.DESIGNATION_ID", "AND");
+        }
+        if ($serviceTypeId != null && $serviceTypeId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($serviceTypeId, "E.SERVICE_TYPE_ID", "AND");
+        } 
+        if ($serviceEventTypeId != null && $serviceEventTypeId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($serviceEventTypeId, "E.SERVICE_EVENT_TYPE_ID", "AND");
+        }
+        if ($employeeTypeId != null && $employeeTypeId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($employeeTypeId, "E.EMPLOYEE_TYPE", "AND", true);
+        }
+        if ($employeeId != null && $employeeId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($employeeId, "E.EMPLOYEE_ID", "AND");
+        }
+        if ($genderId != null && $genderId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($genderId, "E.GENDER_ID", "AND");
+        }
+        if ($locationId != null && $locationId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($locationId, "E.LOCATION_ID", "AND");
+        }
+        if ($functionalTypeId != null && $functionalTypeId != -1) {
+            $conditon .= EntityHelper::conditionBuilder($functionalTypeId, "E.FUNCTIONAL_TYPE_ID", "AND");
+        }
+        return $conditon;
+    }
 
 }

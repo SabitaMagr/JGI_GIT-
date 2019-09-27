@@ -9,24 +9,29 @@
         var columns = [
             {field: "EMPLOYEE_CODE", title: "Code", width: 90, locked: true},
             {field: "FULL_NAME", title: "Employee", width: 150, locked: true},
+            {field: "DEPARTMENT_NAME", title: "Department", width: 150},
+            {field: "BRANCH_NAME", title: "Branch", width: 150},
             {field: "LEAVE_ENAME", title: "Leave ", width: 150},
             {field: "REMARKS", title: "Remarks", width: 100},
-            {field: "NO_OF_DAYS", title: "Days", width: 100},
+            {field: "NO_OF_DAYS", title: "Days", width: 100, template: "<span>#: (NO_OF_DAYS < 1) ? '0'+NO_OF_DAYS : NO_OF_DAYS # </span>"},
             {field: "LEAVE_DATE", title: "Leave Date", width: 150}
         ];
-//        var map = {
-//            'EMPLOYEE_CODE': 'Code',
-//            'EMPLOYEE_ID': 'Id',
-//            'FULL_NAME': 'Name',
-//            'DEPARTMENT_NAME': 'Department',
-//            'FUNCTIONAL_TYPE_EDESC': 'Functional Type'
-//        };
+        var map = {
+            'EMPLOYEE_CODE': 'Code',
+            'FULL_NAME': 'Name',
+            'DEPARTMENT_NAME': 'Department',
+            'BRANCH_NAME': 'Branch',
+            'LEAVE_ENAME': 'Leave',
+            'REMARKS': 'Remarks',
+            'NO_OF_DAYS': 'Days',
+            'LEAVE_DATE': 'Leave Date'
+        };
 
         var $leave = $('#leaveId');
         var leaveList = document.leaves;
         app.populateSelect($leave, leaveList, 'LEAVE_ID', 'LEAVE_ENAME');
 
-        app.searchTable($table, ['EMPLOYEE_ID', 'EMPLOYEE_CODE', 'FULL_NAME']);
+        app.searchTable($table, ['EMPLOYEE_CODE', 'EMPLOYEE_CODE', 'FULL_NAME']);
 
         app.initializeKendoGrid($table, columns, null, null, null, 'Leave Addition Report.xlsx');
 
@@ -47,10 +52,10 @@
         });
 
         $('#excelExport').on("click", function () {
-            app.excelExport($table, map, "Employee Leave Balance Report.xlsx");
+            app.excelExport($table, map, "Employee Leave Addition Report.xlsx");
         });
         $('#pdfExport').on("click", function () {
-            app.exportToPDF($table, map, "Employee Leave Balance Report.pdf", 'A2');
+            app.exportToPDF($table, map, "Employee Leave Addition Report.pdf", 'A2');
         });
 
 //        $("#reset").on("click", function () {
